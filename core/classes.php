@@ -465,22 +465,7 @@ global $db, $page, $user, $request, $session;
   return $result;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-/**
-* Отрисовывает клиентский контент
-*
-* @access  public
-*
-* @return  string  Контент
-*/
 function clientRenderContent()
-{
-  global $page;
-
-  $result = isset($page->topic) ? $this->clientRenderItem() : $this->clientRenderList();
-  return $result;
-}
-//------------------------------------------------------------------------------
-/*function clientRenderContent()
 {
   global $db, $page;
 
@@ -497,54 +482,11 @@ function clientRenderContent()
     } else $result .= $this->clientRenderList();
   }
   return $result;
-}*/
-
-//------------------------------------------------------------------------------
-/**
-* Возвращает список элементов для текущего представления
-*
-* @access  private
-*
-* @return  array  Список элементов
-*/
-function clientGetList()
-{
-  global $Eresus, $page;
-  
-  $this->table['fields'] = $Eresus->db->fields($this->table['name']);
-  $this->itemsCount = $Eresus->db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
-  if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
-  if (!$page->subpage) $page->subpage = $this->table['sortDesc']?$this->pagesCount:1;
-  $items = $Eresus->db->select(
-    $this->table['name'],
-    "(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
-    $this->table['sortMode'],
-    $this->table['sortDesc'],
-    '',
-    $this->settings['itemsPerPage'],
-    $this->table['sortDesc']
-      ?(($this->pagesCount-$page->subpage)*$this->settings['itemsPerPage'])
-      :(($page->subpage-1)*$this->settings['itemsPerPage'])
-  );
-  
-  return $items;
 }
-//------------------------------------------------------------------------------
-/**
-* Отрисовывает список элементов
-*
-* @access  private
-*
-* @return  string  Контент
-*/
-function clientRenderList(/*$options = array('pages'=>true)*/)
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+function clientRenderList($options = array('pages'=>true))
 {
-  $result = '';
-  $items = $this->clientGetList();
-  if (count($items)) foreach($items as $item) $result .= $this->clientRenderListItem($item);
-  return $result;
-  
-/*  global $db, $page;
+  global $db, $page;
 
   $result = '';
   $items = $db->select(
@@ -563,7 +505,7 @@ function clientRenderList(/*$options = array('pages'=>true)*/)
     $pages = $this->clientRenderPages();
     $result .= $pages;
   }
-  return $result;*/
+  return $result;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderListItem($item)
