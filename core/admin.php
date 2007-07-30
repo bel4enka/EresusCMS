@@ -10,7 +10,8 @@
 define('ADMINUI', true);
 
 # Подключаем ядро системы #
-if (file_exists('kernel.php')) include_once('kernel.php'); else {
+$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
+if (is_file($filename)) include_once($filename); else {
   echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
   exit;
 }
@@ -45,8 +46,6 @@ class TAdminUI {
   {
     global $Eresus, $plugins, $request;
 
-    useLib('sections');
-    $Eresus->sections = new TSections;
     $this->title = admControls;
     # Определяем уровень вложенности
     do {

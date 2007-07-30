@@ -10,7 +10,8 @@
 define('CLIENTUI', true);
 
 # Подключаем ядро системы #
-if (file_exists('kernel.php')) include_once('kernel.php'); else {
+$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
+if (is_file($filename)) include_once($filename); else {
   echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
   exit;
 }
@@ -131,37 +132,41 @@ class TClientUI {
     $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
     return $result;
   } 
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //------------------------------------------------------------------------------
+  /**
+  * Производит разбор URL и загрузку соответствующего раздела
+  *
+  * @access  private
+  *
+  * @return  array|bool  Описание загруженного раздела или false если он не найден
+  */
   function loadPage()
   {
-  global $KERNEL, $db, $plugins, $request, $user;
-
-    # Поиск текущей страницы
-    # В БД обязана быть страница с именем 'main'
-    $name = 'main';
-    $tmp = $db->selectItem('pages', "`name`='main' AND `owner`='0' AND `access`>='".($user['auth']?$user['access']:GUEST)."' AND `active`='1'");
-    $url = '';
-    if ($tmp == null) $this->httpError(404); else {
-      $item = $tmp;
-      $tmp['id'] = 0;
-      $this->section[] = $item['title'];
-      # Парсим командную строку
-      if (count($request['params'])) do {
-        $tmp = $db->selectItem('pages', "`name`='".$request['params'][0]."' AND `owner`='".$tmp['id']."' AND `access`>=".($user['auth']?$user['access']:GUEST)."");
-        if ($tmp != null) {
-          if (!$tmp['active']) $this->httpError(404);
-          $item = $tmp;
-          $url .= $item['name'].'/';
-          $plugins->clientOnURLSplit($item, $url);
-          $this->section[] = $item['title'];
-          array_shift($request['params']);
-        }
-      } while (($tmp != null) && count($request['params']));
-      $request['path'] = httpRoot.$url;
-      #if (empty($this->content['section'])) $this->content['section'] = $item['caption'];
-      #else $this->content['section'] = implode(' &raquo; ', $this->content['section']);
+    global $Eresus, $plugins, $request, $user;
+    
+    $result = false;
+    if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
+      array_unshift($Eresus->request['params'], 'main');
+      $request['params'] = $Eresus->request['params'];
     }
-    return $item;
+    reset($Eresus->request['params']);
+    $item['id'] = 0;
+    $url = '';
+    do {
+      $items = $Eresus->sections->children($item['id'], $user['auth']?$user['access']:GUEST, SECTIONS_ACTIVE);
+      $item = false;
+      for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
+        $result = $item = $items[$i];
+        if ($item['name'] != 'main' || !empty($url)) $url .= $item['name'].'/';
+        $plugins->clientOnURLSplit($item, $url);
+        $this->section[] = $item['title'];
+        next($Eresus->request['params']);
+        array_shift($request['params']);
+      }
+    } while ($item && current($Eresus->request['params']));
+    $request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
+    if ($result) $result = $Eresus->sections->get($result['id']);
+    return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   # ОБЩИЕ ФУНКЦИИ
@@ -175,7 +180,7 @@ class TClientUI {
     $plugins->clientOnStart();
     
     $item = $this->loadPage();
-    if (!is_null($item)) {
+    if ($item) {
       if (count($request['params'])) {
         if (preg_match('/p[\d]+/i', $request['params'][0])) $this->subpage = substr(array_shift($request['params']), 1);
         if (count($request['params'])) $this->topic = array_shift($request['params']);
@@ -198,8 +203,8 @@ class TClientUI {
       $this->content = $item['content'];
       $this->scripts = '';
       $this->styles = '';
-    }
-    $this->options = decodeOptions($item['options']);
+      $this->options = decodeOptions($item['options']);
+    } else $this->httpError(404);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function Error404()
