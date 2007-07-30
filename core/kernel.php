@@ -600,11 +600,8 @@ function goto($url)
 #   $url - новый адрес
 {
   $url = str_replace('&amp;','&',$url);
-  if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
-    header("Refresh: 0; URL: ".$url);
-  }else{
-    header("Location: ".$url);
-  }
+  if(preg_match('/Apache/i', $_SERVER['SERVER_SOFTWARE'])) header("Location: $url");
+  else header("Refresh: 0; URL=$url");
   exit;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -775,6 +772,8 @@ class Eresus {
   var $style;
   var $froot;
   var $fdata;
+
+  var $request;
   
   /**
   * Конструктор
@@ -835,20 +834,18 @@ class Eresus {
   */
   function init_resolve()
   {
-    if (is_null($this->froot)) $this->froot = realpath('./..').'/';
+    if (is_null($this->froot)) $this->froot = realpath(dirname(__FILE__).'/..').'/';
     if ($this->isWin32()) {
       $this->froot = str_replace('\\', '/', substr($this->froot, 2));
     }
-
     $this->fdata = $this->froot.'data/';
     
     if (is_null($this->host)) $this->host = strtolower($_SERVER['HTTP_HOST']);
     $this->https = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']);
     
     if (is_null($this->path)) {
-      $s = realpath('./..');
-      $s = substr($s, strlen($_SERVER['DOCUMENT_ROOT']));
-      if ($this->isWin32()) $s = str_replace('\\', '/', $s);
+      $s = $this->froot;
+      $s = substr($s, strlen($_SERVER['DOCUMENT_ROOT'])-($this->isWin32()?2:0));
       if (!strlen($s) || $s{strlen($s)-1} != '/') $s .= '/';
       $this->path = ($s{0} != '/' ? '/' : '').$s;
     }
@@ -907,9 +904,10 @@ class Eresus {
     $request['arg'] = __clearargs(array_merge($_GET, $_POST));
     unset($request['arg']['sid']);
     # Разбивка параметров вызова скрипта
-    $request['params'] = explode('/', $s);
-    while (empty($request['params']) && (count($request['params'])>0)) array_shift($request['params']);
-    while (empty($request['params'][count($request['params'])-1]) && (count($request['params'])>0)) array_pop($request['params']);
+    if ($s{0} == '/') $s = substr($s, 1);
+    if ($s{strlen($s)-1} == '/') $s = substr($s, 0, -1);
+    $request['params'] = $s ? explode('/', $s) : array();
+    $this->request = $request;
   }
   //------------------------------------------------------------------------------
   /**
@@ -1003,6 +1001,9 @@ class Eresus {
     $this->init_classes();
     # Подключение к источнику данных
     $this->init_datasource();
+    
+    useLib('sections');
+    $this->sections = new TSections;
   }
   //------------------------------------------------------------------------------
   /**
