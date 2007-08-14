@@ -1,4 +1,4 @@
-<?
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™ 2.00+
 # © 2005-2006, ProCreat Systems
@@ -8,7 +8,7 @@ class TBanners extends TListContentPlugin {
   var $name = 'banners';
   var $title = 'Áàííåğû';
   var $type = 'client,admin';
-  var $version = '1.07';
+  var $version = '1.08';
   var $description = 'Ñèñòåìà ïîêàçà áàííåğîâ';
   var $table = array (
     'name' => 'banners',
