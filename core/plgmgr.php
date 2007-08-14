@@ -66,7 +66,8 @@ class TPlgMgr {
   {
   global $plugins, $page, $request;
 
-    if (count($request['arg']['files'])) foreach ($request['arg']['files'] as $name) {
+    $files = array_keys($request['arg']['files']);
+    if (count($files)) foreach ($files as $name) if ($request['arg']['files'][$name]) {
       $plugins->install($name);
       SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
     }
@@ -131,7 +132,7 @@ class TPlgMgr {
         $match[2] = $file.'.php';
         $match[3] = admPluginsInvalidFile.'</span>';
       }
-      $form['fields'][] = array('type'=>'checkbox','name'=>'files[]','label'=>$match[1].' '.$match[2].' - '.$match[3], 'value'=>$file, 'disabled'=>!$valid);
+      $form['fields'][] = array('type'=>'checkbox','name'=>'files['.$file.']','label'=>$match[1].' '.$match[2].' - '.$match[3], 'value'=>true, 'disabled'=>!$valid);
     }
     $result = $page->renderForm($form);
     return $result;

@@ -83,7 +83,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
         array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl'),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30'),
+        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok','cancel'),
     );
@@ -111,7 +111,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'filename'),
         array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl', 'disabled' => true, 'value' => $item['filename']),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30'),
+        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );
@@ -239,7 +239,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
         array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values, 'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
         array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30'),
+        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok','cancel'),
     );
@@ -265,7 +265,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'name'),
         array('type'=>'edit','name'=>'_name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl ('.$this->stdTemplates[$item['name']]['caption'].')', 'disabled' => true, 'value'=>$item['name']),
         array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30'),
+        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );
@@ -377,7 +377,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
         array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css'),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30'),
+        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
       ),
       'buttons' => array('ok','cancel'),
     );
@@ -405,7 +405,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'filename'),
         array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30'),
+        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );

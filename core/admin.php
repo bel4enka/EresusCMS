@@ -399,135 +399,15 @@ class TAdminUI {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function renderForm($form, $values=null)
+  function renderForm($form, $values=array())
   { 
-  global $request;
-    
     $result = '';
-    $hidden = '';
-    $body = '';
-    $validator = '';
-    $html = false;
-    $file = false;
-    if (empty($form['name'])) $result .= ErrorBox(errFormHasNoName);
     if (isset($form['tabs'])) $result .= $this->renderTabs($form['tabs']);
-    if (count($form['fields'])) foreach($form['fields'] as $item) {
-      if ((!isset($item['access'])) || (UserRights($item['access']))) {
-        if (isset($item['label'])) $label = !empty($item['hint']) ? '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>': $item['label']; else $label = '';
-        if (isset($item['pattern'])) $validator .= "if (!form.".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\nform.".$item['name'].".select();\n} else ";
-        $value = isset($item['value'])
-          ? $item['value']
-          : (isset($item['name']) && isset($values[$item['name']])
-              ? $values[$item['name']] 
-              : (isset($item['default'])
-                  ? $item['default']
-                  : ''
-                )
-            );
-        $width = isset($item['width'])?' style="width: '.$item['width'].';"':'';
-        $disabled = isset($item['disabled']) && $item['disabled']?' disabled':'';
-        $extra = isset($item['extra'])?' '.$item['extra']:'';
-        $comment = isset($item['comment'])?' '.$item['comment']:'';
-        switch(strtolower($item['type'])) {
-          case 'hidden':
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $hidden .= '<div class="admHidden"><input type="hidden" name="'.$item['name'].'" value="'.$value.'"></div>'."\n";
-          break;
-          case 'divider': $body .= "<tr><td colspan=\"2\"><hr class=\"admFormDivider\"></td></tr>\n"; break;
-          case 'text': $body .= '<tr><td colspan="2" class="admFormText"'.$extra.'>'.$value."</td></tr>\n"; break;
-          case 'header': $body .= '<tr><th colspan="2" class="admFormHeader">'.$value."</th></tr>\n"; break;
-          case 'edit': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($value).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$width.$disabled.$extra.'>'.$comment."</td></tr>\n"; 
-          break;
-          case 'password': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.'>'.$comment."</td></tr>\n";
-            if (isset($item['equal'])) $validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
-          break;
-          case 'select': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select name="'.$item['name'].'"'.$width.$disabled.$extra.'>'."\n";
-            if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
-            for($i = 0; $i< count($item['items']); $i++) {
-              if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
-              $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
-            }
-            $body .= '</select>'.$comment."</td></tr>\n";
-          break;
-          case 'listbox':
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'[]"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
-            if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
-            for($i = 0; $i< count($item['items']); $i++) {
-              if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
-              $body .= '<option value="'.$value.'" '.(count($values) && in_array($value, $values[$item['name']]) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
-            }
-            $body .= '</select>'.$comment."</td></tr>\n";
-          break;
-          case 'checkbox': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;"><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
-          break;
-          case 'memo': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="admFormLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$disabled.$extra.' style="width: 100%;">'.EncodeHTML($value)."</textarea></td></tr>\n"; 
-          break;
-          case 'html': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $value = isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'');
-            $body .= '<tr><td colspan="2">'.$label.'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.str_replace('$(httpRoot)', httpRoot, EncodeHTML($value)).'</textarea></td></tr>'."\n";
-            $this->htmlEditors[] = 'wyswyg_'.$item['name'];
-          break;
-          case 'file': 
-            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="admFormLabel">'.$label."</td><td><input type=\"file\" name=\"".$item['name']."\" size=\"".$item['width']."\"".$disabled.">".$comment."</td></tr>\n";
-            $file = true;
-          break;
-          default: ErrorMessage(sprintf(errFormUnknownType, $item['type'], $form['name']));
-        }
-      }
-    }
-    $this->scripts .= "
-      function ".$form['name']."Submit()
-      {
-        var result = true;
-        var form = document.forms.namedItem('".$form['name']."');
-        ".(empty($validator)?'':$validator)."
-        if (result) {
-          var controls = form.elements;
-          var count = controls.length;
-          for (var i=0; i < count; i++) if (controls[i].type == 'checkbox') {
-            var control = document.createElement('input');
-            control.type = 'hidden';
-            control.name = controls[i].name;
-            control.value = controls[i].checked?controls[i].value:0;
-            controls[i].name = '';
-            form.appendChild(control);
-          }
-        }
-        return result;
-      }
-    ";
-    #"function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
-    $referer = isset($request['arg']['sub_id'])?$this->url(array('sub_id'=>'')):$this->url(array('id'=>''));
+    useLib('forms');
     $wnd['caption'] = $form['caption'];
     $wnd['width'] = isset($form['width'])?$form['width']:'';
     $wnd['style'] = 'padding: 0px;';
-    $wnd['body'] = 
-      "<form ".(empty($form['name'])?'':'name="'.$form['name'].'" ')."action=\"".$this->url()."\" method=\"post\" onsubmit=\"return ".$form['name']."Submit();\"".($file?' enctype="multipart/form-data"':'').">\n".
-      $hidden.
-      '<div class="admHidden"><input type="hidden" name="submitURL" value="'.$referer.'"></div>'."\n".
-      "<table width=\"100%\">\n".
-      "<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td></tr>\n".
-      $body.
-      "<tr><td colspan=\"2\" align=\"center\"><br />".
-      (!isset($form['buttons']) || in_array('ok', $form['buttons'])?"<input type=\"submit\" class=\"button\" value=\"".strOk."\"> ":''). # onClick=\"formOKClick('".$form['name']."')\"> ":'').
-      (!isset($form['buttons']) || in_array('apply', $form['buttons'])?"<input type=\"submit\" class=\"button\" value=\"".strApply."\" onClick=\"formApplyClick('".$form['name']."')\"> ":'').
-      (isset($form['buttons']) && in_array('reset', $form['buttons'])?"<input type=\"reset\" class=\"button\" value=\"".strReset."\"> ":'').
-      (!isset($form['buttons']) || in_array('cancel', $form['buttons'])?"<input type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\">":'').
-      "</td></tr>\n".
-      "</table>\n</form>\n";
+    $wnd['body'] = form($form, $values);
     $result .= $this->window($wnd);
     return $result;
   }
