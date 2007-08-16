@@ -1,4 +1,4 @@
-<?
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™
 # © 2006, ProCreat Systems
@@ -51,7 +51,7 @@ class TFAQ extends TListContentPlugin {
         KEY `position` (`position`)
       ) TYPE=MyISAM COMMENT='FAQ';",
     );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Âíóòğåííèå ôóíêöèè
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
@@ -183,7 +183,7 @@ class TFAQ extends TListContentPlugin {
   function renderFAQBlock()
   {
     global $db;
-    
+
     $result = '';
     $items = $db->select($this->table['name'], "`active`='1'".($this->settings['blockMode']==_FAQ_BLOCK_MANUAL?" AND `block`='1'":''), $this->table['sortMode'], $this->table['sortDesc'], '', $this->settings['blockCount']);
     if (count($items)) foreach($items as $item) {
@@ -215,7 +215,7 @@ class TFAQ extends TListContentPlugin {
     $result = str_replace(
       array(
         '$(contents)',
-        '$(items)', 
+        '$(items)',
       ), array(
         $this->contents,
         $items,

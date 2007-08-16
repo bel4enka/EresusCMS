@@ -97,7 +97,7 @@ div.infoBoxCap {background: #007acc; color: #fff; font-weight: bold; padding: 2p
 /* Формы */
 form {margin: 0px; padding: 0px;}
 div.admHidden {position: absolute;}
-td.admFormLabel {text-align: right; white-space: nowrap;}
+td.formLabel {text-align: right; white-space: nowrap;}
 td.admFormText {color: #000; font-weight: normal;}
 hr.admFormDivider {border: solid 1px #007acc;}
 

@@ -1,11 +1,11 @@
-<?
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™ 2.00
 # © 2005-2006, ProCreat Systems
 # Web: http://procreat.ru
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TGallery extends TListContentPlugin {
-  var 
+  var
     $name = 'gallery',
     $type = 'client,content,ondemand',
     $title = 'Галерея',
@@ -112,7 +112,7 @@ class TGallery extends TListContentPlugin {
         KEY `posted` (`posted`)
       ) TYPE=MyISAM COMMENT='Gallery iamges';",
     );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function install()
   {
     parent::install();
@@ -120,17 +120,17 @@ class TGallery extends TListContentPlugin {
     umask(0000);
     if (!file_exists(filesRoot.'data/'.$this->name)) mkdir(filesRoot.'data/'.$this->name, 0777);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function uninstall()
   {
     parent::uninstall();
     $this->dropTable($this->sub_table);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function replaceMacros($template, $item)
   {
     global $request;
-    
+
     $item['thumbnailWidth'] = $this->settings['thumbnailWidth'];
     $item['thumbnailHeight'] = $this->settings['thumbnailHeight'];
     $item['imageWidth'] = $this->settings['imageWidth'];
@@ -143,7 +143,7 @@ class TGallery extends TListContentPlugin {
     $result = parent::replaceMacros($template, $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
   {
   global $db, $request;
@@ -159,20 +159,20 @@ class TGallery extends TListContentPlugin {
   function update()
   {
   global $db, $page, $request;
-  
+
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
     $item = SetArgs($item);
     if (!isset($request['arg']['active'])) $item['active'] = false;
     $db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
     goto($request['arg']['submitURL']);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function delete()
   {
   global $db, $request, $page;
-  
+
     $owner = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$request['arg']['delete']."'");
-    
+
     $items = $db->select($this->sub_table['name'], "`owner`='".$owner['id']."'");
     if (count($items)) foreach($items as $item) {
       unlink(filesRoot.'data/'.$this->name.'/'.$item['image']);
@@ -185,7 +185,7 @@ class TGallery extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function encodeFilename($s)
   {
-    
+
     $s = strtr(strtolower($s), array(
       ' '=>'_',
       'а'=> 'a', 'б'=> 'b', 'в'=> 'v', 'г'=> 'g', 'д'=> 'd', 'е'=> 'e', 'ё'=> 'yo', 'ж'=> 'zh', 'з'=> 'z', 'и'=> 'i', 'й'=> 'y', 'к'=> 'k', 'л'=> 'l', 'м'=> 'm', 'н'=> 'n', 'о'=> 'o', 'п'=> 'p', 'р'=> 'r', 'с'=> 's', 'т'=> 't', 'у'=> 'u', 'ф'=> 'f', 'х'=> 'h', 'ц'=> 'tc', 'ч'=> 'ch', 'ш'=> 'sh', 'щ'=> 'sch', 'ь'=> '', 'ы'=> 'y', 'ъ'=> '', 'э'=> 'e', 'ю'=> 'yu', 'я'=> 'ya',
@@ -200,7 +200,7 @@ class TGallery extends TListContentPlugin {
     }
     return $s;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function overlayLogo(&$src, $thmb = false)
   {
     $logo = @imageCreateFromGIF(filesRoot.'style/'.$this->name.'/'.($thmb?'thumbnail':'logo').'.gif');
@@ -232,7 +232,7 @@ class TGallery extends TListContentPlugin {
       imageDestroy($logo);
     }
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function createThumbnail($filename, $type)
   {
     $path = filesRoot.'data/'.$this->name.'/';
@@ -259,7 +259,7 @@ class TGallery extends TListContentPlugin {
     imageDestroy($dst);
     return $filename;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function resizeImage($filename, $type)
   {
     if ($this->settings['imageResize']) {
@@ -290,7 +290,7 @@ class TGallery extends TListContentPlugin {
     }
     return $filename;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insertImage()
   {
   global $db, $request, $page, $user, $session;
@@ -355,8 +355,8 @@ class TGallery extends TListContentPlugin {
   function sub_up()
   {
   global $page, $db, $request;
-  
-    dbReorderItems($this->sub_table['name'],"`owner`='".$request['arg']['id']."'");  
+
+    dbReorderItems($this->sub_table['name'],"`owner`='".$request['arg']['id']."'");
     $item = $db->selectItem($this->sub_table['name'], "`".$this->table['key']."`='".$request['arg']['sub_up']."'");
     if ($item['position'] > 0) {
       $temp = $db->selectItem($this->sub_table['name'],"`owner`='".$request['arg']['id']."' AND `position`='".($item['position']-1)."'");
@@ -371,7 +371,7 @@ class TGallery extends TListContentPlugin {
   function sub_down()
   {
   global $page, $db, $request;
-  
+
     dbReorderItems($this->sub_table['name'],"`owner`='".$request['arg']['id']."'");
     $count = $db->count($this->sub_table['name']);
     $item = $db->selectItem($this->sub_table['name'], "`".$this->table['key']."`='".$request['arg']['sub_down']."'");
@@ -386,19 +386,19 @@ class TGallery extends TListContentPlugin {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function updateSettings()
   {
     global $request;
-    
+
     parent::updateSettings();
     if (is_uploaded_file($_FILES['logoImage']['tmp_name'])) upload('logoImage', filesRoot.'style/gallery/logo.gif');
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function settings()
   {
     global $page, $request;
-  
+
     if (arg('action') == 'thumbnail') {
       $files = glob(filesRoot.'data/'.$this->name.'/*.jpg');
       $count = 0;
@@ -409,7 +409,7 @@ class TGallery extends TListContentPlugin {
         $count++;
       }
       InfoMessage('Миниатюры перестроены.');
-    } 
+    }
     $image = 'style/gallery/logo.gif';
     $image = is_file(filesRoot.$image)?'<a href="'.httpRoot.$image.'">На изображение (GIF)</a>':'На изображение (GIF)';
     $thmb = 'style/gallery/thumbnail.gif';
@@ -512,7 +512,7 @@ class TGallery extends TListContentPlugin {
       '</td></tr></table>';
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderListItem($item)
   {
     global $request, $db;
@@ -526,7 +526,7 @@ class TGallery extends TListContentPlugin {
     $result = $this->replaceMacros($this->settings['tmplListItem'], $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderList()
   {
     global $page;
@@ -534,24 +534,24 @@ class TGallery extends TListContentPlugin {
     $result = str_replace('$(items)', parent::clientRenderList(), $this->settings['tmplList']);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderAlbum($gallery)
   {
     global $db, $page, $request;
-    
+
     $result = '';
     $item = $db->selectItem($this->table['name'], "(`id`='".$gallery."')AND(`active`='1')");
     $items = $db->select(
       $this->sub_table['name'],
-      "`owner`='".$gallery['id']."'", 
-      $this->sub_table['sortMode'], 
+      "`owner`='".$gallery['id']."'",
+      $this->sub_table['sortMode'],
       $this->sub_table['sortDesc']
     );
-    if (count($items)) foreach($items as $item) 
+    if (count($items)) foreach($items as $item)
       $result .= $this->replaceMacros($this->settings['tmplSubListItem'], $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderImage($gallery, $id)
   {
     global $db, $page, $request;
@@ -575,15 +575,15 @@ class TGallery extends TListContentPlugin {
     $page->template = $this->settings['imageTemplate'];
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderItem()
   {
     global $db, $page, $request, $plugins;
-    
+
     $result = '';
     $gallery = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
     if (is_null($gallery)) {
-      $item = $page->Error404(); 
+      $item = $page->Error404();
       $result = $item['content'];
     } else {
       #$page->title[] = StripSlashes($gallery['caption']);
@@ -600,11 +600,11 @@ class TGallery extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRenderContent()
   {
   global $db, $page, $user, $request;
-  
+
     if (isset($request['arg']['id'])) {
       $item = $db->selectItem($this->table['name'], "`".$this->table['key']."` = '".$request['arg']['id']."'");
       $page->title .= ' - '.StripSlashes($item['caption']);
@@ -632,7 +632,7 @@ class TGallery extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminAddItem()
   {
   global $db, $page, $request;
@@ -650,7 +650,7 @@ class TGallery extends TListContentPlugin {
       'buttons' => array('ok', 'cancel'),
     );
     $result = $page->renderForm($form);
-    
+
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -674,7 +674,7 @@ class TGallery extends TListContentPlugin {
     $result = $page->renderForm($form, $item);
     $this->sub_table['condition'] = "`owner`='".$request['arg']['id']."'";
     $result .= $page->renderTable($this->sub_table, null, 'sub_');
-    
+
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -695,7 +695,7 @@ class TGallery extends TListContentPlugin {
       'buttons' => array('ok', 'cancel'),
     );
     $result = $page->renderForm($form);
-    
+
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -719,7 +719,7 @@ class TGallery extends TListContentPlugin {
       'buttons' => array('ok', 'apply', 'cancel'),
     );
     $result = $page->renderForm($form, $item);
-    
+
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

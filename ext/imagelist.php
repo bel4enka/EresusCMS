@@ -1,4 +1,4 @@
-<?
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™
 # © 2005, ProCreat Systems
@@ -7,7 +7,7 @@
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TImageList extends TListContentPlugin {
-  var 
+  var
     $name = 'imagelist',
     $type = 'client,content,ondemand',
     $title = 'Картинки',
@@ -66,22 +66,22 @@ class TImageList extends TListContentPlugin {
         KEY `source` (`source`)
       ) TYPE=MyISAM COMMENT='ImageList';",
     );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function install()
   {
     parent::install();
     umask(0000);
     if (!file_exists(filesRoot.'data/'.$this->name)) mkdir(filesRoot.'data/'.$this->name, 0777);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function uninstall()
   {
     parent::uninstall();
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function encodeFilename($s)
   {
-    
+
     $s = strtr(strtolower($s), array(
       ' '=>'_',
       'а'=> 'a', 'б'=> 'b', 'в'=> 'v', 'г'=> 'g', 'д'=> 'd', 'е'=> 'e', 'ё'=> 'yo', 'ж'=> 'zh', 'з'=> 'z', 'и'=> 'i', 'й'=> 'y', 'к'=> 'k', 'л'=> 'l', 'м'=> 'm', 'н'=> 'n', 'о'=> 'o', 'п'=> 'p', 'р'=> 'r', 'с'=> 's', 'т'=> 't', 'у'=> 'u', 'ф'=> 'f', 'х'=> 'h', 'ц'=> 'tc', 'ч'=> 'ch', 'ш'=> 'sh', 'щ'=> 'sch', 'ь'=> '', 'ы'=> 'y', 'ъ'=> '', 'э'=> 'e', 'ю'=> 'yu', 'я'=> 'ya',
@@ -96,7 +96,7 @@ class TImageList extends TListContentPlugin {
     }
     return $s;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function resizeImage($filename, $mode, $newname='')
   {
     $path = filesRoot.'data/'.$this->name.'/';
@@ -104,7 +104,7 @@ class TImageList extends TListContentPlugin {
     $type = getimagesize($path.$filename);
     switch ($type[2]) {
       case IMG_GIF: $src = imageCreateFromGIF($path.$filename); break;
-      case IMG_JPG: 
+      case IMG_JPG:
       case IMG_JPEG: $src = imageCreateFromJPEG($path.$filename); break;
       case IMG_PNG: $src = imageCreateFromPNG($path.$filename); break;
     }
@@ -123,7 +123,7 @@ class TImageList extends TListContentPlugin {
     }
     return $newname;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
   {
     global $db, $request;
@@ -144,7 +144,7 @@ class TImageList extends TListContentPlugin {
   function update()
   {
   global $db, $page, $request;
-  
+
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
     $image = $item['image'];
     $item = GetArgs($item);
@@ -160,7 +160,7 @@ class TImageList extends TListContentPlugin {
     $db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
     goto($request['arg']['submitURL']);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function updateImage()
   {
   global $db, $request, $page;
@@ -183,7 +183,7 @@ class TImageList extends TListContentPlugin {
   function deleteImageEx($id)
   {
     global $db;
-    
+
     $item = $db->selectItem($this->table['name'], "`id`='".$id."'");
     $filename = filesRoot.'data/'.$this->name.'/'.$item['image'];
     if (is_file($filename)) unlink($filename);
@@ -194,7 +194,7 @@ class TImageList extends TListContentPlugin {
   function delete($id)
   {
   global $db, $request;
-  
+
     $this->deleteImageEx($id);
     parent::delete($id);
   }
@@ -239,13 +239,13 @@ class TImageList extends TListContentPlugin {
     }
     goto($request['arg']['submitURL']);
   }*/
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function settings()
   {
   global $page;
-  
+
     $form = array(
       'name' => 'settings',
       'caption' => $this->title.' '.$this->version,
@@ -270,7 +270,7 @@ class TImageList extends TListContentPlugin {
     $result = $page->renderForm($form, $this->settings);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderListItem($item)
   {
     global $request;
@@ -282,17 +282,17 @@ class TImageList extends TListContentPlugin {
     $result = $this->replaceMacros($this->settings['tmplListItem'], $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderList()
   {
     $result = str_replace('$(items)', parent::clientRenderList(), $this->settings['tmplList']);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderItem()
   {
     global $db, $page, $request;
-    
+
     $item = $db->selectItem($this->table['name'], "`id`='".$page->topic."'");
     if (is_null($item)) $page->HttpError(404); else {
       $item['image'] = img('data/imagelist/'.$item['image']);
@@ -304,7 +304,7 @@ class TImageList extends TListContentPlugin {
         if ($i>0) $prev = $items[$i-1];
         if ($i<count($items)-1) $next = $items[$i+1];
       }
-      
+
       #$plugins->clientOnPathSplit($item, $page->name.'/'.$item['id'].'/');
       #if (preg_match('/p[\d]+/i', $request['params'][0])) $page->subpage = substr(array_shift($request['params']), 1);
       #if (count($request['params']) && ($request['arg']['action'] != 'add_image')) {
@@ -318,7 +318,7 @@ class TImageList extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminAddItem()
   {
   global $page, $request;
@@ -342,7 +342,7 @@ class TImageList extends TListContentPlugin {
   /*function loadDialog()
   {
     global $request, $page;
-  
+
     $form = array(
       'name' => 'loadForm',
       'caption' => 'Добавить директорию',
@@ -351,7 +351,7 @@ class TImageList extends TListContentPlugin {
         array ('type' => 'hidden', 'name'=>'action', 'value'=>'loadFolder'),
         array ('type' => 'hidden', 'name'=>'owner', 'value'=>$request['arg']['id']),
         array ('type' => 'edit', 'name' => 'folder', 'label' => 'Директория', 'width' => '100%'),
-        array ('type' => 'text', 'value' => 
+        array ('type' => 'text', 'value' =>
           'Введите путь к директории, из которой вы хотите загрузить фотографии.<br>'.
           'Например: /old/imagelist/album1/<br>'.
           'Так же можно воспользоваться <a href="'.httpRoot.'admin.php?mod=files" target="_blank">Файловым менеджером</a>. Для этого<ol>'.

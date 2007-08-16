@@ -1,4 +1,4 @@
-<?
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™
 # © 2005-2006, ProCreat Systems
@@ -73,7 +73,7 @@ class TArticles extends TListContentPlugin {
       KEY `block` (`block`)
     ) TYPE=MyISAM COMMENT='Articles';",
   );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function install()
   {
     parent::install();
@@ -82,12 +82,12 @@ class TArticles extends TListContentPlugin {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function TArticles()
   # производит регистрацию обработчиков событий
   {
     global $plugins;
-  
+
     parent::TListContentPlugin();
     if ($this->settings['blockMode']) $plugins->events['clientOnPageRender'][] = $this->name;
     $this->table['sortMode'] = $this->settings['listSortMode'];
@@ -102,7 +102,7 @@ class TArticles extends TListContentPlugin {
   function updateSettings()
   {
     global $db, $request;
-  
+
     $item = $db->selectItem('`plugins`', "`name`='".$this->name."'");
     $item['settings'] = decodeOptions($item['settings']);
     foreach ($this->settings as $key => $value) $this->settings[$key] = isset($request['arg'][$key])?$request['arg'][$key]:'';
@@ -134,7 +134,7 @@ class TArticles extends TListContentPlugin {
     $type = getimagesize($srcFile);
     switch ($type[2]) {
       case IMG_GIF: $src = imageCreateFromGIF($srcFile); break;
-      case IMG_JPG: 
+      case IMG_JPG:
       case IMG_JPEG: $src = imageCreateFromJPEG($srcFile); break;
       case IMG_PNG: $src = imageCreateFromPNG($srcFile); break;
     }
@@ -339,10 +339,10 @@ class TArticles extends TListContentPlugin {
   function renderArticlesBlock()
   {
     global $db;
-    
+
     $result = '';
     $items = $db->select($this->table['name'], "`active`='1'".($this->settings['blockMode']==_ARTICLES_BLOCK_MANUAL?" AND `block`='1'":''), $this->table['sortMode'], $this->table['sortDesc'], '', $this->settings['blockCount']);
-    if (count($items)) foreach($items as $item) 
+    if (count($items)) foreach($items as $item)
       $result .= $this->replaceMacros($this->settings['tmplBlockItem'], $item, $this->settings['dateFormatPreview']);
     return $result;
   }
@@ -374,13 +374,13 @@ class TArticles extends TListContentPlugin {
     $plugins->clientOnURLSplit($item, $request['path']);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientOnPageRender($text)
   {
     global $page;
-  
+
     $articles = $this->renderArticlesBlock();
     $text = str_replace('$(ArticlesBlock)', $articles, $text);
     return $text;
