@@ -1,11 +1,11 @@
 <?php
 /**
-* Eresus™ 2
+* Eresus™ 2 / © 2007, Eresus Group
 *
 * Óïðàâëåíèå ðàçäåëàìè ñàéòà
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* http://procreat.ru/
+* http://eresus.ru/
 */
 
 class TPages {

@@ -3,7 +3,7 @@
 * LastNews, Eresus™ 2 plugin. 
 *
 * © 2005-2007, ProCreat Systems
-* http://procreat.ru/
+* http://eresus.ru/
 *
 * @author  Mikhail Krasilnikov <mk@procreat.ru>
 * @version  1.00

@@ -3,7 +3,8 @@
 # Система управления контентом Eresus™
 # Версия 2.10
 # © 2004-2007, ProCreat Systems
-# http://procreat.ru/
+# © 2007, Eresus Group
+# http://eresus.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Интерфейс администратора
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -526,7 +527,7 @@ class TAdminUI {
         ?''
         :'<a href="'.(defined('CMSLOGOHREF')?CMSLOGOHREF:'').'"><img src="'.CMSLOGO.'" alt="'.(defined('CMSLOGOALT')?CMSLOGOALT:'').'" style="border: none; float: right;"></a>'
       )
-      :'  <div id="cmsLogo"><a href="http://procreat.ru/"><img src="'.httpRoot.'core/img/logo.gif" alt="ProCreat '.CMSNAME.' '.CMSVERSION.'" width="135" height="30" style="border: none;"></a></div>';
+      :'  <div id="cmsLogo"><a href="http://eresus.ru/"><img src="'.httpRoot.'core/img/logo.png" alt="'.CMSNAME.' '.CMSVERSION.'" width="150" height="30" style="border: none;"></a></div>';
     
     $result = 
       '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n".
