@@ -9,7 +9,7 @@ class TVars extends TListContentPlugin {
     $name = 'vars',
     $title = 'Vars',
     $type = 'client,admin',
-    $version = '1.03',
+    $version = '1.04',
     $description = 'Создание собственных текстовых переменных',
     $settings = array(
     );
@@ -85,8 +85,8 @@ class TVars extends TListContentPlugin {
       'width'=>'500px',
       'fields' => array (
         array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Переменная ', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'Не указано название переменной'),
-        array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'Не указано имя переменной'),
+        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Переменная ', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
+        array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'errormsg' => 'Не указано имя переменной'),
         array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
       ),
       'buttons' => array('ok', 'cancel'),
@@ -107,8 +107,8 @@ class TVars extends TListContentPlugin {
       'width' => '500px',
       'fields' => array (
         array('type'=>'hidden','name'=>'update', 'value'=>$item['name']),
-        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Переменная ', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'Не указано название переменной'),
-        array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'Не указано имя переменной'),
+        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Переменная ', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
+        array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'errormsg' => 'Не указано имя переменной'),
         array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),

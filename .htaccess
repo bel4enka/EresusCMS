@@ -13,6 +13,6 @@ AddDefaultCharset Off
   RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
   RewriteRule ^(core|ext|data|style)/ - [L]
   RewriteRule ^admin core/admin.php [L]
-  RewriteRule \.(robots.txt|favicon.ico)$ - [L]
+  RewriteRule ^(robots.txt|favicon.ico)$ - [L]
   RewriteRule .* core/client.php
 </IfModule>

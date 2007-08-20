@@ -9,7 +9,7 @@ class TFAQ extends TListContentPlugin {
     $name = 'faq',
     $type = 'client,content',
     $title = 'FAQ',
-    $version = '2.00a',
+    $version = '2.00b',
     $description = 'Частозадаваемые вопросы (FAQ)',
     $settings = array(
       'tmplPage' => '<ol>$(contents)</ol><hr />$(items)',
@@ -135,7 +135,6 @@ class TFAQ extends TListContentPlugin {
         array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%', 'maxlength' => '100', 'pattern' => '/.+/', 'errormsg' => 'Не указан заголовок'),
         array ('type' => 'memo', 'name' => 'question', 'label' => 'Текст вопроса', 'height' => '5'),
         array ('type' => 'html', 'name' => 'answer', 'label' => 'Текст ответа', 'height' => '300px'),
-        array ('type' => ($this->settings['blockMode'] == _FAQ_BLOCK_MANUAL)?'checkbox':'hidden', 'name' => 'block', 'label' => 'Показывать в блоке'),
         array ('type' => 'divider'),
         array ('type' => 'edit', 'name' => 'section', 'label' => 'Раздел', 'access'=>ADMIN),
         array ('type' => 'edit', 'name'=>'posted', 'label'=>'Написано'),
