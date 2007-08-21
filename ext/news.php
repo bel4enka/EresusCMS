@@ -1,19 +1,29 @@
 <?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™
-# © 2005-2006, ProCreat Systems
+# © 2005-2007, ProCreat Systems
 # Web: http://procreat.ru
+# История верий:
+# 2.06 - исправления by bersz @ 2007 :
+#        Добавлен код пути для отображения в плагине path, аналогично articles
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TNews extends TListContentPlugin {
   var
     $name = 'news',
     $type = 'client,content',
     $title = 'Новости',
-    $version = '2.05',
+    $version = '2.06',
     $description = 'Публикация новостей',
     $settings = array(
       'itemsPerPage' => 10,
-      'tmplListItem' => '<div class="NewsListItem"><div class="caption">$(caption) ($(posted))</div>$(preview)<br /><a href="$(link)">Полный текст...</a></div>',
+      'tmplListItem' => '
+        <div class="NewsListItem">
+          <div class="caption">$(caption) ($(posted))</div>
+          $(preview)
+          <br />
+          <a href="$(link)">Полный текст...</a>
+        </div>
+      ',
       'tmplItem' => '<h3>$(caption)</h3>$(posted)<br /><br />$(text)',
       'tmplLastNews' => '<b>$(posted)</b><br /><a href="$(link)">$(caption)</a><br />',
       'previewMaxSize' => 500,
@@ -57,14 +67,14 @@ class TNews extends TListContentPlugin {
         KEY `posted` (`posted`)
       ) TYPE=MyISAM COMMENT='News';",
     );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function TNews()
   # производит регистрацию обработчиков событий
   {
   global $plugins;
-  
+
     parent::TListContentPlugin();
     switch ($this->settings['lastNewsMode']) {
       case 1: $plugins->events['clientOnPageRender'][] = $this->name; break;
@@ -211,7 +221,7 @@ class TNews extends TListContentPlugin {
   function renderLastNews()
   {
     global $db;
-    
+
     $result = '';
     $items = $db->select($this->table['name'], "`active`='1'", 'posted', true, '', $this->settings['lastNewsCount']);
     if (count($items)) foreach($items as $item) $result .= $this->replaceMacros($this->settings['tmplLastNews'], $item, $this->settings['dateFormatPreview']);
@@ -228,21 +238,27 @@ class TNews extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderItem()
   {
-    global $db, $page;
+    global $db, $page, $plugins, $request;
 
     $item = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
     if (is_null($item)) $page->httpError('404');
     $result = $this->replaceMacros($this->settings['tmplItem'], $item, $this->settings['dateFormatFullText']).$page->buttonBack();
     $page->section[] = $item['caption'];
+    $item['access'] = $page->access;
+    $item['name'] = $item['id'];
+    $item['title'] = $item['caption'];
+    $item['hint'] = $item['description'] = $item['keywords'] = '';
+    $plugins->clientOnURLSplit($item, $request['path']);
+
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientOnPageRender($text)
   {
   global $page;
-  
+
     $text = str_replace('$(NewsLast)', $this->renderLastNews(), $text);
     return $text;
   }

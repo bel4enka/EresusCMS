@@ -38,6 +38,7 @@ class THtml extends TContentPlugin {
     else {
       $item = $db->selectItem('pages', "`id`='".$request['arg']['section']."'");
       $item['options'] = decodeOptions($item['options']);
+      $url = $page->clientURL($item['id']);
       $form = array(
         'name' => 'contentEditor',
         'caption' => 'Текст страницы',
@@ -45,6 +46,7 @@ class THtml extends TContentPlugin {
         'fields' => array (
           array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
           array ('type' => 'html','name' => 'content','height' => '400px', 'value'=>$item['content']),
+          array ('type' => 'text', 'value' => 'Адрес страницы: <a href="'.$url.'" target="_blank">'.$url.'</a>'),
           array ('type' => 'checkbox','name' => 'allowGET', 'label' => 'Разрешить аргументы GET', 'value'=>isset($item['options']['allowGET'])?$item['options']['allowGET']:false),
         ),
         'buttons'=> array('ok', 'reset'),

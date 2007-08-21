@@ -1,10 +1,11 @@
 <?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # CMS Eresus™
-# © 2005-2006, ProCreat Systems
+# © 2005-2007, ProCreat Systems
 # Web: http://procreat.ru
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # 2.07 - Вызов onURLSplit
+# 2.08 - bersz: Замена несуществующего изображения на пустое
 define('_ARTICLES_BLOCK_NONE', 0);
 define('_ARTICLES_BLOCK_LAST', 1);
 define('_ARTICLES_BLOCK_MANUAL', 2);
@@ -15,12 +16,34 @@ class TArticles extends TListContentPlugin {
   var $name = 'articles';
   var $type = 'client,content,ondemand';
   var $title = 'Статьи';
-  var $version = '2.07';
+  var $version = '2.08';
   var $description = 'Публикация статей';
   var $settings = array(
     'itemsPerPage' => 10,
-    'tmplListItem' => '<div class="ArticlesListItem"><div class="caption">$(caption) ($(posted))</div><img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" /><div style="margin-left: $(imageWidth)px; padding-left: 5px;">$(preview)<div class="controls"><a href="$(link)">Полный текст...</a></div></div></div>',
-    'tmplItem' => '<div class="ArticlesItem"><h3>$(caption)</h3>$(posted)<br /><br /><img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" />$(text)</div>',
+    'tmplListItem' => '
+      <div class="ArticlesItem">
+        <h3>$(caption)</h3>
+        $(posted)
+        <br /><br />
+        <img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" />
+        $(text)
+      </div>
+    ',
+    'tmplItem' => '
+      <div class="ArticlesListItem">
+        <div class="caption">
+          $(caption) ($(posted))
+        </div>
+        <img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" style="float:left" />
+        <div style="margin-left: $(imageWidth)px; padding-left: 5px;">
+          $(preview)
+          <div class="controls">
+            <a href="$(link)">Полный текст...</a>
+          </div>
+        </div>
+        <br /><br />
+      </div>
+    ',
     'tmplBlockItem' => '<b>$(posted)</b><br /><a href="$(link)">$(caption)</a><br />',
     'previewMaxSize' => 500,
     'previewSmartSplit' => true,
@@ -206,6 +229,19 @@ class TArticles extends TListContentPlugin {
   {
     global $plugins, $page, $request;
 
+    if (file_exists(filesRoot.'data/articles/'.$item['id'].'.jpg'))
+    {
+      $image = httpRoot.'data/articles/'.$item['id'].'.jpg';
+      $width = $this->settings['imageWidth'];
+      $height = $this->settings['imageHeight'];
+    }
+    else
+    {
+      $image = styleRoot.'dot.gif';
+      $width = 1;
+      $height = 1;
+    }
+
     $result = str_replace(
       array(
         '$(caption)',
@@ -218,14 +254,14 @@ class TArticles extends TListContentPlugin {
         '$(imageHeight)',
       ),
       array(
-        StripSlashes($item['caption']),
+        strip_tags(htmlspecialchars(StripSlashes($item['caption']))),
         StripSlashes($item['preview']),
         StripSlashes($item['text']),
         FormatDate($item['posted'], $dateFormat),
         $page->clientURL($item['section']).$item['id'].'/',
-        httpRoot.'data/articles/'.$item['id'].'.jpg',
-        $this->settings['imageWidth'],
-        $this->settings['imageHeight'],
+        $image,
+        $width,
+        $height,
       ),
       $template
     );
