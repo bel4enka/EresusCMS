@@ -8,7 +8,6 @@
 * © 2007, Eresus Group, http://eresus.ru/
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @author: dkDimon <dkdimon@mail.ru>
 *
 * @version: 1.03
 * @modified: 2007-08-22
