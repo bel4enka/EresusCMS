@@ -455,23 +455,23 @@ class TClientUI {
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i < count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
-              $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
+              $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected="selected' : '').">".$item['items'][$i]."</option>\n";
             }
             $body .= '</select>'.$comment."</td></tr>\n";
           break;
           case 'listbox':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="formLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
+            $body .= '<tr><td class="formLabel">'.$label.'</td><td><select multiple="multiple" name="'.$item['name'].'[]"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
-              $body .= '<option value="'.$value.'" '.(count($values) && in_array($value, $values[$item['name']]) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
+              $body .= '<option value="'.$value.'" '.(count($values) && in_array($value, $values[$item['name']]) ? 'selected="selected"' : '').">".$item['items'][$i]."</option>\n";
             }
             $body .= '</select>'.$comment."</td></tr>\n";
           break;
           case 'checkbox': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
+            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked="checked"' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
           break;
           case 'memo': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));

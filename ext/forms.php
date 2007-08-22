@@ -1,22 +1,24 @@
 <?php
 /**
-* Forms / EresusЩ 2 Plugin
-*
 * —оздание клиентских форм ввода
-* © 2005-2007, ProCreat Systems
-* http://eresus.ru/
 *
-* @author Mikhail Krasilnikov <mk@procreat.ru>
-* @version 1.02
-* @modified 2007-07-18
+* Eresus 2, PHP 4,5 
+*
+* © 2005-2007, ProCreat Systems, http://procreat.ru/
+* © 2007, Eresus Group, http://eresus.ru/
+*
+* @author: Mikhail Krasilnikov <mk@procreat.ru>
+* @author: dkDimon <dkdimon@mail.ru>
+*
+* @version: 1.03
+* @modified: 2007-08-22
 */
-#-------------------------------------------------------------------------------
 
 class TForms extends TListContentPlugin {
   var $name = 'forms';
   var $type = 'client,admin';
   var $title = '‘ормы ввода';
-  var $version = '1.02';
+  var $version = '1.03';
   var $kernel = '2.10';
   var $description = '—оздание собственных форм ввода';
   var $table = array (
@@ -81,8 +83,13 @@ class TForms extends TListContentPlugin {
       $subject = $item['caption'];
       if (count($form['fields'])) foreach($form['fields'] as $field) {
         switch ($field['type']) {
-          case 'text':; case 'header':;
-          case 'checkbox': if ($request['arg'][$field['name']]) $letter .= $field['label']."\n"; break;
+          case 'text':; case 'header':; break;
+          case 'checkbox': 
+						if (isset($request['arg'][$field['name']])) $letter .= $field['label']."\n"; 
+					break;
+          case 'listbox': 
+            $letter .= (isset($request['arg'][$field['name']]) ? $field['label'].': '.implode(', ', $request['arg'][$field['name']]):'')."\n" ;
+					break;
           default:
             $letter .= $field['label'].': '.$request['arg'][$field['name']]."\n";
           break;
