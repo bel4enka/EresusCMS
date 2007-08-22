@@ -1,14 +1,24 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™ 2.00+
-# © 2005-2006, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+* Система показа баннеров
+*
+* Eresus 2, PHP 4,5 
+*
+* © 2005-2006, ProCreat Systems, http://procreat.ru/
+* © 2007, Eresus Group, http://eresus.ru/
+*
+* @author: Mikhail Krasilnikov <mk@procreat.ru>
+* @author: dkDimon <dkdimon@mail.ru>
+*
+* @version: 1.09
+* @modified: 2007-08-22
+*/
+
 class TBanners extends TListContentPlugin {
   var $name = 'banners';
   var $title = 'Баннеры';
   var $type = 'client,admin';
-  var $version = '1.08';
+  var $version = '1.09';
   var $description = 'Система показа баннеров';
   var $table = array (
     'name' => 'banners',
@@ -108,7 +118,7 @@ class TBanners extends TListContentPlugin {
 
     $item = GetArgs($db->fields($this->table['name']));
     $item['section'] = ':'.implode(':', arg('section')).':';
-    #if (isset($item['section'])) $item['section'] = ($item['section'] != 'all')?':'.implode(':', $request['arg']['section']).':':'all';
+    if ($item['showTill'] == '') unset($item['showTill']);
     $db->insert($this->table['name'], $item);
     $item['id'] = $db->getInsertedID();
     if (is_uploaded_file($_FILES['image']['tmp_name'])) {
@@ -128,9 +138,8 @@ class TBanners extends TListContentPlugin {
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
     $old_file = $item['image'];
     $item = GetArgs($item);
-    #$item['section'] = ($item['section'] != 'all')?':'.implode(':', $request['arg']['section']).':':'all';
     $item['section'] = ':'.implode(':', arg('section')).':';
-    #if (!isset($request['arg']['active'])) $item['active'] = false;
+    if ($item['showTill'] == '') unset($item['showTill']);
     if (arg('flushShowCount')) $item['shows'] = 0;
     if (is_uploaded_file($_FILES['image']['tmp_name'])) {
       $path = filesRoot.'data/'.$this->name.'/';
@@ -337,7 +346,7 @@ class TBanners extends TListContentPlugin {
       preg_match_all('/\$\(Banners:([^)]+)\)/', $text, $blocks, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
       $delta = 0;
       foreach($blocks as $block) {
-        $sql = "(`active`=1) AND (`section` LIKE '%:".$page->id.":%' OR `section` LIKE '%:all:%') AND (`block`='".$block[1][0]."') AND (`showFrom`<='".gettime()."') AND (`showCount`=0 OR (`shows` < `showCount`)) AND (`showTill` = '0000-00-00' OR `showTill` > '".gettime()."')";
+        $sql = "(`active`=1) AND (`section` LIKE '%:".$page->id.":%' OR `section` LIKE '%:all:%') AND (`block`='".$block[1][0]."') AND (`showFrom`<='".gettime()."') AND (`showCount`=0 OR (`shows` < `showCount`)) AND (`showTill` = '0000-00-00' OR `showTill` IS NULL OR `showTill` > '".gettime()."')";
         # Получаем баннеры для этого блока в порядке уменьшения приоритета
         $items = $db->select($this->name, $sql, '`priority`', true);
         if (count($items)) {
