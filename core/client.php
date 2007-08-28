@@ -305,7 +305,7 @@ class TClientUI {
     $template = filesRoot.'templates/'.$this->template.'.tmpl';
     if (file_exists($template)) $template = file_get_contents($template); else {
       $template = filesRoot.'templates/default.tmpl';
-      if (file_exists($template)) $template = file_get_contents($template); else CMSError('File not found', 'Open file '.$template, __FILE__, __LINE__);
+      if (file_exists($template)) $template = file_get_contents($template); else FatalError('File not found', 'Open file '.$template);
     }
     $this->template = trim(substr($template, strpos($template, "\n")));
     $content = $plugins->clientOnContentRender($content);
@@ -455,7 +455,7 @@ class TClientUI {
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i < count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
-              $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected="selected' : '').">".$item['items'][$i]."</option>\n";
+              $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected="selected"' : '').">".$item['items'][$i]."</option>\n";
             }
             $body .= '</select>'.$comment."</td></tr>\n";
           break;
