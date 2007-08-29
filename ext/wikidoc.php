@@ -122,13 +122,14 @@ class TWikidoc extends TListContentPlugin {
   */
   function parse_content($text)
   {
+	  $text = str_replace("\r", '', $text);
 		$text = $this->parse_local_links($text);
 		#$text = $this->parse_external_links($text);
 		#$text = $this->parse_lists($text);
 		$text = $this->parse_headings($text);
 		$text = $this->parse_basics($text);
 
-		$text = preg_replace('![\n\r]*(</(div|h\d)>)[\n\r]*!', '$1', $text);
+		$text = preg_replace('!\n*(</(div|h\d)>)\n?!', '$1', $text);
 		$text = nl2br(rtrim($text));
 
 		return $text;
