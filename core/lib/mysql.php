@@ -150,7 +150,7 @@ class MySQL {
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   function selectItem($table, $condition, $fields = '')
   {
-    if ($table[0] != "`") $table = "`".$table."`";
+    if ($table{0} != "`") $table = "`".$table."`";
     $tmp = $this->select($table, $condition, '', false, $fields);
     $tmp = isset($tmp[0])?$tmp[0]:null;
     return $tmp;
