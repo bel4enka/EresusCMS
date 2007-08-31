@@ -5,8 +5,8 @@
 * Библиотека для работы с СУБД MySQL
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 1.2.0
-* @modified: 2007-07-22
+* @version: 1.2.1
+* @modified: 2007-08-30
 */
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
@@ -23,15 +23,19 @@ class MySQL {
   function init($mysqlHost, $mysqlUser, $mysqlPswd, $mysqlName, $mysqlPrefix='')
   # Открывает соединение с базой данных MySQL и выбирает указанную базу данных.
   {
+		$result = false;
     $this->name = $mysqlName;
     $this->prefix = $mysqlPrefix;
     @$this->Connection = mysql_connect($mysqlHost, $mysqlUser, $mysqlPswd, true);
-    if (!$this->Connection) FatalError("Can not connect to MySQL server. Check login and password");
-    if (defined('LOCALE_CHARSET')) {
-      $version = preg_replace('/[^\d\.]/', '', mysql_get_server_info());
-      if (version_compare($version, '4.1') >= 0) $this->query("SET NAMES '".LOCALE_CHARSET."'");
-    }
-    if (!mysql_select_db($this->name, $this->Connection)) FatalError(mysql_error($this->Connection));
+    if ($this->Connection) {
+	    if (defined('LOCALE_CHARSET')) {
+	      $version = preg_replace('/[^\d\.]/', '', mysql_get_server_info());
+	      if (version_compare($version, '4.1') >= 0) $this->query("SET NAMES '".LOCALE_CHARSET."'");
+	    }
+	    if (mysql_select_db($this->name, $this->Connection)) $result = true;
+			elseif ($this->error_reporting) FatalError(mysql_error($this->Connection));
+		} elseif ($this->error_reporting) FatalError("Can not connect to MySQL server. Check login and password");
+		return $result;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   function query($query)
@@ -81,13 +85,13 @@ class MySQL {
     $query = 'SELECT ';
     if ($distinct) $query .= 'DISTINCT ';
     if (!strlen($fields)) $fields = '*';
-    $tables = str_replace('`','',$tables);
+    $tables = str_replace('`' ,'', $tables);
     $tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
     $query .= $fields." FROM ".$tables;
-    if (strlen($condition)) $query .= " WHERE ".$condition;
-    if (strlen($group)) $query .= " GROUP BY ".$group."";
+    if (strlen($condition)) $query .= " WHERE $condition";
+    if (strlen($group)) $query .= " GROUP BY $group";
     if (strlen($order)) {
-      $query .= " ORDER BY ".$order;
+      $query .= " ORDER BY $order";
       if ($desc) $query .= ' DESC';
     }
     if ($lim_rows) {
