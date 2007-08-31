@@ -46,8 +46,8 @@ class TWikidoc extends TListContentPlugin {
   function parse_basics($text)
   {
 		$text = preg_replace(
-			array('/\*\*(.*?)\*\*/s', '#(?<!:)//(.*?)//#s', /*'/__([^]*?)__/s',*/ '/\+\+(.*?)\+\+/s', '/^~(.*)$/m'),
-			array('<b>$1</b>', /*'<em>$1</em>',*/ '<span class="underline">$1</span>', '<span class="striked">$1</span>', '<div class="indent">$1</div>'),
+			array('/\*\*([^<>\*]*?)\*\*/s', '#//([^<>/]*?)//#s', '/\+\+([^<>\+]*?)\+\+/s', '/__([^<>_]*?)__/s', '/^~(.*)$/m'),
+			array('<b>$1</b>', '<span class="underline">$1</span>', '<span class="striked">$1</span>', '<em>$1</em>', '<div class="indent">$1</div>'),
 			$text
 		);
 		return $text;
@@ -67,6 +67,28 @@ class TWikidoc extends TListContentPlugin {
 			array('<h3>$1</h3>', '<h2>$1</h2>', '<h1>$1</h1>'),
 			$text
 		);
+		return $text;
+  }
+  //------------------------------------------------------------------------------
+	/**
+  * Внешние ссылки
+	*		
+	*   [[http://site.tld/link]]
+	*   [[http://site.tld/link | текст для отображения]]
+  */
+  function parse_external_links($text)
+  {
+		global $Eresus;
+		
+		preg_match_all('/\[\[((https?|ftp):\/\/.+?)(\s*\|\s*(.+?))?\]\]/s', $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+		$delta = 0;
+		foreach($matches as $match) {
+			$href = trim($match[1][0]);
+			$caption = trim((count($match) == 5 ? $match[4][0] : $match[1][0]));
+			$href = '<a href="'.$href.'" class="external '.$match[2][0].'">'.$caption.'</a>';
+			$text = substr_replace($text, $href, $match[0][1]+$delta, strlen($match[0][0]));
+			$delta += strlen($href) - strlen($match[0][0]);
+		}
 		return $text;
   }
   //------------------------------------------------------------------------------
@@ -106,14 +128,26 @@ class TWikidoc extends TListContentPlugin {
   */
   function parse_lists($text)
   {
-		preg_match('/^\s*\*[^\n]*/mU', $text, $match, PREG_OFFSET_CAPTURE);
-		if ($match) {
+		$it = 0;
+		while (preg_match('/^(\*|#)(.+)$/m', $text, $match, PREG_OFFSET_CAPTURE)) {
+			$delta = 0;
+			$type = $match[1][0];
+			array_splice($match, 1, 1);
 			$list = array($match);
-			print_r($match);
-			preg_match('/^\*[^\n]*/sU', $text, $match, PREG_OFFSET_CAPTURE, $list[count($list)-1][0][1]+strlen($list[count($list)-1][0][0]));
-			print_r($match); die;
+			$i = $match[0][1] + strlen($match[0][0])+1;
+			while ($i < strlen($text) && $text{$i} == $type) {
+				preg_match('/'.($type=='*'?'\\':'').$type.'([^\n]+)/s', $text, $match, PREG_OFFSET_CAPTURE, $i);
+				$list[] = $match;
+				$i += strlen($match[0][0])+1;
+			}
+			$type = $type == '*' ? 'u' : 'o';
+			$replace = '<'.$type.'l>';
+			for($i=0; $i<count($list); $i++) $replace .= '<li>'.trim($list[$i][1][0]).'</li>';
+			$replace .= '</'.$type.'l>';
+			$length = $list[count($list)-1][0][1] - $list[0][0][1] + strlen($list[count($list)-1][0][0]);
+			$text = substr_replace($text, $replace, $list[0][0][1]+$delta, $length);
+			$delta += strlen($replace) - $length;
 		}
-		die;
 		return $text;
   }
   //------------------------------------------------------------------------------
@@ -123,11 +157,11 @@ class TWikidoc extends TListContentPlugin {
   function parse_content($text)
   {
 	  $text = str_replace("\r", '', $text);
-		$text = $this->parse_local_links($text);
-		#$text = $this->parse_external_links($text);
-		#$text = $this->parse_lists($text);
-		$text = $this->parse_headings($text);
 		$text = $this->parse_basics($text);
+		$text = $this->parse_lists($text);
+		$text = $this->parse_external_links($text);
+		$text = $this->parse_local_links($text);
+		$text = $this->parse_headings($text);
 
 		$text = preg_replace('!\n*(</(div|h\d)>)\n?!', '$1', $text);
 		$text = nl2br(rtrim($text));
@@ -167,30 +201,27 @@ class TWikidoc extends TListContentPlugin {
 	/**
   * Чтение страницы из БД
   *
-  * @param  string  $name  Имя страницы
-  *
   * @return  array  Страница
   */
-  function readPage($name)
+  function readPage()
   {
 		global $Eresus, $page;
 		
-		$result = $Eresus->db->selectItem($this->table['name'], "`section` = '".$page->id."' AND `name` = '".mysql_real_escape_string($name)."'");
+		$result = $Eresus->db->selectItem($this->table['name'], "`section` = '".$page->id."' AND `name` = '".mysql_real_escape_string($this->page)."'");
 		return $result;
   }
   //------------------------------------------------------------------------------
 	/**
   * Запись страницы в БД
   *
-  * @param  string  $name    Имя страницы
   * @param  array   $item    Страница
   */
-  function writePage($name, $item)
+  function writePage($item)
   {
 		global $Eresus, $page;
 		
-		if ($this->readPage($name))
-			$Eresus->db->updateItem($this->table['name'], $item, "`section` = '".$page->id."' AND `name` = '".mysql_real_escape_string($name)."'");
+		if ($this->readPage())
+			$Eresus->db->updateItem($this->table['name'], $item, "`section` = '".$page->id."' AND `name` = '".mysql_real_escape_string($this->page)."'");
 		else
 			$Eresus->db->insert($this->table['name'], $item);
   }
@@ -198,24 +229,24 @@ class TWikidoc extends TListContentPlugin {
 	/**
   * Обновление страницы
   */
-	function updatePage($name)
+	function updatePage()
 	{
 		global $Eresus, $page;
 		
-		$item = $Eresus->db->selectItem($this->table['name'], "`section` = '".$page->id."' AND `name` = '".mysql_real_escape_string($name)."'");
+		$item = $Eresus->db->selectItem($this->table['name'], "`section` = '".$page->id."' AND `name` = '".mysql_real_escape_string($this->page)."'");
 		if (!$item) $item = array(
 			'section' => $page->id,
-			'name' => $name,
-			'keyword' => $name,
-			'caption' => $name,
+			'name' => $this->page,
+			'keyword' => $this->page,
+			'caption' => $this->page,
 			'text' => '',
 			'user' => $Eresus->user['id'],
 		);
-		$item['keyword'] = arg('keyword') ? arg('keyword') : $name;
-		$item['caption'] = arg('caption') ? arg('caption') : $name;
+		$item['keyword'] = arg('keyword') ? arg('keyword') : $this->page;
+		$item['caption'] = arg('caption') ? arg('caption') : $this->page;
 		$item['text'] = arg('text');
-		$this->writePage($name, $item);
-		goto($Eresus->request['path'].$name);
+		$this->writePage($item);
+		goto($Eresus->request['path'].$this->page);
 	}
   //------------------------------------------------------------------------------
 	/**
@@ -225,16 +256,17 @@ class TWikidoc extends TListContentPlugin {
   *
   * @return  type  description
   */
-  function editPage($name)
+  function editPage()
   {
 		global $Eresus, $page;
 		
-		$item = $this->readPage($name);
+		$item = $this->readPage();
+		$result = '';
 		if (UserRights(USER)) {
 			$form = array(
 	      'name' => 'EditPage',
-				'action' => $Eresus->request['path'].$name.'/update',
-	      'caption' => 'Изменение страницы "'.$name.'"',
+				'action' => $Eresus->request['path'].$this->page.'/update',
+	      'caption' => 'Изменение страницы "'.$this->page.'"',
 	      'width' => '100%',
 	      'fields' => array (
 	        array('type'=>'hidden','name'=>'action', 'value'=>'update'),
@@ -255,11 +287,11 @@ class TWikidoc extends TListContentPlugin {
   * @param  string  $name  Имя страницы
   *
   */
-  function showPage($name)
+  function showPage()
   {
 		global $Eresus, $page;
 		
-		$item = $this->readPage($name);
+		$item = $this->readPage();
 		if ($item) {
 			$page->section[] = $page->title = $item['caption'];
 			$result = '<div class="WikiDoc">'.$this->parse_content($item['text']).'</div>';
@@ -268,7 +300,7 @@ class TWikidoc extends TListContentPlugin {
 				'[ <a href="'.$Eresus->request['path'].$this->page.'/edit">Редактировать</a> ] '.
 				'[ <a href="'.$Eresus->request['path'].$this->page.'/delete">Удалить</a> ]'.
 				'</div>';
-		} else $result = $this->editPage($name);
+		} else $result = $this->editPage();
 		return $result;
   }
   //------------------------------------------------------------------------------
@@ -289,9 +321,9 @@ class TWikidoc extends TListContentPlugin {
 		if (in_array($action, array('edit', 'update', 'delete'))) $this->page = substr($this->page, 0, -strlen($action)-1);
 		if (substr($this->page, -1) == '/') $this->page = substr($this->page, 0, -1);
 		switch($action) {
-			case 'edit': $result = $this->editPage($this->page); break;
-			case 'update': $result = $this->updatePage($this->page); break;
-			default: $result = $this->showPage($this->page);
+			case 'edit': $result = $this->editPage(); break;
+			case 'update': $result = $this->updatePage(); break;
+			default: $result = $this->showPage();
 		}
 		return $result;
   }
