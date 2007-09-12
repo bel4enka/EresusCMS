@@ -13,7 +13,7 @@ define('CMSVERSION', '2.10b2'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '22.08.07'); # Дата обновления ядра
+define('KERNELDATE', '22.09.11'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -846,7 +846,7 @@ class Eresus {
     
     if (is_null($this->path)) {
       $s = $this->froot;
-      $s = substr($s, strlen($_SERVER['DOCUMENT_ROOT'])-($this->isWin32()?2:0));
+      $s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
       if (!strlen($s) || $s{strlen($s)-1} != '/') $s .= '/';
       $this->path = ($s{0} != '/' ? '/' : '').$s;
     }
