@@ -78,8 +78,6 @@ class TWikidoc extends TListContentPlugin {
   */
   function parse_external_links($text)
   {
-		global $Eresus;
-		
 		preg_match_all('/\[\[((https?|ftp):\/\/.+?)(\s*\|\s*(.+?))?\]\]/s', $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 		$delta = 0;
 		foreach($matches as $match) {
@@ -152,6 +150,25 @@ class TWikidoc extends TListContentPlugin {
   }
   //------------------------------------------------------------------------------
 	/**
+  * Обработка листингов
+  *
+	* %% (lang)
+	*  ...
+	* %%
+  */
+  function parse_code($text)
+  {
+		preg_match_all('/%%(\(\w+\))?(.*?)%%/s', $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+		$delta = 0;
+		foreach($matches as $match) {
+			$replace = highlight_string("<?php\n".trim($match[2][0])."\n?>", true);
+			$text = substr_replace($text, $replace, $match[0][1]+$delta, strlen($match[0][0]));
+			$delta += strlen($replace) - strlen($match[0][0]);
+		}
+		return $text;
+  }
+  //------------------------------------------------------------------------------
+	/**
   * Синтаксическое преобразование текста
   */
   function parse_content($text)
@@ -162,6 +179,7 @@ class TWikidoc extends TListContentPlugin {
 		$text = $this->parse_external_links($text);
 		$text = $this->parse_local_links($text);
 		$text = $this->parse_headings($text);
+		$text = $this->parse_code($text);
 
 		$text = preg_replace('!\n*(</(div|h\d)>)\n?!', '$1', $text);
 		$text = nl2br(rtrim($text));

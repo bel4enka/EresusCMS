@@ -554,7 +554,7 @@ function fileread($filename)
  * @param string $filename Имя файла
  * @param string $content  Содержимое
  * @param int    $flags    Флаги
- * @return mixed Содержимое файла или false 
+ * @return bool Результат выполнения 
  */ 
 function filewrite($filename, $content, $flags = 0)
 {
@@ -625,10 +625,11 @@ function upload($name, $filename, $overwrite = true)
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# TODO: Удалить как устаревшую
 function loadTemplate($name)
 # Считывает указанный шаблон
 {
-  $filename = filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.tmpl':'');
+  $filename = filesRoot.'templates/'.$name.(strpos($name, '.html')===false?'.html':'');
   if (file_exists($filename)) {
     $result['html'] = file_get_contents($filename);
     preg_match('/<!--(.*?)-->/', $result['html'], $result['description']);
@@ -638,11 +639,12 @@ function loadTemplate($name)
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# TODO: Удалить как устаревшую
 function saveTemplate($name, $template)
 # Сохраняет указанный шаблон
 {
   $file = "<!-- ".$template['description']." -->\r\n\r\n".$template['html'];
-  $fp = fopen(filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.tmpl':''), 'w');
+  $fp = fopen(filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.html':''), 'w');
   fwrite($fp, $file);
   fclose($fp);
 }
