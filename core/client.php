@@ -302,12 +302,9 @@ class TClientUI {
     #if ($this->updated < 0) $this->updated = 0;
     #$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
     $this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
-    $template = filesRoot.'templates/'.$this->template.'.tmpl';
-    if (file_exists($template)) $template = file_get_contents($template); else {
-      $template = filesRoot.'templates/default.tmpl';
-      if (file_exists($template)) $template = file_get_contents($template); else FatalError('File not found', 'Open file '.$template);
-    }
-    $this->template = trim(substr($template, strpos($template, "\n")));
+    useLib('templates');
+    $templates = new Templates;
+    $this->template = $templates->get($this->template);
     $content = $plugins->clientOnContentRender($content);
 
     if (isset($session['msg']['information']) && count($session['msg']['information'])) {

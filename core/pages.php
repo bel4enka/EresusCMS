@@ -222,15 +222,11 @@ class TPages {
   {
     $result[0] = array();
     $result[1] = array();
-    $dir = filesRoot.'templates/';
-    $hnd = opendir($dir);
-    while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
-      $description = file_get_contents($dir.$filename);
-      preg_match('/<!--(.*?)-->/', $description, $description);
-      $description = trim($description[1]);
-      $result[0][] = $description;
-      $result[1][] = substr($filename, 0, strrpos($filename, '.'));
-    }
+    useLib('templates');
+    $templates = new Templates();
+    $list = $templates->enum();
+    $result[0]= array_values($list);
+    $result[1]= array_keys($list);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

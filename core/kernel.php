@@ -22,6 +22,8 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
+if (!defined('FILE_APPEND')) deinfe('FILE_APPEND', 8);
+
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # ОБРАБОТКА ОШИБОК
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -529,6 +531,59 @@ global $db;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # РАБОТА С ФАЙЛАМИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Чтение файла
+ * 
+ * @param string $filename Имя файла
+ * @return mixed Содержимое файла или false 
+ */ 
+function fileread($filename)
+{
+	$result = false;
+	if (is_file($filename)) {
+		if (is_readable($filename)) {
+			$result = file_get_contents($filename);
+		}
+	}
+	return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Запись в файл
+ * 
+ * @param string $filename Имя файла
+ * @param string $content  Содержимое
+ * @param int    $flags    Флаги
+ * @return mixed Содержимое файла или false 
+ */ 
+function filewrite($filename, $content, $flags = 0)
+{
+	$result = false;
+	@$fp = fopen($filename, ($flags && FILE_APPEND)?'ab':'wb'); 
+	if ($fp) {
+		$result = fwrite($fp, $content) == strlen($content);
+		fclose($fp);
+	}
+	return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Удаляет файл
+ * 
+ * @param string $filename Имя файла
+ * @return bool Результат выполнения 
+ */ 
+function filedelete($filename)
+{
+	$result = false;
+	if (is_file($filename)) {
+		if (is_writeable($filename)) {
+			$result = unlink($filename);
+		}
+	}
+	return $result;
+}
+//------------------------------------------------------------------------------
 function upload($name, $filename, $overwrite = true)
 {
   $result = false;

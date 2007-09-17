@@ -44,36 +44,33 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplatesInsert()
   {
-    global $request;
-    
-    $file = "<!-- ".$request['arg']['description']." -->\r\n\r\n".$request['arg']['html'];
-    $fp = fopen(filesRoot.'templates/'.$request['arg']['filename'].'.tmpl', 'w');
-    fwrite($fp, $file);
-    fclose($fp);
-    SendNotify((isset($request['update'])?admUpdated:admAdded).': '.$request['arg']['filename'].'.tmpl');
-    goto($request['arg']['submitURL']);
+    useLib('templates');
+    $templates = new Templates();
+    $templates->add(arg('name'), '', arg('code'), arg('desc'));
+  	goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplatesUpdate()
   {
-    global $request;
-    $request['update'] = true;
-    $this->sectionTemplatesInsert();
+    useLib('templates');
+    $templates = new Templates();
+    $templates->update(arg('name'), '', arg('code'), arg('desc'));
+  	goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplatesDelete()
   {
-    global $request, $page;
+    global $page;
     
-    $filename = filesRoot.'templates/'.$request['arg']['delete'];
-    if (file_exists($filename)) unlink($filename);
-    SendNotify(admDeleted.': '.$request['arg']['delete']);
+    useLib('templates');
+    $templates = new Templates();
+    $templates->delete(arg('delete'));
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplatesAdd()
   {
-    global $page, $request;
+    global $page;
     
     $form = array(
       'name' => 'addForm',
@@ -81,10 +78,10 @@ class TThemes {
       'width' => '100%',
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
-        array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
-        array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl'),
-        array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
+        array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
+        array('type'=>'edit','name'=>'name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html'),
+        array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+        array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok','cancel'),
     );
@@ -94,25 +91,22 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplatesEdit()
   {
-    global $page, $request;
+    global $page;
     
-    $item['filename'] = $request['arg']['id'];
-    $item['html'] = file_get_contents(filesRoot.'templates/'.$item['filename']);
-    preg_match('/<!--(.*?)-->/', $item['html'], $item['description']);
-    $item['description'] = trim($item['description'][1]);
-    $item['filename'] = substr($item['filename'], 0, strrpos($item['filename'], '.'));
-    $item['html'] = trim(substr($item['html'], strpos($item['html'], "\n")));
+    useLib('templates');
+    $templates = new Templates();
+    $item = $templates->get(arg('id'), '', true);
     $form = array(
       'name' => 'editForm',
       'caption' => $page->title.admTDiv.admEdit,
       'width' => '100%',
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'update'),
-        array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
-        array('type'=>'hidden','name'=>'filename'),
-        array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl', 'disabled' => true, 'value' => $item['filename']),
-        array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
+        array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
+        array('type'=>'hidden','name'=>'name'),
+        array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html', 'disabled' => true, 'value' => $item['name']),
+        array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+        array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );
@@ -144,19 +138,11 @@ class TThemes {
         )
       ),
     );
-    # Загружаем список шаблонов
-    $dir = filesRoot.'templates/';
-    $hnd = opendir($dir);
-    while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
-      $description = file_get_contents($dir.$filename);
-      preg_match('/<!--(.*?)-->/', $description, $description);
-      $description = trim($description[1]);
-      $items[] = array(
-        'filename' => $filename,
-        'description' => $description,
-      );
-    }
-    closedir($hnd); 
+    useLib('templates');
+    $templates = new Templates();
+    $list = $templates->enum();
+    $items = array();
+    foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value); 
     $result = $page->renderTable($table, $items);
     return $result;
   }
