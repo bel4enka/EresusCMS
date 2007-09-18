@@ -10,6 +10,7 @@
 */
 
 class Templates {
+	var $pattern = '/^<!--\s*(.+)\s*-->.*$/s';
 	/**
 	 * Возвращает список шаблонов
 	 *
@@ -51,16 +52,15 @@ class Templates {
 		$filename .= "$name.html";
 		$result = fileread($filename);
 		if ($result) {
-			$pattern = '/^<!-- (.+) -->/';
 			if ($array) {
-				$desc = preg_match($pattern, $result);
+				$desc = preg_match($this->pattern, $result);
 				$result = array(
 					'name' => $name,
-					'desc' => $desc ? preg_replace('/^<!-- (.+) -->/', '$1', $result) : 'n/a',
+					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : 'n/a',
 					'code' => $desc ? trim(substr($result, strpos($result, "\n"))) : $result,
 				);
 			} else {
-				if (preg_match($pattern, $result)) $result = trim(substr($result, strpos($result, "\n")));
+				if (preg_match($this->pattern, $result)) $result = trim(substr($result, strpos($result, "\n")));
 			}				
 		} else {
 			if (empty($type)) $result = $this->get('default', $type);

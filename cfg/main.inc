@@ -17,10 +17,10 @@ $Eresus->conf['debug']['enable'] = true;
 #$Eresus->conf['db']['host'] = 'localhost';
 
 # Имя пользователя СУБД
-$Eresus->conf['db']['user'] = 'root';
+$Eresus->conf['db']['user'] = 'user';
 
 # Пароль для доступа к СУБД
-$Eresus->conf['db']['password'] = 'mysql';
+$Eresus->conf['db']['password'] = 'password';
 
 # Имя базы данных
 $Eresus->conf['db']['name'] = 'eresus';
