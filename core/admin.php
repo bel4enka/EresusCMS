@@ -41,6 +41,7 @@ class TAdminUI {
   var $headers; # Заголовки ответа сервера
   var $options; # Для совместимости с TClientUI
   var $htmlEditors = array(); # Список полей визуальных редакторов
+  var $id = 0;  
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function init()
   # Проводит инициализацию страницы
@@ -534,7 +535,7 @@ class TAdminUI {
       '<html>'."\n".
       '<head>'."\n".
       '  <meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'">'."\n".
-      '  <title>'.getOption('siteName').' - '.strip_tags($this->title).'</title>'."\n".
+      '  <title>'.option('siteName').' - '.strip_tags($this->title).'</title>'."\n".
       '  <link rel="StyleSheet" href="'.httpRoot.'core/admin.css" type="text/css">'."\n".
       (empty($this->styles)?'':"  <style type=\"text/css\">\n".$this->styles."  </style>\n").
       '  <script type="text/javascript">'."\n".

@@ -14,6 +14,7 @@ class TContent {
 
     if (UserRights(EDITOR)) {
       $item = $db->selectItem('pages', "`id`='".$request['arg']['section']."'");
+      $page->id = $item['id'];
       if (!array_key_exists($item['type'], $plugins->list)) {
         switch ($item['type']) {
           case 'default':

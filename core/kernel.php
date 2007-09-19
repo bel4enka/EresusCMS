@@ -1,19 +1,34 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Система управления контентом Eresus™
-# Версия 2.10
-# © 2004-2007, ProCreat Systems
-# © 2007, Eresus Group
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Ядро интерактивной системы управления сайтом
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Eresus 2.10
+ * 
+ * Система управления контентом Eresus™
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or  
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * @author Mikhail Krasilnikov (mk@procreat.ru)
+ */
+
 define('CMSNAME', 'Eresus'); # Название системы
 define('CMSVERSION', '2.10b2'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '22.09.11'); # Дата обновления ядра
+define('KERNELDATE', '19.09.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -217,7 +232,7 @@ global $db, $user;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-### Library support ###
+### Подключаемые модули (библиотеки, классы) ###
 
 /**
 * Link libaray (if it wasn't included)
@@ -238,6 +253,27 @@ function useLib($library)
     include_once($path.$filename);
     $result = true;
     break;
+  }
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
+* Подключает описание класса
+*
+* @access  public
+*
+* @param  string  $className   Имя класса
+*
+* @return  bool  Результат выполнения
+*/
+function useClass($className)
+{
+  $result = false;
+  if (DIRECTORY_SEPARATOR != '/') $className = str_replace('/', DIRECTORY_SEPARATOR, $className);
+  $filename = realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.$className.'.php';
+	if (is_file($filename)) {
+    include_once($filename);
+    $result = true;
   }
   return $result;
 }
@@ -421,8 +457,6 @@ function array2text($value, $assoc=false)
 function encodeOptions($options)
 # Собирает настройки из массива в строку
 {
-  global $db;
-
   $result = serialize($options);
   return $result;
 }
@@ -432,17 +466,27 @@ function decodeOptions($options, $defaults = array())
 {
   if (empty($options)) $result = $defaults; else {
     @$result = unserialize($options);
-    /*if (!$result && strpos($options, 'Winkhaus')) {
-      $GLOBALS['session']['msg']['errors'] = array();
-      echo callstack();
-      die;
-    }*/
     if (gettype($result) != 'array') $result = $defaults; else {
       if (count($defaults)) foreach($defaults as $key => $value) if (!array_key_exists($key, $result)) $result[$key] = $value;
     }
   }
   return $result;
 }
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function replaceMacros($template, $item)
+{
+  preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
+  if (count($matches[1])) foreach($matches[1] as $macros) switch(gettype($item)) {
+    case 'array'  : if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template); break;
+    case 'object' : if (isset($item->$macros)) $template = str_replace('$('.$macros.')', $item->$macros, $template); break;
+  }
+  return $template;
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# Работа с HTTP-запросом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function GetArgs($item, $checkboxes = array(), $prevent = array())
 # Заполняет массив $item соответствующими значениями из $request['arg']
@@ -458,11 +502,6 @@ global $request;
     }
   }
   return $item;
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function setArgs($fields, $checkboxes = array(), $prevent = array()) /* OBSOLETE */
-{
-  return GetArgs($fields);
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function arg($arg)
@@ -488,22 +527,9 @@ function restoreRequest()
   }
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function replaceMacros($template, $item)
-{
-  preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-  if (count($matches[1])) foreach($matches[1] as $macros) switch(gettype($item)) {
-    case 'array'  : if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template); break;
-    case 'object' : if (isset($item->$macros)) $template = str_replace('$('.$macros.')', $item->$macros, $template); break;
-  }
-  return $template;
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # РАБОТА С БД
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function getOption($name) /* OBSOLETE */ {return option($name);}
-function setOption($name, $data) /* OBSOLETE */ {}
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function dbReorderItems($table, $condition='', $id='id')
 {
@@ -813,6 +839,9 @@ class Eresus {
     'session' => array(
       'timeout' => 30,
     ),
+		'backward' => array(
+			'TListContentPlugin' => false,
+		),
     'debug' => array(
       'enable' => false,
       'mail' => true,
@@ -825,11 +854,11 @@ class Eresus {
   var $host;
   var $https;
   var $path;
-  var $root;
-  var $data;
-  var $style;
-  var $froot;
-  var $fdata;
+  var $root; # Корневой URL
+  var $data; # URL данных
+  var $style; # URL стилей
+  var $froot; # Корневая директория
+  var $fdata; # Директория данных
 
   var $request;
   
@@ -997,6 +1026,9 @@ class Eresus {
     $filename = $this->froot.'core/classes.php';
     if (is_file($filename)) include_once($filename);
     else FatalError("Classes file '$filename' not found!");
+		if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
+		elseif ($this->conf['backward']['TContentPlugin']) useClass('backward/TContentPlugin');
+  	elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
   }
   //------------------------------------------------------------------------------
   /**

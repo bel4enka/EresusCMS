@@ -1,4 +1,4 @@
-<?php
+	<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
 # Версия 2.10
@@ -188,83 +188,149 @@ class TPlugins {
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС-ПРЕДОК "ПЛАГИН"
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TPlugin {
-  var $name;
-  var $version;
-  var $title;
-  var $description;
+/* * * * * * * * * * * * * * * * * * * * * * * *
+*
+*     Классы-предки для создания плагинов
+*
+* * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Родительский класс для всех плагинов
+ *
+ * @var  string  $name        Имя плагина
+ * @var  string  $version	   	Версия плагина
+ * @var  string  $kernel      Необходимая версия Eresus
+ * @var  string  $title       Название плагина
+ * @var  string  $description	Описание плагина
+ * @var  string  $type        Тип плагина, перечисленые через запятую ключевые слова:
+ *                            	client   - Загружать плагин в КИ
+ *                              admin    - Загружать плагин в АИ
+ *                              content  - Плагин предоставляет тип контента
+ *                              ondemand - Не загружать плагин автоматически
+ * @var  array   $settings    Настройки плагина
+ */
+class Plugin {
+  var $name = 'noname';
+  var $version = '0.00';
+  var $kernel = '2.10b2';
+  var $title = 'no title';
+  var $description = '';
   var $type;
-  #var $client = array('asgd' => false, 'load' => 'normal', 'content' => false);
-  #var $admin  = array('asgd' => false, 'load' => 'normal');
-  #var $lib    = array('asgd' => false, 'load' => 'normal');
   var $settings = array();
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Стандартные функции
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function TPlugin()
-# Производит чтение настроек плагина и подключение языковых файлов
+  var $dirData; # Директория данных (/data/имя_плагина)
+  var $dirCode; # Директория скриптов (/ext/имя_плагина)
+/**
+ * Конструктор
+ *
+ * Производит чтение настроек плагина и подключение языковых файлов
+ */
+function Plugin()
 {
-global $plugins, $locale;
+	global $Eresus, $plugins, $locale;
 
   if (!empty($this->name) && isset($plugins->list[$this->name])) {
     $this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);
+		# Если установлена версия плагина отличная от установленной ранее
+		# то необходимо произвести обновление информации о плагине в БД
     if ($this->version != $plugins->list[$this->name]['version']) $this->resetPlugin();
   }
+  $this->dirData = $Eresus->fdata.$this->name.'/'; 
+  $this->dirCode = $Eresus->froot.'ext/'.$this->name.'/'; 
   $filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
-  if (file_exists($filename)) include_once($filename);
+  if (is_file($filename)) include_once($filename);
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function resetPlugin()
-# Производит обновление данных о плагине
+//------------------------------------------------------------------------------
+/**
+ * Возвращает информацию о плагине
+ *
+ * @param  array  $item  Предыдущая версия информации (по умолчанию null)
+ *
+ * @return  array  Массив информации, пригодный для записи в БД
+ */
+function __item($item = null)
 {
-global $db;
-
-  $item = $db->selectItem('plugins', "`name`='".$this->name."'");
-  $db->updateItem('plugins', $this->createPluginItem($item), "`name`='".$this->name."'");
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function createPluginItem($item = null)
-# Создает массив информации о плагине
-{
-global $db;
+	global $Eresus;
 
   $result['name'] = $this->name;
   $result['type'] = $this->type;
-  $result['active'] = true;
-  $result['position'] = is_null($item)?$db->count('plugins'):$item['position'];
-  $result['settings'] = is_null($item)?encodeOptions($this->settings):$item['settings'];
+  $result['active'] = is_null($item)? true : $item['active'];
+  $result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
+  $result['settings'] = is_null($item) ? encodeOptions($this->settings) : $item['settings'];
   $result['title'] = $this->title;
   $result['version'] = $this->version;
   $result['description'] = $this->description;
   return $result;
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function install()
-# Производит инсталляцию плагина
+//------------------------------------------------------------------------------
+/**
+ * Чтение настроек плагина из БД
+ *
+ * @return  bool  Результат выполнения
+ */
+function loadSettings()
 {
+	global $Eresus;
+  $result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
+	if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
+	return (bool)$result;
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function uninstall()
-# Производит деинсталляцию плагина
+//------------------------------------------------------------------------------
+/**
+ * Сохранение настроек плагина в БД
+ *
+ * @return  bool  Результат выполнения
+ */
+function saveSettings()
 {
+	global $Eresus;
+  $result = $Eresus->db->updateItem('plugins', $this->__item(), "`name`='".$this->name."'");
+	return $result;
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+//------------------------------------------------------------------------------
+/**
+ * Обновление данных о плагине в БД
+ */
+function resetPlugin()
+{
+  $this->loadSettings();
+  $this->saveSettings();
+}
+//------------------------------------------------------------------------------
+/**
+ * Действия, выполняемые при инсталляции плагина
+ */
+function install() {}
+//------------------------------------------------------------------------------
+/**
+ * Действия, выполняемые при деинсталляции плагина
+ */
+function uninstall() {}
+//------------------------------------------------------------------------------
+/**
+ * Действия при изменении настроек
+ */
+function onSettingsUpdate() {}
+//------------------------------------------------------------------------------
+/**
+ * Сохраняет в БД изменения настроек плагина
+ */
 function updateSettings()
-# Сохраняет в БД настройки плагина
 {
- global $db, $request;
+	global $Eresus;
 
-  $item = $db->selectItem('`plugins`', "`name`='".$this->name."'");
-  $request['b'] = true;
-  $item['settings'] = decodeOptions($item['settings']);
-  foreach ($this->settings as $key => $value) if (isset($request['arg'][$key])) $this->settings[$key] = $request['arg'][$key];
-  $item['settings'] = encodeOptions($this->settings);
-  $db->updateItem('plugins', $item, "`name`='".$this->name."'");
+  foreach ($this->settings as $key => $value) if (isset($Eresus->request['arg'][$key])) $this->settings[$key] = $Eresus->request['arg'][$key];
+	$this->onSettingsUpdate();
+  $this->saveSettings();
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+//------------------------------------------------------------------------------
+/**
+ * Замена макросов
+ *
+ * @param  string  $template  Строка в которой требуется провести замену макросов
+ * @param  arrya   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+ *
+ * @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
+ */
 function replaceMacros($template, $item)
 {
   preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
@@ -272,20 +338,23 @@ function replaceMacros($template, $item)
     if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template);
   return $template;
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+//------------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС-ПРЕДОК "КОНТЕНТ"
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+* Базовый класс для плагинов, предоставляющих тип контента
+*
+*
+*/
 class TContentPlugin extends TPlugin {
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Стандартные функции
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+/**
+* Конструктор
+*
+* Устанавливает плагин в качестве плагина контента и читает локальные настройки
+*/
 function TContentPlugin()
 {
-global $page;
+	global $page;
 
   parent::TPlugin();
   if (isset($page)) {
@@ -293,37 +362,52 @@ global $page;
     if (count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
   }
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Внтуренние функции
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+//------------------------------------------------------------------------------
+/**
+* Обновляет контент страницы в БД
+* 
+* @param  string  $content  Контент
+*/
+function updateContent($content)
+{
+	global $Eresus, $page;
+
+  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+  $item['content'] = $content;
+  $Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+}
+//------------------------------------------------------------------------------
+/**
+* Обновляет контент страницы
+*/
 function update()
 {
-global $db, $page, $request;
-
-  $item = $db->selectItem('pages', "`id`='".$request['arg']['section']."'");
-  $item['content'] = $request['arg']['content'];
-  $db->updateItem('pages', $item, "`id`='".$request['arg']['section']."'");
-  goto($request['arg']['submitURL']);
+	$this->updateContent(arg('content'));
+  goto(arg('submitURL'));
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Клиентские функции
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+//------------------------------------------------------------------------------
+/**
+* Отрисовка клиентской части
+*
+* @return  string  Контент
+*/
 function clientRenderContent()
-# Отрисовка контента
 {
-global $page;
+	global $page;
 
   return $page->content;
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Административные функции
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+//------------------------------------------------------------------------------
+/**
+* Отрисовка административной части
+*
+* @return  string  Контент
+*/
 function adminRenderContent()
-# Отрисовка редактора контента
 {
-global $page, $db, $request;
+	global $page, $Eresus;
 
-  $item = $db->selectItem('pages', "`id`='".$request['arg']['section']."'");
+  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
   $form = array(
     'name' => 'content',
     'caption' => $page->title,
@@ -337,196 +421,7 @@ global $page, $db, $request;
 
   $result = $page->renderForm($form, $item);
   return $result;
-}}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС-ПРЕДОК "КОНТЕНТ-СПИСОК"
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TListContentPlugin extends TContentPlugin {
-var $table;
-var $pagesCount = 0;
-#---------------------------------------------------------------------------------------------------------------------#
-function install()
-{
-  $this->createTable($this->table);
-  parent::install();
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function uninstall()
-{
-  $this->dropTable($this->table);
-  parent::uninstall();
+//------------------------------------------------------------------------------
 }
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function createTable($table)
-{
-global $db;
-
-  $db->query('CREATE TABLE IF NOT EXISTS `'.$db->prefix.$table['name'].'`'.$table['sql']);
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function dropTable($table)
-{
-global $db;
-
-  $db->query("DROP TABLE IF EXISTS `".$db->prefix.$table['name']."`;");
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function toggle($id)
-{
-global $db, $page, $request;
-
-  $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-  $item['active'] = (integer)!$item['active'];
-  $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$id."'");
-  $caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-  sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
-  goto($page->url());
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function delete($id)
-{
-global $db, $page, $request;
-
-  $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-  $db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
-  $caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-  sendNotify(admDeleted.': '.'<a href="'.str_replace('delete',$this->table['key'],$request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
-  goto($page->url());
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function up($id)
-{
-global $page, $db, $request;
-
-  dbReorderItems($this->table['name'],"`section`='".$request['arg']['section']."'");
-  $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-  if ($item['position'] > 0) {
-    $temp = $db->selectItem($this->table['name'],"(`section`='".$request['arg']['section']."') AND (`position`='".($item['position']-1)."')");
-    $temp['position'] = $item['position'];
-    $item['position']--;
-    $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
-    $db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
-  }
-  goto($page->url());
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function down($id)
-{
-global $page, $db, $request;
-
-  dbReorderItems($this->table['name'],"`section`='".$request['arg']['section']."'");
-  $count = $db->count($this->table['name'], "`section`='".$request['arg']['section']."'");
-  $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-  if ($item['position'] < $count-1) {
-    $temp = $db->selectItem($this->table['name'],"(`section`='".$request['arg']['section']."') AND (`position`='".($item['position']+1)."')");
-    $temp['position'] = $item['position'];
-    $item['position']++;
-    $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
-    $db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
-  }
-  goto($page->url());
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function adminRenderContent()
-{
-global $db, $page, $user, $request, $session;
-
-  $result = '';
-  if (isset($request['arg']['id'])) {
-    $item = $db->selectItem($this->table['name'], "`".$this->table['key']."` = '".$request['arg']['id']."'");
-    $page->title .= empty($item['caption'])?'':' - '.$item['caption'];
-  }
-  if (isset($request['arg']['update']) && isset($this->table['controls']['edit'])) {
-    if (method_exists($this, 'update')) $result = $this->update(); else $session['errorMessage'] = sprintf(errMethodNotFound, 'update', get_class($this));
-  } elseif (isset($request['arg']['toggle']) && isset($this->table['controls']['toggle'])) {
-    if (method_exists($this, 'toggle')) $result = $this->toggle($request['arg']['toggle']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'toggle', get_class($this));
-  } elseif (isset($request['arg']['delete']) && isset($this->table['controls']['delete'])) {
-    if (method_exists($this, 'delete')) $result = $this->delete($request['arg']['delete']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'delete', get_class($this));
-  } elseif (isset($request['arg']['up']) && isset($this->table['controls']['position'])) {
-    if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down($request['arg']['up']):$this->up($request['arg']['up']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'up', get_class($this));
-  } elseif (isset($request['arg']['down']) && isset($this->table['controls']['position'])) {
-    if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up($request['arg']['down']):$this->down($request['arg']['down']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'down', get_class($this));
-  } elseif (isset($request['arg']['id']) && isset($this->table['controls']['edit'])) {
-    if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else $session['errorMessage'] = sprintf(errMethodNotFound, 'adminEditItem', get_class($this));
-  } elseif (isset($request['arg']['action'])) switch ($request['arg']['action']) {
-    case 'create': if(isset($this->table['controls']['edit']))
-      if (method_exists($this, 'adminAddItem')) $result = $this->adminAddItem();
-      else $session['errorMessage'] = sprintf(errMethodNotFound, 'adminAddItem', get_class($this));
-    break;
-    case 'insert':
-      if (method_exists($this, 'insert')) $result = $this->insert();
-      else $session['errorMessage'] = sprintf(errMethodNotFound, 'insert', get_class($this));
-    break;
-  } else {
-    if (isset($request['arg']['section'])) $this->table['condition'] = "`section`='".$request['arg']['section']."'";
-    $result = $page->renderTable($this->table);
-  }
-  return $result;
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderContent()
-{
-  global $db, $page;
-
-  $result = '';
-  if (!isset($this->settings['itemsPerPage'])) $this->settings['itemsPerPage'] = 0;
-  if (isset($page->topic)) $result = $this->clientRenderItem(); else {
-    $this->table['fields'] = $db->fields($this->table['name']);
-    $this->itemsCount = $db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
-    if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
-    if (!$page->subpage) $page->subpage = $this->table['sortDesc']?$this->pagesCount:1;
-    if ($this->itemsCount && ($page->subpage > $this->pagesCount)) {
-      $item = $page->Error404();
-      $result = $item['content'];
-    } else $result .= $this->clientRenderList();
-  }
-  return $result;
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderList($options = array('pages'=>true))
-{
-  global $db, $page;
-
-  $result = '';
-  $items = $db->select(
-    $this->table['name'],
-    "(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
-    $this->table['sortMode'],
-    $this->table['sortDesc'],
-    '',
-    $this->settings['itemsPerPage'],
-    $this->table['sortDesc']
-      ?(($this->pagesCount-$page->subpage)*$this->settings['itemsPerPage'])
-      :(($page->subpage-1)*$this->settings['itemsPerPage'])
-  );
-  if (count($items)) foreach($items as $item) $result .= $this->clientRenderListItem($item);
-  if ($options['pages']) {
-    $pages = $this->clientRenderPages();
-    $result .= $pages;
-  }
-  return $result;
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderListItem($item)
-{
-  $result = $item['caption']."<br />\n";
-  return $result;
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderItem()
-{
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderPages()
-{
-  global $page;
-
-  $result = $page->pages($this->pagesCount, $this->settings['itemsPerPage'], $this->table['sortDesc']);
-  return $result;
-}
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 ?>
