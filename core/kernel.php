@@ -271,7 +271,7 @@ function useClass($className)
   $result = false;
   if (DIRECTORY_SEPARATOR != '/') $className = str_replace('/', DIRECTORY_SEPARATOR, $className);
   $filename = realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.$className.'.php';
-	if (is_file($filename)) {
+  if (is_file($filename)) {
     include_once($filename);
     $result = true;
   }
@@ -1026,7 +1026,8 @@ class Eresus {
     $filename = $this->froot.'core/classes.php';
     if (is_file($filename)) include_once($filename);
     else FatalError("Classes file '$filename' not found!");
-		if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
+		if ($this->conf['backward']['TPlugins']) useClass('backward/TPlugins');
+    if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
 		elseif ($this->conf['backward']['TContentPlugin']) useClass('backward/TContentPlugin');
   	elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
   }
@@ -1129,7 +1130,7 @@ if ((!isset($user['auth']) || !$user['auth']) && isset($_COOKIE['autologin']) &&
 ResetLogin();
 
 # Загрузка плагинов
-$plugins = new TPlugins;
+$plugins = new Plugins;
 
 $KERNEL['loaded'] = true; # Флаг загрузки ядра
 ?>

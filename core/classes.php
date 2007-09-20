@@ -1,4 +1,4 @@
-	<?php
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
 # Версия 2.10
@@ -12,46 +12,49 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # КЛАСС "ПЛАГИНЫ"
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TPlugins {
-  var
-    $list = array(), # Список всех плагинов
-    $items = array(), # Массив плагинов
-    $events = array(); # Таблица обработчиков событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function  TPlugins()
-  {
-  global $db;
 
-    $items = $db->select('`plugins`', '', '`position`');
+class Plugins {
+  var $list = array(); # Список всех плагинов
+  var $items = array(); # Массив плагинов
+  var $events = array(); # Таблица обработчиков событий
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function  Plugins()
+  {
+  	global $Eresus;
+
+    $items = $Eresus->db->select('`plugins`', '', '`position`');
     if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function install($name)
   # Установка нового плагина
   {
-  global $db;
+  	global $Eresus;
 
     $filename = filesRoot.'ext/'.$name.'.php';
     if (file_exists($filename)) {
       include_once($filename);
-      $Class = 'T'.$name;
-      $this->items[$name] = new $Class;
-      $this->items[$name]->install();
-      $db->insert('plugins', $this->items[$name]->createPluginItem());
+      $ClassName = $name;
+      if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
+      if (class_exists($ClassName)) {
+	      $this->items[$name] = new $ClassName;
+	      $this->items[$name]->install();
+	      $Eresus->db->insert('plugins', $this->items[$name]->__item());
+      } else FatalError(sprintf(errClassNotFound, $ClassName));
     }
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function uninstall($name)
   # Удаление плагина
   {
-  global $db;
+  	global $Eresus;
 
     if (!isset($this->items[$name])) $this->load($name);
     if (isset($this->items[$name])) $this->items[$name]->uninstall();
-    $item = $db->selectItem('plugins', "`name`='".$name."'");
+    $item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
     if (!is_null($item)) {
-      $db->delete('plugins', "`name`='".$name."'");
-      $db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
+      $Eresus->db->delete('plugins', "`name`='".$name."'");
+      $Eresus->db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
     }
     $filename = filesRoot.'ext/'.$name.'.php';
     #if (file_exists($filename)) unlink($filename);
@@ -72,9 +75,12 @@ class TPlugins {
       $filename = filesRoot.'ext/'.$name.'.php';
       if (file_exists($filename)) {
         include_once($filename);
-        $Class = 'T'.$name;
-        $this->items[$name] = new $Class;
-        $result = $this->items[$name];
+        $ClassName = $name;
+        if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
+	      if (class_exists($ClassName)) {
+	        $this->items[$name] = new $ClassName;
+	        $result = $this->items[$name];
+	      } else FatalError(sprintf(errClassNotFound, $name));
       } else $result = false;
     }
     return $result;
@@ -210,7 +216,7 @@ class TPlugins {
  * @var  array   $settings    Настройки плагина
  */
 class Plugin {
-  var $name = 'noname';
+  var $name;
   var $version = '0.00';
   var $kernel = '2.10b2';
   var $title = 'no title';
@@ -228,6 +234,10 @@ function Plugin()
 {
 	global $Eresus, $plugins, $locale;
 
+	$this->name = strtolower(get_class($this));
+	# Обратная совместимость с версиями до 2.10b2
+	if (!property_exists($this, 'kernel')) $this->name = substr($this->name, 1);
+	
   if (!empty($this->name) && isset($plugins->list[$this->name])) {
     $this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);
 		# Если установлена версия плагина отличная от установленной ранее
@@ -346,7 +356,7 @@ function replaceMacros($template, $item)
 *
 *
 */
-class TContentPlugin extends TPlugin {
+class ContentPlugin extends Plugin {
 /**
 * Конструктор
 *

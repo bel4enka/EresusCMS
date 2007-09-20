@@ -1,19 +1,23 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Система управления контентом Eresus™
-# Версия 2.10
-# © 2004-2007, ProCreat Systems
-# © 2007, Eresus Group
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Управление модулями расширения
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Eresus 2.10
+ * 
+ * Управление модулями расширения
+ * 
+ * Система управления контентом Eresus™
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ * 
+ * @author Mikhail Krasilnikov (mk@procreat.ru)
+ * @author БерсЪ (fanta@steeka.com)
+ */
+
 class TPlgMgr {
   var $access = ADMIN;
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function toggle()
   {
-  global $db, $page, $request;
+  	global $db, $page, $request;
 
     $item = $db->selectItem('plugins', "`name`='".$request['arg']['toggle']."'");
     $item['active'] = !$item['active'];
@@ -77,21 +81,15 @@ class TPlgMgr {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function add()
   {
-  global $db, $page;
+  	global $db, $page;
 
     $items = $db->select('`plugins`', '', "`name`");
-
-    $hnd=opendir(filesRoot.'ext/');
-    $i = 0;
-    $files=array();
-    while (($name = readdir($hnd))!==false) if (preg_match("/\.php$/i", $name)) $files[] = substr($name, 0, strlen($name)-4);
-    closedir($hnd);
-    if (count($files) && count($items)) foreach($items as $item) for($i = 0; $i < count($files); $i++) {
-      if (strtolower($files[$i]) == strtolower($item['name'])) {
-        array_splice($files, $i, 1);
-        break;
-      }
-    }
+		$installed = array();
+		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';  
+		
+    $files = glob(filesRoot.'ext/*.php');
+    $files = array_diff($files, $installed);
+    
     $page->scripts .= '
       function checkboxes(type)
       {
@@ -123,17 +121,27 @@ class TPlgMgr {
       ),
     );
     if (count($files)) foreach($files as $file) {
-      $hnd = fopen(filesRoot.'ext/'.$file.'.php','r');
-      $s = '';
-      while (!feof($hnd)) $s .= fgets($hnd, 1024);
-      fclose($hnd);
-      $valid = preg_match('/var.*\$title\s*=\s*\'(.+)\'.*\$version\s*=\s*\'(.+)\'.*\$description\s*=\s*\'(.+)\'/Usi',$s, $match);
-      if (!$valid) {
-        $match[1] = '<span class="admError">';
-        $match[2] = $file.'.php';
-        $match[3] = admPluginsInvalidFile.'</span>';
+      $s = file_get_contents($file);
+      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?\{(.*?)function/is', $s, $s);
+      if ($valid) {
+      	$s = $s[1];
+      	preg_match('/\$kernel\s*=\s*(\'|")(.+)\1/', $s, $kernel);
+      	preg_match('/\$version\s*=\s*(\'|")(.+)\1/', $s, $version);
+      	preg_match('/\$title\s*=\s*(\'|")(.+)\1/', $s, $title);
+      	preg_match('/\$description\s*=\s*(\'|")(.+)\1/', $s, $description);
+      	#FIX: Совместимость с версиями до 2.10b2. Надо проверять и наличие $kernel
+      	if (count($version) && count($title) && count($description)) {
+      		$caption = "{$title[2]} {$version[2]} - {$description[2]}";
+      	} else {
+      		$valid = false;
+      		$caption = '<span class="admError">'.$file.'.php - '.admPluginsInvalidFile.'</span>';
+      	}
+      	if (count($kernel) && version_compare($kernel[2], CMSVERSION, '>')) {
+      		$valid = false; 
+      		$caption = '<span class="admError">'.sprintf(admPluginsInvalidVersion, $title[2], $kernel[2]).'</span>';
+      	}
       }
-      $form['fields'][] = array('type'=>'checkbox','name'=>'files['.$file.']','label'=>$match[1].' '.$match[2].' - '.$match[3], 'value'=>true, 'disabled'=>!$valid);
+      $form['fields'][] = array('type'=>'checkbox','name'=>'files['.basename($file, '.php').']','label'=>$caption, 'value'=>true, 'disabled'=>!$valid);
     }
     $result = $page->renderForm($form);
     return $result;

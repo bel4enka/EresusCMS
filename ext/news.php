@@ -1,38 +1,45 @@
 <?php
-/**
-* News, Eresus™ 2 plugin. 
-*
-* © 2005-2007, ProCreat Systems
-* http://procreat.ru/
-*
-* @author  Mikhail Krasilnikov <mk@procreat.ru>
-* @version  2.07
-* @modified  2007-07-27
-*/
-
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# CMS Eresus™
+# © 2005-2007, ProCreat Systems
+# Web: http://procreat.ru
+# История верий:
+# 2.06 - исправления by bersz @ 2007 :
+#        Добавлен код пути для отображения в плагине path, аналогично articles
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TNews extends TListContentPlugin {
-  var $name = 'news';
-  var $type = 'client,content';
-  var $title = 'Новости';
-  var $version = '2.07';
-  var $description = 'Публикация новостей';
-  var $settings = array(
+  var
+    $name = 'news',
+    $type = 'client,content',
+    $title = 'Новости',
+    $version = '2.06',
+    $description = 'Публикация новостей',
+    $settings = array(
       'itemsPerPage' => 10,
-      'tmplListItem' => '<div><div><b>$(caption)</b> ($(posted))</div><div>$(preview)</div><a href="$(url)">Полный текст...</a></div><br />',
-      'tmplItem' => '<h3>$(caption)</h3>$(posted)<br /><br />$(text)<br /><br />',
+      'tmplListItem' => '
+        <div class="NewsListItem">
+          <div class="caption">$(caption) ($(posted))</div>
+          $(preview)
+          <br />
+          <a href="$(link)">Полный текст...</a>
+        </div>
+      ',
+      'tmplItem' => '<h3>$(caption)</h3>$(posted)<br /><br />$(text)',
+      'tmplLastNews' => '<b>$(posted)</b><br /><a href="$(link)">$(caption)</a><br />',
       'previewMaxSize' => 500,
       'previewSmartSplit' => true,
       'dateFormatPreview' => DATE_SHORT,
       'dateFormatFullText' => DATE_LONG,
-      'virt_ext' => 'html',
-  );
-  var $table = array (
+      'lastNewsMode' => 0,
+      'lastNewsCount' => 5,
+    ),
+    $table = array (
       'name' => 'news',
       'key'=> 'id',
       'sortMode' => 'posted',
       'sortDesc' => true,
       'columns' => array(
-        array('name' => 'caption', 'caption' => 'Заголовок'),
+        array('name' => 'caption', 'caption' => 'Заголовок', 'wrap' => false),
         array('name' => 'posted', 'align'=>'center', 'value' => templPosted, 'macros' => true),
         array('name' => 'preview', 'caption' => 'Кратко'),
       ),
@@ -60,15 +67,22 @@ class TNews extends TListContentPlugin {
         KEY `posted` (`posted`)
       ) TYPE=MyISAM COMMENT='News';",
     );
-  /**
-  * Создаеёт аннотацию к новости
-  *
-  * @access  private
-  *
-  * @param  string  $text  Исходный текст новости
-  *
-  * @return  string  Аннотация
-  */
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  # Стандартные функции
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function TNews()
+  # производит регистрацию обработчиков событий
+  {
+  global $plugins;
+
+    parent::TListContentPlugin();
+    switch ($this->settings['lastNewsMode']) {
+      case 1: $plugins->events['clientOnPageRender'][] = $this->name; break;
+    }
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  # Внутренние функции
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function createPreview($text)
   {
     $text = trim(preg_replace('/<[^>]+?>/Us',' ',$text));
@@ -84,10 +98,10 @@ class TNews extends TListContentPlugin {
     }
     return $result;
   }
-  //------------------------------------------------------------------------------
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
   {
-    global $db, $request, $page;
+  global $db, $request, $page;
 
     $item = getArgs($db->fields($this->table['name']));
     $item['active'] = true;
@@ -101,7 +115,7 @@ class TNews extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-    global $db, $page, $request;
+  global $db, $page, $request;
 
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
     $item = setArgs($item);
@@ -112,34 +126,22 @@ class TNews extends TListContentPlugin {
     goto($request['arg']['submitURL']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  /**
-  * Замена макросов
-  *
-  * @access  private
-  *
-  * @param  string  $template    Шаблон
-  * @param  array   $item        Обрабатываемый элемент
-  * @param  string  $dateFormat  Шаблон даты
-  *
-  * @return  string  Результат
-  */
   function replaceMacros($template, $item, $dateFormat)
   {
-    global $page;
+  global $page;
 
     $item['preview'] = '<p>'.str_replace("\n", "</p>\n<p>", $item['preview']).'</p>';
     $item['posted'] = FormatDate($item['posted'], $dateFormat);
-    # @todo  Remove 'link'
-    $item['link'] = $item['url'] = $page->clientURL($item['section']).$item['id'].'.'.$this->settings['virt_ext'];
+    $item['link'] = $page->clientURL($item['section']).$item['id'].'/';
     $result = parent::replaceMacros($template, $item);
     return $result;
   }
-  //------------------------------------------------------------------------------
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Административные функции
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminAddItem()
   {
-    global $page, $request;
+  global $page, $request;
 
     $form = array(
       'name' => 'newNews',
@@ -162,7 +164,7 @@ class TNews extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminEditItem()
   {
-    global $db, $page, $request;
+  global $db, $page, $request;
 
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
     $form = array(
@@ -189,7 +191,7 @@ class TNews extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function settings()
   {
-    global $page;
+  global $page;
 
     $form = array(
       'name' => 'settings',
@@ -200,15 +202,29 @@ class TNews extends TListContentPlugin {
         array('type'=>'edit','name'=>'itemsPerPage','label'=>'Новостей на страницу','width'=>'50px', 'maxlength'=>'2'),
         array('type'=>'memo','name'=>'tmplListItem','label'=>'Шаблон краткого текста','height'=>'5'),
         array('type'=>'edit','name'=>'dateFormatPreview','label'=>'Формат даты', 'width'=>'200px'),
-        array('type'=>'edit','name'=>'previewMaxSize','label'=>'Макс. размер описания','width'=>'50px', 'maxlength'=>'4', 'comment'=>'символов'),
+        array('type'=>'edit','name'=>'previewMaxSize','label'=>'Макс. размер описания','width'=>'50px', 'maxlength'=>'4', 'comment'=>'симовлов'),
         array('type'=>'checkbox','name'=>'previewSmartSplit','label'=>'"Умное" создание описания'),
         array('type'=>'divider'),
         array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон полнотекстового просмотра','height'=>'5'),
         array('type'=>'edit','name'=>'dateFormatFullText','label'=>'Формат даты', 'width'=>'200px'),
+        array('type'=>'header', 'value' => 'Последние новости'),
+        array('type'=>'memo','name'=>'tmplLastNews','label'=>'Шаблон последних новостей','height'=>'3'),
+        array('type'=>'select','name'=>'lastNewsMode','label'=>'Режим', 'items'=>array('отключить', 'Заменять макрос $(NewsLast)')),
+        array('type'=>'edit','name'=>'lastNewsCount','label'=>'Показывать новостей', 'width'=>'100px'),
     ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );
     $result = $page->renderForm($form, $this->settings);
+    return $result;
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function renderLastNews()
+  {
+    global $db;
+
+    $result = '';
+    $items = $db->select($this->table['name'], "`active`='1'", 'posted', true, '', $this->settings['lastNewsCount']);
+    if (count($items)) foreach($items as $item) $result .= $this->replaceMacros($this->settings['tmplLastNews'], $item, $this->settings['dateFormatPreview']);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -220,44 +236,33 @@ class TNews extends TListContentPlugin {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientGetItems()
+  function clientRenderItem()
   {
-    global $Eresus, $page;
-    
-    $year = next($Eresus->request['params']);
-    $month = next($Eresus->request['params']);
-    $day = next($Eresus->request['params']);
-    if ($year) {
-      $sql = "(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":'');
-      $sql .= " AND (`posted` BETWEEN '$year-".($month?$month:'01')."-".($day?$day:'01')."' AND '$year-".($month?$month:'12')."-".($day?$day:'31')."')";
-      $result = $Eresus->db->select(
-        $this->table['name'],
-        $sql,
-        $this->table['sortMode'],
-        $this->table['sortDesc']
-      );
-    } else $result = parent::clientGetItems();
+    global $db, $page, $plugins, $request;
+
+    $item = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
+    if (is_null($item)) $page->httpError('404');
+    $result = $this->replaceMacros($this->settings['tmplItem'], $item, $this->settings['dateFormatFullText']).$page->buttonBack();
+    $page->section[] = $item['caption'];
+    $item['access'] = $page->access;
+    $item['name'] = $item['id'];
+    $item['title'] = $item['caption'];
+    $item['hint'] = $item['description'] = $item['keywords'] = '';
+    $plugins->clientOnURLSplit($item, $request['path']);
+
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientRenderItem()
+  # Обработчики событий
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function clientOnPageRender($text)
   {
-    global $db, $page, $Eresus;
+  global $page;
 
-    if (strpos($page->topic, $this->settings['virt_ext']) !== false) {
-      $page->topic = substr($page->topic, 0, -strlen($this->settings['virt_ext']));
-      $item = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
-      if (is_null($item)) $page->httpError('404');
-      $result = $this->replaceMacros($this->settings['tmplItem'], $item, $this->settings['dateFormatFullText']).$page->buttonBack();
-      $page->section[] = $item['caption'];
-    } else {
-      prev($Eresus->request['params']);
-      $result = $this->clientRenderList();
-    }
-    return $result;
+    $text = str_replace('$(NewsLast)', $this->renderLastNews(), $text);
+    return $text;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 ?>
-

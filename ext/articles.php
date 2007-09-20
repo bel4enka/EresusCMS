@@ -16,31 +16,26 @@ class TArticles extends TListContentPlugin {
   var $name = 'articles';
   var $type = 'client,content,ondemand';
   var $title = 'Статьи';
-  var $version = '2.08';
+  var $version = '2.09';
   var $description = 'Публикация статей';
   var $settings = array(
     'itemsPerPage' => 10,
     'tmplListItem' => '
-      <div class="ArticlesItem">
+      <div class="ArticlesListItem">
         <h3>$(caption)</h3>
-        $(posted)
-        <br /><br />
+        $(posted)<br />
         <img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" />
-        $(text)
+        $(preview)
+        <div class="controls">
+          <a href="$(link)">Полный текст...</a>
+        </div>
       </div>
     ',
     'tmplItem' => '
-      <div class="ArticlesListItem">
-        <div class="caption">
-          $(caption) ($(posted))
-        </div>
-        <img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" style="float:left" />
-        <div style="margin-left: $(imageWidth)px; padding-left: 5px;">
-          $(preview)
-          <div class="controls">
-            <a href="$(link)">Полный текст...</a>
-          </div>
-        </div>
+      <div class="ArticlesItem">
+        <h1>$(caption)</h1><b>$(posted)</b><br />
+        <img src="$(image)" alt="$(caption)" width="$(imageWidth)" height="$(imageHeight)" style="float: left;" />
+        $(text)
         <br /><br />
       </div>
     ',

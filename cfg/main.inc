@@ -63,9 +63,11 @@ $Eresus->conf['timezone'] = 'Europe/Moscow';
 #-------------------------------------------------------------------------------
 # Этот параметр управляет параметрами обратной совместимости
 $Eresus->conf['backward'] = array(
+	# Делает доступным класс TPlugins в версиях старше 2.10b
+  'TPlugins' => false,
 	# Делает доступным класс TPlugin в версиях старше 2.10b
   'TPlugin' => true,
-	# Делает доступным класс TContentPlugin в версиях старше 2.10b
+  # Делает доступным класс TContentPlugin в версиях старше 2.10b
 	'TContentPlugin' => true,
 	# Делает доступным класс TListContentPlugin в версиях старше 2.10b
 	'TListContentPlugin' => true,

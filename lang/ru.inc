@@ -86,12 +86,14 @@ define('errUnknownLine', 'Неизвестная строка');
 define('errInternalError', 'Внутренняя ошибка');
 define('errNoMainPage', 'В списке страниц не найдена корневая страница с именем "main"');
 define('errContentPluginNotFound', 'Не найдено модуля поддержки типа контента "%s"');
+define('errClassNotFound', 'Класс "%s" не найден.');
 define('errMethodNotFound', 'Метод "%s" не найден в классе "%s".');
 # Файловые
 define('errFileNotFound', 'Файл не найден');
 define('errFileOpening', 'Открытие файла "%s"');
 define('errFileWriteError', 'Ошибка записи в файл');
 define('errFileWriting', 'Запись в файл "%s"');
+define('errFileWrite', 'Не удается записать в файл "%s"');
 define('errFileCopy', 'Не удается скопировать файл "%s" в "%s"');
 define('errFileMove', 'Не удается переместить файл "%s" в "%s"');
 define('errLibNotFound', 'Не найдена библиотека "%s"');
@@ -270,7 +272,7 @@ define('admPluginsAdd', 'Добавить плагин');
 define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эндом, <strong>admin</strong> - работает с бэк-эндом, <strong>content</strong> - плагин контента, <strong>ondemand</strong> - загружается только при необходимости");
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
-define('admPluginsInvalidVersion', 'Для работы модуля расширения %s требуется ядро %s или выше.');
+define('admPluginsInvalidVersion', 'Для работы "%s" требуется ядро %s или выше.');
 define('admPluginsAdded', 'Подключен новый плагин');
 define('admPluginTopicTable', 'Таблица топиков');
 

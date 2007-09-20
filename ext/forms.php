@@ -20,7 +20,7 @@ class TForms extends TListContentPlugin {
   var $type = 'client,admin';
   var $title = 'Формы ввода';
   var $version = '1.04';
-  var $kernel = '2.10';
+  var $kernel = '2.10b';
   var $description = 'Создание собственных форм ввода';
   var $table = array (
     'name' => 'forms',

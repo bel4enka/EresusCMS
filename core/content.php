@@ -18,7 +18,7 @@ class TContent {
       if (!array_key_exists($item['type'], $plugins->list)) {
         switch ($item['type']) {
           case 'default':
-            $editor = new TContentPlugin;
+            $editor = new ContentPlugin;
             if (isset($request['arg']['update'])) $editor->update();
             else $result = $editor->adminRenderContent();
           break;
