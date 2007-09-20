@@ -2,7 +2,7 @@
 /**
  * Eresus 2.10
  * 
- * Система управления контентом Eresus™
+ * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
  * 

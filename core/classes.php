@@ -1,13 +1,13 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Система управления контентом Eresus™
-# Версия 2.10
-# © 2004-2007, ProCreat Systems
-# © 2007, Eresus Group
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Классы системы
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Основные классы системы
+ * 
+ * Система управления контентом Eresus™ 2
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ * 
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ */
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # КЛАСС "ПЛАГИНЫ"
@@ -314,7 +314,15 @@ function install() {}
 /**
  * Действия, выполняемые при деинсталляции плагина
  */
-function uninstall() {}
+function uninstall()
+{
+	global $Eresus;
+	
+	$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
+	for ($i=0; $i < count($tables); $i++)
+		$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
+	$this->dbDropTable();
+}
 //------------------------------------------------------------------------------
 /**
  * Действия при изменении настроек
@@ -347,6 +355,89 @@ function replaceMacros($template, $item)
   if (count($matches[1])) foreach($matches[1] as $macros)
     if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template);
   return $template;
+}
+//------------------------------------------------------------------------------
+/**
+ * Создание новой директории
+ * 
+ * @param string $name Имя директории
+ * @return bool Результат
+ */
+function mkdir($name = '')
+{
+	$result = true;
+	$umask = umask(0000);
+	# Проверка и создание корневой директории данных
+	if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
+	if ($result) {
+		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
+		if ($name) {
+			$name = explode('/', $name);
+			$root = substr($this->dirData, 0, -1);
+			for($i=0; $i<count($name); $i++) if ($name[$i]) {
+				$root .= '/'.$name[$i];
+				if (!is_dir($root)) $result = mkdir($root);
+				if (!$result) break;
+			}
+		}
+	}
+	umask($umask);
+	return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Удаление директории и файлов
+ * 
+ * @param string $name Имя директории
+ * @return bool Результат
+ */
+function rmdir($name = '')
+{
+	$result = true;
+	$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
+	$name = $this->dirData.$name;
+	if (is_dir($name)) {
+		$files = glob($name.'/{.*,*}', GLOB_BRACE);
+		for ($i = 0; $i < count($files); $i++) {
+			if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
+			if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
+			elseif (is_file($files[$i])) $result = filedelete($files[$i]);
+			if (!$result) break;
+		}
+		if ($result) $result = rmdir($name);
+	}
+	return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Создание таблицы в БД
+ * 
+ * @param string $SQL Описание таблицы
+ * @param string $name Имя таблицы
+ * 
+ * @return bool Результат выполенения
+ */
+function dbCreateTable($SQL, $name = '')
+{
+	global $Eresus;
+	
+	$result = $Eresus->db->create($this->name.(empty($name)?'':'_'.$name), $SQL);
+	return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Удаление таблицы БД
+ * 
+ * @param string $name Имя таблицы
+ * 
+ * @return bool Результат выполенения
+ */
+function dbDropTable($name = '')
+{
+	global $Eresus;
+	
+	$result = $Eresus->db->drop($this->name.(empty($name)?'':'_'.$name));
+	return $result;
 }
 //------------------------------------------------------------------------------
 }

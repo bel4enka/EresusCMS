@@ -1,13 +1,15 @@
 <?php
 /**
-* Eresus™ 2
-*
-* Библиотека для работы с СУБД MySQL
-*
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 1.2.1
-* @modified: 2007-08-30
-*/
+ * Библиотека для работы с СУБД MySQL
+ * 
+ * Система управления контентом Eresus™ 2
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ *
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @version 1.2.2
+ * @modified 2007-09-20
+ */
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
 # Устанавливает глобальные переменные 
@@ -69,7 +71,39 @@ class MySQL {
     }
     return $values;
   }
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  //------------------------------------------------------------------------------
+  /**
+   * Создание новой таблицы
+   *
+   * @param string $name       Имя таблицы
+   * @param string $structure  Описание структуры
+   * @param string $options    Опции
+   * 
+   * @return bool Результат
+   */
+  function create($name, $structure, $options = '')
+  {
+  	$result = false;
+  	$query = "CREATE TABLE `{$this->prefix}$name` ($structure) $options";
+  	$result = $this->query($query);
+  	return $result;
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * Удаление таблицы
+   *
+   * @param string $name       Имя таблицы
+   * 
+   * @return bool Результат
+   */
+  function drop($name)
+  {
+  	$result = false;
+  	$query = "DROP TABLE `{$this->prefix}$name`";
+  	$result = $this->query($query);
+  	return $result;
+  }
+  //------------------------------------------------------------------------------
   function select($tables, $condition = '', $order = '', $desc = false, $fields = '', $lim_rows = 0, $lim_offset = 0, $group = '', $distinct = false)
   # Выполняет запрос SELECT к базе данных используя метод query().
   #  $tables - таблицы, из которых требуется сделать выборку (FROM)
