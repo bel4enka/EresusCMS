@@ -7,15 +7,15 @@
 * PHP 4.3.3
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 1.00
-* @modified: 2007-08-29
+* @version: 1.03
+* @modified: 2007-09-20
 */
 
 class TWikidoc extends TListContentPlugin {
   var $name = 'wikidoc';
   var $type = 'client,content,ondemand';
   var $title = 'Wiki-документация';
-  var $version = '1.00';
+  var $version = '1.03';
   var $description = 'Документация в стиле Wiki';
   var $settings = array(
   );
@@ -46,7 +46,7 @@ class TWikidoc extends TListContentPlugin {
   function parse_basics($text)
   {
 		$text = preg_replace(
-			array('/\*\*([^<>\*]*?)\*\*/s', '#//([^<>/]*?)//#s', '/\+\+([^<>\+]*?)\+\+/s', '/__([^<>_]*?)__/s', '/^~(.*)$/m'),
+			array('/\*\*([^<>\n\*]*?)\*\*/s', '#//([^<>/\n]*?)//#s', '/\+\+([^<>\n\+]*?)\+\+/s', '/__([^<>_\n]*?)__/s', '/^~(.*)$/m'),
 			array('<b>$1</b>', '<span class="underline">$1</span>', '<span class="striked">$1</span>', '<em>$1</em>', '<div class="indent">$1</div>'),
 			$text
 		);
@@ -158,14 +158,19 @@ class TWikidoc extends TListContentPlugin {
   */
   function parse_code($text)
   {
-		preg_match_all('/%%(\(\w+\))?(.*?)%%/s', $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
-		$delta = 0;
-		foreach($matches as $match) {
-			$replace = highlight_string("<?php\n".trim($match[2][0])."\n?>", true);
-			$text = substr_replace($text, $replace, $match[0][1]+$delta, strlen($match[0][0]));
-			$delta += strlen($replace) - strlen($match[0][0]);
+		if (preg_match_all('/%%(\w+)?(.*?)%%\n?/s', $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
+  		$delta = 0;
+			include_once(filesRoot.'ext/geshi/geshi.php');
+			foreach($matches as $match) {
+				$geshi = new GeSHi(trim($match[2][0]), $match[1][0]);
+				$geshi->set_header_type(GESHI_HEADER_DIV);
+				$replace = trim($geshi->parse_code());
+				$replace = str_replace('<br />', "", $replace);
+				$text = substr_replace($text, $replace, $match[0][1]+$delta, strlen($match[0][0]));
+				$delta += strlen($replace) - strlen($match[0][0]);
+			}
 		}
-		return $text;
+  	return $text;
   }
   //------------------------------------------------------------------------------
 	/**
