@@ -47,7 +47,7 @@ class TWikidoc extends TListContentPlugin {
   {
 		$text = preg_replace(
 			array('/\*\*([^<>\n\*]*?)\*\*/s', '#//([^<>/\n]*?)//#s', '/\+\+([^<>\n\+]*?)\+\+/s', '/__([^<>_\n]*?)__/s', '/^~(.*)$/m'),
-			array('<b>$1</b>', '<span class="underline">$1</span>', '<span class="striked">$1</span>', '<em>$1</em>', '<div class="indent">$1</div>'),
+			array('<b>$1</b>', '<em>$1</em>', '<span class="striked">$1</span>', '<span class="underline">$1</span>', '<div class="indent">$1</div>'),
 			$text
 		);
 		return $text;
