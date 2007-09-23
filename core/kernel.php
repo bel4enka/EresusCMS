@@ -859,7 +859,8 @@ class Eresus {
   var $style; # URL стилей
   var $froot; # Корневая директория
   var $fdata; # Директория данных
-
+  var $fstyle; # Директория стилей
+  
   var $request;
   
   /**
@@ -926,6 +927,7 @@ class Eresus {
       $this->froot = str_replace('\\', '/', substr($this->froot, 2));
     }
     $this->fdata = $this->froot.'data/';
+    $this->fstyle = $this->froot.'style/';
     
     if (is_null($this->host)) $this->host = strtolower($_SERVER['HTTP_HOST']);
     $this->https = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']);

@@ -5,15 +5,15 @@
 * Библиотека для работы с HTML-формами
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.1
-* @modified: 2007-08-03
+* @version: 0.0.2
+* @modified: 2007-09-23
 */
 
 
 /**
 * HTML-форма
 */
-class TForm {
+class Form {
   var $form;
   var $values;
   var $hidden = '';
@@ -28,7 +28,7 @@ class TForm {
   * @param  array  $form    Описание формы
   * @param  array  $values  Значения полей по умолчанию (необязательно)
   */
-  function TForm($form, $values=array())
+  function Form($form, $values=array())
   {
     $this->form = $form;
     $this->values = $values;
@@ -49,10 +49,10 @@ class TForm {
     # Подсказка
     if (isset($item['hint'])) $item['label'] = '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>';
     # Маска значения
-    if (isset($item['pattern']) && isset($item['name'])) 
+    if (isset($item['pattern']) && isset($item['name']))
       $this->validator .= "
         if (!form.".$item['name'].".value.match(".$item['pattern'].")) {
-          alert('".(isset($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');
+          alert('".(isset($item['errormsg'])?$item['errormsg']:sprintf(errFormPatternError, $item['name'], $item['pattern']))."');
           result = false;
           form.".$item['name'].".select();
         } else ";
@@ -102,7 +102,7 @@ class TForm {
   /**
   * Раделитель
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -117,7 +117,7 @@ class TForm {
   /**
   * Текст
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -132,7 +132,7 @@ class TForm {
   /**
   * Подзаголовок
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -147,7 +147,7 @@ class TForm {
   /**
   * <input type="hidden" />
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -163,7 +163,7 @@ class TForm {
   /**
   * <input type="text" />
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -179,7 +179,7 @@ class TForm {
   /**
   * <input type="password" />
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -196,7 +196,7 @@ class TForm {
   /**
   * <input type="checkbox" />
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -212,7 +212,7 @@ class TForm {
   /**
   * <select>
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -234,7 +234,7 @@ class TForm {
   /**
   * <select multiple>
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -256,7 +256,7 @@ class TForm {
   /**
   * <textarea></textarea>
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -286,7 +286,7 @@ class TForm {
   /**
   * <textarea html>
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -305,7 +305,7 @@ class TForm {
   /**
   * <input type="file" />
   *
-  * @access  private
+  * @access  protected
   *
   * @param  array  $item  Описание поля
   *
@@ -393,7 +393,7 @@ class TForm {
 */
 function form($form, $values=array())
 {
-  $Form = new TForm($form, $values);
+  $Form = new Form($form, $values);
   $result = $Form->render();
   return $result;
 }

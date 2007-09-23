@@ -224,7 +224,11 @@ class Plugin {
   var $type;
   var $settings = array();
   var $dirData; # Директория данных (/data/имя_плагина)
+  var $urlData; # URL данных
   var $dirCode; # Директория скриптов (/ext/имя_плагина)
+  var $urlCode; # URL скриптов
+  var $dirStyle; # Директория оформления (style/имя_плагина)
+  var $urlStyle; # URL оформления
 /**
  * Конструктор
  *
@@ -246,6 +250,7 @@ function Plugin()
   }
   $this->dirData = $Eresus->fdata.$this->name.'/'; 
   $this->dirCode = $Eresus->froot.'ext/'.$this->name.'/'; 
+  $this->dirStyle = $Eresus->fstyle.$this->name.'/'; 
   $filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
   if (is_file($filename)) include_once($filename);
 }
@@ -410,6 +415,17 @@ function rmdir($name = '')
 }
 //------------------------------------------------------------------------------
 /**
+ * Возвращает реальное имя таблицы
+ * 
+ * @param string $table  Локальное имя таблицы
+ * @return string Реальное имя таблицы
+ */
+function __table($table)
+{
+	return $this->name.(empty($table)?'':'_'.$table);
+}
+//------------------------------------------------------------------------------
+/**
  * Создание таблицы в БД
  * 
  * @param string $SQL Описание таблицы
@@ -421,7 +437,7 @@ function dbCreateTable($SQL, $name = '')
 {
 	global $Eresus;
 	
-	$result = $Eresus->db->create($this->name.(empty($name)?'':'_'.$name), $SQL);
+	$result = $Eresus->db->create($this->__table($name), $SQL);
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -436,8 +452,104 @@ function dbDropTable($name = '')
 {
 	global $Eresus;
 	
-	$result = $Eresus->db->drop($this->name.(empty($name)?'':'_'.$name));
+	$result = $Eresus->db->drop($this->__table($name));
 	return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Производит выборку из таблицы БД
+ * 
+ * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
+ * @param string	$condition		Условие выборки
+ * @param string	$order				Порядок выборки
+ * @param bool		$desc					Обратный порядок
+ * @param string	$fields				Список полей
+ * @param int			$limit				Вернуть не больше полей чем limit
+ * @param int			$offset				Смещение выборки
+ * @param bool		$distinct			Только уникальные результаты
+ * 
+ * @return array	Список записей
+ */ 
+function dbSelect($table = '', $condition = '', $order = '', $desc = false, $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+{
+	global $Eresus;
+	
+	$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
+
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Получение записи из БД
+ * 
+ * @param string $table  Имя таблицы
+ * @param mixed  $id   	 Идентификатор элемента
+ * @param string $key    Имя ключевого поля
+ * 
+ * @return array Элемент
+ */
+function dbItem($table, $id, $key = 'id')
+{
+	global $Eresus;
+	
+	$result = $Eresus->db->selectItem($this->__table($table), "`$key` = '$id'");
+
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Вставка в таблицу БД
+ * 
+ * @param string $table  Имя таблицы
+ * @param array  $item   Вставляемый элемент
+ */
+function dbInsert($table, $item)
+{
+	global $Eresus;
+	
+	$result = $Eresus->db->insert($this->__table($table), $item);
+
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Изменение данных в БД
+ * 
+ * @param string $table      Имя таблицы
+ * @param mixed  $data       Изменяемый эелемент / Изменения
+ * @param string $condition  Ключевое поле / Условие для замены
+ * 
+ * @return bool Результат
+ */
+function dbUpdate($table, $data, $condition = '')
+{
+	global $Eresus;
+	
+	if (is_array($data)) {
+		if (empty($condition)) $condition = 'id';
+		$result = $Eresus->db->updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
+	} elseif (is_string($data)) {
+		$result = $Eresus->db->update($this->__table($table), $data, $condition);
+	}
+
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Подсчёт количества записей в БД
+ * 
+ * @param string $table      Имя таблицы
+ * @param string $condition  Условие для включения в подсчёт
+ * 
+ * @return int Количество записей, удовлетворяющих условию
+ */
+function dbCount($table, $condition = '')
+{
+	global $Eresus;
+	
+	$result = $Eresus->db->count($this->__table($table), $condition);
+
+  return $result;
 }
 //------------------------------------------------------------------------------
 }
@@ -453,11 +565,11 @@ class ContentPlugin extends Plugin {
 *
 * Устанавливает плагин в качестве плагина контента и читает локальные настройки
 */
-function TContentPlugin()
+function ContentPlugin()
 {
 	global $page;
 
-  parent::TPlugin();
+  parent::Plugin();
   if (isset($page)) {
     $page->plugin = $this->name;
     if (count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;

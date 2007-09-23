@@ -151,8 +151,8 @@ class TPlgMgr {
   {
   global $plugins, $page, $db, $request;
 
-    $item = $db->selectItem('plugins', "`name`='".$request['arg']['up']."'");
     dbReorderItems('plugins','','name');
+  	$item = $db->selectItem('plugins', "`name`='".$request['arg']['up']."'");
     if ($item['position'] > 0) {
       $temp = $db->selectItem('plugins',"`position`='".($item['position']-1)."'");
       $item['position']--;
@@ -167,9 +167,9 @@ class TPlgMgr {
   {
   global $plugins, $page, $db, $request;
 
-    $item = $db->selectItem('plugins', "`name`='".$request['arg']['down']."'");
+    dbReorderItems('plugins','','name');
+  	$item = $db->selectItem('plugins', "`name`='".$request['arg']['down']."'");
     if ($item['position'] < $db->count('plugins')-1) {
-      dbReorderItems('plugins','','name');
       $temp = $db->selectItem('plugins',"`position`='".($item['position']+1)."'");
       $item['position']++;
       $temp['position']--;

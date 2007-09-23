@@ -5,12 +5,12 @@
 * Библиотека для работы с шаблонами
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.1
-* @modified: 2007-09-14
+* @version: 0.0.2
+* @modified: 2007-09-23
 */
 
 class Templates {
-	var $pattern = '/^<!--\s*(.+)\s*-->.*$/s';
+	var $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
 	/**
 	 * Возвращает список шаблонов
 	 *
