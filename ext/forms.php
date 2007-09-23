@@ -19,7 +19,7 @@ class TForms extends TListContentPlugin {
   var $name = 'forms';
   var $type = 'client,admin';
   var $title = 'Формы ввода';
-  var $version = '1.04';
+  var $version = '1.05';
   var $kernel = '2.10b';
   var $description = 'Создание собственных форм ввода';
   var $table = array (
@@ -103,7 +103,7 @@ class TForms extends TListContentPlugin {
       if (isset($plugins->items['vistat'])) $letter .= "\n\n--\n".$plugins->items['vistat']->dumpStats();
       if ($item['actionValue'] != '') {
         $recipients = explode(',', $item['actionValue']);
-        if (count($recipients) != 0) foreach ($recipients as $ti) {
+        if (count($recipients) != 0) foreach ($recipients as $to) {
         	$to = trim($to);
           if ($to !== '') sendMail($to, $subject, $letter);
         }
