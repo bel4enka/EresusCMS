@@ -9,7 +9,7 @@
 * @modified: 2007-07-23
 */
 
-class TAdminTable {
+class AdminList {
   var $columns = array();
   var $head = array();
   var $body = array();

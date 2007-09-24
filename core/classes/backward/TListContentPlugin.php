@@ -132,13 +132,13 @@ function clientRenderContent()
 
   $result = '';
   if (!isset($this->settings['itemsPerPage'])) $this->settings['itemsPerPage'] = 0;
-  if (isset($page->topic)) $result = $this->clientRenderItem(); else {
+  if ($page->topic) $result = $this->clientRenderItem(); else {
     $this->table['fields'] = $db->fields($this->table['name']);
     $this->itemsCount = $db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
     if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
     if (!$page->subpage) $page->subpage = $this->table['sortDesc']?$this->pagesCount:1;
     if ($this->itemsCount && ($page->subpage > $this->pagesCount)) {
-      $item = $page->Error404();
+      $item = $page->httpError(404);
       $result = $item['content'];
     } else $result .= $this->clientRenderList();
   }

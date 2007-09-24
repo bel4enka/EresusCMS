@@ -86,18 +86,23 @@ class Plugins {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  /**
+   * Отрисовка контента раздела
+   *
+   * @return stirng  Контент
+   */
   function clientRenderContent()
   {
-  global $page, $db, $user, $session, $request;
+  	global $page, $db, $user, $session, $request;
 
     $result = '';
     switch ($page->type) {
       case 'default':
-        $plugin = new TContentPlugin;
+        $plugin = new ContentPlugin;
         $result = $plugin->clientRenderContent();
       break;
       case 'list':
-        if (isset($page->topic)) $page->httpError('404');
+        if ($page->topic) $page->httpError(404);
         $subitems = $db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($user['auth'] ? $user['access'] : GUEST)."')", "`position`");
         if (empty($page->content)) $page->content = '$(items)';
         $template = loadTemplate('std/SectionListItem');
@@ -134,9 +139,9 @@ class Plugins {
       default:
       if ($this->load($page->type)) {
         if (method_exists($this->items[$page->type], 'clientRenderContent'))
-        $result = $this->items[$page->type]->clientRenderContent();
-        else $session['errorMessage'] = sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type]));
-      }
+        	$result = $this->items[$page->type]->clientRenderContent();
+        else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
+      } else die("FIXME: ".__FILE__." ".__LINE__);
     }
     return $result;
   }
@@ -249,8 +254,11 @@ function Plugin()
     if ($this->version != $plugins->list[$this->name]['version']) $this->resetPlugin();
   }
   $this->dirData = $Eresus->fdata.$this->name.'/'; 
+  $this->urlData = $Eresus->data.$this->name.'/'; 
   $this->dirCode = $Eresus->froot.'ext/'.$this->name.'/'; 
+  $this->urlCode = $Eresus->root.'ext/'.$this->name.'/'; 
   $this->dirStyle = $Eresus->fstyle.$this->name.'/'; 
+  $this->urlStyle = $Eresus->style.$this->name.'/'; 
   $filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
   if (is_file($filename)) include_once($filename);
 }
@@ -350,7 +358,7 @@ function updateSettings()
  * Замена макросов
  *
  * @param  string  $template  Строка в которой требуется провести замену макросов
- * @param  arrya   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+ * @param  array   $item      Ассоциативный массив со значениями для подстановки вместо макросов
  *
  * @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
  */
@@ -508,6 +516,7 @@ function dbInsert($table, $item)
 	global $Eresus;
 	
 	$result = $Eresus->db->insert($this->__table($table), $item);
+	$result = $Eresus->db->getInsertedId();
 
   return $result;
 }
@@ -531,6 +540,24 @@ function dbUpdate($table, $data, $condition = '')
 	} elseif (is_string($data)) {
 		$result = $Eresus->db->update($this->__table($table), $data, $condition);
 	}
+
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
+ * Удаление элемента из БД
+ * 
+ * @param string $table  Имя таблицы
+ * @param mixed  $item   Удаляемый элемент / Идентификатор
+ * @param string $key    Ключевое поле
+ * 
+ * @return bool Результат
+ */
+function dbDelete($table, $item, $key = 'id')
+{
+	global $Eresus;
+	
+  $result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
 
   return $result;
 }
@@ -581,7 +608,7 @@ function ContentPlugin()
 * 
 * @param  string  $content  Контент
 */
-function updateContent($content)
+function update($content)
 {
 	global $Eresus, $page;
 
@@ -593,7 +620,7 @@ function updateContent($content)
 /**
 * Обновляет контент страницы
 */
-function update()
+function adminUpdate()
 {
 	$this->updateContent(arg('content'));
   goto(arg('submitURL'));
@@ -612,21 +639,22 @@ function clientRenderContent()
 }
 //------------------------------------------------------------------------------
 /**
-* Отрисовка административной части
-*
-* @return  string  Контент
-*/
+ * Отрисовка административной части
+ *
+ * @return  string  Контент
+ */
 function adminRenderContent()
 {
 	global $page, $Eresus;
 
-  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+  if (arg('action') == 'update') $this->adminUpdate();
+	$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
   $form = array(
     'name' => 'content',
     'caption' => $page->title,
     'width' => '100%',
     'fields' => array (
-      array ('type'=>'hidden','name'=>'update'),
+      array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
       array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
     ),
     'buttons' => array('apply', 'reset'),

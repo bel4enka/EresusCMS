@@ -351,8 +351,8 @@ class TPages {
       $page->control('delete', $root.'action=delete&amp;id=%d');
     $types = $this->loadContentTypes();
     for($i=0; $i<count($types[0]); $i++) $this->cache['content_types'][$types[1][$i]] = $types[0][$i];
-    useLib('admin/tables');
-    $table = new TAdminTable;
+    useLib('admin/lists');
+    $table = new AdminList;
     $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
     $table->addRow(array(admPagesRoot, '', '', '',array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
     $table->addRows($this->sectionIndexBrunch(0, 1));

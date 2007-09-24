@@ -53,6 +53,7 @@ class TClientUI {
   var $scripts = ''; # Скрипты
   var $styles = ''; # Стили
   var $subpage = 0; # Стили
+  var $topic = false; # 2.10b2
   //------------------------------------------------------------------------------
   /**
   * Конструктор
@@ -295,13 +296,13 @@ class TClientUI {
   {
     global $Eresus, $KERNEL, $plugins, $session, $request;
 
-    if (isset($request['arg']['HTTP_ERROR'])) $this->httpError($request['arg']['HTTP_ERROR']);
+    if (arg('HTTP_ERROR')) $this->httpError(arg('HTTP_ERROR'));
     # Отрисовываем контент
     $content = $plugins->clientRenderContent();
     #$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
     #if ($this->updated < 0) $this->updated = 0;
     #$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
-    $this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
+    #$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
     useLib('templates');
     $templates = new Templates;
     $this->template = $templates->get($this->template);
