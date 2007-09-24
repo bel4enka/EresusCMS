@@ -1,70 +1,80 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™
-# © 2005-2006, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * HTML-страница
+ *
+ * Eresus 2
+ * 
+ * Плагин обеспечивает визаульное редактирование текстографических страниц
+ *
+ * © 2005-2006, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ *
+ * @version: 3.00
+ * @modified: 2007-09-24
+ * 
+ * @author: Mikhail Krasilnikov <mk@procreat.ru>
+ */
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class THtml extends TContentPlugin {
-  var $name = 'html';
-  var $type = 'client,content,ondemand';
+class Html extends ContentPlugin {
+  var $version = '3.00a';
+  var $kernel = '2.10b2';
   var $title = 'HTML';
-  var $version = '2.03';
   var $description = 'HTML страница';
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function update()
+  var $type = 'client,content,ondemand';
+  /**
+   * Обновление контента
+   *
+   * @param string $content  Новый контент
+   */
+  function update($content)
   {
-  global $db, $page;
-
-    $item = $db->selectItem('pages', "`id`='".arg('update')."'");
-    $item['content'] = arg('content');
+		global $Eresus, $page;
+	
+	  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+	  $item['content'] = $content;
     $item['options'] = decodeOptions($item['options']);
     $item['options']['allowGET'] = arg('allowGET');
     $item['options'] = encodeOptions($item['options']);
-    $db->updateItem('pages', $item, "`id`='".$item['id']."'");
-    goto($page->url());
+	  $Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//------------------------------------------------------------------------------
+  /**
+	 * Отрисовка административной части
+	 *
+	 * @return  string  Контент
+	 */
   function adminRenderContent()
   {
-  global $db, $page, $request;
-
-    if (isset($request['arg']['update'])) $this->update($request['arg']['update']);
-    else {
-      $item = $db->selectItem('pages', "`id`='".$request['arg']['section']."'");
-      $item['options'] = decodeOptions($item['options']);
-      $url = $page->clientURL($item['id']);
-      $form = array(
-        'name' => 'contentEditor',
-        'caption' => 'Текст страницы',
-        'width' => '100%',
-        'fields' => array (
-          array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
-          array ('type' => 'html','name' => 'content','height' => '400px', 'value'=>$item['content']),
-          array ('type' => 'text', 'value' => 'Адрес страницы: <a href="'.$url.'" target="_blank">'.$url.'</a>'),
-          array ('type' => 'checkbox','name' => 'allowGET', 'label' => 'Разрешить аргументы GET', 'value'=>isset($item['options']['allowGET'])?$item['options']['allowGET']:false),
-        ),
-        'buttons'=> array('ok', 'reset'),
-      );
-      $result = $page->renderForm($form);
-    }
-    return $result;
+		global $page, $Eresus;
+	
+	  if (arg('action') == 'update') $this->adminUpdate();
+		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+	  $form = array(
+	    'name' => 'contentEditor',
+	    'caption' => $page->title,
+	    'width' => '100%',
+	    'fields' => array (
+	      array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
+				array ('type' => 'html','name' => 'content','height' => '400px', 'value'=>$item['content']),
+				array ('type' => 'text', 'value' => 'Адрес страницы: <a href="'.$url.'">'.$url.'</a>'),
+				array ('type' => 'checkbox','name' => 'allowGET', 'label' => 'Разрешить передавать аргументы в адресе страницы', 'value'=>isset($item['options']['allowGET'])?$item['options']['allowGET']:false),
+	     ),
+	    'buttons' => array('apply', 'reset'),
+	  );
+	
+	  $result = $page->renderForm($form, $item);
+	  return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//------------------------------------------------------------------------------
   function clientRenderContent()
   {
     global $request, $page;
-    if (isset($page->topic)) {
-      if (!($page->options['allowGET'] && (strpos($page->topic, execScript.'?') === 0))) $page->httpError('404');
+    if ($page->topic) {
+      if (!(isset($page->options['allowGET']) && $page->options['allowGET'] && (strpos($page->topic, execScript.'?') === 0))) $page->httpError(404);
     }
     return parent::clientRenderContent();
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//------------------------------------------------------------------------------
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 ?>

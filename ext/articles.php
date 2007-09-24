@@ -1,11 +1,21 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™
-# © 2005-2007, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# 2.07 - Вызов onURLSplit
-# 2.08 - bersz: Замена несуществующего изображения на пустое
+/**
+ * Публикация статей
+ *
+ * Eresus 2
+ * 
+ * Плагин обеспечивает возможность публикации на сайте статей
+ *
+ * © 2005-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ *
+ * @version: 2.10
+ * @modified: 2007-09-24
+ * 
+ * @author: Mikhail Krasilnikov <mk@procreat.ru>
+ * @author: БерсЪ <bersz@procreat.ru>
+ */
+
 define('_ARTICLES_BLOCK_NONE', 0);
 define('_ARTICLES_BLOCK_LAST', 1);
 define('_ARTICLES_BLOCK_MANUAL', 2);
@@ -16,7 +26,7 @@ class TArticles extends TListContentPlugin {
   var $name = 'articles';
   var $type = 'client,content,ondemand';
   var $title = 'Статьи';
-  var $version = '2.09';
+  var $version = '2.10';
   var $description = 'Публикация статей';
   var $settings = array(
     'itemsPerPage' => 10,
@@ -392,7 +402,7 @@ class TArticles extends TListContentPlugin {
 
     $item = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
     if (is_null($item)) {
-      $item = $page->Error404();
+      $item = $page->httpError(404);
       $result = $item['content'];
     } else {
       $result = $this->replaceMacros($this->settings['tmplItem'], $item, $this->settings['dateFormatFullText']);
@@ -402,7 +412,7 @@ class TArticles extends TListContentPlugin {
     $item['name'] = $item['id'];
     $item['title'] = $item['caption'];
     $item['hint'] = $item['description'] = $item['keywords'] = '';
-    $plugins->clientOnURLSplit($item, $request['path']);
+    $plugins->clientOnURLSplit($item, $request['url']);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

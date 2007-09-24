@@ -1,17 +1,26 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™
-# © 2005, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# 1.08 - правильное определение последнего элемента
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TPath extends TPlugin {
-  var $name = 'path';
-  var $title = 'Path';
-  var $type = 'client';
-  var $version = '1.08';
+/**
+ * "Хлебные крошки" 
+ *
+ * Eresus 2
+ * 
+ * Строка с местом положения на сайте
+ *
+ * © 2005, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ *
+ * @version: 2.00
+ * @modified: 2007-09-24
+ * 
+ * @author: Mikhail Krasilnikov <mk@procreat.ru>
+ */
+
+class Path extends Plugin {
+  var $version = '2.00a';
+  var $kernel = '2.10b2';
+	var $title = '"Хлебные крошки"';
   var $description = 'Строка с местом положения на сайте';
+	var $type = 'client';
   var $settings = array(
     'prefix' => '',
     'delimiter' => '&nbsp;&raquo;&nbsp;',
@@ -23,19 +32,19 @@ class TPath extends TPlugin {
   var $path = array(); # Строка пути
   var $level = -1; # Вложенность страницы
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function TPath()
+  function Path()
   # производит регистрацию обработчиков событий
   {
-  global $plugins;
+  	global $plugins;
 
-    parent::TPlugin();
+    parent::Plugin();
     $plugins->events['clientOnURLSplit'][] = $this->name;
     $plugins->events['clientOnPageRender'][] = $this->name;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function settings()
   {
-  global $page;
+  	global $page;
 
     $form = array(
       'name' => 'Settings',
@@ -71,35 +80,9 @@ class TPath extends TPlugin {
       $result = array();
       for($i = 0; $i < count($this->path); $i++) {
         $item = $this->path[$i];
+        $item['link'] = httpRoot.$item[$this->name.'_url'];
         $template = ($i == count($this->path)-1)?$this->settings['current']:$this->settings['link'];
-        $template = str_replace(
-          array(
-            '$(link)',
-            '$(pageId)',
-            '$(pageName)',
-            '$(pageTitle)',
-            '$(pageCaption)',
-            '$(pageHint)',
-            '$(pageDescription)',
-            '$(pageKeywords)',
-            '$(pageAccessLevel)',
-            '$(pageAccessName)',
-          ),
-          array(
-            httpRoot.$item[$this->name.'_url'],
-            $item['id'],
-            $item['name'],
-            $item['title'],
-            $item['caption'],
-            $item['hint'],
-            $item['description'],
-            $item['keywords'],
-            $item['access'],
-            constant('ACCESSLEVEL'.$item['access']),
-          ),
-          $template
-        );
-        $result[] = $template;
+        $result[] = $this->replaceMacros($template, $item);
       }
       $result = implode($this->settings['delimiter'], $result);
       $result = str_replace('$(Path)', $this->settings['prefix'].$result, $text);
@@ -115,5 +98,4 @@ class TPath extends TPlugin {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 ?>
