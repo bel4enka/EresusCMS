@@ -31,9 +31,8 @@ function __macroVar($matches) {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # КЛАСС "СТРАНИЦА"
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TClientUI {
+class TClientUI extends WebPage {
   var $dbItem = array(); # Информация о страниуе из БД
-  var $id = -1; # Идентификатор страницы
   var $name = ''; # Имя страницы
   var $owner = 0; # Идентификатор родительской страницы
   var $title = ''; # Заголовок страницы
@@ -49,7 +48,6 @@ class TClientUI {
   var $options = array(); # Опции страницы
   var $Document; # DOM-интерфейс к странице
   var $plugin; # Плагин контента
-  var $headers; # Заголовки ответа сервера
   var $scripts = ''; # Скрипты
   var $styles = ''; # Стили
   var $subpage = 0; # Стили
@@ -322,17 +320,12 @@ class TClientUI {
     }
     $result = str_replace('$(Content)', $content, $this->template);
     
-    if (!empty($this->styles)) {
-      $styles = "<style type=\"text/css\">\n  ".str_replace("\n", "\n  ", trim($this->styles))."\n</style>\n";
-      $result = preg_replace('|(.*)</head>|i', '$1'.$styles."\n</head>", $result);
-    }
-
+    # FIX: Обратная совместимость
+    if (!empty($this->styles))	$this->addStyles($this->styles);
+    
     $result = $plugins->clientOnPageRender($result);
 
-    if (!empty($this->scripts)) $this->scripts = "  <script type=\"text/javascript\">\n  //<!-- <![CDATA[\n  ".str_replace("\n", "\n    ", trim($this->scripts))."\n  //]] -->\n  </script>\n";
-    $this->scripts =
-      '  <script type="text/javascript">'."\n".
-      "  //<!-- <![CDATA[\n".
+    $this->addScripts(
       "    var iBrowser = new Array();\n".
       "    iBrowser['UserAgent'] = navigator.userAgent.toLowerCase();\n".
       "    if ((iBrowser['UserAgent'].indexOf('msie') != -1) && (iBrowser['UserAgent'].indexOf('opera') == -1) && (iBrowser['UserAgent'].indexOf('webtv') == -1)) iBrowser['Engine'] = 'IE';\n".
@@ -340,11 +333,14 @@ class TClientUI {
       "    if (iBrowser['UserAgent'].indexOf('opera') != -1) iBrowser['Engine'] = 'Opera';\n".
       "    if (iBrowser['UserAgent'].indexOf('safari') != -1) iBrowser['Engine'] = 'Safari';\n".
       "    if (iBrowser['UserAgent'].indexOf('konqueror') != -1) iBrowser['Engine'] = 'Konqueror';\n".
-      "    iBrowser['UserAgent'] = navigator.userAgent;\n".
-      "  //]] -->".
-      "  </script>\n".
-      $this->scripts;
-    $result = preg_replace('|(.*)</head>|i', '$1'.$this->scripts."\n</head>", $result);
+      "    iBrowser['UserAgent'] = navigator.userAgent;\n"
+    );
+    
+    # FIX: Обратная совместимость
+    if (!empty($this->scripts))	$this->addScripts($this->scripts);
+    
+    $result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
+    
     # Замена макросов
     $result = $this->replaceMacros($result);
 

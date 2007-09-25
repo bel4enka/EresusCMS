@@ -9,6 +9,168 @@
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
+
+/**
+ * Родительский класс веб-интерфейсов
+ *
+ */
+class WebPage {
+	/**
+	 * Идентификатор текущего раздела
+	 *
+	 * @var int
+	 */
+	var $id = 0;
+	/**
+	 * HTTP-заголовки ответа
+	 *
+	 * @var array
+	 */
+  var $headers = array();
+  /**
+   * Описание секции HEAD
+   * 	meta-http - мета-теги HTTP-заголовков
+   * 	meta-tags - мета-теги
+   * 	link - подключение внешних ресурсов
+   * 	style - CSS
+   * 	script - Скрипты
+   * 	content - прочее
+   *
+   * @var array
+   */
+  var $head = array (
+    'meta-http' => array(),
+  	'meta-tags' => array(),
+  	'link' => array(),
+    'style' => array(),
+    'script' => array(),
+    'content' => '',
+  );
+ /**
+	* Установка мета-тега HTTP-заголовка
+	*
+	* @param string $httpEquiv  Имя тега
+	* @param string $content  	Значение тега
+	*/
+	function setMetaHeader($httpEquiv, $content)
+	{
+	  $this->head['meta-http'][$httpEquiv] = $content;
+	}
+	//------------------------------------------------------------------------------
+ /**
+	* Установка мета-тега
+	*
+	* @param string $name  		Имя тега
+	* @param string $content  Значение тега
+	*/
+	function setMetaTag($name, $content)
+	{
+	  $this->head['meta-tags'][$name] = $content;
+	}
+	//------------------------------------------------------------------------------
+ /**
+	* Подключение CSS-файла 
+	*
+	* @param string $url    URL файла
+	* @param string $media  Тип носителя
+	*/
+	function linkStyles($url, $media = '')
+	{
+	  for($i=0; $i<count($this->head['link']); $i++) if ($this->head['link'][$i]['href'] == $url) return;
+	  $item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
+	  if (!empty($media)) $item['media'] = $media;
+	  $this->head['link'][] = $item;
+	}
+	//------------------------------------------------------------------------------
+ /**
+	* Встраивание CSS
+	*
+	* @param string $content  Стили CSS
+	* @param string $media 	  Тип носителя
+	*/
+	function addStyles($content, $media = '')
+	{
+	  $content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
+	  $content = rtrim($content);
+	  $item = array('content' => $content);
+	  if (!empty($media)) $item['media'] = $media;
+	  $this->head['style'][] = $item;
+	}
+	//------------------------------------------------------------------------------
+ /**
+	* Подключение клиентского скрипта
+	*
+	* @param string $url   URL скрипта
+	* @param string $type  Тип скрипта
+	*/
+	function linkScripts($url, $type = 'javascript')
+	{
+	  for($i=0; $i<count($this->head['script']); $i++) if (isset($this->head['script'][$i]['src']) && $this->head['script'][$i]['src'] == $url) return;
+	  if (strpos($type, '/') === false) switch (strtolower($type)) {
+	    case 'emca': $type = 'text/emcascript'; break;
+	  	case 'javascript': $type = 'text/javascript'; break;
+	    case 'jscript': $type = 'text/jscript'; break;
+	    case 'vbscript': $type = 'text/vbscript'; break;
+	    default: return;
+	  }
+	  $this->head['script'][] = array('type' => $type, 'src' => $url);
+	}
+	//------------------------------------------------------------------------------
+ /**
+	* Добавление клиентских скриптов
+	*
+	* @param string $content  Код скрипта
+	* @param string $type     Тип скрипта
+	*/
+	function addScripts($content, $type = 'javascript')
+	{
+	  if (strpos($type, '/') === false) switch (strtolower($type)) {
+	    case 'emca': $type = 'text/emcascript'; break;
+	  	case 'javascript': $type = 'text/javascript'; break;
+	    case 'jscript': $type = 'text/jscript'; break;
+	    case 'vbscript': $type = 'text/vbscript'; break;
+	    default: return;
+	  }
+	  $content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
+	  $this->head['script'][] = array('type' => $type, 'content' => $content);
+	}
+	//------------------------------------------------------------------------------
+ /**
+	* Отрисовка секции <head>
+	*
+	* @return string  Отрисованная секция <head>
+	*/
+	function renderHeadSection()
+	{
+	  # <meta> теги
+	  if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value) 
+	    $result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
+	  if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value) 
+	    $result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
+	  # <link>
+	  if (count($this->head['link'])) foreach($this->head['link'] as $value) 
+	    $result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
+	  # <script>
+	  if (count($this->head['script'])) foreach($this->head['script'] as $value) {
+	    if (isset($value['content'])) {
+	      $value['content'] = trim($value['content']);
+	      $result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".$value['content']."\n	//]] -->\n	</script>";
+	    } elseif (isset($value['src'])) $result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
+	  }
+	  # <style>
+	  if (count($this->head['style'])) foreach($this->head['style'] as $value) 
+	    $result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
+	
+	  $this->head['content'] = trim($this->head['content']);
+	  if (!empty($this->head['content'])) $result[] = $this->head['content'];
+	
+	  $result = implode("\n" , $result);
+	  return $result;
+	}
+	//------------------------------------------------------------------------------
+  
+}
+
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # КЛАСС "ПЛАГИНЫ"
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
