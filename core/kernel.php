@@ -28,7 +28,7 @@ define('CMSVERSION', '2.10b2'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '19.09.07'); # Дата обновления ядра
+define('KERNELDATE', '26.09.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -849,6 +849,7 @@ class Eresus {
   );
   var $session;
   var $db;
+  var $plugins;
   var $user;
   
   var $host;
@@ -863,6 +864,8 @@ class Eresus {
   
   var $request;
   
+  var $PHP5 = false;
+  
   /**
   * Конструктор
   */
@@ -870,6 +873,8 @@ class Eresus {
   {
     # Инициализация перехватчика ошибок
     $this->oldErrorHandler = set_error_handler('ErrorHandler');
+    # Флаг использования PHP5
+  	$this->PHP5 = version_compare(PHP_VERSION, '5.0.0', '>=');
   }
   //------------------------------------------------------------------------------
   // Информация о системе
@@ -1041,13 +1046,21 @@ class Eresus {
   */
   function init_datasource()
   {
-    global $db;
-    
     if (useLib($this->conf['db']['engine'])) {
       $this->db = new $this->conf['db']['engine'];
       $this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-      $db = $this->db;
+      if ($this->PHP5) $GLOBALS['db'] = $this->db; else $GLOBALS['db'] =& $this->db;
     } else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+  }
+  //------------------------------------------------------------------------------
+ /**
+  * Инициализация механизма плагинов
+  */
+  function init_plugins()
+  {
+		$this->plugins = new Plugins;
+		#FIX Обратная совместимость
+		if ($this->PHP5) $GLOBALS['plugins'] = $this->plugins; else $GLOBALS['plugins'] &= $this->plugins;;
   }
   //------------------------------------------------------------------------------
   /**
@@ -1063,7 +1076,38 @@ class Eresus {
     }
   }
   //------------------------------------------------------------------------------
-  /**
+ /**
+  * Проверка на логин/логаут
+  *
+  */
+  function check_loginout()
+  {
+		if (arg('action')) switch (arg('action')) {
+		  case 'login': Login(arg('user'), md5(arg('password')), arg('autologin')); break;
+		  case 'logout': Logout(true); goto(httpRoot); break;
+		}
+  }
+  //------------------------------------------------------------------------------
+ /**
+  * Попытка cookie-логина
+  */
+  function check_cookies()
+  {
+		if (!$this->user['auth'] && isset($_COOKIE['autologin']) && $_COOKIE['autologin']['active']) {
+  		if (!Login($_COOKIE['autologin']['login'], $_COOKIE['autologin']['hash'], true, true))
+    		setcookie("autologin[active]", "0", time()+2592000, cookiePath, cookieHost);
+		}
+  }
+  //------------------------------------------------------------------------------
+ /**
+  * Обновление данных о пользователе
+  */
+  function reset_login()
+  {
+  	ResetLogin();
+  }
+  //------------------------------------------------------------------------------
+ /**
   * Инициализация системы
   *
   * @access public
@@ -1094,20 +1138,29 @@ class Eresus {
     $this->init_classes();
     # Подключение к источнику данных
     $this->init_datasource();
-    
+    # Инициализация механизма плагинов
+    $this->init_plugins();
+    # Проверка сессии
+    $this->check_session();
+    # Проверка логина/логаута
+    $this->check_loginout();
+		# Попытка cookie-логина
+		$this->check_cookies();
+		# Обновление данных о пользователе
+		$this->reset_login();
+		# Подключение работы с разделами сайта
     useLib('sections');
     $this->sections = new TSections;
+    $GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
   }
   //------------------------------------------------------------------------------
-  /**
+ /**
   * Исполнение
   *
   * @access public
   */
   function execute()
   {  
-    # Проверка сессии
-    $this->check_session();
   }
   //------------------------------------------------------------------------------
 }
@@ -1117,22 +1170,4 @@ class Eresus {
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
-
-if (isset($request['arg']['action'])) switch ($request['arg']['action']) {
-  case 'login': Login($request['arg']['user'], md5($request['arg']['password']), isset($request['arg']['autologin'])?$request['arg']['autologin']:false); break;
-  case 'logout': Logout(true); goto(httpRoot); break;
-}
-
-# Попытка cookie-логина
-if ((!isset($user['auth']) || !$user['auth']) && isset($_COOKIE['autologin']) && $_COOKIE['autologin']['active']) {
-  if (!Login($_COOKIE['autologin']['login'], $_COOKIE['autologin']['hash'], true, true))
-    setcookie("autologin[active]", "0", time()+2592000, cookiePath, cookieHost);
-}
-# Обновление данных о пользователе
-ResetLogin();
-
-# Загрузка плагинов
-$plugins = new Plugins;
-
-$KERNEL['loaded'] = true; # Флаг загрузки ядра
 ?>

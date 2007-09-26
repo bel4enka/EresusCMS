@@ -13,7 +13,43 @@ class AdminList {
   var $columns = array();
   var $head = array();
   var $body = array();
+  var $__controls = array(
+  	'add'           => array('image' => 'core/img/ctrl_add.gif', 'title' => strAdd, 'alt' => '+'),
+  	'edit' 	        => array('image' => 'core/img/ctrl_edit.gif', 'title' => strEdit, 'alt' => '&plusmn;'),
+  	'delete'        => array('image' => 'core/img/ctrl_delete.gif', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
+  	'setup'         => array('image' => 'core/img/ctrl_setup.gif', 'title' => strProperties, 'alt' => '*'),
+  	'move'          => array('image' => 'core/img/ctrl_move.gif', 'title' => strMove, 'alt' => '-&gt;'),
+  	'on'        	  => array('image' => 'core/img/ctrl_off.gif', 'title' => admActivate, 'alt' => '0'),
+  	'off'       	  => array('image' => 'core/img/ctrl_on.gif', 'title' => admDeactivate, 'alt' => '1'),
+  	'position'      => array('image' => 'core/img/ctrl_up.gif', 'title' => admUp, 'alt' => '&uarr;'),
+  	'position_down' => array('image' => 'core/img/ctrl_down.gif', 'title' => admDown, 'alt' => '&darr;'), 
+  );
   /**
+  * Отрисовывает элемент управления
+  *
+  * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
+  * @param string $href    Ссылка
+  * @param string $custom  Индивидуальные настройки
+  * @return  string  Отрисованный ЭУ
+  */
+  function control($type, $href, $custom = array())
+  {
+    global $Eresus;
+
+    if (isset($this->__controls[$type])) $control = $this->__controls[$type];
+    switch($type) {
+      case 'position':
+        $s = array_pop($href);
+        $href = $href[0];
+      break;
+    }
+    foreach($custom as $key => $value) $control[$key] = $value;
+    $result = '<a href="'.$href.'"'.(isset($control['onclick'])?' onclick="'.$control['onclick'].'"':'').'><img src="'.$Eresus->root.$control['image'].'" alt="'.$control['alt'].'" title="'.$control['title'].'" /></a>';
+    if ($type == 'position') $result .= ' '.$this->control('position_down', $s, $custom);
+    return $result;
+  }
+  //------------------------------------------------------------------------------
+ /**
   * Устанавливает названия и параметры столбцов
   *
   * @access public

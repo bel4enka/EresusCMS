@@ -196,13 +196,20 @@ class TAdminUI extends WebPage {
   function control($type, $href, $custom = array())
   {
     global $Eresus;
-    
+
     switch($type) {
       case 'add':
         $control = array(
           'image' => $Eresus->root.'core/img/ctrl_add.gif',
           'title' => strAdd,
           'alt' => '+',
+        );
+      break;
+      case 'edit':
+        $control = array(
+          'image' => $Eresus->root.'core/img/ctrl_edit.gif',
+          'title' => strEdit,
+          'alt' => '&plusmn;',
         );
       break;
       case 'delete':
@@ -217,7 +224,7 @@ class TAdminUI extends WebPage {
         $control = array(
           'image' => $Eresus->root.'core/img/ctrl_setup.gif',
           'title' => strProperties,
-          'alt' => 'P',
+          'alt' => '*',
         );
       break;
       case 'move':

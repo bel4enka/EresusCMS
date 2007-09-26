@@ -97,6 +97,7 @@ define('errFileWrite', 'Не удается записать в файл "%s"');
 define('errFileCopy', 'Не удается скопировать файл "%s" в "%s"');
 define('errFileMove', 'Не удается переместить файл "%s" в "%s"');
 define('errLibNotFound', 'Не найдена библиотека "%s"');
+define('errTemplateNotFound', 'Шаблон "%s" не найден');
 # Загрузка файлов
 define('errUploadSizeINI', 'Размер файла "%s" превышает максимально допустимый размер '.ini_get('upload_max_filesize').'.');
 define('errUploadSizeFORM', 'Размер файла "%s" превышает максимально допустимый размер указанный в форме.');

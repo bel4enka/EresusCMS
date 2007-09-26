@@ -5,8 +5,8 @@
 * Библиотека для работы с шаблонами
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.2
-* @modified: 2007-09-23
+* @version: 0.0.3
+* @modified: 2007-09-26
 */
 
 class Templates {
@@ -64,7 +64,8 @@ class Templates {
 			}				
 		} else {
 			if (empty($type)) $result = $this->get('default', $type);
-			if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
+			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
+			if (!$result) $result = '';
 		}
   	return $result;
   }
@@ -118,7 +119,7 @@ class Templates {
 		$result = filewrite($filename, $content);
 		if ($result) {
 			$message = admUpdated.': '.$name;
-			InfoMessage($message);
+			#InfoMessage($message);
 			SendNotify($message);
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));

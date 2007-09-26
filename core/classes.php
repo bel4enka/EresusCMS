@@ -468,7 +468,7 @@ function loadSettings()
 function saveSettings()
 {
 	global $Eresus;
-  $result = $Eresus->db->updateItem('plugins', $this->__item(), "`name`='".$this->name."'");
+  $result = $Eresus->db->updateItem('plugins', $this->__item($this->__item()), "`name`='".$this->name."'");
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -739,6 +739,12 @@ function dbCount($table, $condition = '')
 	$result = $Eresus->db->count($this->__table($table), $condition);
 
   return $result;
+}
+//------------------------------------------------------------------------------
+function listenEvent($event)
+{
+	global $Eresus;
+	$Eresus->plugins->events[$event][] = $this->name;
 }
 //------------------------------------------------------------------------------
 }
