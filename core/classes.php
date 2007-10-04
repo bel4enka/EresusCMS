@@ -468,7 +468,11 @@ function loadSettings()
 function saveSettings()
 {
 	global $Eresus;
-  $result = $Eresus->db->updateItem('plugins', $this->__item($this->__item()), "`name`='".$this->name."'");
+	
+	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
+	$item = $this->__item($item);
+	$item['settings'] = encodeOptions($this->settings);
+  $result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
 	return $result;
 }
 //------------------------------------------------------------------------------

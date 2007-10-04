@@ -6,9 +6,64 @@
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 0.0.1
- * @modified 2007-09-24
+ * @version 0.0.2
+ * @modified 2007-10-04
  */
+
+/**
+ * Создание изображения из файла
+ *
+ * @param string $filename Имя файла
+ * @return mixed Дескриптор или false
+ */
+function imageCreateFromFile($filename)
+{
+	$type = getimagesize($filename);
+	switch ($type[2]) {
+		case IMG_GIF:  $result = imageCreateFromGIF($filename); break;
+		case IMG_JPG:
+		case IMG_JPEG: $result = imageCreateFromJPEG($filename); break;
+		case IMG_PNG:  $result = imageCreateFromPNG($filename); break;
+		case IMG_WBMP: $result = imageCreateFromWBMP($filename); break;
+		case IMG_XPM:  $result = imageCreateFromXPM($filename); break;
+		default:       $result = false; 
+	}
+	return $result;
+}
+
+/**
+ * Сохранение изображения в файл заданного формата
+ *
+ * @param resource  $image     Изображение
+ * @param string    $filename  Имя файла
+ * @param int       $format		 Формат файла
+ * @return mixed Дескриптор или false
+ */
+function imageSaveToFile($image, $filename, $format)
+{
+	$result = false;
+	switch ($format) {
+		case IMG_GIF:
+			$result = imageGIF($image, $filename);
+		break;
+		case IMG_JPG:
+		case IMG_JPEG:
+			$quality = func_num_args() > 3 ? func_get_arg(3) : 80; 
+			$result = imageJPEG($image, $filename, $quality);
+		break;
+		case IMG_PNG:
+			$quality = func_num_args() > 3 ? func_get_arg(3) : 7;
+			$filters = func_num_args() > 4 ? func_get_arg(4) : 0;
+			$result = imagePNG($image, $filename, $quality, $filters);
+		break;
+		case IMG_WBMP:
+			$foreground = func_num_args() > 3 ? func_get_arg(3) : null;
+			$result = imageWBMP($image, $filename, $foreground);
+		break;
+	}
+	return $result;
+}
+
 
 /**
  * Создание миниатюры
@@ -24,13 +79,7 @@
 function thumbnail($srcFile, $dstFile, $width, $height, $fill = null, $quality = 80)
 {
 	$result = false;
-	$type = getimagesize($srcFile);
-	switch ($type[2]) {
-		case IMG_GIF: $src = imageCreateFromGIF($srcFile); break;
-		case IMG_JPG:
-		case IMG_JPEG: $src = imageCreateFromJPEG($srcFile); break;
-		case IMG_PNG: $src = imageCreateFromPNG($srcFile); break;
-	}
+	$src = imageCreateFromFile($srcFile);
 	if ($src) {
 		$sW = imageSX($src);
 		$sH = imageSY($src);
@@ -61,5 +110,22 @@ function thumbnail($srcFile, $dstFile, $width, $height, $fill = null, $quality =
 	}
 	return $result;
 }
+
+/**
+ * Изменение формата изображения
+ *
+ * @param string  $srcFilename  Имя исходного файла
+ * @param string  $dstFilename  Имя файла назначения
+ * @param int     $format       Формат файла назначения
+ * @return bool  Результат выполнения
+ */
+function imageConvert($srcFile, $dstFile, $format = IMG_JPG)
+{
+	$src = imageCreateFromFile($srcFile);
+	if ($src) $result = imageSaveToFile($src, $dstFile, $format);
+	else $result = false;
+	return $result;
+}
+
 
 ?>
