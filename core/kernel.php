@@ -20,15 +20,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * @author Mikhail Krasilnikov (mk@procreat.ru)
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.10b2'); # Версия системы
+define('CMSVERSION', '2.10b3'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '26.09.07'); # Дата обновления ядра
+define('KERNELDATE', '05.10.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
