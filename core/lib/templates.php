@@ -56,14 +56,14 @@ class Templates {
 				$desc = preg_match($this->pattern, $result);
 				$result = array(
 					'name' => $name,
-					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : 'n/a',
+					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : admNA,
 					'code' => $desc ? trim(substr($result, strpos($result, "\n"))) : $result,
 				);
 			} else {
 				if (preg_match($this->pattern, $result)) $result = trim(substr($result, strpos($result, "\n")));
 			}				
 		} else {
-			if (empty($type)) $result = $this->get('default', $type);
+			if (empty($type) && $name != 'default') $result = $this->get('default', $type);
 			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
 			if (!$result) $result = '';
 		}
