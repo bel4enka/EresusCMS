@@ -407,7 +407,7 @@ function Plugin()
 
 	$this->name = strtolower(get_class($this));
 	# Обратная совместимость с версиями до 2.10b2
-	if (!property_exists($this, 'kernel')) $this->name = substr($this->name, 1);
+	if (@!$this->kernel) $this->name = substr($this->name, 1);
 	
   if (!empty($this->name) && isset($plugins->list[$this->name])) {
     $this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);

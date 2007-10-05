@@ -1060,7 +1060,7 @@ class Eresus {
   {
 		$this->plugins = new Plugins;
 		#FIX Обратная совместимость
-		if ($this->PHP5) $GLOBALS['plugins'] = $this->plugins; else $GLOBALS['plugins'] &= $this->plugins;;
+		if ($this->PHP5) $GLOBALS['plugins'] = $this->plugins; else $GLOBALS['plugins'] =& $this->plugins;;
   }
   //------------------------------------------------------------------------------
   /**
