@@ -11,7 +11,7 @@
  * @modified 2007-09-20
  */
 
-# ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
+# ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug']['enable'])
 # Устанавливает глобальные переменные 
 #  $__MYSQL_QUERY_COUNT - Считает количество запросов к БД
 #  $__MYSQL_QUERY_TIME - Считает общее время запросов к БД
@@ -45,13 +45,13 @@ class MySQL {
   {
     global $Eresus, $__MYSQL_QUERY_COUNT, $__MYSQL_QUERY_TIME, $__MYSQL_QUERY_LOG;
 
-    if ($Eresus->conf['debug']) {
+    if ($Eresus->conf['debug']['enable']) {
       $time_start = microtime();
       if ($this->logQueries) $__MYSQL_QUERY_LOG .= $query."\n";
     }
     $result = mysql_query($query, $this->Connection);
-    if ($this->error_reporting && !$result) FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
-    if ($Eresus->conf['debug']) {
+    if ($this->error_reporting && !$result) FatalError($Eresus->conf['debug']['enable'] ? mysql_error($this->Connection)."<br />Query \"$query\"" : 'MySQL Error!');
+    if ($Eresus->conf['debug']['enable']) {
       $__MYSQL_QUERY_COUNT++;
       $__MYSQL_QUERY_TIME += microtime() - $time_start;
     }
