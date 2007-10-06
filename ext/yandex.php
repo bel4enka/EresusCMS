@@ -11,7 +11,7 @@ class TYandex extends TListContentPlugin {
   var $name = 'yandex';
   var $title = '<span style="color:red">Я</span>ндекс';
   var $type = 'admin';
-  var $version = '2.00b2';
+  var $version = '2.00b3';
   var $kernel = '2.08';
   var $description = 'Анализ позиций сайта в системе <a href="http://yandex.ru/">Яндекс</a>';
   var $settings = array (
@@ -21,7 +21,7 @@ class TYandex extends TListContentPlugin {
         'countMethod' => YANDEX_METHOD_STARTVALUE,
         'startValue' => '!<ol class="results" start="(\d+)">!',
         'explode' => '</li>',
-        'pattern' => '!<a tabindex="\d+" .*? href="http://(www\.)?{%host}/"!s',
+        'pattern' => '!<a tabindex="(\d+)" .*? href="http://(www\.)?{%host}/"!s',
       );
   var $table = array (
     'name' => 'yandex',
@@ -119,12 +119,13 @@ class TYandex extends TListContentPlugin {
     $status = true;
     $pattern = str_replace('{%host}', str_replace('.', '\.', empty($this->settings['host'])?httpHost:$this->settings['host']), $this->settings['pattern']);
     do {
+    	# Получаем страницу Яндекса
       $text = $this->readURL($url);
-      if ($text) {
+      if ($text) { # если удалось получить страницу...
         if (empty($this->settings['explode'])) $frags = array($text); 
         else $frags = explode($this->settings['explode'], $text);
         $found = false;
-        $x = preg_match($pattern, $frags[3], $match);
+        
         for ($i=0; $i<count($frags); $i++) {
           $found = preg_match($pattern, $frags[$i], $match);
           if ($found) break;
@@ -149,8 +150,10 @@ class TYandex extends TListContentPlugin {
       break;
     } else $result = 0;
     $item = $db->selectItem($this->table['name'], "`keyword`='".$phrase."'");
-    $item['place'] = $result;
-    $db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
+    if ($item) {
+	    $item['place'] = $result;
+	    $db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
+    }
     $this->settings['lastcheck'] = gettime();
     $item = $db->selectItem('plugins', "`name`='".$this->name."'");
     $item['settings'] = decodeOptions($item['settings']);

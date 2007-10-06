@@ -16,7 +16,7 @@
  */
 
 class Html extends ContentPlugin {
-  var $version = '3.00a';
+  var $version = '3.00a2';
   var $kernel = '2.10b2';
   var $title = 'HTML';
   var $description = 'HTML страница';
@@ -26,7 +26,7 @@ class Html extends ContentPlugin {
    *
    * @param string $content  Новый контент
    */
-  function update($content)
+  function updateContent($content)
   {
 		global $Eresus, $page;
 	
@@ -49,6 +49,8 @@ class Html extends ContentPlugin {
 	
 	  if (arg('action') == 'update') $this->adminUpdate();
 		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+    $item['options'] = decodeOptions($item['options']); 	 
+    $url = $page->clientURL($item['id']);		
 	  $form = array(
 	    'name' => 'contentEditor',
 	    'caption' => $page->title,
