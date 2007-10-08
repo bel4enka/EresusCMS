@@ -8,7 +8,7 @@
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
  * 
- * @author Mikhail Krasilnikov (mk@procreat.ru)
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  * @author ÁåğñÚ (fanta@steeka.com)
  */
 

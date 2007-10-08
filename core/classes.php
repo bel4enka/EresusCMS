@@ -1,5 +1,7 @@
 <?php
 /**
+ * Eresus 2.10
+ * 
  * Основные классы системы
  * 
  * Система управления контентом Eresus™ 2
@@ -167,6 +169,12 @@ class WebPage {
 	  $result = implode("\n" , $result);
 	  return $result;
 	}
+	//------------------------------------------------------------------------------
+	function pageselector()
+	{
+		;
+	}
+	
 	//------------------------------------------------------------------------------
   
 }
@@ -406,9 +414,6 @@ function Plugin()
 	global $Eresus, $plugins, $locale;
 
 	$this->name = strtolower(get_class($this));
-	# Обратная совместимость с версиями до 2.10b2
-	if (@!$this->kernel) $this->name = substr($this->name, 1);
-	
   if (!empty($this->name) && isset($plugins->list[$this->name])) {
     $this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);
 		# Если установлена версия плагина отличная от установленной ранее

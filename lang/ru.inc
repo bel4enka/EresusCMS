@@ -335,5 +335,8 @@ define('admTemplList', 'Шаблон элемента списка разделов');
 define('admTemplListLabel', 'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
 define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок; <strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание; <strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.');
 
+define('admTemplPageSelector', 'Шаблон переключателя страниц');
+define('admTemplPageSelectorLabel', 'Шаблон состоит из 3-х секций, разделяемых тройным дефисом (---):<ol><li>Переключатель страниц, макрос $(pages) задаёт расположение страниц, $(first) и $(last) - ссылки на первую и последнюю страницы.</li><li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li></ol>');
+
 define('templPosted', ' <img src="'.httpRoot.'core/img/time.gif" alt="" title="$(posted)">');
 ?>

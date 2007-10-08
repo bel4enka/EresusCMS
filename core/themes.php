@@ -1,13 +1,16 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Система управления контентом Eresus™
-# Версия 2.10
-# © 2004-2007, ProCreat Systems
-# © 2007, Eresus Group
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Управление оформлением
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Eresus 2.10
+ * 
+ * Управление оформлением
+ * 
+ * Система управления контентом Eresus™ 2
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ * 
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ */
+
 class TThemes {
   var $access = ADMIN;
   var $tabs = array(
@@ -20,7 +23,8 @@ class TThemes {
   );
   var $stdTemplates = array(
     'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
-    '400' => array('caption' => 'HTTP 400 - Bad Request'),
+    'PageSelector' => array('caption' => admTemplPageSelector, 'hint' => admTemplPageSelectorLabel),
+  	'400' => array('caption' => 'HTTP 400 - Bad Request'),
     '401' => array('caption' => 'HTTP 401 - Unauthorized'),
     '402' => array('caption' => 'HTTP 402 - Payment Required'),
     '403' => array('caption' => 'HTTP 403 - Forbidden'),
@@ -170,30 +174,24 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStdInsert()
   {
-    global $request;
-    
-    $file = "<!-- ".$this->stdTemplates[$request['arg']['name']]['caption']." -->\r\n\r\n".$request['arg']['html'];
-    $fp = fopen(filesRoot.'templates/std/'.$request['arg']['name'].'.tmpl', 'w');
-    fwrite($fp, $file);
-    fclose($fp);
-    SendNotify((isset($request['update'])?admUpdated:admAdded).': std/'.$request['arg']['name'].'.tmpl');
-    goto($request['arg']['submitURL']);
+    useLib('templates');
+    $templates = new Templates();
+    $templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
+  	goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStdUpdate()
   {
-    global $request;
-    $request['update'] = true;
-     $this->sectionStdInsert();
+  	$this->sectionStdInsert();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStdDelete()
   {
-    global $request, $page;
+    global $page;
     
-    $filename = filesRoot.'templates/std/'.$request['arg']['delete'];
-    if (file_exists($filename)) unlink($filename);
-    SendNotify(admDeleted.': std/'.$request['arg']['delete']);
+    useLib('templates');
+    $templates = new Templates();
+    $templates->delete(arg('delete'), 'std');
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -226,7 +224,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
         array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values, 'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
         array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
+        array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok','cancel'),
     );
@@ -236,23 +234,22 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStdEdit()
   {
-    global $page, $request;
+    global $page;
     
-    $item['name'] = $request['arg']['id'];
-    $item['html'] = trim(file_get_contents(filesRoot.'templates/std/'.$item['name']));
-    $item['name'] = substr($item['name'], 0, strrpos($item['name'], '.'));
-    $item['html'] = trim(substr($item['html'], strpos($item['html'], "\n")));
+    useLib('templates');
+    $templates = new Templates();
+    $item = $templates->get(arg('id'), 'std', true);
     $form = array(
       'name' => 'editForm',
       'caption' => $page->title.admTDiv.admEdit,
       'width' => '100%',
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'update'),
-        array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
+        array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
         array('type'=>'hidden','name'=>'name'),
         array('type'=>'edit','name'=>'_name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl ('.$this->stdTemplates[$item['name']]['caption'].')', 'disabled' => true, 'value'=>$item['name']),
         array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
-        array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'html'),
+        array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );
@@ -271,7 +268,7 @@ class TThemes {
       'sortDesc' => false,
       'columns' => array(
         array('name' => 'description', 'caption' => 'Описание'),
-        array('name' => 'filename', 'caption' => 'Имя файла'),
+        #array('name' => 'filename', 'caption' => 'Имя файла'),
       ),
       'controls' => array (
         'delete' => '',
@@ -284,19 +281,11 @@ class TThemes {
         )
       ),
     );
-    # Загружаем список шаблонов
-    $dir = filesRoot.'templates/std/';
-    $hnd = opendir($dir);
-    while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
-      $description = file_get_contents($dir.$filename);
-      preg_match('/<!--(.*?)-->/', $description, $description);
-      $description = trim($description[1]);
-      $items[] = array(
-        'filename' => $filename,
-        'description' => $description,
-      );
-    }
-    closedir($hnd); 
+    useLib('templates');
+    $templates = new Templates();
+    $list = $templates->enum('std');
+    $items = array();
+    foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value); 
     $result = $page->renderTable($table, $items);
     return $result;
   }

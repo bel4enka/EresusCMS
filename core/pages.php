@@ -1,12 +1,15 @@
 <?php
 /**
-* Eresus™ 2 / © 2007, Eresus Group
-*
-* Управление разделами сайта
-*
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* http://eresus.ru/
-*/
+ * Eresus 2.10
+ * 
+ * Управление разделами сайта
+ * 
+ * Система управления контентом Eresus™ 2
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ * 
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ */
 
 class TPages {
   var $access = ADMIN;
