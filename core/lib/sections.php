@@ -1,18 +1,20 @@
 <?php
 /**
-* Eresus™ 2
-*
-* Библиотека для работы с разделами сайта
-*
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.2
-* @modified: 2007-07-25
-*/
+ * Eresus™ 2
+ *
+ * Библиотека для работы с разделами сайта
+ *
+ * @author: Mikhail Krasilnikov <mk@procreat.ru>
+ * @version: 0.0.3
+ * 
+ * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
+ * 
+ */
 
 define('SECTIONS_ACTIVE',  0x0001);
 define('SECTIONS_VISIBLE', 0x0002);
 
-class TSections {
+class Sections {
   var $table = 'pages';
   var $index = array();
   var $cache = array();
@@ -130,7 +132,7 @@ class TSections {
   *
   * @access public
   *
-  * @param  int  $id   Идентификатор корневого раздела ветки
+  * @param  int  $id   Идентификатор раздела
   *
   * @return  array  Описания разделов
   */
@@ -173,6 +175,8 @@ class TSections {
   *
   * @param  int     $id  ID раздела
   * или
+  * @param  array   $id  Список идентификаторов
+  * или
   * @param  string  $id  SQL-условие
   *
   * @return  array  Описание раздела
@@ -181,9 +185,12 @@ class TSections {
   {
     global $Eresus;
     
-    if (is_numeric($id)) $id = "`id`=$id";
-    $result = $Eresus->db->selectItem($this->table, $id);
-    if ($result) $result['options'] = decodeOptions($result['options']);
+    if (is_array($id)) $what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
+    elseif (is_numeric($id)) $what = "`id`=$id";
+    else $what = $id;
+    $result = $Eresus->db->select($this->table, $what);
+    if ($result) for($i=0; $i<count($result); $i++) $result[$i]['options'] = decodeOptions($result[$i]['options']);
+    if (is_numeric($id) && $result && count($result)) $result = $result[0];
     return $result;
   }
   //------------------------------------------------------------------------------
@@ -208,13 +215,51 @@ class TSections {
     $item['options'] = isset($item['options']) ? trim($item['options']) : '';
     $item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
     if (!isset($item['position']) || $item['position'] === '') $item['position'] = isset($this->index[$item['owner']]) ? count($this->index[$item['owner']]) : 0;
-    if ($Eresus->db->insert($this->table, $item)) {
-      $item['id'] = $Eresus->db->getInsertedId();
-      $result = $item;
-    }
+    if ($Eresus->db->insert($this->table, $item))
+      $result = $this->get($Eresus->db->getInsertedId());
     return $result;
   }
   //------------------------------------------------------------------------------
+  /**
+  * Изменяет раздел
+  *
+  * @access public
+  *
+  * @param  array  $item  Раздел
+  *
+  * @return  mixed  Описание нового раздела или false в случае неудачи
+  */
+  function update($item)
+  {
+    global $Eresus;
+    
+    $result = false;
+    $item['updated'] = gettime('Y-m-d H:i:s');
+    $item['options'] = encodeOptions($item['options']);
+    $result = $Eresus->db->updateItem($this->table, $item, "`id`={$item['id']}");
+    return $result;
+  }
+  //------------------------------------------------------------------------------  
+  /**
+  * Удаляет раздел и подразделы
+  *
+  * @access public
+  *
+  * @param  int  $id  Идентификатор раздела
+  *
+  * @return  bool  Результат операции
+  */
+  function delete($id)
+  {
+    global $Eresus;
+
+    $result = true;
+    $children = $this->children($id);
+    for($i=0; $i<count($children); $i++) if  (!$result = $this->delete($children[$i]['id'])) break;
+    if ($result) $result = $Eresus->db->delete($this->table, "`id`=$id");
+    return $result;
+  }
+  //------------------------------------------------------------------------------  
 }
 
 ?>

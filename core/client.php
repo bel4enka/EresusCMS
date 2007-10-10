@@ -2,7 +2,7 @@
 /**
  * Eresus 2.10
  * 
- *Клиентский интерфейс
+ * Клиентский интерфейс
  * 
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
@@ -63,10 +63,6 @@ class TClientUI extends WebPage {
   */
   function TClientUI()
   {
-    global $Eresus;
-    
-    useLib('sections');
-    $Eresus->sections = new TSections;
   }
   //------------------------------------------------------------------------------
   # ВНУТРЕННИЕ ФУНКЦИИ
@@ -135,6 +131,27 @@ class TClientUI extends WebPage {
     $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
     return $result;
   } 
+  //------------------------------------------------------------------------------
+ /**
+  * Отрисовка переключателя страниц
+  *
+  * @param int     $total      Общее количество страниц
+  * @param int     $current    Номер текущей страницы
+  * @param string  $url        Шаблон адреса для перехода к подстранице.
+  * @param array   $templates  Шаблоны оформления
+  * @return string
+  */
+	function pageSelector($total, $current, $url = null, $templates = null)
+	{
+		if (is_null($url)) $url = $this->url().'p%d/';
+		useLib('templates');
+		$Templates = new Templates();
+		$defaults = explode('---', $Templates->get('PageSelector', 'std'));
+		if (!is_array($templates)) $templates = array();
+		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $defaults[$i];
+		$result = parent::pageSelector($total, $current, $url, $templates);
+		return $result; 
+	}
   //------------------------------------------------------------------------------
   /**
   * Производит разбор URL и загрузку соответствующего раздела
@@ -267,31 +284,6 @@ class TClientUI extends WebPage {
     exit;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function url($dummy=null)
-  {
-    global $request;
-    
-    $pos = strpos($request['url'], '?');
-    $result = ($pos === false) ? $request['url'] : substr($request['url'], 0, $pos);
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function clientURL($id)
-  # Функция возвращает HTTP путь к странице с идентификатором $id
-  {
-    global $db;
-    
-    $result = '';
-    $item = $db->selectItem('pages', "`id`='".$id."'");
-    while (!is_null($item)) {
-      $result = $item['name'].'/'.$result;
-      $item = $db->selectItem('pages', "`id`='".$item['owner']."'");
-    }
-    if ($result == 'main/') $result = '';
-    $result = httpRoot.$result;
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function render()
   # Отправляет созданную страницу пользователю.
   {
@@ -328,17 +320,6 @@ class TClientUI extends WebPage {
     
     $result = $plugins->clientOnPageRender($result);
 
-    $this->addScripts(
-      "    var iBrowser = new Array();\n".
-      "    iBrowser['UserAgent'] = navigator.userAgent.toLowerCase();\n".
-      "    if ((iBrowser['UserAgent'].indexOf('msie') != -1) && (iBrowser['UserAgent'].indexOf('opera') == -1) && (iBrowser['UserAgent'].indexOf('webtv') == -1)) iBrowser['Engine'] = 'IE';\n".
-      "    if (iBrowser['UserAgent'].indexOf('gecko') != -1) iBrowser['Engine'] = 'Gecko';\n".
-      "    if (iBrowser['UserAgent'].indexOf('opera') != -1) iBrowser['Engine'] = 'Opera';\n".
-      "    if (iBrowser['UserAgent'].indexOf('safari') != -1) iBrowser['Engine'] = 'Safari';\n".
-      "    if (iBrowser['UserAgent'].indexOf('konqueror') != -1) iBrowser['Engine'] = 'Konqueror';\n".
-      "    iBrowser['UserAgent'] = navigator.userAgent;\n"
-    );
-    
     # FIX: Обратная совместимость
     if (!empty($this->scripts))	$this->addScripts($this->scripts);
     

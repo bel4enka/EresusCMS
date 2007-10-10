@@ -55,12 +55,12 @@ class TPages {
   function insert()
   # Запись новой страницы в БД
   {
-    global $Eresus, $page, $request;
+    global $Eresus, $page;
 
     $item = GetArgs($Eresus->sections->fields());
     $item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
     $temp = $Eresus->sections->get("(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
-    if (is_null($temp)) {
+    if (count($temp) == 0) {
       $item = $Eresus->sections->add($item);
       SendNotify($this->notifyMessage($item));
       dbReorderItems('pages', "`owner`='".$request['arg']['owner']."'");
@@ -68,30 +68,30 @@ class TPages {
     } else {
       ErrorMessage(sprintf(errItemWithSameName, $item['name']));
       saveRequest();
-      goto($request['referer']);
+      goto($Eresus->request['referer']);
     }
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-  global $db, $page, $request;
+  	global $Eresus, $page;
 
-    $old = $db->selectItem('pages', "`id`='".$request['arg']['update']."'");
+    $old = $Eresus->sections->get(arg('update'));
     $item = GetArgs($old, array('active', 'visible'));
     $item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
     $item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
     $item['updated'] = gettime('Y-m-d H:i:s');
     if (isset($request['arg']['updatedAuto'])) $item['updated'] = gettime();
-    $db->updateItem('pages', $item, "`id`='".$request['arg']['update']."'");
+    $Eresus->sections->update($item);
     SendNotify($this->notifyMessage($item, $old));
-    goto($request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function selectList($skip=0, $owner = 0, $level = 0)
   {
-    global $db, $user;
+    global $Eresus;
 
-    $items = $db->select('`pages`', "(`owner`='".$owner."') AND (`access` >= '".$user['access']."')", "`position`", false, '`id`,`caption`');
+    $items = $Eresus->sections->children($owner, $Eresus->user['access']);
     $result = array(array(), array());
     if (count($items)) foreach($items as $item) {
       if ($item['id'] != $skip) {
@@ -110,18 +110,19 @@ class TPages {
   function moveUp()
   # Функция перемещает страницу вверх в списке
   {
-    global $db, $request, $page;
+    global $Eresus, $page;
 
-    $item = $db->selectItem('pages',"`id`='".$request['arg']['id']."'");
+    $item = $Eresus->sections->get(arg('id'));
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
-    $item = $db->selectItem('pages',"`id`='".$request['arg']['id']."'");
+    $item = $Eresus->sections->get(arg('id'));
     if ($item['position'] > 0) {
-      $temp = $db->selectItem('pages',"(`owner`='".$item['owner']."') AND (`position`='".($item['position']-1)."')");
-      if ($temp) {
+      $temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".($item['position']-1)."')");
+      if (count($temp)) {
+      	$temp = $temp[0];
         $item['position']--;
         $temp['position']++;
-        $db->updateItem('pages', $item, "`id`='".$item['id']."'");
-        $db->updateItem('pages', $temp, "`id`='".$temp['id']."'");
+        $Eresus->sections->update($item);
+        $Eresus->sections->update($temp);
       }
     }
     goto($page->url(array('id'=>'')));
@@ -130,18 +131,19 @@ class TPages {
   function moveDown()
   # Функция перемещает страницу вниз в списке
   {
-    global $db, $request, $page;
+    global $Eresus, $page;
 
-    $item = $db->selectItem('pages',"`id`='".$request['arg']['id']."'");
+    $item = $Eresus->sections->get(arg('id'));
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
-    $item = $db->selectItem('pages',"`id`='".$request['arg']['id']."'");
-    if ($item['position'] < $db->count('pages', "`owner`='".$item['owner']."'")) {
-      $temp = $db->selectItem('pages',"(`owner`='".$item['owner']."') AND (`position`='".($item['position']+1)."')");
+    $item = $Eresus->sections->get(arg('id'));
+    if ($item['position'] < count($Eresus->sections->children($item['owner']))) {
+      $temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".($item['position']+1)."')");
       if ($temp) {
+      	$temp = $temp[0];
         $item['position']++;
         $temp['position']--;
-        $db->updateItem('pages', $item, "`id`='".$item['id']."'");
-        $db->updateItem('pages', $temp, "`id`='".$temp['id']."'");
+        $Eresus->sections->update($item);
+        $Eresus->sections->update($temp);
       }
     }
     goto($page->url(array('id'=>'')));
@@ -150,14 +152,14 @@ class TPages {
   function move()
   # Перемещает страницу из одной ветки в другую
   {
-    global $db, $page, $request;
+    global $Eresus, $page;
 
-    $item = $db->selectItem('pages', "`id`='".$request['arg']['id']."'");
-    if (isset($request['arg']['to'])) {
+    $item = $Eresus->sections->get(arg('id'));
+    if (arg('to') !== false) {
       dbReorderItems('pages', "`owner`='".$item['owner']."'");
-      $item['owner'] = $request['arg']['to'];
-      $item['position'] = $db->count('pages', "`owner`='".$item['owner']."'");
-      $db->updateItem('pages', $item, "`id`='".$request['arg']['id']."'");
+      $item['owner'] = arg('to');
+      $item['position'] = count($Eresus->sections->children($item['owner']));
+      $Eresus->sections->update($item);
       goto($page->url(array('id'=>'')));
     } else {
       $select = $this->selectList($item['id']);
@@ -198,10 +200,10 @@ class TPages {
   function delete()
   # Удаляет страницу
   {
-  global $db, $page, $request;
+  global $Eresus, $page;
 
-    $item = $db->selectItem('pages', "`id`='".$request['arg']['id']."'");
-    $this->deleteBrunch($request['arg']['id']);
+    $item = $Eresus->sections->get(arg('id'));
+    $Eresus->sections->delete(arg('id'));
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
     SendNotify(admDeleted.":\n".$this->notifyMessage($item));
     goto($page->url(array('id'=>'')));
@@ -214,9 +216,9 @@ class TPages {
     $result[0][] = admPagesContentDefault; $result[1][] = 'default';
     $result[0][] = admPagesContentList; $result[1][] = 'list';
     $result[0][] = admPagesContentURL; $result[1][] = 'url';
-    if(count($plugins->list)) foreach($plugins->list as $plugin) if (strpos($plugin['type'], 'content') !== false) {
+    if(count($plugins->list)) foreach($plugins->list as $name => $plugin) if (strpos($plugin['type'], 'content') !== false) {
       $result[0][] = $plugin['title'];
-      $result[1][] = $plugin['name'];
+      $result[1][] = $name;
     }
     return $result;
   }
@@ -236,7 +238,7 @@ class TPages {
   function create()
   # Функция выводит форму для добавления новой страницы
   {
-  global $page, $plugins, $request;
+  global $page, $plugins;
 
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
@@ -246,7 +248,7 @@ class TPages {
       'caption' => strAdd,
       'width' => '600px',
       'fields' => array (
-        array ('type' => 'hidden','name'=>'owner','value'=>$request['arg']['owner']),
+        array ('type' => 'hidden','name'=>'owner','value'=>arg('owner')),
         array ('type' => 'hidden','name'=>'action', 'value'=>'insert'),
         array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
         array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
@@ -271,13 +273,11 @@ class TPages {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function edit($id)
   {
-    global $db, $page;
+    global $Eresus, $page;
 
-    $item = $db->selectItem('pages', "`id`='".$id."'");
+    $item = $Eresus->sections->get($id);
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
-    # Декодируем опции
-    $item['options'] = array2text(decodeOptions($item['options']), true);
     $form['caption'] = $item['caption'];
     # Вычисляем адрес страницы
     $urlAbs = $page->clientURL($item['id']);

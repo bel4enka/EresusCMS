@@ -132,22 +132,6 @@ class TAdminUI extends WebPage {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientURL($id)
-  # Функция возвращает HTTP путь к странице с идентификатором $id
-  {
-    global $db;
-    
-    $result = '';
-    $item = $db->selectItem('pages', "`id`='".$id."'");
-    while (!is_null($item)) {
-      $result = $item['name'].'/'.$result;
-      $item = $db->selectItem('pages', "`id`='".$item['owner']."'");
-    }
-    if ($result == 'main/') $result = '';
-    $result = httpRoot.$result;
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function addMenuItem($section, $item)
   {
     $item['link'] = 'ext-'.$item['link'];
@@ -295,7 +279,7 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='') 
   {
-  global $request;
+    global $request;
 
     $prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
     if ($itemsCount > $itemsPerPage) {
@@ -538,7 +522,6 @@ class TAdminUI extends WebPage {
         :'<a href="'.(defined('CMSLOGOHREF')?CMSLOGOHREF:'').'"><img src="'.CMSLOGO.'" alt="'.(defined('CMSLOGOALT')?CMSLOGOALT:'').'" style="border: none; float: right;"></a>'
       )
       :'  <div id="cmsLogo"><a href="http://eresus.ru/"><img src="'.httpRoot.'core/img/logo.png" alt="'.CMSNAME.' '.CMSVERSION.'" width="150" height="30" style="border: none;"></a></div>';
-    
     $result = 
       '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n".
       '<html>'."\n".
@@ -547,6 +530,7 @@ class TAdminUI extends WebPage {
       '  <title>'.option('siteName').' - '.strip_tags($this->title).'</title>'."\n".
       '  <link rel="StyleSheet" href="'.httpRoot.'core/admin.css" type="text/css">'."\n".
       (empty($this->styles)?'':"  <style type=\"text/css\">\n".$this->styles."  </style>\n").
+    	# TODO: Заменить определение браузера на подключение ua.js
       '  <script type="text/javascript">'."\n".
       '    var iBrowser = new Array();'."\n".
       '    iBrowser["UserAgent"] = navigator.userAgent.toLowerCase();'."\n".

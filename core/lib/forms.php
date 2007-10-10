@@ -6,7 +6,7 @@
 *
 * @author: Mikhail Krasilnikov <mk@procreat.ru>
 * @version: 0.0.2
-* @modified: 2007-09-23
+* @modified: 2007-09-21
 */
 
 
@@ -67,7 +67,7 @@ class Form {
     # Элемент отключен
     if (!isset($item['disabled'])) $item['disabled'] = '';
     # Комментарий
-    if (!isset($item['comment'])) $item['comment'] = '';
+    $item['comment'] = isset($item['comment']) ? ' '.$item['comment'] : '';
     # Стили
     $item['style'] = isset($item['style']) ? explode(';', $item['style']) : array();
     # Классы

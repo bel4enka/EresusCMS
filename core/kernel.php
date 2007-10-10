@@ -116,35 +116,35 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 //------------------------------------------------------------------------------
 function ErrorMessage($message)
 {
-  global $session;
-  $session['msg']['errors'][] = $message;
+  global $Eresus;
+  $Eresus->session['msg']['errors'][] = $message;
 }
 //------------------------------------------------------------------------------
 function InfoMessage($message)
 {
-  global $session;
-  $session['msg']['information'][] = $message;
+  global $Eresus;
+  $Eresus->session['msg']['information'][] = $message;
 }
 //------------------------------------------------------------------------------
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # БЕЗОПАСНОСТЬ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function UserRights($level) {
+function UserRights($level)
 # Функция проверяет права пользователя на соответствие заданной маске
-global $user;
+{
+	global $Eresus;
 
-  return ((($user['auth']) && ($user['access'] <= $level) && ($user['access'] != 0)) || ($level == GUEST));
+  return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
 }
 //------------------------------------------------------------------------------
 function Login($login, $hash, $autologin = false, $cookieLogin = false)
 #  Функция авторизует пользователя и, если нужно, сохраняет в кукисах информацию для автологина
 {
-global $db, $user, $session;
+global $Eresus;
 
   $result = false;
-  $session['errorMessage'] = '';
-  $item = $db->selectItem('users', "`login`='$login'");
+  $item = $Eresus->db->selectItem('users', "`login`='$login'");
   if (!is_null($item)) { # Если такой пользователь есть...
     if ($item['active']) { # Если учетная запись активна...
       if (time() - $item['lastLoginTime'] > $item['loginErrors']) {
@@ -158,43 +158,42 @@ global $db, $user, $session;
             setcookie('autologin[login]', '', time() - 3600, cookiePath, cookieHost);
             setcookie('autologin[hash]', '', time() - 3600, cookiePath, cookieHost);
           }
-          $setVisitTime = !isset($user['id']);
-          $lastVisit = isset($user['lastVisit'])?$user['lastVisit']:'';
-          $user = $item;
-          $user['profile'] = decodeOptions($user['profile']);
-          $user['auth'] = true; # Устанавливаем флаг авторизации
+          $setVisitTime = !isset($Eresus->user['id']);
+          $lastVisit = isset($Eresus->user['lastVisit'])?$Eresus->user['lastVisit']:'';
+          $Eresus->user = $item;
+          $Eresus->user['profile'] = decodeOptions($Eresus->user['profile']);
+          $Eresus->user['auth'] = true; # Устанавливаем флаг авторизации
           if ($setVisitTime) $item['lastVisit'] = gettime(); # Записываем время последнего входа
           $item['lastLoginTime'] = time();
           $item['loginErrors'] = 0;
-          $db->updateItem('users', $item,"`id`='".$item['id']."'");
-          $session['time'] = time(); # Инициализируем время последней активности сессии.
-          $session['msg'] = array();
+          $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
+          $Eresus->session['time'] = time(); # Инициализируем время последней активности сессии.
           $result = true;
         } else { # Если пароль не верен...
           if (!$cookieLogin) {
-            $session['msg']['errors'][] = errInvalidPassword;
+            ErrorMessage(errInvalidPassword);
             $item['lastLoginTime'] = time();
             $item['loginErrors']++;
-            $db->updateItem('users', $item,"`id`='".$item['id']."'");
+            $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
           }
         }
       } else { # Если авторизация проведена слишком рано
-        $session['msg']['errors'][] = sprintf(errTooEarlyRelogin, $item['loginErrors']);
+        ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
         $item['lastLoginTime'] = time();
-        $db->updateItem('users', $item,"`id`='".$item['id']."'");
+        $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
       }
-    } else $session['msg']['errors'][] = sprintf(errAccountNotActive, $login);
-  } else $session['msg']['errors'][] = errInvalidPassword;
+    } else ErrorMessage(sprintf(errAccountNotActive, $login));
+  } else ErrorMessage(errInvalidPassword);
   return $result;
 }
 //------------------------------------------------------------------------------
 function Logout($clearCookies=true)
 # Функция завершает сеанс работы с системой и удалаяет кукисы
 {
-global $user;
+  global $Eresus;
 
-  $user['auth'] = false;
-  $user['access'] = GUEST;
+  $Eresus->user['auth'] = false;
+  $Eresus->user['access'] = GUEST;
   if ($clearCookies) {
     setcookie('autologin[active]', '', time() - 3600, cookiePath, cookieHost);
     setcookie('autologin[login]', '', time() - 3600, cookiePath, cookieHost);
@@ -204,37 +203,37 @@ global $user;
 //------------------------------------------------------------------------------
 function ResetLogin()
 {
-global $db, $user, $session;
+	global $Eresus;
 
-  $user['auth'] = isset($user['auth'])?$user['auth']:false;
-  if ($user['auth']) {
-    $item = $db->selectItem('users', "`id`='".$user['id']."'");
+  $Eresus->user['auth'] = isset($Eresus->user['auth'])?$Eresus->user['auth']:false;
+  if ($Eresus->user['auth']) {
+    $item = $Eresus->db->selectItem('users', "`id`='".$Eresus->user['id']."'");
     if (!is_null($item)) { # Если такой пользователь есть...
       if ($item['active']) { # Если учетная запись активна...
-        $user['name'] = $item['name'];
-        $user['mail'] = $item['mail'];
-        $user['access'] = $item['access'];
-        $user['profile'] = decodeOptions($item['profile']);
+        $Eresus->user['name'] = $item['name'];
+        $Eresus->user['mail'] = $item['mail'];
+        $Eresus->user['access'] = $item['access'];
+        $Eresus->user['profile'] = decodeOptions($item['profile']);
       } else {
-        $session['msg']['errors'][] = sprintf(errAccountNotActive, $item['login']);
+        ErrorMessage(sprintf(errAccountNotActive, $item['login']));
         Logout();
       }
     } else Logout();
-  } else $user['access'] = GUEST;
+  } else $Eresus->user['access'] = GUEST;
 }
 //------------------------------------------------------------------------------
 function resetLastVisitTime($time='', $expand=false)
 {
-global $db, $user;
+	global $Eresus;
 
-  if ($user['auth']) {
-    $item = $db->selectItem('users', "`id`='".$user['id']."'");
+  if ($Eresus->user['auth']) {
+    $item = $Eresus->db->selectItem('users', "`id`='".$Eresus->user['id']."'");
     if (empty($time)) $item['lastVisit'] = gettime(); else {
       if ($expand) $time = substr($time,0,4).'-'.substr($time,4,2).'-'.substr($time,6,2).' '.substr($time,8,2).':'.substr($time,10,2);
       $item['lastVisit'] = $time;
     }
-    $db->updateItem('users', $item,"`id`='".$item['id']."'");
-    $user['lastVisit'] = $item['lastVisit'];
+    $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
+    $Eresus->user['lastVisit'] = $item['lastVisit'];
   }
 }
 //------------------------------------------------------------------------------
@@ -355,19 +354,19 @@ function sendNotify($notify, $params=null)
 #   url (string) - адрес раздела
 #   user (string) - имя пользователя
 {
-  global $user, $page, $request;
+  global $Eresus, $page;
 
   $subject = isset($params['subject'])?$params['subject']:option('siteName');
-  $username = isset($params['user'])?$params['user']:(is_null($user)?'Guest':$user['name']);
-  $usermail = !is_null($user) && $user['auth'] ? $user['mail'] : option('mailFormAddr');
+  $username = isset($params['user'])?$params['user']:(is_null($Eresus->user)?'Guest':$Eresus->user['name']);
+  $usermail = !is_null($Eresus->user) && $Eresus->user['auth'] ? $Eresus->user['mail'] : option('mailFormAddr');
   if (defined('ADMINUI')) {
     $editors = isset($params['editors'])?$params['editors']:false;
     $title = isset($params['title'])?$params['title']:$page->title;
-    $url = isset($params['url'])?$params['url']:(isset($request['arg']['submitURL'])?$request['arg']['submitURL']:$request['referer']);
+    $url = isset($params['url'])?$params['url']:(arg('submitURL')?arg('submitURL'):$Eresus->request['referer']);
   } else {
     $editors = isset($params['editors'])?$params['editors']:true;
     $title = isset($params['title'])?$params['title']:$page->title;
-    $url = isset($params['url'])?$params['url']:$request['arg']['submitURL'];
+    $url = isset($params['url'])?$params['url']:arg('submitURL');
   }
   $target = sendNotifyTo;
   $host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -480,16 +479,23 @@ function decodeOptions($options, $defaults = array())
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function replaceMacros($template, $item)
+/**
+ * Замена макросов
+ * 
+ * @param string $template  Шаблон
+ * @param mixed  $source    Источник для замены
+ * @return Обработанный текст
+ */
+function replaceMacros($template, $source)
 {
   preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-  if (count($matches[1])) foreach($matches[1] as $macros) switch(gettype($item)) {
-    case 'array'  : if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template); break;
-    case 'object' : if (isset($item->$macros)) $template = str_replace('$('.$macros.')', $item->$macros, $template); break;
+  if (count($matches[1])) foreach($matches[1] as $macros) switch(gettype($source)) {
+    case 'array'  : if (isset($source[$macros])) $template = str_replace('$('.$macros.')', $source[$macros], $template); break;
+    case 'object' : if (isset($source->$macros)) $template = str_replace('$('.$macros.')', $source->$macros, $template); break;
   }
   return $template;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//------------------------------------------------------------------------------
 
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -498,14 +504,14 @@ function replaceMacros($template, $item)
 function GetArgs($item, $checkboxes = array(), $prevent = array())
 # Заполняет массив $item соответствующими значениями из $request['arg']
 {
-global $request;
+	global $Eresus;
    
   if ($clear = (key($item) == '0')) $item = array_flip($item);
   foreach ($item as $key => $value) {
     if ($clear) unset($item[$key]);
     if (!in_array($key, $prevent)) {
-      if (isset($request['arg'][$key])) $item[$key] = $request['arg'][$key];
-      if (in_array($key, $checkboxes)&& (!isset($request['arg'][$key]))) $item[$key] = false;
+      if (arg($key)) $item[$key] = arg($key);
+      if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
     }
   }
   return $item;
@@ -513,24 +519,24 @@ global $request;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function arg($arg)
 {
-  global $request;
-  return isset($request['arg'][$arg])?$request['arg'][$arg]:false;
+  global $Eresus;
+  return isset($Eresus->request['arg'][$arg])?$Eresus->request['arg'][$arg]:false;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function saveRequest()
 # Функция сохраняет в сессии текущие аргументы
 {
-  global $request, $session;
-  $session['request'] = $request;
+  global $Eresus;
+  $Eresus->session['request'] = $Eresus->request;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function restoreRequest()
 # Функция сохраняет в сессии текущие аргументы
 {
-  global $request, $session;
-  if (isset($session['request'])) {
-    $request = $session['request'];
-    unset($session['request']);
+  global $Eresus;
+  if (isset($Eresus->session['request'])) {
+    $Eresus->request = $Eresus->session['request'];
+    unset($Eresus->session['request']);
   }
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -540,23 +546,23 @@ function restoreRequest()
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function dbReorderItems($table, $condition='', $id='id')
 {
-  global $db;
+  global $Eresus;
 
-  $items = $db->select("`".$table."`", $condition, '`position`');
+  $items = $Eresus->db->select("`".$table."`", $condition, '`position`');
   for($i=0; $i<count($items); $i++) {
     $items[$i]['position'] = $i;
-    $db->updateItem($table, $items[$i], "`".$id."`='".$items[$i][$id]."'");
+    $Eresus->db->updateItem($table, $items[$i], "`".$id."`='".$items[$i][$id]."'");
   }
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function dbShiftItems($table, $condition, $delta)
 {
-global $db;
+global $Eresus;
 
-  $items = $db->select("`".$table."`", $condition, '`position`');
+  $items = $Eresus->db->select("`".$table."`", $condition, '`position`');
   for($i=0; $i<count($items); $i++) {
     $items[$i]['position'] += $delta;
-    $db->updateItem($table, $items[$i], "`id`='".$items[$i]['id']."'");
+    $Eresus->db->updateItem($table, $items[$i], "`id`='".$items[$i]['id']."'");
   }
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -851,6 +857,9 @@ class Eresus {
       'timeout' => 30,
     ),
 		'backward' => array(
+			'TPlugins' => false,
+			'TPlugin' => false,
+			'TContentPlugin' => false,
 			'TListContentPlugin' => false,
 		),
     'debug' => array(
@@ -874,6 +883,7 @@ class Eresus {
   var $fstyle; # Директория стилей
   
   var $request;
+  var $sections;
   
   var $PHP5 = false;
   
@@ -924,6 +934,7 @@ class Eresus {
     session_name('sid');
     session_start();
     $this->session = &$_SESSION['session'];
+    if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
     $this->user = &$_SESSION['user'];
 
     # Обратная совместимость
@@ -1001,16 +1012,19 @@ class Eresus {
     }
     $request['method'] = $_SERVER['REQUEST_METHOD'];
     $request['url'] = $this->root.$s;
-    # Создаем безопасный URL для ссылок
+    # Создаем заготовку URL для GET-запросов с параметрами
     $request['link'] = $request['url'];
-    if ((strpos($request['link'], '?') === false) && (substr($request['link'], -1) != '/')) $request['link'] .= '/';
+    if (substr($request['link'], -1) == '/') $request['link'] .= '?';
+    if (strpos($request['link'], '?') === false)  $request['link'] .= '?';
+    if (substr($request['link'], -1) == '?') $request['link'] .= '&';
+    # Адрес, откуда был совершён переход
     $request['referer'] = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
     # Сбор аргументов вызова
     $request['arg'] = __clearargs(array_merge($_GET, $_POST));
     unset($request['arg']['sid']);
     # Разбивка параметров вызова скрипта
-    if ($s{0} == '/') $s = substr($s, 1);
-    if ($s{strlen($s)-1} == '/') $s = substr($s, 0, -1);
+    if ($p = strrpos($s, '/')) $s = substr($s, 0, $p);
+    $request['path'] = $this->root.$s.'/';
     $request['params'] = $s ? explode('/', $s) : array();
     $this->request = $request;
   }
@@ -1161,7 +1175,7 @@ class Eresus {
 		$this->reset_login();
 		# Подключение работы с разделами сайта
     useLib('sections');
-    $this->sections = new TSections;
+    $this->sections = new Sections;
     $GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
   }
   //------------------------------------------------------------------------------

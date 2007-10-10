@@ -49,6 +49,19 @@ class WebPage {
     'content' => '',
   );
  /**
+  * Значения по умолчанию
+  * @var array
+  */
+  var $defaults = array(
+		'pageselector' => array(
+  		'<div class="pages">$(pages)</div>',
+  		'<a href="$(href)">$(number)</a>',
+    	'<a href="$(href)" class="selected">$(number)</a>',
+    	'<a href="$(href)">&larr;</a>',
+    	'<a href="$(href)">&rarr;</a>',
+  	),  
+  );
+ /**
 	* Установка мета-тега HTTP-заголовка
 	*
 	* @param string $httpEquiv  Имя тега
@@ -170,11 +183,73 @@ class WebPage {
 	  return $result;
 	}
 	//------------------------------------------------------------------------------
-	function pageselector()
+ /**
+  * Построение GET-запроса
+  *
+  * @param array $args      Установить аргументы
+  * @return string
+  */
+	function url($args = null)
 	{
-		;
+		global $Eresus;
+		
+		$args = array_merge($Eresus->request['arg'], $args);
+		
+		$result = array();
+		foreach($args as $key => $value) if ($value !== '') $result []= "$key=$value"; 
+		$result = implode('&amp;', $result);
+		$result = $Eresus->request['path'].'?'.$result;
+		return $result;
 	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Клиентский URL страницы с идентификатором $id
+  *
+  * @param int $id  Идентификатор страницы
+  * @return string URL страницы
+  */
+	function clientURL($id)
+  {
+  	global $Eresus;
+  	
+  	$result = array();
+  	$parents = $Eresus->sections->parents($id);
+  	array_push($parents, $id);
+  	$items = $Eresus->sections->get( $parents);
+  	for($i=0; $i<count($items); $i++) $result[] = $items[$i]['name'];
+  	$result = $Eresus->root.implode('/', $result).(count($result)?'/':'');
+  	return $result;
+  }
+  //----------------------------------------------------------------------------- 
 	
+ /**
+  * Отрисовка переключателя страниц
+  *
+  * @param int     $total      Общее количество страниц
+  * @param int     $current    Номер текущей страницы
+  * @param string  $url        Шаблон адреса для перехода к подстранице.
+  * @param array   $templates  Шаблоны оформления
+  * @return string
+  */
+	function pageSelector($total, $current, $url = null, $templates = null)
+	{
+		$result = '';
+		
+		if (!is_array($templates)) $templates = array();
+		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $this->defaults['pageselector'][$i];
+
+		$pages = array();
+		for($i = 1; $i <= $total; $i++) {
+			$src['href'] = sprintf($url, $i);
+			$src['number'] = $i;
+			$pages[] = replaceMacros($templates[$i != $current ? 1 : 2], $src);
+		}
+		
+		$pages = implode('', $pages);
+		$result = replaceMacros($templates[0], array('pages' => $pages));
+		
+		return $result;
+	}	
 	//------------------------------------------------------------------------------
   
 }
@@ -529,16 +604,14 @@ function updateSettings()
  * Замена макросов
  *
  * @param  string  $template  Строка в которой требуется провести замену макросов
- * @param  array   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+ * @param  mixed   $item      Ассоциативный массив со значениями для подстановки вместо макросов
  *
- * @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
+ * @return  string  Обработанная строка
  */
 function replaceMacros($template, $item)
 {
-  preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-  if (count($matches[1])) foreach($matches[1] as $macros)
-    if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template);
-  return $template;
+	$result = replaceMacros($template, $item);
+  return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -750,10 +823,19 @@ function dbCount($table, $condition = '')
   return $result;
 }
 //------------------------------------------------------------------------------
-function listenEvent($event)
+/**
+ * Регистрация обработчиков событий
+ * 
+ * @param string $event1  Имя события1
+ * ...
+ * @param string $eventN  Имя событияN
+ */ 
+function listenEvents()
 {
 	global $Eresus;
-	$Eresus->plugins->events[$event][] = $this->name;
+	
+	for($i=0; $i < func_num_args(); $i++)
+		$Eresus->plugins->events[func_get_arg($i)][] = $this->name;
 }
 //------------------------------------------------------------------------------
 }
