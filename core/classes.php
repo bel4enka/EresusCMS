@@ -62,6 +62,14 @@ class WebPage {
   	),  
   );
  /**
+  * Конструктор
+  * @return WebPage
+  */
+  function WebPage()
+  {
+  }
+  //-----------------------------------------------------------------------------
+ /**
 	* Установка мета-тега HTTP-заголовка
 	*
 	* @param string $httpEquiv  Имя тега
@@ -194,6 +202,7 @@ class WebPage {
 		global $Eresus;
 		
 		$args = array_merge($Eresus->request['arg'], $args);
+		foreach($args as $key => $value) if (is_array($value)) $args[$key] = implode(',', $value);
 		
 		$result = array();
 		foreach($args as $key => $value) if ($value !== '') $result []= "$key=$value"; 
@@ -441,6 +450,16 @@ class Plugins {
     if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin) $this->items[$plugin]->adminOnMenuRender();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+ /**
+  * Событие ajaxOnRequest
+  */
+  function ajaxOnRequest()
+  {
+  	if (isset($this->events['ajaxOnRequest'])) 
+  		foreach($this->events['ajaxOnRequest'] as $plugin)
+  			$this->items[$plugin]->ajaxOnRequest();
+  }
+  //-----------------------------------------------------------------------------
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
@@ -867,7 +886,7 @@ function ContentPlugin()
 * 
 * @param  string  $content  Контент
 */
-function updateContent($content)
+function update($content)
 {
 	global $Eresus, $page;
 
