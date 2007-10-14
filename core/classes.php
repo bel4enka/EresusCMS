@@ -597,9 +597,9 @@ function uninstall()
 	global $Eresus;
 	
 	$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
+	$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
 	for ($i=0; $i < count($tables); $i++)
 		$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
-	$this->dbDropTable();
 }
 //------------------------------------------------------------------------------
 /**

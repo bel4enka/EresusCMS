@@ -138,89 +138,6 @@ function UserRights($level)
   return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
 }
 //------------------------------------------------------------------------------
-function Login($login, $hash, $autologin = false, $cookieLogin = false)
-#  Функция авторизует пользователя и, если нужно, сохраняет в кукисах информацию для автологина
-{
-global $Eresus;
-
-  $result = false;
-  $item = $Eresus->db->selectItem('users', "`login`='$login'");
-  if (!is_null($item)) { # Если такой пользователь есть...
-    if ($item['active']) { # Если учетная запись активна...
-      if (time() - $item['lastLoginTime'] > $item['loginErrors']) {
-        if ($hash == $item['hash']) { # Если пароль верен...
-          if ($autologin) { # Если установлен переключатель "Запомнить логин", то сохраняем его в кукисах
-            setcookie('autologin[active]', '1', time()+2592000, cookiePath, cookieHost);
-            setcookie('autologin[login]', $login, time()+2592000, cookiePath, cookieHost);
-            setcookie('autologin[hash]', $hash, time()+2592000, cookiePath, cookieHost);
-          } else { # ...иначе, удаляем кукисы
-            setcookie('autologin[active]', '', time() - 3600, cookiePath, cookieHost);
-            setcookie('autologin[login]', '', time() - 3600, cookiePath, cookieHost);
-            setcookie('autologin[hash]', '', time() - 3600, cookiePath, cookieHost);
-          }
-          $setVisitTime = !isset($Eresus->user['id']);
-          $lastVisit = isset($Eresus->user['lastVisit'])?$Eresus->user['lastVisit']:'';
-          $Eresus->user = $item;
-          $Eresus->user['profile'] = decodeOptions($Eresus->user['profile']);
-          $Eresus->user['auth'] = true; # Устанавливаем флаг авторизации
-          if ($setVisitTime) $item['lastVisit'] = gettime(); # Записываем время последнего входа
-          $item['lastLoginTime'] = time();
-          $item['loginErrors'] = 0;
-          $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
-          $Eresus->session['time'] = time(); # Инициализируем время последней активности сессии.
-          $result = true;
-        } else { # Если пароль не верен...
-          if (!$cookieLogin) {
-            ErrorMessage(errInvalidPassword);
-            $item['lastLoginTime'] = time();
-            $item['loginErrors']++;
-            $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
-          }
-        }
-      } else { # Если авторизация проведена слишком рано
-        ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
-        $item['lastLoginTime'] = time();
-        $Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
-      }
-    } else ErrorMessage(sprintf(errAccountNotActive, $login));
-  } else ErrorMessage(errInvalidPassword);
-  return $result;
-}
-//------------------------------------------------------------------------------
-function Logout($clearCookies=true)
-# Функция завершает сеанс работы с системой и удалаяет кукисы
-{
-  global $Eresus;
-
-  $Eresus->user['auth'] = false;
-  $Eresus->user['access'] = GUEST;
-  if ($clearCookies) {
-    setcookie('autologin[active]', '', time() - 3600, cookiePath, cookieHost);
-    setcookie('autologin[login]', '', time() - 3600, cookiePath, cookieHost);
-    setcookie('autologin[hash]', '', time() - 3600, cookiePath, cookieHost);
-  }
-}
-//------------------------------------------------------------------------------
-function ResetLogin()
-{
-	global $Eresus;
-
-  $Eresus->user['auth'] = isset($Eresus->user['auth'])?$Eresus->user['auth']:false;
-  if ($Eresus->user['auth']) {
-    $item = $Eresus->db->selectItem('users', "`id`='".$Eresus->user['id']."'");
-    if (!is_null($item)) { # Если такой пользователь есть...
-      if ($item['active']) { # Если учетная запись активна...
-        $Eresus->user['name'] = $item['name'];
-        $Eresus->user['mail'] = $item['mail'];
-        $Eresus->user['access'] = $item['access'];
-        $Eresus->user['profile'] = decodeOptions($item['profile']);
-      } else {
-        ErrorMessage(sprintf(errAccountNotActive, $item['login']));
-        Logout();
-      }
-    } else Logout();
-  } else $Eresus->user['access'] = GUEST;
-}
 //------------------------------------------------------------------------------
 function resetLastVisitTime($time='', $expand=false)
 {
@@ -485,14 +402,20 @@ function decodeOptions($options, $defaults = array())
  * @param string $template  Шаблон
  * @param mixed  $source    Источник для замены
  * @return Обработанный текст
+ * 
+ * @see __propery
  */
 function replaceMacros($template, $source)
 {
-  preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-  if (count($matches[1])) foreach($matches[1] as $macros) switch(gettype($source)) {
-    case 'array'  : if (isset($source[$macros])) $template = str_replace('$('.$macros.')', $source[$macros], $template); break;
-    case 'object' : if (isset($source->$macros)) $template = str_replace('$('.$macros.')', $source->$macros, $template); break;
+	# Замена условных макросов
+	preg_match_all('/\$\(([^\)\?:]+)\?([^:\)]*):([^\)]*)\)/U', $template, $matches, PREG_SET_ORDER);
+  if (count($matches)) foreach($matches as $macros) {
+  	if (__isset($source, $macros[1])) $template = str_replace($macros[0], __property($source, $macros[1])?$macros[2]:$macros[3], $template);
   }
+		# Замена обычных макросов
+  preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
+  if (count($matches[1])) foreach($matches[1] as $macros) 
+  	if (__isset($source, $macros)) $template = str_replace('$('.$macros.')', __property($source, $macros), $template);
   return $template;
 }
 //------------------------------------------------------------------------------
@@ -830,6 +753,42 @@ function __clearargs($args)
   return $args;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Определяет установлено ли свойство у элемента
+ * 
+ * @param mixed  $object    Элемент
+ * @param string $property  Свойство
+ * @return bool Значение
+ * 
+ * @see replaceMacros
+ */
+function __isset($object, $property)
+{
+	return 
+		is_object($object) ? isset($object->$property) : ( 
+			is_array ($object) ? isset($object[$property]) :
+			false
+		);
+}
+//-----------------------------------------------------------------------------
+/**
+ * Возвращает свойство элемента
+ * 
+ * @param mixed  $object    Элемент
+ * @param string $property  Свойство
+ * @return string Значение
+ * 
+ * @see replaceMacros
+ */
+function __property($object, $property)
+{
+	return 
+		is_object($object) ? $object->$property : ( 
+			is_array ($object) ? $object[$property] :
+			''
+		);
+}
+//-----------------------------------------------------------------------------
 
 /**
 * Основной класс приложения
@@ -1108,8 +1067,8 @@ class Eresus {
   function check_loginout()
   {
 		if (arg('action')) switch (arg('action')) {
-		  case 'login': Login(arg('user'), md5(arg('password')), arg('autologin')); break;
-		  case 'logout': Logout(true); goto(httpRoot); break;
+		  case 'login': $this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin')); break;
+		  case 'logout': $this->logout(true); goto($this->root.'admin/'); break;
 		}
   }
   //------------------------------------------------------------------------------
@@ -1118,9 +1077,9 @@ class Eresus {
   */
   function check_cookies()
   {
-		if (!$this->user['auth'] && isset($_COOKIE['autologin']) && $_COOKIE['autologin']['active']) {
-  		if (!Login($_COOKIE['autologin']['login'], $_COOKIE['autologin']['hash'], true, true))
-    		setcookie("autologin[active]", "0", time()+2592000, cookiePath, cookieHost);
+		if (!$this->user['auth'] && isset($_COOKIE['eresus_login'])) {
+  		if (!$this->login($_COOKIE['eresus_login'], $_COOKIE['eresus_key'], true, true))
+    		$this->clear_login_cookies();
 		}
   }
   //------------------------------------------------------------------------------
@@ -1129,7 +1088,21 @@ class Eresus {
   */
   function reset_login()
   {
-  	ResetLogin();
+  	$this->user['auth'] = isset($this->user['auth'])?$this->user['auth']:false;
+  	if ($this->user['auth']) {
+    	$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
+    	if (!is_null($item)) { # Если такой пользователь есть...
+      	if ($item['active']) { # Если учетная запись активна...
+	        $this->user['name'] = $item['name'];
+        	$this->user['mail'] = $item['mail'];
+        	$this->user['access'] = $item['access'];
+        	$this->user['profile'] = decodeOptions($item['profile']);
+      	} else {
+        	ErrorMessage(sprintf(errAccountNotActive, $item['login']));
+        	$this->logout();
+      	}
+    	} else $this->logout();
+  	} else $this->user['access'] = GUEST;
   }
   //------------------------------------------------------------------------------
  /**
@@ -1180,6 +1153,100 @@ class Eresus {
   }
   //------------------------------------------------------------------------------
  /**
+  * Хеширует пароль
+  *
+  * @param string $password  Пароль
+  * @return string  Хеш
+  */
+  function password_hash($password)
+  {
+  	$result = md5($password);
+  	return $result;
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Устанавливает авторизационные кукисы
+  *
+  * @param string $login
+  * @param string $key
+  */
+  function set_login_cookies($login, $key)
+  {
+    setcookie('eresus_login', $login, time()+2592000, $this->path);
+    setcookie('eresus_key', $key, time()+2592000, $this->path);
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Удалаяет авторизационные кукисы
+  *
+  */
+  function clear_login_cookies()
+  {
+    setcookie('eresus_login', '', time()-3600, $this->path);
+    setcookie('eresus_key', '', time()-3600, $this->path);
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Авторизация пользователя
+  *
+  * @param string $login   Имя пользователя
+  * @param string $key		 Ключ учётной записи
+  * @param bool   $auto		 Сохранить авторизационные данные на комптютере посетителя
+  * @param bool   $cookie  Авторизация при помощи cookie
+  * @return bool Результат
+  */
+	function login($login, $key, $auto = false, $cookie = false)
+	{
+  	$result = false;
+  	$item = $this->db->selectItem('users', "`login`='$login'");
+  	if (!is_null($item)) { # Если такой пользователь есть...
+    	if ($item['active']) { # Если учетная запись активна...
+      	if (time() - $item['lastLoginTime'] > $item['loginErrors']) {
+        	if ($key == $item['hash']) { # Если пароль верен...
+          	if ($auto) $this->set_login_cookies($login, $key);
+            else $this->clear_login_cookies();
+          	$setVisitTime = !isset($this->user['id']);
+          	$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
+          	$this->user = $item;
+          	$this->user['profile'] = decodeOptions($this->user['profile']);
+          	$this->user['auth'] = true; # Устанавливаем флаг авторизации
+          	if ($setVisitTime) $item['lastVisit'] = gettime(); # Записываем время последнего входа
+          	$item['lastLoginTime'] = time();
+          	$item['loginErrors'] = 0;
+          	$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+          	$this->session['time'] = time(); # Инициализируем время последней активности сессии.
+          	$result = true;
+        	} else { # Если пароль не верен...
+          	if (!$cookie) {
+            	ErrorMessage(errInvalidPassword);
+            	$item['lastLoginTime'] = time();
+            	$item['loginErrors']++;
+            	$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+          	}
+        	}
+      	} else { # Если авторизация проведена слишком рано
+        	ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
+        	$item['lastLoginTime'] = time();
+        	$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+      	}
+    	} else ErrorMessage(sprintf(errAccountNotActive, $login));
+  	} else ErrorMessage(errInvalidPassword);
+  	return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Завершение сеанса работы с системой
+  *
+  * @param bool $clearCookies
+  */
+	function logout($clearCookies=true)
+	{
+  	$this->user['auth'] = false;
+  	$this->user['access'] = GUEST;
+  	if ($clearCookies) $this->clear_login_cookies();
+	}
+	//-----------------------------------------------------------------------------
+ /**
   * Исполнение
   *
   * @access public
@@ -1190,7 +1257,6 @@ class Eresus {
   //------------------------------------------------------------------------------
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
 
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();

@@ -63,7 +63,7 @@ class TPages {
     if (count($temp) == 0) {
       $item = $Eresus->sections->add($item);
       SendNotify($this->notifyMessage($item));
-      dbReorderItems('pages', "`owner`='".$request['arg']['owner']."'");
+      dbReorderItems('pages', "`owner`='".arg('owner')."'");
       goto($page->url(array('id'=>'')));
     } else {
       ErrorMessage(sprintf(errItemWithSameName, $item['name']));
@@ -81,7 +81,7 @@ class TPages {
     $item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
     $item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
     $item['updated'] = gettime('Y-m-d H:i:s');
-    if (isset($request['arg']['updatedAuto'])) $item['updated'] = gettime();
+    if (arg('updatedAuto')) $item['updated'] = gettime();
     $Eresus->sections->update($item);
     SendNotify($this->notifyMessage($item, $old));
     goto(arg('submitURL'));
@@ -238,7 +238,7 @@ class TPages {
   function create()
   # Функция выводит форму для добавления новой страницы
   {
-  global $page, $plugins;
+  global $Eresus, $page, $plugins;
 
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
@@ -267,7 +267,7 @@ class TPages {
       'buttons' => array('ok', 'cancel'),
     );
 
-    $result = $page->renderForm($form, $request['arg']);
+    $result = $page->renderForm($form, $Eresus->request['arg']);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
