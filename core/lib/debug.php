@@ -65,7 +65,7 @@ function callStack()
       $args = array();
       foreach($callstack[$i]['args'] as $arg) {
         ob_start();
-        var_dump($arg);
+        var_dump(strip_tags($arg));
         $args[] = htmlentities(ob_get_contents(), ENT_NOQUOTES, LOCALE_CHARSET);
         ob_end_clean();
       }

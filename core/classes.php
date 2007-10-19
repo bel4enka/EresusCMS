@@ -886,7 +886,7 @@ function ContentPlugin()
 * 
 * @param  string  $content  Контент
 */
-function update($content)
+function updateContent($content)
 {
 	global $Eresus, $page;
 

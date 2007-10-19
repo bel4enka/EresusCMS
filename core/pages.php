@@ -278,6 +278,7 @@ class TPages {
     $item = $Eresus->sections->get($id);
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
+    $item['options'] = encodeOptions($item['options']);
     $form['caption'] = $item['caption'];
     # Вычисляем адрес страницы
     $urlAbs = $page->clientURL($item['id']);
