@@ -304,21 +304,41 @@ function gettime($format = 'Y-m-d H:i:s')
   return date($format , time() + $delta); // Время, со смещением на наш часовой пояс
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ * Форматирование даты
+ * 
+ * @param string $date    Дата в формате YYYY-MM-DD hh:mm:ss
+ * @param string $format  Правила форматирования даты
+ * 
+ * @return string Отформатированная дата
+ */
 function FormatDate($date, $format=DATETIME_NORMAL)
-# Функция выполняет форматирование даты
 {
   if (empty($date)) $result = DATETIME_UNKNOWN; else {
-    $year = substr($date, 0, 4);
-    $month = substr($date, 5, 2);
-    $day = substr($date, 8, 2);
-    $hour = substr($date, 11, 2);
-    $min = substr($date, 14, 2);
-    $sec = substr($date, 17, 2);
-    $result = str_replace(array('h', 'H', 'i', 's', 'd', 'D', 'm', 'M', 'y', 'Y'), array($hour, ($hour[0]=='0'?$hour[1]:$hour), $min, $sec, $day, ($day[0]=='0'?$day[1]:$day), $month, constant('MONTH_'.$month), substr($year, 2, 2), $year), $format);
+  	preg_match_all('/(?<!\\\)[hHisdDmMyY]/', $format, $m, PREG_OFFSET_CAPTURE);
+  	$repl = array(
+  		'Y' => substr($date, 0, 4),
+  		'm' => substr($date, 5, 2),
+	    'd' => substr($date, 8, 2),
+	    'h' => substr($date, 11, 2),
+	    'i' => substr($date, 14, 2),
+	    's' => substr($date, 17, 2)
+  	);
+  	$repl['y'] = substr($repl['Y'], 2, 2);
+  	$repl['M'] = constant('MONTH_'.$repl['m']);
+  	$repl['D'] = $repl['d']{0} == '0' ? $repl['d']{1} : $repl['d'];
+  	$repl['H'] = $repl['h']{0} == '0' ? $repl['h']{1} : $repl['h'];
+  	
+    $delta = 0;
+    for($i = 0; $i<count($m[0]); $i++) {
+    	$format = substr_replace($format, $repl[$m[0][$i][0]], $m[0][$i][1]+$delta, 1);
+    	$delta += strlen($repl[$m[0][$i][0]]) - 1;
+    }
   }
-  return $result;
+  return $format;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 # РАБОТА С ДАННЫМИ
