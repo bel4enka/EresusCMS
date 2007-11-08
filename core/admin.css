@@ -1,12 +1,12 @@
 /**
  * Eresus 2.10
- * 
+ *
  * Стили административного интерфейса
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -83,7 +83,7 @@ td#adminMenu {width: 200px; vertical-align: top;}
 #adminMenu .hidden a {color: #888;}
 #adminMenu .hidden a.visited {color: #888;}
 #adminMenu .hidden a:hover {color: red;}
-#adminMenu em {font-style: normal; color: red;} /* Два слона */ 
+#adminMenu em {font-style: normal; color: red;} /* Два слона */
 
 #adminContent {vertical-align: top; padding: 0px;}
 
@@ -139,9 +139,13 @@ table.admTabs {margin: 2px 0px;}
 	text-align: center;
 	border: solid 1px;
 	border-color: #47d #028 #028 #47d;
-	cursor: pointer;
 }
-.admTabs a {color: white; font-weight: bold;}
+.admTabs a {
+	color: white;
+	font-weight: bold;
+	display: block;
+	height: 100%;
+}
 .admTabs a:visited  {color: white; font-weight: bold;}
 .admTabs a:hover  {color: white; font-weight: bold;}
 

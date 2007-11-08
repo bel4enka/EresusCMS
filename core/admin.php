@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Интерфейс администратора
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -83,7 +83,7 @@ class TAdminUI extends WebPage {
   # Подставляет значения макросов
   {
   global $user;
-  
+
     $result = str_replace(
       array(
         '$(httpHost)',
@@ -91,19 +91,19 @@ class TAdminUI extends WebPage {
         '$(httpRoot)',
         '$(styleRoot)',
         '$(dataRoot)',
-        
+
         '$(siteName)',
         '$(siteTitle)',
         '$(siteKeywords)',
         '$(siteDescription)',
       ),
       array(
-        httpHost, 
-        httpPath, 
-        httpRoot, 
+        httpHost,
+        httpPath,
+        httpRoot,
         styleRoot,
         dataRoot,
-        
+
         siteName,
         siteTitle,
         siteKeywords,
@@ -115,8 +115,8 @@ class TAdminUI extends WebPage {
     $result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i', '__macroVar', $result);
     $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
     return $result;
-  } 
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function url($args = null, $clear = false)
   {
   global $request, $locale;
@@ -162,7 +162,7 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function window($wnd)
   {
-    $result = 
+    $result =
     "<table border=\"0\" class=\"admWindow\"".(empty($wnd['width'])?'':' style="width: '.$wnd['width'].';"').">\n".
     (empty($wnd['caption'])?'':"<tr><th>".$wnd['caption']."</th></tr>\n").
     "<tr><td".(empty($wnd['style'])?'':' style="'.$wnd['style'].'"').">".$wnd['body']."</td></tr>\n</table>\n";
@@ -254,7 +254,7 @@ class TAdminUI extends WebPage {
   function renderTabs($tabs)
   {
     global $request, $page;
-    
+
     if (count($tabs)) {
       $result = "<table class=\"admTabs\"><tr>\n";
       $width = empty($tabs['width'])?'':' style="width: '.$tabs['width'].'"';
@@ -269,7 +269,7 @@ class TAdminUI extends WebPage {
           } else $url = $page->url();
         }
         $url = preg_replace('/&(?!amp;)/', '&amp;', $url);
-        $result .= '<td'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').' onclick="window.location.href=\''.$url.'\'"><a href="'.$url.'">'.$item['caption'].'</a></td>';
+        $result .= '<td'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').'><a href="'.$url.'">'.$item['caption'].'</a></td>';
       }
 
       $result .= "</tr></table>\n";
@@ -277,7 +277,7 @@ class TAdminUI extends WebPage {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='') 
+  function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
   {
     global $request;
 
@@ -294,12 +294,12 @@ class TAdminUI extends WebPage {
         $forDelta = 1;
       }
       $pageIndex = isset($request['arg'][$prefix.'pg'])?$request['arg'][$prefix.'pg']:$forFrom;
-      for ($i = $forFrom; $i != $forTo; $i += $forDelta) 
+      for ($i = $forFrom; $i != $forTo; $i += $forDelta)
         if ($i == $pageIndex) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
         else $result .= '<a href="'.$this->url(array($prefix.'pg' => $i)).'">&nbsp;'.$i.'&nbsp;</a>';
       $result .= "</div>\n";
       return $result;
-    } 
+    }
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderTable($table, $values=null, $sub_prefix='')
@@ -340,7 +340,7 @@ class TAdminUI extends WebPage {
       '<tr><th style="width: 100px;">'.admControls.
       (isset($table['controls']['position'])?' <a href="'.$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.admSortPosition.'">'.img('core/img/ard.gif', admSortPosition, admSortPosition).'</a>':'').
       "</th>";
-    if (count($table['columns'])) foreach($table['columns'] as $column) 
+    if (count($table['columns'])) foreach($table['columns'] as $column)
       $result .= '<th '.(isset($column['width'])?' style="width: '.$column['width'].'"':'').'>'.
         ((isset($request['arg'][$prefix.'sort']) && ($request['arg'][$prefix.'sort'] == $column['name']))?'<span class="admSortBy">'.(isset($column['caption'])?$column['caption']:'&nbsp;').'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
         (isset($table['name'])?
@@ -395,7 +395,7 @@ class TAdminUI extends WebPage {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderForm($form, $values=array())
-  { 
+  {
     $result = '';
     if (isset($form['tabs'])) $result .= $this->renderTabs($form['tabs']);
     useLib('forms');
@@ -444,7 +444,7 @@ class TAdminUI extends WebPage {
   function renderPagesMenu(&$opened, $owner = 0, $level = 0)
   {
     global $Eresus, $user, $request;
-    
+
     $result = '';
     $ie = preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']);
     $items = $Eresus->sections->children($owner, $user['access'], SECTIONS_ACTIVE);
@@ -455,7 +455,7 @@ class TAdminUI extends WebPage {
       $current = (isset($request['arg']['mod'])) && ($request['arg']['mod'] == 'content') && ($request['arg']['section'] == $item['id']);
       if ($current) $opened = $level;
       if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
-      $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onClick="toggleMenuBrunch(\''.$item['id'].'\');"'));
+      $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBrunch(\''.$item['id'].'\');"'));
       $result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
       if (!empty($sub)) $result .= '<ul id="brunch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
     }
@@ -465,30 +465,30 @@ class TAdminUI extends WebPage {
   function renderMenu()
   {
     global $request, $user;
-  
+
     $menu = '';
-    for ($section = 0; $section < count($this->extmenu); $section++) 
+    for ($section = 0; $section < count($this->extmenu); $section++)
       if (UserRights($this->extmenu[$section]['access'])) {
         $menu .= "<tr><th>".$this->extmenu[$section]['caption']."</th></tr>\n<tr><td>";
         foreach ($this->extmenu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->extmenu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
           if (isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod'])) $this->title = $item['caption'];
-          $menu .= '<div '.((isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod']))?'class="selected"':'').' onClick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+          $menu .= '<div '.((isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod']))?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
         }
         $menu .= "</td></tr>\n";
       }
 
-    for ($section = 0; $section < count($this->menu); $section++) 
+    for ($section = 0; $section < count($this->menu); $section++)
       if (UserRights($this->menu[$section]['access'])) {
         $menu .= "<tr><th>".$this->menu[$section]['caption']."</th></tr>\n<tr><td>";
         foreach ($this->menu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->menu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
           if (isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod'])) $this->title = $item['caption'];
-          $menu .= '<div '.((isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod']))?'class="selected"':'').' onClick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+          $menu .= '<div '.((isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod']))?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
         }
         $menu .= "</td></tr>\n";
       }
 
     $opened = -1;
-    $result = 
+    $result =
       '<table>'."\n".
       '  <tr><th>'.admContent."</th></tr>\n".
       "  <tr><td>\n<ul id=\"menuContent\">\n".$this->renderPagesMenu($opened)."</ul>\n</td></tr>\n".
@@ -503,7 +503,7 @@ class TAdminUI extends WebPage {
       '    </form>'."\n".
       '  </td></tr>'."\n".
       '</table>'."\n";
-      
+
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -513,7 +513,7 @@ class TAdminUI extends WebPage {
     global $locale;
 
     $menu = $this->renderMenu();
-    
+
     $content = $this->renderContent();
 
     $logo = defined('CMSLOGO')
@@ -522,7 +522,7 @@ class TAdminUI extends WebPage {
         :'<a href="'.(defined('CMSLOGOHREF')?CMSLOGOHREF:'').'"><img src="'.CMSLOGO.'" alt="'.(defined('CMSLOGOALT')?CMSLOGOALT:'').'" style="border: none; float: right;"></a>'
       )
       :'  <div id="cmsLogo"><a href="http://eresus.ru/"><img src="'.httpRoot.'core/img/logo.png" alt="'.CMSNAME.' '.CMSVERSION.'" width="150" height="30" style="border: none;"></a></div>';
-    $result = 
+    $result =
       '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n".
       '<html>'."\n".
       '<head>'."\n".
@@ -551,7 +551,7 @@ class TAdminUI extends WebPage {
       '   <script src="'.httpRoot.'core/editor/htmlarea.js" type="text/javascript"></script>'."\n".
       '   <script src="'.httpRoot.'core/editor/editor.js" type="text/javascript"></script>'."\n"
       :'').
-      '   <script type="text/javascript">'."\n".  
+      '   <script type="text/javascript">'."\n".
       '     '.trim(str_replace("\n", "\n     ",$this->scripts))."\n".
       '   </script>'."\n".
       $this->head."\n".
@@ -586,7 +586,7 @@ if (!UserRights(EDITOR)) {
     $session['msg']['errors'] = array();
     $messages = '<div style="position: absolute; width: 100%; margin: 0;">'.$messages.'</div>';
   }
-  echo 
+  echo
     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html>\n".
     "<head>\n".
     "  <title>Авторизация</title>\n".
