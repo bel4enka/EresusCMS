@@ -329,10 +329,11 @@ class TPages {
     $result = array();
     $items = $Eresus->sections->children($owner, $user['auth'] ? $user['access'] : GUEST);
     for($i=0; $i<count($items); $i++) {
+    	$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ? $this->cache['content_types'][$items[$i]['type']] : '<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
       $row = array();
       $row[] = array('text' => $items[$i]['caption'], 'style'=>"padding-left: {$level}em;", 'href'=>$Eresus->root.'admin.php?mod=content&amp;section='.$items[$i]['id']);
       $row[] = $items[$i]['name'];
-      $row[] = array('text' => $this->cache['content_types'][$items[$i]['type']], 'align' => 'center');
+      $row[] = array('text' => $content_type, 'align' => 'center');
       $row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
       $row[] = sprintf($this->cache['index_controls'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
       $result[] = $row;
