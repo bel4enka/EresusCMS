@@ -24,11 +24,11 @@
  */
 
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.10b3'); # Версия системы
+define('CMSVERSION', '2.10b4'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '05.10.07'); # Дата обновления ядра
+define('KERNELDATE', '08.11.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
