@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Управление конфигурацией
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -36,7 +36,7 @@ class TSettings {
   function mkstr($name, $caption, $type='string', $options=array())
   {
     global $request, $locale;
-    
+
     $result = "  define('".(isset($options['locale'])?($options['locale']?$locale['prefix']:''):'').$name."', ";
     $quot = "'";
     $value = (isset($request['arg'][$name]))?$request['arg'][$name]:option($name);
@@ -57,9 +57,9 @@ class TSettings {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
-  { 
+  {
     global $request;
-    
+
     $settings = "<?php\n";
 
     $settings .= $this->mkstr('siteName', admConfigSiteName, 'string', array('locale'=>true));
@@ -92,10 +92,10 @@ class TSettings {
     goto($request['arg']['submitURL']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionMain() 
+  function sectionMain()
   {
   global $locale, $page;
-  
+
     $page->title .= admTDiv.admSettingsMain;
     $form = array(
       'name' => 'settingsForm',
@@ -116,10 +116,10 @@ class TSettings {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionMail() 
+  function sectionMail()
   {
   global $locale, $page;
-  
+
     $page->title .= admTDiv.admSettingsMail;
     $form = array(
       'name' => 'settingsForm',
@@ -142,10 +142,10 @@ class TSettings {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionFiles() 
+  function sectionFiles()
   {
   global $locale, $page;
-  
+
     $page->title .= admTDiv.admSettingsFiles;
     $form = array(
       'name' => 'settingsForm',
@@ -165,10 +165,10 @@ class TSettings {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionOther() 
+  function sectionOther()
   {
   global $locale, $page, $plugins;
-  
+
     $page->title .= admTDiv.admSettingsOther;
 
     # Создаем список типов контента
@@ -182,17 +182,12 @@ class TSettings {
       $content_values[] = $plugin['name'];
     }
     # Загружаем список шаблонов
-    $template_items = array();
-    $template_values = array();
-    $dir = filesRoot.'templates/';
-    $hnd = opendir($dir);
-    while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
-      $description = file_get_contents($dir.$filename);
-      preg_match('/<!--(.*?)-->/', $description, $description);
-      $description = trim($description[1]);
-      $template_items[] = $description;
-      $template_values[] = substr($filename, 0, strrpos($filename, '.'));
-    }
+    useLib('templates');
+    $templates = new Templates();
+    $list = $templates->enum();
+    $templates = array();
+    $templates[0]= array_values($list);
+    $templates[1]= array_keys($list);
 
     $form = array(
       'name' => 'settingsForm',
@@ -201,7 +196,7 @@ class TSettings {
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'update'),
         array('type'=>'select','name'=>'contentTypeDefault','label'=>admConfigDefaultContentType, 'items' => $content_items, 'values' => $content_values, 'value'=>option('contentTypeDefault'), 'access'=>ADMIN),
-        array('type'=>'select','name'=>'pageTemplateDefault','label'=>admConfigDefaultPageTamplate, 'items' => $template_items, 'values' => $template_values, 'value'=>option('pageTemplateDefault'), 'access'=>ADMIN),
+        array('type'=>'select','name'=>'pageTemplateDefault','label'=>admConfigDefaultPageTamplate, 'items' => $templates[0], 'values' => $templates[1], 'value'=>option('pageTemplateDefault'), 'access'=>ADMIN),
         array('type'=>'edit','name'=>'clientPagesAtOnce','label'=>admConfigClientPagesAtOnce, 'width' => '20px', 'value'=>option('clientPagesAtOnce'), 'access'=>ADMIN, 'comment' => admConfigClientPagesAtOnceComment),
       ),
       'buttons' => array('apply','reset'),
@@ -215,7 +210,7 @@ class TSettings {
   global $page, $request;
 
     $result = '';
-    if (UserRights($this->access)) {  
+    if (UserRights($this->access)) {
       if (isset($request['arg']['action'])) {
         switch($request['arg']['action']) {
           case 'update': $this->update(); break;
