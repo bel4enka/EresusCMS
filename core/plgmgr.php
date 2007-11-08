@@ -122,7 +122,7 @@ class TPlgMgr {
     );
     if (count($files)) foreach($files as $file) {
       $s = file_get_contents($file);
-      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?\{(.*?)function/is', $s, $s);
+      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?\{(.*?)(function|})/is', $s, $s);
       if ($valid) {
       	$s = $s[1];
       	preg_match('/\$kernel\s*=\s*(\'|")(.+)\1/', $s, $kernel);
@@ -140,7 +140,7 @@ class TPlgMgr {
       		$valid = false; 
       		$caption = '<span class="admError">'.sprintf(admPluginsInvalidVersion, $title[2], $kernel[2]).'</span>';
       	}
-      }
+      } else $caption = admPluginsInvalidFile;
       $form['fields'][] = array('type'=>'checkbox','name'=>'files['.basename($file, '.php').']','label'=>$caption, 'value'=>true, 'disabled'=>!$valid);
     }
     $result = $page->renderForm($form);

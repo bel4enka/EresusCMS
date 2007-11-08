@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Управление разделами сайта
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -63,7 +63,7 @@ class TPages {
     if (count($temp) == 0) {
       $item = $Eresus->sections->add($item);
       SendNotify($this->notifyMessage($item));
-      dbReorderItems('pages', "`owner`='".arg('owner')."'");
+      dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
       goto($page->url(array('id'=>'')));
     } else {
       ErrorMessage(sprintf(errItemWithSameName, $item['name']));
@@ -76,7 +76,7 @@ class TPages {
   {
   	global $Eresus, $page;
 
-    $old = $Eresus->sections->get(arg('update'));
+    $old = $Eresus->sections->get(arg('update', 'int'));
     $item = GetArgs($old, array('active', 'visible'));
     $item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
     $item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
@@ -112,9 +112,9 @@ class TPages {
   {
     global $Eresus, $page;
 
-    $item = $Eresus->sections->get(arg('id'));
+    $item = $Eresus->sections->get(arg('id', 'int'));
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
-    $item = $Eresus->sections->get(arg('id'));
+    $item = $Eresus->sections->get(arg('id', 'int'));
     if ($item['position'] > 0) {
       $temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".($item['position']-1)."')");
       if (count($temp)) {
@@ -133,9 +133,9 @@ class TPages {
   {
     global $Eresus, $page;
 
-    $item = $Eresus->sections->get(arg('id'));
+    $item = $Eresus->sections->get(arg('id', 'int'));
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
-    $item = $Eresus->sections->get(arg('id'));
+    $item = $Eresus->sections->get(arg('id', 'int'));
     if ($item['position'] < count($Eresus->sections->children($item['owner']))) {
       $temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".($item['position']+1)."')");
       if ($temp) {
@@ -154,10 +154,10 @@ class TPages {
   {
     global $Eresus, $page;
 
-    $item = $Eresus->sections->get(arg('id'));
+    $item = $Eresus->sections->get(arg('id', 'int'));
     if (arg('to') !== false) {
       dbReorderItems('pages', "`owner`='".$item['owner']."'");
-      $item['owner'] = arg('to');
+      $item['owner'] = arg('to', 'int');
       $item['position'] = count($Eresus->sections->children($item['owner']));
       $Eresus->sections->update($item);
       goto($page->url(array('id'=>'')));
@@ -202,8 +202,8 @@ class TPages {
   {
   global $Eresus, $page;
 
-    $item = $Eresus->sections->get(arg('id'));
-    $Eresus->sections->delete(arg('id'));
+    $item = $Eresus->sections->get(arg('id', 'int'));
+    $Eresus->sections->delete(arg('id', 'int'));
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
     SendNotify(admDeleted.":\n".$this->notifyMessage($item));
     goto($page->url(array('id'=>'')));
@@ -248,7 +248,7 @@ class TPages {
       'caption' => strAdd,
       'width' => '600px',
       'fields' => array (
-        array ('type' => 'hidden','name'=>'owner','value'=>arg('owner')),
+        array ('type' => 'hidden','name'=>'owner','value'=>arg('owner', 'int')),
         array ('type' => 'hidden','name'=>'action', 'value'=>'insert'),
         array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
         array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
@@ -345,9 +345,9 @@ class TPages {
   function sectionIndex()
   {
     global $Eresus, $page;
-    
+
     $root = $Eresus->root.'admin.php?mod=pages&amp;';
-    $this->cache['index_controls'] = 
+    $this->cache['index_controls'] =
       $page->control('setup', $root.'id=%d').' '.
       $page->control('position', array($root.'action=up&amp;id=%d',$root.'action=down&amp;id=%d')).' '.
       $page->control('add', $root.'action=create&amp;owner=%d').' '.
@@ -378,7 +378,7 @@ class TPages {
         case 'insert': $this->insert();
         case 'move': $result = $this->move(); break;
         case 'delete': $this->delete(); break;
-      } elseif (isset($request['arg']['id'])) $result = $this->edit(arg('id'));
+      } elseif (isset($request['arg']['id'])) $result = $this->edit(arg('id', 'int'));
       else $result = $this->sectionIndex();
       return $result;
     }

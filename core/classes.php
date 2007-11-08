@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Основные классы системы
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -55,11 +55,11 @@ class WebPage {
   var $defaults = array(
 		'pageselector' => array(
   		'<div class="pages">$(pages)</div>',
-  		'<a href="$(href)">$(number)</a>',
-    	'<a href="$(href)" class="selected">$(number)</a>',
+  		'&nbsp;<a href="$(href)">$(number)</a>&nbsp;',
+    	'&nbsp;<b>$(number)</b>&nbsp;',
     	'<a href="$(href)">&larr;</a>',
     	'<a href="$(href)">&rarr;</a>',
-  	),  
+  	),
   );
  /**
   * Конструктор
@@ -92,7 +92,7 @@ class WebPage {
 	}
 	//------------------------------------------------------------------------------
  /**
-	* Подключение CSS-файла 
+	* Подключение CSS-файла
 	*
 	* @param string $url    URL файла
 	* @param string $media  Тип носителя
@@ -166,12 +166,12 @@ class WebPage {
 	function renderHeadSection()
 	{
 	  # <meta> теги
-	  if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value) 
+	  if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
 	    $result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
-	  if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value) 
+	  if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value)
 	    $result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
 	  # <link>
-	  if (count($this->head['link'])) foreach($this->head['link'] as $value) 
+	  if (count($this->head['link'])) foreach($this->head['link'] as $value)
 	    $result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
 	  # <script>
 	  if (count($this->head['script'])) foreach($this->head['script'] as $value) {
@@ -181,12 +181,12 @@ class WebPage {
 	    } elseif (isset($value['src'])) $result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
 	  }
 	  # <style>
-	  if (count($this->head['style'])) foreach($this->head['style'] as $value) 
+	  if (count($this->head['style'])) foreach($this->head['style'] as $value)
 	    $result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
-	
+
 	  $this->head['content'] = trim($this->head['content']);
 	  if (!empty($this->head['content'])) $result[] = $this->head['content'];
-	
+
 	  $result = implode("\n" , $result);
 	  return $result;
 	}
@@ -200,12 +200,12 @@ class WebPage {
 	function url($args = null)
 	{
 		global $Eresus;
-		
+
 		$args = array_merge($Eresus->request['arg'], $args);
 		foreach($args as $key => $value) if (is_array($value)) $args[$key] = implode(',', $value);
-		
+
 		$result = array();
-		foreach($args as $key => $value) if ($value !== '') $result []= "$key=$value"; 
+		foreach($args as $key => $value) if ($value !== '') $result []= "$key=$value";
 		$result = implode('&amp;', $result);
 		$result = $Eresus->request['path'].'?'.$result;
 		return $result;
@@ -220,7 +220,7 @@ class WebPage {
 	function clientURL($id)
   {
   	global $Eresus;
-  	
+
   	$result = array();
   	$parents = $Eresus->sections->parents($id);
   	array_push($parents, $id);
@@ -229,8 +229,8 @@ class WebPage {
   	$result = $Eresus->root.implode('/', $result).(count($result)?'/':'');
   	return $result;
   }
-  //----------------------------------------------------------------------------- 
-	
+  //-----------------------------------------------------------------------------
+
  /**
   * Отрисовка переключателя страниц
   *
@@ -243,24 +243,42 @@ class WebPage {
 	function pageSelector($total, $current, $url = null, $templates = null)
 	{
 		$result = '';
-		
+		# Загрузка шаблонов
 		if (!is_array($templates)) $templates = array();
 		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $this->defaults['pageselector'][$i];
 
-		$pages = array();
-		for($i = 1; $i <= $total; $i++) {
+		$pages = array(); # Отображаемые страницы
+		# Определяем номера первой и последней отображаемых страниц
+		$visible = option('clientPagesAtOnce'); # TODO: Изменить переменную или сделать учёт client/admin
+		if ($total > $visible) {
+			# Будут показаны НЕ все страницы
+			$from = floor($current - $visible / 2); # Начинаем показ с текущей минус половину видимых
+			if ($from < 1) $from = 1; # Страниц меньше 1-й не существует
+			$to = $from + $visible - 1; # мы должны показать $visible страниц
+			if ($to > $total) { # Но если это больше чем страниц всего, вносим исправления
+				$to = $total;
+				$from = $to - $visible + 1;
+			}
+		} else {
+			# Будут показаны все страницы
+			$from = 1;
+			$to = $total;
+		}
+		for($i = $from; $i <= $to; $i++) {
 			$src['href'] = sprintf($url, $i);
 			$src['number'] = $i;
 			$pages[] = replaceMacros($templates[$i != $current ? 1 : 2], $src);
 		}
-		
+
 		$pages = implode('', $pages);
+		if ($from != 1) $pages = replaceMacros($templates[3], array('href' => sprintf($url, 1))).$pages;
+		if ($to != $total) $pages .= replaceMacros($templates[4], array('href' => sprintf($url, $total)));
 		$result = replaceMacros($templates[0], array('pages' => $pages));
-		
+
 		return $result;
-	}	
+	}
 	//------------------------------------------------------------------------------
-  
+
 }
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -455,7 +473,7 @@ class Plugins {
   */
   function ajaxOnRequest()
   {
-  	if (isset($this->events['ajaxOnRequest'])) 
+  	if (isset($this->events['ajaxOnRequest']))
   		foreach($this->events['ajaxOnRequest'] as $plugin)
   			$this->items[$plugin]->ajaxOnRequest();
   }
@@ -514,12 +532,12 @@ function Plugin()
 		# то необходимо произвести обновление информации о плагине в БД
     if ($this->version != $plugins->list[$this->name]['version']) $this->resetPlugin();
   }
-  $this->dirData = $Eresus->fdata.$this->name.'/'; 
-  $this->urlData = $Eresus->data.$this->name.'/'; 
-  $this->dirCode = $Eresus->froot.'ext/'.$this->name.'/'; 
-  $this->urlCode = $Eresus->root.'ext/'.$this->name.'/'; 
-  $this->dirStyle = $Eresus->fstyle.$this->name.'/'; 
-  $this->urlStyle = $Eresus->style.$this->name.'/'; 
+  $this->dirData = $Eresus->fdata.$this->name.'/';
+  $this->urlData = $Eresus->data.$this->name.'/';
+  $this->dirCode = $Eresus->froot.'ext/'.$this->name.'/';
+  $this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
+  $this->dirStyle = $Eresus->fstyle.$this->name.'/';
+  $this->urlStyle = $Eresus->style.$this->name.'/';
   $filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
   if (is_file($filename)) include_once($filename);
 }
@@ -567,7 +585,7 @@ function loadSettings()
 function saveSettings()
 {
 	global $Eresus;
-	
+
 	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
 	$item = $this->__item($item);
 	$item['settings'] = encodeOptions($this->settings);
@@ -595,7 +613,7 @@ function install() {}
 function uninstall()
 {
 	global $Eresus;
-	
+
 	$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
 	$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
 	for ($i=0; $i < count($tables); $i++)
@@ -635,7 +653,7 @@ function replaceMacros($template, $item)
 //------------------------------------------------------------------------------
 /**
  * Создание новой директории
- * 
+ *
  * @param string $name Имя директории
  * @return bool Результат
  */
@@ -663,7 +681,7 @@ function mkdir($name = '')
 //------------------------------------------------------------------------------
 /**
  * Удаление директории и файлов
- * 
+ *
  * @param string $name Имя директории
  * @return bool Результат
  */
@@ -687,7 +705,7 @@ function rmdir($name = '')
 //------------------------------------------------------------------------------
 /**
  * Возвращает реальное имя таблицы
- * 
+ *
  * @param string $table  Локальное имя таблицы
  * @return string Реальное имя таблицы
  */
@@ -698,38 +716,38 @@ function __table($table)
 //------------------------------------------------------------------------------
 /**
  * Создание таблицы в БД
- * 
+ *
  * @param string $SQL Описание таблицы
  * @param string $name Имя таблицы
- * 
+ *
  * @return bool Результат выполенения
  */
 function dbCreateTable($SQL, $name = '')
 {
 	global $Eresus;
-	
+
 	$result = $Eresus->db->create($this->__table($name), $SQL);
 	return $result;
 }
 //------------------------------------------------------------------------------
 /**
  * Удаление таблицы БД
- * 
+ *
  * @param string $name Имя таблицы
- * 
+ *
  * @return bool Результат выполенения
  */
 function dbDropTable($name = '')
 {
 	global $Eresus;
-	
+
 	$result = $Eresus->db->drop($this->__table($name));
 	return $result;
 }
 //------------------------------------------------------------------------------
 /**
  * Производит выборку из таблицы БД
- * 
+ *
  * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
  * @param string	$condition		Условие выборки
  * @param string	$order				Порядок выборки
@@ -738,13 +756,13 @@ function dbDropTable($name = '')
  * @param int			$limit				Вернуть не больше полей чем limit
  * @param int			$offset				Смещение выборки
  * @param bool		$distinct			Только уникальные результаты
- * 
+ *
  * @return array	Список записей
- */ 
+ */
 function dbSelect($table = '', $condition = '', $order = '', $desc = false, $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 {
 	global $Eresus;
-	
+
 	$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
 
   return $result;
@@ -752,17 +770,17 @@ function dbSelect($table = '', $condition = '', $order = '', $desc = false, $fie
 //------------------------------------------------------------------------------
 /**
  * Получение записи из БД
- * 
+ *
  * @param string $table  Имя таблицы
  * @param mixed  $id   	 Идентификатор элемента
  * @param string $key    Имя ключевого поля
- * 
+ *
  * @return array Элемент
  */
 function dbItem($table, $id, $key = 'id')
 {
 	global $Eresus;
-	
+
 	$result = $Eresus->db->selectItem($this->__table($table), "`$key` = '$id'");
 
   return $result;
@@ -770,14 +788,14 @@ function dbItem($table, $id, $key = 'id')
 //------------------------------------------------------------------------------
 /**
  * Вставка в таблицу БД
- * 
+ *
  * @param string $table  Имя таблицы
  * @param array  $item   Вставляемый элемент
  */
 function dbInsert($table, $item)
 {
 	global $Eresus;
-	
+
 	$result = $Eresus->db->insert($this->__table($table), $item);
 	$result = $Eresus->db->getInsertedId();
 
@@ -786,17 +804,17 @@ function dbInsert($table, $item)
 //------------------------------------------------------------------------------
 /**
  * Изменение данных в БД
- * 
+ *
  * @param string $table      Имя таблицы
  * @param mixed  $data       Изменяемый эелемент / Изменения
  * @param string $condition  Ключевое поле / Условие для замены
- * 
+ *
  * @return bool Результат
  */
 function dbUpdate($table, $data, $condition = '')
 {
 	global $Eresus;
-	
+
 	if (is_array($data)) {
 		if (empty($condition)) $condition = 'id';
 		$result = $Eresus->db->updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
@@ -809,17 +827,17 @@ function dbUpdate($table, $data, $condition = '')
 //------------------------------------------------------------------------------
 /**
  * Удаление элемента из БД
- * 
+ *
  * @param string $table  Имя таблицы
  * @param mixed  $item   Удаляемый элемент / Идентификатор
  * @param string $key    Ключевое поле
- * 
+ *
  * @return bool Результат
  */
 function dbDelete($table, $item, $key = 'id')
 {
 	global $Eresus;
-	
+
   $result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
 
   return $result;
@@ -827,16 +845,16 @@ function dbDelete($table, $item, $key = 'id')
 //------------------------------------------------------------------------------
 /**
  * Подсчёт количества записей в БД
- * 
+ *
  * @param string $table      Имя таблицы
  * @param string $condition  Условие для включения в подсчёт
- * 
+ *
  * @return int Количество записей, удовлетворяющих условию
  */
 function dbCount($table, $condition = '')
 {
 	global $Eresus;
-	
+
 	$result = $Eresus->db->count($this->__table($table), $condition);
 
   return $result;
@@ -844,15 +862,15 @@ function dbCount($table, $condition = '')
 //------------------------------------------------------------------------------
 /**
  * Регистрация обработчиков событий
- * 
+ *
  * @param string $event1  Имя события1
  * ...
  * @param string $eventN  Имя событияN
- */ 
+ */
 function listenEvents()
 {
 	global $Eresus;
-	
+
 	for($i=0; $i < func_num_args(); $i++)
 		$Eresus->plugins->events[func_get_arg($i)][] = $this->name;
 }
@@ -883,7 +901,7 @@ function ContentPlugin()
 //------------------------------------------------------------------------------
 /**
 * Обновляет контент страницы в БД
-* 
+*
 * @param  string  $content  Контент
 */
 function updateContent($content)
@@ -900,7 +918,7 @@ function updateContent($content)
 */
 function adminUpdate()
 {
-	$this->updateContent(arg('content'));
+	$this->updateContent(arg('content', 'dbsafe'));
   goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------

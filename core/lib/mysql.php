@@ -1,17 +1,17 @@
 <?php
 /**
  * Библиотека для работы с СУБД MySQL
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 1.2.3
+ * @version 1.2.4
  */
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
-# Устанавливает глобальные переменные 
+# Устанавливает глобальные переменные
 #  $__MYSQL_QUERY_COUNT - Считает количество запросов к БД
 #  $__MYSQL_QUERY_TIME - Считает общее время запросов к БД
 #  $__MYSQL_QUERY_LOG - Все сделанные запросы (Необходимо установить флаг TMySQL->logQueries)
@@ -44,13 +44,13 @@ class MySQL {
   {
     global $Eresus, $__MYSQL_QUERY_COUNT, $__MYSQL_QUERY_TIME, $__MYSQL_QUERY_LOG;
 
-    if ($Eresus->conf['debug']) {
+    if ($Eresus->conf['debug']['enable']) {
       $time_start = microtime();
       if ($this->logQueries) $__MYSQL_QUERY_LOG .= $query."\n";
     }
     $result = mysql_query($query, $this->Connection);
     if ($this->error_reporting && !$result) FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
-    if ($Eresus->conf['debug']) {
+    if ($Eresus->conf['debug']['enable']) {
       $__MYSQL_QUERY_COUNT++;
       $__MYSQL_QUERY_TIME += microtime() - $time_start;
     }
@@ -77,7 +77,7 @@ class MySQL {
    * @param string $name       Имя таблицы
    * @param string $structure  Описание структуры
    * @param string $options    Опции
-   * 
+   *
    * @return bool Результат
    */
   function create($name, $structure, $options = '')
@@ -92,7 +92,7 @@ class MySQL {
    * Удаление таблицы
    *
    * @param string $name       Имя таблицы
-   * 
+   *
    * @return bool Результат
    */
   function drop($name)
@@ -153,7 +153,7 @@ class MySQL {
     $cols = substr($cols, 2);
     $values = substr($values, 2);
     $result = $this->query("INSERT INTO ".$this->prefix.$table." (".$cols.") VALUES (".$values.")");
-    return $result; 
+    return $result;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   function update($table, $set, $condition)
@@ -201,7 +201,7 @@ class MySQL {
     $i = 0;
     while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) $values[] = "`$field`='".mysql_real_escape_string($item[$field], $this->Connection)."'";
     $values = implode(', ', $values);
-    $result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition); 
+    $result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition);
     return $result;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -233,5 +233,21 @@ class MySQL {
     return $result;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+ /**
+  * Экранирует потенциально опасные символы
+  *
+  * @param mixed $src  Входные данные
+  *
+  * @return mixed
+  */
+  function escape($src)
+  {
+  	switch (true) {
+  		case is_string($src): $src = mysql_real_escape_string($src); break;
+  		case is_array($src): foreach($src as $key => $value) $src[$key] = mysql_real_escape_string($value); break;
+  	}
+  	return $src;
+  }
+  //-----------------------------------------------------------------------------
 }
 ?>

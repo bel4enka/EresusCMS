@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Клиентский интерфейс
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -66,16 +66,16 @@ class TClientUI extends WebPage {
   }
   //------------------------------------------------------------------------------
   # ВНУТРЕННИЕ ФУНКЦИИ
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function replaceMacros($text)
   # Подставляет значения макросов
   {
   global $user;
-  
+
   $section = $this->section;
   if (siteTitleReverse) $section = array_reverse($section);
   $section = strip_tags(implode($section, option('siteTitleDivider')));
-  
+
   $result = str_replace(
       array(
         '$(httpHost)',
@@ -83,12 +83,12 @@ class TClientUI extends WebPage {
         '$(httpRoot)',
         '$(styleRoot)',
         '$(dataRoot)',
-        
+
         '$(siteName)',
         '$(siteTitle)',
         '$(siteKeywords)',
         '$(siteDescription)',
-        
+
         '$(pageId)',
         '$(pageName)',
         '$(pageTitle)',
@@ -102,17 +102,17 @@ class TClientUI extends WebPage {
         '$(sectionTitle)',
       ),
       array(
-        httpHost, 
-        httpPath, 
-        httpRoot, 
+        httpHost,
+        httpPath,
+        httpRoot,
         styleRoot,
         dataRoot,
-        
+
         siteName,
         siteTitle,
         siteKeywords,
         siteDescription,
-        
+
         $this->id,
         $this->name,
         $this->title,
@@ -130,7 +130,7 @@ class TClientUI extends WebPage {
     $result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i', '__macroVar', $result);
     $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
     return $result;
-  } 
+  }
   //------------------------------------------------------------------------------
  /**
   * Отрисовка переключателя страниц
@@ -150,7 +150,7 @@ class TClientUI extends WebPage {
 		if (!is_array($templates)) $templates = array();
 		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $defaults[$i];
 		$result = parent::pageSelector($total, $current, $url, $templates);
-		return $result; 
+		return $result;
 	}
   //------------------------------------------------------------------------------
   /**
@@ -163,7 +163,7 @@ class TClientUI extends WebPage {
   function loadPage()
   {
     global $Eresus, $plugins, $request, $user;
-    
+
     $result = false;
     if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
       array_unshift($Eresus->request['params'], 'main');
@@ -188,9 +188,9 @@ class TClientUI extends WebPage {
     if ($result) $result = $Eresus->sections->get($result['id']);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # ОБЩИЕ ФУНКЦИИ
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function init()
   # Проводит инициализацию страницы
   {
@@ -198,7 +198,7 @@ class TClientUI extends WebPage {
 
     $plugins->preload(array('client'),array('ondemand'));
     $plugins->clientOnStart();
-    
+
     $item = $this->loadPage();
     if ($item) {
       if (count($request['params'])) {
@@ -226,16 +226,16 @@ class TClientUI extends WebPage {
       $this->options = decodeOptions($item['options']);
     } else $this->httpError(404);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function Error404()
   {
     $this->httpError(404);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function httpError($code)
   {
   global $KERNEL;
-  
+
     if (isset($KERNEL['ERROR'])) return;
     $ERROR = array(
       '400' => array('response' => 'Bad Request'),
@@ -257,7 +257,7 @@ class TClientUI extends WebPage {
       '416' => array('response' => 'Requested Range Not Satisfiable'),
       '417' => array('response' => 'Expectation Failed'),
     );
-  
+
     Header($_SERVER['SERVER_PROTOCOL'].' '.$code.' '.$ERROR[$code]['response']);
 
     if (defined('HTTP_CODE_'.$code)) $message = constant('HTTP_CODE_'.$code);
@@ -283,13 +283,13 @@ class TClientUI extends WebPage {
     $this->render();
     exit;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function render()
   # Отправляет созданную страницу пользователю.
   {
     global $Eresus, $KERNEL, $plugins, $session, $request;
 
-    if (arg('HTTP_ERROR')) $this->httpError(arg('HTTP_ERROR'));
+    if (arg('HTTP_ERROR')) $this->httpError(arg('HTTP_ERROR', 'int'));
     # Отрисовываем контент
     $content = $plugins->clientRenderContent();
     #$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
@@ -314,28 +314,28 @@ class TClientUI extends WebPage {
       $session['msg']['errors'] = array();
     }
     $result = str_replace('$(Content)', $content, $this->template);
-    
+
     # FIX: Обратная совместимость
     if (!empty($this->styles))	$this->addStyles($this->styles);
-    
+
     $result = $plugins->clientOnPageRender($result);
 
     # FIX: Обратная совместимость
     if (!empty($this->scripts))	$this->addScripts($this->scripts);
-    
+
     $result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
-    
+
     # Замена макросов
     $result = $this->replaceMacros($result);
 
     if (count($this->headers)) foreach ($this->headers as $header) Header($header);
-    
+
     $result = $plugins->clientBeforeSend($result);
     if (!$Eresus->conf['debug']['enable']) ob_start('ob_gzhandler');
     echo $result;
     if (!$Eresus->conf['debug']['enable']) ob_end_flush();
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function pages($pagesCount, $itemsPerPage, $reverse = false)
   # Выводит список подстраниц для навигации по ним
   {
@@ -344,10 +344,10 @@ class TClientUI extends WebPage {
     if ($pagesCount>1) {
       $at_once = option('clientPagesAtOnce');
       if (!$at_once) $at_once = 10;
-      
+
       $side_left = '';
       $side_right = '';
-      
+
       $for_from = $reverse ? $pagesCount : 1;
       $default = $for_from;
       $for_to = $reverse ? 0 : $pagesCount+1;
@@ -363,7 +363,7 @@ class TClientUI extends WebPage {
           if ($for_from != $pagesCount) $side_left = "<a href=\"".$request['path']."\" title=\"".strLastPage."\">&nbsp;&laquo;&nbsp;</a>";
           if ($for_to != 0) $side_right = "<a href=\"".$request['path']."p1/\" title=\"".strFirstPage."\">&nbsp;&raquo;&nbsp;</a>";
         } else { # Если установлен прямой порядок страниц
-          if ($this->subpage > (integer)($at_once / 2)) $for_from = $this->subpage - (integer)($at_once / 2); 
+          if ($this->subpage > (integer)($at_once / 2)) $for_from = $this->subpage - (integer)($at_once / 2);
           if ($pagesCount - $this->subpage < (integer)($at_once / 2) + (($at_once % 2)>0)) $for_from = $pagesCount - $at_once+1;
           $for_to = $for_from + $at_once;
           if ($for_from != 1) $side_left = "<a href=\"".$request['path']."\" title=\"".strFirstPage."\">&nbsp;&laquo;&nbsp;</a>";
@@ -372,19 +372,19 @@ class TClientUI extends WebPage {
       }
       $result = '<div class="pages">'.strPages;
       $result .= $side_left;
-      for ($i = $for_from; $i != $for_to; $i += $for_delta) 
+      for ($i = $for_from; $i != $for_to; $i += $for_delta)
         if ($i == $this->subpage) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
           else $result .= '<a href="'.$request['path'].($i==$default?'':'p'.$i.'/').'">&nbsp;'.$i.'&nbsp;</a>';
       $result .= $side_right;
       $result .= "</div>\n";
       return $result;
-    } 
+    }
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderForm($form, $values=null)
-  { 
+  {
   global $request;
-  
+
     $result = '';
     $hidden = '';
     $body = '';
@@ -396,11 +396,11 @@ class TClientUI extends WebPage {
       if ((!isset($item['access'])) || (UserRights($item['access']))) {
         if (isset($item['label'])) $label = !empty($item['hint']) ? '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>': $item['label']; else $label = '';
         if (isset($item['pattern'])) $validator .= "if (!form.".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\nform.".$item['name'].".select();\n} else ";
-        $value = 
+        $value =
           isset($item['value'])
             ? $item['value']
             : (isset($item['name']) && isset($values[$item['name']])
-                ? $values[$item['name']] 
+                ? $values[$item['name']]
                 : (isset($item['default'])
                     ? $item['default']
                     : ''
@@ -411,23 +411,23 @@ class TClientUI extends WebPage {
         $extra = isset($item['extra'])?' '.$item['extra']:'';
         $comment = isset($item['comment'])?' '.$item['comment']:'';
         switch(strtolower($item['type'])) {
-          case 'hidden': 
+          case 'hidden':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $hidden .= '<input type="hidden" name="'.$item['name'].'" value="'.$value.'" />'."\n";
           break;
           case 'divider': $body .= "<tr><td colspan=\"2\"><hr></td></tr>\n"; break;
           case 'text': $body .= '<tr><td colspan="2" class="formText"'.$extra.'>'.$value."</td></tr>\n"; break;
           case 'header': $body .= '<tr><th colspan="2" class="formHeader">'.$value."</th></tr>\n"; break;
-          case 'edit': 
+          case 'edit':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($value).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$width.$disabled.$extra.' />'.$comment."</td></tr>\n"; break;
           break;
-          case 'password': 
+          case 'password':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.' />'.$comment."</td></tr>\n";
             if (isset($item['equal'])) $validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
           break;
-          case 'select': 
+          case 'select':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><select name="'.$item['name'].'"'.$width.$disabled.$extra.'>'."\n";
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
@@ -447,15 +447,15 @@ class TClientUI extends WebPage {
             }
             $body .= '</select>'.$comment."</td></tr>\n";
           break;
-          case 'checkbox': 
+          case 'checkbox':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked="checked"' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
+            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked="checked"' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n";
           break;
-          case 'memo': 
+          case 'memo':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="formLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="40" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$width.$disabled.$extra.' >'.EncodeHTML($value)."</textarea></td></tr>\n"; 
+            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="formLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="40" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$width.$disabled.$extra.' >'.EncodeHTML($value)."</textarea></td></tr>\n";
           break;
-          case 'file': 
+          case 'file':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="file" name="'.$item['name'].'" size="'.$item['width'].'"'.$disabled." />".$comment."</td></tr>\n";
             $file = true;

@@ -1,25 +1,25 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or  
+ * the Free Software Foundation; either version 2 of the License, or
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -42,7 +42,7 @@ if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 ### ОБРАБОТКА ОШИБОК ###
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
- * 
+ *
  * @param string $msg  Текст сообщения
  */
 function FatalError($msg)
@@ -71,11 +71,11 @@ function FatalError($msg)
 //------------------------------------------------------------------------------
 /**
  * Вывод сообщения о пользовательской ошибке
- * 
+ *
  * @param string $text     Текст сообщения
  * @param string $caption  Заголовок окна сообщения
  */
-function ErrorBox($text, $caption=errError) 
+function ErrorBox($text, $caption=errError)
 {
   $result =
     (empty($caption)?'':"<div class=\"errorBoxCap\">".$caption."</div>\n").
@@ -99,7 +99,7 @@ function InfoBox($text, $caption=strInformation)
 function ErrorHandler($errno, $errstr, $errfile, $errline)
 {
   global $Eresus;
-  
+
   if (error_reporting()) switch ($errno) {
     case E_NOTICE:
       if ($Eresus->conf['debug']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
@@ -249,8 +249,8 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
     $multipart.=chunk_split(base64_encode($text))."\n\n";
     $multipart.="--$boundary--\n";
     $text = $multipart;
-  } else $headers .= "Content-type: text/plain; charset=$charset\n"; 
-  
+  } else $headers .= "Content-type: text/plain; charset=$charset\n";
+
   if ($Eresus->conf['debug']['enable'] && $Eresus->conf['debug']['mail'] !== true) {
     if (is_string($Eresus->conf['debug']['mail'])) {
       $hnd = @fopen($Eresus->conf['debug']['mail'], 'a');
@@ -307,10 +307,10 @@ function gettime($format = 'Y-m-d H:i:s')
 
 /**
  * Форматирование даты
- * 
+ *
  * @param string $date    Дата в формате YYYY-MM-DD hh:mm:ss
  * @param string $format  Правила форматирования даты
- * 
+ *
  * @return string Отформатированная дата
  */
 function FormatDate($date, $format=DATETIME_NORMAL)
@@ -329,7 +329,7 @@ function FormatDate($date, $format=DATETIME_NORMAL)
   	$repl['M'] = constant('MONTH_'.$repl['m']);
   	$repl['D'] = $repl['d']{0} == '0' ? $repl['d']{1} : $repl['d'];
   	$repl['H'] = $repl['h']{0} == '0' ? $repl['h']{1} : $repl['h'];
-  	
+
     $delta = 0;
     for($i = 0; $i<count($m[0]); $i++) {
     	$format = substr_replace($format, $repl[$m[0][$i][0]], $m[0][$i][1]+$delta, 1);
@@ -357,7 +357,7 @@ function decodeHTML($text)
   $trans_tbl = array_flip ($trans_tbl);
   $trans_tbl['%28'] = '(';
   $trans_tbl['%29'] = ')';
-  $text = strtr ($text, $trans_tbl); 
+  $text = strtr ($text, $trans_tbl);
   $text = preg_replace('/ilo-[^\s>]*/i', '', $text);
   return $text;
 }
@@ -418,11 +418,11 @@ function decodeOptions($options, $defaults = array())
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
  * Замена макросов
- * 
+ *
  * @param string $template  Шаблон
  * @param mixed  $source    Источник для замены
  * @return Обработанный текст
- * 
+ *
  * @see __propery
  */
 function replaceMacros($template, $source)
@@ -434,7 +434,7 @@ function replaceMacros($template, $source)
   }
 		# Замена обычных макросов
   preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-  if (count($matches[1])) foreach($matches[1] as $macros) 
+  if (count($matches[1])) foreach($matches[1] as $macros)
   	if (__isset($source, $macros)) $template = str_replace('$('.$macros.')', __property($source, $macros), $template);
   return $template;
 }
@@ -444,28 +444,61 @@ function replaceMacros($template, $source)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Работа с HTTP-запросом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Заполняет массив значениями из запроса
+ *
+ * @param array $item        Заполняемый массив или массив ключей
+ * @param array $checkboxes  Список аргументов рассматриваемых как чек-боксы
+ * @param array $prevent     Список полей массива изменять которые не следует
+ *
+ * @return array  Заполненный массив
+ */
 function GetArgs($item, $checkboxes = array(), $prevent = array())
-# Заполняет массив $item соответствующими значениями из $request['arg']
 {
 	global $Eresus;
-   
+
   if ($clear = (key($item) == '0')) $item = array_flip($item);
   foreach ($item as $key => $value) {
     if ($clear) unset($item[$key]);
     if (!in_array($key, $prevent)) {
-      if (arg($key)) $item[$key] = arg($key);
+      if (arg($key)) $item[$key] = arg($key, 'dbsafe');
       if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
     }
   }
   return $item;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function arg($arg)
+/**
+ * Получение аргумента запроса
+ *
+ * @param string $arg     Имя аргумента
+ * @param mixed  $filter  Фильтр на значение
+ *
+ * @return mixed
+ */
+function arg($arg, $filter = null)
 {
   global $Eresus;
-  return isset($Eresus->request['arg'][$arg])?$Eresus->request['arg'][$arg]:false;
+
+  $arg = isset($Eresus->request['arg'][$arg])?$Eresus->request['arg'][$arg]:false;
+  if ($arg !== false && !is_null($filter)) {
+  	switch($filter) {
+  		case 'dbsafe':
+  			$arg = $Eresus->db->escape($arg);
+  		break;
+  		case 'int':
+  		case 'integer':
+  				$arg = intval($arg);
+  		break;
+  		case 'float':
+  				$arg = floatval($arg);
+  		break;
+  		default: $arg = preg_replace($filter, '', $arg);
+  	}
+  }
+  return $arg;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 function saveRequest()
 # Функция сохраняет в сессии текущие аргументы
 {
@@ -515,10 +548,10 @@ global $Eresus;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
  * Чтение файла
- * 
+ *
  * @param string $filename Имя файла
- * @return mixed Содержимое файла или false 
- */ 
+ * @return mixed Содержимое файла или false
+ */
 function fileread($filename)
 {
 	$result = false;
@@ -532,16 +565,16 @@ function fileread($filename)
 //------------------------------------------------------------------------------
 /**
  * Запись в файл
- * 
+ *
  * @param string $filename Имя файла
  * @param string $content  Содержимое
  * @param int    $flags    Флаги
- * @return bool Результат выполнения 
- */ 
+ * @return bool Результат выполнения
+ */
 function filewrite($filename, $content, $flags = 0)
 {
 	$result = false;
-	@$fp = fopen($filename, ($flags && FILE_APPEND)?'ab':'wb'); 
+	@$fp = fopen($filename, ($flags && FILE_APPEND)?'ab':'wb');
 	if ($fp) {
 		$result = fwrite($fp, $content) == strlen($content);
 		fclose($fp);
@@ -551,10 +584,10 @@ function filewrite($filename, $content, $flags = 0)
 //------------------------------------------------------------------------------
 /**
  * Удаляет файл
- * 
+ *
  * @param string $filename Имя файла
- * @return bool Результат выполнения 
- */ 
+ * @return bool Результат выполнения
+ */
 function filedelete($filename)
 {
 	$result = false;
@@ -581,7 +614,7 @@ function upload($name, $filename, $overwrite = true)
     }
   }
   switch($_FILES[$name]['error']) {
-    case UPLOAD_ERR_OK: 
+    case UPLOAD_ERR_OK:
       if (is_uploaded_file($_FILES[$name]['tmp_name'])) {
         $moved = @move_uploaded_file($_FILES[$name]['tmp_name'], $filename);
         if ($moved) {
@@ -636,7 +669,7 @@ function saveTemplate($name, $template)
 
 /**
  * Переадресация на URL
- * 
+ *
  * @param string $url  Новый URL
  */
 function goto($url)
@@ -664,17 +697,17 @@ function SendXML($data)
   exit;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function option($name) 
-{ 
+function option($name)
+{
   $result = defined($name)?constant($name):'';
-  return $result; 
+  return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function img($imagename)
 # function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
 # function img($imagename, $params=array())
 # Функция возвращает заполненный тэг <img>
-{ 
+{
   $argc = func_num_args();
   $argv = func_get_args();
   if ($argc > 1) {
@@ -694,7 +727,7 @@ function img($imagename)
   if (!isset($p['ext']))  $p['ext'] = '';
   if (!isset($p['autosize'])) $p['autosize'] = true;
 
-  
+
   if (strpos($imagename, httpRoot) !== false) $imagename = str_replace(httpRoot, '', $imagename);
   if (strpos($imagename, filesRoot) !== false) $imagename = str_replace(filesRoot, '', $imagename);
   if (strpos($imagename, '://') === false) $imagename = httpRoot.$imagename;
@@ -746,7 +779,7 @@ function Translit($s) #: String
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __clearargs($args)
 {
-  if (count($args)) foreach($args as $key => $value) 
+  if (count($args)) foreach($args as $key => $value)
     if (gettype($args[$key]) == 'array') {
       $args[$key] = __clearargs($args[$key]);
     } else {
@@ -775,17 +808,17 @@ function __clearargs($args)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
  * Определяет установлено ли свойство у элемента
- * 
+ *
  * @param mixed  $object    Элемент
  * @param string $property  Свойство
  * @return bool Значение
- * 
+ *
  * @see replaceMacros
  */
 function __isset($object, $property)
 {
-	return 
-		is_object($object) ? isset($object->$property) : ( 
+	return
+		is_object($object) ? isset($object->$property) : (
 			is_array ($object) ? isset($object[$property]) :
 			false
 		);
@@ -793,17 +826,17 @@ function __isset($object, $property)
 //-----------------------------------------------------------------------------
 /**
  * Возвращает свойство элемента
- * 
+ *
  * @param mixed  $object    Элемент
  * @param string $property  Свойство
  * @return string Значение
- * 
+ *
  * @see replaceMacros
  */
 function __property($object, $property)
 {
-	return 
-		is_object($object) ? $object->$property : ( 
+	return
+		is_object($object) ? $object->$property : (
 			is_array ($object) ? $object[$property] :
 			''
 		);
@@ -850,7 +883,7 @@ class Eresus {
   var $db;
   var $plugins;
   var $user;
-  
+
   var $host;
   var $https;
   var $path;
@@ -860,12 +893,12 @@ class Eresus {
   var $froot; # Корневая директория
   var $fdata; # Директория данных
   var $fstyle; # Директория стилей
-  
+
   var $request;
   var $sections;
-  
+
   var $PHP5 = false;
-  
+
   /**
   * Конструктор
   */
@@ -897,7 +930,7 @@ class Eresus {
   function init_config()
   {
     global $Eresus;
-    
+
     $filename = realpath(dirname(__FILE__).'/..').'/cfg/main.inc';
     if (is_file($filename)) include_once($filename);
     else FatalError("Main config file '$filename' not found!");
@@ -934,10 +967,10 @@ class Eresus {
     }
     $this->fdata = $this->froot.'data/';
     $this->fstyle = $this->froot.'style/';
-    
+
     if (is_null($this->host)) $this->host = strtolower($_SERVER['HTTP_HOST']);
     $this->https = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']);
-    
+
     if (is_null($this->path)) {
       $s = $this->froot;
       $s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
@@ -947,7 +980,7 @@ class Eresus {
     $this->root = ($this->https ? 'https://' : 'http://').$this->host.$this->path;
     $this->data = $this->root.'data/';
     $this->style = $this->root.'style/';
-    
+
     # Обратная совместимость
     define('httpPath', $this->path);
     define('filesRoot', $this->froot);
@@ -980,7 +1013,7 @@ class Eresus {
   function init_request()
   {
     global $request;
-    
+
     $s = substr($_SERVER['REQUEST_URI'], strlen($this->path));
     # Если SID передается в URL, вырезаем его.
     $sid = 'sid='.session_id();
@@ -1019,7 +1052,7 @@ class Eresus {
 
     $locale['lang'] = $this->conf['lang'];
     $locale['prefix'] = '';
-    
+
     # Подключение строковых данных
     $filename = $this->froot.'lang/'.$locale['lang'].'.inc';
     if (is_file($filename)) include_once($filename);
@@ -1087,7 +1120,7 @@ class Eresus {
   function check_loginout()
   {
 		if (arg('action')) switch (arg('action')) {
-		  case 'login': $this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin')); break;
+		  case 'login': $this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int')); break;
 		  case 'logout': $this->logout(true); goto($this->root.'admin/'); break;
 		}
   }
@@ -1272,7 +1305,7 @@ class Eresus {
   * @access public
   */
   function execute()
-  {  
+  {
   }
   //------------------------------------------------------------------------------
 }

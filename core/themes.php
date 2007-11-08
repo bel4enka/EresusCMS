@@ -1,15 +1,17 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Управление оформлением
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
+
+#TODO: Проверить нет ли доступа к внешним директориям и проверить аргументы arg()
 
 class TThemes {
   var $access = ADMIN;
@@ -65,7 +67,7 @@ class TThemes {
   function sectionTemplatesDelete()
   {
     global $page;
-    
+
     useLib('templates');
     $templates = new Templates();
     $templates->delete(arg('delete'));
@@ -75,7 +77,7 @@ class TThemes {
   function sectionTemplatesAdd()
   {
     global $page;
-    
+
     $form = array(
       'name' => 'addForm',
       'caption' => $page->title.admTDiv.admAdd,
@@ -96,7 +98,7 @@ class TThemes {
   function sectionTemplatesEdit()
   {
     global $page;
-    
+
     useLib('templates');
     $templates = new Templates();
     $item = $templates->get(arg('id'), '', true);
@@ -121,7 +123,7 @@ class TThemes {
   function sectionTemplatesList()
   {
     global $page;
-    
+
     $table = array(
       'name' => 'templates',
       'key'=> 'filename',
@@ -146,15 +148,15 @@ class TThemes {
     $templates = new Templates();
     $list = $templates->enum();
     $items = array();
-    foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value); 
+    foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
     $result = $page->renderTable($table, $items);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionTemplates() 
+  function sectionTemplates()
   {
   global $page, $request;
-  
+
     $page->title .= admTDiv.admThemesTemplates;
 
     if (!isset($request['arg']['action'])) $request['arg']['action'] = '';
@@ -162,7 +164,7 @@ class TThemes {
       case 'update': $result = $this->sectionTemplatesUpdate(); break;
       case 'insert': $result = $this->sectionTemplatesInsert(); break;
       case 'add': $result = $this->sectionTemplatesAdd(); break;
-      default: 
+      default:
         if (isset($request['arg']['delete'])) $result = $this->sectionTemplatesDelete();
         elseif (isset($request['arg']['id'])) $result = $this->sectionTemplatesEdit();
         else $result = $this->sectionTemplatesList();
@@ -188,7 +190,7 @@ class TThemes {
   function sectionStdDelete()
   {
     global $page;
-    
+
     useLib('templates');
     $templates = new Templates();
     $templates->delete(arg('delete'), 'std');
@@ -198,7 +200,7 @@ class TThemes {
   function sectionStdAdd()
   {
     global $page, $request;
-    
+
     $values = array();
     $items = array();
     $jsArray = "var aTemplates = Array();\n";
@@ -235,7 +237,7 @@ class TThemes {
   function sectionStdEdit()
   {
     global $page;
-    
+
     useLib('templates');
     $templates = new Templates();
     $item = $templates->get(arg('id'), 'std', true);
@@ -260,7 +262,7 @@ class TThemes {
   function sectionStdList()
   {
     global $page;
-    
+
     $table = array(
       'name' => 'templates',
       'key'=> 'filename',
@@ -285,15 +287,15 @@ class TThemes {
     $templates = new Templates();
     $list = $templates->enum('std');
     $items = array();
-    foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value); 
+    foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
     $result = $page->renderTable($table, $items);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionStd() 
+  function sectionStd()
   {
   global $page, $request;
-  
+
     $page->title .= admTDiv.admThemesStandard;
 
     if (!isset($request['arg']['action'])) $request['arg']['action'] = '';
@@ -301,7 +303,7 @@ class TThemes {
       case 'update': $result = $this->sectionStdUpdate(); break;
       case 'insert': $result = $this->sectionStdInsert(); break;
       case 'add': $result = $this->sectionStdAdd(); break;
-      default: 
+      default:
         if (isset($request['arg']['delete'])) $result = $this->sectionStdDelete();
         if (isset($request['arg']['id'])) $result = $this->sectionStdEdit();
         else $result = $this->sectionStdList();
@@ -314,7 +316,7 @@ class TThemes {
   function sectionStylesInsert()
   {
     global $request;
-    
+
     $file = "/* ".$request['arg']['description']." */\r\n\r\n".$request['arg']['html'];
     $fp = fopen(filesRoot.'style/'.$request['arg']['filename'].'.css', 'w');
     fwrite($fp, $file);
@@ -333,7 +335,7 @@ class TThemes {
   function sectionStylesDelete()
   {
     global $request, $page;
-    
+
     $filename = filesRoot.'style/'.$request['arg']['delete'];
     if (file_exists($filename)) unlink($filename);
     SendNotify(admDeleted.': '.$request['arg']['delete']);
@@ -343,7 +345,7 @@ class TThemes {
   function sectionStylesAdd()
   {
     global $page, $request;
-    
+
     $form = array(
       'name' => 'addForm',
       'caption' => $page->title.admTDiv.admAdd,
@@ -364,7 +366,7 @@ class TThemes {
   function sectionStylesEdit()
   {
     global $page, $request;
-    
+
     $item['filename'] = $request['arg']['id'];
     $item['html'] = trim(file_get_contents(filesRoot.'style/'.$item['filename']));
     preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
@@ -392,7 +394,7 @@ class TThemes {
   function sectionStylesList()
   {
     global $page;
-    
+
     $table = array(
       'name' => 'Styles',
       'key'=> 'filename',
@@ -425,22 +427,22 @@ class TThemes {
         'description' => $description,
       );
     }
-    closedir($hnd); 
+    closedir($hnd);
     $result = $page->renderTable($table, $items);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function sectionStyles() 
+  function sectionStyles()
   {
   global $page, $request;
-  
+
     $page->title .= admTDiv.admThemesStyles;
     if (!isset($request['arg']['action'])) $request['arg']['action'] = '';
     switch($request['arg']['action']) {
       case 'update': $result = $this->sectionStylesUpdate(); break;
       case 'insert': $result = $this->sectionStylesInsert(); break;
       case 'add': $result = $this->sectionStylesAdd(); break;
-      default: 
+      default:
         if (isset($request['arg']['delete'])) $result = $this->sectionStylesDelete();
         elseif (isset($request['arg']['id'])) $result = $this->sectionStylesEdit();
         else $result = $this->sectionStylesList();

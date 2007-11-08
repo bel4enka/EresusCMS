@@ -24,7 +24,7 @@ function TContentPlugin()
 //------------------------------------------------------------------------------
 /**
 * Обновляет контент страницы в БД
-* 
+*
 * @param  string  $content  Контент
 */
 function updateContent($content)
@@ -41,7 +41,7 @@ function updateContent($content)
 */
 function update()
 {
-	$this->updateContent(arg('content'));
+	$this->updateContent(arg('content', 'dbsafe'));
   goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
