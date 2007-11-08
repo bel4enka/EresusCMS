@@ -918,7 +918,7 @@ function updateContent($content)
 */
 function adminUpdate()
 {
-	$this->updateContent(arg('content', 'dbsafe'));
+	$this->updateContent(arg('content'));
   goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
