@@ -74,7 +74,7 @@ define('strReadOnly', 'Только чтение');
 
 /* ОШИБКИ */
 
-# Общие 
+# Общие
 define('errNotice', 'Замечание');
 define('errWarning', 'Предупреждение');
 define('errError', 'Ошибка');
@@ -116,6 +116,9 @@ define('errFormPatternError', 'Введенное значение в поле "%s" не соответствует т
 define('errFormBadConfirm', 'Пароль и подтверждение не совпадают!');
 define('errAccessDenied', 'Доступ к данному разделу запрещен!');
 define('errNonexistedDomain', 'Несуществующий домен: "%s"');
+
+# Разделы
+define('errContentType', 'Неверный тип контента "%s"');
 
 define('errItemWithSameName', 'Элемент с именем "%s" уже существует.');
 
