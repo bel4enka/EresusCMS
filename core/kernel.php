@@ -461,7 +461,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
   foreach ($item as $key => $value) {
     if ($clear) unset($item[$key]);
     if (!in_array($key, $prevent)) {
-      if (arg($key)) $item[$key] = arg($key, 'dbsafe');
+      if (arg($key) !== false) $item[$key] = arg($key);
       if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
     }
   }
@@ -492,6 +492,9 @@ function arg($arg, $filter = null)
   		break;
   		case 'float':
   				$arg = floatval($arg);
+  		break;
+  		case 'word':
+  				$arg = preg_replace('/[\W]/', '', $arg);
   		break;
   		default: $arg = preg_replace($filter, '', $arg);
   	}
