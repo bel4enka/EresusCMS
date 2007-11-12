@@ -58,7 +58,7 @@ class Form {
         } else ";
     # Значение
     $item['value'] = isset($item['value']) ? $item['value']
-      : (isset($item['name']) && isset($this->values[$item['name']]) ? $this->values[$item['name']] 
+      : (isset($item['name']) && isset($this->values[$item['name']]) ? $this->values[$item['name']]
       : (isset($item['default']) ? $item['default']
       : '' )
     );
@@ -274,12 +274,12 @@ class Form {
       if (!$item['id']) $item['id'] = $this->form['name'].'_'.$item['name'];
       $item['class'][] = 'codepress';
       $item['class'] = array_merge($item['class'], explode(' ', $item['syntax']));
-      $this->onsubmit .= 
+      $this->onsubmit .=
         "\n    form.".$item['name'].".value = ".$item['id'].".getCode();\n".
         "    form.".$item['name'].".disabled = false;\n";
       $this->syntax = true;
     }
-    $result = '<tr><td colspan="2">'.(empty($item['label'])?'':'<span class="formLabel">'.$item['label'].'</span><br />').'<textarea name="'.$item['name'].'" cols="'.$cols.'" rows="'.(empty($item['height'])?'3':$item['height']).'" '.$this->attrs($item).'>'.EncodeHTML($item['value'])."</textarea></td></tr>\n"; 
+    $result = '<tr><td colspan="2">'.(empty($item['label'])?'':'<span class="formLabel">'.$item['label'].'</span><br />').'<textarea name="'.$item['name'].'" cols="'.$cols.'" rows="'.(empty($item['height'])?'3':$item['height']).'" '.$this->attrs($item).'>'.EncodeHTML($item['value'])."</textarea></td></tr>\n";
     return $result;
   }
   //------------------------------------------------------------------------------
@@ -313,9 +313,8 @@ class Form {
   */
   function render_file($item)
   {
-
     if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
-    $result = '<tr><td class="formLabel">'.$item['label']."</td><td><input type=\"file\" name=\"".$item['name']."\" size=\"".$item['width']."\"".$this->attrs($item).">".$item['comment']."</td></tr>\n";
+    $result = '<tr><td class="formLabel">'.$item['label']."</td><td><input type=\"file\" name=\"".$item['name']."\"".(isset($item['width']) ? ' size="'.$item['width'].'"':'').$this->attrs($item).">".$item['comment']."</td></tr>\n";
     $this->file = true;
     return $result;
   }
@@ -330,11 +329,11 @@ class Form {
   function render()
   {
     global $page, $request;
-      
+
     $result = '';     # Выходной код
     $hidden = '';     # Скрытые поля???
     $body = '';       # Тело таблицы-формы
-  
+
     if (empty($this->form['name'])) $result .= ErrorBox(errFormHasNoName);
     if (count($this->form['fields'])) foreach($this->form['fields'] as $item) {
       # Проверяем права доступа к элементу
@@ -358,11 +357,11 @@ class Form {
         return result;
       }
     ";
-    if ($this->syntax) $page->head .= '<script src="'.httpRoot.'core/codepress/codepress.js" type="text/javascript"></script>'."\n";
+    if ($this->syntax) $page->linkScripts(httpRoot.'core/codepress/codepress.js');
     $referer = isset($request['arg']['sub_id'])?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
     $this->hidden .= '<input type="hidden" name="submitURL" value="'.$referer.'">';
     $this->hidden = "<div class=\"hidden\">{$this->hidden}</div>";
-    $result = 
+    $result =
       "<form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" ')."action=\"".$page->url()."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
       $this->hidden.
       "<table width=\"100%\">\n".
@@ -375,7 +374,7 @@ class Form {
       (!isset($this->form['buttons']) || in_array('cancel', $this->form['buttons'])?"<input type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\">":'').
       "</td></tr>\n".
       "</table>\n</form>\n";
-      
+
     return $result;
   }
   //------------------------------------------------------------------------------
