@@ -1,13 +1,12 @@
 <?php
 /**
  * Библиотека для работы с изображениями
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  * @version 0.0.2
- * @modified 2007-10-04
  */
 
 /**
@@ -26,7 +25,7 @@ function imageCreateFromFile($filename)
 		case IMG_PNG:  $result = imageCreateFromPNG($filename); break;
 		case IMG_WBMP: $result = imageCreateFromWBMP($filename); break;
 		case IMG_XPM:  $result = imageCreateFromXPM($filename); break;
-		default:       $result = false; 
+		default:       $result = false;
 	}
 	return $result;
 }
@@ -48,7 +47,7 @@ function imageSaveToFile($image, $filename, $format)
 		break;
 		case IMG_JPG:
 		case IMG_JPEG:
-			$quality = func_num_args() > 3 ? func_get_arg(3) : 80; 
+			$quality = func_num_args() > 3 ? func_get_arg(3) : 80;
 			$result = imageJPEG($image, $filename, $quality);
 		break;
 		case IMG_PNG:
@@ -73,7 +72,7 @@ function imageSaveToFile($image, $filename, $format)
  * @param int    $width    Ширина миниатюры
  * @param int    $height   Высота миниатюры
  * @param mixed  $fill     Заполнение фона
- * 
+ *
  * @return bool Результат
  */
 function thumbnail($srcFile, $dstFile, $width, $height, $fill = null, $quality = 80)

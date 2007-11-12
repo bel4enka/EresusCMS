@@ -4,9 +4,8 @@
 *
 * Библиотека для работы с шаблонами
 *
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.3
-* @modified: 2007-09-26
+* @author Mikhail Krasilnikov <mk@procreat.ru>
+* @version 0.0.3
 */
 
 class Templates {
@@ -30,7 +29,7 @@ class Templates {
 				$file = trim(substr($file, strpos($file, "\n")));
 				$title = $title[1];
 			} else $title = admNoTitle;
-			$result[basename($filename, '.html')] = $title;  
+			$result[basename($filename, '.html')] = $title;
 		}
 		return $result;
 	}
@@ -61,7 +60,7 @@ class Templates {
 				);
 			} else {
 				if (preg_match($this->pattern, $result)) $result = trim(substr($result, strpos($result, "\n")));
-			}				
+			}
 		} else {
 			if (empty($type) && $name != 'default') $result = $this->get('default', $type);
 			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
