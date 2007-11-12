@@ -34,7 +34,6 @@ function __macroVar($matches) {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TAdminUI extends WebPage {
   var $module; # Загружаемый модуль
-  var $head; # Раздел <HEAD>
   var $title; # Заголовок страницы
   var $styles; # Стили CSS
   var $scripts; # Скрипты
@@ -455,9 +454,9 @@ class TAdminUI extends WebPage {
       $current = (isset($request['arg']['mod'])) && ($request['arg']['mod'] == 'content') && ($request['arg']['section'] == $item['id']);
       if ($current) $opened = $level;
       if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
-      $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBrunch(\''.$item['id'].'\');"'));
+      $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
       $result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
-      if (!empty($sub)) $result .= '<ul id="brunch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
+      if (!empty($sub)) $result .= '<ul id="branch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
     }
     return $result;
   }
@@ -554,7 +553,7 @@ class TAdminUI extends WebPage {
       '   <script type="text/javascript">'."\n".
       '     '.trim(str_replace("\n", "\n     ",$this->scripts))."\n".
       '   </script>'."\n".
-      $this->head."\n".
+      $this->renderHeadSection()."\n".
       '</head>'."\n".
       '<body class="admin">'."\n".
       '<div class="pageHeader">'."\n".
