@@ -148,7 +148,7 @@ class MySQL {
     $values = '';
     while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) {
       $cols .= ", `$field`";
-      $values .= " , '".mysql_real_escape_string($item[$field], $this->Connection)."'";
+      $values .= " , '{$item[$field]}'";
     }
     $cols = substr($cols, 2);
     $values = substr($values, 2);
@@ -199,7 +199,7 @@ class MySQL {
     if ($hnd === false) FatalError(mysql_error($this->Connection));
     $values = array();
     $i = 0;
-    while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) $values[] = "`$field`='".mysql_real_escape_string($item[$field], $this->Connection)."'";
+    while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) $values[] = "`$field`='{$item[$field]}'";
     $values = implode(', ', $values);
     $result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition);
     return $result;
