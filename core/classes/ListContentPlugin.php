@@ -1,35 +1,34 @@
 <?php
-useClass('backward/TContentPlugin');
-
 /**
- * Контент-список
+ * Eresus 2.10
  *
  * Родительский класс для плагинов, реализующих контент в виде списка
  *
- * @author: Mikhail Krasilnikov <mk@procreat.ru>, <mk@dvaslona.ru>
- * @version: x.x.x
- * @modified: 2007-xx-xx
+ * Система управления контентом Eresus™ 2
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
+ *
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 /**
  * Родительский класс для плагинов, реализующих контент в виде списка
  *
- * @var  string  $name         Имя плагина
+ * @var  string  $name        Имя плагина
  * @var  string  $version	    Версия плагина
- * @var  string  $kernel       Необходимая версия Eresus
- * @var  string  $title        Название плагина
+ * @var  string  $kernel      Необходимая версия Eresus
+ * @var  string  $title       Название плагина
  * @var  string  $description	Описание плагина
- * @var  string  $type         Тип плагина, перечисленые через запятую ключевые слова:
- *                               client   - Загружать плагин в КИ
- *                               admin    - Загружать плагин в АИ
- *                               content  - Плагин предоставляет тип контента
- *                               ondemand - Не загружать плагин автоматически
- * @var  array   $settings     Настройки плагина
+ * @var  string  $type        Тип плагина, перечисленые через запятую ключевые слова:
+ *                              client   - Загружать плагин в КИ
+ *                              admin    - Загружать плагин в АИ
+ *                              content  - Плагин предоставляет тип контента
+ *                              ondemand - Не загружать плагин автоматически
+ * @var  array   $settings    Настройки плагина
  */
 
-class ListContentPlugin extends TContentPlugin {
-var $table;
+class ListContentPlugin extends ContentPlugin {
+/*var $table;
 var $pagesCount = 0;
 #---------------------------------------------------------------------------------------------------------------------#
 function install()
@@ -157,7 +156,7 @@ global $db, $page, $user, $request, $session;
 * @access  public
 *
 * @return  string  Контент
-*/
+* /
 function clientRenderContent()
 {
   global $page;
@@ -172,11 +171,11 @@ function clientRenderContent()
 * @access  private
 *
 * @return  array  Список элементов
-*/
+* /
 function clientGetItems()
 {
   global $Eresus, $page;
-  
+
   $this->table['fields'] = $Eresus->db->fields($this->table['name']);
   $this->itemsCount = $Eresus->db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
   if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
@@ -192,7 +191,7 @@ function clientGetItems()
       ?(($this->pagesCount-$page->subpage)*$this->settings['itemsPerPage'])
       :(($page->subpage-1)*$this->settings['itemsPerPage'])
   );
-  
+
   return $items;
 }
 //------------------------------------------------------------------------------
@@ -202,7 +201,7 @@ function clientGetItems()
 * @access  private
 *
 * @return  string  Контент
-*/
+* /
 function clientRenderList()
 {
   $result = '';
@@ -227,7 +226,7 @@ function clientRenderPages()
 
   $result = $page->pages($this->pagesCount, $this->settings['itemsPerPage'], $this->table['sortDesc']);
   return $result;
-}
+}*/
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#

@@ -165,6 +165,7 @@ class WebPage {
 	*/
 	function renderHeadSection()
 	{
+		$result = array();
 	  # <meta> теги
 	  if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
 	    $result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
@@ -797,7 +798,7 @@ function dbInsert($table, $item)
 	global $Eresus;
 
 	$result = $Eresus->db->insert($this->__table($table), $item);
-	$result = $Eresus->db->getInsertedId();
+	$result = $this->dbItem($table, $Eresus->db->getInsertedId());
 
   return $result;
 }
@@ -895,7 +896,7 @@ function ContentPlugin()
   parent::Plugin();
   if (isset($page)) {
     $page->plugin = $this->name;
-    if (count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
+    if (isset($page->options) && count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
   }
 }
 //------------------------------------------------------------------------------

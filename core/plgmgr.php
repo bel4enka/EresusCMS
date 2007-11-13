@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Управление модулями расширения
- * 
+ *
  * Система управления контентом Eresus™
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  * @author БерсЪ (fanta@steeka.com)
  */
@@ -42,7 +42,7 @@ class TPlgMgr {
 
     $plugins->load($request['arg']['id']);
     if (method_exists($plugins->items[$request['arg']['id']], 'settings')) {
-      $result = $plugins->items[$request['arg']['id']]->settings();
+      $result = $plugins->items[arg('id', 'word')]->settings();
     } else {
       $form = array(
         'name' => 'InfoWindow',
@@ -85,11 +85,11 @@ class TPlgMgr {
 
     $items = $db->select('`plugins`', '', "`name`");
 		$installed = array();
-		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';  
-		
+		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';
+
     $files = glob(filesRoot.'ext/*.php');
     $files = array_diff($files, $installed);
-    
+
     $page->scripts .= '
       function checkboxes(type)
       {
@@ -137,7 +137,7 @@ class TPlgMgr {
       		$caption = '<span class="admError">'.$file.'.php - '.admPluginsInvalidFile.'</span>';
       	}
       	if (count($kernel) && version_compare($kernel[2], CMSVERSION, '>')) {
-      		$valid = false; 
+      		$valid = false;
       		$caption = '<span class="admError">'.sprintf(admPluginsInvalidVersion, $title[2], $kernel[2]).'</span>';
       	}
       } else $caption = admPluginsInvalidFile;
