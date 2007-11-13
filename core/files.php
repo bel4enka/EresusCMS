@@ -334,7 +334,7 @@ class TFiles {
     elseif (isset($request['arg']['movefile'])) $this->moveFile();
     elseif (isset($request['arg']['delete'])) $this->deleteFile();
     else {
-      $page->head .= "   <script language=javascript src=\"".httpRoot."core/files.js\" type=\"text/javascript\"></script>\n";
+      $page->linkScripts(httpRoot.'core/files.js');
       $result =
         "<table id=\"fileManager\"width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"files\">\n".
         '<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".
