@@ -2,7 +2,7 @@
 /**
 * Система показа баннеров
 *
-* Eresus 2, PHP 4,5 
+* Eresus 2, PHP 4,5
 *
 * © 2005-2006, ProCreat Systems, http://procreat.ru/
 * © 2007, Eresus Group, http://eresus.ru/
@@ -18,7 +18,7 @@ class TBanners extends TListContentPlugin {
   var $name = 'banners';
   var $title = 'Баннеры';
   var $type = 'client,admin';
-  var $version = '1.09';
+  var $version = '1.10';
   var $description = 'Система показа баннеров';
   var $table = array (
     'name' => 'banners',
@@ -95,7 +95,7 @@ class TBanners extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Внутренние функции
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function menuBrunch($owner = 0, $level = 0)
+  function menuBranch($owner = 0, $level = 0)
   {
   global $db;
     $result = array(array(), array());
@@ -103,7 +103,7 @@ class TBanners extends TListContentPlugin {
     if (count($items)) foreach($items as $item) {
       $result[0][] = str_repeat('- ', $level).$item['caption'];
       $result[1][] = $item['id'];
-      $sub = $this->menuBrunch($item['id'], $level+1);
+      $sub = $this->menuBranch($item['id'], $level+1);
       if (count($sub[0])) {
         $result[0] = array_merge($result[0], $sub[0]);
         $result[1] = array_merge($result[1], $sub[1]);
@@ -183,7 +183,7 @@ class TBanners extends TListContentPlugin {
     global $page, $db;
 
     $sections = array(array(), array());
-    $sections = $this->menuBrunch();
+    $sections = $this->menuBranch();
     array_unshift($sections[0], 'ВСЕ РАЗДЕЛЫ');
     array_unshift($sections[1], 'all');
     $form = array(
@@ -224,7 +224,7 @@ class TBanners extends TListContentPlugin {
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
     $item['section'] = explode(':', $item['section']);
     $sections = array(array(), array());
-    $sections = $this->menuBrunch();
+    $sections = $this->menuBranch();
     array_unshift($sections[0], 'ВСЕ РАЗДЕЛЫ');
     array_unshift($sections[1], 'all');
     $form = array(
