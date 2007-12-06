@@ -122,28 +122,28 @@ class MySQL {
   	if (is_bool($fields)) {
   		# Обратная совместимость c 1.2.x
   		$desc = $fields;
-  		$fields = $lim_rows;
+  		$fields = $lim_rows ? $lim_rows : '*';
   		$lim_rows = $lim_offset;
   		$lim_offset = $group;
   		$group = $distinct;
   		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-    $query = 'SELECT ';
-    if ($distinct) $query .= 'DISTINCT ';
-    if (!strlen($fields)) $fields = '*';
-    $tables = str_replace('`' ,'', $tables);
-    $tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
-    $query .= $fields." FROM ".$tables;
-    if (strlen($condition)) $query .= " WHERE $condition";
-    if (strlen($group)) $query .= " GROUP BY $group";
-    if (strlen($order)) {
-      $query .= " ORDER BY $order";
-      if ($desc) $query .= ' DESC';
-    }
-    if ($lim_rows) {
-      $query .= ' LIMIT ';
-      if ($lim_offset) $query .= "$lim_offset, ";
-      $query .= $lim_rows;
-    }
+    	$query = 'SELECT ';
+    	if ($distinct) $query .= 'DISTINCT ';
+    	if (!strlen($fields)) $fields = '*';
+    	$tables = str_replace('`' ,'', $tables);
+    	$tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
+    	$query .= $fields." FROM ".$tables;
+    	if (strlen($condition)) $query .= " WHERE $condition";
+    	if (strlen($group)) $query .= " GROUP BY $group";
+    	if (strlen($order)) {
+	      $query .= " ORDER BY $order";
+  	    if ($desc) $query .= ' DESC';
+    	}
+    	if ($lim_rows) {
+	      $query .= ' LIMIT ';
+      	if ($lim_offset) $query .= "$lim_offset, ";
+      	$query .= $lim_rows;
+    	}
   	} else {
 	    $query = 'SELECT ';
 	    if ($distinct) $query .= 'DISTINCT ';
