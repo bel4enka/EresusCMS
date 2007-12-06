@@ -35,11 +35,11 @@ class TGallery extends TListContentPlugin {
 	var $version = '1.06b';
 	var $description = 'Галерея изображений';
 	var $settings = array(
-	  'tmplList' => '',
-    'tmplListItem' => '',
-    'tmplSubList' => '',
-    'tmplSubListItem' => '',
-    'tmplItem' => '',
+	  'tmplList' => '$(items)',
+    'tmplListItem' => '<b>$(caption)</b><br />Фотографий: $(images)<br /><a href="$(url)"><img src="$(thumbnail)" widt="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
+    'tmplSubList' => '$(items)',
+    'tmplSubListItem' => '<b>$(caption)</b> $(posted)<br /><a href="$(url)"><img src="$(thumbnail)" widt="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
+    'tmplItem' => '<h1>$(caption)</h1><img src="$(image)" widt="$(imageWidth)" height="$(imageHeight)" alt="$(caption)" />',
     'buttonBack' => '[ &laquo; Назад ]',
     'buttonNext' => '[ Вперед &raquo; ]',
     'itemsPerPage' => 20,
