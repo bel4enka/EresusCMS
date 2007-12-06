@@ -752,7 +752,6 @@ function dbDropTable($name = '')
  * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
  * @param string	$condition		Условие выборки
  * @param string	$order				Порядок выборки
- * @param bool		$desc					Обратный порядок
  * @param string	$fields				Список полей
  * @param int			$limit				Вернуть не больше полей чем limit
  * @param int			$offset				Смещение выборки
@@ -760,11 +759,20 @@ function dbDropTable($name = '')
  *
  * @return array	Список записей
  */
-function dbSelect($table = '', $condition = '', $order = '', $desc = false, $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 {
 	global $Eresus;
 
+	if (is_bool($fields)) {
+		# Обратная совместимость
+		$desc = $fields;
+ 		$fields = $lim_rows;
+ 		$lim_rows = $lim_offset;
+ 		$lim_offset = $group;
+ 		$group = $distinct;
+ 		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
 	$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
+	} else $result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit, $offset, $group, $distinct);
 
   return $result;
 }

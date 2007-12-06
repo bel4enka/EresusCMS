@@ -162,7 +162,7 @@ class TClientUI extends WebPage {
   */
   function loadPage()
   {
-    global $Eresus, $plugins, $request, $user;
+    global $Eresus;
 
     $result = false;
     if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
@@ -173,18 +173,18 @@ class TClientUI extends WebPage {
     $item['id'] = 0;
     $url = '';
     do {
-      $items = $Eresus->sections->children($item['id'], $user['auth']?$user['access']:GUEST, SECTIONS_ACTIVE);
+      $items = $Eresus->sections->children($item['id'], $Eresus->user['auth']?$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
       $item = false;
       for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
         $result = $item = $items[$i];
         if ($item['name'] != 'main' || !empty($url)) $url .= $item['name'].'/';
-        $plugins->clientOnURLSplit($item, $url);
+        $Eresus->plugins->clientOnURLSplit($item, $url);
         $this->section[] = $item['title'];
         next($Eresus->request['params']);
-        array_shift($request['params']);
+        array_shift($Eresus->request['params']);
       }
     } while ($item && current($Eresus->request['params']));
-    $request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
+    $Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
     if ($result) $result = $Eresus->sections->get($result['id']);
     return $result;
   }
@@ -194,16 +194,16 @@ class TClientUI extends WebPage {
   function init()
   # Проводит инициализацию страницы
   {
-  global $db, $user, $plugins, $request;
+  	global $Eresus;
 
-    $plugins->preload(array('client'),array('ondemand'));
-    $plugins->clientOnStart();
+    $Eresus->plugins->preload(array('client'),array('ondemand'));
+    $Eresus->plugins->clientOnStart();
 
     $item = $this->loadPage();
     if ($item) {
-      if (count($request['params'])) {
-        if (preg_match('/p[\d]+/i', $request['params'][0])) $this->subpage = substr(array_shift($request['params']), 1);
-        if (count($request['params'])) $this->topic = array_shift($request['params']);
+      if (count($Eresus->request['params'])) {
+        if (preg_match('/p[\d]+/i', $Eresus->request['params'][0])) $this->subpage = substr(array_shift($Eresus->request['params']), 1);
+        if (count($Eresus->request['params'])) $this->topic = array_shift($Eresus->request['params']);
       }
       $this->dbItem = $item;
       $this->id = $item['id'];
@@ -301,17 +301,17 @@ class TClientUI extends WebPage {
     $this->template = $templates->get($this->template);
     $content = $plugins->clientOnContentRender($content);
 
-    if (isset($session['msg']['information']) && count($session['msg']['information'])) {
+    if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
       $messages = '';
-      foreach($session['msg']['information'] as $message) $messages .= InfoBox($message);
+      foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
       $content = $messages.$content;
-      $session['msg']['information'] = array();
+      $Eresus->session['msg']['information'] = array();
     }
-    if (isset($session['msg']['errors']) && count($session['msg']['errors'])) {
+    if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
       $messages = '';
-      foreach($session['msg']['errors'] as $message) $messages .= ErrorBox($message);
+      foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message);
       $content = $messages.$content;
-      $session['msg']['errors'] = array();
+      $Eresus->session['msg']['errors'] = array();
     }
     $result = str_replace('$(Content)', $content, $this->template);
 

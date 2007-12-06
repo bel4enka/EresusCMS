@@ -7,7 +7,7 @@
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 1.2.4
+ * @version 1.3.0
  */
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
@@ -103,18 +103,30 @@ class MySQL {
   	return $result;
   }
   //------------------------------------------------------------------------------
-  function select($tables, $condition = '', $order = '', $desc = false, $fields = '', $lim_rows = 0, $lim_offset = 0, $group = '', $distinct = false)
-  # Выполняет запрос SELECT к базе данных используя метод query().
-  #  $tables - таблицы, из которых требуется сделать выборку (FROM)
-  #  $contidion - условие для выборки (WHERE)
-  #  $order - поля, по которым следует выполнить сортировку (OREDER BY)
-  #  $desc - если равен true, то сортировка идет в обратном порядке
-  #  $fields - список полей, которые требуется получить
-  #  $lim_rows - кол-во строк для выборки
-  #  $lim_offset - первая строка для выборки
-  #  $group - поле для группировки
-  #  $distinct - усли равно true, то будут выбраны только уникальные значения.
+ /**
+  * Выполняет запрос SELECT
+  *
+  * @param string  $tables      Список таблиц, разделённый запятыми
+  * @param string  $condition   Условие для выборки (WHERE)
+  * @param string  $order       Поля для сортировки (ORDER BY)
+  * @param string  $fields      Список полей для получения
+  * @param int     $lim_rows    Максимльное количество получаемых записей
+  * @param int     $lim_offset  Начальное смещение для выборки
+  * @param string  $group       Поле для группировки
+  * @param bool    $distinct    Вернуть только уникальные записи
+  *
+  * @return array
+  */
+  function select($tables, $condition = '', $order = '', $fields = '', $lim_rows = 0, $lim_offset = 0, $group = '', $distinct = false)
   {
+  	if (is_bool($fields)) {
+  		# Обратная совместимость c 1.2.x
+  		$desc = $fields;
+  		$fields = $lim_rows;
+  		$lim_rows = $lim_offset;
+  		$lim_offset = $group;
+  		$group = $distinct;
+  		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
     $query = 'SELECT ';
     if ($distinct) $query .= 'DISTINCT ';
     if (!strlen($fields)) $fields = '*';
@@ -132,7 +144,29 @@ class MySQL {
       if ($lim_offset) $query .= "$lim_offset, ";
       $query .= $lim_rows;
     }
-
+  	} else {
+	    $query = 'SELECT ';
+	    if ($distinct) $query .= 'DISTINCT ';
+	    if (!strlen($fields)) $fields = '*';
+	    $tables = str_replace('`','',$tables);
+	    $tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
+	    $query .= $fields." FROM ".$tables;
+	    if (strlen($condition)) $query .= " WHERE ".$condition;
+	    if (strlen($group)) $query .= " GROUP BY ".$group."";
+	    if (strlen($order)) {
+	    	$order = explode(',', $order);
+	    	for($i = 0; $i < count($order); $i++) switch ($order[$i]{0}) {
+	    		case '+': $order[$i] = substr($order[$i], 1); break;
+	    		case '-': $order[$i] = substr($order[$i], 1).' DESC'; break;
+	    	}
+	      $query .= " ORDER BY ".implode(', ',$order);
+	    }
+	    if ($lim_rows) {
+	      $query .= ' LIMIT ';
+	      if ($lim_offset) $query .= "$lim_offset, ";
+	      $query .= $lim_rows;
+	    }
+  	}
     $result = $this->query_array($query);
 
     return $result;
