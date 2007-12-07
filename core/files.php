@@ -44,7 +44,7 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function url($args = null)
   {
-  global $request;
+  	global $request;
 
     $basics = array('lf','rf','sp');
     $result = '';
@@ -175,7 +175,7 @@ class TFiles {
   function renderFileList($side)
   {
   global $request;
-    $path = isset($request['arg'][$side.'f'])?$request['arg'][$side.'f']:'';
+    $path = $this->panels[$side];
     $items = $this->BuildFileList($path);
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"filesList\" id=\"".$side."Panel\">\n".
@@ -325,7 +325,9 @@ class TFiles {
     $this->root = UserRights(ADMIN)?'':'data/';
     #TODO: Проверить на безопасность
     $this->pannels['l'] = filesRoot.$this->root.(arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
+    $this->pannels['l'] = str_replace('/..', '', $this->pannels['l']);
     $this->pannels['r'] = filesRoot.$this->root.(arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
+    $this->pannels['r'] = str_replace('/..', '', $this->pannels['r']);
     if (count($_FILES)) $this->upload();
     elseif (isset($request['arg']['mkdir'])) $this->mkDir();
     elseif (isset($request['arg']['rename'])) $this->renameEntry();
@@ -346,7 +348,7 @@ class TFiles {
         '<tr><td colspan="2" class="filesControls">'.$this->renderStatus()."</td></tr>".
         "</table>".
         "<script language=javascript type=\"text/javascript\"><!--\n".
-        " filesInit('".httpRoot.$this->root."', '".(empty($request['arg']['sp'])?'l':$request['arg']['sp'])."');\n".
+        " filesInit('".httpRoot.$this->root."', '".(arg('sp')?'l':arg('sp'))."');\n".
         "--></script>\n";
       return $result;
     }
