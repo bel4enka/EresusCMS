@@ -5,7 +5,7 @@
  * Библиотека для работы с разделами сайта
  *
  * @author: Mikhail Krasilnikov <mk@procreat.ru>
- * @version: 0.0.4
+ * @version: 0.0.5
  *
  * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
  *
@@ -258,7 +258,14 @@ class Sections {
     $result = true;
     $children = $this->children($id);
     for($i=0; $i<count($children); $i++) if  (!$result = $this->delete($children[$i]['id'])) break;
-    if ($result) $result = $Eresus->db->delete($this->table, "`id`=$id");
+    if ($result) {
+    	# Удаляем контент раздела
+    	$section = $this->get($id);
+    	if ($plugin = $Eresus->plugins->load($section['type'])) {
+				if (method_exists($plugin, 'onSectionDelete')) $plugin->onSectionDelete($id);
+    	}
+    	$result = $Eresus->db->delete($this->table, "`id`=$id");
+    }
     return $result;
   }
   //------------------------------------------------------------------------------

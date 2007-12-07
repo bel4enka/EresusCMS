@@ -7,7 +7,7 @@
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 1.3.0
+ * @version 1.3.1
  */
 
 # ÔÓÍÊÖÈÈ ÎÒËÀÄÊÈ (Ðàáîòàþò ïðè óñòàíîâëåííîì ôëàãå $Eresus->conf['debug'])
@@ -262,8 +262,11 @@ class MySQL {
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   function tableStatus($table, $param='')
   {
-    $result = $this->query_array("SHOW TABLE STATUS LIKE '".$table."'");
-    if (!empty($param)) $result = $result[0][$param];
+    $result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
+    if ($result) {
+    	$result = $result[0];
+    	if (!empty($param)) $result = $result[$param];
+    }
     return $result;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
