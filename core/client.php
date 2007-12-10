@@ -223,7 +223,7 @@ class TClientUI extends WebPage {
       $this->content = $item['content'];
       $this->scripts = '';
       $this->styles = '';
-      $this->options = decodeOptions($item['options']);
+      $this->options = $item['options'];
     } else $this->httpError(404);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
