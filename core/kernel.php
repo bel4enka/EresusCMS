@@ -494,7 +494,7 @@ function arg($arg, $filter = null)
   				$arg = floatval($arg);
   		break;
   		case 'word':
-  				$arg = preg_replace('/[\W]/', '', $arg);
+  				$arg = preg_replace('/\W/', '', $arg);
   		break;
   		default: $arg = preg_replace($filter, '', $arg);
   	}
@@ -1217,6 +1217,7 @@ class Eresus {
   function password_hash($password)
   {
   	$result = md5($password);
+  	if (!$this->conf['backward']['weak_password']) $result = md5($result);
   	return $result;
   }
   //-----------------------------------------------------------------------------

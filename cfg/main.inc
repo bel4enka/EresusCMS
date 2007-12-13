@@ -11,7 +11,7 @@ $Eresus->conf['debug']['enable'] = true;
 #-------------------------------------------------------------------------------
 
 # Используемая СУБД. По умолчанию: 'mysql'
-#$Eresus->conf['db']['engine'] = 'mysql'; 
+#$Eresus->conf['db']['engine'] = 'mysql';
 
 # Хост сервера СУБД. По умолчанию: 'localhost'
 #$Eresus->conf['db']['host'] = 'localhost';
@@ -71,6 +71,8 @@ $Eresus->conf['backward'] = array(
 	'TContentPlugin' => true,
 	# Делает доступным класс TListContentPlugin в версиях старше 2.10b
 	'TListContentPlugin' => true,
+	# Отключает усиленное хеширование пароля, для совместимости со старыми базами пользователей
+	'weak_password' => false,
 );
 
 #-------------------------------------------------------------------------------
