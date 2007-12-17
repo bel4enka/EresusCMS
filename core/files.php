@@ -219,7 +219,7 @@ class TFiles {
   function upload()
   {
     global $request;
-    foreach($_FILES as $name => $file) upload($name, $this->pannels[arg('sp')]);
+    foreach($_FILES as $name => $file) upload($name, filesRoot.$this->pannels[arg('sp')]);
     goto($request['referer']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -228,7 +228,7 @@ class TFiles {
   global $request;
 
     umask(0000);
-    mkdir($this->pannels[arg('sp')].arg('mkdir', FILES_FILTER), 0777);
+    mkdir(filesRoot.$this->pannels[arg('sp')].arg('mkdir', FILES_FILTER), 0777);
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -265,7 +265,7 @@ class TFiles {
   {
     global $request;
 
-    $filename = $this->pannels[arg('sp')].arg('chmod', FILES_FILTER);
+    $filename = filesRoot.$this->pannels[arg('sp')].arg('chmod', FILES_FILTER);
     if (file_exists($filename)) chmod($filename, octdec(arg('perms')));
     goto($this->url());
   }
@@ -274,8 +274,8 @@ class TFiles {
   {
   global $request;
 
-  	$filename = $this->pannels[arg('sp')].arg('copyfile', FILES_FILTER);
-    $dest = $this->pannels[arg('sp')=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
+  	$filename = filesRoot.$this->pannels[arg('sp')].arg('copyfile', FILES_FILTER);
+    $dest = filesRoot.$this->pannels[arg('sp')=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
     if (is_file($filename)) copy($filename, $dest);
     elseif (is_dir($filename)) {
     }
@@ -287,8 +287,8 @@ class TFiles {
   global $request;
 
     if (UserRights(ADMIN)) {
-    	$filename = $this->pannels[arg('sp')].arg('movefile', FILES_FILTER);
-      $dest = $this->pannels[arg('sp')=='l'?'r':'l'].arg('movefile', FILES_FILTER);
+    	$filename = filesRoot.$this->pannels[arg('sp')].arg('movefile', FILES_FILTER);
+      $dest = filesRoot.$this->pannels[arg('sp')=='l'?'r':'l'].arg('movefile', FILES_FILTER);
       if (is_file($filename)) rename($filename, $dest);
       elseif (is_dir($filename)) {
       }
@@ -301,7 +301,7 @@ class TFiles {
   global $request;
 
     if (UserRights(ADMIN)) {
-    	$filename = $this->pannels[arg('sp')].arg('delete', FILES_FILTER);
+    	$filename = filesRoot.$this->pannels[arg('sp')].arg('delete', FILES_FILTER);
       if (is_file($filename)) unlink($filename);
       elseif (is_dir($filename)) {
         $this->rmDir($filename);
