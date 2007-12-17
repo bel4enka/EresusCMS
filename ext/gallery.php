@@ -32,14 +32,14 @@ class TGallery extends TListContentPlugin {
   var $name = 'gallery';
 	var $type = 'client,content,ondemand';
 	var $title = 'Галерея';
-	var $version = '1.06b';
+	var $version = '1.06b2';
 	var $description = 'Галерея изображений';
 	var $settings = array(
 	  'tmplList' => '$(items)',
-    'tmplListItem' => '<b>$(caption)</b><br />Фотографий: $(images)<br /><a href="$(url)"><img src="$(thumbnail)" widt="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
+    'tmplListItem' => '<b>$(caption)</b><br />Фотографий: $(images)<br /><a href="$(url)"><img src="$(thumbnail)" width="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
     'tmplSubList' => '$(items)',
     'tmplSubListItem' => '<b>$(caption)</b> $(posted)<br /><a href="$(url)"><img src="$(thumbnail)" widt="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
-    'tmplItem' => '<h1>$(caption)</h1><img src="$(image)" widt="$(imageWidth)" height="$(imageHeight)" alt="$(caption)" />',
+    'tmplItem' => '<h1>$(caption)</h1><img src="$(image)" width="$(imageWidth)" height="$(imageHeight)" alt="$(caption)" />',
     'buttonBack' => '[ &laquo; Назад ]',
     'buttonNext' => '[ Вперед &raquo; ]',
     'itemsPerPage' => 20,
@@ -328,7 +328,7 @@ class TGallery extends TListContentPlugin {
       $item['active'] = true;
       upload('image', filesRoot.'data/'.$this->name.'/'.$item['image']);
       $item['thumbnail'] = $this->createthumbnail($item['image'], $type[2]);
-      $item['image'] = $this->resizeImage($item['image'], $type[2]);
+      #$item['image'] = $this->resizeImage($item['image'], $type[2]);
       $item['posted'] = gettime();
       $db->insert($this->sub_table['name'], $item);
       $owner['images']++;
@@ -438,17 +438,9 @@ class TGallery extends TListContentPlugin {
     $thmb = 'style/gallery/thumbnail.gif';
     $thmb = is_file(filesRoot.$thmb)?'<a href="'.httpRoot.$thmb.'">На миниатюра (GIF)</a>':'На миниатюра (GIF)';
 
-    $templates[0] = array();
-    $templates[1] = array();
-    $dir = filesRoot.'templates/';
-    $hnd = opendir($dir);
-    while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
-      $description = file_get_contents($dir.$filename);
-      preg_match('/<!--(.*?)-->/', $description, $description);
-      $description = trim($description[1]);
-      $templates[0][] = $description;
-      $templates[1][] = substr($filename, 0, strrpos($filename, '.'));
-    }
+    useLib('templates');
+    $Templates = new Templates();
+    $templates = $Templates->enum();
 
     $form = array(
       'name' => 'settings',
@@ -470,7 +462,7 @@ class TGallery extends TListContentPlugin {
         array('type'=>'edit','name'=>'background','label'=>'Цвет фона','width'=>'50px', 'maxlength'=>'6', 'comment' => 'Формат: RRGGBB'),
         array('type'=>'text','value'=>'<center><a href="'.$request['url'].'&action=thumbnail"><b>Перестроить миниатюры</b></a></center>'),
         array('type'=>'header', 'value'=>'Просмотр изображения'),
-        array('type'=>'select','name' =>'imageTemplate','label' => 'Шаблон страницы', 'items' => $templates[0], 'values' => $templates[1]),
+        array('type'=>'select','name' =>'imageTemplate','label' => 'Шаблон страницы', 'items' => array_values($templates), 'values' => array_keys($templates)),
         array('type'=>'checkbox','name'=>'imageResize','label'=>'Уменьшать изображения больше чем:'),
         array('type'=>'edit','name'=>'imageWidth','label'=>'','width'=>'50px', 'maxlength'=>'4', 'comment' => 'пикселей по ширине'),
         array('type'=>'edit','name'=>'imageHeight','label'=>'','width'=>'50px', 'maxlength'=>'4', 'comment' => 'пикселей по высоте'),
