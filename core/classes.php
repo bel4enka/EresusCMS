@@ -665,6 +665,7 @@ function mkdir($name = '')
 	# Проверка и создание корневой директории данных
 	if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
 	if ($result) {
+		# Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
 		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
 		if ($name) {
 			$name = explode('/', $name);

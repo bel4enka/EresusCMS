@@ -1111,7 +1111,7 @@ class Eresus {
   function check_session()
   {
     if (isset($this->session['time'])) {
-      if ((time() - $this->session['time'] > $this->conf['session']['timeout']*3600)&&($this->user['auth'])) Logout(false);
+      if ((time() - $this->session['time'] > $this->conf['session']['timeout']*3600)&&($this->user['auth'])) $this->logout(false);
       else $this->session['time'] = time();
     }
   }
