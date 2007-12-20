@@ -37,6 +37,27 @@ class MyPlugin extends Plugin {
   var $title = 'Мой плагин';
   var $description = 'Описание плагина';
   var $type = 'client';
+	/**
+	 * Диалог настроек плагина
+	 *
+	 * @return string  Форма настроек
+	 */
+	function settings()
+	{
+  	global $page;
 
+  	$form = array(
+			'name'=>'SettingsForm', # Может быть произвольным
+			'caption' => $this->title.' '.$this->version, # Рекомендуемое значение
+			'width' => '500px', # Может быть произвольным
+			'fields' => array (
+	  		array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
+	  		# Необходимые поля формы
+			),
+			'buttons' => array('ok', 'apply', 'cancel'),
+  	);
+  	$result = $page->renderForm($form, $this->settings);
+  	return $result;
+	}
 }
 ?>
