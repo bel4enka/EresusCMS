@@ -134,7 +134,7 @@ class TPlgMgr {
       		$caption = "{$title[2]} {$version[2]} - {$description[2]}";
       	} else {
       		$valid = false;
-      		$caption = '<span class="admError">'.$file.'.php - '.admPluginsInvalidFile.'</span>';
+      		$caption = '<span class="admError">'.basename($file).' - '.admPluginsInvalidFile.'</span>';
       	}
       	if (count($kernel) && version_compare($kernel[2], CMSVERSION, '>')) {
       		$valid = false;
