@@ -172,7 +172,7 @@ class TPages {
           array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
           array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
           array('type'=>'hidden', 'name'=>'id', 'value' => $item['id']),
-          array('type'=>'select', 'label'=>strMove.' "<b>'.$item['title'].'</b>" â', 'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
+          array('type'=>'select', 'label'=>strMove.' "<b>'.$item['caption'].'</b>" â', 'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
         ),
         'buttons' => array('ok', 'cancel'),
       );
