@@ -1,54 +1,77 @@
 <?php
 /**
-* Call (CMS Eresus™ 2 Plugin)
-*
-* This plugin adds a $(call) macros wich allows to call other plugins from templates
-* Format:
-*   $(call:plugin->method)
-*
-* @author Mikhail Krasilnikov <mk@procreat.ru>
-* @version 1.00
-* @modified 2007-07-16
-*/
-class TCall extends TPlugin {
-  var $name = 'call';
+ * Call
+ *
+ * Eresus 2
+ *
+ * Вызов других плагинов посредством макросов.
+ *
+ * @version 2.00
+ *
+ * @copyright   2007, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @maintainer  Михалыч <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо по вашему выбору с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ */
+
+class Call extends Plugin {
+  var $version = '2.00a2';
+  var $kernel = '2.10b3';
   var $title = 'Call';
-  var $type = 'client';
-  var $version = '1.00a';
   var $description = 'Вызов плагинов из шаблонов';
-  var $settings = array(
-  );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function TCall()
-  # производит регистрацию обработчиков событий
+  var $type = 'client';
+	
+ /**
+  * Конструктор
+  *
+  * @return Call
+  */
+  function Call()
   {
-    global $plugins;
-  
-    parent::TPlugin();
-    $plugins->events['clientOnPageRender'][] = $this->name;
+    parent::Plugin();
+    $this->listenEvents('clientOnPageRender');
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
+ /**
+  * Обработчик события clientOnPageRender
+  *
+  * @param string $text
+  * @return string
+  */
   function clientOnPageRender($text)
   {
-    global $plugins;
+    global $Eresus;
     
-    preg_match_all('/\$\(call:(.*)->(.*)\)/Usi', $text, $calls, PREG_SET_ORDER);
+    preg_match_all('/\$\(call:(.*)(::(.*)({(.*)})?)?\)/Usi', $text, $calls, PREG_SET_ORDER);
     foreach($calls as $call) {
-      if (isset($plugins->list[$call[1]])) {
-        $plugin = isset($plugins->items[$call[1]]) ? $plugins->items[$call[1]] : $plugins->load($call[1]);
-        if (method_exists($plugin, $call[2])) {
-          $result = call_user_func(array($plugin, $call[2]));
-        } else $result = "Method {$call[2]} not found in '{$call[1]}' plugin";
-      } else $result = "Plugin '{$call[1]}' not installed";
-      $text = str_replace($call[0], $result, $text);
+    	$name = strtolower($call[1]);
+    	$method = count($call) > 3 ? strtolower($call[3]) : null;
+      if (isset($Eresus->plugins->list[$name])) {
+        $plugin = isset($Eresus->plugins->items[$name]) ? $Eresus->plugins->items[$name] : $Eresus->plugins->load($name);
+        if ($method) {
+	        if (method_exists($plugin, $method)) {
+	        	$args = count($call) > 5 ? $call[5] : null;
+	          $result = call_user_func(array($plugin, $method), $args);
+	          if (is_string($result)) $text = str_replace($call[0], $result, $text);
+	        } else ErrorMessage("Method '$method' not found in plugin '$name'");
+        }
+      } else ErrorMessage("Plugin '$name' not installed or disabled");
     }
     return $text;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 ?>
