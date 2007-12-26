@@ -1,12 +1,12 @@
 /**
  * Eresus 2.10
- * 
+ *
  * Клиентские скрипты административного интерфейса
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -28,30 +28,30 @@ function replaceMacros(sURL)
   {
     return macros[sMacros];
   }
-  
+
   sURL = sURL.replace(/\$\(([^\)]+)\)/, __replace);
   return sURL;
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function pageLeft() 
+function pageLeft()
 {
   return isIE ? (document.body.scrollLeft?document.body.scrollLeft:document.documentElement.scrollLeft) : window.pageXOffset;
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function pageTop() 
+function pageTop()
 {
   return isIE ? (document.body.scrollTop?document.body.scrollTop:document.documentElement.scrollTop) : window.pageYOffset;
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function toggleMenuBrunch(Id)
+function toggleMenuBranch(Id)
 {
-  var brunch = document.getElementById('brunch'+Id);
+  var branch = document.getElementById('branch'+Id);
   var root = document.getElementById('root'+Id);
-  if (brunch.style.display == 'none') {
-    brunch.style.display = 'block';
+  if (branch.style.display == 'none') {
+    branch.style.display = 'block';
     root.src = "$(httpRoot)core/img/br_opened.gif";
   } else {
-    brunch.style.display = 'none';
+    branch.style.display = 'none';
     root.src = "$(httpRoot)core/img/br_closed.gif";
   }
   return false;
@@ -73,7 +73,7 @@ function BrowseFileDialog(id, Folder)
   var hnd = window.open('$(httpRoot)core/dlg/BrowseFile.php?id='+id+'&root='+BrowseFileLast, 'OpenFileDialog', 'dependent=yes,width=500,height=550,resizable=yes,menubar=no,directories=no,personalbar=no,scrollbars=no,status=no,titlebar=no,toolbar=no');
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function SendRequest(url, handler) 
+function SendRequest(url, handler)
 {
   // branch for native XMLHttpRequest object
   if (window.XMLHttpRequest) {
@@ -90,5 +90,5 @@ function SendRequest(url, handler)
       HttpRequest.send();
     }
   }
-}        
+}
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

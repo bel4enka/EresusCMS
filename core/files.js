@@ -1,12 +1,12 @@
 /**
  * Eresus 2.10
- * 
+ *
  * Скрипты клиентской части файлового менеджреа
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 var objRowSel = null;
@@ -18,7 +18,7 @@ function filesInit(root, panel)
   httpRoot = root;
   slctPanel = panel;
   var obj = document.getElementById(panel+'Panel');
-  rowSelect(iBrowser['Engine']=='IE'?obj.children[0].children[2]:obj.childNodes[1].childNodes[4]);
+  if (obj) rowSelect(iBrowser['Engine']=='IE'?obj.children[0].children[2]:obj.childNodes[1].childNodes[4]);
 }
 
 function setPanel(url)
@@ -48,7 +48,7 @@ function keyboardEvents()
 function getCurrentFolder()
 {
   var folder = objRowSel.parentNode.childNodes[0].childNodes[0].innerHTML.substr(2);
-  if (folder.length) folder += '/';
+  //if (folder.length) folder += '/';
   return folder;
 }
 
@@ -70,7 +70,7 @@ function rowSelect(objRow)
 function Copy(strControlName)
 {
   var ua = navigator.userAgent.toLowerCase();
-  var isIE = ((ua.indexOf("msie") != -1) && (ua.indexOf("opera") == -1) && (ua.indexOf("webtv") == -1)); 
+  var isIE = ((ua.indexOf("msie") != -1) && (ua.indexOf("opera") == -1) && (ua.indexOf("webtv") == -1));
   if (isIE) {
     var objControl = document.getElementById(strControlName);
     objControl.createTextRange().execCommand("Copy");
@@ -80,7 +80,7 @@ function Copy(strControlName)
 
 function filesCD(url)
 {
-  window.location = setPanel(url);
+	window.location = setPanel(url);
 }
 
 function filesMkDir()
@@ -95,7 +95,7 @@ function filesRename()
     var filename = objRowSel.childNodes[1].innerHTML;
     if (filename.substr(-2) != '..') {
       var newname = prompt('Переименовать',filename);
-      if (newname != undefined && newname.length && newname != filename) 
+      if (newname != undefined && newname.length && newname != filename)
         window.location = setPanel(window.location)+'&rename='+filename+'&newname='+newname;
     }
   }
@@ -118,7 +118,7 @@ function filesChmod()
         perms += value.toString();
       }
       var newperms = prompt('Установить права', perms);
-      if (newperms != undefined && newperms.length && newperms != perms) 
+      if (newperms != undefined && newperms.length && newperms != perms)
         window.location = setPanel(window.location)+'&chmod='+filename+'&perms='+newperms;
     }
   }
@@ -131,7 +131,7 @@ function filesCopy()
     if (filename.substr(-2) != '..') {
       var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
       obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
-      for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename) 
+      for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename)
         if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
         else return;
       window.location = setPanel(window.location)+'&copyfile='+filename;
@@ -146,7 +146,7 @@ function filesMove()
     if (filename.substr(-2) != '..') {
       var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
       obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
-      for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename) 
+      for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename)
         if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
         else return;
       window.location = setPanel(window.location)+'&movefile='+filename;

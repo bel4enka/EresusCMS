@@ -92,4 +92,4 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` VALUES (1, 'root', 'd41d8cd98f00b204e9800998ecf8427e', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Служба поддержки', 'support@eresus.ru', NULL);
+INSERT INTO `users` VALUES (1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Служба поддержки', 'support@example.org', NULL);

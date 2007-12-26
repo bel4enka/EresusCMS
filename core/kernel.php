@@ -2,33 +2,36 @@
 /**
  * Eresus 2.10
  *
- * Система управления контентом Eresus™ 2
- * © 2004-2007, ProCreat Systems, http://procreat.ru/
- * © 2007, Eresus Group, http://eresus.ru/
+ * Система управления контентом Eresus 2
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *
+ * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright		2007, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
  * @author Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  */
 
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.10b4'); # Версия системы
+define('CMSVERSION', '2.10rc'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '08.11.07'); # Дата обновления ядра
+define('KERNELDATE', '26.12.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -461,7 +464,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
   foreach ($item as $key => $value) {
     if ($clear) unset($item[$key]);
     if (!in_array($key, $prevent)) {
-      if (arg($key)) $item[$key] = arg($key, 'dbsafe');
+      if (arg($key) !== false) $item[$key] = arg($key);
       if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
     }
   }
@@ -492,6 +495,9 @@ function arg($arg, $filter = null)
   		break;
   		case 'float':
   				$arg = floatval($arg);
+  		break;
+  		case 'word':
+  				$arg = preg_replace('/\W/', '', $arg);
   		break;
   		default: $arg = preg_replace($filter, '', $arg);
   	}
@@ -1108,7 +1114,7 @@ class Eresus {
   function check_session()
   {
     if (isset($this->session['time'])) {
-      if ((time() - $this->session['time'] > $this->conf['session']['timeout']*3600)&&($this->user['auth'])) Logout(false);
+      if ((time() - $this->session['time'] > $this->conf['session']['timeout']*3600)&&($this->user['auth'])) $this->logout(false);
       else $this->session['time'] = time();
     }
   }
@@ -1214,6 +1220,7 @@ class Eresus {
   function password_hash($password)
   {
   	$result = md5($password);
+  	if (!$this->conf['backward']['weak_password']) $result = md5($result);
   	return $result;
   }
   //-----------------------------------------------------------------------------

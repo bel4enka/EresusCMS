@@ -165,6 +165,7 @@ class WebPage {
 	*/
 	function renderHeadSection()
 	{
+		$result = array();
 	  # <meta> теги
 	  if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
 	    $result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
@@ -664,6 +665,7 @@ function mkdir($name = '')
 	# Проверка и создание корневой директории данных
 	if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
 	if ($result) {
+		# Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
 		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
 		if ($name) {
 			$name = explode('/', $name);
@@ -751,7 +753,6 @@ function dbDropTable($name = '')
  * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
  * @param string	$condition		Условие выборки
  * @param string	$order				Порядок выборки
- * @param bool		$desc					Обратный порядок
  * @param string	$fields				Список полей
  * @param int			$limit				Вернуть не больше полей чем limit
  * @param int			$offset				Смещение выборки
@@ -759,11 +760,20 @@ function dbDropTable($name = '')
  *
  * @return array	Список записей
  */
-function dbSelect($table = '', $condition = '', $order = '', $desc = false, $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 {
 	global $Eresus;
 
+	if (is_bool($fields)) {
+		# Обратная совместимость
+		$desc = $fields;
+ 		$fields = $lim_rows;
+ 		$lim_rows = $lim_offset;
+ 		$lim_offset = $group;
+ 		$group = $distinct;
+ 		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
 	$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
+	} else $result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit, $offset, $group, $distinct);
 
   return $result;
 }
@@ -797,7 +807,7 @@ function dbInsert($table, $item)
 	global $Eresus;
 
 	$result = $Eresus->db->insert($this->__table($table), $item);
-	$result = $Eresus->db->getInsertedId();
+	$result = $this->dbItem($table, $Eresus->db->getInsertedId());
 
   return $result;
 }
@@ -861,6 +871,23 @@ function dbCount($table, $condition = '')
 }
 //------------------------------------------------------------------------------
 /**
+ * Получение информации о таблицах
+ *
+ * @param string $table  Маска имени таблицы
+ * @param string $param  Вернуть только указанный парамер
+ *
+ * @return mixed
+ */
+function dbTable($table, $param = '')
+{
+	global $Eresus;
+
+	$result = $Eresus->db->tableStatus($this->__table($table), $param);
+
+  return $result;
+}
+//------------------------------------------------------------------------------
+/**
  * Регистрация обработчиков событий
  *
  * @param string $event1  Имя события1
@@ -895,10 +922,21 @@ function ContentPlugin()
   parent::Plugin();
   if (isset($page)) {
     $page->plugin = $this->name;
-    if (count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
+    if (isset($page->options) && count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
   }
 }
 //------------------------------------------------------------------------------
+/**
+ * Действия при удалении раздела данного типа
+ * @param int     $id     Идентификатор удаляемого раздела
+ * @param string  $table  Имя таблицы
+ */
+function onSectionDelete($id, $table = '')
+{
+	if (count($this->dbTable($table)))
+		$this->dbDelete($table, $id, 'section');
+}
+//-----------------------------------------------------------------------------
 /**
 * Обновляет контент страницы в БД
 *
@@ -918,7 +956,7 @@ function updateContent($content)
 */
 function adminUpdate()
 {
-	$this->updateContent(arg('content', 'dbsafe'));
+	$this->updateContent(arg('content'));
   goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------

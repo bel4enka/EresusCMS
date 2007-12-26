@@ -19,6 +19,8 @@ function files_compare($a, $b)
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+define('FILES_FILTER', '!\.\./!');
+
 class TFiles {
   var
     $access = EDITOR,
@@ -44,7 +46,7 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function url($args = null)
   {
-  global $request;
+  	global $request;
 
     $basics = array('lf','rf','sp');
     $result = '';
@@ -135,7 +137,7 @@ class TFiles {
         case 'dir':
           $result[$i]['icon'] = 'folder';
           $result[$i]['size'] = 'Папка';
-          $result[$i]['link'] = ($name == '..')?substr($path, 0, strrpos($path, '/')):$path.'/'.$name;
+          $result[$i]['link'] = ($name == '..')?preg_replace('![^/]+/$!', '', $path):$path.$name;
           $result[$i]['action'] = 'cd';
         break;
         case 'file':
@@ -175,11 +177,11 @@ class TFiles {
   function renderFileList($side)
   {
   global $request;
-    $path = isset($request['arg'][$side.'f'])?$request['arg'][$side.'f']:'';
+    $path = $this->pannels[$side];
     $items = $this->BuildFileList($path);
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"filesList\" id=\"".$side."Panel\">\n".
-      "<tr class=\"filesListPath\"><th colspan=\"5\">.".((empty($path)) ? '/' : $path)."</th></tr>\n".
+      "<tr class=\"filesListPath\"><th colspan=\"5\">./".((empty($path)) ? '' : $path)."</th></tr>\n".
       "<tr class=\"filesListHdr\"><th>&nbsp;</th><th>Имя файла</th><th>Размер</th><th>Время</th><th>Доступ</th><th>Владелец</th><th style=\"width: 100%\">&nbsp;</th></tr>\n";
     for ($i = 0; $i < count($items);  $i++) {
       $result .= "<tr onClick=\"rowSelect(this)\" onDblClick=\"";
@@ -217,8 +219,7 @@ class TFiles {
   function upload()
   {
     global $request;
-    #TODO: Проверить на безопасность
-    foreach($_FILES as $name => $file) upload($name, $this->pannels[arg('sp')]);
+    foreach($_FILES as $name => $file) upload($name, filesRoot.$this->pannels[arg('sp')]);
     goto($request['referer']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -227,8 +228,7 @@ class TFiles {
   global $request;
 
     umask(0000);
-    #TODO: Проверить на безопасность
-    mkdir($this->pannels[arg('sp')].arg('mkdir'), 0777);
+    mkdir(filesRoot.$this->pannels[arg('sp')].arg('mkdir', FILES_FILTER), 0777);
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -255,9 +255,8 @@ class TFiles {
   {
     global $request;
 
-    #TODO: Проверить на безопасность
-    $filename = $this->pannels[arg('sp')].arg('rename');
-    $newname = $this->pannels[arg('sp')].arg('newname');
+    $filename = filesRoot.$this->pannels[arg('sp')].arg('rename', FILES_FILTER);
+    $newname = filesRoot.$this->pannels[arg('sp')].arg('newname', FILES_FILTER);
     if (file_exists($filename)) rename($filename, $newname);
     goto($this->url());
   }
@@ -266,8 +265,7 @@ class TFiles {
   {
     global $request;
 
-    #TODO: Проверить на безопасность
-    $filename = $this->pannels[arg('sp')].arg('chmod');
+    $filename = filesRoot.$this->pannels[arg('sp')].arg('chmod', FILES_FILTER);
     if (file_exists($filename)) chmod($filename, octdec(arg('perms')));
     goto($this->url());
   }
@@ -276,9 +274,8 @@ class TFiles {
   {
   global $request;
 
-    #TODO: Проверить на безопасность
-  $filename = $this->pannels[arg('sp')].arg('copyfile');
-    $dest = $this->pannels[arg('sp')=='l'?'r':'l'].arg('copyfile');
+  	$filename = filesRoot.$this->pannels[arg('sp')].arg('copyfile', FILES_FILTER);
+    $dest = filesRoot.$this->pannels[arg('sp')=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
     if (is_file($filename)) copy($filename, $dest);
     elseif (is_dir($filename)) {
     }
@@ -290,9 +287,8 @@ class TFiles {
   global $request;
 
     if (UserRights(ADMIN)) {
-    #TODO: Проверить на безопасность
-    	$filename = $this->pannels[arg('sp')].arg('movefile');
-      $dest = $this->pannels[arg('sp')=='l'?'r':'l'].arg('movefile');
+    	$filename = filesRoot.$this->pannels[arg('sp')].arg('movefile', FILES_FILTER);
+      $dest = filesRoot.$this->pannels[arg('sp')=='l'?'r':'l'].arg('movefile', FILES_FILTER);
       if (is_file($filename)) rename($filename, $dest);
       elseif (is_dir($filename)) {
       }
@@ -305,8 +301,7 @@ class TFiles {
   global $request;
 
     if (UserRights(ADMIN)) {
-    #TODO: Проверить на безопасность
-    	$filename = $this->pannels[arg('sp')].$request['arg']['delete'];
+    	$filename = filesRoot.$this->pannels[arg('sp')].arg('delete', FILES_FILTER);
       if (is_file($filename)) unlink($filename);
       elseif (is_dir($filename)) {
         $this->rmDir($filename);
@@ -323,9 +318,10 @@ class TFiles {
   global $request, $page;
 
     $this->root = UserRights(ADMIN)?'':'data/';
-    #TODO: Проверить на безопасность
-    $this->pannels['l'] = filesRoot.$this->root.(arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
-    $this->pannels['r'] = filesRoot.$this->root.(arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
+    $this->pannels['l'] = $this->root.(arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
+    $this->pannels['l'] = str_replace('/..', '', $this->pannels['l']);
+    $this->pannels['r'] = $this->root.(arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
+    $this->pannels['r'] = str_replace('/..', '', $this->pannels['r']);
     if (count($_FILES)) $this->upload();
     elseif (isset($request['arg']['mkdir'])) $this->mkDir();
     elseif (isset($request['arg']['rename'])) $this->renameEntry();
@@ -334,7 +330,7 @@ class TFiles {
     elseif (isset($request['arg']['movefile'])) $this->moveFile();
     elseif (isset($request['arg']['delete'])) $this->deleteFile();
     else {
-      $page->head .= "   <script language=javascript src=\"".httpRoot."core/files.js\" type=\"text/javascript\"></script>\n";
+      $page->linkScripts(httpRoot.'core/files.js');
       $result =
         "<table id=\"fileManager\"width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"files\">\n".
         '<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".
@@ -346,7 +342,7 @@ class TFiles {
         '<tr><td colspan="2" class="filesControls">'.$this->renderStatus()."</td></tr>".
         "</table>".
         "<script language=javascript type=\"text/javascript\"><!--\n".
-        " filesInit('".httpRoot.$this->root."', '".(empty($request['arg']['sp'])?'l':$request['arg']['sp'])."');\n".
+        " filesInit('".httpRoot.$this->root."', '".(arg('sp')?'l':arg('sp'))."');\n".
         "--></script>\n";
       return $result;
     }

@@ -1,117 +1,140 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™ 2.00
-# © 2005-2006, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Call
+ *
+ * Eresus 2
+ *
+ * Вызов других плагинов посредством макросов.
+ *
+ * @version 2.00
+ *
+ * @copyright   2005-2006, ProCreat Systems, http://procreat.ru/
+ * @copyright   2007, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @maintainer  Михалыч <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо по вашему выбору с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ */
+
 class TGallery extends TListContentPlugin {
-  var
-    $name = 'gallery',
-    $type = 'client,content,ondemand',
-    $title = 'Галерея',
-    $version = '1.05',
-    $description = 'Галерея изображений',
-    $settings = array(
-      'tmplList' => '',
-      'tmplListItem' => '',
-      'tmplSubList' => '',
-      'tmplSubListItem' => '',
-      'tmplItem' => '',
-      'buttonBack' => '[ &laquo; Назад ]',
-      'buttonNext' => '[ Вперед &raquo; ]',
-      'itemsPerPage' => 20,
-      'imagesPerPage' => 20,
-      'background' => '000000',
-      'thumbnailWidth' => 120,
-      'thumbnailHeight' => 90,
-      'imageTemplate' => '',
-      'imageResize' => false,
-      'imageWidth' => 1024,
-      'imageHeight' => 768,
-      'logoEnable' => false,
-      'logoPosition' => 'BR',
-      'logoVPadding' => 10,
-      'logoHPadding' => 10,
-      'logoTVPadding' => 10,
-      'logoTHPadding' => 10,
-      'qualityJPEG' => 90,
-      'logoOpacity' => 70,
+  var $name = 'gallery';
+	var $type = 'client,content,ondemand';
+	var $title = 'Галерея';
+	var $version = '1.06b2';
+	var $description = 'Галерея изображений';
+	var $settings = array(
+	  'tmplList' => '$(items)',
+    'tmplListItem' => '<b>$(caption)</b><br />Фотографий: $(images)<br /><a href="$(url)"><img src="$(thumbnail)" width="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
+    'tmplSubList' => '$(items)',
+    'tmplSubListItem' => '<b>$(caption)</b> $(posted)<br /><a href="$(url)"><img src="$(thumbnail)" widt="$(thumbnailWidth)" height="$(thumbnailHeight)" alt="$(caption)" /></a><br /><br />',
+    'tmplItem' => '<h1>$(caption)</h1><img src="$(image)" width="$(imageWidth)" height="$(imageHeight)" alt="$(caption)" />',
+    'buttonBack' => '[ &laquo; Назад ]',
+    'buttonNext' => '[ Вперед &raquo; ]',
+    'itemsPerPage' => 20,
+    'imagesPerPage' => 20,
+    'background' => '000000',
+    'thumbnailWidth' => 120,
+    'thumbnailHeight' => 90,
+    'imageTemplate' => '',
+    'imageResize' => false,
+    'imageWidth' => 1024,
+    'imageHeight' => 768,
+    'logoEnable' => false,
+    'logoPosition' => 'BR',
+    'logoVPadding' => 10,
+    'logoHPadding' => 10,
+    'logoTVPadding' => 10,
+    'logoTHPadding' => 10,
+    'qualityJPEG' => 90,
+    'logoOpacity' => 70,
+  );
+	var $table = array (
+    'name' => 'gallery_albums',
+    'key'=> 'id',
+    'sortMode' => 'position',
+    'sortDesc' => false,
+    'columns' => array(
+      array('name' => 'caption', 'caption' => 'Заголовок'),
+      array('name' => 'posted', 'caption' => 'Дата'),
+      array('name' => 'images', 'caption' => 'Картинок', 'align'=>'center'),
     ),
-    $table = array (
-      'name' => 'gallery_albums',
-      'key'=> 'id',
-      'sortMode' => 'position',
-      'sortDesc' => false,
-      'columns' => array(
-        array('name' => 'caption', 'caption' => 'Заголовок'),
-        array('name' => 'posted', 'caption' => 'Дата'),
-        array('name' => 'images', 'caption' => 'Картинок', 'align'=>'center'),
-      ),
-      'controls' => array (
-        'delete' => '',
-        'edit' => '',
-        'position' => '',
-        'toggle' => '',
-      ),
-      'tabs' => array(
-        'width' => '150px',
-        'items' => array(
-          array('caption' => 'Новый альбом', 'name' => 'action', 'value' => 'create'),
-        ),
-      ),
-      'fields' => array('active'),
-      'sql' => "(
-        `id` int(10) unsigned NOT NULL auto_increment,
-        `section` int(10) unsigned default NULL,
-        `position` int(10) unsigned NOT NULL default '0',
-        `active` tinyint(1) unsigned default '0',
-        `posted` datetime default NULL,
-        `caption` varchar(128) default NULL,
-        `images` int(10) unsigned default NULL,
-        PRIMARY KEY  (`id`),
-        KEY `section` (`section`),
-        KEY `position` (`position`),
-        KEY `active` (`active`),
-        KEY `posted` (`posted`)
-      ) TYPE=MyISAM COMMENT='Gallery albums';",
+    'controls' => array (
+      'delete' => '',
+      'edit' => '',
+      'position' => '',
+      'toggle' => '',
     ),
-    $sub_table = array (
-      'name' => 'gallery_images',
-      'key'=> 'id',
-      'sortMode' => 'position',
-      'sortDesc' => false,
-      'columns' => array(
-        array('name' => 'caption', 'caption' => 'Описание', 'maxlength'=>300, 'striptags' => true),
-        array('name' => 'posted', 'caption' => 'Дата'),
-        array('name' => 'image', 'caption' => 'Файл'),
+    'tabs' => array(
+      'width' => '150px',
+      'items' => array(
+        array('caption' => 'Новый альбом', 'name' => 'action', 'value' => 'create'),
       ),
-      'controls' => array (
-        'delete' => '',
-        'edit' => '',
-        'position' => '',
+    ),
+    'fields' => array('active'),
+    'sql' => "(
+      `id` int(10) unsigned NOT NULL auto_increment,
+      `section` int(10) unsigned default NULL,
+      `position` int(10) unsigned NOT NULL default '0',
+      `active` tinyint(1) unsigned default '0',
+      `posted` datetime default NULL,
+      `caption` varchar(128) default NULL,
+      `images` int(10) unsigned default NULL,
+      PRIMARY KEY  (`id`),
+      KEY `section` (`section`),
+      KEY `position` (`position`),
+      KEY `active` (`active`),
+      KEY `posted` (`posted`)
+    ) TYPE=MyISAM COMMENT='Gallery albums';",
+  );
+	var $sub_table = array (
+    'name' => 'gallery_images',
+    'key'=> 'id',
+    'sortMode' => 'position',
+    'sortDesc' => false,
+    'columns' => array(
+      array('name' => 'caption', 'caption' => 'Описание', 'maxlength'=>300, 'striptags' => true),
+      array('name' => 'posted', 'caption' => 'Дата'),
+      array('name' => 'image', 'caption' => 'Файл'),
+    ),
+    'controls' => array (
+      'delete' => '',
+      'edit' => '',
+      'position' => '',
+    ),
+    'tabs' => array(
+      'width' => '150px',
+      'items' => array(
+        array('caption' => 'Новое изображение', 'name' => 'sub_action', 'value' => 'create'),
       ),
-      'tabs' => array(
-        'width' => '150px',
-        'items' => array(
-          array('caption' => 'Новое изображение', 'name' => 'sub_action', 'value' => 'create'),
-        ),
-      ),
-      'sql' => "(
-        `id` int(10) unsigned NOT NULL auto_increment,
-        `owner` int(10) unsigned default NULL,
-        `position` int(10) unsigned NOT NULL default '0',
-        `active` tinyint(1) unsigned default '0',
-        `posted` datetime default NULL,
-        `caption` varchar(128) default NULL,
-        `image` varchar(128) default NULL,
-        `thumbnail` varchar(128) default NULL,
-        PRIMARY KEY  (`id`),
-        KEY `owner` (`owner`),
-        KEY `position` (`position`),
-        KEY `active` (`active`),
-        KEY `posted` (`posted`)
-      ) TYPE=MyISAM COMMENT='Gallery iamges';",
-    );
+    ),
+    'sql' => "(
+      `id` int(10) unsigned NOT NULL auto_increment,
+      `owner` int(10) unsigned default NULL,
+      `position` int(10) unsigned NOT NULL default '0',
+      `active` tinyint(1) unsigned default '0',
+      `posted` datetime default NULL,
+      `caption` varchar(128) default NULL,
+      `image` varchar(128) default NULL,
+      `thumbnail` varchar(128) default NULL,
+      PRIMARY KEY  (`id`),
+      KEY `owner` (`owner`),
+      KEY `position` (`position`),
+      KEY `active` (`active`),
+      KEY `posted` (`posted`)
+    ) TYPE=MyISAM COMMENT='Gallery iamges';",
+  );
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function install()
   {
@@ -135,10 +158,10 @@ class TGallery extends TListContentPlugin {
     $item['thumbnailHeight'] = $this->settings['thumbnailHeight'];
     $item['imageWidth'] = $this->settings['imageWidth'];
     $item['imageHeight'] = $this->settings['imageHeight'];
-    if (strpos($item['thumbnail'], httpRoot) === false) $item['thumbnail'] = httpRoot.'data/'.$this->name.'/'.$item['thumbnail'];
-    if (strpos($item['image'], httpRoot) === false) $item['image'] = httpRoot.'data/'.$this->name.'/'.$item['image'];
-    $item['url'] = $request['path'].(isset($item['owner'])?$item['owner'].'/':'').$item['id'].'/';
-    $item['posted'] = FormatDate($item['posted']);
+    if (isset($item['thumbnail']) && strpos($item['thumbnail'], httpRoot) === false) $item['thumbnail'] = httpRoot.'data/'.$this->name.'/'.$item['thumbnail'];
+    if (isset($item['image']) && strpos($item['image'], httpRoot) === false) $item['image'] = httpRoot.'data/'.$this->name.'/'.$item['image'];
+    $item['url'] = $request['path'].$item['id'].'/';
+    if (isset($item['posted'])) $item['posted'] = FormatDate($item['posted']);
 
     $result = parent::replaceMacros($template, $item);
     return $result;
@@ -305,7 +328,7 @@ class TGallery extends TListContentPlugin {
       $item['active'] = true;
       upload('image', filesRoot.'data/'.$this->name.'/'.$item['image']);
       $item['thumbnail'] = $this->createthumbnail($item['image'], $type[2]);
-      $item['image'] = $this->resizeImage($item['image'], $type[2]);
+      #$item['image'] = $this->resizeImage($item['image'], $type[2]);
       $item['posted'] = gettime();
       $db->insert($this->sub_table['name'], $item);
       $owner['images']++;
@@ -415,17 +438,9 @@ class TGallery extends TListContentPlugin {
     $thmb = 'style/gallery/thumbnail.gif';
     $thmb = is_file(filesRoot.$thmb)?'<a href="'.httpRoot.$thmb.'">На миниатюра (GIF)</a>':'На миниатюра (GIF)';
 
-    $templates[0] = array();
-    $templates[1] = array();
-    $dir = filesRoot.'templates/';
-    $hnd = opendir($dir);
-    while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
-      $description = file_get_contents($dir.$filename);
-      preg_match('/<!--(.*?)-->/', $description, $description);
-      $description = trim($description[1]);
-      $templates[0][] = $description;
-      $templates[1][] = substr($filename, 0, strrpos($filename, '.'));
-    }
+    useLib('templates');
+    $Templates = new Templates();
+    $templates = $Templates->enum();
 
     $form = array(
       'name' => 'settings',
@@ -447,7 +462,7 @@ class TGallery extends TListContentPlugin {
         array('type'=>'edit','name'=>'background','label'=>'Цвет фона','width'=>'50px', 'maxlength'=>'6', 'comment' => 'Формат: RRGGBB'),
         array('type'=>'text','value'=>'<center><a href="'.$request['url'].'&action=thumbnail"><b>Перестроить миниатюры</b></a></center>'),
         array('type'=>'header', 'value'=>'Просмотр изображения'),
-        array('type'=>'select','name' =>'imageTemplate','label' => 'Шаблон страницы', 'items' => $templates[0], 'values' => $templates[1]),
+        array('type'=>'select','name' =>'imageTemplate','label' => 'Шаблон страницы', 'items' => array_values($templates), 'values' => array_keys($templates)),
         array('type'=>'checkbox','name'=>'imageResize','label'=>'Уменьшать изображения больше чем:'),
         array('type'=>'edit','name'=>'imageWidth','label'=>'','width'=>'50px', 'maxlength'=>'4', 'comment' => 'пикселей по ширине'),
         array('type'=>'edit','name'=>'imageHeight','label'=>'','width'=>'50px', 'maxlength'=>'4', 'comment' => 'пикселей по высоте'),
@@ -537,15 +552,14 @@ class TGallery extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderAlbum($gallery)
   {
-    global $db, $page, $request;
+    global $Eresus, $page;
 
     $result = '';
-    $item = $db->selectItem($this->table['name'], "(`id`='".$gallery."')AND(`active`='1')");
-    $items = $db->select(
+    $items = $Eresus->db->select(
       $this->sub_table['name'],
       "`owner`='".$gallery['id']."'",
       $this->sub_table['sortMode'],
-      $this->sub_table['sortDesc']
+      $this->sub_table['sortDesc'] == 1
     );
     if (count($items)) foreach($items as $item)
       $result .= $this->replaceMacros($this->settings['tmplSubListItem'], $item);
@@ -578,24 +592,24 @@ class TGallery extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderItem()
   {
-    global $db, $page, $request, $plugins;
+    global $Eresus, $page;
 
     $result = '';
-    $gallery = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
+    $gallery = $Eresus->db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
     if (is_null($gallery)) {
       $item = $page->Error404();
       $result = $item['content'];
     } else {
-      #$page->title[] = StripSlashes($gallery['caption']);
+    	#$page->title[] = StripSlashes($gallery['caption']);
       #$plugins->clientOnPathSplit($gallery, $page->name.'/'.$gallery['id'].'/');
       #$page->content['section'] .= ' &raquo; '.StripSlashes($gallery['caption']);
-      if (count($request['params']) && $request['params'][0][0] == 'p') {
-        $page->content['sub_page'] = substr($request['params'][0], 1);
-        array_shift($request['params']);
+      if (count($Eresus->request['params']) && $Eresus->request['params'][0][0] == 'p') {
+        $page->content['sub_page'] = substr($Eresus->request['params'][0], 1);
+        array_shift($Eresus->request['params']);
       }
-      if (count($request['params']) && (arg('action') != 'add_image')) {
-        $page->topic = array_shift($request['params']);
-        $result .= $this->renderImage($gallery, $page->topic);
+      if (count($Eresus->request['params']) && (arg('action') != 'add_image')) {
+      	$page->topic = array_shift($Eresus->request['params']);
+      	$result .= $this->renderImage($gallery, $page->topic);
       } else $result .= str_replace('$(items)', $this->renderAlbum($gallery), $this->settings['tmplSubList']);
     }
     return $result;

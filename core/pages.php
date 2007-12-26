@@ -172,7 +172,7 @@ class TPages {
           array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
           array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
           array('type'=>'hidden', 'name'=>'id', 'value' => $item['id']),
-          array('type'=>'select', 'label'=>strMove.' "<b>'.$item['title'].'</b>" в', 'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
+          array('type'=>'select', 'label'=>strMove.' "<b>'.$item['caption'].'</b>" в', 'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
         ),
         'buttons' => array('ok', 'cancel'),
       );
@@ -181,7 +181,7 @@ class TPages {
     }
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function deleteBrunch($id)
+  function deleteBranch($id)
   {
     global $db, $plugins;
 
@@ -193,7 +193,7 @@ class TPages {
       }
     }
     $items = $db->select('`pages`', "`owner`='".$id."'", '', false, '`id`');
-    if (count($items)) foreach($items as $item) $this->deleteBrunch($item['id']);
+    if (count($items)) foreach($items as $item) $this->deleteBranch($item['id']);
     $db->delete('pages', "`id`='".$id."'");
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -278,7 +278,7 @@ class TPages {
     $item = $Eresus->sections->get($id);
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
-    $item['options'] = encodeOptions($item['options']);
+    $item['options'] = array2text($item['options']);
     $form['caption'] = $item['caption'];
     # Вычисляем адрес страницы
     $urlAbs = $page->clientURL($item['id']);
@@ -322,7 +322,7 @@ class TPages {
   *
   * @return  string  Отрисованная часть таблицы
   */
-  function sectionIndexBrunch($owner=0, $level=0)
+  function sectionIndexBranch($owner=0, $level=0)
   {
     global $Eresus, $user;
 
@@ -337,7 +337,7 @@ class TPages {
       $row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
       $row[] = sprintf($this->cache['index_controls'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
       $result[] = $row;
-      $children = $this->sectionIndexBrunch($items[$i]['id'], $level+1);
+      $children = $this->sectionIndexBranch($items[$i]['id'], $level+1);
       if (count($children)) $result = array_merge($result, $children);
     }
     return $result;
@@ -360,7 +360,7 @@ class TPages {
     $table = new AdminList;
     $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
     $table->addRow(array(admPagesRoot, '', '', '',array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
-    $table->addRows($this->sectionIndexBrunch(0, 1));
+    $table->addRows($this->sectionIndexBranch(0, 1));
     $result = $table->render();
     return $result;
   }

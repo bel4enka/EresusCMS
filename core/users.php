@@ -1,21 +1,34 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Управление учётными записями пользователей
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class TUsers {
+
+useLib('accounts');
+
+class TUsers extends Accounts {
+	var $accounts;
   var
     $access = ADMIN,
     $itemsPerPage = 30,
     $pagesDesc = false;
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+ /**
+  * Конструктор
+  *
+  * @return TUsers
+  */
+  function TUsers()
+  {
+  	$this->accounts = new Accounts();
+  }
+  //-----------------------------------------------------------------------------
   function checkMail($mail)
   {
   global $session;
@@ -86,18 +99,38 @@ class TUsers {
     goto($request['arg']['submitURL']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+ /**
+  * Создание учётной записи
+  */
   function insert()
   {
-  global $db, $page, $request;
+	  global $Eresus, $page;
 
-    $fields = $db->fields('users');
-    foreach ($fields as $field) if (isset($request['arg'][$field])) $item[$field] = $request['arg'][$field];
-    if ($request['arg']['pswd1'] == $request['arg']['pswd2']) $item['hash'] = md5($request['arg']['pswd1']); else Logout();
-    if ($this->checkMail($item['mail'])) {
-      $db->insert('users', $item); 
-      SendNotify(admUsersAdded.': '.$this->notifyMessage($item), '', false, '', $page->url(array('action'=>'')));
-    };
-    goto($request['arg']['submitURL']);
+  	# Получение данных
+  	$item = array(
+  		'name' => arg('name', 'dbsafe'),
+  		'login' => arg('login', '/[^a-z0-9_]/'),
+  		'access' => arg('access', 'int'),
+  		'hash' => $Eresus->password_hash(arg('pswd1')),
+  		'mail' => arg('mail', 'dbsafe'),
+  	);
+  	# Проверка входных данных
+  	$error = false;
+		if (empty($item['name'])) { ErrorMessage(admUsersNameInvalid); $error = true;}
+		if (empty($item['login'])) { ErrorMessage(admUsersLoginInvalid); $error = true;}
+  	if ($item['access'] <= ROOT) { ErrorMessage('Invalid access level!'); $error = true;}
+		if ($item['hash'] != $Eresus->password_hash(arg('pswd2'))) { ErrorMessage(admUsersConfirmInvalid); $error = true;}
+		# Проверка данных на уникальность
+		$check = $this->accounts->get("`login` = '{$item['login']}'");
+		if ($check) { ErrorMessage(admUsersLoginExists); $error = true;}
+		if ($error) {
+			saveRequest();
+			goto($Eresus->request['referer']);
+		}
+    if ($this->accounts->add($item))
+    	SendNotify(admUsersAdded.': '.$this->notifyMessage($item), '', false, '', $page->url(array('action'=>'')));
+    else ErrorMessage('Error creating user account');
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function delete()
@@ -141,7 +174,7 @@ class TUsers {
       ),
       'buttons' => array(UserRights($this->access)?'ok':'', 'apply', 'cancel'),
     );
-    
+
     $pswd = array(
       'name' => 'PasswordForm',
       'caption' => admUsersChangePassword,
@@ -153,15 +186,16 @@ class TUsers {
       ),
       'buttons' => array(UserRights($this->access)?'ok':'apply', 'cancel'),
     );
-    
+
     $result = $page->renderForm($form)."<br />\n".$page->renderForm($pswd);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function create()
   {
-  global $db, $page;
+  	global $Eresus, $page;
 
+  	restoreRequest();
     $form = array(
       'name'=>'UserForm',
       'caption' => admUsersCreate,
@@ -180,8 +214,7 @@ class TUsers {
       ),
       'buttons'=>array('ok', 'cancel')
     );
-    
-    $result = $page->renderForm($form);
+    $result = $page->renderForm($form, $Eresus->request['arg']);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -196,7 +229,7 @@ class TUsers {
         if (empty($request['arg']['password']) || ($request['arg']['password'] == $user['id'])) $granted = true;
         if (empty($request['arg']['update']) || ($request['arg']['update'] == $user['id'])) $granted = true;
       }
-    }  
+    }
     if ($granted) {
       if (isset($request['arg']['update'])) $this->update();
       elseif (isset($request['arg']['password'])  && (!isset($request['arg']['action']) || ($request['arg']['action'] != 'login'))) $this->password();

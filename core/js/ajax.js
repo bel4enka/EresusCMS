@@ -97,7 +97,8 @@ var AJAX = {
   process: function()
   {
 		if (!this.req) return false;
-		
+		#TODO: Оставить только для IE
+		this.init();
     if (this.queue.length && (this.req.readyState == AJAX_READY || this.req.readyState == AJAX_NOT_INITIALIZED)) {
       this.current = this.queue.shift();
       this.req.open('GET', this.current, true);

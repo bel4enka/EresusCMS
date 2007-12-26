@@ -8,7 +8,7 @@ class TMenus extends TListContentPlugin {
   var $name = 'menus';
   var $title = 'Управление меню';
   var $type = 'client,admin';
-  var $version = '1.02b';
+  var $version = '1.02';
   var $kernel = '2.10b';
   var $description = 'Менеджер меню';
   var $table = array (
@@ -56,22 +56,22 @@ class TMenus extends TListContentPlugin {
   var $menu = null;
   var $pages = array(); # Путь по страницым
   var $ids = array(); # Путь по страницым (только идентификаторы)
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function TMenus()
   # производит регистрацию обработчиков событий
   {
   global $plugins;
-  
+
     parent::TPlugin();
     $plugins->events['clientOnURLSplit'][] = $this->name;
     $plugins->events['clientOnPageRender'][] = $this->name;
     $plugins->events['adminOnMenuRender'][] = $this->name;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
   {
     global $db, $request;
@@ -105,26 +105,26 @@ class TMenus extends TListContentPlugin {
     $template = parent::replaceMacros($template, $item);
     return $template;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function pagesBrunch($owner = 0, $level = 0)
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function pagesBranch($owner = 0, $level = 0)
   {
     global $Eresus;
-    
+
     $result = array(array(), array());
     $items = $Eresus->sections->children($owner, GUEST, SECTIONS_ACTIVE);
     if (count($items)) foreach($items as $item) {
       $result[0][] = str_repeat('- ', $level).$item['caption'];
       $result[1][] = $item['id'];
-      $sub = $this->pagesBrunch($item['id'], $level+1);
+      $sub = $this->pagesBranch($item['id'], $level+1);
       if (count($sub[0])) {
         $result[0] = array_merge($result[0], $sub[0]);
         $result[1] = array_merge($result[1], $sub[1]);
       }
-    }    
+    }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function menuBrunch($owner = 0, $path = '', $level = 1)
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function menuBranch($owner = 0, $path = '', $level = 1)
   # Функция строит ветку меню начиная от элемента с id = $owner
   #   $owner - id корневого предка
   #   $path - виртуальный путь к страницам
@@ -148,7 +148,7 @@ class TMenus extends TListContentPlugin {
         $item['is-selected'] = $item['id'] == $page->id;
         $item['is-parent'] = !$item['is-selected'] && in_array($item['id'], $this->ids);
         if ((!$this->menu['expandLevelAuto'] || ($level < $this->menu['expandLevelAuto'])) || (($item['is-parent'] || $item['is-selected']) && (!$this->menu['expandLevelMax'] || $level < $this->menu['expandLevelMax']))) {
-          $item['submenu'] = $this->menuBrunch($item['id'], $path.$item['name'].'/', $level+1);
+          $item['submenu'] = $this->menuBranch($item['id'], $path.$item['name'].'/', $level+1);
         }
         switch ($this->menu['specialMode']) {
           case 0: # нет
@@ -171,14 +171,14 @@ class TMenus extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminAddItem()
   {
     global $page, $db;
 
-    $sections = $this->pagesBrunch();
+    $sections = $this->pagesBranch();
     array_unshift($sections[0], 'ТЕКУЩИЙ РАЗДЕЛ');
     array_unshift($sections[1], -1);
     array_unshift($sections[0], 'КОРЕНЬ');
@@ -212,7 +212,7 @@ class TMenus extends TListContentPlugin {
           )
         ),
         array('type'=>'divider'),
-        array('type'=>'text', 'value' => 
+        array('type'=>'text', 'value' =>
           'Макросы:<ul>'.
           '<li><b>Все элементы страницы</b></li>'.
           '<li><b>$(level)</b> - номер текущего уровня</li><li><b>$(url)</b> - ссылка</li>'.
@@ -234,7 +234,7 @@ class TMenus extends TListContentPlugin {
     global $page, $db, $request;
 
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
-    $sections = $this->pagesBrunch();
+    $sections = $this->pagesBranch();
     array_unshift($sections[0], 'ТЕКУЩИЙ РАЗДЕЛ');
     array_unshift($sections[1], -1);
     array_unshift($sections[0], 'КОРЕНЬ');
@@ -268,7 +268,7 @@ class TMenus extends TListContentPlugin {
           )
         ),
         array('type'=>'divider'),
-        array('type'=>'text', 'value' => 
+        array('type'=>'text', 'value' =>
           'Макросы:<ul>'.
           '<li><b>Все элементы страницы</b></li>'.
           '<li><b>$(level)</b> - номер текущего уровня</li><li><b>$(url)</b> - ссылка</li>'.
@@ -290,19 +290,19 @@ class TMenus extends TListContentPlugin {
     $result = $this->adminRenderContent();
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientOnURLSplit($item, $url)
-  { 
+  {
     $this->pages[] = $item;
     $this->ids[] = $item['id'];
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientOnPageRender($text)
   {
     global $Eresus, $page, $request, $db;
-    
+
     preg_match_all('/\$\(Menus:(.+)?\)/Usi', $text, $menus, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
     $delta = 0;
     for($i = 0; $i < count($menus); $i++) {
@@ -316,7 +316,7 @@ class TMenus extends TListContentPlugin {
           else $this->menu['root'] = -2;
         }
         $path = $this->menu['root'] > -1 ? $page->clientURL($this->menu['root']) : $request['path'];
-        $menu = $this->menuBrunch($this->menu['root'], $path);
+        $menu = $this->menuBranch($this->menu['root'], $path);
         $text = substr_replace($text, $menu, $menus[$i][0][1]+$delta, strlen($menus[$i][0][0]));
         $delta += strlen($menu) - strlen($menus[$i][0][0]);
       }
@@ -327,7 +327,7 @@ class TMenus extends TListContentPlugin {
   function adminOnMenuRender()
   {
   global $page;
-  
+
     $page->addMenuItem(admExtensions, array ('access'  => ADMIN, 'link'  => $this->name, 'caption'  => $this->title, 'hint'  => $this->description));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

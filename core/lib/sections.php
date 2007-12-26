@@ -5,10 +5,10 @@
  * Библиотека для работы с разделами сайта
  *
  * @author: Mikhail Krasilnikov <mk@procreat.ru>
- * @version: 0.0.3
- * 
+ * @version: 0.0.5
+ *
  * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
- * 
+ *
  */
 
 define('SECTIONS_ACTIVE',  0x0001);
@@ -18,7 +18,6 @@ class Sections {
   var $table = 'pages';
   var $index = array();
   var $cache = array();
-  var $fieldset;
   /**
   * Создаёт индекс разделов
   *
@@ -29,9 +28,8 @@ class Sections {
   function index($force = false)
   {
     global $Eresus;
-    
+
     if ($force || !$this->index) {
-      if (!$this->fieldset) $this->fieldset = $Eresus->db->fields($this->table);
       $items = $Eresus->db->select($this->table, '', '`position`', false, '`id`,`owner`');
       if ($items) {
         $this->index = array();
@@ -49,12 +47,12 @@ class Sections {
   *
   * @return  array  Список ID разделов
   */
-  function brunch_ids($owner)
+  function branch_ids($owner)
   {
     $result = array();
     if (isset($this->index[$owner])) {
       $result = $this->index[$owner];
-      foreach($result as $section) $result = array_merge($result, $this->brunch_ids($section));
+      foreach($result as $section) $result = array_merge($result, $this->branch_ids($section));
     }
     return $result;
   }
@@ -70,15 +68,15 @@ class Sections {
   *
   * @return  array  Описания разделов
   */
-  function brunch($owner, $access = GUEST, $flags = 0)
+  function branch($owner, $access = GUEST, $flags = 0)
   {
     global $Eresus;
-    
+
     $result = array();
     # Создаём индекс
     if (!$this->index) $this->index();
     # Находим ID разделов ветки.
-    $set = $this->brunch_ids($owner);
+    $set = $this->branch_ids($owner);
     if (count($set)) {
       $list = array();
       # Читаем из кэша
@@ -88,7 +86,7 @@ class Sections {
         $i--;
       }
       if (count($set)) {
-        $fieldset = implode(',', array_diff($this->fieldset, array('content')));
+        $fieldset = implode(',', array_diff($this->fields(), array('content')));
         # Читаем из БД
         $set = implode(',', $set);
         $items = $Eresus->db->select($this->table, "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', false, $fieldset);
@@ -97,8 +95,8 @@ class Sections {
           $list[] = $items[$i];
         }
       }
-      if ($flags) { 
-        for($i=0; $i<count($list); $i++) if 
+      if ($flags) {
+        for($i=0; $i<count($list); $i++) if
           (
             (!($flags & SECTIONS_ACTIVE) || $list[$i]['active']) &&
             (!($flags & SECTIONS_VISIBLE) || $list[$i]['visible'])
@@ -107,9 +105,13 @@ class Sections {
     }
     return $result;
   }
+  function brunch($owner, $access = GUEST, $flags = 0)
+  {
+  	return $this->branch($owner, $access, $flags);
+  }
   //------------------------------------------------------------------------------
   /**
-  * Возвращает дочерние разделы указанного
+  * Возвращает идентификаторы дочерних разделов указанного
   *
   * @access public
   *
@@ -117,24 +119,24 @@ class Sections {
   * @param  int  $access  Минимальный уровень доступа
   * @param  int  $flags   Флаги (см. SECTIONS_XXX)
   *
-  * @return  array  Описания разделов
+  * @return  array  Идентификаторы разделов
   */
   function children($owner, $access = GUEST, $flags = 0)
   {
-    $items = $this->brunch($owner, $access, $flags);
+    $items = $this->branch($owner, $access, $flags);
     $result = array();
     for($i=0; $i<count($items); $i++) if ($items[$i]['owner'] == $owner) $result[] = $items[$i];
     return $result;
   }
   //------------------------------------------------------------------------------
   /**
-  * Возвращает все родительские разделы указанного
+  * Возвращает идентификаторы всех родительских разделов указанного
   *
   * @access public
   *
   * @param  int  $id   Идентификатор раздела
   *
-  * @return  array  Описания разделов
+  * @return  array  Идентификаторы разделов
   */
   function parents($id)
   {
@@ -150,7 +152,7 @@ class Sections {
     return $result;
   }
   //------------------------------------------------------------------------------
-  /**
+ /**
   * Возвращает список полей
   *
   * @access public
@@ -160,7 +162,7 @@ class Sections {
   function fields()
   {
     global $Eresus;
-    
+
     if (isset($this->cache['fields'])) $result = $this->cache['fields']; else {
       $result = $Eresus->db->fields($this->table);
       $this->cache['fields'] = $result;
@@ -168,7 +170,7 @@ class Sections {
     return $result;
   }
   //------------------------------------------------------------------------------
-  /**
+ /**
   * Возвращает раздел
   *
   * @access public
@@ -184,7 +186,7 @@ class Sections {
   function get($id)
   {
     global $Eresus;
-    
+
     if (is_array($id)) $what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
     elseif (is_numeric($id)) $what = "`id`=$id";
     else $what = $id;
@@ -206,7 +208,7 @@ class Sections {
   function add($item)
   {
     global $Eresus;
-    
+
     $result = false;
     if (isset($item['id'])) unset($item['id']);
     if (!isset($item['owner'])) $item['owner'] = 0;
@@ -232,14 +234,14 @@ class Sections {
   function update($item)
   {
     global $Eresus;
-    
+
     $result = false;
     $item['updated'] = gettime('Y-m-d H:i:s');
     $item['options'] = encodeOptions($item['options']);
     $result = $Eresus->db->updateItem($this->table, $item, "`id`={$item['id']}");
     return $result;
   }
-  //------------------------------------------------------------------------------  
+  //------------------------------------------------------------------------------
   /**
   * Удаляет раздел и подразделы
   *
@@ -256,10 +258,17 @@ class Sections {
     $result = true;
     $children = $this->children($id);
     for($i=0; $i<count($children); $i++) if  (!$result = $this->delete($children[$i]['id'])) break;
-    if ($result) $result = $Eresus->db->delete($this->table, "`id`=$id");
+    if ($result) {
+    	# Удаляем контент раздела
+    	$section = $this->get($id);
+    	if ($plugin = $Eresus->plugins->load($section['type'])) {
+				if (method_exists($plugin, 'onSectionDelete')) $plugin->onSectionDelete($id);
+    	}
+    	$result = $Eresus->db->delete($this->table, "`id`=$id");
+    }
     return $result;
   }
-  //------------------------------------------------------------------------------  
+  //------------------------------------------------------------------------------
 }
 
 ?>

@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * Управление модулями расширения
- * 
+ *
  * Система управления контентом Eresus™
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  * @author БерсЪ (fanta@steeka.com)
  */
@@ -42,7 +42,7 @@ class TPlgMgr {
 
     $plugins->load($request['arg']['id']);
     if (method_exists($plugins->items[$request['arg']['id']], 'settings')) {
-      $result = $plugins->items[$request['arg']['id']]->settings();
+      $result = $plugins->items[arg('id', 'word')]->settings();
     } else {
       $form = array(
         'name' => 'InfoWindow',
@@ -85,11 +85,11 @@ class TPlgMgr {
 
     $items = $db->select('`plugins`', '', "`name`");
 		$installed = array();
-		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';  
-		
+		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';
+
     $files = glob(filesRoot.'ext/*.php');
     $files = array_diff($files, $installed);
-    
+
     $page->scripts .= '
       function checkboxes(type)
       {
@@ -122,25 +122,23 @@ class TPlgMgr {
     );
     if (count($files)) foreach($files as $file) {
       $s = file_get_contents($file);
-      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?\{(.*?)(function|})/is', $s, $s);
+      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?{(.*?)({|})/is', $s, $s);
       if ($valid) {
       	$s = $s[1];
       	preg_match('/\$kernel\s*=\s*(\'|")(.+)\1/', $s, $kernel);
       	preg_match('/\$version\s*=\s*(\'|")(.+)\1/', $s, $version);
       	preg_match('/\$title\s*=\s*(\'|")(.+)\1/', $s, $title);
       	preg_match('/\$description\s*=\s*(\'|")(.+)\1/', $s, $description);
-      	#FIX: Совместимость с версиями до 2.10b2. Надо проверять и наличие $kernel
+      	#FIXME: Совместимость с версиями до 2.10b2. Надо проверять и наличие $kernel
       	if (count($version) && count($title) && count($description)) {
       		$caption = "{$title[2]} {$version[2]} - {$description[2]}";
-      	} else {
-      		$valid = false;
-      		$caption = '<span class="admError">'.$file.'.php - '.admPluginsInvalidFile.'</span>';
-      	}
+      	} else $valid = false;
       	if (count($kernel) && version_compare($kernel[2], CMSVERSION, '>')) {
-      		$valid = false; 
+      		$valid = false;
       		$caption = '<span class="admError">'.sprintf(admPluginsInvalidVersion, $title[2], $kernel[2]).'</span>';
       	}
-      } else $caption = admPluginsInvalidFile;
+      } else $valid = false;
+      if (!$valid) $caption = '<span class="admError">'.basename($file).' - '.admPluginsInvalidFile.'</span>';
       $form['fields'][] = array('type'=>'checkbox','name'=>'files['.basename($file, '.php').']','label'=>$caption, 'value'=>true, 'disabled'=>!$valid);
     }
     $result = $page->renderForm($form);

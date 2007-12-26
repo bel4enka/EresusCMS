@@ -8,7 +8,7 @@ class TBlocks extends TListContentPlugin {
   var $name = 'blocks';
   var $title = 'Блоки';
   var $type = 'client,admin';
-  var $version = '2.01';
+  var $version = '2.02';
   var $description = 'Система управления текстовыми блоками';
   var $table = array (
     'name' => 'blocks',
@@ -44,24 +44,24 @@ class TBlocks extends TListContentPlugin {
       KEY `main` (`active`, `section`, `block`, `target`)
     ) TYPE=MyISAM COMMENT='Content blocks';",
   );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function TBlocks()
   # производит регистрацию обработчиков событий
   {
   global $plugins;
-  
+
     parent::TPlugin();
     if (defined('CLIENTUI')) {
-      $plugins->events['clientOnContentRender'][] = $this->name; 
-      $plugins->events['clientOnPageRender'][] = $this->name; 
+      $plugins->events['clientOnContentRender'][] = $this->name;
+      $plugins->events['clientOnPageRender'][] = $this->name;
     } else $plugins->events['adminOnMenuRender'][] = $this->name;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function menuBrunch($owner = 0, $level = 0)
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function menuBranch($owner = 0, $level = 0)
   {
   global $db;
     $result = array(array(), array());
@@ -69,7 +69,7 @@ class TBlocks extends TListContentPlugin {
     if (count($items)) foreach($items as $item) {
       $result[0][] = str_repeat('- ', $level).$item['caption'];
       $result[1][] = $item['id'];
-      $sub = $this->menuBrunch($item['id'], $level+1);
+      $sub = $this->menuBranch($item['id'], $level+1);
       if (count($sub[0])) {
         $result[0] = array_merge($result[0], $sub[0]);
         $result[1] = array_merge($result[1], $sub[1]);
@@ -77,7 +77,7 @@ class TBlocks extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
   {
   global $db, $request;
@@ -106,7 +106,7 @@ class TBlocks extends TListContentPlugin {
   function toggle($id)
   {
   global $db, $page, $request;
-  
+
     $item = $db->selectItem($this->table['name'], "`id`='".$id."'");
     $item['active'] = !$item['active'];
     $db->updateItem($this->table['name'], $item, "`id`='".$id."'");
@@ -120,13 +120,13 @@ class TBlocks extends TListContentPlugin {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function create()
   {
   global $page, $db;
 
     $sections = array(array(), array());
-    $sections = $this->menuBrunch();
+    $sections = $this->menuBranch();
     array_unshift($sections[0], 'ВСЕ РАЗДЕЛЫ');
     array_unshift($sections[1], 'all');
     $form = array(
@@ -156,7 +156,7 @@ class TBlocks extends TListContentPlugin {
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
     $item['section'] = explode(':', $item['section']);
     $sections = array(array(), array());
-    $sections = $this->menuBrunch();
+    $sections = $this->menuBranch();
     array_unshift($sections[0], 'ВСЕ РАЗДЕЛЫ');
     array_unshift($sections[1], 'all');
     $form = array(
@@ -183,7 +183,7 @@ class TBlocks extends TListContentPlugin {
   function adminRender()
   {
   global $db, $page, $user, $request, $session;
-  
+
     $result = '';
     if (isset($request['arg']['id'])) {
       $item = $db->selectItem($this->table['name'], "`".$this->table['key']."` = '".$request['arg']['id']."'");
@@ -200,7 +200,7 @@ class TBlocks extends TListContentPlugin {
     } elseif (isset($request['arg']['action'])) switch ($request['arg']['action']) {
       case 'create': $result = $this->create(); break;
       case 'insert':
-        if (method_exists($this, 'insert')) $result = $this->insert(); 
+        if (method_exists($this, 'insert')) $result = $this->insert();
         else $session['errorMessage'] = sprintf(errMethodNotFound, 'insert', get_class($this));
       break;
     } else {
@@ -208,11 +208,11 @@ class TBlocks extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function renderBlocks($source, $target) 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function renderBlocks($source, $target)
   {
     global $db, $page, $request;
-  
+
     preg_match_all('/\$\(Blocks:([^\)]+)\)/', $source, $blocks);
     foreach($blocks[1] as $block) {
       $sql = "(`active`=1) AND (`section` LIKE '%:".$page->id.":%' OR `section` = ':all:') AND (`block`='".$block."') AND (`target` = '".$target."')";
@@ -223,11 +223,11 @@ class TBlocks extends TListContentPlugin {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminOnMenuRender()
   {
     global $page;
-  
+
     $page->addMenuItem(admExtensions, array ('access'  => EDITOR, 'link'  => $this->name, 'caption'  => $this->title, 'hint'  => $this->description));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
