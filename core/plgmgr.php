@@ -122,25 +122,23 @@ class TPlgMgr {
     );
     if (count($files)) foreach($files as $file) {
       $s = file_get_contents($file);
-      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?\{(.*?)(function|})/is', $s, $s);
+      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?{(.*?)({|})/is', $s, $s);
       if ($valid) {
       	$s = $s[1];
       	preg_match('/\$kernel\s*=\s*(\'|")(.+)\1/', $s, $kernel);
       	preg_match('/\$version\s*=\s*(\'|")(.+)\1/', $s, $version);
       	preg_match('/\$title\s*=\s*(\'|")(.+)\1/', $s, $title);
       	preg_match('/\$description\s*=\s*(\'|")(.+)\1/', $s, $description);
-      	#FIX: Совместимость с версиями до 2.10b2. Надо проверять и наличие $kernel
+      	#FIXME: Совместимость с версиями до 2.10b2. Надо проверять и наличие $kernel
       	if (count($version) && count($title) && count($description)) {
       		$caption = "{$title[2]} {$version[2]} - {$description[2]}";
-      	} else {
-      		$valid = false;
-      		$caption = '<span class="admError">'.basename($file).' - '.admPluginsInvalidFile.'</span>';
-      	}
+      	} else $valid = false;
       	if (count($kernel) && version_compare($kernel[2], CMSVERSION, '>')) {
       		$valid = false;
       		$caption = '<span class="admError">'.sprintf(admPluginsInvalidVersion, $title[2], $kernel[2]).'</span>';
       	}
-      } else $caption = admPluginsInvalidFile;
+      } else $valid = false;
+      if (!$valid) $caption = '<span class="admError">'.basename($file).' - '.admPluginsInvalidFile.'</span>';
       $form['fields'][] = array('type'=>'checkbox','name'=>'files['.basename($file, '.php').']','label'=>$caption, 'value'=>true, 'disabled'=>!$valid);
     }
     $result = $page->renderForm($form);
