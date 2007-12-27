@@ -31,36 +31,43 @@
  * <http://www.gnu.org/licenses/>
  */
 
-useClass('ListContentPlugin');
-
-class Menus extends ListContentPlugin {
+class Menus extends Plugin {
   var $version = '2.00a';
-  var $kernel = '2.10b4';
+  var $kernel = '2.10rc';
   var $title = 'Управление меню';
   var $description = 'Менеджер меню';
   var $type = 'client,admin';
-
-  var $table = array (
-    'name' => 'menus',
-    'key'=> 'id',
-    'sortMode' => 'id',
-    'sortDesc' => false,
-    'columns' => array(
-      array('name' => 'caption', 'caption' => 'Название'),
-      array('name' => 'name', 'caption' => 'Имя'),
-    ),
-    'controls' => array (
-      'delete' => '',
-      'edit' => '',
-      'toggle' => '',
-    ),
-    'tabs' => array(
-      'width'=>'180px',
-      'items'=>array(
-       array('caption'=>'Создать меню', 'name'=>'action', 'value'=>'create')
-      ),
-    ),
-    'sql' => "(
+ /**
+  * @var array
+  */
+  var $menu = null;
+ /**
+  * Путь по страницым
+  * @var array
+  */
+  var $pages = array();
+ /**
+  * Путь по страницым (только идентификаторы)
+  * @var array
+  */
+  var $ids = array();
+ /**
+  * Конструктор
+  * @return Menus
+  */
+  function Menus()
+  {
+    parent::Plugin();
+    $this->listenEvents('clientOnURLSplit', 'clientOnPageRender', 'adminOnMenuRender');
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Создание таблиц
+  */
+  function install()
+  {
+  	parent::install();
+  	$this->dbCreateTable("
       `id` int(10) unsigned NOT NULL auto_increment,
       `name` varchar(31) default NULL,
       `caption` varchar(255) default NULL,
@@ -78,47 +85,47 @@ class Menus extends ListContentPlugin {
       PRIMARY KEY  (`id`),
       KEY `name` (`name`),
       KEY `active` (`active`)
-    ) TYPE=MyISAM COMMENT='Menu collection';",
-  );
-  var $settings = array(
-  );
-  var $menu = null;
-  var $pages = array(); # Путь по страницым
-  var $ids = array(); # Путь по страницым (только идентификаторы)
+  	");
+  }
+  //-----------------------------------------------------------------------------
  /**
-  * Конструктор
-  * @return Menus
+  * Удаление таблиц
   */
-  function Menus()
+  function uninstall()
   {
-    parent::ListContentPlugin();
-    $this->listenEvents('clientOnURLSplit', 'clientOnPageRender', 'adminOnMenuRender');
+  	$this->dbDropTable();
+  	parent::uninstall();
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function insert()
+  //-----------------------------------------------------------------------------
+ /**
+  * Добавляет меню в БД
+  *
+  * @param array $item  Описание меню
+  */
+  function insert($item)
   {
-    global $db, $request;
-
-    $item = GetArgs($db->fields($this->table['name']));
-    $item['active'] = true;
-    $db->insert($this->table['name'], $item);
+    $this->dbInsert('', $item);
     sendNotify('Добавлено меню: '.$item['caption']);
-    goto($request['arg']['submitURL']);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function update()
+  //-----------------------------------------------------------------------------
+ /**
+  * Изменяет меню в БД
+  *
+  * @param array $item  Описание меню
+  */
+  function update($item)
   {
-    global $db, $request;
-
-    $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
-    $item = GetArgs($item);
-    $db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
+    $this->dbUpdate('', $item);
     sendNotify('Изменено меню: '.$item['caption']);
-    goto($request['arg']['submitURL']);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
+ /**
+  * Замена макросов
+  *
+  * @param string $template
+  * @param array $item
+  * @return string
+  */
   function replaceMacros($template, $item)
   {
     preg_match_all('|{%selected\?(.*?):(.*?)}|i', $template, $matches);
@@ -130,7 +137,14 @@ class Menus extends ListContentPlugin {
     $template = parent::replaceMacros($template, $item);
     return $template;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
+ /**
+  * Построение дерева разделов
+  *
+  * @param int $owner  ID корневого раздела
+  * @param int $level  Текущий уровень вложенности
+  * @return array
+  */
   function pagesBranch($owner = 0, $level = 0)
   {
     global $Eresus;
@@ -148,61 +162,80 @@ class Menus extends ListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function menuBranch($owner = 0, $path = '', $level = 1)
-  # Функция строит ветку меню начиная от элемента с id = $owner
-  #   $owner - id корневого предка
-  #   $path - виртуальный путь к страницам
-  #   $level - уровень вложенности
+	//-----------------------------------------------------------------------------
+  /**
+  * Добавляет новое меню в БД
+  */
+  function adminInsert()
   {
-    global $Eresus, $user, $page, $request;
-
-    $result = '';
-    if (strpos($path, httpRoot) !== false) $path = substr($path, strlen(httpRoot));
-    if ($owner == -1) $owner = $page->id;
-    $items = $Eresus->sections->children($owner, $user['auth'] ? $user['access'] : GUEST, SECTIONS_ACTIVE | ($this->menu['invisible']? 0 : SECTIONS_VISIBLE));
-    if (count($items)) {
-      $result = array();
-      foreach($items as $item) {
-        $template = $this->menu['tmplItem'];
-        if ($item['type'] == 'url') {
-          $item = $Eresus->sections->get($item['id']);
-          $item['url'] = $page->replaceMacros($item['content']);
-        } else $item['url'] = httpRoot.$path.($item['name']=='main'?'':$item['name'].'/');
-        $item['level'] = $level;
-        $item['is-selected'] = $item['id'] == $page->id;
-        $item['is-parent'] = !$item['is-selected'] && in_array($item['id'], $this->ids);
-        if ((!$this->menu['expandLevelAuto'] || ($level < $this->menu['expandLevelAuto'])) || (($item['is-parent'] || $item['is-selected']) && (!$this->menu['expandLevelMax'] || $level < $this->menu['expandLevelMax']))) {
-          $item['submenu'] = $this->menuBranch($item['id'], $path.$item['name'].'/', $level+1);
-        }
-        switch ($this->menu['specialMode']) {
-          case 0: # нет
-          break;
-          case 1: # только для выбранного пункта
-            if ($item['is-selected']) $template = $this->menu['tmplSpecial'];
-          break;
-          case 2: # для выбранного пункта если выбран его подпункт
-            if ((strpos($request['path'], $item['url']) === 0) && $item['name'] != 'main') $template = $this->menu['tmplSpecial'];
-          break;
-          case 3: # для пунктов, имеющих подпункты
-            if (!empty($item['submenu'])) $template = $this->menu['tmplSpecial'];
-          break;
-        }
-        $result[] = $this->replaceMacros($template, $item);
-      }
-      $result = implode($this->menu['glue'], $result);
-      $result = array('level'=>($level), 'items'=>$result);
-      $result = $this->replaceMacros($this->menu['tmplList'], $result);
+    $item['name'] = arg('name', 'word');
+		$item['caption'] = arg('caption', 'dbsafe');
+    $item['active'] = true;
+    $item['root'] = arg('root', 'int');
+    $item['rootLevel'] = arg('rootLevel', 'int');
+    $item['expandLevelAuto'] = arg('expandLevelAuto', 'int');
+    $item['expandLevelMax'] = arg('expandLevelMax', 'int');
+    $item['glue'] = arg('glue', 'dbsafe');
+    $item['tmplList'] = arg('tmplList', 'dbsafe');
+    $item['tmplItem'] = arg('tmplItem', 'dbsafe');
+    $item['tmplSpecial'] = arg('tmplSpecial', 'dbsafe');
+    $item['specialMode'] = arg('specialMode', 'int');
+    $item['invisible'] = arg('invisible', 'int');
+    if (empty($item['name']) || empty($item['caption'])) {
+    	saveRequest();
+    	ErrorMessage('Заполнены не все обязательные поля!');
+    	goto($GLOBALS['Eresus']->request['referer']);
     }
-    return $result;
+    $this->insert($item);
+    goto(arg('submitURL'));
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function adminAddItem()
+  //-----------------------------------------------------------------------------
+ /**
+  * Добавляет новое меню в БД
+  */
+  function adminUpdate()
   {
-    global $page, $db;
-
+		$item = $this->dbItem('', arg('update', 'int'));
+    $item['name'] = arg('name', 'word');
+		$item['caption'] = arg('caption', 'dbsafe');
+    $item['root'] = arg('root', 'int');
+    $item['rootLevel'] = arg('rootLevel', 'int');
+    $item['expandLevelAuto'] = arg('expandLevelAuto', 'int');
+    $item['expandLevelMax'] = arg('expandLevelMax', 'int');
+    $item['glue'] = arg('glue', 'dbsafe');
+    $item['tmplList'] = arg('tmplList', 'dbsafe');
+    $item['tmplItem'] = arg('tmplItem', 'dbsafe');
+    $item['tmplSpecial'] = arg('tmplSpecial', 'dbsafe');
+    $item['specialMode'] = arg('specialMode', 'int');
+    $item['invisible'] = arg('invisible', 'int');
+    /*if (empty($item['name']) || empty($item['caption'])) {
+    	saveRequest();
+    	ErrorMessage('Заполнены не все обязательные поля!');
+    	goto($GLOBALS['Eresus']->request['referer']);
+    }*/
+    $this->update($item);
+    goto(arg('submitURL'));
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Изменяет активность меню
+  */
+  function adminToggle()
+  {
+  	global $Eresus;
+		$item = $this->dbItem('', arg('toggle', 'int'));
+		$item['active'] = !$item['active'];
+    $this->dbUpdate('', $item);
+    goto($Eresus->request['referer']);
+  }
+  //-----------------------------------------------------------------------------
+  /**
+  * Создаёт базовую форму диалога создания/изменения меню
+  *
+  * @return array
+  */
+  function adminDialogTemplate()
+  {
     $sections = $this->pagesBranch();
     array_unshift($sections[0], 'ТЕКУЩИЙ РАЗДЕЛ');
     array_unshift($sections[1], -1);
@@ -210,10 +243,8 @@ class Menus extends ListContentPlugin {
     array_unshift($sections[1], 0);
     $form = array(
       'name' => 'FormCreate',
-      'caption' => 'Создать меню',
       'width' => '500px',
       'fields' => array (
-        array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
         array('type'=>'edit','name'=>'name','label'=>'<b>Имя</b>', 'width' => '100px', 'comment' => 'для использования в макросах', 'pattern'=>'/[a-z]\w*/i', 'errormsg'=>'Имя должно начинаться с буквы и может содержать только латинские буквы и цифры'),
         array('type'=>'edit','name'=>'caption','label'=>'<b>Название</b>', 'width' => '100%', 'hint' => 'Для внутреннего использования', 'pattern'=>'/.+/i', 'errormsg'=>'Название не может быть пустым'),
         array('type'=>'select','name'=>'root','label'=>'Корневой раздел', 'values'=>$sections[1], 'items'=>$sections[0], 'extra' =>'onchange="this.form.rootLevel.disabled = this.value != -1"'),
@@ -224,7 +255,7 @@ class Menus extends ListContentPlugin {
         array('type'=>'edit','name'=>'expandLevelMax','label'=>'Разворачивать максимум', 'width' => '20px', 'comment' => 'уровней (0 - без ограничений)', 'default' => 0),
         array('type'=>'header', 'value'=>'Шаблоны'),
         array('type'=>'memo','name'=>'tmplList','label'=>'Шаблон блока одного уровня меню', 'height' => '3'),
-        array('type'=>'text', 'value' => 'Макросы:<ul><li><b><li><b>$(level)</b> - номер текущего уровня</li><li><b>$(items)</b> - пункты меню</li></ul>'),
+        array('type'=>'text', 'value' => 'Макросы:<ul><li><b>$(level)</b> - номер текущего уровня</li><li><b>$(items)</b> - пункты меню</li></ul>'),
         array('type'=>'edit','name'=>'glue','label'=>'Разделитель пунктов', 'width' => '100%', 'maxlength' => 63),
         array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон пункта меню', 'height' => '3'),
         array('type'=>'memo','name'=>'tmplSpecial','label'=>'Специальный шаблон пункта меню', 'height' => '3'),
@@ -239,8 +270,10 @@ class Menus extends ListContentPlugin {
         array('type'=>'divider'),
         array('type'=>'text', 'value' =>
           'Макросы:<ul>'.
-          '<li><b>Все элементы страницы</b></li>'.
-          '<li><b>$(level)</b> - номер текущего уровня</li><li><b>$(url)</b> - ссылка</li>'.
+          '<li><b>Все свойста раздела</b> - $(id), $(title), $(caption), $(hint), $(description), $(keywords) и т.д.</li>'.
+        	'<li><b>$(href)</b> - ссылка</li>'.
+          '<li><b>$(num)</b> - порядковый номер раздела в текущем уровне</li>'.
+        	'<li><b>$(level)</b> - номер текущего уровня</li><li>'.
           '<li><b>$(submenu)</b> - место для вставки подменю</li>'.
           '<li><b>{%selected?строка1:строка2}</b> - если элемент выбран, вставить строка1, иначе строка2</li>'.
           '<li><b>{%parent?строка1:строка2}</b> - если элемент находится среди родительских разделов выбранного элемента, вставить строка1, иначе строка2</li>'.
@@ -248,91 +281,124 @@ class Menus extends ListContentPlugin {
         array('type'=>'divider'),
         array('type'=>'text', 'value' => 'Для вставки меню используйте макрос <b>$(Menus:имя_меню)</b>'),
       ),
-      'buttons' => array('ok', 'cancel'),
     );
-    $result = $page->renderForm($form);
+  	return $form;
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Диалог создания меню
+  *
+  * @return string
+  */
+  function adminCreateDialog()
+  {
+    global $Eresus, $page;
+
+    $form = $this->adminDialogTemplate();
+    $form['caption']  = 'Создать меню';
+    $form['fields'][] = array('type'=>'hidden','name'=>'action', 'value'=>'insert');
+    $form['buttons'] = array('ok', 'cancel');
+    restoreRequest();
+    $result = $page->renderForm($form, $Eresus->request['arg']);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function adminEditItem()
+  //-----------------------------------------------------------------------------
+ /**
+  * Диалог изменения меню
+  *
+  * @return string
+  */
+  function adminEditDialog()
   {
-    global $page, $db, $request;
+    global $Eresus, $page;
 
-    $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
-    $sections = $this->pagesBranch();
-    array_unshift($sections[0], 'ТЕКУЩИЙ РАЗДЕЛ');
-    array_unshift($sections[1], -1);
-    array_unshift($sections[0], 'КОРЕНЬ');
-    array_unshift($sections[1], 0);
-    $form = array(
-      'name' => 'FormEdit',
-      'caption' => 'Изменить меню',
-      'width' => '500px',
-      'fields' => array (
-        array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-        array('type'=>'edit','name'=>'name','label'=>'<b>Имя</b>', 'width' => '100px', 'comment' => 'для использования в макросах', 'pattern'=>'/[a-z]\w*/i', 'errormsg'=>'Имя должно начинаться с буквы и может содержать только латинские буквы и цифры'),
-        array('type'=>'edit','name'=>'caption','label'=>'<b>Название</b>', 'width' => '100%', 'hint' => 'Для внутреннего использования', 'pattern'=>'/.+/i', 'errormsg'=>'Название не может быть пустым'),
-        array('type'=>'select','name'=>'root','label'=>'Корневой раздел', 'values'=>$sections[1], 'items'=>$sections[0], 'extra' =>'onchange="this.form.rootLevel.disabled = this.value != -1"'),
-        array('type'=>'edit','name'=>'rootLevel','label'=>'Фикс. уровень', 'width' => '20px', 'comment' => '(0 - текущий уровень)', 'default' => 0, 'disabled' => $item['root'] != -1),
-        array('type'=>'header', 'value'=>'Уровни меню'),
-        array('type'=>'edit','name'=>'expandLevelAuto','label'=>'Всегда показывать', 'width' => '20px', 'comment' => 'уровней (0 - развернуть все)', 'default' => 0),
-        array('type'=>'edit','name'=>'expandLevelMax','label'=>'Разворачивать максимум', 'width' => '20px', 'comment' => 'уровней (0 - без ограничений)', 'default' => 0),
-        array('type'=>'checkbox','name'=>'invisible','label'=>'Показывать скрытые разделы'),
-        array('type'=>'header', 'value'=>'Шаблоны'),
-        array('type'=>'memo','name'=>'tmplList','label'=>'Шаблон блока одного уровня меню', 'height' => '3'),
-        array('type'=>'text', 'value' => 'Макросы:<ul><li><b><li><b>$(level)</b> - номер текущего уровня</li><li><b>$(items)</b> - пункты меню</li></ul>'),
-        array('type'=>'edit','name'=>'glue','label'=>'Разделитель пунктов', 'width' => '100%', 'maxlength' => 63),
-        array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон пункта меню', 'height' => '3'),
-        array('type'=>'memo','name'=>'tmplSpecial','label'=>'Специальный шаблон пункта меню', 'height' => '3'),
-        array('type'=>'text', 'value' => 'Использовать специальный шаблон'),
-        array('type'=>'select','name'=>'specialMode','items'=>array(
-          'нет',
-          'только для выбранного пункта',
-          'для выбранного пункта если выбран его подпункт',
-          'для пунктов, имеющих подпункты'
-          )
-        ),
-        array('type'=>'divider'),
-        array('type'=>'text', 'value' =>
-          'Макросы:<ul>'.
-          '<li><b>Все элементы страницы</b></li>'.
-          '<li><b>$(level)</b> - номер текущего уровня</li><li><b>$(url)</b> - ссылка</li>'.
-          '<li><b>$(submenu)</b> - место для вставки подменю</li>'.
-          '<li><b>{%selected?строка1:строка2}</b> - если элемент выбран, вставить строка1, иначе строка2</li>'.
-          '<li><b>{%parent?строка1:строка2}</b> - если элемент находится среди родительских разделов выбранного элемента, вставить строка1, иначе строка2</li>'.
-          '</ul>'),
-        array('type'=>'divider'),
-        array('type'=>'text', 'value' => 'Для вставки меню используйте макрос <b>$(Menus:имя_меню)</b>'),
-      ),
-      'buttons' => array('ok', 'apply', 'cancel'),
-    );
+    $item = $this->dbItem('', arg('id', 'int'));
+    $form = $this->adminDialogTemplate();
+    $form['caption']  = 'Изменение меню';
+    $form['fields'][] = array('type'=>'hidden','name'=>'update', 'value'=>$item['id']);
     $result = $page->renderForm($form, $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function adminRender()
-  {
-    $result = $this->adminRenderContent();
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+ /**
+  * Сохранение текущего пути по разделам
+  *
+  * @param array $item Поисание раздела
+  * @param string $url URI раздела
+  */
   function clientOnURLSplit($item, $url)
   {
     $this->pages[] = $item;
     $this->ids[] = $item['id'];
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
+ /**
+  * Cтроит ветку меню начиная от элемента с id = $owner
+  *
+  * @param int $owner    id корневого предка
+  * @param string $path  виртуальный путь к страницам
+  * @param int $level		 уровень вложенности
+  * @return string
+  */
+  function menuBranch($owner = 0, $path = '', $level = 1)
+  {
+    global $Eresus, $page;
+
+    $result = '';
+    if (strpos($path, httpRoot) !== false) $path = substr($path, strlen(httpRoot));
+    if ($owner == -1) $owner = $page->id;
+    $items = $Eresus->sections->children($owner, $Eresus->user['auth'] ? $Eresus->user['access'] : GUEST, SECTIONS_ACTIVE | ($this->menu['invisible']? 0 : SECTIONS_VISIBLE));
+    if (count($items)) {
+      $result = array();
+      for($i = 0; $i < count($items); $i++) {
+        $template = $this->menu['tmplItem'];
+        if ($items[$i]['type'] == 'url') {
+          $items[$i] = $Eresus->sections->get($items[$i]['id']);
+          $items[$i]['url'] = $items[$i]['href'] = $page->replaceMacros($items[$i]['content']); #FIXME: Убрать 'url' в последующих версиях (обратная совместимость)
+        } else $items[$i]['url'] = $items[$i]['href'] = httpRoot.$path.($items[$i]['name']=='main'?'':$items[$i]['name'].'/'); #FIXME: Убрать 'url' в последующих версиях (обратная совместимость)
+				$items[$i]['num'] = $i+1;
+        $items[$i]['level'] = $level;
+        $items[$i]['is-selected'] = $items[$i]['id'] == $page->id;
+        $items[$i]['is-parent'] = !$items[$i]['is-selected'] && in_array($items[$i]['id'], $this->ids);
+        if ((!$this->menu['expandLevelAuto'] || ($level < $this->menu['expandLevelAuto'])) || (($items[$i]['is-parent'] || $items[$i]['is-selected']) && (!$this->menu['expandLevelMax'] || $level < $this->menu['expandLevelMax']))) {
+          $items[$i]['submenu'] = $this->menuBranch($items[$i]['id'], $path.$items[$i]['name'].'/', $level+1);
+        }
+        switch ($this->menu['specialMode']) {
+          case 0: # нет
+          break;
+          case 1: # только для выбранного пункта
+            if ($items[$i]['is-selected']) $template = $this->menu['tmplSpecial'];
+          break;
+          case 2: # для выбранного пункта если выбран его подпункт
+            if ((strpos($Eresus->request['path'], $items[$i]['href']) === 0) && $items[$i]['name'] != 'main') $template = $this->menu['tmplSpecial'];
+          break;
+          case 3: # для пунктов, имеющих подпункты
+            if (!empty($items[$i]['submenu'])) $template = $this->menu['tmplSpecial'];
+          break;
+        }
+        $result[] = $this->replaceMacros($template, $items[$i]);
+      }
+      $result = implode($this->menu['glue'], $result);
+      $result = array('level'=>($level), 'items'=>$result);
+      $result = $this->replaceMacros($this->menu['tmplList'], $result);
+    }
+    return $result;
+  }
+	//-----------------------------------------------------------------------------
+ /**
+  * Поиск и отрисовка меню
+  *
+  * @param string $text
+  * @return string
+  */
   function clientOnPageRender($text)
   {
-    global $Eresus, $page, $request, $db;
+    global $Eresus, $page;
 
-    preg_match_all('/\$\(Menus:(.+)?\)/Usi', $text, $menus, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+    preg_match_all('/\$\(menus:(.+?)\)/si', $text, $menus, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
     $delta = 0;
     for($i = 0; $i < count($menus); $i++) {
-      $this->menu = $db->selectItem($this->table['name'], "`name`='".$menus[$i][1][0]."' AND `active` = 1");
-      if (!is_null($this->menu)) {
+      $this->menu = $this->dbItem('', $menus[$i][1][0], 'name');
+      if (!is_null($this->menu) && $this->menu['active']) {
         if ($this->menu['root'] == -1 && $this->menu['rootLevel']) {
           $parents = $Eresus->sections->parents($page->id);
           $level = count($parents);
@@ -340,7 +406,7 @@ class Menus extends ListContentPlugin {
           elseif ($level > $this->menu['rootLevel']) $this->menu['root'] = $this->menu['root'] = $parents[$this->menu['rootLevel']];
           else $this->menu['root'] = -2;
         }
-        $path = $this->menu['root'] > -1 ? $page->clientURL($this->menu['root']) : $request['path'];
+        $path = $this->menu['root'] > -1 ? $page->clientURL($this->menu['root']) : $Eresus->request['path'];
         $menu = $this->menuBranch($this->menu['root'], $path);
         $text = substr_replace($text, $menu, $menus[$i][0][1]+$delta, strlen($menus[$i][0][0]));
         $delta += strlen($menu) - strlen($menus[$i][0][0]);
@@ -348,14 +414,72 @@ class Menus extends ListContentPlugin {
     }
     return $text;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
+ /**
+  * Отрисовка списка меню
+  * @return string
+  */
+  function adminRenderList()
+  {
+  	global $Eresus, $page;
+
+  	$result = '';
+		$tabs = array(
+      'width'=>'180px',
+      'items'=>array(
+       array('caption'=>'Создать меню', 'name'=>'action', 'value'=>'create')
+      ),
+    );
+    $result .= $page->renderTabs($tabs);
+
+    # Отрисовка списка
+    $root = $Eresus->root.'admin.php?mod=pages&amp;';
+    $items = $this->dbSelect('', '', 'caption');
+    useLib('admin/lists');
+    $list = new AdminList();
+    $list->setHead('', 'Название', 'Имя');
+    for($i=0; $i<count($items); $i++) {
+      $row = array();
+      $row[] =
+      	$list->control('delete', $page->url(array('delete' => $items[$i]['id']))).'&nbsp;'.
+      	$list->control($items[$i]['active']? 'off' : 'on', $page->url(array('toggle' => $items[$i]['id']))).'&nbsp;'.
+      	$list->control('edit', $page->url(array('id' => $items[$i]['id'])));
+      $row[] = $items[$i]['caption'];
+      $row[] = $items[$i]['name'];
+     	$list->addRow($row);
+    }
+    $result .= $list->render();
+    return $result;
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Отрисовка контента АИ
+  * @return string
+  */
+  function adminRender()
+  {
+  	$result = '';
+  	switch (arg('action')) {
+  		case 'create': $result = $this->adminCreateDialog(); break;
+  		case 'insert': $this->adminInsert(); break;
+  		default: switch (true) {
+  			case arg('update'): $this->adminUpdate(); break;
+  			case arg('toggle'): $this->adminToggle(); break;
+  			case arg('id'): $result = $this->adminEditDialog(); break;
+  			default: $result = $this->adminRenderList();
+  		}
+  	}
+  	return $result;
+  }
+  //-----------------------------------------------------------------------------
+ /**
+  * Добавление пункта в меню "Расширения"
+  */
   function adminOnMenuRender()
   {
-  global $page;
-
+  	global $page;
     $page->addMenuItem(admExtensions, array ('access'  => ADMIN, 'link'  => $this->name, 'caption'  => $this->title, 'hint'  => $this->description));
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 ?>
