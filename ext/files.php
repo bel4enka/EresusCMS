@@ -3,14 +3,14 @@
  * Публикация файлов
  *
  * Eresus 2
- * 
+ *
  * Плагин обеспечивает публикуцию на сайте файлов, с разбивкой по категориям
  *
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @version: 1.00
  * @modified: 2007-09-21
- * 
+ *
  * @author: Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -66,7 +66,7 @@ class Files extends ContentPlugin {
    * Возвращает список разделов
    *
    * @param int $section Раздел сайта
-   * 
+   *
    * @return array Список разделов
    */
   function sectionEnum($section)
@@ -107,7 +107,7 @@ class Files extends ContentPlugin {
   		$this->dbUpdate('sections', $item);
   	}
   }
-  //------------------------------------------------------------------------  
+  //------------------------------------------------------------------------
   /**
    * Перемещает раздел вниз в списке
    *
@@ -122,7 +122,7 @@ class Files extends ContentPlugin {
   		$this->dbUpdate('sections', $item);
   	}
   }
-  //------------------------------------------------------------------------  
+  //------------------------------------------------------------------------
   /**
    * Возвращает диалог добавления раздела
    *
@@ -131,7 +131,7 @@ class Files extends ContentPlugin {
   function sectionAddDialog()
   {
   	global $page;
-  	
+
   	$form = array(
   		'name' => 'AddDialog',
   		'caption' => 'Новая категория',
@@ -150,7 +150,7 @@ class Files extends ContentPlugin {
    * Возвращает список файлов
    *
    * @param int $owner Идентификатор подраздела
-   * 
+   *
    * @return array Список файлов
    */
   function filesEnum($owner)
@@ -158,7 +158,7 @@ class Files extends ContentPlugin {
   	$result = $this->dbSelect('files', "`owner` = '$owner'", 'position');
   	return $result;
   }
-  //------------------------------------------------------------------------  
+  //------------------------------------------------------------------------
   /**
    * Возвращает диалог добавления файла
    *
@@ -168,7 +168,7 @@ class Files extends ContentPlugin {
   function fileAddDialog($owner)
   {
   	global $page;
-  	
+
   	$form = array(
   		'name' => 'AddDialog',
   		'caption' => 'Новый файл',
@@ -206,7 +206,7 @@ class Files extends ContentPlugin {
   			$result = false;
   		}
   	}
-  	
+
   	return $result > 0;
   }
   //------------------------------------------------------------------------
@@ -224,7 +224,7 @@ class Files extends ContentPlugin {
   		$this->dbUpdate('files', $item);
   	}
   }
-  //------------------------------------------------------------------------  
+  //------------------------------------------------------------------------
   /**
    * Перемещает файл вниз в списке
    *
@@ -239,7 +239,7 @@ class Files extends ContentPlugin {
   		$this->dbUpdate('files', $item);
   	}
   }
-  //------------------------------------------------------------------------  
+  //------------------------------------------------------------------------
   /**
    * Удаляет файл
    *
@@ -252,10 +252,10 @@ class Files extends ContentPlugin {
   	$this->dbDelete('files', $item);
   	$this->dbUpdate('files', "`position` = `position` - 1", "`owner`={$item['owner']} AND `position` > ".($item['position']));
   }
-  //------------------------------------------------------------------------  
+  //------------------------------------------------------------------------
   /**
    * Отрисовка списка файлов
-   * 
+   *
    * @param int $section  Раздел сайта
    *
    * @return string Контент
@@ -263,7 +263,7 @@ class Files extends ContentPlugin {
   function adminRenderList($section)
   {
   	global $page;
-  	
+
 		$result = '';
 		$tabs = array(
 			'items' => array(
@@ -294,7 +294,7 @@ class Files extends ContentPlugin {
 				<a href=\"".$page->url(array('action' => 'section_down', 'id' => $sections[$i]['id']))."\" title=\"Переместить ниже\">[&darr;]</a>
 				<a href=\"".$page->url(array('action' => 'section_delete', 'id' => $sections[$i]['id']))."\" title=\"Удалить раздел и все его файлы\">[-]</a></div>";
 			$files = $this->filesEnum($sections[$i]['id']);
-			if (count($files)) $result .= $page->renderTable($table, $files, 'file_'); 
+			if (count($files)) $result .= $page->renderTable($table, $files, 'file_');
 		}
 		return $result;
   }
@@ -313,7 +313,7 @@ class Files extends ContentPlugin {
 		if (arg('file_down')) $action = 'file_down';
 		if (arg('file_delete')) $action = 'file_delete';
 		#if (arg('file_id')) $action = 'file_delete';
-		
+
 		switch ($action) {
 			case 'section_add': $result = $this->sectionAddDialog(); break;
 			case 'section_insert': $this->sectionCreate($page->id, arg('caption')); goto(arg('submitURL')); break;
@@ -328,7 +328,7 @@ class Files extends ContentPlugin {
 				$result = $this->adminRenderList($page->id);
 			break;
 		}
-		
+
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -340,7 +340,7 @@ class Files extends ContentPlugin {
 	function settings()
 	{
 	  global $Eresus, $page;
-	
+
 	  $form = array(
 	    'name'=>'SettingsForm',
 	    'caption' => $this->title.' '.$this->version,
@@ -355,7 +355,7 @@ class Files extends ContentPlugin {
 	  );
 	  $result = $page->renderForm($form, $this->settings);
 	  return $result;
-	}	
+	}
 	//------------------------------------------------------------------------------
 	/**
 	 * Отрисовка клиентского контента
@@ -365,7 +365,7 @@ class Files extends ContentPlugin {
 	function clientRenderContent()
 	{
 		global $page;
-  	
+
 		$result = '';
 
 		if ($page->topic) {
@@ -394,8 +394,8 @@ class Files extends ContentPlugin {
 				$result .= "<p>";
 				for ($j = 0; $j < count($files); $j++) {
 					$icon = strtolower(substr($files[$j]['filename'], strpos($files[$j]['filename'], '.')+1));
-					$icon = isset($icons[$icon]) ? '<img src="'.$this->urlStyle.$icons[$icon].'" alt="" />' : ''; 
-					$result .= '<a href="'.$files[$j]['id'].'">'.$files[$j]['caption'].'</a> ('.FormatSize($files[$j]['size']).')'.$icon.'<br />';
+					$icon = isset($icons[$icon]) ? '<img src="'.$this->urlStyle.$icons[$icon].'" alt="" />' : '';
+					$result .= '<a href="'.$files[$j]['id'].'/">'.$files[$j]['caption'].'</a> ('.FormatSize($files[$j]['size']).')'.$icon.'<br />';
 				}
 				$result .= "</p>";
 			}
@@ -403,6 +403,11 @@ class Files extends ContentPlugin {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+	function onSectionDelete($id)
+	{
+		parent::onSectionDelete($id, 'sections');
+	}
+	//-----------------------------------------------------------------------------
 }
 
 ?>

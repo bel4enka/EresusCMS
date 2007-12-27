@@ -1,16 +1,45 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™ 2.00+
-# © 2007, ProCreat Systems
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TMenus extends TListContentPlugin {
-  var $name = 'menus';
+/**
+ * Menus
+ *
+ * Eresus 2
+ *
+ * Управление несколькими меню
+ *
+ * @version 2.00
+ *
+ * @copyright   2007, ProCreat Systems, http://procreat.ru/
+ * @copyright   2007, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ */
+
+useClass('ListContentPlugin');
+
+class Menus extends ListContentPlugin {
+  var $version = '2.00a';
+  var $kernel = '2.10b4';
   var $title = 'Управление меню';
-  var $type = 'client,admin';
-  var $version = '1.02';
-  var $kernel = '2.10b';
   var $description = 'Менеджер меню';
+  var $type = 'client,admin';
+
   var $table = array (
     'name' => 'menus',
     'key'=> 'id',
@@ -56,18 +85,14 @@ class TMenus extends TListContentPlugin {
   var $menu = null;
   var $pages = array(); # Путь по страницым
   var $ids = array(); # Путь по страницым (только идентификаторы)
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function TMenus()
-  # производит регистрацию обработчиков событий
+ /**
+  * Конструктор
+  * @return Menus
+  */
+  function Menus()
   {
-  global $plugins;
-
-    parent::TPlugin();
-    $plugins->events['clientOnURLSplit'][] = $this->name;
-    $plugins->events['clientOnPageRender'][] = $this->name;
-    $plugins->events['adminOnMenuRender'][] = $this->name;
+    parent::ListContentPlugin();
+    $this->listenEvents('clientOnURLSplit', 'clientOnPageRender', 'adminOnMenuRender');
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Внутренние функции
