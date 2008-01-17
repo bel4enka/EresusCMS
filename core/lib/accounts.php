@@ -70,6 +70,7 @@ class Accounts {
 
     $result = false;
     if (isset($item['id'])) unset($item['id']);
+    if (!isset($item['profile'])) $item['profile'] = array();
     $item['profile'] = encodeOptions($item['profile']);
     if ($Eresus->db->insert($this->table, $item))
       $result = $this->get($Eresus->db->getInsertedId());

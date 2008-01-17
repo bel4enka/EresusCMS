@@ -43,6 +43,7 @@ class TFiles {
     );
   var $root;
   var $panels = array('l'=>'', 'r'=>'');
+  var $sp = 'l';
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function url($args = null)
   {
@@ -88,13 +89,13 @@ class TFiles {
         'name' => 'move',
         'caption' => 'Переместить',
         'action' => 'javascript:filesMove()',
-        'active' => UserRights(ADMIN),
+        'active' => true #UserRights(ADMIN),
       ),
       array (
         'name' => 'delete',
         'caption' => 'Удалить',
         'action' => "javascript:filesDelete()",
-        'active' => UserRights(ADMIN),
+        'active' => true #UserRights(ADMIN),
       ),
     );
 
@@ -108,76 +109,80 @@ class TFiles {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function buildFileList($path)
+  function buildFileList($dir)
   {
-    $dir = (substr($path, 0, 1) == '/')?substr($path, 1):$path;
-    $hnd=opendir(filesRoot.$this->root.$dir);
-    $i = 0;
-    while (($name = readdir($hnd))!==false) if ($name != '.') {
-      $result[$i]['filename'] = $name;
-      $perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
-      $perm = $perm - 32768;
-      if ($perm < 0) $perm += 16384;
-      $result[$i]['perm'] = '';
-      for($j=0; $j<3; $j++) {
-        $x = $perm % 8;
-        $perm /= 8;
-        $result[$i]['perm'] = (($x % 2 == 1)?'x':'-').$result[$i]['perm'];
-        $x = ($x - ($x % 2)) / 2;
-        $result[$i]['perm'] = (($x % 2 == 1)?'w':'-').$result[$i]['perm'];
-        $x = ($x - ($x % 2)) / 2;
-        $result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
-      }
-      $s = getenv('WINDIR');
-      if (empty($s)) {
-        $result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root.$dir.'/'.$name));
-        $result[$i]['owner'] = $result[$i]['owner']['name'];
-      } else $result[$i]['owner'] = 'unknown';
-      switch (filetype(filesRoot.$this->root.$dir.'/'.$name)) {
-        case 'dir':
-          $result[$i]['icon'] = 'folder';
-          $result[$i]['size'] = 'Папка';
-          $result[$i]['link'] = ($name == '..')?preg_replace('![^/]+/$!', '', $path):$path.$name;
-          $result[$i]['action'] = 'cd';
-        break;
-        case 'file':
-          $result[$i]['link'] = httpRoot.$this->root.$dir.'/'.$name;
-          $result[$i]['size'] = number_format(filesize(filesRoot.$this->root.$dir.'/'.$name));
-          $result[$i]['action'] = 'new';
-          $result[$i]['icon'] = 'file';
-          if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
-            $result[$i]['icon'] = $item['icon'];
-            break;
-          }
-        break;
-      }
-      $result[$i]['date'] = strftime("%y-%m-%d %H:%I:%S", filemtime(filesRoot.$this->root.$dir.'/'.$name));
-      $i++;
-    }
-    closedir($hnd);
-    if (count($result)) {
-      usort ($result, "files_compare");
-      if (count($result) > 1) {
-        for ($i=1; $i<count($result); $i++) {
-          if ($result[$i]['icon'] == 'folder') {
-            $k = $i;
-            while (($k>0)&&(($result[$k-1]['icon'] != 'folder')||(($result[$k-1]['icon'] == 'folder')&&($result[$k-1]['filename'] > $result[$k]['filename'])))) {
-              $tmp = $result[$k];
-              $result[$k] = $result[$k-1];
-              $result[$k-1] = $tmp;
-              $k--;
-            }
-          }
-        }
-      }
-    }
+  	global $Eresus;
+
+  	$result = '';
+   	@$hnd=opendir(filesRoot.$this->root.$dir);
+		if ($hnd) {
+	    $i = 0;
+	    while (($name = readdir($hnd))!==false) if ($name != '.') {
+	      $result[$i]['filename'] = $name;
+	      $perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
+	      $perm = $perm - 32768;
+	      if ($perm < 0) $perm += 16384;
+	      $result[$i]['perm'] = '';
+	      for($j=0; $j<3; $j++) {
+	        $x = $perm % 8;
+	        $perm /= 8;
+	        $result[$i]['perm'] = (($x % 2 == 1)?'x':'-').$result[$i]['perm'];
+	        $x = ($x - ($x % 2)) / 2;
+	        $result[$i]['perm'] = (($x % 2 == 1)?'w':'-').$result[$i]['perm'];
+	        $x = ($x - ($x % 2)) / 2;
+	        $result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
+	      }
+	      if (function_exists('posix_getpwuid') && !$Eresus->isWin32()) {
+	        $result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root.$dir.'/'.$name));
+	        $result[$i]['owner'] = $result[$i]['owner']['name'];
+	      } else $result[$i]['owner'] = 'unknown';
+	      switch (filetype(filesRoot.$this->root.$dir.'/'.$name)) {
+	        case 'dir':
+	          $result[$i]['icon'] = 'folder';
+	          $result[$i]['size'] = 'Папка';
+	          $result[$i]['link'] = ($name == '..')?preg_replace('![^/]+/$!', '', $dir):$dir.$name;
+	          $result[$i]['action'] = 'cd';
+	        break;
+	        case 'file':
+	          $result[$i]['link'] = httpRoot.$dir.'/'.$name;
+	          $result[$i]['size'] = number_format(filesize(filesRoot.$this->root.$dir.'/'.$name));
+	          $result[$i]['action'] = 'new';
+	          $result[$i]['icon'] = 'file';
+	          if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
+	            $result[$i]['icon'] = $item['icon'];
+	            break;
+	          }
+	        break;
+	      }
+	      $result[$i]['date'] = strftime("%y-%m-%d %H:%I:%S", filemtime(filesRoot.$this->root.$dir.'/'.$name));
+	      $i++;
+	    }
+	    closedir($hnd);
+	    if (count($result)) {
+	      usort ($result, "files_compare");
+	      if (count($result) > 1) {
+	        for ($i=1; $i<count($result); $i++) {
+	          if ($result[$i]['icon'] == 'folder') {
+	            $k = $i;
+	            while (($k>0)&&(($result[$k-1]['icon'] != 'folder')||(($result[$k-1]['icon'] == 'folder')&&($result[$k-1]['filename'] > $result[$k]['filename'])))) {
+	              $tmp = $result[$k];
+	              $result[$k] = $result[$k-1];
+	              $result[$k-1] = $tmp;
+	              $k--;
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderFileList($side)
   {
   global $request;
-    $path = $this->pannels[$side];
+
+  	$path = $this->pannels[$side];
     $items = $this->BuildFileList($path);
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"filesList\" id=\"".$side."Panel\">\n".
@@ -219,7 +224,7 @@ class TFiles {
   function upload()
   {
     global $request;
-    foreach($_FILES as $name => $file) upload($name, filesRoot.$this->pannels[arg('sp')]);
+    foreach($_FILES as $name => $file) upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
     goto($request['referer']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -228,13 +233,13 @@ class TFiles {
   global $request;
 
     umask(0000);
-    mkdir(filesRoot.$this->pannels[arg('sp')].arg('mkdir', FILES_FILTER), 0777);
+    mkdir(filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER), 0777);
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function rmDir($path)
   {
-    if (UserRights(ADMIN)) {
+    #if (UserRights(ADMIN)) {
       $hnd=@opendir($path);
       if ($hnd) {
         while (($name = readdir($hnd))!==false) if (($name != '.')&&($name != '..')) {
@@ -248,15 +253,15 @@ class TFiles {
         }
         closedir($hnd);
       }
-    }
+    #}
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renameEntry()
   {
     global $request;
 
-    $filename = filesRoot.$this->pannels[arg('sp')].arg('rename', FILES_FILTER);
-    $newname = filesRoot.$this->pannels[arg('sp')].arg('newname', FILES_FILTER);
+    $filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
+    $newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
     if (file_exists($filename)) rename($filename, $newname);
     goto($this->url());
   }
@@ -265,7 +270,7 @@ class TFiles {
   {
     global $request;
 
-    $filename = filesRoot.$this->pannels[arg('sp')].arg('chmod', FILES_FILTER);
+    $filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
     if (file_exists($filename)) chmod($filename, octdec(arg('perms')));
     goto($this->url());
   }
@@ -274,8 +279,8 @@ class TFiles {
   {
   global $request;
 
-  	$filename = filesRoot.$this->pannels[arg('sp')].arg('copyfile', FILES_FILTER);
-    $dest = filesRoot.$this->pannels[arg('sp')=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
+  	$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
+    $dest = filesRoot.$this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
     if (is_file($filename)) copy($filename, $dest);
     elseif (is_dir($filename)) {
     }
@@ -286,13 +291,13 @@ class TFiles {
   {
   global $request;
 
-    if (UserRights(ADMIN)) {
-    	$filename = filesRoot.$this->pannels[arg('sp')].arg('movefile', FILES_FILTER);
-      $dest = filesRoot.$this->pannels[arg('sp')=='l'?'r':'l'].arg('movefile', FILES_FILTER);
+    #if (UserRights(ADMIN)) {
+    	$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('movefile', FILES_FILTER);
+      $dest = filesRoot.$this->root.$this->pannels[$this->sp=='l'?'r':'l'].arg('movefile', FILES_FILTER);
       if (is_file($filename)) rename($filename, $dest);
       elseif (is_dir($filename)) {
       }
-    }
+    #}
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -300,14 +305,14 @@ class TFiles {
   {
   global $request;
 
-    if (UserRights(ADMIN)) {
-    	$filename = filesRoot.$this->pannels[arg('sp')].arg('delete', FILES_FILTER);
+    #if (UserRights(ADMIN)) {
+    	$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('delete', FILES_FILTER);
       if (is_file($filename)) unlink($filename);
       elseif (is_dir($filename)) {
         $this->rmDir($filename);
         rmdir($filename);
       }
-    }
+    #}
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -318,10 +323,16 @@ class TFiles {
   global $request, $page;
 
     $this->root = UserRights(ADMIN)?'':'data/';
-    $this->pannels['l'] = $this->root.(arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
+
+    $this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
     $this->pannels['l'] = str_replace('/..', '', $this->pannels['l']);
-    $this->pannels['r'] = $this->root.(arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
+    $this->pannels['l'] = preg_replace('!^/!', '', $this->pannels['l']);
+    while (!empty($this->pannels['l']) && !is_dir(filesRoot.$this->root.$this->pannels['l'])) $this->pannels['l'] = preg_replace('![^/]+/$!', '', $this->pannels['l']);
+    $this->pannels['r'] = (arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
     $this->pannels['r'] = str_replace('/..', '', $this->pannels['r']);
+    $this->pannels['r'] = preg_replace('!^/!', '', $this->pannels['r']);
+    while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
+    if ($this->sp) $this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
     if (count($_FILES)) $this->upload();
     elseif (isset($request['arg']['mkdir'])) $this->mkDir();
     elseif (isset($request['arg']['rename'])) $this->renameEntry();
@@ -342,7 +353,7 @@ class TFiles {
         '<tr><td colspan="2" class="filesControls">'.$this->renderStatus()."</td></tr>".
         "</table>".
         "<script language=javascript type=\"text/javascript\"><!--\n".
-        " filesInit('".httpRoot.$this->root."', '".(arg('sp')?'l':arg('sp'))."');\n".
+        " filesInit('".httpRoot.$this->root."', '".$this->sp."');\n".
         "--></script>\n";
       return $result;
     }
