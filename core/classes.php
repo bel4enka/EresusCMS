@@ -956,8 +956,8 @@ function updateContent($content)
 */
 function adminUpdate()
 {
-	$this->updateContent(arg('content'));
-  goto(arg('submitURL'));
+	$this->updateContent(arg('content', 'dbsafes'));
+	goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
 /**
