@@ -339,7 +339,7 @@ class TClientUI extends WebPage {
   function pages($pagesCount, $itemsPerPage, $reverse = false)
   # ¬ыводит список подстраниц дл€ навигации по ним
   {
-  global $request;
+  	global $Eresus;
 
     if ($pagesCount>1) {
       $at_once = option('clientPagesAtOnce');
@@ -360,21 +360,21 @@ class TClientUI extends WebPage {
           if ($this->subpage < (integer)($at_once / 2)) $for_from = $at_once;
           $for_to = $for_from - $at_once;
           if ($for_to < 0) {$for_from += abs($for_to); $for_to = 0;}
-          if ($for_from != $pagesCount) $side_left = "<a href=\"".$request['path']."\" title=\"".strLastPage."\">&nbsp;&laquo;&nbsp;</a>";
-          if ($for_to != 0) $side_right = "<a href=\"".$request['path']."p1/\" title=\"".strFirstPage."\">&nbsp;&raquo;&nbsp;</a>";
+          if ($for_from != $pagesCount) $side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage."\">&nbsp;&laquo;&nbsp;</a>";
+          if ($for_to != 0) $side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage."\">&nbsp;&raquo;&nbsp;</a>";
         } else { # ≈сли установлен пр€мой пор€док страниц
           if ($this->subpage > (integer)($at_once / 2)) $for_from = $this->subpage - (integer)($at_once / 2);
           if ($pagesCount - $this->subpage < (integer)($at_once / 2) + (($at_once % 2)>0)) $for_from = $pagesCount - $at_once+1;
           $for_to = $for_from + $at_once;
-          if ($for_from != 1) $side_left = "<a href=\"".$request['path']."\" title=\"".strFirstPage."\">&nbsp;&laquo;&nbsp;</a>";
-          if ($for_to < $pagesCount) $side_right = "<a href=\"".$request['path']."p".$pagesCount."/\" title=\"".strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
+          if ($for_from != 1) $side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage."\">&nbsp;&laquo;&nbsp;</a>";
+          if ($for_to < $pagesCount) $side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
         }
       }
       $result = '<div class="pages">'.strPages;
       $result .= $side_left;
       for ($i = $for_from; $i != $for_to; $i += $for_delta)
         if ($i == $this->subpage) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
-          else $result .= '<a href="'.$request['path'].($i==$default?'':'p'.$i.'/').'">&nbsp;'.$i.'&nbsp;</a>';
+          else $result .= '<a href="'.$Eresus->request['path'].($i==$default?'':'p'.$i.'/').'">&nbsp;'.$i.'&nbsp;</a>';
       $result .= $side_right;
       $result .= "</div>\n";
       return $result;
