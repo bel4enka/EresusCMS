@@ -276,7 +276,8 @@ define('admPluginsAdd', 'Добавить плагин');
 define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эндом, <strong>admin</strong> - работает с бэк-эндом, <strong>content</strong> - плагин контента, <strong>ondemand</strong> - загружается только при необходимости");
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
-define('admPluginsInvalidVersion', 'Для работы "%s" требуется ядро %s или выше.');
+define('admPluginsInvalidVersion', 'Требуется ядро %s или выше.');
+define('admPluginsNotRequiredFields', 'Отсутствует олно или более из свойств: version, title, description');
 define('admPluginsAdded', 'Подключен новый плагин');
 define('admPluginTopicTable', 'Таблица топиков');
 

@@ -198,7 +198,7 @@ class WebPage {
   * @param array $args      Установить аргументы
   * @return string
   */
-	function url($args = null)
+	function url($args = array())
 	{
 		global $Eresus;
 
@@ -956,7 +956,7 @@ function updateContent($content)
 */
 function adminUpdate()
 {
-	$this->updateContent(arg('content', 'dbsafes'));
+	$this->updateContent(arg('content', 'dbsafe'));
 	goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------

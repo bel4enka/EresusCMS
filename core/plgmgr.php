@@ -122,8 +122,9 @@ class TPlgMgr {
     );
     if (count($files)) foreach($files as $file) {
       $s = file_get_contents($file);
-      $valid = preg_match('/class\s+T?'.basename($file, '.php').'\s.*?{(.*?)({|})/is', $s, $s);
-      if ($valid) {
+      $name = basename($file, '.php'); # Имя плагина
+      $invalid = !preg_match('/class\s+T?'.$name.'\s.*?{(.*?)({|})/is', $s, $s);
+      if (!$invalid) {
       	$s = $s[1];
       	preg_match('/\$kernel\s*=\s*(\'|")(.+)\1/', $s, $kernel);
       	preg_match('/\$version\s*=\s*(\'|")(.+)\1/', $s, $version);
@@ -132,14 +133,12 @@ class TPlgMgr {
       	#FIXME: Совместимость с версиями до 2.10b2. Надо проверять и наличие $kernel
       	if (count($version) && count($title) && count($description)) {
       		$caption = "{$title[2]} {$version[2]} - {$description[2]}";
-      	} else $valid = false;
-      	if (count($kernel) && version_compare($kernel[2], CMSVERSION, '>')) {
-      		$valid = false;
-      		$caption = '<span class="admError">'.sprintf(admPluginsInvalidVersion, $title[2], $kernel[2]).'</span>';
-      	}
-      } else $valid = false;
-      if (!$valid) $caption = '<span class="admError">'.basename($file).' - '.admPluginsInvalidFile.'</span>';
-      $form['fields'][] = array('type'=>'checkbox','name'=>'files['.basename($file, '.php').']','label'=>$caption, 'value'=>true, 'disabled'=>!$valid);
+      	} else $invalid = admPluginsNotRequiredFields;
+      	# PHP < 5.3 have an error treating lowercase 'rc'
+      	if (count($kernel) && version_compare(strtoupper($kernel[2]), strtoupper(CMSVERSION), '>')) $invalid = sprintf(admPluginsInvalidVersion, $kernel[2]);
+      } else $invalid = admPluginsInvalidFile;
+      if ($invalid) $caption = '<span class="admError">'.$name.' - '.$invalid.'</span>';
+      $form['fields'][] = array('type'=>'checkbox','name'=>'files['.$name.']','label'=>$caption, 'value'=>true, 'disabled'=>$invalid);
     }
     $result = $page->renderForm($form);
     return $result;
