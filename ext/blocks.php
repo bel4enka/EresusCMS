@@ -1,14 +1,37 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™ 2.00+
-# © 2005-2006, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Call
+ *
+ * Eresus 2
+ *
+ * Вызов других плагинов посредством макросов.
+ *
+ * @version 2.00
+ *
+ * @copyright   2005-2006, ProCreat Systems, http://procreat.ru/
+ * @copyright   2007, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @maintainer  Михалыч <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо по вашему выбору с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ */
 class TBlocks extends TListContentPlugin {
   var $name = 'blocks';
   var $title = 'Блоки';
   var $type = 'client,admin';
-  var $version = '2.02';
+  var $version = '2.03';
   var $description = 'Система управления текстовыми блоками';
   var $table = array (
     'name' => 'blocks',
@@ -41,7 +64,10 @@ class TBlocks extends TListContentPlugin {
       `target` varchar(63) default NULL,
       `content` text,
       PRIMARY KEY  (`id`),
-      KEY `main` (`active`, `section`, `block`, `target`)
+      KEY `active` (`active`),
+      KEY `section` (`section`),
+      KEY `block` (`block`),
+      KEY `target` (`target`)
     ) TYPE=MyISAM COMMENT='Content blocks';",
   );
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
