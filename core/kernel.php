@@ -50,6 +50,9 @@ if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
  */
 function FatalError($msg)
 {
+	if (PHP_SAPI == 'cli') {
+		$result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg));
+	} else {
   $result =
     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
     "<html>\n".
@@ -69,6 +72,7 @@ function FatalError($msg)
     "  </div>\n".
     "</body>\n".
     "</html>";
+	}
   die($result);
 }
 //------------------------------------------------------------------------------

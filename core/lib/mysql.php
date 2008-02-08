@@ -7,7 +7,7 @@
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 1.3.1
+ * @version 1.3.2
  */
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
@@ -119,7 +119,7 @@ class MySQL {
   */
   function select($tables, $condition = '', $order = '', $fields = '', $lim_rows = 0, $lim_offset = 0, $group = '', $distinct = false)
   {
-  	if (is_bool($fields)) {
+  	if (is_bool($fields) || $fields=='1' || $fields == '0') {
   		# Обратная совместимость c 1.2.x
   		$desc = $fields;
   		$fields = $lim_rows ? $lim_rows : '*';
@@ -127,23 +127,23 @@ class MySQL {
   		$lim_offset = $group;
   		$group = $distinct;
   		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-    	$query = 'SELECT ';
-    	if ($distinct) $query .= 'DISTINCT ';
-    	if (!strlen($fields)) $fields = '*';
-    	$tables = str_replace('`' ,'', $tables);
-    	$tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
-    	$query .= $fields." FROM ".$tables;
-    	if (strlen($condition)) $query .= " WHERE $condition";
-    	if (strlen($group)) $query .= " GROUP BY $group";
-    	if (strlen($order)) {
-	      $query .= " ORDER BY $order";
-  	    if ($desc) $query .= ' DESC';
-    	}
-    	if ($lim_rows) {
-	      $query .= ' LIMIT ';
-      	if ($lim_offset) $query .= "$lim_offset, ";
-      	$query .= $lim_rows;
-    	}
+    $query = 'SELECT ';
+    if ($distinct) $query .= 'DISTINCT ';
+    if (!strlen($fields)) $fields = '*';
+    $tables = str_replace('`' ,'', $tables);
+    $tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
+    $query .= $fields." FROM ".$tables;
+    if (strlen($condition)) $query .= " WHERE $condition";
+    if (strlen($group)) $query .= " GROUP BY $group";
+    if (strlen($order)) {
+      $query .= " ORDER BY $order";
+      if ($desc) $query .= ' DESC';
+    }
+    if ($lim_rows) {
+      $query .= ' LIMIT ';
+      if ($lim_offset) $query .= "$lim_offset, ";
+      $query .= $lim_rows;
+    }
   	} else {
 	    $query = 'SELECT ';
 	    if ($distinct) $query .= 'DISTINCT ';

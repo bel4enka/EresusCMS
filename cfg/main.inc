@@ -17,13 +17,13 @@ $Eresus->conf['debug']['enable'] = true;
 #$Eresus->conf['db']['host'] = 'localhost';
 
 # Имя пользователя СУБД
-$Eresus->conf['db']['user'] = 'user';
+$Eresus->conf['db']['user'] = '';
 
 # Пароль для доступа к СУБД
-$Eresus->conf['db']['password'] = 'password';
+$Eresus->conf['db']['password'] = '';
 
 # Имя базы данных
-$Eresus->conf['db']['name'] = 'eresus';
+$Eresus->conf['db']['name'] = '';
 
 # Префикс таблиц. По умолчанию: '' (без префикса)
 #$Eresus->conf['db']['prefix']   = '';

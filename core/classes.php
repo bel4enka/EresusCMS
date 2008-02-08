@@ -198,7 +198,7 @@ class WebPage {
   * @param array $args      Установить аргументы
   * @return string
   */
-	function url($args = null)
+	function url($args = array())
 	{
 		global $Eresus;
 

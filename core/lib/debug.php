@@ -59,7 +59,9 @@ function callStack()
   $callstack = debug_backtrace();
   $result = '<div style="font-weight: normal; text-align: left;">';
   for ($i = 1; $i < count($callstack); $i++) if (strtolower($callstack[$i]['function']) != 'errorhandler') {
-    $result .= 'File <b>'.$callstack[$i]['file'].'</b> line <b>'.$callstack[$i]['line'].'</b>:<br />';
+  	$file = isset($callstack[$i]['file']) ? $callstack[$i]['file'] : 'unknown';
+  	$line = isset($callstack[$i]['line']) ? $callstack[$i]['line'] : 'unknown';
+    $result .= 'File <b>'.$file.'</b> line <b>'.$line.'</b>:<br />';
     $args = '';
     if (isset($callstack[$i]['args']) && count($callstack[$i]['args'])) {
       $args = array();

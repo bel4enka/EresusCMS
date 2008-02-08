@@ -381,11 +381,13 @@ class Form {
     $referer = isset($request['arg']['sub_id'])?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
     $this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
     $this->hidden = "\t<div class=\"hidden\">\n\t\t{$this->hidden}\n\t</div>";
+    $width = isset($this->form['width']) ? ' style="width: '.$this->form['width'].'"' : '';
     $result =
-      "<form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".$page->url()."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
+      "<div class=\"form\"$width><form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".(isset($this->form['action'])?$this->form['action']:$page->url())."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
       $this->hidden.
       "\n\t<table width=\"100%\">\n".
-      "\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
+      #"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
+      "\t\t<colgroup><col /><col width=\"100%\"></colgroup>\n".
       $result.
       "\t\t<tr><td colspan=\"2\" align=\"center\"><br />".
       ((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<input name="form_ok" type="submit" class="button" value="'.$this->form['buttons']['ok'].'" /> ':'').
@@ -400,7 +402,7 @@ class Form {
       ((isset($this->form['buttons']) && isset($this->form['buttons']['cancel']))?'<input name="form_cancel" type="button" class="button" value="'.$this->form['buttons']['cancel']."\" onclick=\"javascript:history.back();\" /> ":'').
       (!isset($this->form['buttons']) || in_array('cancel', $this->form['buttons'])?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\" />":'').
       "</td>\n\t\t</tr>\n".
-      "\t</table>\n</form>\n";
+      "\t</table>\n</form></div>\n";
 
     return $result;
   }
