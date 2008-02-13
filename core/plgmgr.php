@@ -134,8 +134,12 @@ class TPlgMgr {
       	if (count($version) && count($title) && count($description)) {
       		$caption = "{$title[2]} {$version[2]} - {$description[2]}";
       	} else $invalid = admPluginsNotRequiredFields;
-      	# PHP < 5.3 have an error treating lowercase 'rc'
-      	if (count($kernel) && version_compare(strtoupper($kernel[2]), strtoupper(CMSVERSION), '>')) $invalid = sprintf(admPluginsInvalidVersion, $kernel[2]);
+      	# PHP < 5.3 does not understatnd lowercase 'rc' but other letters must be only lowercase
+      	if (isset($kernel[2])) $v_plugin =  str_replace('rc','RC', $kernel[2]);
+      	else $v_plugin =  str_replace('rc','RC', $kernel);
+
+      	$v_kernel =  str_replace('rc','RC', CMSVERSION);
+      	if (count($kernel) && version_compare($v_plugin, $v_kernel, '>')) $invalid = sprintf(admPluginsInvalidVersion, $kernel[2]);
       } else $invalid = admPluginsInvalidFile;
       if ($invalid) $caption = '<span class="admError">'.$name.' - '.$invalid.'</span>';
       $form['fields'][] = array('type'=>'checkbox','name'=>'files['.$name.']','label'=>$caption, 'value'=>true, 'disabled'=>$invalid);

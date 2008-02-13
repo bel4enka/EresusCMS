@@ -525,7 +525,6 @@ class Plugin {
 function Plugin()
 {
 	global $Eresus, $plugins, $locale;
-
 	$this->name = strtolower(get_class($this));
   if (!empty($this->name) && isset($plugins->list[$this->name])) {
     $this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);
@@ -589,8 +588,8 @@ function saveSettings()
 
 	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
 	$item = $this->__item($item);
-	$item['settings'] = encodeOptions($this->settings);
-  $result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
+	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
+	$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -633,7 +632,7 @@ function updateSettings()
 {
 	global $Eresus;
 
-  foreach ($this->settings as $key => $value) if (isset($Eresus->request['arg'][$key])) $this->settings[$key] = $Eresus->request['arg'][$key];
+  foreach ($this->settings as $key => $value) if (arg($key)) $this->settings[$key] = arg($key);
 	$this->onSettingsUpdate();
   $this->saveSettings();
 }
