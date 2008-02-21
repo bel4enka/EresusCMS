@@ -147,7 +147,7 @@ class TUsers extends Accounts {
   	global $Eresus, $page;
 
     $item = $Eresus->db->selectItem('users', "`id`='".arg('password')."'");
-    if (arg('pswd1') == arg('pswd2')) $item['hash'] = md5(arg('pswd1')); else exit;
+    if (arg('pswd1') == arg('pswd2')) $item['hash'] = $Eresus->password_hash(arg('pswd1')); else exit;
     $Eresus->db->updateItem('users', $item, "`id`='".arg('password')."'");
     SendNotify(admUsersPasswordChanged.': '.$item['name']);
     goto(arg('submitURL'));
