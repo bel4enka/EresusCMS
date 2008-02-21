@@ -1044,7 +1044,7 @@ class Eresus {
     if ($p = strrpos($s, '/')) $s = substr($s, 0, $p);
     $request['path'] = $this->root.$s.'/';
     $request['params'] = $s ? explode('/', $s) : array();
-    $this->request = $request;
+    $this->request = &$request;
   }
   //------------------------------------------------------------------------------
   /**

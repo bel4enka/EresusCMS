@@ -70,13 +70,13 @@ class TClientUI extends WebPage {
   function replaceMacros($text)
   # Подставляет значения макросов
   {
-  global $user;
+  	global $Eresus;
 
-  $section = $this->section;
-  if (siteTitleReverse) $section = array_reverse($section);
-  $section = strip_tags(implode($section, option('siteTitleDivider')));
+  	$section = $this->section;
+  	if (siteTitleReverse) $section = array_reverse($section);
+  	$section = strip_tags(implode($section, option('siteTitleDivider')));
 
-  $result = str_replace(
+  	$result = str_replace(
       array(
         '$(httpHost)',
         '$(httpPath)',
@@ -167,7 +167,6 @@ class TClientUI extends WebPage {
     $result = false;
     if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
       array_unshift($Eresus->request['params'], 'main');
-      $request['params'] = $Eresus->request['params'];
     }
     reset($Eresus->request['params']);
     $item['id'] = 0;
@@ -287,11 +286,11 @@ class TClientUI extends WebPage {
   function render()
   # Отправляет созданную страницу пользователю.
   {
-    global $Eresus, $KERNEL, $plugins, $session, $request;
+    global $Eresus, $KERNEL;
 
     if (arg('HTTP_ERROR')) $this->httpError(arg('HTTP_ERROR', 'int'));
     # Отрисовываем контент
-    $content = $plugins->clientRenderContent();
+    $content = $Eresus->plugins->clientRenderContent();
     #$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
     #if ($this->updated < 0) $this->updated = 0;
     #$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
@@ -299,7 +298,7 @@ class TClientUI extends WebPage {
     useLib('templates');
     $templates = new Templates;
     $this->template = $templates->get($this->template);
-    $content = $plugins->clientOnContentRender($content);
+    $content = $Eresus->plugins->clientOnContentRender($content);
 
     if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
       $messages = '';
@@ -318,7 +317,7 @@ class TClientUI extends WebPage {
     # FIX: Обратная совместимость
     if (!empty($this->styles))	$this->addStyles($this->styles);
 
-    $result = $plugins->clientOnPageRender($result);
+    $result = $Eresus->plugins->clientOnPageRender($result);
 
     # FIX: Обратная совместимость
     if (!empty($this->scripts))	$this->addScripts($this->scripts);
@@ -330,7 +329,7 @@ class TClientUI extends WebPage {
 
     if (count($this->headers)) foreach ($this->headers as $header) Header($header);
 
-    $result = $plugins->clientBeforeSend($result);
+    $result = $Eresus->plugins->clientBeforeSend($result);
     if (!$Eresus->conf['debug']['enable']) ob_start('ob_gzhandler');
     echo $result;
     if (!$Eresus->conf['debug']['enable']) ob_end_flush();
@@ -339,7 +338,7 @@ class TClientUI extends WebPage {
   function pages($pagesCount, $itemsPerPage, $reverse = false)
   # Выводит список подстраниц для навигации по ним
   {
-  global $request;
+  global $Eresus;
 
     if ($pagesCount>1) {
       $at_once = option('clientPagesAtOnce');
@@ -360,21 +359,21 @@ class TClientUI extends WebPage {
           if ($this->subpage < (integer)($at_once / 2)) $for_from = $at_once;
           $for_to = $for_from - $at_once;
           if ($for_to < 0) {$for_from += abs($for_to); $for_to = 0;}
-          if ($for_from != $pagesCount) $side_left = "<a href=\"".$request['path']."\" title=\"".strLastPage."\">&nbsp;&laquo;&nbsp;</a>";
-          if ($for_to != 0) $side_right = "<a href=\"".$request['path']."p1/\" title=\"".strFirstPage."\">&nbsp;&raquo;&nbsp;</a>";
+          if ($for_from != $pagesCount) $side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage."\">&nbsp;&laquo;&nbsp;</a>";
+          if ($for_to != 0) $side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage."\">&nbsp;&raquo;&nbsp;</a>";
         } else { # Если установлен прямой порядок страниц
           if ($this->subpage > (integer)($at_once / 2)) $for_from = $this->subpage - (integer)($at_once / 2);
           if ($pagesCount - $this->subpage < (integer)($at_once / 2) + (($at_once % 2)>0)) $for_from = $pagesCount - $at_once+1;
           $for_to = $for_from + $at_once;
-          if ($for_from != 1) $side_left = "<a href=\"".$request['path']."\" title=\"".strFirstPage."\">&nbsp;&laquo;&nbsp;</a>";
-          if ($for_to < $pagesCount) $side_right = "<a href=\"".$request['path']."p".$pagesCount."/\" title=\"".strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
+          if ($for_from != 1) $side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage."\">&nbsp;&laquo;&nbsp;</a>";
+          if ($for_to < $pagesCount) $side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
         }
       }
       $result = '<div class="pages">'.strPages;
       $result .= $side_left;
       for ($i = $for_from; $i != $for_to; $i += $for_delta)
         if ($i == $this->subpage) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
-          else $result .= '<a href="'.$request['path'].($i==$default?'':'p'.$i.'/').'">&nbsp;'.$i.'&nbsp;</a>';
+          else $result .= '<a href="'.$Eresus->request['path'].($i==$default?'':'p'.$i.'/').'">&nbsp;'.$i.'&nbsp;</a>';
       $result .= $side_right;
       $result .= "</div>\n";
       return $result;
@@ -383,7 +382,7 @@ class TClientUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderForm($form, $values=null)
   {
-  global $request;
+  	global $Eresus;
 
     $result = '';
     $hidden = '';
@@ -488,7 +487,7 @@ class TClientUI extends WebPage {
     #if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
     $result .=
       "<div style=\"width: ".$form['width']."\" class=\"form\">\n".
-      "<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onsubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
+      "<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$Eresus->request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onsubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
       "<div class=\"hidden\"><input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
       $hidden."</div>\n".
       "<table>\n".
@@ -509,20 +508,17 @@ class TClientUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function buttonAddItem($caption = '', $value = '')
   {
-  global $request;
-    return '<form class="contentButton" action="'.$request['url'].execScript.'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
+  	global $Eresus;
+    return '<form class="contentButton" action="'.$Eresus->request['url'].execScript.'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function buttonBack($caption = '', $url='')
   {
-  global $request;
     return '<form class="contentButton" action="" method="get"><div><input type="button" value="'.(empty($caption) ? strReturn : $caption).'" class="contentButton" onclick="'.(empty($url)?'javascript:history.back();':"window.location='".$url."'").'" /></div></form>';
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function button($caption, $url, $name='', $value='')
   {
-  global $request;
-
     $result = '<form class="contentButton" action="'.$url.'" method="get"><div>';
     if (!empty($name)) $result .= '<input type="hidden" name="'.$name.'" value="'.$value.'" />';
     $result .= '<input type="submit" value="'.$caption.'" class="contentButton" onclick="window.location=\''.$url.'\'" /></div></form>';

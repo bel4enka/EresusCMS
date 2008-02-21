@@ -11,15 +11,6 @@
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Система управления контентом Eresus™
-# Версия 2.10
-# © 2004-2007, ProCreat Systems
-# © 2007, Eresus Group
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Конфигурация системы управления сайтом
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TSettings {
   var $access = ADMIN;
   var $tabs = array(
@@ -35,11 +26,11 @@ class TSettings {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function mkstr($name, $caption, $type='string', $options=array())
   {
-    global $request, $locale;
+    global $Eresus, $locale;
 
     $result = "  define('".(isset($options['locale'])?($options['locale']?$locale['prefix']:''):'').$name."', ";
     $quot = "'";
-    $value = (isset($request['arg'][$name]))?$request['arg'][$name]:option($name);
+    $value = (arg($name)) ? arg($name) : option($name);
     if (isset($options['nobr']) && $options['nobr']) $value = str_replace(array("\n", "\r"), ' ', $value);
     if (isset($options['savebr']) && $options['savebr']) {
       $value = addcslashes($value, "\n\r\"");
@@ -58,7 +49,7 @@ class TSettings {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-    global $request;
+    global $Eresus;
 
     $settings = "<?php\n";
 
@@ -89,7 +80,7 @@ class TSettings {
     fwrite($fp, $settings);
     fclose($fp);
     SendNotify(str_replace(array('<?', '?>'), '', $settings));
-    goto($request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionMain()
@@ -167,7 +158,7 @@ class TSettings {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionOther()
   {
-  global $locale, $page, $plugins;
+  global $Eresus, $locale, $page;
 
     $page->title .= admTDiv.admSettingsOther;
 
@@ -177,7 +168,7 @@ class TSettings {
     $content_items[] = admPagesContentDefault; $content_values[] = 'default';
     $content_items[] = admPagesContentList; $content_values[] = 'list';
     $content_items[] = admPagesContentURL; $content_values[] = 'url';
-    if(count($plugins->list)) foreach($plugins->list as $plugin) if (strpos($plugin['type'], 'content') !== false) {
+    if(count($Eresus->plugins->list)) foreach($Eresus->plugins->list as $plugin) if (strpos($plugin['type'], 'content') !== false) {
       $content_items[] = $plugin['title'];
       $content_values[] = $plugin['name'];
     }
@@ -207,18 +198,18 @@ class TSettings {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $page, $request;
+  global $Eresus, $page;
 
     $result = '';
     if (UserRights($this->access)) {
-      if (isset($request['arg']['action'])) {
-        switch($request['arg']['action']) {
+      if (arg('action')) {
+        switch(arg('action')) {
           case 'update': $this->update(); break;
         }
       } else {
         $result .= $page->renderTabs($this->tabs);
-        if (!isset($request['arg']['section'])) $request['arg']['section'] = 'main';
-        switch ($request['arg']['section']) {
+        if (!isset($Eresus->request['arg']['section'])) $Eresus->request['arg']['section'] = 'main';
+        switch (arg('section')) {
           case 'other': $result .= $this->sectionOther(); break;
           case 'files': $result .= $this->sectionFiles(); break;
           case 'mail': $result .= $this->sectionMail(); break;

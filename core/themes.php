@@ -155,18 +155,17 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplates()
   {
-  global $page, $request;
+  global $Eresus, $page;
 
     $page->title .= admTDiv.admThemesTemplates;
 
-    if (!isset($request['arg']['action'])) $request['arg']['action'] = '';
-    switch($request['arg']['action']) {
+    switch(arg('action')) {
       case 'update': $result = $this->sectionTemplatesUpdate(); break;
       case 'insert': $result = $this->sectionTemplatesInsert(); break;
       case 'add': $result = $this->sectionTemplatesAdd(); break;
       default:
-        if (isset($request['arg']['delete'])) $result = $this->sectionTemplatesDelete();
-        elseif (isset($request['arg']['id'])) $result = $this->sectionTemplatesEdit();
+        if (arg('delete')) $result = $this->sectionTemplatesDelete();
+        elseif (arg('id')) $result = $this->sectionTemplatesEdit();
         else $result = $this->sectionTemplatesList();
     }
     return $result;
@@ -199,7 +198,7 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStdAdd()
   {
-    global $page, $request;
+    global $page;
 
     $values = array();
     $items = array();
@@ -223,7 +222,7 @@ class TThemes {
       'width' => '100%',
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
-        array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
+        array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
         array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values, 'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
         array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
         array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
@@ -294,18 +293,17 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStd()
   {
-  global $page, $request;
+  	global $page;
 
     $page->title .= admTDiv.admThemesStandard;
 
-    if (!isset($request['arg']['action'])) $request['arg']['action'] = '';
-    switch($request['arg']['action']) {
+    switch(arg('action')) {
       case 'update': $result = $this->sectionStdUpdate(); break;
       case 'insert': $result = $this->sectionStdInsert(); break;
       case 'add': $result = $this->sectionStdAdd(); break;
       default:
-        if (isset($request['arg']['delete'])) $result = $this->sectionStdDelete();
-        if (isset($request['arg']['id'])) $result = $this->sectionStdEdit();
+        if (arg('delete')) $result = $this->sectionStdDelete();
+        if (arg('id')) $result = $this->sectionStdEdit();
         else $result = $this->sectionStdList();
     }
     return $result;
@@ -315,36 +313,34 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStylesInsert()
   {
-    global $request;
-
-    $file = "/* ".$request['arg']['description']." */\r\n\r\n".$request['arg']['html'];
-    $fp = fopen(filesRoot.'style/'.$request['arg']['filename'].'.css', 'w');
+    $file = "/* ".arg('description')." */\r\n\r\n".arg('html');
+    $fp = fopen(filesRoot.'style/'.arg('filename').'.css', 'w');
     fwrite($fp, $file);
     fclose($fp);
-    SendNotify((isset($request['update'])?admUpdated:admAdded).': '.$request['arg']['filename'].'.css');
-    goto($request['arg']['submitURL']);
+    SendNotify((arg('update')?admUpdated:admAdded).': '.arg('filename').'.css');
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStylesUpdate()
   {
-    global $request;
-    $request['update'] = true;
+    global $Eresus;
+    $Eresus->request['update'] = true;
     $this->sectionStylesInsert();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStylesDelete()
   {
-    global $request, $page;
+    global $page;
 
-    $filename = filesRoot.'style/'.$request['arg']['delete'];
+    $filename = filesRoot.'style/'.arg('delete');
     if (file_exists($filename)) unlink($filename);
-    SendNotify(admDeleted.': '.$request['arg']['delete']);
+    SendNotify(admDeleted.': '.arg('delete'));
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStylesAdd()
   {
-    global $page, $request;
+    global $page;
 
     $form = array(
       'name' => 'addForm',
@@ -352,7 +348,7 @@ class TThemes {
       'width' => '100%',
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
-        array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
+        array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
         array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css'),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
         array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
@@ -365,9 +361,9 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStylesEdit()
   {
-    global $page, $request;
+    global $page;
 
-    $item['filename'] = $request['arg']['id'];
+    $item['filename'] = arg('id');
     $item['html'] = trim(file_get_contents(filesRoot.'style/'.$item['filename']));
     preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
     $item['description'] = trim($item['description'][1]);
@@ -379,7 +375,7 @@ class TThemes {
       'width' => '100%',
       'fields' => array (
         array('type'=>'hidden','name'=>'action', 'value'=>'update'),
-        array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
+        array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
         array('type'=>'hidden','name'=>'filename'),
         array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
@@ -434,17 +430,16 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStyles()
   {
-  global $page, $request;
+  global $page;
 
     $page->title .= admTDiv.admThemesStyles;
-    if (!isset($request['arg']['action'])) $request['arg']['action'] = '';
-    switch($request['arg']['action']) {
+    switch(arg('action')) {
       case 'update': $result = $this->sectionStylesUpdate(); break;
       case 'insert': $result = $this->sectionStylesInsert(); break;
       case 'add': $result = $this->sectionStylesAdd(); break;
       default:
-        if (isset($request['arg']['delete'])) $result = $this->sectionStylesDelete();
-        elseif (isset($request['arg']['id'])) $result = $this->sectionStylesEdit();
+        if (arg('delete')) $result = $this->sectionStylesDelete();
+        elseif (arg('id')) $result = $this->sectionStylesEdit();
         else $result = $this->sectionStylesList();
     }
     return $result;
@@ -452,13 +447,12 @@ class TThemes {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $page, $request;
+  global $page;
 
     $result = '';
     if (UserRights($this->access)) {
       $result .= $page->renderTabs($this->tabs);
-      if (!isset($request['arg']['section'])) $request['arg']['section'] = 'main';
-      switch ($request['arg']['section']) {
+      switch (arg('section')) {
         case 'css': $result .= $this->sectionStyles(); break;
         case 'std': $result .= $this->sectionStd(); break;
         case 'themes': default: $result .= $this->sectionTemplates(); break;

@@ -31,12 +31,10 @@ class TUsers extends Accounts {
   //-----------------------------------------------------------------------------
   function checkMail($mail)
   {
-  global $session;
-
     $host = substr($mail, strpos($mail, '@')+1);
     $ip = gethostbyname($host);
     if ($ip == $host) {
-      $session['errorMessage'] = sprintf(errNonexistedDomain, $host);
+      ErrorMessage(sprintf(errNonexistedDomain, $host));
       return false;
     }
     return true;
@@ -69,34 +67,35 @@ class TUsers extends Accounts {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function check_for_edit($item)
   {
-  global $user;
-    return (($item['access'] != ROOT)||($user['id'] == $item['id'])) && UserRights(ADMIN);
+  	global $Eresus;
+
+    return (($item['access'] != ROOT)||($Eresus->user['id'] == $item['id'])) && UserRights(ADMIN);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function toggle()
   {
-  global $db, $page, $request;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('users', "`id`='".$request['arg']['toggle']."'");
+    $item = $Eresus->db->selectItem('users', "`id`='".arg('toggle')."'");
     $item['active'] = !$item['active'];
-    $db->updateItem('users', $item, "`id`='".$request['arg']['toggle']."'");
+    $Eresus->db->updateItem('users', $item, "`id`='".arg('toggle')."'");
     SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['name']);
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-  global $db, $page, $request, $session, $user;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('users', "`id`='".$request['arg']['update']."'");
+    $item = $Eresus->db->selectItem('users', "`id`='".arg('update')."'");
     $old = $item;
-    foreach ($item as $key => $value) if (isset($request['arg'][$key])) $item[$key] = $request['arg'][$key];
-    $item['active'] = $request['arg']['active'] || ($user['id'] == $item['id']);
+    foreach ($item as $key => $value) if (isset($Eresus->request['arg'][$key])) $item[$key] = $Eresus->request['arg'][$key];
+    $item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user['id'] == $item['id']);
     if ($this->checkMail($item['mail'])) {
-      $db->updateItem('users', $item, "`id`='".$request['arg']['update']."'");
+      $Eresus->db->updateItem('users', $item, "`id`='".arg('update')."'");
       SendNotify($this->notifyMessage($item, $old));
     };
-    goto($request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
  /**
@@ -135,30 +134,30 @@ class TUsers extends Accounts {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function delete()
   {
-  global $db, $page, $request;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('users', "`id`='".$request['arg']['delete']."'");
-    $db->delete('users', "`id`='".$request['arg']['delete']."'");
+    $item = $Eresus->db->selectItem('users', "`id`='".arg('delete')."'");
+    $Eresus->db->delete('users', "`id`='".arg('delete')."'");
     SendNotify(admDeleted.': '.$this->notifyMessage($item));
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function password()
   {
-  global $db, $page, $request;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('users', "`id`='".$request['arg']['password']."'");
-    if ($request['arg']['pswd1'] == $request['arg']['pswd2']) $item['hash'] = md5($request['arg']['pswd1']); else exit;
-    $db->updateItem('users', $item, "`id`='".$request['arg']['password']."'");
+    $item = $Eresus->db->selectItem('users', "`id`='".arg('password')."'");
+    if (arg('pswd1') == arg('pswd2')) $item['hash'] = md5(arg('pswd1')); else exit;
+    $Eresus->db->updateItem('users', $item, "`id`='".arg('password')."'");
     SendNotify(admUsersPasswordChanged.': '.$item['name']);
-    goto($request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function edit()
   {
-  global $db, $page, $request, $user;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('users', "`id`='".$request['arg']['id']."'");
+    $item = $Eresus->db->selectItem('users', "`id`='".arg('id')."'");
     $form = array(
       'name' => 'UserForm',
       'caption' => admUsersChangeUser.' ¹'.$item['id'],
@@ -220,23 +219,23 @@ class TUsers extends Accounts {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $db, $page, $request, $user;
+  	global $Eresus, $page;
 
     $result = '';
     $granted = false;
     if (UserRights($this->access)) $granted = true; else {
-      if ($request['arg']['id'] == $user['id']) {
-        if (empty($request['arg']['password']) || ($request['arg']['password'] == $user['id'])) $granted = true;
-        if (empty($request['arg']['update']) || ($request['arg']['update'] == $user['id'])) $granted = true;
+      if (arg('id') == $Eresus->user['id']) {
+        if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
+        if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
       }
     }
     if ($granted) {
-      if (isset($request['arg']['update'])) $this->update();
-      elseif (isset($request['arg']['password'])  && (!isset($request['arg']['action']) || ($request['arg']['action'] != 'login'))) $this->password();
-      elseif (isset($request['arg']['toggle'])) $this->toggle();
-      elseif (isset($request['arg']['delete'])) $this->delete();
-      elseif (isset($request['arg']['id'])) $result = $this->edit();
-      elseif (isset($request['arg']['action'])) switch($request['arg']['action']) {
+      if (arg('update')) $this->update();
+      elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
+      elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
+      elseif (isset($Eresus->request['arg']['delete'])) $this->delete();
+      elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
+      elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
         case 'create': $result = $this->create(); break;
         case 'insert': $this->insert(); break;
       } else {
