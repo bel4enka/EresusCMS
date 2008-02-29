@@ -47,17 +47,17 @@ class TAdminUI extends WebPage {
   function init()
   # Проводит инициализацию страницы
   {
-    global $Eresus, $plugins, $request;
+    global $Eresus;
 
     $this->title = admControls;
     # Определяем уровень вложенности
     do {
       $this->sub++;
-      $i = strpos($request['url'], str_repeat('sub_', $this->sub).'id');
+      $i = strpos($Eresus->request['url'], str_repeat('sub_', $this->sub).'id');
     } while ($i !== false);
     $this->sub--;
     # Загружаем плагины
-    $plugins->preload(array('admin'),array('ondemand'));
+    $Eresus->plugins->preload(array('admin'),array('ondemand'));
     # Создаем меню
     $this->menu = array(
       array(
@@ -73,7 +73,7 @@ class TAdminUI extends WebPage {
         )
       ),
     );
-    $plugins->adminOnMenuRender();
+    $Eresus->plugins->adminOnMenuRender();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Общие методы
@@ -81,7 +81,7 @@ class TAdminUI extends WebPage {
   function replaceMacros($text)
   # Подставляет значения макросов
   {
-  global $user;
+  	global $Eresus;
 
     $result = str_replace(
       array(
@@ -118,11 +118,11 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function url($args = null, $clear = false)
   {
-  global $request, $locale;
+  	global $Eresus, $locale;
 
     $basics = array('mod','section','id','sort','desc','pg');
     $result = '';
-    if (count($request['arg'])) foreach($request['arg'] as $key => $value) if (in_array($key,$basics)|| strpos($key, 'sub_')===0) $arg[$key] = $value;
+    if (count($Eresus->request['arg'])) foreach($Eresus->request['arg'] as $key => $value) if (in_array($key,$basics)|| strpos($key, 'sub_')===0) $arg[$key] = $value;
     if (count($args)) foreach($args as $key => $value) $arg[$key] = $value;
     if (count($arg)) foreach($arg as $key => $value) if (!empty($value)) $result .= '&'.$key.'='.$value;
     if (!empty($result)) $result[0] = '?';
@@ -252,7 +252,7 @@ class TAdminUI extends WebPage {
   //------------------------------------------------------------------------------
   function renderTabs($tabs)
   {
-    global $request, $page;
+    global $Eresus, $page;
 
     if (count($tabs)) {
       $result = "<table class=\"admTabs\"><tr>\n";
@@ -261,7 +261,7 @@ class TAdminUI extends WebPage {
         if (isset($item['url'])) {
           $url = $item['url'];
         } else {
-          $url = $request['url'];
+          $url = $Eresus->request['url'];
           if (isset($item['name'])) {
             if (($p = strpos($url, $item['name'].'=')) !== false) $url = substr($url, 0, $p-1);
             $url .= (strpos($url, '?') !== false?'&':'?').$item['name'].'='.$item['value'];
@@ -278,7 +278,7 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
   {
-    global $request;
+    global $Eresus;
 
     $prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
     if ($itemsCount > $itemsPerPage) {
@@ -292,7 +292,7 @@ class TAdminUI extends WebPage {
         $forTo = $pageCount+1;
         $forDelta = 1;
       }
-      $pageIndex = isset($request['arg'][$prefix.'pg'])?$request['arg'][$prefix.'pg']:$forFrom;
+      $pageIndex = arg($prefix.'pg')?arg($prefix.'pg'):$forFrom;
       for ($i = $forFrom; $i != $forTo; $i += $forDelta)
         if ($i == $pageIndex) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
         else $result .= '<a href="'.$this->url(array($prefix.'pg' => $i)).'">&nbsp;'.$i.'&nbsp;</a>';
@@ -303,7 +303,7 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderTable($table, $values=null, $sub_prefix='')
   {
-  global $db, $request;
+  	global $Eresus;
 
     $result = '';
     $prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
@@ -311,20 +311,20 @@ class TAdminUI extends WebPage {
     $pagesDesc = isset($table['sortDesc'])?$table['sortDesc']:false;
     if (isset($table['tabs']) && count($table['tabs'])) $result .= $this->renderTabs($table['tabs']);
     if (isset($table['hint'])) $result .= '<div class="admListHint">'.$table['hint']."</div>\n";
-    $sortMode = isset($request['arg'][$prefix.'sort'])?$request['arg'][$prefix.'sort']:(isset($table['sortMode'])?$table['sortMode']:'');
-    $sortDesc = isset($request['arg'][$prefix.'desc'])?$request['arg'][$prefix.'desc']:(isset($request['arg'][$prefix.'sort'])?'':(isset($table['sortDesc'])?$table['sortDesc']:false));
+    $sortMode = arg($prefix.'sort')?arg($prefix.'sort'):(isset($table['sortMode'])?$table['sortMode']:'');
+    $sortDesc = arg($prefix.'desc')?arg($prefix.'desc'):(arg($prefix.'sort')?'':(isset($table['sortDesc'])?$table['sortDesc']:false));
     if (is_null($values)) {
-      $count = $db->count($table['name'], isset($table['condition'])?$table['condition']:'');
+      $count = $Eresus->db->count($table['name'], isset($table['condition'])?$table['condition']:'');
       if ($itemsPerPage) {
         $pageCount = ((integer)($count / $itemsPerPage)+(($count % $itemsPerPage) > 0));
         if ($count > $itemsPerPage) $pages = $this->renderPages($count, $itemsPerPage, $pageCount, $pagesDesc, $sub_prefix); else $pages = '';
-        $page = isset($request['arg'][$prefix.'pg'])?$request['arg'][$prefix.'pg']:($pagesDesc?$pageCount:1);
+        $page = arg($prefix.'pg')?arg($prefix.'pg'):($pagesDesc?$pageCount:1);
       } else {
         $pageCount = $count;
         $pages = '';
         $page = 1;
       }
-      $items = $db->select(
+      $items = $Eresus->db->select(
         $table['name'],
         isset($table['condition'])?$table['condition']:'',
         $sortMode,
@@ -341,7 +341,7 @@ class TAdminUI extends WebPage {
       "</th>";
     if (count($table['columns'])) foreach($table['columns'] as $column)
       $result .= '<th '.(isset($column['width'])?' style="width: '.$column['width'].'"':'').'>'.
-        ((isset($request['arg'][$prefix.'sort']) && ($request['arg'][$prefix.'sort'] == $column['name']))?'<span class="admSortBy">'.(isset($column['caption'])?$column['caption']:'&nbsp;').'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
+        (arg($prefix.'sort') == $column['name'] ? '<span class="admSortBy">'.(isset($column['caption'])?$column['caption']:'&nbsp;').'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
         (isset($table['name'])?
         ' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).'" title="'.admSortAscending.'">'.img('core/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
         '<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).'" title="'.admSortDescending.'">'.img('core/img/aru.gif', admSortDescending, admSortDescending).'</a></th>':'');
@@ -408,50 +408,51 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderContent()
   {
-  global $request, $session, $plugins;
+  global $Eresus;
 
     $result = '';
-    if (!empty($request['arg']['mod'])) {
-      if(file_exists(filesRoot."core/".$request['arg']['mod'].".php")) {
-        include_once(filesRoot."core/".$request['arg']['mod'].".php");
-        $class = 'T'.$request['arg']['mod'];
+    if (arg('mod')) {
+    	$module = arg('mod');
+      if(file_exists(filesRoot."core/$module.php")) {
+        include_once(filesRoot."core/$module.php");
+        $class = "T$module";
         $this->module = new $class;
-      } elseif (substr($request['arg']['mod'], 0, 4) == 'ext-') {
-        $name = substr($request['arg']['mod'], 4);
-        $this->module = $plugins->load($name);
-      } else $session['errorMessage'] = errFileNotFound.': "'.filesRoot.'core/'.$request['arg']['mod'].'.php"';
+      } elseif (substr($module, 0, 4) == 'ext-') {
+        $name = substr($module, 4);
+        $this->module = $Eresus->plugins->load($name);
+      } else ErrorMessage(errFileNotFound.': "'.filesRoot."core/$module.php'");
       if (is_object($this->module)) {
         if (method_exists($this->module, 'adminRender')) $result .= $this->module->adminRender();
-        else $session['errorMessage'] = sprintf(errMethodNotFound, 'adminRender', get_class($this->module));
+        else ErrorMessage(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
       }
     }
-    if (isset($session['msg']['information']) && count($session['msg']['information'])) {
+    if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
       $messages = '';
-      foreach($session['msg']['information'] as $message) $messages .= InfoBox($message);
+      foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
       $result = $messages.$result;
-      $session['msg']['information'] = array();
+      $Eresus->session['msg']['information'] = array();
     }
-    if (isset($session['msg']['errors']) && count($session['msg']['errors'])) {
+    if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
       $messages = '';
-      foreach($session['msg']['errors'] as $message) $messages .= ErrorBox($message);
+      foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message);
       $result = $messages.$result;
-      $session['msg']['errors'] = array();
+      $Eresus->session['msg']['errors'] = array();
     }
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderPagesMenu(&$opened, $owner = 0, $level = 0)
   {
-    global $Eresus, $user, $request;
+    global $Eresus;
 
     $result = '';
     $ie = preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']);
-    $items = $Eresus->sections->children($owner, $user['access'], SECTIONS_ACTIVE);
+    $items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
     if (count($items)) foreach($items as $item) {
       if (empty($item['caption'])) $item['caption'] = admNA;
-      if (isset($request['arg']['section']) && ($item['id'] == $request['arg']['section'])) $this->title = $item['caption']; # title - массив?
+      if (isset($Eresus->request['arg']['section']) && ($item['id'] == arg('section'))) $this->title = $item['caption']; # title - массив?
       $sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
-      $current = (isset($request['arg']['mod'])) && ($request['arg']['mod'] == 'content') && ($request['arg']['section'] == $item['id']);
+      $current = (arg('mod') == 'content') && (arg('section') == $item['id']);
       if ($current) $opened = $level;
       if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
       $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
@@ -463,15 +464,15 @@ class TAdminUI extends WebPage {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderMenu()
   {
-    global $request, $user;
+    global $Eresus;
 
     $menu = '';
     for ($section = 0; $section < count($this->extmenu); $section++)
       if (UserRights($this->extmenu[$section]['access'])) {
         $menu .= "<tr><th>".$this->extmenu[$section]['caption']."</th></tr>\n<tr><td>";
         foreach ($this->extmenu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->extmenu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
-          if (isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod'])) $this->title = $item['caption'];
-          $menu .= '<div '.((isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod']))?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+          if ($item['link'] == arg('mod')) $this->title = $item['caption'];
+          $menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
         }
         $menu .= "</td></tr>\n";
       }
@@ -480,8 +481,8 @@ class TAdminUI extends WebPage {
       if (UserRights($this->menu[$section]['access'])) {
         $menu .= "<tr><th>".$this->menu[$section]['caption']."</th></tr>\n<tr><td>";
         foreach ($this->menu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->menu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
-          if (isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod'])) $this->title = $item['caption'];
-          $menu .= '<div '.((isset($request['arg']['mod']) && ($item['link'] == $request['arg']['mod']))?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+          if ($item['link'] == arg('mod')) $this->title = $item['caption'];
+          $menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
         }
         $menu .= "</td></tr>\n";
       }
@@ -493,7 +494,7 @@ class TAdminUI extends WebPage {
       "  <tr><td>\n<ul id=\"menuContent\">\n".$this->renderPagesMenu($opened)."</ul>\n</td></tr>\n".
       $menu.
       '  <tr><td align="center">'."\n".
-      '    <a href="'.httpRoot.'admin.php?mod=users&amp;id='.$user['id'].'">'.admUsersChangePassword.'</a>'."\n".
+      '    <a href="'.httpRoot.'admin.php?mod=users&amp;id='.$Eresus->user['id'].'">'.admUsersChangePassword.'</a>'."\n".
       '    <form action="'.httpRoot.'admin.php" method="post" style="margin:5px;">'."\n".
       '      <div>'."\n".
       '        <input type="hidden" name="action" value="logout">'."\n".
@@ -580,9 +581,9 @@ class TAdminUI extends WebPage {
 # Проверям права доступа и если надо, проводим авторизацию
 if (!UserRights(EDITOR)) {
   $messages = '';
-  if (isset($session['msg']['errors']) && count($session['msg']['errors'])) {
-    foreach($session['msg']['errors'] as $message) $messages .= ErrorBox($message, errError);
-    $session['msg']['errors'] = array();
+  if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
+    foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message, errError);
+    $Eresus->session['msg']['errors'] = array();
     $messages = '<div style="position: absolute; width: 100%; margin: 0;">'.$messages.'</div>';
   }
   echo

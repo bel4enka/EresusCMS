@@ -88,7 +88,7 @@ function saveSettings()
 	global $Eresus;
 	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
 	$item = $this->__item($item);
-	$item['settings'] = encodeOptions($this->settings);
+	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
   $result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
 	return $result;
 }

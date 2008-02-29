@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.11
- * 
+ *
  * Редактирование контента
- * 
+ *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -15,25 +15,25 @@ class TContent {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $db, $page, $plugins, $request;
+  	global $Eresus, $page;
 
     if (UserRights(EDITOR)) {
-      $item = $db->selectItem('pages', "`id`='".$request['arg']['section']."'");
+      $item = $Eresus->db->selectItem('pages', "`id`='".arg('section', 'int')."'");
       $page->id = $item['id'];
-      if (!array_key_exists($item['type'], $plugins->list)) {
+      if (!array_key_exists($item['type'], $Eresus->plugins->list)) {
         switch ($item['type']) {
           case 'default':
             $editor = new ContentPlugin;
-            if (isset($request['arg']['update'])) $editor->update();
+            if (arg('update')) $editor->update();
             else $result = $editor->adminRenderContent();
           break;
-          case 'list': 
-            if (isset($request['arg']['update'])) {
+          case 'list':
+            if (arg('update')) {
               $original = $item['content'];
-              $item['content'] = $request['arg']['content'];
-              $db->updateItem('pages', $item, "`id`='".$item['id']."'");
+              $item['content'] = arg('content', 'dbsafe');
+              $Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
               sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$item['content']);
-              goto($request['arg']['submitURL']);
+              goto(arg('submitURL'));
             } else {
               $form = array(
                 'name' => 'editURL',
@@ -49,12 +49,12 @@ class TContent {
             }
           break;
           case 'url':
-            if (isset($request['arg']['update'])) {
+            if (arg('update')) {
               $original = $item['content'];
-              $item['content'] = $request['arg']['url'];
-              $db->updateItem('pages', $item, "`id`='".$item['id']."'");
+              $item['content'] = arg('url', 'dbsafe');
+              $Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
               sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$original.' &rarr; '.$item['content']);
-              goto($request['arg']['submitURL']);
+              goto(arg('submitURL'));
             } else {
               $form = array(
                 'name' => 'editURL',
@@ -70,12 +70,12 @@ class TContent {
             }
           break;
           default:
-          $result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);          
+          $result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
         }
       } else {
-        $plugins->load($item['type']);
-        $page->module = $plugins->items[$item['type']];
-        $result = $plugins->items[$item['type']]->adminRenderContent();
+        $Eresus->plugins->load($item['type']);
+        $page->module = $Eresus->plugins->items[$item['type']];
+        $result = $Eresus->plugins->items[$item['type']]->adminRenderContent();
       }
       return $result;
     }

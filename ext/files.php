@@ -394,8 +394,13 @@ class Files extends ContentPlugin {
 				$result .= "<p>";
 				for ($j = 0; $j < count($files); $j++) {
 					$icon = strtolower(substr($files[$j]['filename'], strpos($files[$j]['filename'], '.')+1));
+<<<<<<< .working
 					$icon = isset($icons[$icon]) ? '<img src="'.$this->urlStyle.$icons[$icon].'" alt="" />' : '';
 					$result .= '<a href="'.$files[$j]['id'].'/">'.$files[$j]['caption'].'</a> ('.FormatSize($files[$j]['size']).')'.$icon.'<br />';
+=======
+					$icon = isset($icons[$icon]) ? '<img src="'.$this->urlStyle.$icons[$icon].'" alt="" />' : ''; 
+					$result .= '<a href="'.$files[$j]['id'].'/">'.$files[$j]['caption'].'</a> ('.FormatSize($files[$j]['size']).')'.$icon.'<br />';
+>>>>>>> .merge-right.r286
 				}
 				$result .= "</p>";
 			}

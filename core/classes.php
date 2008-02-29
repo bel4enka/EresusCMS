@@ -366,7 +366,7 @@ class Plugins {
    */
   function clientRenderContent()
   {
-  	global $page, $db, $user, $session, $request;
+  	global $Eresus, $page;
 
     $result = '';
     switch ($page->type) {
@@ -376,7 +376,7 @@ class Plugins {
       break;
       case 'list':
         if ($page->topic) $page->httpError(404);
-        $subitems = $db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($user['auth'] ? $user['access'] : GUEST)."')", "`position`");
+        $subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
         if (empty($page->content)) $page->content = '$(items)';
         $template = loadTemplate('std/SectionListItem');
         if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
@@ -399,7 +399,7 @@ class Plugins {
               $item['caption'],
               $item['description'],
               $item['hint'],
-              $request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
+              $Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
             ),
             $template['html']
           );
@@ -524,14 +524,13 @@ class Plugin {
  */
 function Plugin()
 {
-	global $Eresus, $plugins, $locale;
-
+	global $Eresus, $locale;
 	$this->name = strtolower(get_class($this));
-  if (!empty($this->name) && isset($plugins->list[$this->name])) {
-    $this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);
+  if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
+    $this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
 		# Если установлена версия плагина отличная от установленной ранее
 		# то необходимо произвести обновление информации о плагине в БД
-    if ($this->version != $plugins->list[$this->name]['version']) $this->resetPlugin();
+    if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
   }
   $this->dirData = $Eresus->fdata.$this->name.'/';
   $this->urlData = $Eresus->data.$this->name.'/';
@@ -589,8 +588,8 @@ function saveSettings()
 
 	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
 	$item = $this->__item($item);
-	$item['settings'] = encodeOptions($this->settings);
-  $result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
+	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
+	$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -633,7 +632,7 @@ function updateSettings()
 {
 	global $Eresus;
 
-  foreach ($this->settings as $key => $value) if (isset($Eresus->request['arg'][$key])) $this->settings[$key] = $Eresus->request['arg'][$key];
+  foreach ($this->settings as $key => $value) if (arg($key)) $this->settings[$key] = arg($key);
 	$this->onSettingsUpdate();
   $this->saveSettings();
 }
@@ -956,8 +955,8 @@ function updateContent($content)
 */
 function adminUpdate()
 {
-	$this->updateContent(arg('content'));
-  goto(arg('submitURL'));
+	$this->updateContent(arg('content', 'dbsafe'));
+	goto(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
 /**

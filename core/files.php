@@ -180,8 +180,6 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderFileList($side)
   {
-  global $request;
-
   	$path = $this->pannels[$side];
     $items = $this->BuildFileList($path);
     $result =
@@ -223,9 +221,10 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function upload()
   {
-    global $request;
+   global $Eresus;
+
     foreach($_FILES as $name => $file) upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
-    goto($request['referer']);
+    goto($Eresus->request['referer']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function mkDir()
@@ -258,18 +257,14 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renameEntry()
   {
-    global $request;
-
     $filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
     $newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
-    if (file_exists($filename)) rename($filename, $newname);
+      if (file_exists($filename)) rename($filename, $newname);
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function chmodEntry()
   {
-    global $request;
-
     $filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
     if (file_exists($filename)) chmod($filename, octdec(arg('perms')));
     goto($this->url());
@@ -277,8 +272,6 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function copyFile()
   {
-  global $request;
-
   	$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
     $dest = filesRoot.$this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
     if (is_file($filename)) copy($filename, $dest);
@@ -289,8 +282,6 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function moveFile()
   {
-  global $request;
-
     #if (UserRights(ADMIN)) {
     	$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('movefile', FILES_FILTER);
       $dest = filesRoot.$this->root.$this->pannels[$this->sp=='l'?'r':'l'].arg('movefile', FILES_FILTER);
@@ -303,8 +294,6 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function deleteFile()
   {
-  global $request;
-
     #if (UserRights(ADMIN)) {
     	$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('delete', FILES_FILTER);
       if (is_file($filename)) unlink($filename);

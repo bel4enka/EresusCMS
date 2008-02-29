@@ -183,18 +183,18 @@ class TPages {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function deleteBranch($id)
   {
-    global $db, $plugins;
+    global $Eresus;
 
-    $item = $db->selectItem('pages', "`id`='".$id."'");
-    if ($plugins->load($item['type'])) {
-      if (isset($plugins->items[$item['type']]->table)) {
-        $fields = $db->fields($plugins->items[$item['type']]->table['name']);
-        if (in_array('section', $fields)) $db->delete($plugins->items[$item['type']]->table['name'], "`section`='".$item['id']."'");
+    $item = $Eresus->db->selectItem('pages', "`id`='".$id."'");
+    if ($Eresus->plugins->load($item['type'])) {
+      if (isset($Eresus->plugins->items[$item['type']]->table)) {
+        $fields = $Eresus->db->fields($Eresus->plugins->items[$item['type']]->table['name']);
+        if (in_array('section', $fields)) $Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'], "`section`='".$item['id']."'");
       }
     }
-    $items = $db->select('`pages`', "`owner`='".$id."'", '', false, '`id`');
+    $items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', false, '`id`');
     if (count($items)) foreach($items as $item) $this->deleteBranch($item['id']);
-    $db->delete('pages', "`id`='".$id."'");
+    $Eresus->db->delete('pages', "`id`='".$id."'");
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function delete()
@@ -211,12 +211,13 @@ class TPages {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function loadContentTypes()
   {
-    global $plugins;
+    global $Eresus;
+
     $result[0] = array(); $result[1] = array();
     $result[0][] = admPagesContentDefault; $result[1][] = 'default';
     $result[0][] = admPagesContentList; $result[1][] = 'list';
     $result[0][] = admPagesContentURL; $result[1][] = 'url';
-    if(count($plugins->list)) foreach($plugins->list as $name => $plugin) if (strpos($plugin['type'], 'content') !== false) {
+    if(count($Eresus->plugins->list)) foreach($Eresus->plugins->list as $name => $plugin) if (strpos($plugin['type'], 'content') !== false) {
       $result[0][] = $plugin['title'];
       $result[1][] = $name;
     }
@@ -238,7 +239,7 @@ class TPages {
   function create()
   # Функция выводит форму для добавления новой страницы
   {
-  global $Eresus, $page, $plugins;
+  global $Eresus, $page;
 
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
@@ -324,10 +325,10 @@ class TPages {
   */
   function sectionIndexBranch($owner=0, $level=0)
   {
-    global $Eresus, $user;
+    global $Eresus;
 
     $result = array();
-    $items = $Eresus->sections->children($owner, $user['auth'] ? $user['access'] : GUEST);
+    $items = $Eresus->sections->children($owner, $Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
     for($i=0; $i<count($items); $i++) {
     	$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ? $this->cache['content_types'][$items[$i]['type']] : '<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
       $row = array();
@@ -367,19 +368,19 @@ class TPages {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-    global $db, $page, $plugins, $request;
+    global $Eresus, $page;
 
     if (UserRights($this->access)) {
       $result = '';
-      if (isset($request['arg']['update'])) $this->update();
-      elseif (isset($request['arg']['action'])) switch($request['arg']['action']) {
+      if (arg('update')) $this->update();
+      elseif (arg('action')) switch(arg('action')) {
         case 'up': $this->moveUp(); break;
         case 'down': $this->moveDown(); break;
         case 'create': $result = $this->create(); break;
         case 'insert': $this->insert();
         case 'move': $result = $this->move(); break;
         case 'delete': $this->delete(); break;
-      } elseif (isset($request['arg']['id'])) $result = $this->edit(arg('id', 'int'));
+      } elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit(arg('id', 'int'));
       else $result = $this->sectionIndex();
       return $result;
     }
