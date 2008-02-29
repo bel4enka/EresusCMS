@@ -70,12 +70,26 @@ class TPlgMgr {
   function insert()
   {
   global $page, $Eresus;
-
-    $files = array_keys($Eresus->request['arg']['files']);
-    if (count($files)) foreach ($files as $name) if ($Eresus->request['arg']['files'][$name]) {
-      $Eresus->plugins->install($name);
-      SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
+//    unset($Eresus->session['addplugins']);
+//var_dump($Eresus->session['addplugins']);
+    if (!isset($Eresus->session['addplugins']) || (count($Eresus->session['addplugins']) == 0))
+    {
+      $Eresus->session['addplugins'] = array_keys($Eresus->request['arg']['files']);
     }
+//var_dump($Eresus->session['addplugins']);
+
+//    $files = array_keys($Eresus->request['arg']['files']);
+
+    if (count($Eresus->session['addplugins']))
+      foreach ($Eresus->session['addplugins'] as $k => $name)
+//        if (isset($Eresus->request['arg']['files']) && isset($Eresus->request['arg']['files'][$name]))
+        if (isset($Eresus->session['addplugins'][$k]))
+        {
+          $Eresus->plugins->install($name);
+          unset($Eresus->session['addplugins'][$k]);
+          SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
+        }
+
     goto($Eresus->request['arg']['submitURL']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -114,7 +128,8 @@ class TPlgMgr {
     $form = array(
       'name' => 'FoundPlugins',
       'caption' => admPluginsFound,
-      'buttons' => array('ok','cancel'),
+      'width' => '600px',
+      'buttons' => array('ok','cancel'=>array('label' => 'Отмена', 'url' => 'http://san-dis.ru/admin.php?mod=plgmgr')),
       'fields' => array(
         array('type'=>'hidden','name'=>'action','value'=>'insert'),
         array('type'=>'text','value'=>'Выбрать: [<a href="#" onclick="return checkboxes(true);">Все</a>]  [<a href="#" onclick="return checkboxes(false);">Ни одного</a>]'),

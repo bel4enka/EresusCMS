@@ -397,8 +397,10 @@ class Form {
       ((isset($this->form['buttons']) && isset($this->form['buttons']['reset']))?'<input name="form_reset" type="reset" class="button" value="'.$this->form['buttons']['reset'].'" /> ':'').
       (isset($this->form['buttons']) && in_array('reset', $this->form['buttons'])?"<input name=\"form_reset\" type=\"reset\" class=\"button\" value=\"".strReset."\" /> ":'').
 
-      ((isset($this->form['buttons']) && isset($this->form['buttons']['cancel']))?'<input name="form_cancel" type="button" class="button" value="'.$this->form['buttons']['cancel']."\" onclick=\"javascript:history.back();\" /> ":'').
-      (!isset($this->form['buttons']) || in_array('cancel', $this->form['buttons'])?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\" />":'').
+      ((isset($this->form['buttons']) && isset($this->form['buttons']['cancel']) && (!is_array($this->form['buttons']['cancel'])))?'<input name="form_cancel" type="button" class="button" value="'.$this->form['buttons']['cancel']."\" onclick=\"javascript:history.back();\" /> ":'').
+      ((!isset($this->form['buttons']) || (in_array('cancel', $this->form['buttons'])))?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\" />":'').
+      ((isset($this->form['buttons']['cancel']) && (is_array($this->form['buttons']['cancel'])))?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".$this->form['buttons']['cancel']['label']."\" onclick=\"window.location.href='".$this->form['buttons']['cancel']['url']."'\" />":'').
+
       "</td>\n\t\t</tr>\n".
       "\t</table>\n</form>\n";
 
