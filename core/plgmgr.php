@@ -17,32 +17,32 @@ class TPlgMgr {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function toggle()
   {
-  	global $db, $page, $request;
+  	global $page, $Eresus;
 
-    $item = $db->selectItem('plugins', "`name`='".$request['arg']['toggle']."'");
+    $item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['toggle']."'");
     $item['active'] = !$item['active'];
-    $db->updateItem('plugins', $item, "`name`='".$request['arg']['toggle']."'");
+    $Eresus->db->updateItem('plugins', $item, "`name`='".$Eresus->request['arg']['toggle']."'");
     SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['title']);
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function delete()
   {
-  global $plugins, $page, $request;
+  global $page, $Eresus;
 
-    $plugins->load($request['arg']['delete']);
-    $plugins->uninstall($request['arg']['delete']);
-    SendNotify(admDeleted.': '.$plugins->list[$request['arg']['delete']]['title']);
+    $Eresus->plugins->load($Eresus->request['arg']['delete']);
+    $Eresus->plugins->uninstall($Eresus->request['arg']['delete']);
+    SendNotify(admDeleted.': '.$Eresus->plugins->list[$Eresus->request['arg']['delete']]['title']);
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function edit()
   {
-  global $plugins, $page, $request;
+  global $page, $Eresus;
 
-    $plugins->load($request['arg']['id']);
-    if (method_exists($plugins->items[$request['arg']['id']], 'settings')) {
-      $result = $plugins->items[arg('id', 'word')]->settings();
+    $Eresus->plugins->load($Eresus->request['arg']['id']);
+    if (method_exists($Eresus->plugins->items[$Eresus->request['arg']['id']], 'settings')) {
+      $result = $Eresus->plugins->items[arg('id', 'word')]->settings();
     } else {
       $form = array(
         'name' => 'InfoWindow',
@@ -60,30 +60,30 @@ class TPlgMgr {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-  global $plugins, $page, $request;
+  global $page, $Eresus;
 
-    $plugins->load($request['arg']['update']);
-    $plugins->items[$request['arg']['update']]->updateSettings();
-    goto($request['arg']['submitURL']);
+    $Eresus->plugins->load($Eresus->request['arg']['update']);
+    $Eresus->plugins->items[$Eresus->request['arg']['update']]->updateSettings();
+    goto($Eresus->request['arg']['submitURL']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function insert()
   {
-  global $plugins, $page, $request;
+  global $page, $Eresus;
 
-    $files = array_keys($request['arg']['files']);
-    if (count($files)) foreach ($files as $name) if ($request['arg']['files'][$name]) {
-      $plugins->install($name);
+    $files = array_keys($Eresus->request['arg']['files']);
+    if (count($files)) foreach ($files as $name) if ($Eresus->request['arg']['files'][$name]) {
+      $Eresus->plugins->install($name);
       SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
     }
-    goto($request['arg']['submitURL']);
+    goto($Eresus->request['arg']['submitURL']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function add()
   {
-  	global $db, $page;
+  	global $page, $Eresus;
 
-    $items = $db->select('`plugins`', '', "`name`");
+    $items = $Eresus->db->select('`plugins`', '', "`name`");
 		$installed = array();
 		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';
 
@@ -150,50 +150,50 @@ class TPlgMgr {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function up()
   {
-  global $plugins, $page, $db, $request;
+  global $page, $Eresus;
 
     dbReorderItems('plugins','','name');
-  	$item = $db->selectItem('plugins', "`name`='".$request['arg']['up']."'");
+  	$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['up']."'");
     if ($item['position'] > 0) {
-      $temp = $db->selectItem('plugins',"`position`='".($item['position']-1)."'");
+      $temp = $Eresus->db->selectItem('plugins',"`position`='".($item['position']-1)."'");
       $item['position']--;
       $temp['position']++;
-      $db->updateItem('plugins', $item, "`name`='".$item['name']."'");
-      $db->updateItem('plugins', $temp, "`name`='".$temp['name']."'");
+      $Eresus->db->updateItem('plugins', $item, "`name`='".$item['name']."'");
+      $Eresus->db->updateItem('plugins', $temp, "`name`='".$temp['name']."'");
     }
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function down()
   {
-  global $plugins, $page, $db, $request;
+  global $page, $Eresus;
 
     dbReorderItems('plugins','','name');
-  	$item = $db->selectItem('plugins', "`name`='".$request['arg']['down']."'");
-    if ($item['position'] < $db->count('plugins')-1) {
-      $temp = $db->selectItem('plugins',"`position`='".($item['position']+1)."'");
+  	$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['down']."'");
+    if ($item['position'] < $Eresus->db->count('plugins')-1) {
+      $temp = $Eresus->db->selectItem('plugins',"`position`='".($item['position']+1)."'");
       $item['position']++;
       $temp['position']--;
-      $db->updateItem('plugins', $item, "`name`='".$item['name']."'");
-      $db->updateItem('plugins', $temp, "`name`='".$temp['name']."'");
+      $Eresus->db->updateItem('plugins', $item, "`name`='".$item['name']."'");
+      $Eresus->db->updateItem('plugins', $temp, "`name`='".$temp['name']."'");
     }
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $db, $page, $request;
+  global $page, $Eresus;
 
     if (UserRights($this->access)) {
       $result = '';
       $page->title = admPlugins;
-      if (isset($request['arg']['update'])) $this->update();
-      elseif (isset($request['arg']['toggle'])) $this->toggle();
-      elseif (isset($request['arg']['delete'])) $this->delete();
-      elseif (isset($request['arg']['id'])) $result = $this->edit();
-      elseif (isset($request['arg']['up'])) $this->up();
-      elseif (isset($request['arg']['down'])) $this->down();
-      elseif (isset($request['arg']['action'])) switch($request['arg']['action']) {
+      if (isset($Eresus->request['arg']['update'])) $this->update();
+      elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
+      elseif (isset($Eresus->request['arg']['delete'])) $this->delete();
+      elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
+      elseif (isset($Eresus->request['arg']['up'])) $this->up();
+      elseif (isset($Eresus->request['arg']['down'])) $this->down();
+      elseif (isset($Eresus->request['arg']['action'])) switch($Eresus->request['arg']['action']) {
         case 'add': $result = $this->add(); break;
         case 'insert': $this->insert(); break;
       } else {
