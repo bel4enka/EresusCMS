@@ -1,14 +1,36 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™ 2.00+
-# © 2007, ProCreat Systems
-# http://eresus.ru/
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Menus
+ *
+ * Eresus 2, PHP 4.3.0
+ *
+ * Управление меню
+ *
+ * @version 1.03
+ *
+ * @copyright   2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо по вашему выбору с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ */
 class TMenus extends TListContentPlugin {
   var $name = 'menus';
   var $title = 'Управление меню';
   var $type = 'client,admin';
-  var $version = '1.02';
+  var $version = '1.03';
   var $kernel = '2.10b';
   var $description = 'Менеджер меню';
   var $table = array (
@@ -56,11 +78,10 @@ class TMenus extends TListContentPlugin {
   var $menu = null;
   var $pages = array(); # Путь по страницым
   var $ids = array(); # Путь по страницым (только идентификаторы)
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Стандартные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+ /**
+  * Конструктор
+  */
   function TMenus()
-  # производит регистрацию обработчиков событий
   {
   global $plugins;
 
@@ -69,29 +90,30 @@ class TMenus extends TListContentPlugin {
     $plugins->events['clientOnPageRender'][] = $this->name;
     $plugins->events['adminOnMenuRender'][] = $this->name;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//------------------------------------------------------------------------------
+ /**
+  * Добавление меню
+  */
   function insert()
   {
-    global $db, $request;
+    global $Eresus;
 
-    $item = GetArgs($db->fields($this->table['name']));
+    $item = GetArgs($Eresus->db->fields($this->table['name']));
     $item['active'] = true;
-    $db->insert($this->table['name'], $item);
+    $Eresus->db->insert($this->table['name'], $item);
     sendNotify('Добавлено меню: '.$item['caption']);
-    goto($request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-    global $db, $request;
+    global $Eresus;
 
-    $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
+    $item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
     $item = GetArgs($item);
-    $db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
+    $Eresus->db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
     sendNotify('Изменено меню: '.$item['caption']);
-    goto($request['arg']['submitURL']);
+    goto(arG('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function replaceMacros($template, $item)
@@ -130,12 +152,12 @@ class TMenus extends TListContentPlugin {
   #   $path - виртуальный путь к страницам
   #   $level - уровень вложенности
   {
-    global $Eresus, $user, $page, $request;
+    global $Eresus, $page;
 
     $result = '';
     if (strpos($path, httpRoot) !== false) $path = substr($path, strlen(httpRoot));
     if ($owner == -1) $owner = $page->id;
-    $items = $Eresus->sections->children($owner, $user['auth'] ? $user['access'] : GUEST, SECTIONS_ACTIVE | ($this->menu['invisible']? 0 : SECTIONS_VISIBLE));
+    $items = $Eresus->sections->children($owner, $Eresus->user['auth'] ? $Eresus->user['access'] : GUEST, SECTIONS_ACTIVE | ($this->menu['invisible']? 0 : SECTIONS_VISIBLE));
     if (count($items)) {
       $result = array();
       foreach($items as $item) {
@@ -176,7 +198,7 @@ class TMenus extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminAddItem()
   {
-    global $page, $db;
+    global $page;
 
     $sections = $this->pagesBranch();
     array_unshift($sections[0], 'ТЕКУЩИЙ РАЗДЕЛ');
@@ -198,11 +220,11 @@ class TMenus extends TListContentPlugin {
         array('type'=>'edit','name'=>'expandLevelAuto','label'=>'Всегда показывать', 'width' => '20px', 'comment' => 'уровней (0 - развернуть все)', 'default' => 0),
         array('type'=>'edit','name'=>'expandLevelMax','label'=>'Разворачивать максимум', 'width' => '20px', 'comment' => 'уровней (0 - без ограничений)', 'default' => 0),
         array('type'=>'header', 'value'=>'Шаблоны'),
-        array('type'=>'memo','name'=>'tmplList','label'=>'Шаблон блока одного уровня меню', 'height' => '3'),
+        array('type'=>'memo','name'=>'tmplList','label'=>'Шаблон блока одного уровня меню', 'height' => '3', 'default' => "<ul>\n\t$(items)\n</ul>"),
         array('type'=>'text', 'value' => 'Макросы:<ul><li><b><li><b>$(level)</b> - номер текущего уровня</li><li><b>$(items)</b> - пункты меню</li></ul>'),
         array('type'=>'edit','name'=>'glue','label'=>'Разделитель пунктов', 'width' => '100%', 'maxlength' => 63),
-        array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон пункта меню', 'height' => '3'),
-        array('type'=>'memo','name'=>'tmplSpecial','label'=>'Специальный шаблон пункта меню', 'height' => '3'),
+        array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон пункта меню', 'height' => '3', 'default' => "<li><a href=\"$(url)\">$(caption)</a></li>"),
+        array('type'=>'memo','name'=>'tmplSpecial','label'=>'Специальный шаблон пункта меню', 'height' => '3', 'default' => "<li class=\"selected\"><a href=\"$(url)\">$(caption)</a></li>"),
         array('type'=>'text', 'value' => 'Использовать специальный шаблон'),
         array('type'=>'select','name'=>'specialMode','items'=>array(
           'нет',
@@ -231,9 +253,9 @@ class TMenus extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminEditItem()
   {
-    global $page, $db, $request;
+    global $page, $Eresus;
 
-    $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
+    $item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('id', 'int')."'");
     $sections = $this->pagesBranch();
     array_unshift($sections[0], 'ТЕКУЩИЙ РАЗДЕЛ');
     array_unshift($sections[1], -1);
@@ -301,12 +323,12 @@ class TMenus extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientOnPageRender($text)
   {
-    global $Eresus, $page, $request, $db;
+    global $Eresus, $page;
 
     preg_match_all('/\$\(Menus:(.+)?\)/Usi', $text, $menus, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
     $delta = 0;
     for($i = 0; $i < count($menus); $i++) {
-      $this->menu = $db->selectItem($this->table['name'], "`name`='".$menus[$i][1][0]."' AND `active` = 1");
+      $this->menu = $Eresus->db->selectItem($this->table['name'], "`name`='".$menus[$i][1][0]."' AND `active` = 1");
       if (!is_null($this->menu)) {
         if ($this->menu['root'] == -1 && $this->menu['rootLevel']) {
           $parents = $Eresus->sections->parents($page->id);
@@ -315,7 +337,7 @@ class TMenus extends TListContentPlugin {
           elseif ($level > $this->menu['rootLevel']) $this->menu['root'] = $this->menu['root'] = $parents[$this->menu['rootLevel']];
           else $this->menu['root'] = -2;
         }
-        $path = $this->menu['root'] > -1 ? $page->clientURL($this->menu['root']) : $request['path'];
+        $path = $this->menu['root'] > -1 ? $page->clientURL($this->menu['root']) : $Eresus->request['path'];
         $menu = $this->menuBranch($this->menu['root'], $path);
         $text = substr_replace($text, $menu, $menus[$i][0][1]+$delta, strlen($menus[$i][0][0]));
         $delta += strlen($menu) - strlen($menus[$i][0][0]);
@@ -326,7 +348,7 @@ class TMenus extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminOnMenuRender()
   {
-  global $page;
+  	global $page;
 
     $page->addMenuItem(admExtensions, array ('access'  => ADMIN, 'link'  => $this->name, 'caption'  => $this->title, 'hint'  => $this->description));
   }
