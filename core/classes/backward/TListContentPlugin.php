@@ -58,12 +58,13 @@ global $db, $page, $request;
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
 {
-global $page, $db, $request;
+	global $page, $db, $request;
 
-  dbReorderItems($this->table['name'],"`section`='".$request['arg']['section']."'");
+	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
+  dbReorderItems($this->table['name'], $sql_prefix);
   $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
   if ($item['position'] > 0) {
-    $temp = $db->selectItem($this->table['name'],"(`section`='".$request['arg']['section']."') AND (`position`='".($item['position']-1)."')");
+    $temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
     $temp['position'] = $item['position'];
     $item['position']--;
     $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
@@ -74,13 +75,14 @@ global $page, $db, $request;
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
 {
-global $page, $db, $request;
+	global $page, $db, $request;
 
-  dbReorderItems($this->table['name'],"`section`='".$request['arg']['section']."'");
-  $count = $db->count($this->table['name'], "`section`='".$request['arg']['section']."'");
+	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
+  dbReorderItems($this->table['name'], $sql_prefix);
+  $count = $db->count($this->table['name'], $sql_prefix);
   $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
   if ($item['position'] < $count-1) {
-    $temp = $db->selectItem($this->table['name'],"(`section`='".$request['arg']['section']."') AND (`position`='".($item['position']+1)."')");
+    $temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
     $temp['position'] = $item['position'];
     $item['position']++;
     $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
