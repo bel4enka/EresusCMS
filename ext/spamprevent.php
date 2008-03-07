@@ -6,9 +6,9 @@
   *
   * Защита E-mail адресов от спам-роботов
   *
-  * @version 1.03
+  * @version 1.04
   *
-  * @copyright   2007, Eresus Group, http://eresus.ru/
+  * @copyright   2007-2008, Eresus Group, http://eresus.ru/
   * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
   * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
   * @author      Mikhail Krasilnikov <mk@procreat.ru>
@@ -30,15 +30,15 @@
   * <http://www.gnu.org/licenses/>
   */
 
-class TSpamPrevent extends TPlugin {
-  var $name = 'spamprevent';
-  var $type = 'client';
+class SpamPrevent extends Plugin {
+  var $version = '1.04';
+  var $kernel = '2.10rc';
+	var $type = 'client';
   var $title = 'SpamPrevent';
-  var $version = '1.03';
   var $description = 'Защита E-mail адресов от спам-роботов';
   var $settings = array(
     'href_method' => 'onmouseover',
-    'href_fake_email' => 'abuse@spamcop.net',
+    'href_fake_email' => 'null@example.com',
     'text_method' => 'entity',
   );
   /**
@@ -46,34 +46,10 @@ class TSpamPrevent extends TPlugin {
    *
    * @return TSpamPrevent
    */
-  function TSpamPrevent()
+  function SpamPrevent()
   {
-    global $Eresus;
-
-    parent::TPlugin();
-    $Eresus->plugins->events['clientOnPageRender'][] = $this->name;
-  }
-  //-----------------------------------------------------------------------------
-  /**
-   * Добавление скриптов к странице
-   */
-  function clientInstallScripts()
-  {
-    global $page;
-
-    $page->addScripts("
-      function ".$this->name."ActionCnange(oSender)
-      {
-        //var oForm = document.getElementById(sFormName);
-        var Row = oSender.parentNode.offsetParent.rows[oSender.parentNode.parentNode.rowIndex+1];
-        oSender.form.actionValue.disabled = oSender.value == 'none';
-        switch (oSender.value) {
-          case 'none': Row.cells[0].innerHTML = ''; break;
-          case 'action': Row.cells[0].innerHTML = 'URL'; break;
-          case 'mailto': Row.cells[0].innerHTML = 'E-mail'; break;
-        }
-      }
-    ");
+    parent::Plugin();
+    $this->listenEvents('clientOnPageRender');
   }
   //-----------------------------------------------------------------------------
   /**
