@@ -8,9 +8,9 @@
  *
  * @version 2.00
  *
- * @copyright   2007, Eresus Group, http://eresus.ru/
+ * @copyright   2007-2008, Eresus Group, http://eresus.ru/
  * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Михалыч <mk@procreat.ru>
+ * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
  * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
@@ -28,12 +28,12 @@
  */
 
 class Call extends Plugin {
-  var $version = '2.00a2';
+  var $version = '2.00b';
   var $kernel = '2.10b3';
   var $title = 'Call';
   var $description = 'Вызов плагинов из шаблонов';
   var $type = 'client';
-	
+
  /**
   * Конструктор
   *
@@ -54,7 +54,7 @@ class Call extends Plugin {
   function clientOnPageRender($text)
   {
     global $Eresus;
-    
+
     preg_match_all('/\$\(call:(.*)(::(.*)({(.*)})?)?\)/Usi', $text, $calls, PREG_SET_ORDER);
     foreach($calls as $call) {
     	$name = strtolower($call[1]);
