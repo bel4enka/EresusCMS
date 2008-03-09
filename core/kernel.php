@@ -483,7 +483,7 @@ function arg($arg, $filter = null)
 {
 	global $Eresus;
 
-	$arg = isset($Eresus->request['arg'][$arg])?$Eresus->request['arg'][$arg]:false;
+	$arg = isset($Eresus->request['arg'][$arg])?$Eresus->request['arg'][$arg]:null;
 	if ($arg !== false && !is_null($filter)) {
 		switch($filter) {
 			case 'dbsafe':
