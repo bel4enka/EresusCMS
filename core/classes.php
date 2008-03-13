@@ -28,47 +28,47 @@ class WebPage {
 	 *
 	 * @var array
 	 */
-  var $headers = array();
-  /**
-   * Описание секции HEAD
-   * 	meta-http - мета-теги HTTP-заголовков
-   * 	meta-tags - мета-теги
-   * 	link - подключение внешних ресурсов
-   * 	style - CSS
-   * 	script - Скрипты
-   * 	content - прочее
-   *
-   * @var array
-   */
-  var $head = array (
-    'meta-http' => array(),
-  	'meta-tags' => array(),
-  	'link' => array(),
-    'style' => array(),
-    'script' => array(),
-    'content' => '',
-  );
+	var $headers = array();
+	/**
+	 * Описание секции HEAD
+	 * 	meta-http - мета-теги HTTP-заголовков
+	 * 	meta-tags - мета-теги
+	 * 	link - подключение внешних ресурсов
+	 * 	style - CSS
+	 * 	script - Скрипты
+	 * 	content - прочее
+	 *
+	 * @var array
+	 */
+	var $head = array (
+		'meta-http' => array(),
+		'meta-tags' => array(),
+		'link' => array(),
+		'style' => array(),
+		'script' => array(),
+		'content' => '',
+	);
  /**
-  * Значения по умолчанию
-  * @var array
-  */
-  var $defaults = array(
+	* Значения по умолчанию
+	* @var array
+	*/
+	var $defaults = array(
 		'pageselector' => array(
-  		'<div class="pages">$(pages)</div>',
-  		'&nbsp;<a href="$(href)">$(number)</a>&nbsp;',
-    	'&nbsp;<b>$(number)</b>&nbsp;',
-    	'<a href="$(href)">&larr;</a>',
-    	'<a href="$(href)">&rarr;</a>',
-  	),
-  );
+			'<div class="pages">$(pages)</div>',
+			'&nbsp;<a href="$(href)">$(number)</a>&nbsp;',
+			'&nbsp;<b>$(number)</b>&nbsp;',
+			'<a href="$(href)">&larr;</a>',
+			'<a href="$(href)">&rarr;</a>',
+		),
+	);
  /**
-  * Конструктор
-  * @return WebPage
-  */
-  function WebPage()
-  {
-  }
-  //-----------------------------------------------------------------------------
+	* Конструктор
+	* @return WebPage
+	*/
+	function WebPage()
+	{
+	}
+	//-----------------------------------------------------------------------------
  /**
 	* Установка мета-тега HTTP-заголовка
 	*
@@ -77,7 +77,7 @@ class WebPage {
 	*/
 	function setMetaHeader($httpEquiv, $content)
 	{
-	  $this->head['meta-http'][$httpEquiv] = $content;
+		$this->head['meta-http'][$httpEquiv] = $content;
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -88,7 +88,7 @@ class WebPage {
 	*/
 	function setMetaTag($name, $content)
 	{
-	  $this->head['meta-tags'][$name] = $content;
+		$this->head['meta-tags'][$name] = $content;
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -99,10 +99,10 @@ class WebPage {
 	*/
 	function linkStyles($url, $media = '')
 	{
-	  for($i=0; $i<count($this->head['link']); $i++) if ($this->head['link'][$i]['href'] == $url) return;
-	  $item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
-	  if (!empty($media)) $item['media'] = $media;
-	  $this->head['link'][] = $item;
+		for($i=0; $i<count($this->head['link']); $i++) if ($this->head['link'][$i]['href'] == $url) return;
+		$item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
+		if (!empty($media)) $item['media'] = $media;
+		$this->head['link'][] = $item;
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -113,11 +113,11 @@ class WebPage {
 	*/
 	function addStyles($content, $media = '')
 	{
-	  $content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
-	  $content = rtrim($content);
-	  $item = array('content' => $content);
-	  if (!empty($media)) $item['media'] = $media;
-	  $this->head['style'][] = $item;
+		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
+		$content = rtrim($content);
+		$item = array('content' => $content);
+		if (!empty($media)) $item['media'] = $media;
+		$this->head['style'][] = $item;
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -128,15 +128,15 @@ class WebPage {
 	*/
 	function linkScripts($url, $type = 'javascript')
 	{
-	  for($i=0; $i<count($this->head['script']); $i++) if (isset($this->head['script'][$i]['src']) && $this->head['script'][$i]['src'] == $url) return;
-	  if (strpos($type, '/') === false) switch (strtolower($type)) {
-	    case 'emca': $type = 'text/emcascript'; break;
-	  	case 'javascript': $type = 'text/javascript'; break;
-	    case 'jscript': $type = 'text/jscript'; break;
-	    case 'vbscript': $type = 'text/vbscript'; break;
-	    default: return;
-	  }
-	  $this->head['script'][] = array('type' => $type, 'src' => $url);
+		for($i=0; $i<count($this->head['script']); $i++) if (isset($this->head['script'][$i]['src']) && $this->head['script'][$i]['src'] == $url) return;
+		if (strpos($type, '/') === false) switch (strtolower($type)) {
+			case 'emca': $type = 'text/emcascript'; break;
+			case 'javascript': $type = 'text/javascript'; break;
+			case 'jscript': $type = 'text/jscript'; break;
+			case 'vbscript': $type = 'text/vbscript'; break;
+			default: return;
+		}
+		$this->head['script'][] = array('type' => $type, 'src' => $url);
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -147,15 +147,15 @@ class WebPage {
 	*/
 	function addScripts($content, $type = 'javascript')
 	{
-	  if (strpos($type, '/') === false) switch (strtolower($type)) {
-	    case 'emca': $type = 'text/emcascript'; break;
-	  	case 'javascript': $type = 'text/javascript'; break;
-	    case 'jscript': $type = 'text/jscript'; break;
-	    case 'vbscript': $type = 'text/vbscript'; break;
-	    default: return;
-	  }
-	  $content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
-	  $this->head['script'][] = array('type' => $type, 'content' => $content);
+		if (strpos($type, '/') === false) switch (strtolower($type)) {
+			case 'emca': $type = 'text/emcascript'; break;
+			case 'javascript': $type = 'text/javascript'; break;
+			case 'jscript': $type = 'text/jscript'; break;
+			case 'vbscript': $type = 'text/vbscript'; break;
+			default: return;
+		}
+		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
+		$this->head['script'][] = array('type' => $type, 'content' => $content);
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -166,38 +166,38 @@ class WebPage {
 	function renderHeadSection()
 	{
 		$result = array();
-	  # <meta> теги
-	  if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
-	    $result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
-	  if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value)
-	    $result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
-	  # <link>
-	  if (count($this->head['link'])) foreach($this->head['link'] as $value)
-	    $result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
-	  # <script>
-	  if (count($this->head['script'])) foreach($this->head['script'] as $value) {
-	    if (isset($value['content'])) {
-	      $value['content'] = trim($value['content']);
-	      $result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".$value['content']."\n	//]] -->\n	</script>";
-	    } elseif (isset($value['src'])) $result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
-	  }
-	  # <style>
-	  if (count($this->head['style'])) foreach($this->head['style'] as $value)
-	    $result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
+		# <meta> теги
+		if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
+			$result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
+		if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value)
+			$result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
+		# <link>
+		if (count($this->head['link'])) foreach($this->head['link'] as $value)
+			$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
+		# <script>
+		if (count($this->head['script'])) foreach($this->head['script'] as $value) {
+			if (isset($value['content'])) {
+				$value['content'] = trim($value['content']);
+				$result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".$value['content']."\n	//]] -->\n	</script>";
+			} elseif (isset($value['src'])) $result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
+		}
+		# <style>
+		if (count($this->head['style'])) foreach($this->head['style'] as $value)
+			$result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
 
-	  $this->head['content'] = trim($this->head['content']);
-	  if (!empty($this->head['content'])) $result[] = $this->head['content'];
+		$this->head['content'] = trim($this->head['content']);
+		if (!empty($this->head['content'])) $result[] = $this->head['content'];
 
-	  $result = implode("\n" , $result);
-	  return $result;
+		$result = implode("\n" , $result);
+		return $result;
 	}
 	//------------------------------------------------------------------------------
  /**
-  * Построение GET-запроса
-  *
-  * @param array $args      Установить аргументы
-  * @return string
-  */
+	* Построение GET-запроса
+	*
+	* @param array $args      Установить аргументы
+	* @return string
+	*/
 	function url($args = array())
 	{
 		global $Eresus;
@@ -213,34 +213,34 @@ class WebPage {
 	}
 	//-----------------------------------------------------------------------------
  /**
-  * Клиентский URL страницы с идентификатором $id
-  *
-  * @param int $id  Идентификатор страницы
-  * @return string URL страницы
-  */
+	* Клиентский URL страницы с идентификатором $id
+	*
+	* @param int $id  Идентификатор страницы
+	* @return string URL страницы
+	*/
 	function clientURL($id)
-  {
-  	global $Eresus;
+	{
+		global $Eresus;
 
-  	$result = array();
-  	$parents = $Eresus->sections->parents($id);
-  	array_push($parents, $id);
-  	$items = $Eresus->sections->get( $parents);
-  	for($i=0; $i<count($items); $i++) $result[] = $items[$i]['name'];
-  	$result = $Eresus->root.implode('/', $result).(count($result)?'/':'');
-  	return $result;
-  }
-  //-----------------------------------------------------------------------------
+		$result = array();
+		$parents = $Eresus->sections->parents($id);
+		array_push($parents, $id);
+		$items = $Eresus->sections->get( $parents);
+		for($i=0; $i<count($items); $i++) $result[] = $items[$i]['name'];
+		$result = $Eresus->root.implode('/', $result).(count($result)?'/':'');
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
 
  /**
-  * Отрисовка переключателя страниц
-  *
-  * @param int     $total      Общее количество страниц
-  * @param int     $current    Номер текущей страницы
-  * @param string  $url        Шаблон адреса для перехода к подстранице.
-  * @param array   $templates  Шаблоны оформления
-  * @return string
-  */
+	* Отрисовка переключателя страниц
+	*
+	* @param int     $total      Общее количество страниц
+	* @param int     $current    Номер текущей страницы
+	* @param string  $url        Шаблон адреса для перехода к подстранице.
+	* @param array   $templates  Шаблоны оформления
+	* @return string
+	*/
 	function pageSelector($total, $current, $url = null, $templates = null)
 	{
 		$result = '';
@@ -287,198 +287,200 @@ class WebPage {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 class Plugins {
-  var $list = array(); # Список всех плагинов
-  var $items = array(); # Массив плагинов
-  var $events = array(); # Таблица обработчиков событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function  Plugins()
-  {
-  	global $Eresus;
+	var $list = array(); # Список всех плагинов
+	var $items = array(); # Массив плагинов
+	var $events = array(); # Таблица обработчиков событий
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function  Plugins()
+	{
+		global $Eresus;
 
-    $items = $Eresus->db->select('`plugins`', '', '`position`');
-    if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function install($name)
-  # Установка нового плагина
-  {
-  	global $Eresus;
+		$items = $Eresus->db->select('`plugins`', '', '`position`');
+		if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function install($name)
+	# Установка нового плагина
+	{
+		global $Eresus;
 
-    $filename = filesRoot.'ext/'.$name.'.php';
-    if (file_exists($filename)) {
-      include_once($filename);
-      $ClassName = $name;
-      if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
-      if (class_exists($ClassName)) {
-	      $this->items[$name] = new $ClassName;
-	      $this->items[$name]->install();
-	      $Eresus->db->insert('plugins', $this->items[$name]->__item());
-      } else FatalError(sprintf(errClassNotFound, $ClassName));
-    }
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function uninstall($name)
-  # Удаление плагина
-  {
-  	global $Eresus;
+		$filename = filesRoot.'ext/'.$name.'.php';
+		if (file_exists($filename)) {
+			include_once($filename);
+			$ClassName = $name;
+			if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
+			if (class_exists($ClassName)) {
+				$this->items[$name] = new $ClassName;
+				$this->items[$name]->install();
+				$Eresus->db->insert('plugins', $this->items[$name]->__item());
+			} else FatalError(sprintf(errClassNotFound, $ClassName));
+		}
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function uninstall($name)
+	# Удаление плагина
+	{
+		global $Eresus;
 
-    if (!isset($this->items[$name])) $this->load($name);
-    if (isset($this->items[$name])) $this->items[$name]->uninstall();
-    $item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
-    if (!is_null($item)) {
-      $Eresus->db->delete('plugins', "`name`='".$name."'");
-      $Eresus->db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
-    }
-    $filename = filesRoot.'ext/'.$name.'.php';
-    #if (file_exists($filename)) unlink($filename);
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function preload($include, $exclude)
-  {
-    if (count($this->list)) foreach($this->list as $item) if ($item['active']) {
-      $type = explode(',', $item['type']);
-      if (count(array_intersect($include, $type)) && count(array_diff($exclude, $type))) $this->load($item['name']);
-    }
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function load($name)
-  {
-    $result = isset($this->items[$name]) ? $this->items[$name] : false;
-    if (isset($this->list[$name]) && !$result) {
-      $filename = filesRoot.'ext/'.$name.'.php';
-      if (file_exists($filename)) {
-        include_once($filename);
-        $ClassName = $name;
-        if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
-	      if (class_exists($ClassName)) {
-	        $this->items[$name] = new $ClassName;
-	        $result = $this->items[$name];
-	      } else FatalError(sprintf(errClassNotFound, $name));
-      } else $result = false;
-    }
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  /**
-   * Отрисовка контента раздела
-   *
-   * @return stirng  Контент
-   */
-  function clientRenderContent()
-  {
-  	global $Eresus, $page;
+		if (!isset($this->items[$name])) $this->load($name);
+		if (isset($this->items[$name])) $this->items[$name]->uninstall();
+		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
+		if (!is_null($item)) {
+			$Eresus->db->delete('plugins', "`name`='".$name."'");
+			$Eresus->db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
+		}
+		$filename = filesRoot.'ext/'.$name.'.php';
+		#if (file_exists($filename)) unlink($filename);
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function preload($include, $exclude)
+	{
+		if (count($this->list)) foreach($this->list as $item) if ($item['active']) {
+			$type = explode(',', $item['type']);
+			if (count(array_intersect($include, $type)) && count(array_diff($exclude, $type))) $this->load($item['name']);
+		}
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function load($name)
+	{
+		$result = isset($this->items[$name]) ? $this->items[$name] : false;
+		if (isset($this->list[$name]) && !$result) {
+			$filename = filesRoot.'ext/'.$name.'.php';
+			if (file_exists($filename)) {
+				include_once($filename);
+				$ClassName = $name;
+				if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
+				if (class_exists($ClassName)) {
+					$this->items[$name] = new $ClassName;
+					$result = $this->items[$name];
+				} else FatalError(sprintf(errClassNotFound, $name));
+			} else $result = false;
+		}
+		return $result;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	/**
+	 * Отрисовка контента раздела
+	 *
+	 * @return stirng  Контент
+	 */
+	function clientRenderContent()
+	{
+		global $Eresus, $page;
 
-    $result = '';
-    switch ($page->type) {
-      case 'default':
-        $plugin = new ContentPlugin;
-        $result = $plugin->clientRenderContent();
-      break;
-      case 'list':
-        if ($page->topic) $page->httpError(404);
-        $subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
-        if (empty($page->content)) $page->content = '$(items)';
-        $template = loadTemplate('std/SectionListItem');
-        if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
-        $items = '';
-        foreach($subitems as $item) {
-          $items .= str_replace(
-            array(
-              '$(id)',
-              '$(name)',
-              '$(title)',
-              '$(caption)',
-              '$(description)',
-              '$(hint)',
-              '$(link)',
-            ),
-            array(
-              $item['id'],
-              $item['name'],
-              $item['title'],
-              $item['caption'],
-              $item['description'],
-              $item['hint'],
-              $Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
-            ),
-            $template['html']
-          );
-          $result = str_replace('$(items)', $items, $page->content);
-        }
-      break;
-      case 'url':
-        goto($page->replaceMacros($page->content));
-      break;
-      default:
-      if ($this->load($page->type)) {
-        if (method_exists($this->items[$page->type], 'clientRenderContent'))
-        	$result = $this->items[$page->type]->clientRenderContent();
-        else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
-      } else die("FIXME: ".__FILE__." ".__LINE__);
-    }
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnStart()
-  {
-    if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnURLSplit($item, $url)
-  {
-    if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnTopicRender($text, $topic = null, $buttonBack = true)
-  {
-  global $page;
-    if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
-    if ($buttonBack) $text .= '<br /><br />'.$page->buttonBack();
-    return $text;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnContentRender($text)
-  {
-    if (isset($this->events['clientOnContentRender']))
-      foreach($this->events['clientOnContentRender'] as $plugin) $text = $this->items[$plugin]->clientOnContentRender($text);
-    return $text;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnPageRender($text)
-  {
-    if (isset($this->events['clientOnPageRender']))
-      foreach($this->events['clientOnPageRender'] as $plugin) $text = $this->items[$plugin]->clientOnPageRender($text);
-    return $text;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientBeforeSend($text)
-  {
-    if (isset($this->events['clientBeforeSend']))
-      foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
-    return $text;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  /* function clientOnFormControlRender($formName, $control, $text)
-  {
-    if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
-    return $text;
-  }*/
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function adminOnMenuRender()
-  {
-    if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin) $this->items[$plugin]->adminOnMenuRender();
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+		$result = '';
+		switch ($page->type) {
+			case 'default':
+				$plugin = new ContentPlugin;
+				$result = $plugin->clientRenderContent();
+			break;
+			case 'list':
+				if ($page->topic) $page->httpError(404);
+				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
+				if (empty($page->content)) $page->content = '$(items)';
+				$template = loadTemplate('std/SectionListItem');
+				if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
+				$items = '';
+				foreach($subitems as $item) {
+					$items .= str_replace(
+						array(
+							'$(id)',
+							'$(name)',
+							'$(title)',
+							'$(caption)',
+							'$(description)',
+							'$(hint)',
+							'$(link)',
+						),
+						array(
+							$item['id'],
+							$item['name'],
+							$item['title'],
+							$item['caption'],
+							$item['description'],
+							$item['hint'],
+							$Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
+						),
+						$template['html']
+					);
+					$result = str_replace('$(items)', $items, $page->content);
+				}
+			break;
+			case 'url':
+				goto($page->replaceMacros($page->content));
+			break;
+			default:
+			if ($this->load($page->type)) {
+				if (method_exists($this->items[$page->type], 'clientRenderContent'))
+					$result = $this->items[$page->type]->clientRenderContent();
+				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
+			} else die("FIXME: ".__FILE__." ".__LINE__);
+		}
+		return $result;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function clientOnStart()
+	{
+		if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function clientOnURLSplit($item, $url)
+	{
+		if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function clientOnTopicRender($text, $topic = null, $buttonBack = true)
+	{
+	global $page;
+		if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
+		if ($buttonBack) $text .= '<br /><br />'.$page->buttonBack();
+		return $text;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function clientOnContentRender($text)
+	{
+		if (isset($this->events['clientOnContentRender']))
+			foreach($this->events['clientOnContentRender'] as $plugin) $text = $this->items[$plugin]->clientOnContentRender($text);
+		return $text;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function clientOnPageRender($text)
+	{
+		if (isset($this->events['clientOnPageRender']))
+			foreach($this->events['clientOnPageRender'] as $plugin) $text = $this->items[$plugin]->clientOnPageRender($text);
+		return $text;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function clientBeforeSend($text)
+	{
+		if (isset($this->events['clientBeforeSend']))
+			foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
+		return $text;
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	/* function clientOnFormControlRender($formName, $control, $text)
+	{
+		if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
+		return $text;
+	}*/
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	function adminOnMenuRender()
+	{
+		if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin)
+			if (method_exists($this->items[$plugin], 'adminOnMenuRender')) $this->items[$plugin]->adminOnMenuRender();
+			else ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+	}
+	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
  /**
-  * Событие ajaxOnRequest
-  */
-  function ajaxOnRequest()
-  {
-  	if (isset($this->events['ajaxOnRequest']))
-  		foreach($this->events['ajaxOnRequest'] as $plugin)
-  			$this->items[$plugin]->ajaxOnRequest();
-  }
-  //-----------------------------------------------------------------------------
+	* Событие ajaxOnRequest
+	*/
+	function ajaxOnRequest()
+	{
+		if (isset($this->events['ajaxOnRequest']))
+			foreach($this->events['ajaxOnRequest'] as $plugin)
+				$this->items[$plugin]->ajaxOnRequest();
+	}
+	//-----------------------------------------------------------------------------
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
@@ -504,19 +506,19 @@ class Plugins {
  * @var  array   $settings    Настройки плагина
  */
 class Plugin {
-  var $name;
-  var $version = '0.00';
-  var $kernel = '2.10b2';
-  var $title = 'no title';
-  var $description = '';
-  var $type;
-  var $settings = array();
-  var $dirData; # Директория данных (/data/имя_плагина)
-  var $urlData; # URL данных
-  var $dirCode; # Директория скриптов (/ext/имя_плагина)
-  var $urlCode; # URL скриптов
-  var $dirStyle; # Директория оформления (style/имя_плагина)
-  var $urlStyle; # URL оформления
+	var $name;
+	var $version = '0.00';
+	var $kernel = '2.10b2';
+	var $title = 'no title';
+	var $description = '';
+	var $type;
+	var $settings = array();
+	var $dirData; # Директория данных (/data/имя_плагина)
+	var $urlData; # URL данных
+	var $dirCode; # Директория скриптов (/ext/имя_плагина)
+	var $urlCode; # URL скриптов
+	var $dirStyle; # Директория оформления (style/имя_плагина)
+	var $urlStyle; # URL оформления
 /**
  * Конструктор
  *
@@ -526,20 +528,20 @@ function Plugin()
 {
 	global $Eresus, $locale;
 	$this->name = strtolower(get_class($this));
-  if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
-    $this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+	if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
+		$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
 		# Если установлена версия плагина отличная от установленной ранее
 		# то необходимо произвести обновление информации о плагине в БД
-    if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
-  }
-  $this->dirData = $Eresus->fdata.$this->name.'/';
-  $this->urlData = $Eresus->data.$this->name.'/';
-  $this->dirCode = $Eresus->froot.'ext/'.$this->name.'/';
-  $this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
-  $this->dirStyle = $Eresus->fstyle.$this->name.'/';
-  $this->urlStyle = $Eresus->style.$this->name.'/';
-  $filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
-  if (is_file($filename)) include_once($filename);
+		if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
+	}
+	$this->dirData = $Eresus->fdata.$this->name.'/';
+	$this->urlData = $Eresus->data.$this->name.'/';
+	$this->dirCode = $Eresus->froot.'ext/'.$this->name.'/';
+	$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
+	$this->dirStyle = $Eresus->fstyle.$this->name.'/';
+	$this->urlStyle = $Eresus->style.$this->name.'/';
+	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
+	if (is_file($filename)) include_once($filename);
 }
 //------------------------------------------------------------------------------
 /**
@@ -553,15 +555,15 @@ function __item($item = null)
 {
 	global $Eresus;
 
-  $result['name'] = $this->name;
-  $result['type'] = $this->type;
-  $result['active'] = is_null($item)? true : $item['active'];
-  $result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
-  $result['settings'] = is_null($item) ? encodeOptions($this->settings) : $item['settings'];
-  $result['title'] = $this->title;
-  $result['version'] = $this->version;
-  $result['description'] = $this->description;
-  return $result;
+	$result['name'] = $this->name;
+	$result['type'] = $this->type;
+	$result['active'] = is_null($item)? true : $item['active'];
+	$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
+	$result['settings'] = is_null($item) ? encodeOptions($this->settings) : $item['settings'];
+	$result['title'] = $this->title;
+	$result['version'] = $this->version;
+	$result['description'] = $this->description;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -572,7 +574,7 @@ function __item($item = null)
 function loadSettings()
 {
 	global $Eresus;
-  $result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
+	$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
 	if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
 	return (bool)$result;
 }
@@ -598,8 +600,8 @@ function saveSettings()
  */
 function resetPlugin()
 {
-  $this->loadSettings();
-  $this->saveSettings();
+	$this->loadSettings();
+	$this->saveSettings();
 }
 //------------------------------------------------------------------------------
 /**
@@ -632,9 +634,9 @@ function updateSettings()
 {
 	global $Eresus;
 
-  foreach ($this->settings as $key => $value) if (arg($key)) $this->settings[$key] = arg($key);
+	foreach ($this->settings as $key => $value) if (arg($key)) $this->settings[$key] = arg($key);
 	$this->onSettingsUpdate();
-  $this->saveSettings();
+	$this->saveSettings();
 }
 //------------------------------------------------------------------------------
 /**
@@ -648,7 +650,7 @@ function updateSettings()
 function replaceMacros($template, $item)
 {
 	$result = replaceMacros($template, $item);
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -774,7 +776,7 @@ function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limi
 	$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
 	} else $result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit, $offset, $group, $distinct);
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -792,7 +794,7 @@ function dbItem($table, $id, $key = 'id')
 
 	$result = $Eresus->db->selectItem($this->__table($table), "`$key` = '$id'");
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -808,7 +810,7 @@ function dbInsert($table, $item)
 	$result = $Eresus->db->insert($this->__table($table), $item);
 	$result = $this->dbItem($table, $Eresus->db->getInsertedId());
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -831,7 +833,7 @@ function dbUpdate($table, $data, $condition = '')
 		$result = $Eresus->db->update($this->__table($table), $data, $condition);
 	}
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -847,9 +849,9 @@ function dbDelete($table, $item, $key = 'id')
 {
 	global $Eresus;
 
-  $result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
+	$result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -866,7 +868,7 @@ function dbCount($table, $condition = '')
 
 	$result = $Eresus->db->count($this->__table($table), $condition);
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -883,7 +885,7 @@ function dbTable($table, $param = '')
 
 	$result = $Eresus->db->tableStatus($this->__table($table), $param);
 
-  return $result;
+	return $result;
 }
 //------------------------------------------------------------------------------
 /**
@@ -918,11 +920,11 @@ function ContentPlugin()
 {
 	global $page;
 
-  parent::Plugin();
-  if (isset($page)) {
-    $page->plugin = $this->name;
-    if (isset($page->options) && count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
-  }
+	parent::Plugin();
+	if (isset($page)) {
+		$page->plugin = $this->name;
+		if (isset($page->options) && count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
+	}
 }
 //------------------------------------------------------------------------------
 /**
@@ -945,9 +947,9 @@ function updateContent($content)
 {
 	global $Eresus, $page;
 
-  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
-  $item['content'] = $content;
-  $Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+	$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+	$item['content'] = $content;
+	$Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
 }
 //------------------------------------------------------------------------------
 /**
@@ -968,7 +970,7 @@ function clientRenderContent()
 {
 	global $page;
 
-  return $page->content;
+	return $page->content;
 }
 //------------------------------------------------------------------------------
 /**
@@ -980,21 +982,21 @@ function adminRenderContent()
 {
 	global $page, $Eresus;
 
-  if (arg('action') == 'update') $this->adminUpdate();
+	if (arg('action') == 'update') $this->adminUpdate();
 	$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
-  $form = array(
-    'name' => 'content',
-    'caption' => $page->title,
-    'width' => '100%',
-    'fields' => array (
-      array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
-      array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
-    ),
-    'buttons' => array('apply', 'reset'),
-  );
+	$form = array(
+		'name' => 'content',
+		'caption' => $page->title,
+		'width' => '100%',
+		'fields' => array (
+			array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
+			array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
+		),
+		'buttons' => array('apply', 'reset'),
+	);
 
-  $result = $page->renderForm($form, $item);
-  return $result;
+	$result = $page->renderForm($form, $item);
+	return $result;
 }
 //------------------------------------------------------------------------------
 }
