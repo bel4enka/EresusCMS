@@ -1,103 +1,126 @@
 <?php
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# CMS Eresus™
-# © 2005-2007, ProCreat Systems
-# Web: http://procreat.ru
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Гостевая
+ *
+ * Eresus 2
+ *
+ * Вызов других плагинов посредством макросов.
+ *
+ * @version 1.06
+ *
+ * @copyright   2005-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright   2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо по вашему выбору с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ */
 class TGuestbook extends TListContentPlugin {
-  var 
-    $name = 'guestbook',
-    $type = 'client,content,ondemand',
-    $title = 'Гостевая',
-    $version = '1.05',
-    $kernel = '2.09',
-    $description = 'Гостевая книга',
-    $settings = array(
-      'caption' => 'Добавить свой отзыв',
-      'itemsPerPage' => 20,
-      'template' => '<div><b>$(name)</b> :: $(posted)<br>$(text)</div>',
-      'moderation' => false,
+  var $name = 'guestbook';
+  var $type = 'client,content,ondemand';
+  var $title = 'Гостевая';
+  var $version = '1.06';
+  var $description = 'Гостевая книга';
+  var $settings = array(
+  	'caption' => 'Добавить свой отзыв',
+    'itemsPerPage' => 20,
+    'template' => '<div><b>$(name)</b> :: $(posted)<br>$(text)</div>',
+    'moderation' => false,
+  	'blacklist' => '',
+  ),
+  $table = array (
+  	'name' => 'guestbook',
+    'key'=> 'id',
+    'sortMode' => 'posted',
+    'sortDesc' => true,
+    'columns' => array(
+    	array('name' => 'name', 'caption' => 'Автор'),
+      array('name' => 'text', 'caption' => 'Текст', 'maxlength'=>200, 'striptags'=>true),
+      array('name' => 'posted', 'caption' => 'Дата'),
     ),
-    $table = array (
-      'name' => 'guestbook',
-      'key'=> 'id',
-      'sortMode' => 'posted',
-      'sortDesc' => true,
-      'columns' => array(
-        array('name' => 'name', 'caption' => 'Автор'),
-        array('name' => 'text', 'caption' => 'Текст', 'maxlength'=>200, 'striptags'=>true),
-        array('name' => 'posted', 'caption' => 'Дата'),
-      ),
-      'controls' => array (
-        'delete' => '',
-        'edit' => '',
-        'toggle' => '',
-      ),
-      'sql' => "(
-        `id` int(10) unsigned NOT NULL auto_increment,
-        `section` int(10) unsigned NOT NULL default '0',
-        `active` tinyint(1) unsigned NOT NULL default '0',
-        `name` varchar(63) NOT NULL default '',
-        `mail` varchar(63) NOT NULL default '',
-        `posted` datetime default NULL,
-        `text` text NOT NULL,
-        PRIMARY KEY  (`id`),
-        KEY `section` (`section`),
-        KEY `active` (`active`)
-        ) TYPE=MyISAM COMMENT='Guestbook'
-       ",
-    );
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+    'controls' => array (
+    	'delete' => '',
+      'edit' => '',
+      'toggle' => '',
+    ),
+    'sql' => "(
+    	`id` int(10) unsigned NOT NULL auto_increment,
+      `section` int(10) unsigned NOT NULL default '0',
+      `active` tinyint(1) unsigned NOT NULL default '0',
+      `name` varchar(63) NOT NULL default '',
+      `mail` varchar(63) NOT NULL default '',
+      `posted` datetime default NULL,
+      `text` text NOT NULL,
+      PRIMARY KEY  (`id`),
+      KEY `section` (`section`),
+      KEY `active` (`active`)
+      ) TYPE=MyISAM COMMENT='Guestbook'
+    ",
+  );
+ /**
+  * Добавление записи
+  *
+  */
   function insert()
   {
-    global $db, $page, $session, $request;
+    global $Eresus, $page;
 
-    if ($request['method'] == 'POST') {
-      $item = GetArgs($db->fields($this->table['name']));
+    if ($Eresus->request['method'] == 'POST') {
+      $item = GetArgs($Eresus->db->fields($this->table['name']));
       if (empty($item['name']) && empty($item['mail'])) {
         $item['name'] = arg('_name');
-        $item['mail'] = arg('_mail');
-        $item['posted'] = gettime();
-        $item['active'] = $this->settings['moderation']?defined('ADMINUI'):true;
-        if (!empty($item['name']) && !empty($item['text'])) {
-          $db->insert('guestbook', $item);
-          if ($this->settings['moderation']) $session['message'] = 'Сообщение отправлено редакторам сайта';
-          $item['id'] = $db->getInsertedID();
-          sendNotify("<b>".$item['name']."</b> (".$item['mail'].") пишет:\n".$item['text']);
-        }
+        if (!preg_match("/(^|\s){$item['name']}($|\s|,)/i", $this->settings['blacklist'])) {
+	        $item['mail'] = arg('_mail');
+	        $item['posted'] = gettime();
+	        $item['active'] = $this->settings['moderation'] ? defined('ADMINUI') : true;
+	        if (!empty($item['name']) && !empty($item['text'])) {
+	          $Eresus->db->insert('guestbook', $item);
+	          if ($this->settings['moderation']) InfoMessage('Сообщение отправлено редакторам сайта');
+	          $item['id'] = $Eresus->db->getInsertedID();
+	          sendNotify("<b>".$item['name']."</b> (".$item['mail'].") пишет:\n".$item['text']);
+	        }
+        } else ErrorMessage('Имя "'.$item['name'].'" запрещено к использованию администраторами сайта!');
       }
     }
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
   function update()
   {
-  global $db, $request;
+  	global $Eresus;
 
-    $item = setArgs($db->selectItem('guestbook', "`id`='".$request['arg']['update']."'"));
-    $db->updateItem('guestbook', $item, "`id`='".$item['id']."'");
+    $item = getArgs($Eresus->db->selectItem('guestbook', "`id`='".arg('update', 'int')."'"));
+    $Eresus->db->updateItem('guestbook', $item, "`id`='".$item['id']."'");
     sendNotify(admUpdated."\nАвтор:  <strong>".$item['name']."</strong>\n".$item['text']);
-    goto($request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
   function delete()
   {
-  global $db, $page, $request;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('guestbook', "`id`='".$request['arg']['delete']."'");
-    $db->delete('guestbook', "`id`='".$item['id']."'");
+    $item = $Eresus->db->selectItem('guestbook', "`id`='".arg('delete')."'");
+    $Eresus->db->delete('guestbook', "`id`='".$item['id']."'");
     sendNotify(admDeleted."\nАвтор:  <strong>".$item['name']."</strong>\n".$item['text']);
     goto($page->url());
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
   function adminEditItem()
   {
-  global $db, $page, $request;
+  	global $Eresus, $page;
 
-    $item = $db->selectItem('guestbook', "`id`='".$request['arg']['id']."'");
+    $item = $Eresus->db->selectItem('guestbook', "`id`='".arg('id', 'int')."'");
     $form = array(
       'name'=>'EditForm',
       'caption' => 'Изменить сообщение',
@@ -116,11 +139,11 @@ class TGuestbook extends TListContentPlugin {
     $result = $page->renderForm($form, $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
   function settings()
   {
-  global $page, $db, $plugins;
-  
+  	global $page;
+
     $form = array(
       'name' => 'SettingsForm',
       'caption' => $this->title.' '.$this->version,
@@ -132,15 +155,14 @@ class TGuestbook extends TListContentPlugin {
         array('type'=>'checkbox', 'name' => 'moderation', 'label' => 'Предмодерация'),
         array('type'=>'memo','name'=>'template','label'=>'Шаблон сообщения','height'=>'5'),
         array('type'=>'text', 'value'=>'Макросы:<br /><b>$(name)</b> - имя<br /><b>$(mail)</b> - e-mail<br /><b>$(posted)</b> - время сообщения<br /><b>$(text)</b> - текст сооббщения'),
+        array('type'=>'memo','name'=>'blacklist','label'=>'Запрещённые имена (перечислите через запятую)','height'=>'5'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
     );
     $result = $page->renderForm($form, $this->settings);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  # Пользовательские функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
   function clientRenderListItem($item)
   {
     $item['posted'] = FormatDate($item['posted'], DATETIME_LONG);
@@ -148,11 +170,11 @@ class TGuestbook extends TListContentPlugin {
     $result = $this->replaceMacros($this->settings['template'], $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
   function clientRenderList()
   {
-  global $page;
-  
+  	global $page;
+
     $form = array (
       'name' => 'FormAdd',
       'caption' => $this->settings['caption'],
@@ -171,30 +193,30 @@ class TGuestbook extends TListContentPlugin {
     $result .= $page->renderForm($form);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
   function clientRenderItem()
   {
-    global $db, $page;
-    
-    $item = $db->selectItem($this->table['name'], "`id`='".$page->topic."'");
+    global $Eresus, $page;
+
+    $item = $Eresus->db->selectItem($this->table['name'], "`id`='".$page->topic."'");
     $item['posted'] = FormatDate($item['posted'], DATETIME_LONG);
     $item['text'] = nl2br($item['text']);
     $result = $this->replaceMacros($this->settings['template'], $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
   function clientRenderContent()
   {
-    global $request;
+    global $Eresus;
 
     if (arg('action') == 'insert') {
-      $this->insert(); 
-      goto($request['referer']);
+      $this->insert();
+      goto($Eresus->request['referer']);
     }
     $result = parent::clientRenderContent();
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  //-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 ?>
