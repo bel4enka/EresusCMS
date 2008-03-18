@@ -895,6 +895,9 @@ class Eresus {
   var $user;
 
   var $host;
+ /**
+  * @deprecated since 2.11
+  */
   var $https;
   var $path;
   var $root; # Корневой URL
