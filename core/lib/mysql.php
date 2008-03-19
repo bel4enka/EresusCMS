@@ -189,12 +189,15 @@ class MySQL {
 		$result = $this->query("INSERT INTO ".$this->prefix.$table." (".$cols.") VALUES (".$values.")");
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+ /**
+  * Выполняет обновление информации в БД
+  *
+  * @param string $table      Таблица
+  * @param string $set        Изменения
+  * @param string $condition  Условие
+  * @return unknown
+  */
 	function update($table, $set, $condition)
-	# Выполняет запрос UPDATE к базе данных используя метод query().
-	#  $table - таблица, в которую надо внестит изменения
-	#  $set - изменяемые значения
-	#  $condition - условия для изменения
 	{
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
 		return $result;
