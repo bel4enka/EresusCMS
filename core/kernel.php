@@ -523,31 +523,45 @@ function restoreRequest()
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# РАБОТА С БД
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+ /*
+ 	* РАБОТА С БД
+  */
+
+/**
+ * Упорядочивание элементов
+ *
+ * @param string $table      Таблица
+ * @param string $condition  Условие
+ * @param string $id         Имя ключевого поля
+ *
+ * @deprecated
+ */
 function dbReorderItems($table, $condition='', $id='id')
 {
 	global $Eresus;
 
-	$items = $Eresus->db->select("`".$table."`", $condition, '`position`');
-	for($i=0; $i<count($items); $i++) {
-		$items[$i]['position'] = $i;
-		$Eresus->db->updateItem($table, $items[$i], "`".$id."`='".$items[$i][$id]."'");
-	}
+	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', 'id');
+	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//------------------------------------------------------------------------------
+/**
+ * Сдвиг позиций элементов
+ *
+ * @param string $table      Таблица
+ * @param string $condition  Условие
+ * @param string $delta      Величина сдвига
+ *
+ * @deprecated
+ *  */
 function dbShiftItems($table, $condition, $delta)
 {
-global $Eresus;
+	global $Eresus;
 
-	$items = $Eresus->db->select("`".$table."`", $condition, '`position`');
-	for($i=0; $i<count($items); $i++) {
-		$items[$i]['position'] += $delta;
-		$Eresus->db->updateItem($table, $items[$i], "`id`='".$items[$i]['id']."'");
-	}
+	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', 'id');
+	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = `position` + $delta", "`".$id."`='".$items[$i][$id]."'");
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//------------------------------------------------------------------------------
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # РАБОТА С ФАЙЛАМИ
