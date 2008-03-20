@@ -541,7 +541,7 @@ function dbReorderItems($table, $condition='', $id='id')
 {
 	global $Eresus;
 
-	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', 'id');
+	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', $id);
 	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 }
 //------------------------------------------------------------------------------
@@ -554,7 +554,7 @@ function dbReorderItems($table, $condition='', $id='id')
  *
  * @deprecated
  *  */
-function dbShiftItems($table, $condition, $delta)
+function dbShiftItems($table, $condition, $delta, $id='id')
 {
 	global $Eresus;
 
