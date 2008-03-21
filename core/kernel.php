@@ -31,7 +31,7 @@ define('CMSVERSION', '2.10rc2'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '29.02.08'); # Дата обновления ядра
+define('KERNELDATE', '22.03.08'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -558,7 +558,7 @@ function dbShiftItems($table, $condition, $delta, $id='id')
 {
 	global $Eresus;
 
-	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', 'id');
+	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', $id);
 	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = `position` + $delta", "`".$id."`='".$items[$i][$id]."'");
 }
 //------------------------------------------------------------------------------
