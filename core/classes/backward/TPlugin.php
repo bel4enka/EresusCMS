@@ -124,7 +124,7 @@ function updateSettings()
 {
 	global $Eresus;
 
-	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
+	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key, 'dbsafe');
 	$this->onSettingsUpdate();
 	$this->saveSettings();
 }
