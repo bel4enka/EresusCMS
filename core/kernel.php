@@ -26,6 +26,7 @@
  * <http://www.gnu.org/licenses/>
  */
 
+
 define('CMSNAME', 'Eresus'); # Название системы
 define('CMSVERSION', '2.10rc2'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
