@@ -30,7 +30,7 @@ class TSettings {
 
     $result = "  define('".(isset($options['locale'])?($options['locale']?$locale['prefix']:''):'').$name."', ";
     $quot = "'";
-    $value = (arg($name)) ? arg($name) : option($name);
+    $value = is_null(arg($name)) ? option($name) : arg($name);
     if (isset($options['nobr']) && $options['nobr']) $value = str_replace(array("\n", "\r"), ' ', $value);
     if (isset($options['savebr']) && $options['savebr']) {
       $value = addcslashes($value, "\n\r\"");
@@ -49,7 +49,6 @@ class TSettings {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-    global $Eresus;
 
     $settings = "<?php\n";
 

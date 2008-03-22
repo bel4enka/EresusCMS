@@ -47,11 +47,11 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function url($args = null)
   {
-  	global $request;
+  	global $Eresus;
 
     $basics = array('lf','rf','sp');
     $result = '';
-    if (count($request['arg'])) foreach($request['arg'] as $key => $value) if (in_array($key,$basics)) $arg[$key] = $value;
+    if (count($Eresus->request['arg'])) foreach($Eresus->request['arg'] as $key => $value) if (in_array($key,$basics)) $arg[$key] = $value;
     if (count($args)) foreach($args as $key => $value) $arg[$key] = $value;
     if (count($arg)) foreach($arg as $key => $value) if (!empty($value)) $result .= '&amp;'.$key.'='.$value;
     $result = httpRoot.'admin.php?mod=files'.$result;
@@ -200,10 +200,10 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderControls()
   {
-  global $request;
+  	global $Eresus;
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-      "<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".$request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"upload\" size=\"50\"> <input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</form></td></tr>".
+      "<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".$Eresus->request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"upload\" size=\"50\"> <input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</form></td></tr>".
       "<tr><td align=\"center\"><a href=\"javascript:Copy('SelFileName');\">Скопировать имя</a></td><td style=\"width: 100%;\"><input type=\"text\" id=\"SelFileName\" value=\"Нет выбранных объектов\" style=\"width: 100%;\"></td></tr>".
       "</table>";
     return $result;
@@ -211,7 +211,6 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderStatus()
   {
-  global $request;
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
       "<tr><td>Доступное место: ".FormatSize(disk_free_space(filesRoot.$this->root))."</td></tr>".
@@ -229,8 +228,6 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function mkDir()
   {
-  global $request;
-
     umask(0000);
     mkdir(filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER), 0777);
     goto($this->url());
@@ -309,7 +306,7 @@ class TFiles {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $request, $page;
+  	global $Eresus, $page;
 
     $this->root = UserRights(ADMIN)?'':'data/';
 
@@ -323,12 +320,12 @@ class TFiles {
     while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
     if ($this->sp) $this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
     if (count($_FILES)) $this->upload();
-    elseif (isset($request['arg']['mkdir'])) $this->mkDir();
-    elseif (isset($request['arg']['rename'])) $this->renameEntry();
-    elseif (isset($request['arg']['chmod'])) $this->chmodEntry();
-    elseif (isset($request['arg']['copyfile'])) $this->copyFile();
-    elseif (isset($request['arg']['movefile'])) $this->moveFile();
-    elseif (isset($request['arg']['delete'])) $this->deleteFile();
+    elseif (arg('mkdir')) $this->mkDir();
+    elseif (arg('rename')) $this->renameEntry();
+    elseif (arg('chmod')) $this->chmodEntry();
+    elseif (arg('copyfile')) $this->copyFile();
+    elseif (arg('movefile')) $this->moveFile();
+    elseif (arg('delete')) $this->deleteFile();
     else {
       $page->linkScripts(httpRoot.'core/files.js');
       $result =
