@@ -1,11 +1,11 @@
 /**
  * Библиотека AJAX
- * 
+ *
  * Система управления контентом Eresus™ 2
- * © 2007, Eresus Group, http://eresus.ru/
- * 
+ * © 2007-2008, Eresus Group, http://eresus.ru/
+ *
  * @version 0.0.1
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -47,7 +47,7 @@ var AJAX = {
   * @type string  Текущий запрос
   */
   current: '',
-		
+
  /**
   * Инициализирует объект
   */
@@ -83,7 +83,7 @@ var AJAX = {
   request: function(plugin)
   {
 		if (!this.req) return false;
-		
+
     var url = '$(httpRoot)ajax/'+plugin+'/?__nocache='+Math.random();
     if (arguments.length > 1) url += '&'+arguments[1];
     var result = this.queue.push(url);
@@ -97,7 +97,7 @@ var AJAX = {
   process: function()
   {
 		if (!this.req) return false;
-		#TODO: Оставить только для IE
+		//TODO: Оставить только для IE
 		this.init();
     if (this.queue.length && (this.req.readyState == AJAX_READY || this.req.readyState == AJAX_NOT_INITIALIZED)) {
       this.current = this.queue.shift();
@@ -121,7 +121,7 @@ var AJAX = {
 	{
 		var type = this.req.getResponseHeader('content-type').replace(/;.*$/, '').toLowerCase();
 		switch (type) {
-			case 'text/javascript': this.processJavaScript(); break;  
+			case 'text/javascript': this.processJavaScript(); break;
 		}
 	},
   //------------------------------------------------------------------------------
