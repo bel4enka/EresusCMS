@@ -119,7 +119,7 @@ class MySQL {
 	*/
 	function select($tables, $condition = '', $order = '', $fields = '', $lim_rows = 0, $lim_offset = 0, $group = '', $distinct = false)
 	{
-		if (is_bool($fields) || $fields == '1' || $fields == '0' || is_string($lim_rows)) {
+		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($lim_rows)) {
 			# Обратная совместимость c 1.2.x
 			$desc = $fields;
 			$fields = $lim_rows ? $lim_rows : '*';
