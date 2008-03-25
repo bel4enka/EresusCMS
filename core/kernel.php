@@ -5,7 +5,7 @@
  * Система управления контентом Eresus 2
  *
  * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007, Eresus Group, http://eresus.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
  * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -51,7 +51,7 @@ if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 function FatalError($msg)
 {
 	if (PHP_SAPI == 'cli') {
-		$result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg));
+		$result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg))."\n";
 	} else {
 	$result =
 		"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
@@ -900,6 +900,7 @@ class Eresus {
 		'session' => array(
 			'timeout' => 30,
 		),
+		'extensions' => array(),
 		'backward' => array(
 			'TPlugins' => false,
 			'TPlugin' => false,
@@ -912,6 +913,12 @@ class Eresus {
 		),
 	);
 	var $session;
+ /**
+  * Интерфейс к расширениям системы
+  *
+  * @var unknown_type
+  */
+	var $ext;
 	var $db;
 	var $plugins;
 	var $user;
@@ -1097,9 +1104,6 @@ class Eresus {
 		define('cookiePath', $this->path);
 		# 2.10
 		$this->https = $request['scheme'] == 'https';
-
-		var_dump($request);
-		die;
 	}
 	//------------------------------------------------------------------------------
 	/**
@@ -1120,7 +1124,7 @@ class Eresus {
 		else FatalError("Locale file '$filename' not found!");
 	}
 	//------------------------------------------------------------------------------
-	/**
+ /**
 	* Подключение базовых классов
 	*
 	* @access private
@@ -1137,6 +1141,14 @@ class Eresus {
 		elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
 	}
 	//------------------------------------------------------------------------------
+ /**
+  * Инициализация расширений
+  */
+	function init_extensions()
+	{
+		$this->ext = new Extensions();
+	}
+	//-----------------------------------------------------------------------------
 	/**
 	* Подключение к источнику данных
 	*
@@ -1248,6 +1260,8 @@ class Eresus {
 		$this->init_locale();
 		# Подключение базовых классов
 		$this->init_classes();
+		# Инициализация расширений
+		$this->init_extensions();
 		# Подключение к источнику данных
 		$this->init_datasource();
 		# Инициализация механизма плагинов

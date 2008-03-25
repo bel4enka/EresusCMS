@@ -6,7 +6,7 @@
  *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
- * © 2007, Eresus Group, http://eresus.ru/
+ * © 2007-2008, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
@@ -999,5 +999,52 @@ function adminRenderContent()
 	return $result;
 }
 //------------------------------------------------------------------------------
+}
+
+/**
+ * Базовый класс коннектора сторонних расширений
+ *
+ */
+class EresusExtensionConnector {
+
+}
+
+/**
+ * Класс для работы с расширениями системы
+ */
+class Extensions {
+ /**
+  * Загруженные расширения
+  *
+  * @var array
+  */
+	var $items = array();
+ /**
+  * Загрузка расширения
+  *
+  * @param string $name  Имя расширения
+  * @return mixed  Экземпляр класса EresusExtensionConnector или false если не удалось загрузить расширение
+  */
+	function load($name)
+	{
+		global $Eresus;
+
+		$result = false;
+		if (isset($this->items[$name])) {
+			if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
+		} else {
+			$filename = $Eresus->froot.'ext-3rd/'.strtolower($name).'/eresus-connector.php';
+			if (is_file($filename)) {
+				include_once $filename;
+				$class = $name.'Connector';
+				if (class_exists($class)) {
+					$this->items[$name] = new $class;
+					if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
+				}
+			}
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
 }
 ?>
