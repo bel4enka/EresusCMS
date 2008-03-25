@@ -1006,7 +1006,22 @@ function adminRenderContent()
  *
  */
 class EresusExtensionConnector {
+	var $root;
+	var $froot;
+ /**
+  * Конструктор
+  *
+  * @return EresusExtensionConnector
+  */
+	function EresusExtensionConnector()
+	{
+		global $Eresus;
 
+		$name = strtolower(substr(get_class($this), 0, -9));
+		$this->root = $Eresus->root.'ext-3rd/'.$name.'/';
+		$this->froot = $Eresus->froot.'ext-3rd/'.$name.'/';
+	}
+	//-----------------------------------------------------------------------------
 }
 
 /**
@@ -1020,25 +1035,57 @@ class Extensions {
   */
 	var $items = array();
  /**
-  * Загрузка расширения
+  * Определение имени расширения
   *
-  * @param string $name  Имя расширения
-  * @return mixed  Экземпляр класса EresusExtensionConnector или false если не удалось загрузить расширение
+  * @param string $class     Класс расширения
+  * @param string $function  Расширяемая функция
+  * @param string $name      Имя расширения
+  *
+  * @return mixed  Имя расширения или false если подходящего расширения не найдено
   */
-	function load($name)
+	function get_name($class, $function, $name = null)
 	{
 		global $Eresus;
 
 		$result = false;
+		if (isset($Eresus->conf['extensions'])) {
+			if (isset($Eresus->conf['extensions'][$class])) {
+				if (isset($Eresus->conf['extensions'][$class][$function])) {
+					$items = $Eresus->conf['extensions'][$class][$function];
+					reset($items);
+					$result = isset($items[$name]) ? $name : key($items);
+				}
+			}
+		}
+
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Загрузка расширения
+  *
+  * @param string $class     Класс расширения
+  * @param string $function  Расширяемая функция
+  * @param string $name      Имя расширения
+  *
+  * @return mixed  Экземпляр класса EresusExtensionConnector или false если не удалось загрузить расширение
+  */
+	function load($class, $function, $name = null)
+	{
+		global $Eresus;
+
+		$result = false;
+		$name = $this->get_name($class, $function, $name);
+
 		if (isset($this->items[$name])) {
 			if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
 		} else {
-			$filename = $Eresus->froot.'ext-3rd/'.strtolower($name).'/eresus-connector.php';
+			$filename = $Eresus->froot.'ext-3rd/'.$name.'/eresus-connector.php';
 			if (is_file($filename)) {
 				include_once $filename;
 				$class = $name.'Connector';
 				if (class_exists($class)) {
-					$this->items[$name] = new $class;
+					$this->items[$name] = new $class();
 					if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
 				}
 			}

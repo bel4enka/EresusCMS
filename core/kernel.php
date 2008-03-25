@@ -918,7 +918,7 @@ class Eresus {
   *
   * @var unknown_type
   */
-	var $ext;
+	var $extensions;
 	var $db;
 	var $plugins;
 	var $user;
@@ -973,7 +973,7 @@ class Eresus {
 	{
 		global $Eresus;
 
-		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.inc';
+		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Main config file '$filename' not found!");
 	}
@@ -1146,7 +1146,10 @@ class Eresus {
   */
 	function init_extensions()
 	{
-		$this->ext = new Extensions();
+		$filename = $this->froot.'cfg/extensions.php';
+		if (is_file($filename)) include_once($filename);
+
+		$this->extensions = new Extensions();
 	}
 	//-----------------------------------------------------------------------------
 	/**

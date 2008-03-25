@@ -22,7 +22,7 @@ class Form {
   var $validator = '';
   var $file = false;    # Признок наличия полей типа file
   var $html = false;    # Признак наличия WYSIWYG редакторов
-  var $syntax = false;  # Признако наличия полей с подсветкой синтаксиса
+  var $options = array();
   /**
   * Конструктор
   *
@@ -265,6 +265,8 @@ class Form {
   */
   function render_memo($item)
   {
+  	global $Eresus;
+
     if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
     if (empty($item['width'])) $item['width'] = '100%';
     if (strpos($item['width'], '%') === false) {
@@ -272,13 +274,14 @@ class Form {
       $item['width'] = '';
     } else $cols = '50';
     if (isset($item['syntax'])) {
-      if (!$item['id']) $item['id'] = $this->form['name'].'_'.$item['name'];
-      $item['class'][] = 'codepress';
-      $item['class'] = array_merge($item['class'], explode(' ', $item['syntax']));
-      $this->onsubmit .=
-        "\n    form.".$item['name'].".value = ".$item['id'].".getCode();\n".
-        "    form.".$item['name'].".disabled = false;\n";
-      $this->syntax = true;
+    	$extension = $Eresus->extensions->load(
+    		'forms',
+    		'memo_syntax',
+    		isset($item['syntax_extension']) ? $item['syntax_extension'] : null
+    	);
+    	if ($extension) {
+    		$item = $extension->forms_memo_syntax($this, $item);
+    	}
     }
     $result = "\t\t".'<tr><td colspan="2">'.(empty($item['label'])?'':'<span class="formLabel">'.$item['label'].'</span><br />').'<textarea name="'.$item['name'].'" cols="'.$cols.'" rows="'.(empty($item['height'])?'3':$item['height']).'" '.$this->attrs($item).'>'.EncodeHTML($item['value'])."</textarea></td></tr>\n";
     return $result;
@@ -376,7 +379,6 @@ class Form {
         return result;
       }
     ";
-    if ($this->syntax) $page->linkScripts(httpRoot.'core/codepress/codepress.js');
     # FIXME: sub_id - устаревший элемент
     $referer = isset($request['arg']['sub_id'])?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
     $this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
