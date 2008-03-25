@@ -34,7 +34,7 @@ $GLOBALS['Eresus']->conf['extensions'] = array(
 		# Расширение полей типа html
 		'html' => array(
 			'xinha' => null,
-			'tiny_mce' => null,
+			'tinymce' => null,
 		),
 	),
 );

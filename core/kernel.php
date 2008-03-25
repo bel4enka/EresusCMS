@@ -532,7 +532,7 @@ function restoreRequest()
 
  /*
  	* РАБОТА С БД
-  */
+	*/
 
 /**
  * Упорядочивание элементов
@@ -811,30 +811,31 @@ function Translit($s) #: String
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __clearargs($args)
 {
-	if (count($args)) foreach($args as $key => $value)
-		if (gettype($args[$key]) == 'array') {
-			$args[$key] = __clearargs($args[$key]);
-		} else {
-			if (get_magic_quotes_gpc()) $value = StripSlashes($value);
-			if (strpos($key, 'wyswyg_') === 0) {
-				unset($args[$key]);
-				$key = substr($key, 7);
-				$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
-				$value = str_replace(array('%28', '%29'), array('(',')'), $value);
-				$value = str_replace(httpRoot, '$(httpRoot)', $value);
-				preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
-				if (count($images[0])) {
-					$images = $images[0];
-					$delta = 0;
-					for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
-						$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
-						$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
-						$delta += strlen($s) - strlen($images[$i][0]);
-					}
+	global $Eresus;
+
+	if (count($args)) foreach($args as $key => $value) if (gettype($args[$key]) == 'array') {
+		$args[$key] = __clearargs($args[$key]);
+	} else {
+		if (get_magic_quotes_gpc()) $value = StripSlashes($value);
+		if (strpos($key, 'wyswyg_') === 0) {
+			unset($args[$key]);
+			$key = substr($key, 7);
+			$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
+			$value = str_replace(array('%28', '%29'), array('(',')'), $value);
+			$value = str_replace($Eresus->root, '$(httpRoot)', $value);
+			preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
+			if (count($images[0])) {
+				$images = $images[0];
+				$delta = 0;
+				for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
+					$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
+					$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
+					$delta += strlen($s) - strlen($images[$i][0]);
 				}
 			}
-			$args[$key] = $value;
 		}
+		$args[$key] = $value;
+	}
 	return $args;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -914,10 +915,10 @@ class Eresus {
 	);
 	var $session;
  /**
-  * Интерфейс к расширениям системы
-  *
-  * @var unknown_type
-  */
+	* Интерфейс к расширениям системы
+	*
+	* @var unknown_type
+	*/
 	var $extensions;
 	var $db;
 	var $plugins;
@@ -925,8 +926,8 @@ class Eresus {
 
 	var $host;
  /**
-  * @deprecated since 2.11
-  */
+	* @deprecated since 2.11
+	*/
 	var $https;
 	var $path;
 	var $root; # Корневой URL
@@ -1142,8 +1143,8 @@ class Eresus {
 	}
 	//------------------------------------------------------------------------------
  /**
-  * Инициализация расширений
-  */
+	* Инициализация расширений
+	*/
 	function init_extensions()
 	{
 		$filename = $this->froot.'cfg/extensions.php';
