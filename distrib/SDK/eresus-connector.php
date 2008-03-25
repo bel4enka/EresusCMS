@@ -24,7 +24,7 @@
 /**
  * Класс-коннектор
  *
- * Класс-коннектор должен имть имя вида 'ИмяРасширенияConnector' и наследоваться от
+ * Класс-коннектор должен иметь имя вида 'ИмяРасширенияConnector' и наследоваться от
  * базового класса EresusExtensionConnector.
  */
 class ExntensionNameConntector extends EresusExtensionConnector {

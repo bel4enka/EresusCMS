@@ -27,11 +27,11 @@
 $GLOBALS['Eresus']->conf['extensions'] = array(
 	# Расширение возможностей форм ввода
 	'forms' => array(
-		# Расширение молей типа memo
+		# Расширение полей типа memo
 		'memo_syntax' => array(
 			'codepress' => null,
 		),
-		# Расширение молей типа html
+		# Расширение полей типа html
 		'html' => array(
 			'xinha' => null,
 			'tiny_mce' => null,
