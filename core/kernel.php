@@ -1149,7 +1149,7 @@ class Eresus {
 		$filename = $this->froot.'cfg/extensions.php';
 		if (is_file($filename)) include_once($filename);
 
-		$this->extensions = new Extensions();
+		$this->extensions = new EresusExtensions();
 	}
 	//-----------------------------------------------------------------------------
 	/**

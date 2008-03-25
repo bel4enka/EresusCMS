@@ -28,9 +28,9 @@ class EresusObjectTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(isset($GLOBALS['Eresus']), 'Global object $Eresus does not exsists');
   }
   //-----------------------------------------------------------------------------
-  function testPropertyExt()
+  function testPropertyExtensions()
   {
-  	$this->assertEquals('Extensions', get_class($this->fixture->ext), '$Eresus->ext is not an object of class Extensions');
+  	$this->assertEquals('EresusExtensions', get_class($this->fixture->extensions), '$Eresus->extensions has invalid class');
   }
   //-----------------------------------------------------------------------------
   function testPropertyDb()

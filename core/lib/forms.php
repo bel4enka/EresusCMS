@@ -279,9 +279,7 @@ class Form {
     		'memo_syntax',
     		isset($item['syntax_extension']) ? $item['syntax_extension'] : null
     	);
-    	if ($extension) {
-    		$item = $extension->forms_memo_syntax($this, $item);
-    	}
+    	if ($extension) $item = $extension->forms_memo_syntax($this, $item);
     }
     $result = "\t\t".'<tr><td colspan="2">'.(empty($item['label'])?'':'<span class="formLabel">'.$item['label'].'</span><br />').'<textarea name="'.$item['name'].'" cols="'.$cols.'" rows="'.(empty($item['height'])?'3':$item['height']).'" '.$this->attrs($item).'>'.EncodeHTML($item['value'])."</textarea></td></tr>\n";
     return $result;
@@ -298,11 +296,18 @@ class Form {
   */
   function render_html($item)
   {
-    global $page;
+  	global $Eresus;
+
     if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
-    $value = isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'');
-    $result = "\t\t".'<tr><td colspan="2">'.$item['label'].'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.str_replace('$(httpRoot)', httpRoot, EncodeHTML($value)).'</textarea></td></tr>'."\n";
-    $page->htmlEditors[] = 'wyswyg_'.$item['name'];
+
+    $result = '';
+   	$extension = $Eresus->extensions->load(
+   		'forms',
+   		'html',
+   		isset($item['html_extension']) ? $item['html_extension'] : null
+   	);
+    if ($extension) $result = $extension->forms_html($this, $item);
+
     return $result;
   }
   //------------------------------------------------------------------------------

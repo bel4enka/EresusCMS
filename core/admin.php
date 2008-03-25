@@ -42,7 +42,6 @@ class TAdminUI extends WebPage {
   var $sub; # Уровень вложенности
   var $headers; # Заголовки ответа сервера
   var $options; # Для совместимости с TClientUI
-  var $htmlEditors = array(); # Список полей визуальных редакторов
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function init()
   # Проводит инициализацию страницы
@@ -541,16 +540,6 @@ class TAdminUI extends WebPage {
       '    if (iBrowser["UserAgent"].indexOf("konqueror") != -1) iBrowser["Engine"] = "Konqueror";'."\n".
       '   </script>'."\n".
       '   <script src="'.httpRoot.'core/functions.js" type="text/javascript"></script>'."\n".
-      (count($this->htmlEditors)?
-      '  <script type="text/javascript">'."\n".
-      '    var _editor_url  = "'.httpRoot.'core/editor/";'."\n".
-      '    var _editor_lang = "'.$locale['lang'].'";'."\n".
-      '    var _editor_skin = "";'."\n".
-      "    var xinha_editors = ['".implode("', '", $this->htmlEditors)."'];\n".
-      '   </script>'."\n".
-      '   <script src="'.httpRoot.'core/editor/htmlarea.js" type="text/javascript"></script>'."\n".
-      '   <script src="'.httpRoot.'core/editor/editor.js" type="text/javascript"></script>'."\n"
-      :'').
       '   <script type="text/javascript">'."\n".
       '     '.trim(str_replace("\n", "\n     ",$this->scripts))."\n".
       '   </script>'."\n".

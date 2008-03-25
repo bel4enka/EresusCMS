@@ -1027,7 +1027,7 @@ class EresusExtensionConnector {
 /**
  * Класс для работы с расширениями системы
  */
-class Extensions {
+class EresusExtensions {
  /**
   * Загруженные расширения
   *
