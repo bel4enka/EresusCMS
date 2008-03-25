@@ -165,32 +165,26 @@ class TPlgMgr {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function up()
   {
-  global $page, $Eresus;
+  	global $page, $Eresus;
 
     dbReorderItems('plugins','','name');
-  	$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['up']."'");
+  	$item = $Eresus->db->selectItem('plugins', "`name`='".arg('up', 'dbsafe')."'");
     if ($item['position'] > 0) {
-      $temp = $Eresus->db->selectItem('plugins',"`position`='".($item['position']-1)."'");
-      $item['position']--;
-      $temp['position']++;
-      $Eresus->db->updateItem('plugins', $item, "`name`='".$item['name']."'");
-      $Eresus->db->updateItem('plugins', $temp, "`name`='".$temp['name']."'");
+      $Eresus->db->update('plugins', "`position` = `position`+1", "`position` = '".($item['position']-1)."'");
+      $Eresus->db->update('plugins', "`position` = `position`-1", "`name` = '".$item['name']."'");
     }
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function down()
   {
-  global $page, $Eresus;
+  	global $page, $Eresus;
 
     dbReorderItems('plugins','','name');
-  	$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['down']."'");
+  	$item = $Eresus->db->selectItem('plugins', "`name`='".arg('down', 'dbsafe')."'");
     if ($item['position'] < $Eresus->db->count('plugins')-1) {
-      $temp = $Eresus->db->selectItem('plugins',"`position`='".($item['position']+1)."'");
-      $item['position']++;
-      $temp['position']--;
-      $Eresus->db->updateItem('plugins', $item, "`name`='".$item['name']."'");
-      $Eresus->db->updateItem('plugins', $temp, "`name`='".$temp['name']."'");
+      $Eresus->db->update('plugins', "`position` = `position`-1", "`position` = '".($item['position']+1)."'");
+      $Eresus->db->update('plugins', "`position` = `position`+1", "`name` = '".$item['name']."'");
     }
     goto($page->url());
   }
