@@ -904,8 +904,13 @@ class Eresus {
 		'extensions' => array(),
 		'cache' => array(
 			'memory' => array(
+				'driver' => 'EresusMemoryCache',
 				'limit' => 0,
 			),
+#			'session' => array(
+#				'driver' => 'EresusSessionCache',
+#				'limit' => 0,
+#			),
 		),
 		'backward' => array(
 			'TPlugins' => false,
@@ -1169,10 +1174,11 @@ class Eresus {
   */
 	function init_cache()
 	{
+		useClass('cache');
 		$this->cache = new EresusCache();
 		$items = $this->conf['cache'];
 		foreach($items as $system => $options)
-			$this->cache->create($system, "Eresus{$system}Cache", $options);
+			$this->cache->create($system, $options);
 	}
 	//-----------------------------------------------------------------------------
 	/**
