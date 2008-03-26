@@ -11,6 +11,229 @@
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *  КЭШИРОВАНИЕ
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Кэширующий класс
+ */
+class EresusAbstractCache {
+ /* * * * * * * * * * * * * * * * * * * * * * * * *
+  * PRIVATE
+  * * * * * * * * * * * * * * * * * * * * * * * * */
+ /**
+  * Размер кэша (всего)
+  *
+  * @var int
+  *
+  * @access protected
+  */
+	var $size = 0xffffffff;
+ /**
+  * Размер зкэшированных данных (в байтах)
+  *
+  * @var int
+  *
+  * @access protected
+  */
+	var $used = 0;
+ /**
+  * Поместить данные в кэш
+  *
+  * @param string $key    Bдентификатор данных
+  * @param string $value  Данные
+  *
+  * @access protected
+  * @abstract
+  */
+	function data_put($key, $value)
+	{
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получить данные из кэша
+  *
+  * @param string $key  Идентификатор данных
+  *
+  * @return string  Данные из кэша или NULL
+  *
+  * @access protected
+  * @abstract
+  */
+	function data_get($key)
+	{
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Выкинуть данные из кэша
+  *
+  * @param string $key  Идентификатор записи
+  *
+  * @access protected
+  * @abstract
+  */
+	function data_drop($key)
+	{
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Проиндексировать запись
+  *
+  * @param string $key       Идентификатор данных
+  * @param int    $lifetime  Срок жизни данных (секунды)
+  *
+  * @access protected
+  * @abstract
+  */
+	function index_put($key, $lifetime)
+	{
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получить устаревшую запись из индекса
+  *
+  * @param bool $force  Значение true заставляет вернуть наиболее старую, но ещё не устаревшую запись
+  *
+  * @return string  Идентификатор записи
+  *
+  * @access protected
+  * @abstract
+  */
+	function index_get($force = false)
+	{
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Сериализация данных
+  *
+  * @param mixed $value
+  * @return string
+  *
+  * @access protected
+  */
+	function serialize($value)
+	{
+		$result = serialize($value);
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Десериализация данных
+  *
+  * @param string $value
+  * @return mixed
+  *
+  * @access protected
+  */
+	function unserialize($value)
+	{
+		$result = unserialize($value);
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+ /* * * * * * * * * * * * * * * * * * * * * * * * *
+  * PUBLIC
+  * * * * * * * * * * * * * * * * * * * * * * * * */
+ /**
+  * Максимальный размер кэша в килобайтах
+  *
+  * Специальные значения:
+  * -1 - отключить кэширование
+  *  0 - нет ограничения
+  *
+  * @var int
+  * @access public
+  */
+	var $limit = -1;
+ /**
+  * Конструктор
+  *
+  * @return EresusAbstractCache
+  */
+	function EresusAbstractCache()
+	{
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получение количества свободной памяти (в байтах)
+  *
+  * @return int
+  */
+	function free()
+	{
+		switch ($this->limit) {
+			case -1: $result = 0; break;
+			case  0: $result = $this->size - $this->used; break;
+			default: $result = $this->limit - $this->used;
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Очистка мусора
+  *
+  * @param int $free  Требуемое количество свободной памяти
+  */
+	function cleanup($free = 0)
+	{
+		while ($this->free() < $free && !is_null($key = $this->index_get($free > 0)))
+			$this->data_drop($key);
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Поместить данные в кэш
+  *
+  * @param string $key       Идентификатор данных
+  * @param mixed  $value     Данные
+  * @param int    $lifetime  Срок жизни данных (секундны)
+  */
+	function put($key, $value, $lifetime = 0)
+	{
+		$value = $this->serialize($value);
+		$size = strlen($value);
+		if ($size > $this->free() && $size < $this->size) $this->cleanup($size);
+		if ($size <= $this->free()) {
+			$this->index_put($key, $lifetime);
+			$this->data_put($key, $value);
+		}
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получить данные из кэша
+  *
+  * @param string $key       Идентификатор данных
+  *
+  * @return mixed
+  */
+	function get($key)
+	{
+		$result = $this->data_get($key);
+		$result = $this->unserilize($result);
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Возвращает возраст данных (время нахождения в кэше)
+  *
+  * @param string $key  Идентификатор данных
+  * @return int  Возраст в секундах
+  *
+  * @abstract
+  */
+	function age($key)
+	{
+		return 0xffffffff;
+	}
+	//-----------------------------------------------------------------------------
+}
+
 
 /**
  * Родительский класс веб-интерфейсов
