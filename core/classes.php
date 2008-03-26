@@ -164,7 +164,7 @@ class EresusAbstractCache {
   * @var int
   * @access public
   */
-	var $limit = -1;
+	var $limit = 0;
  /**
   * Конструктор
   *
@@ -238,7 +238,7 @@ class EresusAbstractCache {
 }
 
 /**
- * Класс подсистемы кэширования
+ * Класс системы кэширования
  */
 class EresusCache {
  /**
@@ -258,9 +258,21 @@ class EresusCache {
   *
   * @return EresusCache
   */
-	function EresusCache($default = null)
+	function EresusCache()
 	{
-		$this->default = $default;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Саздание новой подсистемы кэширования
+  *
+  * @param string $name     Имя подсистемы
+  * @param string $class		Имя класса подсистемы
+  * @param array  $options  Опции подсистемы
+  */
+	function create($name, $class, $options = null)
+	{
+		$this->caches[$name] = new $class($options);
+		if (count($this->caches) == 1) $this->default = $name;
 	}
 	//-----------------------------------------------------------------------------
  /**
@@ -270,7 +282,7 @@ class EresusCache {
   *
   * @return int
   */
-	function free($target = null)
+	function free($target = 'default')
 	{
 		if ($target == 'default') $target = $this->default;
 		$result = isset($this->caches[$target]) ? $this->caches[$target]->free() : 0;
@@ -283,10 +295,10 @@ class EresusCache {
   * @param string $owner   Владелец данных
   * @param string $key     Идентификатор данных
   * @param mixed  $value   Данные
-  * @param string $target  Кеш, где требуется сохранить данные (default)
   * @param int    $lifetime  Срок жизни данных (секундны)
+  * @param string $target  Кеш, где требуется сохранить данные (default)
   */
-	function put($owner, $key, $value, $target = 'default', $lifetime = 0)
+	function put($owner, $key, $value, $lifetime = 0, $target = 'default')
 	{
 		if ($target == 'default') $target = $this->default;
 		if (isset($this->caches[$target])) $this->caches[$target]->put("$owner.$key", $value, $lifetime);
@@ -297,10 +309,11 @@ class EresusCache {
   *
   * @param string $owner   Владелец данных
   * @param string $key     Идентификатор данных
+  * @param string $target  Выбор кэша
   *
   * @return mixed
   */
-	function get($owner, $key)
+	function get($owner, $key, $target = 'default')
 	{
 		if ($target == 'default') $target = $this->default;
 		$result = isset($this->caches[$target]) ? $this->caches[$target]->get("$owner.$key") : null;
@@ -312,10 +325,11 @@ class EresusCache {
   *
   * @param string $owner   Владелец данных
   * @param string $key  Идентификатор данных
+  * @param string $target  Выбор кэша
   *
   * @return int  Возраст в секундах
   */
-	function age($owner, $key)
+	function age($owner, $key, $target = 'default')
 	{
 		if ($target == 'default') $target = $this->default;
 		$result = isset($this->caches[$target]) ? $this->caches[$target]->age("$owner.$key") : 0xffffffff;
@@ -324,6 +338,100 @@ class EresusCache {
 	//-----------------------------------------------------------------------------
 
 }
+
+
+/**
+ * Кэширование в оперативной памяти
+ */
+class EresusMemoryCache extends EresusAbstractCache {
+ /**
+  * Поместить данные в кэш
+  *
+  * @param string $key    Bдентификатор данных
+  * @param string $value  Данные
+  *
+  * @access protected
+  * @abstract
+  */
+	function data_put($key, $value)
+	{
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получить данные из кэша
+  *
+  * @param string $key  Идентификатор данных
+  *
+  * @return string  Данные из кэша или NULL
+  *
+  * @access protected
+  * @abstract
+  */
+	function data_get($key)
+	{
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Выкинуть данные из кэша
+  *
+  * @param string $key  Идентификатор записи
+  *
+  * @access protected
+  * @abstract
+  */
+	function data_drop($key)
+	{
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Проиндексировать запись
+  *
+  * @param string $key       Идентификатор данных
+  * @param int    $lifetime  Срок жизни данных (секунды)
+  *
+  * @access protected
+  * @abstract
+  */
+	function index_put($key, $lifetime)
+	{
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получить устаревшую запись из индекса
+  *
+  * @param bool $force  Значение true заставляет вернуть наиболее старую, но ещё не устаревшую запись
+  *
+  * @return string  Идентификатор записи
+  *
+  * @access protected
+  * @abstract
+  */
+	function index_get($force = false)
+	{
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+
+ /* * * * * * * * * * * * * * * * * * * * * * * * *
+  * PUBLIC
+  * * * * * * * * * * * * * * * * * * * * * * * * */
+ /**
+  * Возвращает возраст данных (время нахождения в кэше)
+  *
+  * @param string $key  Идентификатор данных
+  * @return int  Возраст в секундах
+  *
+  * @abstract
+  */
+	function age($key)
+	{
+		return 0xffffffff;
+	}
+	//-----------------------------------------------------------------------------
+}
+
 
 
 /**

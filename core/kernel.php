@@ -902,6 +902,11 @@ class Eresus {
 			'timeout' => 30,
 		),
 		'extensions' => array(),
+		'cache' => array(
+			'memory' => array(
+				'limit' => 0,
+			),
+		),
 		'backward' => array(
 			'TPlugins' => false,
 			'TPlugin' => false,
@@ -920,6 +925,12 @@ class Eresus {
 	* @var unknown_type
 	*/
 	var $extensions;
+ /**
+  * Инетрфейс к системе кэширования
+  *
+  * @var EresusCache
+  */
+	var $cache;
 	var $db;
 	var $plugins;
 	var $user;
@@ -1154,6 +1165,17 @@ class Eresus {
 	}
 	//-----------------------------------------------------------------------------
 	/**
+  * Инициадизация кэширования
+  */
+	function init_cache()
+	{
+		$this->cache = new EresusCache();
+		$items = $this->conf['cache'];
+		foreach($items as $system => $options)
+			$this->cache->create($system, "Eresus{$system}Cache", $options);
+	}
+	//-----------------------------------------------------------------------------
+	/**
 	* Подключение к источнику данных
 	*
 	* @access private
@@ -1266,6 +1288,8 @@ class Eresus {
 		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
+		# Инициализация системы кэширования
+		$this->init_cache();
 		# Подключение к источнику данных
 		$this->init_datasource();
 		# Инициализация механизма плагинов
