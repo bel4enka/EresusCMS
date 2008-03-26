@@ -137,6 +137,19 @@ class EresusAbstractCache {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
+ /**
+  * Очистка мусора
+  *
+  * @param int $free  Требуемое количество свободной памяти
+  *
+  * @access protected
+  */
+	function cleanup($free = 0)
+	{
+		while ($this->free() < $free && !is_null($key = $this->index_get($free > 0)))
+			$this->data_drop($key);
+	}
+	//-----------------------------------------------------------------------------
 
  /* * * * * * * * * * * * * * * * * * * * * * * * *
   * PUBLIC
@@ -159,6 +172,7 @@ class EresusAbstractCache {
   */
 	function EresusAbstractCache()
 	{
+		$this->cleanup();
 	}
 	//-----------------------------------------------------------------------------
  /**
@@ -174,17 +188,6 @@ class EresusAbstractCache {
 			default: $result = $this->limit - $this->used;
 		}
 		return $result;
-	}
-	//-----------------------------------------------------------------------------
- /**
-  * Очистка мусора
-  *
-  * @param int $free  Требуемое количество свободной памяти
-  */
-	function cleanup($free = 0)
-	{
-		while ($this->free() < $free && !is_null($key = $this->index_get($free > 0)))
-			$this->data_drop($key);
 	}
 	//-----------------------------------------------------------------------------
  /**
@@ -232,6 +235,94 @@ class EresusAbstractCache {
 		return 0xffffffff;
 	}
 	//-----------------------------------------------------------------------------
+}
+
+/**
+ * Класс подсистемы кэширования
+ */
+class EresusCache {
+ /**
+  * Тип кеша по умолчанию
+  *
+  * @var string
+  */
+	var $default = null;
+ /**
+  * Интерфейсы к различным тиам кеша
+  *
+  * @var array
+  */
+	var $caches = array();
+ /**
+  * Конструктор
+  *
+  * @return EresusCache
+  */
+	function EresusCache($default = null)
+	{
+		$this->default = $default;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получение количества свободной памяти (в байтах)
+  *
+  * @param string $target  Выбор кэша
+  *
+  * @return int
+  */
+	function free($target = null)
+	{
+		if ($target == 'default') $target = $this->default;
+		$result = isset($this->caches[$target]) ? $this->caches[$target]->free() : 0;
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Поместить данные в кеш
+  *
+  * @param string $owner   Владелец данных
+  * @param string $key     Идентификатор данных
+  * @param mixed  $value   Данные
+  * @param string $target  Кеш, где требуется сохранить данные (default)
+  * @param int    $lifetime  Срок жизни данных (секундны)
+  */
+	function put($owner, $key, $value, $target = 'default', $lifetime = 0)
+	{
+		if ($target == 'default') $target = $this->default;
+		if (isset($this->caches[$target])) $this->caches[$target]->put("$owner.$key", $value, $lifetime);
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Получить данные из кэша
+  *
+  * @param string $owner   Владелец данных
+  * @param string $key     Идентификатор данных
+  *
+  * @return mixed
+  */
+	function get($owner, $key)
+	{
+		if ($target == 'default') $target = $this->default;
+		$result = isset($this->caches[$target]) ? $this->caches[$target]->get("$owner.$key") : null;
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+  * Возвращает возраст данных (время нахождения в кэше)
+  *
+  * @param string $owner   Владелец данных
+  * @param string $key  Идентификатор данных
+  *
+  * @return int  Возраст в секундах
+  */
+	function age($owner, $key)
+	{
+		if ($target == 'default') $target = $this->default;
+		$result = isset($this->caches[$target]) ? $this->caches[$target]->age("$owner.$key") : 0xffffffff;
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 
@@ -513,7 +604,7 @@ class Plugins {
 	var $items = array(); # Массив плагинов
 	var $events = array(); # Таблица обработчиков событий
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function  Plugins()
+	function Plugins()
 	{
 		global $Eresus;
 
