@@ -907,10 +907,10 @@ class Eresus {
 				'driver' => 'EresusMemoryCache',
 				'limit' => 0,
 			),
-#			'session' => array(
-#				'driver' => 'EresusSessionCache',
-#				'limit' => 0,
-#			),
+			'session' => array(
+				'driver' => 'EresusSessionCache',
+				'limit' => 0,
+			),
 		),
 		'backward' => array(
 			'TPlugins' => false,
