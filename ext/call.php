@@ -25,53 +25,57 @@
  * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
  * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
  */
 
 class Call extends Plugin {
-  var $version = '2.00b';
-  var $kernel = '2.10b3';
-  var $title = 'Call';
-  var $description = 'Вызов плагинов из шаблонов';
-  var $type = 'client';
+	var $version = '2.00b';
+	var $kernel = '2.10b3';
+	var $title = 'Call';
+	var $description = 'Вызов плагинов из шаблонов';
+	var $type = 'client';
 
  /**
-  * Конструктор
-  *
-  * @return Call
-  */
-  function Call()
-  {
-    parent::Plugin();
-    $this->listenEvents('clientOnPageRender');
-  }
-  //-----------------------------------------------------------------------------
+	* Конструктор
+	*
+	* @return Call
+	*/
+	function Call()
+	{
+		parent::Plugin();
+		$this->listenEvents('clientOnPageRender');
+	}
+	//-----------------------------------------------------------------------------
  /**
-  * Обработчик события clientOnPageRender
-  *
-  * @param string $text
-  * @return string
-  */
-  function clientOnPageRender($text)
-  {
-    global $Eresus;
+	* Обработчик события clientOnPageRender
+	*
+	* @param string $text
+	* @return string
+	*/
+	function clientOnPageRender($text)
+	{
+		global $Eresus;
 
-    preg_match_all('/\$\(call:(.*)(::(.*)({(.*)})?)?\)/Usi', $text, $calls, PREG_SET_ORDER);
-    foreach($calls as $call) {
-    	$name = strtolower($call[1]);
-    	$method = count($call) > 3 ? strtolower($call[3]) : null;
-      if (isset($Eresus->plugins->list[$name])) {
-        $plugin = isset($Eresus->plugins->items[$name]) ? $Eresus->plugins->items[$name] : $Eresus->plugins->load($name);
-        if ($method) {
-	        if (method_exists($plugin, $method)) {
-	        	$args = count($call) > 5 ? $call[5] : null;
-	          $result = call_user_func(array($plugin, $method), $args);
-	          if (is_string($result)) $text = str_replace($call[0], $result, $text);
-	        } else ErrorMessage("Method '$method' not found in plugin '$name'");
-        }
-      } else ErrorMessage("Plugin '$name' not installed or disabled");
-    }
-    return $text;
-  }
-  //-----------------------------------------------------------------------------
+		preg_match_all('/\$\(call:(.*)(::(.*)({(.*)})?)?\)/Usi', $text, $calls, PREG_SET_ORDER);
+		foreach($calls as $call) {
+			$name = strtolower($call[1]);
+			$method = count($call) > 3 ? strtolower($call[3]) : null;
+			if (isset($Eresus->plugins->list[$name])) {
+				$plugin = isset($Eresus->plugins->items[$name]) ? $Eresus->plugins->items[$name] : $Eresus->plugins->load($name);
+				if ($method) {
+					if (method_exists($plugin, $method)) {
+						$args = count($call) > 5 ? $call[5] : null;
+						$result = call_user_func(array($plugin, $method), $args);
+						if (is_string($result)) $text = str_replace($call[0], $result, $text);
+					} else ErrorMessage("Method '$method' not found in plugin '$name'");
+				}
+			} else ErrorMessage("Plugin '$name' not installed or disabled");
+		}
+		return $text;
+	}
+	//-----------------------------------------------------------------------------
 }
 ?>
