@@ -764,7 +764,7 @@ function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limi
 {
 	global $Eresus;
 
-	if (is_bool($fields) || $fields == '1' || $fields == '0' || is_string($lim_rows)) {
+	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($lim_rows)) {
 		# Обратная совместимость
 		$desc = $fields;
  		$fields = $lim_rows;
