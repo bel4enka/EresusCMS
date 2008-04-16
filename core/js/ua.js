@@ -2,7 +2,7 @@
  * Скрипт определения браузера
  * 
  * Система управления контентом Eresus™ 2
- * © 2007, Eresus Group, http://eresus.ru/
+ * © 2007-2008, Eresus Group, http://eresus.ru/
  * 
  * Скрипт написан на основе
  * http://mozilla.org/docs/web-developer/sniffer/browser_type.html
