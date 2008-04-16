@@ -5,7 +5,7 @@
  * Система управления контентом Eresus 2
  *
  * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007, Eresus Group, http://eresus.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
  * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -464,7 +464,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
 	foreach ($item as $key => $value) {
 		if ($clear) unset($item[$key]);
 		if (!in_array($key, $prevent)) {
-			if (arg($key) !== false) $item[$key] = arg($key);
+			if (!is_null(arg($key))) $item[$key] = arg($key);
 			if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
 		}
 	}
