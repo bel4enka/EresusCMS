@@ -574,7 +574,7 @@ function __item($item = null)
 	$result['type'] = $this->type;
 	$result['active'] = is_null($item)? true : $item['active'];
 	$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
-	$result['settings'] = is_null($item) ? encodeOptions($this->settings) : $item['settings'];
+  $result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
 	$result['title'] = $this->title;
 	$result['version'] = $this->version;
 	$result['description'] = $this->description;
@@ -603,10 +603,11 @@ function saveSettings()
 {
 	global $Eresus;
 
-	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
-	$item = $this->__item($item);
-	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
-	$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
+	$result = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
+	$result = $this->__item($result);
+	$result['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
+	$result = $Eresus->db->updateItem('plugins', $result, "`name`='".$this->name."'");
+  
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -649,7 +650,7 @@ function updateSettings()
 {
 	global $Eresus;
 
-	foreach ($this->settings as $key => $value) if (arg($key)) $this->settings[$key] = arg($key);
+	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
 	$this->onSettingsUpdate();
 	$this->saveSettings();
 }
