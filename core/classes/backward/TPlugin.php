@@ -88,6 +88,7 @@ function saveSettings()
 	global $Eresus;
 	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
 	$item = $this->__item($item);
+	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
 	$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
 	return $result;
 }
@@ -123,7 +124,7 @@ function updateSettings()
 {
 	global $Eresus;
 
-	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key, 'dbsafe');
+	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
 	$this->onSettingsUpdate();
 	$this->saveSettings();
 }

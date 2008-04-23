@@ -327,6 +327,7 @@ define('admPagesCreated', 'Дата создания');
 define('admPagesUpdated', 'Дата обновления');
 define('admPagesUpdatedAuto', 'Обновить дату изменения автоматически');
 define('admPagesOptions', 'Дополнительные опции');
+define('admPagesContent', 'Контент страницы');
 
 define('admTemplList', 'Шаблон элемента списка разделов');
 define('admTemplListLabel', 'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
