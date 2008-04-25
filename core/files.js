@@ -1,11 +1,11 @@
 /**
  * Eresus 2.10
  *
- * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+ * Скрипты клиентской части файлового менеджреа
  *
- * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ 2
- * пїЅ 2004-2007, ProCreat Systems, http://procreat.ru/
- * пїЅ 2007-2008, Eresus Group, http://eresus.ru/
+ * Система управления контентом Eresus™ 2
+ * © 2004-2007, ProCreat Systems, http://procreat.ru/
+ * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
@@ -75,7 +75,7 @@ function Copy(strControlName)
     var objControl = document.getElementById(strControlName);
     objControl.createTextRange().execCommand("Copy");
     objControl.focus();
-  } else alert('пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Internet Explorer :(');
+  } else alert('Эта функция доступна только Internet Explorer :(');
 }
 
 function filesCD(url)
@@ -85,7 +85,7 @@ function filesCD(url)
 
 function filesMkDir()
 {
-  var folder = prompt('пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ','');
+  var folder = prompt('Имя папки','');
   if (folder != undefined && folder.length) window.location = setPanel(window.location)+'&mkdir='+folder;
 }
 
@@ -94,7 +94,7 @@ function filesRename()
   if (objRowSel != null) {
     var filename = objRowSel.childNodes[1].innerHTML;
     if (filename.substr(-2) != '..') {
-      var newname = prompt('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',filename);
+      var newname = prompt('Переименовать',filename);
       if (newname != undefined && newname.length && newname != filename)
         window.location = setPanel(window.location)+'&rename='+filename+'&newname='+newname;
     }
@@ -117,7 +117,7 @@ function filesChmod()
         if (a[i].substr(2, 1) == 'x') value += 1;
         perms += value.toString();
       }
-      var newperms = prompt('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ', perms);
+      var newperms = prompt('Установить права', perms);
       if (newperms != undefined && newperms.length && newperms != perms)
         window.location = setPanel(window.location)+'&chmod='+filename+'&perms='+newperms;
     }
@@ -132,7 +132,7 @@ function filesCopy()
       var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
       obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
       for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename)
-        if (confirm('пїЅпїЅпїЅпїЅ "'+filename+'" пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?')) break;
+        if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
         else return;
       window.location = setPanel(window.location)+'&copyfile='+filename;
     }
@@ -147,7 +147,7 @@ function filesMove()
       var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
       obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
       for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename)
-        if (confirm('пїЅпїЅпїЅпїЅ "'+filename+'" пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?')) break;
+        if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
         else return;
       window.location = setPanel(window.location)+'&movefile='+filename;
     }
@@ -158,7 +158,7 @@ function filesDelete()
 {
   if (objRowSel != null) {
     var filename = objRowSel.childNodes[1].innerHTML;
-    if ((filename.substr(-2) != '..') && confirm('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "'+filename+'"?')) {
+    if ((filename.substr(-2) != '..') && confirm('Подтверждаете удаление "'+filename+'"?')) {
       window.location = setPanel(window.location)+'&delete='+filename;
     }
   }
