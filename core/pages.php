@@ -155,7 +155,7 @@ class TPages {
 		global $Eresus, $page;
 
 		$item = $Eresus->sections->get(arg('id', 'int'));
-		if (arg('to') !== false) {
+		if (!is_null(arg('to'))) {
 			dbReorderItems('pages', "`owner`='".$item['owner']."'");
 			$item['owner'] = arg('to', 'int');
 			$item['position'] = count($Eresus->sections->children($item['owner']));
