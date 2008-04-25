@@ -6,7 +6,7 @@
  * © 2007, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 /**
@@ -25,7 +25,15 @@ function imageCreateFromFile($filename)
 		case IMG_PNG:  $result = imageCreateFromPNG($filename); break;
 		case IMG_WBMP: $result = imageCreateFromWBMP($filename); break;
 		case IMG_XPM:  $result = imageCreateFromXPM($filename); break;
-		default:       $result = false;
+		default:
+			switch(substr($type['mime'], 6)) {
+				case 'gif':  $result = imageCreateFromGIF($filename); break;
+				case 'jpeg': $result = imageCreateFromJPEG($filename); break;
+				case 'png':  $result = imageCreateFromPNG($filename); break;
+				case 'wbmp': $result = imageCreateFromWBMP($filename); break;
+				case 'xpm':  $result = imageCreateFromXPM($filename); break;
+				default:       $result = false;
+			}
 	}
 	return $result;
 }
