@@ -19,9 +19,8 @@ class TPlgMgr {
   {
   	global $page, $Eresus;
 
+    $Eresus->db->update('plugins', "`active` = NOT `active`", "`name`='".$Eresus->request['arg']['toggle']."'");
     $item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['toggle']."'");
-    $item['active'] = !$item['active'];
-    $Eresus->db->updateItem('plugins', $item, "`name`='".$Eresus->request['arg']['toggle']."'");
     SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['title']);
     goto($page->url());
   }
