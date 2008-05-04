@@ -182,7 +182,7 @@ class TClientUI extends WebPage {
         next($Eresus->request['params']);
         array_shift($Eresus->request['params']);
       }
-			if ($item && $item['name'] = 'main' && !$item['owner']) $item['id'] = 0;
+			if ($item && $item['name'] == 'main' && !$item['owner']) $item['id'] = 0;
     } while ($item && current($Eresus->request['params']));
     $Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
     if ($result) $result = $Eresus->sections->get($result['id']);
