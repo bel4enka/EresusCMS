@@ -127,7 +127,6 @@ class TMenus extends TListContentPlugin {
 
 		$item['name'] = arg('name', 'word');
 		$item['caption'] = arg('caption', 'dbsafe');
-		$item['active'] = arg('active', 'int');
 		$item['root'] = arg('root', 'int');
 		$item['rootLevel'] = arg('rootLevel', 'int');
 		$item['expandLevelAuto'] = arg('expandLevelAuto', 'int');

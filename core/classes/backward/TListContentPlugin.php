@@ -35,11 +35,10 @@ global $db;
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function toggle($id)
 {
-global $db, $page, $request;
+	global $db, $page, $request;
 
+	$db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
 	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$item['active'] = (integer)!$item['active'];
-	$db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$id."'");
 	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
 	sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
 	goto($page->url());
@@ -64,7 +63,7 @@ global $page, $db, $request;
 	dbReorderItems($this->table['name'], $sql_prefix);
 	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	if ($item['position'] > 0) {
-    	$temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
+			$temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
 		$temp['position'] = $item['position'];
 		$item['position']--;
 		$db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
@@ -82,7 +81,7 @@ global $page, $db, $request;
 	$count = $db->count($this->table['name'], $sql_prefix);
 	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	if ($item['position'] < $count-1) {
-    	$temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
+			$temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
 		$temp['position'] = $item['position'];
 		$item['position']++;
 		$db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
