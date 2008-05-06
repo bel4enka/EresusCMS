@@ -232,7 +232,7 @@ class WebPage {
 	* Клиентский URL страницы с идентификатором $id
 	*
 	* @param int $id  Идентификатор страницы
-	* @return string URL страницы
+	* @return string URL страницы или NULL если раздела $id не существует
 	*/
 	function clientURL($id)
 	{
@@ -240,6 +240,9 @@ class WebPage {
 
 		$result = array();
 		$parents = $Eresus->sections->parents($id);
+
+		if (is_null($parents)) return null;
+
 		array_push($parents, $id);
 		$items = $Eresus->sections->get( $parents);
 		for($i=0; $i<count($items); $i++) $result[] = $items[$i]['name'];
@@ -607,7 +610,7 @@ function saveSettings()
 	$result = $this->__item($result);
 	$result['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
 	$result = $Eresus->db->updateItem('plugins', $result, "`name`='".$this->name."'");
-  
+
 	return $result;
 }
 //------------------------------------------------------------------------------
