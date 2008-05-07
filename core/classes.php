@@ -784,15 +784,15 @@ function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limi
 {
 	global $Eresus;
 
-	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($lim_rows)) {
+	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($limit)) {
 		# Обратная совместимость
 		$desc = $fields;
- 		$fields = $lim_rows;
- 		$lim_rows = $lim_offset;
- 		$lim_offset = $group;
+ 		$fields = $limit;
+ 		$limit = $offset;
+ 		$offset = $group;
  		$group = $distinct;
  		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-	$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
+		$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
 	} else $result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit, $offset, $group, $distinct);
 
 	return $result;
