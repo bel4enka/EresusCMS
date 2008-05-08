@@ -181,6 +181,7 @@ class TClientUI extends WebPage {
 				$this->section[] = $item['title'];
 				next($Eresus->request['params']);
 				array_shift($Eresus->request['params']);
+				break;
 			}
 			if ($item && $item['name'] == 'main' && !$item['owner']) $item['id'] = 0;
 		} while ($item && current($Eresus->request['params']));
