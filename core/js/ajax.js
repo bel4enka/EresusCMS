@@ -1,60 +1,60 @@
 /**
- * Р‘РёР±Р»РёРѕС‚РµРєР° AJAX
- * 
- * РЎРёСЃС‚РµРјР° СѓРїСЂР°РІР»РµРЅРёСЏ РєРѕРЅС‚РµРЅС‚РѕРј Eresusв„ў 2
- * В© 2007-2008, Eresus Group, http://eresus.ru/
- * 
+ * Библиотека AJAX
+ *
+ * Система управления контентом Eresus™ 2
+ * © 2007-2008, Eresus Group, http://eresus.ru/
+ *
  * @version 0.0.1
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
 /**
- * Р—Р°РїСЂРѕСЃ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ
+ * Запрос не инициализирован
  */
 var AJAX_NOT_INITIALIZED = 0;
 /**
- * РРґС‘С‚ РѕС‚РїСЂР°РІРєР° Р·Р°РїСЂРѕСЃР°
+ * Идёт отправка запроса
  */
 var AJAX_SENDING_REQUEST = 1;
 /**
- * Р—Р°РїСЂРѕСЃ РѕС‚РїСЂР°РІР»РµРЅ
+ * Запрос отправлен
  */
 var AJAX_REQUEST_SENT = 2;
 /**
- * РРґС‘С‚ РѕР±РјРµРЅ РґР°РЅРЅС‹РјРё
+ * Идёт обмен данными
  */
 var AJAX_NEGOTIATE = 3;
 /**
- * РћР±РјСѓРµРЅ Р·Р°РІРµСЂС€С‘РЅ
+ * Обмуен завершён
  */
 var AJAX_READY = 4;
 
 
 /**
- * AJAX-РёРЅС‚РµСЂС„РµР№СЃ
+ * AJAX-интерфейс
  */
 var AJAX = {
  /**
-  * @type XMLHttpRequest  РћР±СЉРµРєС‚ XMLHttpRequest
+  * @type XMLHttpRequest  Объект XMLHttpRequest
   */
   req: null,
  /**
-  * @type array  РћС‡РµСЂРµРґСЊ Р·Р°РїСЂРѕСЃРѕРІ
+  * @type array  Очередь запросов
   */
   queue: new Array(),
  /**
-  * @type string  РўРµРєСѓС‰РёР№ Р·Р°РїСЂРѕСЃ
+  * @type string  Текущий запрос
   */
   current: '',
-		
+
  /**
-  * РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РѕР±СЉРµРєС‚
+  * Инициализирует объект
   */
   init: function()
   {
 		if (window.XMLHttpRequest) {
-			// DOM-Р±СЂР°СѓР·РµСЂС‹
+			// DOM-браузеры
 			try {
 				this.req = new XMLHttpRequest();
 			} catch (e) {
@@ -74,16 +74,16 @@ var AJAX = {
   },
   //------------------------------------------------------------------------------
  /**
-  * РћС‚РїСЂР°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ СЃРµСЂРІРµСЂСѓ
+  * Отправляет запрос серверу
   *
-  * @param  string  plugin  Р’С‹Р·С‹РІР°РµРјС‹Р№ РїР»Р°РіРёРЅ
-  * @param  string  params  Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РІ С„РѕСЂРјР°С‚Рµ 'param1=value1&param2=value2'
-  * @return bool Р РµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ
+  * @param  string  plugin  Вызываемый плагин
+  * @param  string  params  Дополнительные параметры в формате 'param1=value1&param2=value2'
+  * @return bool Результат выполнения
   */
   request: function(plugin)
   {
 		if (!this.req) return false;
-		
+
     var url = '$(httpRoot)ajax/'+plugin+'/?__nocache='+Math.random();
     if (arguments.length > 1) url += '&'+arguments[1];
     var result = this.queue.push(url);
@@ -92,12 +92,12 @@ var AJAX = {
   },
   //------------------------------------------------------------------------------
  /**
-  * Р’С‹РїРѕР»РЅСЏРµС‚ СЃР»РµРґСѓСЋС‰РµРµ Р·Р°РґР°РЅРёРµ РІ РѕС‡РµСЂРµРґРё Р·Р°РїСЂРѕСЃРѕРІ
+  * Выполняет следующее задание в очереди запросов
   */
   process: function()
   {
 		if (!this.req) return false;
-		//TODO: РћСЃС‚Р°РІРёС‚СЊ С‚РѕР»СЊРєРѕ РґР»СЏ IE
+		//TODO: Оставить только для IE
 		this.init();
     if (this.queue.length && (this.req.readyState == AJAX_READY || this.req.readyState == AJAX_NOT_INITIALIZED)) {
       this.current = this.queue.shift();
@@ -107,7 +107,7 @@ var AJAX = {
   },
   //------------------------------------------------------------------------------
  /**
-  * РћР±СЂР°Р±РѕС‚РєР° JavaScript-РѕС‚РІРµС‚Р°
+  * Обработка JavaScript-ответа
   */
 	processJavaScript: function()
 	{
@@ -115,18 +115,18 @@ var AJAX = {
 	},
   //------------------------------------------------------------------------------
  /**
-  * РћР±СЂР°Р±РѕС‚РєР° РѕС‚РІРµС‚Р° СЃРµСЂРІРµСЂР°
+  * Обработка ответа сервера
   */
 	processResponse: function()
 	{
 		var type = this.req.getResponseHeader('content-type').replace(/;.*$/, '').toLowerCase();
 		switch (type) {
-			case 'text/javascript': this.processJavaScript(); break;  
+			case 'text/javascript': this.processJavaScript(); break;
 		}
 	},
   //------------------------------------------------------------------------------
  /**
-  * РћР±СЂР°Р±РѕС‚РєР° СЃРѕСЃС‚РѕСЏРЅРёР№ Р·Р°РїСЂРѕСЃР°
+  * Обработка состояний запроса
   */
   handler: function()
   {
