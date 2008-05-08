@@ -156,9 +156,13 @@ function clientRenderContent()
 	return $result;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderList($options = array('pages'=>true))
+function clientRenderList($options = null)
 {
 	global $db, $page;
+
+	if (is_null($options)) $options = array();
+	$options['pages'] = isset($options['pages']) ? $options['pages'] : true;
+	$options['oldordering'] = isset($options['oldordering']) ? $options['oldordering'] : true;
 
 	$result = '';
 	$items = $db->select(
@@ -168,7 +172,7 @@ function clientRenderList($options = array('pages'=>true))
 		$this->table['sortDesc'],
 		'',
 		$this->settings['itemsPerPage'],
-		$this->table['sortDesc']
+		$this->table['sortDesc'] && $options['oldordering']
 			?(($this->pagesCount-$page->subpage)*$this->settings['itemsPerPage'])
 			:(($page->subpage-1)*$this->settings['itemsPerPage'])
 	);
