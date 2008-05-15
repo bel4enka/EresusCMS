@@ -69,27 +69,23 @@ class TPlgMgr {
   function insert()
   {
   global $page, $Eresus;
-//    unset($Eresus->session['addplugins']);
-//var_dump($Eresus->session['addplugins']);
+
+  	$files = arg('files');
     if (!isset($Eresus->session['addplugins']) || (count($Eresus->session['addplugins']) == 0))
     {
-      $Eresus->session['addplugins'] = array_keys($Eresus->request['arg']['files']);
+      $Eresus->session['addplugins'] = $files;
     }
-//var_dump($Eresus->session['addplugins']);
-
-//    $files = array_keys($Eresus->request['arg']['files']);
 
     if (count($Eresus->session['addplugins']))
-      foreach ($Eresus->session['addplugins'] as $k => $name)
-//        if (isset($Eresus->request['arg']['files']) && isset($Eresus->request['arg']['files'][$name]))
-        if (isset($Eresus->session['addplugins'][$k]))
-        {
-          $Eresus->plugins->install($name);
-          unset($Eresus->session['addplugins'][$k]);
-          SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
+      foreach ($Eresus->session['addplugins'] as $plugin => $value)
+        if (isset($Eresus->session['addplugins'][$plugin])) {
+        	if ($Eresus->session['addplugins'][$plugin]) {
+          	$Eresus->plugins->install($plugin);
+          	SendNotify(admPluginsAdded.': '.$plugin, array('url' => $page->url(array('action'=>''))));
+        	}
+        	unset($Eresus->session['addplugins'][$plugin]);
         }
-
-    goto($Eresus->request['arg']['submitURL']);
+    goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function add()
@@ -111,12 +107,12 @@ class TPlgMgr {
         var i = 0;
         while (i < inp.length)
         {
-          if (inp.item(i).type == "checkbox")
+          if (inp[i].type == "checkbox")
           {
             if (type)
-              inp.item(i).checked = true;
+              inp[i].checked = true;
             else
-              inp.item(i).checked = false;
+              inp[i].checked = false;
           }
           i++;
         }
