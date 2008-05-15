@@ -147,7 +147,7 @@ class Sections {
 				$result[] = $id = $key;
 				break;
 			}
-			return null;
+			if (!$result) return null;
 		}
 		$result = array_reverse($result);
 		return $result;
