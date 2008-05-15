@@ -262,10 +262,14 @@ class WebPage {
 	*/
 	function pageSelector($total, $current, $url = null, $templates = null)
 	{
+		global $Eresus;
+
 		$result = '';
 		# Загрузка шаблонов
 		if (!is_array($templates)) $templates = array();
 		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $this->defaults['pageselector'][$i];
+
+		if (is_null($url)) $url = $Eresus->request['path'].'p%d/';
 
 		$pages = array(); # Отображаемые страницы
 		# Определяем номера первой и последней отображаемых страниц
@@ -774,8 +778,8 @@ function dbDropTable($name = '')
  * @param string	$condition		Условие выборки
  * @param string	$order				Порядок выборки
  * @param string	$fields				Список полей
- * @param int			$limit				Вернуть не больше полей чем limit
- * @param int			$offset				Смещение выборки
+ * @param int		$limit				Вернуть не больше полей чем limit
+ * @param int		$offset				Смещение выборки
  * @param bool		$distinct			Только уникальные результаты
  *
  * @return array	Список записей
