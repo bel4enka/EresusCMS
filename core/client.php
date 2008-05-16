@@ -165,8 +165,10 @@ class TClientUI extends WebPage {
 		global $Eresus;
 
 		$result = false;
+		$main_fake = false;
 		if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
 			array_unshift($Eresus->request['params'], 'main');
+			$main_fake = true;
 		}
 		reset($Eresus->request['params']);
 		$item['id'] = 0;
@@ -181,9 +183,8 @@ class TClientUI extends WebPage {
 				$this->section[] = $item['title'];
 				next($Eresus->request['params']);
 				array_shift($Eresus->request['params']);
-				break;
 			}
-			if ($item && $item['name'] == 'main' && !$item['owner']) $item['id'] = 0;
+			if ($item && $item['id'] == 1 && $main_fake) $item['id'] = 0;
 		} while ($item && current($Eresus->request['params']));
 		$Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
 		if ($result) $result = $Eresus->sections->get($result['id']);

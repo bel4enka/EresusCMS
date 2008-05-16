@@ -436,7 +436,7 @@ class Plugins {
 				if (method_exists($this->items[$page->type], 'clientRenderContent'))
 					$result = $this->items[$page->type]->clientRenderContent();
 				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
-			} else die("FIXME: ".__FILE__." ".__LINE__);
+			} else ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
 		}
 		return $result;
 	}
