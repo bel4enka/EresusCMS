@@ -178,7 +178,7 @@ class TClientUI extends WebPage {
 			$item = false;
 			for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
 				$result = $item = $items[$i];
-				if ($item['name'] != 'main' || !empty($url)) $url .= $item['name'].'/';
+				if ($item['id'] != 1 || !$main_fake) $url .= $item['name'].'/';
 				$Eresus->plugins->clientOnURLSplit($item, $url);
 				$this->section[] = $item['title'];
 				next($Eresus->request['params']);
