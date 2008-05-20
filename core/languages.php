@@ -1,13 +1,13 @@
 <?php
 /**
  * Eresus 2.10
- * 
+ *
  * ”правление €зыками интерфейса
- * 
+ *
  * —истема управлени€ контентом EresusЩ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
  * © 2007-2008, Eresus Group, http://eresus.ru/
- * 
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
@@ -16,7 +16,6 @@ class TLanguages {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminRender()
   {
-  global $page, $request;
 
     if (UserRights($this->access)) {
     }

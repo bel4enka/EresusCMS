@@ -347,7 +347,7 @@ class Form {
   */
   function render()
   {
-    global $page, $request;
+    global $page;
 
     $result = '';     # Выходной код
     $hidden = '';     # Скрытые поля???
@@ -378,7 +378,7 @@ class Form {
     ";
     if ($this->syntax) $page->linkScripts(httpRoot.'core/codepress/codepress.js');
     # FIXME: sub_id - устаревший элемент
-    $referer = isset($request['arg']['sub_id'])?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
+    $referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
     $this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
     $this->hidden = "\t<div class=\"hidden\">\n\t\t{$this->hidden}\n\t</div>";
     $result =
