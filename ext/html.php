@@ -9,7 +9,7 @@
  * @version 3.00
  *
  * @copyright 	2005-2006, ProCreat Systems, http://procreat.ru/
- * @copyright   2007, Eresus Group, http://eresus.ru/
+ * @copyright   2007-2008, Eresus Group, http://eresus.ru/
  * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
  * @maintainer  БерсЪ <bersz@procreat.ru>
  * @author      Mikhail Krasilnikov <mk@procreat.ru>
@@ -32,7 +32,7 @@
  */
 
 class Html extends ContentPlugin {
-	var $version = '3.00a2';
+	var $version = '3.00b';
 	var $kernel = '2.10rc';
 	var $title = 'HTML';
 	var $description = 'HTML страница';
@@ -46,12 +46,10 @@ class Html extends ContentPlugin {
 	{
 		global $Eresus, $page;
 
-		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+		$item = $Eresus->sections->get($page->id);
 		$item['content'] = $content;
-		$item['options'] = decodeOptions($item['options']);
-		$item['options']['allowGET'] = arg('allowGET');
-		$item['options'] = encodeOptions($item['options']);
-		$Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+		$item['options']['allowGET'] = arg('allowGET', 'int');
+		$Eresus->sections->update($item);
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -61,7 +59,7 @@ class Html extends ContentPlugin {
 	*/
 	function adminRenderContent()
 	{
-		global $page, $Eresus;
+		global $Eresus, $page;
 
 		if (arg('action') == 'update') $this->adminUpdate();
 		$item = $Eresus->sections->get($page->id);
