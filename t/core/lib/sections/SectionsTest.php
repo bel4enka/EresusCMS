@@ -1,9 +1,6 @@
 <?php
 	require_once 'PHPUnit/Framework.php';
 
-#	require_once 'env/kernel.php';
-	include_once '../core/lib/sections.php';
-
 class SectionsTest extends PHPUnit_Framework_TestCase {
 	static private $ClassName = 'Sections';
 	protected $fixture;

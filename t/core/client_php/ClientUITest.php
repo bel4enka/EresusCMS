@@ -1,12 +1,6 @@
 <?php
 	require_once 'PHPUnit/Framework.php';
 
-	$php = file_get_contents('../core/client.php');
-	$php = substr($php, 5, -3);
-	$php = str_replace("dirname(__FILE__).DIRECTORY_SEPARATOR.'", "'../t/env/", $php);
-	$php = preg_replace('/\$page = new TClientUI.*$/s', '', $php);
-	eval($php);
-
 class ClientUITest extends PHPUnit_Framework_TestCase {
 	static private $ClassName = 'TClientUI';
 	protected $fixture;

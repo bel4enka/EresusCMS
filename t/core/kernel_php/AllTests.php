@@ -1,12 +1,12 @@
 <?php
-if (!defined('PHPUnit_MAIN_METHOD')) define('PHPUnit_MAIN_METHOD', 'Core_Client_php_AllTests::main');
+if (!defined('PHPUnit_MAIN_METHOD')) define('PHPUnit_MAIN_METHOD', 'Core_Kernel_php_AllTests::main');
 
 require_once 'PHPUnit/Framework.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 
-require_once 'ClientUITest.php';
+require_once 'ArgTest.php';
 
-class Core_Client_php_AllTests
+class Core_Kernel_php_AllTests
 {
 		public static function main()
 		{
@@ -17,12 +17,12 @@ class Core_Client_php_AllTests
 		{
 				$suite = new PHPUnit_Framework_TestSuite('PHPUnit Framework');
 
-				$suite->addTestSuite('ClientUITest');
+				$suite->addTestSuite('ArgTest');
 
 				return $suite;
 		}
 }
 
-if (PHPUnit_MAIN_METHOD == 'Core_Client_php_AllTests::main') Core_Client_php_AllTests::main();
+if (PHPUnit_MAIN_METHOD == 'Core_Kernel_php_AllTests::main') Core_Kernel_php_AllTests::main();
 
 ?>
