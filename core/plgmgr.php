@@ -116,7 +116,7 @@ class TPlgMgr {
 			'name' => 'FoundPlugins',
 			'caption' => admPluginsFound,
 			'width' => '600px',
-			'buttons' => array('ok','cancel'=>array('label' => 'Отмена', 'url' => 'http://san-dis.ru/admin.php?mod=plgmgr')),
+			'buttons' => array('ok','cancel'),
 			'fields' => array(
 				array('type'=>'hidden','name'=>'action','value'=>'insert'),
 				array('type'=>'text','value'=>'Выбрать: [<a href="#" onclick="return checkboxes(true);">Все</a>]  [<a href="#" onclick="return checkboxes(false);">Ни одного</a>]'),
