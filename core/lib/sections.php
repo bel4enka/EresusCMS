@@ -5,7 +5,6 @@
  * Ѕиблиотека дл€ работы с разделами сайта
  *
  * @author: Mikhail Krasilnikov <mk@procreat.ru>
- * @version: 0.0.5
  *
  * TODO: ѕеренести сохранение сквозной нумерации позицию сюда из pages
  *
@@ -239,6 +238,13 @@ class Sections {
 		$result = false;
 		$item['updated'] = gettime('Y-m-d H:i:s');
 		$item['options'] = encodeOptions($item['options']);
+		$item['title'] = $Eresus->db->escape($item['title']);
+		$item['caption'] = $Eresus->db->escape($item['caption']);
+		$item['description'] = $Eresus->db->escape($item['description']);
+		$item['hint'] = $Eresus->db->escape($item['hint']);
+		$item['keywords'] = $Eresus->db->escape($item['keywords']);
+		$item['content'] = $Eresus->db->escape($item['content']);
+		$item['options'] = $Eresus->db->escape($item['options']);
 		$result = $Eresus->db->updateItem($this->table, $item, "`id`={$item['id']}");
 		return $result;
 	}
