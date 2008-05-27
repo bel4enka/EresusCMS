@@ -1,4 +1,7 @@
 <?php
+
+class EresusFatalException extends Exception {}
+
 function require_test($filename)
 {
 	static $included = array();
@@ -6,18 +9,19 @@ function require_test($filename)
 	$filename = realpath($filename);
 
 	if (!in_array($filename, $included)) {
+
+		$tempname = dirname(__FILE__).'/php'.substr($filename, strlen(realpath(dirname(__FILE__).'/../..')));
 		$included[] = $filename;
 		$code = file_get_contents($filename);
-		$code = substr($code, 5, -3);
-		$code = preg_replace('/^###cut:start\s.*###cut:end.*$/Ums', '', $code);
-		eval($code);
+		$code = preg_replace('/^\s*###cut:start\s.*###cut:end.*$/Ums', '', $code);
+		file_put_contents($tempname, $code);
+		require($tempname);
 	}
 }
 //-----------------------------------------------------------------------------
-function fake($class)
+function FatalError($message)
 {
-	$filename = "$class.fake.php";
-	require_once $filename;
+	throw new EresusFatalException(strip_tags($message));
 }
 //-----------------------------------------------------------------------------
 ?>

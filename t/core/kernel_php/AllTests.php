@@ -5,6 +5,7 @@ require_once 'PHPUnit/Framework.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 
 require_once 'ArgTest.php';
+require_once 'EresusInitTest.php';
 
 class Core_Kernel_php_AllTests
 {
@@ -18,6 +19,7 @@ class Core_Kernel_php_AllTests
 				$suite = new PHPUnit_Framework_TestSuite('PHPUnit Framework');
 
 				$suite->addTestSuite('ArgTest');
+				$suite->addTestSuite('EresusInitTest');
 
 				return $suite;
 		}
