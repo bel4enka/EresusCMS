@@ -9,7 +9,6 @@ class WebPageTest extends PHPUnit_Framework_TestCase {
 		global $Eresus;
 
 		if (class_exists(self::$ClassName)) {
-			$Eresus->db = new TestDB();
 			$this->fixture = new WebPage();
 		}
 	}
@@ -30,26 +29,10 @@ class WebPageTest extends PHPUnit_Framework_TestCase {
 	*/
 	function testMethod_clientURL_ordering()
 	{
-		$test = $this->fixture->clientURL(22);
+		$expect = 'http:///Framework/php/services/delivery/level3/level4/';
 
-		die("$test\n");
-
-		$this->assertEquals(3, intval($test['id']), "loadPage can't find sections after 'main' one");
+		$this->assertEquals($expect, $this->fixture->clientURL(24), self::$ClassName."::clientURL: invalid order of page names");
 	}
-	//-----------------------------------------------------------------------------
- /**
-	* Test for bug #0000165
-	*	http://eresus.ru/tracker/view.php?id=0000165
-	* /
-	function testMethod_loadPage_ChildOfMain()
-	{
-		global $Eresus;
-
-		$Eresus->request['params'] = array('main', 'main_child');
-		$test = $this->fixture->loadPage();
-
-		$this->assertEquals(22, intval($test['id']), 'loadPage can\'t find child section of a root one');
-	}*/
 	//-----------------------------------------------------------------------------
 }
 

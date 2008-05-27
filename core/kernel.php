@@ -43,6 +43,8 @@ define('GUEST',  5); # Гость (не зарегистрирован)
 if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 
 ### ОБРАБОТКА ОШИБОК ###
+
+###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *
@@ -72,6 +74,7 @@ function FatalError($msg)
 	die($result);
 }
 //------------------------------------------------------------------------------
+###cut:end (testing purpose)
 /**
  * Вывод сообщения о пользовательской ошибке
  *
@@ -526,7 +529,7 @@ function restoreRequest()
 
  /*
  	* РАБОТА С БД
-  */
+	*/
 
 /**
  * Упорядочивание элементов
@@ -965,7 +968,9 @@ class Eresus {
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
+		###cut:start (testing purpose)
 		session_start();
+		###cut:end (testing purpose)
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
 		$this->user = &$_SESSION['user'];

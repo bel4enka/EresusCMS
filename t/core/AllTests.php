@@ -23,7 +23,7 @@ class Core_AllTests
 
 				$suite->addTest(Core_Kernel_php_AllTests::suite());
 				$suite->addTest(Core_Lib_AllTests::suite());
-				#$suite->addTest(Core_Classes_php_AllTests::suite());
+				$suite->addTest(Core_Classes_php_AllTests::suite());
 				$suite->addTest(Core_Client_php_AllTests::suite());
 
 				return $suite;
