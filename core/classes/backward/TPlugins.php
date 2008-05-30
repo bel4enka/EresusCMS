@@ -8,16 +8,16 @@ class TPlugins {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function  TPlugins()
   {
-  global $db;
+  	global $Eresus;
 
-    $items = $db->select('`plugins`', '', '`position`');
+    $items = $Eresus->db->select('`plugins`', '', '`position`');
     if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function install($name)
   # Установка нового плагина
   {
-  global $db;
+  	global $Eresus;
 
     $filename = filesRoot.'ext/'.$name.'.php';
     if (file_exists($filename)) {
@@ -25,24 +25,23 @@ class TPlugins {
       $Class = 'T'.$name;
       $this->items[$name] = new $Class;
       $this->items[$name]->install();
-      $db->insert('plugins', $this->items[$name]->createPluginItem());
+      $Eresus->db->insert('plugins', $this->items[$name]->createPluginItem());
     }
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function uninstall($name)
   # Удаление плагина
   {
-  global $db;
+  	global $Eresus;
 
     if (!isset($this->items[$name])) $this->load($name);
     if (isset($this->items[$name])) $this->items[$name]->uninstall();
-    $item = $db->selectItem('plugins', "`name`='".$name."'");
+    $item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
     if (!is_null($item)) {
-      $db->delete('plugins', "`name`='".$name."'");
-      $db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
+      $Eresus->db->delete('plugins', "`name`='".$name."'");
+      $Eresus->db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
     }
     $filename = filesRoot.'ext/'.$name.'.php';
-    #if (file_exists($filename)) unlink($filename);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function preload($include, $exclude)
@@ -70,7 +69,7 @@ class TPlugins {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderContent()
   {
-  global $page, $db, $user, $session, $request;
+  	global $Eresus, $page;
 
     $result = '';
     switch ($page->type) {
@@ -80,7 +79,7 @@ class TPlugins {
       break;
       case 'list':
         if (isset($page->topic)) $page->httpError('404');
-        $subitems = $db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($user['auth'] ? $user['access'] : GUEST)."')", "`position`");
+        $subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
         if (empty($page->content)) $page->content = '$(items)';
         $template = loadTemplate('std/SectionListItem');
         if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
@@ -103,7 +102,7 @@ class TPlugins {
               $item['caption'],
               $item['description'],
               $item['hint'],
-              $request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
+              $Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
             ),
             $template['html']
           );
@@ -117,7 +116,7 @@ class TPlugins {
       if ($this->load($page->type)) {
         if (method_exists($this->items[$page->type], 'clientRenderContent'))
         $result = $this->items[$page->type]->clientRenderContent();
-        else $session['errorMessage'] = sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type]));
+        else EerrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
       }
     }
     return $result;
@@ -161,12 +160,6 @@ class TPlugins {
       foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
     return $text;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  /* function clientOnFormControlRender($formName, $control, $text)
-  {
-    if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
-    return $text;
-  }*/
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function adminOnMenuRender()
   {

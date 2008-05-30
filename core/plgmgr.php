@@ -69,27 +69,15 @@ class TPlgMgr {
   function insert()
   {
   global $page, $Eresus;
-//    unset($Eresus->session['addplugins']);
-//var_dump($Eresus->session['addplugins']);
-    if (!isset($Eresus->session['addplugins']) || (count($Eresus->session['addplugins']) == 0))
-    {
-      $Eresus->session['addplugins'] = array_keys($Eresus->request['arg']['files']);
+
+		$files = arg('files');
+		if ($files && is_array($files)) {
+			foreach ($files as $plugin => $install) if ($install) {
+				$Eresus->plugins->install($plugin);
+				SendNotify(admPluginsAdded.': '.$plugin, array('url' => $page->url(array('action'=>''))));
     }
-//var_dump($Eresus->session['addplugins']);
-
-//    $files = array_keys($Eresus->request['arg']['files']);
-
-    if (count($Eresus->session['addplugins']))
-      foreach ($Eresus->session['addplugins'] as $k => $name)
-//        if (isset($Eresus->request['arg']['files']) && isset($Eresus->request['arg']['files'][$name]))
-        if (isset($Eresus->session['addplugins'][$k]))
-        {
-          $Eresus->plugins->install($name);
-          unset($Eresus->session['addplugins'][$k]);
-          SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
         }
-
-    goto($Eresus->request['arg']['submitURL']);
+		goto(arg('submitURL'));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function add()
@@ -111,12 +99,12 @@ class TPlgMgr {
         var i = 0;
         while (i < inp.length)
         {
-          if (inp.item(i).type == "checkbox")
+					if (inp[i].type == "checkbox")
           {
             if (type)
-              inp.item(i).checked = true;
+							inp[i].setAttribute("checked", "checked");
             else
-              inp.item(i).checked = false;
+							inp[i].removeAttribute("checked");
           }
           i++;
         }
@@ -128,7 +116,7 @@ class TPlgMgr {
       'name' => 'FoundPlugins',
       'caption' => admPluginsFound,
       'width' => '600px',
-      'buttons' => array('ok','cancel'=>array('label' => 'Отмена', 'url' => 'http://san-dis.ru/admin.php?mod=plgmgr')),
+			'buttons' => array('ok','cancel'),
       'fields' => array(
         array('type'=>'hidden','name'=>'action','value'=>'insert'),
         array('type'=>'text','value'=>'Выбрать: [<a href="#" onclick="return checkboxes(true);">Все</a>]  [<a href="#" onclick="return checkboxes(false);">Ни одного</a>]'),

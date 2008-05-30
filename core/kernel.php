@@ -43,6 +43,8 @@ define('GUEST',  5); # Гость (не зарегистрирован)
 if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 
 ### ОБРАБОТКА ОШИБОК ###
+
+###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *
@@ -76,6 +78,7 @@ function FatalError($msg)
 	die($result);
 }
 //------------------------------------------------------------------------------
+###cut:end (testing purpose)
 /**
  * Вывод сообщения о пользовательской ошибке
  *
@@ -460,7 +463,7 @@ function replaceMacros($template, $source)
  *
  * @return array  Заполненный массив
  *
- * @deprecated
+ * @deprecated since 2.10
  */
 function GetArgs($item, $checkboxes = array(), $prevent = array())
 {
@@ -470,7 +473,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
 	foreach ($item as $key => $value) {
 		if ($clear) unset($item[$key]);
 		if (!in_array($key, $prevent)) {
-			if (arg($key) !== false) $item[$key] = arg($key);
+			if (!is_null(arg($key))) $item[$key] = arg($key);
 			if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
 		}
 	}
@@ -938,6 +941,11 @@ class Eresus {
 	var $cache;
 	var $db;
 	var $plugins;
+ /**
+  * Учётная запись пользователя
+  *
+  * @var EresusAccount
+  */
 	var $user;
 
 	var $host;
@@ -1004,7 +1012,9 @@ class Eresus {
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
+		###cut:start (testing purpose)
 		session_start();
+		###cut:end (testing purpose)
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
 		$this->user = &$_SESSION['user'];
@@ -1206,6 +1216,15 @@ class Eresus {
 	}
 	//------------------------------------------------------------------------------
 	/**
+  * Инициализация учётной записи пользователя
+  *
+  */
+	function init_user()
+	{
+		useLib('accounts');
+	}
+	//-----------------------------------------------------------------------------
+	/**
 	* Проверка сессии
 	*
 	* @access private
@@ -1300,6 +1319,8 @@ class Eresus {
 		$this->init_datasource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
+		# Инициализация учётной записи пользователя
+		$this->init_user();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута
@@ -1422,7 +1443,8 @@ class Eresus {
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
+###cut:start (testing purpose)
+
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
-?>

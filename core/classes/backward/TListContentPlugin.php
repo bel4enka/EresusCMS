@@ -21,83 +21,84 @@ function uninstall()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function createTable($table)
 {
-global $db;
+	global $Eresus;
 
-	$db->query('CREATE TABLE IF NOT EXISTS `'.$db->prefix.$table['name'].'`'.$table['sql']);
+	$Eresus->db->query('CREATE TABLE IF NOT EXISTS `'.$Eresus->db->prefix.$table['name'].'`'.$table['sql']);
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function dropTable($table)
 {
-global $db;
+	global $Eresus;
 
-	$db->query("DROP TABLE IF EXISTS `".$db->prefix.$table['name']."`;");
+	$Eresus->db->query("DROP TABLE IF EXISTS `".$Eresus->db->prefix.$table['name']."`;");
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function toggle($id)
 {
-global $db, $page, $request;
+	global $Eresus, $page;
 
-	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$item['active'] = (integer)!$item['active'];
-	$db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$id."'");
+	$Eresus->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
+	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-	sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
+	sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
 	goto($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function delete($id)
 {
-global $db, $page, $request;
+	global $Eresus, $page;
 
-	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	$Eresus->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-	sendNotify(admDeleted.': '.'<a href="'.str_replace('delete',$this->table['key'],$request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
+	sendNotify(admDeleted.': '.'<a href="'.str_replace('delete',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
 	goto($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
 {
-global $page, $db, $request;
+	global $Eresus, $page;
 
 	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
 	dbReorderItems($this->table['name'], $sql_prefix);
-	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	# FIXME: Escaping
+	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	if ($item['position'] > 0) {
-    	$temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
+			$temp = $Eresus->db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
 		$temp['position'] = $item['position'];
 		$item['position']--;
-		$db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
-		$db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
+		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
+		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
 	goto($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
 {
-global $page, $db, $request;
+	global $Eresus, $page;
 
 	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
 	dbReorderItems($this->table['name'], $sql_prefix);
-	$count = $db->count($this->table['name'], $sql_prefix);
-	$item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	$count = $Eresus->db->count($this->table['name'], $sql_prefix);
+	#FIXME: Escaping
+	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	if ($item['position'] < $count-1) {
-    	$temp = $db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
+			$temp = $Eresus->db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
 		$temp['position'] = $item['position'];
 		$item['position']++;
-		$db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
-		$db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
+		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
+		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
 	goto($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function adminRenderContent()
 {
-global $db, $page, $user, $session;
+global $Eresus, $page;
 
 	$result = '';
 	if (!is_null(arg('id'))) {
-		$item = $db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id')."'");
+		$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id')."'");
 		$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
 	}
 	switch (true) {
@@ -140,13 +141,13 @@ global $db, $page, $user, $session;
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderContent()
 {
-	global $db, $page;
+	global $Eresus, $page;
 
 	$result = '';
 	if (!isset($this->settings['itemsPerPage'])) $this->settings['itemsPerPage'] = 0;
 	if ($page->topic) $result = $this->clientRenderItem(); else {
-		$this->table['fields'] = $db->fields($this->table['name']);
-		$this->itemsCount = $db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
+		$this->table['fields'] = $Eresus->db->fields($this->table['name']);
+		$this->itemsCount = $Eresus->db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
 		if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
 		if (!$page->subpage) $page->subpage = $this->table['sortDesc']?$this->pagesCount:1;
 		if ($this->itemsCount && ($page->subpage > $this->pagesCount)) {
@@ -157,19 +158,23 @@ function clientRenderContent()
 	return $result;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function clientRenderList($options = array('pages'=>true))
+function clientRenderList($options = null)
 {
-	global $db, $page;
+	global $Eresus, $page;
+
+	if (is_null($options)) $options = array();
+	$options['pages'] = isset($options['pages']) ? $options['pages'] : true;
+	$options['oldordering'] = isset($options['oldordering']) ? $options['oldordering'] : true;
 
 	$result = '';
-	$items = $db->select(
+	$items = $Eresus->db->select(
 		$this->table['name'],
 		"(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
 		$this->table['sortMode'],
 		$this->table['sortDesc'],
 		'',
 		$this->settings['itemsPerPage'],
-		$this->table['sortDesc']
+		$this->table['sortDesc'] && $options['oldordering']
 			?(($this->pagesCount-$page->subpage)*$this->settings['itemsPerPage'])
 			:(($page->subpage-1)*$this->settings['itemsPerPage'])
 	);

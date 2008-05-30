@@ -213,12 +213,24 @@ class MySQL {
   * Выполняет обновление информации в источнике
   *
   * @param string $table      Таблица
-  * @param string $set        Изменения
+  * @param mixed  $set        Изменения
   * @param string $condition  Условие
   * @return unknown
   */
 	function update($table, $set, $condition)
 	{
+		if (is_array($set)) {
+			$pairs = array();
+			$fields = $this->fields($table, true);
+			foreach($set as $field => $value) {
+				if (isset($fields[$field])) {
+					switch ($fields[$field]) {
+
+					}
+					#$pairs[]
+				}
+			}
+		}
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
 		return $result;
 	}
@@ -240,7 +252,10 @@ class MySQL {
   */
 	function fields($table, $info = false)
 	{
-		$result = false;
+		global $Eresus;
+
+		$result = $Eresus->cache->get('lib.mysql', "fields.$table.$info");
+		if (is_null($result)) {
 		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
 		if ($fields) {
 			$result = array();
@@ -286,8 +301,9 @@ class MySQL {
 					}
 				} else $result[] = $item['Field'];
 			}
-			#print_r($result); print_r($fields);	die;
+				$Eresus->cache->put('lib.mysql', "fields.$table.$info", $result);
 		} else FatalError(mysql_error($this->Connection));
+		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------

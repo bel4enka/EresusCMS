@@ -18,9 +18,9 @@ class TThemes {
   var $tabs = array(
     'width' => admThemesTabWidth,
     'items' => array(
-      array('caption' => admThemesTemplates, 'name' => 'section', 'value' => 'templates'),
-      array('caption' => admThemesStandard, 'name' => 'section', 'value' => 'std'),
-      array('caption' => admThemesStyles, 'name' => 'section', 'value' => 'css'),
+			array('caption' => admThemesTemplates),
+			array('caption' => admThemesStandard),
+			array('caption' => admThemesStyles),
     ),
   );
   var $stdTemplates = array(
@@ -451,6 +451,10 @@ class TThemes {
 
     $result = '';
     if (UserRights($this->access)) {
+			#FIXME: Временное решение #0000163
+			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
+			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
+			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
       $result .= $page->renderTabs($this->tabs);
       switch (arg('section')) {
         case 'css': $result .= $this->sectionStyles(); break;

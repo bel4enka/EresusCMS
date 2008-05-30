@@ -231,18 +231,24 @@ class WebPage {
 	* Клиентский URL страницы с идентификатором $id
 	*
 	* @param int $id  Идентификатор страницы
-	* @return string URL страницы
+	* @return string URL страницы или NULL если раздела $id не существует
 	*/
 	function clientURL($id)
 	{
 		global $Eresus;
 
-		$result = array();
 		$parents = $Eresus->sections->parents($id);
+
+		if (is_null($parents)) return null;
+
 		array_push($parents, $id);
 		$items = $Eresus->sections->get( $parents);
-		for($i=0; $i<count($items); $i++) $result[] = $items[$i]['name'];
-		$result = $Eresus->root.implode('/', $result).(count($result)?'/':'');
+
+		$list = array();
+		for($i = 0; $i < count($items); $i++) $list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
+		$result = $Eresus->root;
+		for($i = 0; $i < count($list); $i++) $result .= $list[$i].'/';
+
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -258,10 +264,14 @@ class WebPage {
 	*/
 	function pageSelector($total, $current, $url = null, $templates = null)
 	{
+		global $Eresus;
+
 		$result = '';
 		# Загрузка шаблонов
 		if (!is_array($templates)) $templates = array();
 		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $this->defaults['pageselector'][$i];
+
+		if (is_null($url)) $url = $Eresus->request['path'].'p%d/';
 
 		$pages = array(); # Отображаемые страницы
 		# Определяем номера первой и последней отображаемых страниц
@@ -428,7 +438,7 @@ class Plugins {
 				if (method_exists($this->items[$page->type], 'clientRenderContent'))
 					$result = $this->items[$page->type]->clientRenderContent();
 				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
-			} else die("FIXME: ".__FILE__." ".__LINE__);
+			} else ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
 		}
 		return $result;
 	}
@@ -781,12 +791,12 @@ function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limi
 {
 	global $Eresus;
 
-	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($lim_rows)) {
+	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($limit)) {
 		# Обратная совместимость
 		$desc = $fields;
- 		$fields = $lim_rows;
- 		$lim_rows = $lim_offset;
- 		$lim_offset = $group;
+ 		$fields = $limit;
+ 		$limit = $offset;
+ 		$offset = $group;
  		$group = $distinct;
  		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
 		$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);

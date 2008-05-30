@@ -38,26 +38,28 @@ require_once('../kernel.php');
 $uRoot = UserRights(ADMIN)?'':'data/';
 
 if (count($_FILES)) {
-  parse_str($request['referer'], $request['arg']);
-  if ($request['arg']['root'][0] == '/') $request['arg']['root'] = substr($request['arg']['root'], 1);
-  $folder = filesRoot.$uRoot.$request['arg']['root'].(empty($request['arg']['root'])?'':'/');
+  parse_str($Eresus->request['referer'], $Eresus->request['arg']);
+  $root = arg('root');
+  if (substr($root, 0, 1) == '/') $root = substr($root, 1);
+  $folder = filesRoot.$uRoot.$root.(empty($root)?'':'/');
   upload('file', $folder);
-  goto($request['referer']);
+  goto($Eresus->request['referer']);
 }
-if (isset($request['arg']['folder'])) {
-  $folder = $request['arg']['folder'];
-  parse_str($request['referer'], $request['arg']);
-  if ($request['arg']['root'][0] == '/') $request['arg']['root'] = substr($request['arg']['root'], 1);
-  $folder = filesRoot.$uRoot.$request['arg']['root'].(empty($request['arg']['root'])?'':'/').$folder;
+if (arg('folder')) {
+  $folder = arg('folder');
+  parse_str($Eresus->request['referer'], $Eresus->request['arg']);
+  $root = arg('root');
+  if ($root[0] == '/') $root = substr($root, 1);
+  $folder = filesRoot.$uRoot.$root.(empty($root)?'':'/').$folder;
   umask(0000);
   mkdir($folder, 0777);
-  goto($request['referer']);
+  goto($Eresus->request['referer']);
 }
 
 
 $content = '';
 
-$root = filesRoot.$uRoot.$request['arg']['root'];
+$root = filesRoot.$uRoot.arg('root');
 $hnd=opendir($root);
 $i = 0;
 while (($name = readdir($hnd))!==false) if ($name != '.') {

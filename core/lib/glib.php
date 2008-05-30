@@ -32,7 +32,7 @@ function imageCreateFromFile($filename)
 				case 'png':  $result = imageCreateFromPNG($filename); break;
 				case 'wbmp': $result = imageCreateFromWBMP($filename); break;
 				case 'xpm':  $result = imageCreateFromXPM($filename); break;
-				default:       $result = false;
+		default:       $result = false;
 			}
 	}
 	return $result;

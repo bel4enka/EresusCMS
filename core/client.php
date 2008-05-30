@@ -13,12 +13,16 @@
 
 define('CLIENTUI', true);
 
+###cut:start (testing purpose)
 # Подключаем ядро системы #
 $filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
 if (is_file($filename)) include_once($filename); else {
   echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
   exit;
 }
+
+###cut:end (testing purpose)
+
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __macroConst($matches) {
   return constant($matches[1]);
@@ -165,8 +169,10 @@ class TClientUI extends WebPage {
     global $Eresus;
 
     $result = false;
+		$main_fake = false;
     if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
       array_unshift($Eresus->request['params'], 'main');
+			$main_fake = true;
     }
     reset($Eresus->request['params']);
     $item['id'] = 0;
@@ -176,12 +182,13 @@ class TClientUI extends WebPage {
       $item = false;
       for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
         $result = $item = $items[$i];
-        if ($item['name'] != 'main' || !empty($url)) $url .= $item['name'].'/';
+				if ($item['id'] != 1 || !$main_fake) $url .= $item['name'].'/';
         $Eresus->plugins->clientOnURLSplit($item, $url);
         $this->section[] = $item['title'];
         next($Eresus->request['params']);
         array_shift($Eresus->request['params']);
       }
+			if ($item && $item['id'] == 1 && $main_fake) $item['id'] = 0;
     } while ($item && current($Eresus->request['params']));
     $Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
     if ($result) $result = $Eresus->sections->get($result['id']);
@@ -528,7 +535,11 @@ class TClientUI extends WebPage {
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
+###cut:start (testing purpose)
+
 $page = new TClientUI;
 $page->init();
 $page->render();
+
+###cut:end (testing purpose)
 ?>

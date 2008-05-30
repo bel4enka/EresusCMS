@@ -7,21 +7,21 @@ CREATE TABLE `pages` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL default '',
   `owner` int(10) unsigned NOT NULL default '0',
-  `title` text default NULL,
-  `caption` varchar(64) default NULL,
-  `description` text default NULL,
-  `hint` text default NULL,
-  `keywords` text default NULL,
-  `position` smallint(5) unsigned default NULL,
+	`title` text NOT NULL default '',
+	`caption` varchar(64) NOT NULL default '',
+	`description` text NOT NULL default '',
+	`hint` text NOT NULL default '',
+	`keywords` text NOT NULL default '',
+	`position` smallint(5) unsigned NOT NULL default '0',
   `active` tinyint(1) NOT NULL default '0',
-  `access` tinyint(1) unsigned default NULL,
-  `visible` tinyint(1) unsigned default NULL,
-  `template` varchar(64) default NULL,
+	`access` tinyint(1) unsigned NOT NULL default 5,
+	`visible` tinyint(1) unsigned NOT NULL default '1',
+	`template` varchar(64) NOT NULL default '',
   `type` varchar(32) NOT NULL default 'default',
-  `content` longtext,
-  `options` text,
-  `created` datetime default NULL,
-  `updated` datetime default NULL,
+	`content` longtext NOT NULL default '',
+	`options` text NOT NULL default '',
+	`created` datetime NOT NULL default '0000-00-00 00:00:00',
+	`updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `owner` (`owner`),
@@ -31,7 +31,7 @@ CREATE TABLE `pages` (
   KEY `visible` (`visible`),
   KEY `created` (`created`),
   KEY `updated` (`updated`)
-) TYPE=MyISAM COMMENT='Структура и страницы сайта';
+) TYPE=MyISAM;
 
 --
 -- Дамп данных таблицы `pages`
