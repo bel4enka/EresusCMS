@@ -458,6 +458,8 @@ function replaceMacros($template, $source)
  * @param array $prevent     Список полей массива изменять которые не следует
  *
  * @return array  Заполненный массив
+ *
+ * @deprecated since 2.10
  */
 function GetArgs($item, $checkboxes = array(), $prevent = array())
 {
@@ -529,7 +531,7 @@ function restoreRequest()
 
  /*
  	* РАБОТА С БД
-	*/
+  */
 
 /**
  * Упорядочивание элементов
