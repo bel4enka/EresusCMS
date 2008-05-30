@@ -29,19 +29,19 @@ function renderTemplate($template)
         '$(httpRoot)',
         '$(styleRoot)',
         '$(dataRoot)',
-        
+
         '$(siteName)',
         '$(siteTitle)',
         '$(siteKeywords)',
         '$(siteDescription)',
       ),
       array(
-        httpHost, 
-        httpPath, 
-        httpRoot, 
+        httpHost,
+        httpPath,
+        httpRoot,
         styleRoot,
         dataRoot,
-        
+
         siteName,
         siteTitle,
         siteKeywords,
@@ -65,13 +65,13 @@ function callStack()
       $args = array();
       foreach($callstack[$i]['args'] as $arg) {
         ob_start();
-        var_dump(strip_tags($arg));
+        var_dump($arg);
         $args[] = htmlentities(ob_get_contents(), ENT_NOQUOTES, LOCALE_CHARSET);
         ob_end_clean();
       }
       $args = implode(', ', $args);
     }
-    
+
     $result .= 'Call <b>'.(empty($callstack[$i]['class'])?'':$callstack[$i]['class']).(empty($callstack[$i]['type'])?'':$callstack[$i]['type']).$callstack[$i]['function'].'</b>('.$args.')<br /><br />';
   }
   $result .='</div>';
