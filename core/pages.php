@@ -1,11 +1,11 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ
-# пїЅпїЅпїЅпїЅпїЅпїЅ 2.00
-# пїЅ 2004-2006, ProCreat Systems
+# Система управления контентом Eresus™
+# Версия 2.01
+# © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+# Управление структурой сайта
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TPages {
   var $access = ADMIN;
@@ -20,9 +20,9 @@ class TPages {
       $result .= admPagesHint.": ".$new['hint']."\n";
       $result .= admPagesDescription.": ".$new['description']."\n";
       $result .= admPagesKeywords.": ".$new['keywords']."\n";
-      $result .= admPagesActive.": ".($new['active']?strYes:strNo)."\n";
-      $result .= admPagesVisible.": ".($new['visible']?strYes:strNo)."\n";
-      $result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$new['access'])."\n";
+      $result .= admPagesActive.": ".(isset($new['active'])&&$new['active']?strYes:strNo)."\n";
+      $result .= admPagesVisible.": ".(isset($new['visible'])&&$new['visible']?strYes:strNo)."\n";
+      $result .= admAccessLevel.": ".option('ACCESSLEVEL'.$new['access'])."\n";
       $result .= admPagesTemplate.": ".$new['template']."\n";
       $result .= admPagesContentType.": ".$new['type']."\n";
       $result .= admPagesOptions.": ".$new['options']."\n";
@@ -36,7 +36,7 @@ class TPages {
       if ($new['keywords'] != $old['keywords']) $result .= admPagesKeywords.": ".$old['keywords']." &rarr; ".$new['keywords']."\n";
       if ($new['active'] != $old['active']) $result .= admPagesActive.": ".($old['active']?strYes:strNo)." &rarr; ".($new['active']?strYes:strNo)."\n";
       if ($new['visible'] != $old['visible']) $result .= admPagesVisible.": ".($old['visible']?strYes:strNo)." &rarr; ".($new['visible']?strYes:strNo)."\n";
-      if ($new['access'] != $old['access']) $result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$old['access'])." &rarr; ".constant('ACCESSLEVEL'.$new['access'])."\n";
+      if ($new['access'] != $old['access']) $result .= admAccessLevel.": ".option('ACCESSLEVEL'.$old['access'])." &rarr; ".option('ACCESSLEVEL'.$new['access'])."\n";
       if ($new['template'] != $old['template']) $result .= admPagesTemplate.": ".$old['template']." &rarr; ".$new['template']."\n";
       if ($new['type'] != $old['type']) $result .= admPagesContentType.": ".$old['type']." &rarr; ".$new['type']."\n";
       if ($new['content'] != $old['content']) $result .= admPagesContent.": ".$old['content']." &rarr; ".$new['content']."\n";
@@ -47,12 +47,31 @@ class TPages {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function insert()
-  # пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
+  function intallScripts()
   {
-  global $db, $page, $request, $session;
+    global $page, $request;
+    
+    $page->scripts .= "
+      function updatePages()
+      {
+        if ((HttpRequest.readyState == 4) && (HttpRequest.status == 200)) {
+          document.getElementById('admPagesList').innerHTML = HttpRequest.responseText;
+        }
+      }
+    
+      function moveItem(dir, id)
+      {
+        SendRequest('".$request['url']."&'+dir+'='+id, updatePages);
+      }
+    ";
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function insert()
+  # Запись новой страницы в БД
+  {
+  global $db, $page, $request;
 
-    $item = getArgs($db->fields('pages'));
+    $item = GetArgs($db->fields('pages'), array('active', 'visible'));
     $temp = $db->selectItem('pages', "(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
     if (is_null($temp)) {
       $item['created'] = gettime('Y-m-d H:i:s');
@@ -66,7 +85,7 @@ class TPages {
       dbReorderItems('pages', "`owner`='".$request['arg']['owner']."'");
       goto($page->url(array('id'=>$item['id'])));
     } else {
-      $session['errorMessage'] = sprintf(errItemWithSameName, $item['name']);
+      ErrorMessage(sprintf(errItemWithSameName, $item['name']));
       saveRequest();
       goto($request['referer']);
     }
@@ -76,12 +95,8 @@ class TPages {
   {
   global $db, $page, $request;
 
-    $item = $db->selectItem('pages', "`id`='".$request['arg']['update']."'");
-    $old = $item;
-    foreach ($item as $key => $value) if (isset($request['arg'][$key])) $item[$key] = $request['arg'][$key];
-    $item['active'] = isset($request['arg']['active'])?$request['arg']['active']:false;
-    $item['visible'] = isset($request['arg']['visible'])?$request['arg']['visible']:false;
-    $item['options'] = trim($item['options']);
+    $old = $db->selectItem('pages', "`id`='".$request['arg']['update']."'");
+    $item = GetArgs($old, array('active', 'visible'));
     $item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
     $item['updated'] = gettime('Y-m-d H:i:s');
     if (isset($request['arg']['updatedAuto'])) $item['updated'] = gettime();
@@ -91,7 +106,7 @@ class TPages {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function pagesList($owner = 0, $level = 0)
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  # Выводит список страниц
   {
   global $db, $user, $page, $request;
   
@@ -102,8 +117,8 @@ class TPages {
       if (empty($item['caption'])) $item['caption'] = '---';
       $result .= '<tr><td>'.str_repeat('&nbsp;',$level*2).'<a'.((isset($request['arg']['id']) && ($request['arg']['id'] == $item['id']))?' class="selected"':($item['active']?'':' class="disabled"')).' href="'.$page->url(array('id'=>$item['id'])).'" title="'.$item['description'].'">'.$item['caption'].'</a> ';
       $result .=
-        '<a href="'.$page->url(array('up'=>$item['id'])).'" title="'.admUp.'">'.img('core/img/aru.gif', admUp, admUp).'</a> '.
-        '<a href="'.$page->url(array('down' => $item['id'])).'" title="'.admDown.'">'.img('core/img/ard.gif', admDown, admDown).'</a> '.
+        img('core/img/aru.gif', array('alt'=>admUp, 'title'=>admUp, 'extra'=>'onclick="moveItem(\'up\', '.$item['id'].')"')).' '.
+        img('core/img/ard.gif', array('alt'=>admDown, 'title'=>admDown, 'extra'=>'onclick="moveItem(\'down\', '.$item['id'].')"')).' '.
         "</td></tr>\n";
       $result .= $this->pagesList($item['id'], $level+1);
     }
@@ -128,7 +143,7 @@ class TPages {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderPages()
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  # Функция отрисовывает список страниц и элементы управления
   {
   global $page, $request;
 
@@ -136,12 +151,12 @@ class TPages {
     $wnd['width'] = '100%';
     $wnd['body'] =
       "<table width=\"100%\">\n".
-      "<tr><td style=\"padding: 0px;\"><table cellPadding=\"0\" cellSpacing=\"0\">\n".$this->pagesList()."\n</table>\n".
+      "<tr><td style=\"padding: 0px;\"><table cellPadding=\"0\" cellSpacing=\"0\" id=\"admPagesList\">\n".$this->pagesList()."\n</table>\n".
       "<tr><td><hr></td></tr>\n".
       "<tr><td>".
       '<form action="'.httpRoot.'admin.php" method="get">'."\n".
-      '<input type="hidden" name="mod" value="pages"><input type="hidden" name="action" value="create"><input type="submit" value="'.admPagesAddInto.'" class="button" style="width: 100%"><br>'."\n".
-      "<select name=\"owner\" style=\"width: 100%;\"><option value=\"0\">".admPagesRoot."</option>\n".$this->selectList(isset($request['arg']['id'])?$request['arg']['id']:'')."</select><br>\n</form></td></tr>\n";
+      '<input type="hidden" name="mod" value="pages"><input type="hidden" name="action" value="create"><input type="submit" value="'.admPagesAddInto.'" class="button" style="width: 100%"><br />'."\n".
+      "<select name=\"owner\" style=\"width: 100%;\"><option value=\"0\">".admPagesRoot."</option>\n".$this->selectList(isset($request['arg']['id'])?$request['arg']['id']:'')."</select><br />\n</form></td></tr>\n";
     if (isset($request['arg']['id'])) {
       $wnd['body'] .=
         '<tr><td>'.
@@ -150,7 +165,7 @@ class TPages {
           '<div class="admHidden"><input type="hidden" name="action" value="move"></div>'.
           '<div class="admHidden"><input type="hidden" name="id" value="'.$request['arg']['id'].'"></div>'."\n".
         "<hr><div><input type=\"submit\" value=\"".admPagesMoveTo."\" class=\"button\" style=\"width: 100%\"></div>\n".
-        "<div><select name=\"to\" style=\"width: 100%;\"><option value=\"0\">".admPagesRoot."</option>\n".$this->selectList(0, $request['arg']['id'])."</select></div><br>\n</form></td></tr>\n";
+        "<div><select name=\"to\" style=\"width: 100%;\"><option value=\"0\">".admPagesRoot."</option>\n".$this->selectList(0, $request['arg']['id'])."</select></div><br />\n</form></td></tr>\n";
       if (UserRights(ADMIN)) $wnd['body'] .= "<tr><td><hr><form action=\"".httpRoot."admin.php\" method=\"post\"><div><input type=\"hidden\" name=\"mod\" value=\"pages\"><input type=\"hidden\" name=\"action\" value=\"delete\"><input type=\"hidden\" name=\"id\" value=\"".$request['arg']['id']."\"><input type=\"submit\" value=\"".admPagesDeleteBrunch."\" class=\"button\" style=\"width: 100%\"></div></form></td></tr>\n";
     }
     $wnd['body'] .= 
@@ -160,9 +175,9 @@ class TPages {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function moveUp()
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+  # Функция перемещает страницу вверх в списке
   {
-  global $db, $page, $request;
+  global $db, $request;
   
     $item = $db->selectItem('pages',"`id`='".$request['arg']['up']."'");
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
@@ -174,13 +189,13 @@ class TPages {
       $db->updateItem('pages', $item, "`id`='".$item['id']."'");
       $db->updateItem('pages', $temp, "`id`='".$temp['id']."'");
     }
-    goto($page->url());
+    HttpAnswer($this->pagesList());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function moveDown()
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+  # Функция перемещает страницу вниз в списке
   {
-  global $db, $page, $request;
+  global $db, $request;
   
     $item = $db->selectItem('pages',"`id`='".$request['arg']['down']."'");
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
@@ -192,11 +207,11 @@ class TPages {
       $db->updateItem('pages', $item, "`id`='".$item['id']."'");
       $db->updateItem('pages', $temp, "`id`='".$temp['id']."'");
     }
-    goto($page->url());
+    HttpAnswer($this->pagesList());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function move()
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+  # Перемещает страницу из одной ветки в другую
   {
   global $db, $page, $request;
 
@@ -208,16 +223,24 @@ class TPages {
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function deleteBrunch($id) {
-  global $db;
+  function deleteBrunch($id) 
+  {
+    global $db, $plugins;
   
+    $item = $db->selectItem('pages', "`id`='".$id."'"); 
+    if ($plugins->load($item['type'])) {
+      if (isset($plugins->items[$item['type']]->table)) {
+        $fields = $db->fields($plugins->items[$item['type']]->table['name']);
+        if (in_array('section', $fields)) $db->delete($plugins->items[$item['type']]->table['name'], "`section`='".$item['id']."'");
+      }
+    }
     $items = $db->select('`pages`', "`owner`='".$id."'", '', false, '`id`');
     if (count($items)) foreach($items as $item) $this->deleteBrunch($item['id']);
     $db->delete('pages', "`id`='".$id."'");
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function delete()
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  # Удаляет страницу
   {
   global $db, $page, $request;
 
@@ -225,7 +248,7 @@ class TPages {
     $this->deleteBrunch($request['arg']['id']);
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
     SendNotify(admDeleted.":\n".$this->notifyMessage($item));
-    goto($page->url());
+    goto($page->url(array('id'=>'')));
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function loadContentTypes()
@@ -259,7 +282,7 @@ class TPages {
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function create()
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  # Функция выводит форму для добавления новой страницы
   {
   global $page, $plugins, $request;
 
@@ -301,10 +324,10 @@ class TPages {
     $item = $db->selectItem('pages', "`id`='".$id."'");
     $content = $this->loadContentTypes();
     $templates = $this->loadTemplates();
-    # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    # Декодируем опции
     $item['options'] = array2text(decodeOptions($item['options']), true);
     $form['caption'] = $item['caption'];
-    # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    # Вычисляем адрес страницы
     $urlAbs = $page->clientURL($item['id']);
 
     $form = array(
@@ -353,6 +376,7 @@ class TPages {
         case 'move': $this->move(); break;
         case 'delete': $this->delete(); break;
       } else {
+        $this->intallScripts();
         if (isset($request['arg']['id'])) $result .= $this->edit($request['arg']['id']);
         $result = "<table width=\"100%\"><tr><td valign=\"top\" style=\"width: 30%\">\n".$this->renderPages()."</td>\n<td valign=\"top\">".$result."</td></tr></table>\n";
       }

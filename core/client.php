@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.00
+# Версия 2.01
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -11,7 +11,7 @@ define('CLIENTUI', true);
 
 # Подключаем ядро системы #
 if (file_exists('core/kernel.php')) include_once('core/kernel.php'); else {
-  echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br>\nThis error can take place during site update.<br>\nPlease try again later.";
+  echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
   exit;
 }
 
@@ -36,6 +36,7 @@ class TClientUI {
   var $name = ''; # Имя страницы
   var $owner = 0; # Идентификатор родительской страницы
   var $title = ''; # Заголовок страницы
+  var $section = array(); # Массив заголовков страниц
   var $caption = ''; # Название страницы
   var $hint = ''; # Подсказка с описанием страницы
   var $description = ''; # Описание страницы
@@ -59,7 +60,11 @@ class TClientUI {
   {
   global $user;
   
-    $result = str_replace(
+  $section = $this->section;
+  if (siteTitleReverse) $section = array_reverse($section);
+  $section = strip_tags(implode($section, option('siteTitleDivider')));
+  
+  $result = str_replace(
       array(
         '$(httpHost)',
         '$(httpPath)',
@@ -81,6 +86,8 @@ class TClientUI {
         '$(pageKeywords)',
         '$(pageAccessLevel)',
         '$(pageAccessName)',
+
+        '$(sectionTitle)',
       ),
       array(
         httpHost, 
@@ -103,6 +110,7 @@ class TClientUI {
         $this->keywords,
         $this->access,
         constant('ACCESSLEVEL'.$this->access),
+        $section,
       ),
       $text
     );
@@ -124,6 +132,7 @@ class TClientUI {
     if ($tmp == null) $this->Error404(); else {
       $item = $tmp;
       $tmp['id'] = 0;
+      $this->section[] = $item['title'];
       # Парсим командную строку
       if (count($request['params'])) do {
         $tmp = $db->selectItem('pages', "`name`='".$request['params'][0]."' AND `owner`='".$tmp['id']."' AND `access`>=".($user['auth']?$user['access']:GUEST)."");
@@ -132,7 +141,7 @@ class TClientUI {
           $item = $tmp;
           $url .= $item['name'].'/';
           $plugins->clientOnPathSplit($item, $url);
-          #$this->section[] = $item['caption'];
+          $this->section[] = $item['title'];
           array_shift($request['params']);
         }
       } while (($tmp != null) && count($request['params']));
@@ -161,8 +170,7 @@ class TClientUI {
       $this->id = $item['id'];
       $this->name = $item['name'];
       $this->owner = $item['owner'];
-      $this->title[] = siteTitle;
-      $this->title[] = $item['title'];
+      $this->title = $item['title'];
       $this->description = $item['description'];
       $this->keywords = $item['keywords'];
       $this->caption = $item['caption'];
@@ -218,7 +226,8 @@ class TClientUI {
     if (defined('HTTP_CODE_'.$code)) $message = constant('HTTP_CODE_'.$code);
     else $message = $ERROR[$code]['response'];
 
-    $this->title = array(siteTitle, $message);
+    $this->section = array(siteTitle, $message);
+    $this->title = $message;
     $this->description = '';
     $this->keywords = '';
     $this->caption = $message;
@@ -279,7 +288,7 @@ class TClientUI {
       $template = filesRoot.'templates/default.tmpl';
       if (file_exists($template)) $template = StripSlashes(file_get_contents($template)); else CMSError('File not found', 'Open file '.$template, __FILE__, __LINE__);
     }
-    $template = trim(substr($template, strpos($template, "\n")));
+    $this->template = trim(substr($template, strpos($template, "\n")));
     $content = $plugins->clientOnContentRender($content);
 
     if (isset($session['msg']['information']) && count($session['msg']['information'])) {
@@ -306,18 +315,18 @@ class TClientUI {
       $session['errorMessage'] = '';
     }
     /*OBSOLETE:END */
-    $result = str_replace('$(Content)', $content, $template);
+    $result = str_replace('$(Content)', $content, $this->template);
     
-    # Собираем заголовок
-    if (siteTitleReverse) $this->title = array_reverse($this->title);
-    $this->title = implode($this->title, ' - ');
     if (!empty($this->styles)) {
       $styles = "<style type=\"text/css\">\n  ".str_replace("\n", "\n  ", trim($this->styles))."\n</style>\n";
       $result = preg_replace('|(.*)</head>|i', '$1'.$styles."\n</head>", $result);
     }
-    if (!empty($this->scripts)) $this->scripts = "<script type=\"text/javascript\">\n  ".str_replace("\n", "\n  ", trim($this->scripts))."\n</script>\n";
+
+    $result = $plugins->clientOnPageRender($result);
+
+    if (!empty($this->scripts)) $this->scripts = "  <script type=\"text/javascript\">\n  ".str_replace("\n", "\n    ", trim($this->scripts))."\n  </script>\n";
     $this->scripts =
-      '  <script language="JavaScript" type="text/javascript">'."\n".
+      '  <script type="text/javascript">'."\n".
       "    var iBrowser = new Array();\n".
       "    iBrowser['UserAgent'] = navigator.userAgent.toLowerCase();\n".
       "    if ((iBrowser['UserAgent'].indexOf('msie') != -1) && (iBrowser['UserAgent'].indexOf('opera') == -1) && (iBrowser['UserAgent'].indexOf('webtv') == -1)) iBrowser['Engine'] = 'IE';\n".
@@ -327,15 +336,8 @@ class TClientUI {
       "    if (iBrowser['UserAgent'].indexOf('konqueror') != -1) iBrowser['Engine'] = 'Konqueror';\n".
       "    iBrowser['UserAgent'] = navigator.userAgent;\n".
       "  </script>\n".
-      "  <script language=\"JavaScript\" type=\"text/javascript\">iBrowser['JavaScript'] = '1.0'; </script>\n".
-      "  <script language=\"JavaScript1.1\" type=\"text/javascript\">iBrowser['JavaScript'] = '1.1'; </script>\n".
-      "  <script language=\"JavaScript1.2\" type=\"text/javascript\">iBrowser['JavaScript'] = '1.2'; </script>\n".
-      "  <script language=\"JavaScript1.3\" type=\"text/javascript\">iBrowser['JavaScript'] = '1.3'; </script>\n".
-      "  <script language=\"JavaScript1.4\" type=\"text/javascript\">iBrowser['JavaScript'] = '1.4'; </script>\n".
-      "  <script language=\"JavaScript1.5\" type=\"text/javascript\">iBrowser['JavaScript'] = '1.5'; </script>\n".
       $this->scripts;
     $result = preg_replace('|(.*)</head>|i', '$1'.$this->scripts."\n</head>", $result);
-    $result = $plugins->clientOnPageRender($result);
     # Замена макросов
     $result = $this->replaceMacros($result);
 
@@ -346,23 +348,17 @@ class TClientUI {
     if (!DEBUG_MODE) ob_end_flush();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  /*function renderTopic($text, $topic=null, $buttonBack=true)
-  {
-  global $plugins;
-  
-    if (!is_null($topic))$this->content['section'] .= ' &raquo; '.$topic['caption'];
-    $text = $plugins->clientOnTopicRender($text, $topic, $buttonBack);
-    return $text;
-  }*/
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function pages($pagesCount, $itemsPerPage, $reverse = false)
   # Выводит список подстраниц для навигации по ним
   {
   global $request;
 
     if ($pagesCount>1) {
-      #$at_once = getOption('pages_at_once');
+      $at_once = option('clientPagesAtOnce');
       if (!$at_once) $at_once = 10;
+      
+      $side_left = '';
+      $side_right = '';
       
       $for_from = $reverse ? $pagesCount : 1;
       $default = $for_from;
@@ -426,28 +422,29 @@ class TClientUI {
         $width = isset($item['width'])?' style="width: '.$item['width'].';"':'';
         $disabled = isset($item['disabled']) && $item['disabled']?' disabled':'';
         $extra = isset($item['extra'])?' '.$item['extra']:'';
-        $comment = isset($item['comment'])?$item['comment']:'';
+        $comment = isset($item['comment'])?' '.$item['comment']:'';
         switch(strtolower($item['type'])) {
           case 'hidden': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $hidden .= '<input type="hidden" name="'.$item['name'].'" value="'.$value.'">'."\n";
+            $hidden .= '<input type="hidden" name="'.$item['name'].'" value="'.$value.'" />'."\n";
           break;
           case 'divider': $body .= "<tr><td colspan=\"2\"><hr></td></tr>\n"; break;
           case 'text': $body .= '<tr><td colspan="2" class="formText"'.$extra.'>'.$value."</td></tr>\n"; break;
           case 'header': $body .= '<tr><th colspan="2" class="formHeader">'.$value."</th></tr>\n"; break;
           case 'edit': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($value).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$width.$disabled.$extra.'>'.$comment."</td></tr>\n"; break;
+            $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($value).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$width.$disabled.$extra.' />'.$comment."</td></tr>\n"; break;
           break;
           case 'password': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.'>'.$comment."</td></tr>\n";
+            $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.' />'.$comment."</td></tr>\n";
             if (isset($item['equal'])) $validator .= "if (".$form['name'].".".$item['name'].".value != ".$form['name'].".".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\n".$form['name'].".".$item['name'].".value = '';\n".$form['name'].".".$item['equal'].".value = ''\n".$form['name'].".".$item['equal'].".select();\n} else ";
           break;
           case 'select': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><select name="'.$item['name'].'"'.$width.$disabled.$extra.'>'."\n";
-            for($i = 0; $i< count($item['items']); $i++) {
+            if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
+            for($i = 0; $i < count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
               $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
             }
@@ -456,6 +453,7 @@ class TClientUI {
           case 'listbox':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
+            if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
               $body .= '<option value="'.$value.'" '.(count($values) && in_array($value, $values[$item['name']]) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
@@ -464,15 +462,15 @@ class TClientUI {
           break;
           case 'checkbox': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;"><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
+            $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
           break;
           case 'memo': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="formLabel">'.$label.'</span><br>').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$disabled.$extra.' style="width: 100%;">'.EncodeHTML($value)."</textarea></td></tr>\n"; 
+            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="formLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$width.$disabled.$extra.' >'.EncodeHTML($value)."</textarea></td></tr>\n"; 
           break;
           case 'file': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="file" name="'.$item['name'].'" size="'.$item['width'].'"'.$disabled.">".$comment."</td></tr>\n";
+            $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="file" name="'.$item['name'].'" size="'.$item['width'].'"'.$disabled." />".$comment."</td></tr>\n";
             $file = true;
           break;
           default: ErrorMessage(sprintf(errFormUnknownType, $item['type'], $form['name']));
@@ -481,18 +479,21 @@ class TClientUI {
     }
     if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
     $result .=
-      "<div align=\"center\">\n".
+      "<div style=\"width: ".$form['width']."\" class=\"form\">\n".
       "<form ".(empty($form['name'])?'':'name="'.$form['name'].'" id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onSubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
-      "<input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\">".
+      "<input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
       $hidden.
-      "<table width=\"".$form['width']."\" class=\"form\">\n".
+      "<table>\n".
       (empty($form['caption'])?'':"<tr><th colspan=\"2\">".$form['caption']."</th></tr>\n").
       "<tr><td>".img('style/dot.gif')."</td><td style=\"width: 100%\">".img('style/dot.gif')."</td></tr>\n".
       $body.
-      "<tr><td colspan=\"2\" align=\"center\"><br>".
-      (in_array('ok', $form['buttons'])?"<input type=\"submit\" class=\"button\" value=\"OK\"> ":'').
-      (in_array('reset', $form['buttons'])?"<input type=\"reset\" class=\"button\" value=\"".strReset."\"> ":'').
-      (in_array('cancel', $form['buttons'])?"<input type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\">":'').
+      "<tr><td colspan=\"2\" class=\"buttons\"><br />".
+      (in_array('ok', $form['buttons'])?'<input type="submit" class="button" value="OK" /> ':'').
+      (array_key_exists('ok', $form['buttons'])?'<input type="submit" class="button" value="'.$form['buttons']['ok'].'" /> ':'').
+      (in_array('reset', $form['buttons'])?'<input type="reset" class="button" value="'.strReset.'" /> ':'').
+      (array_key_exists('reset', $form['buttons'])?'<input type="reset" class="button" value="'.$form['buttons']['reset'].'" /> ':'').
+      (in_array('cancel', $form['buttons'])?'<input type="button" class="button" value="'.strCancel.'" onclick="javascript:history.back();" />':'').
+      (array_key_exists('cancel', $form['buttons'])?'<input type="button" class="button" value="'.$form['buttons']['cancel'].'" onclick="javascript:history.back();" />':'').
       "</td></tr>\n".
       "</table>\n</form></div>\n";
     return $result;
@@ -501,13 +502,13 @@ class TClientUI {
   function buttonAddItem($caption = '', $value = '')
   {
   global $request;
-    return '<form class="contentButton" action="'.$request['url'].execScript.'" method="get"><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton"></form>';
+    return '<form class="contentButton" action="'.$request['url'].execScript.'" method="get"><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></form>';
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function buttonBack($caption = '', $url='')
   {
   global $request;
-    return '<form class="contentButton" action="" method="get"><input type="button" value="'.(empty($caption) ? strReturn : $caption).'" class="contentButton" onClick="'.(empty($url)?'javascript:history.back();':"window.location='".$url."'").'"></form>';
+    return '<form class="contentButton" action="" method="get"><input type="button" value="'.(empty($caption) ? strReturn : $caption).'" class="contentButton" onClick="'.(empty($url)?'javascript:history.back();':"window.location='".$url."'").'" /></form>';
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function button($caption, $url, $name='', $value='')
@@ -515,8 +516,8 @@ class TClientUI {
   global $request;
 
     $result = '<form class="contentButton" action="'.$url.'" method="get">';
-    if (!empty($name)) $result .= '<input type="hidden" name="'.$name.'" value="'.$value.'">';
-    $result .= '<input type="submit" value="'.$caption.'" class="contentButton" onClick="window.location=\''.$url.'\'"></form>';
+    if (!empty($name)) $result .= '<input type="hidden" name="'.$name.'" value="'.$value.'" />';
+    $result .= '<input type="submit" value="'.$caption.'" class="contentButton" onClick="window.location=\''.$url.'\'" /></form>';
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.00
+# Версия 2.01
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -58,9 +58,9 @@ function callStack()
   $callstack = debug_backtrace();
   $result = '<div style="font-weight: normal; text-align: left;">';
   for ($i = 1; $i < count($callstack); $i++) if ($callstack[$i]['function'] != 'errorhandler') {
-    $result .= 'File <b>'.$callstack[$i]['file'].'</b> line <b>'.$callstack[$i]['line'].'</b>:<br>';
+    $result .= 'File <b>'.$callstack[$i]['file'].'</b> line <b>'.$callstack[$i]['line'].'</b>:<br />';
     $args = '';
-    if (count($callstack[$i]['args'])) {
+    if (isset($callstack[$i]['args']) && count($callstack[$i]['args'])) {
       $args = array();
       foreach($callstack[$i]['args'] as $arg) {
         ob_start();
@@ -71,7 +71,7 @@ function callStack()
       $args = implode(', ', $args);
     }
     
-    $result .= 'Call <b>'.(empty($callstack[$i]['class'])?'':$callstack[$i]['class']).(empty($callstack[$i]['type'])?'':$callstack[$i]['type']).$callstack[$i]['function'].'</b>('.$args.')<br><br>';
+    $result .= 'Call <b>'.(empty($callstack[$i]['class'])?'':$callstack[$i]['class']).(empty($callstack[$i]['type'])?'':$callstack[$i]['type']).$callstack[$i]['function'].'</b>('.$args.')<br /><br />';
   }
   $result .='</div>';
   return $result;

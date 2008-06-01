@@ -366,7 +366,7 @@ HTMLArea.Config = function()
     ["separator","subscript","superscript"],
     ["linebreak","separator","justifyleft","justifycenter","justifyright","justifyfull"],
     ["separator","insertorderedlist","insertunorderedlist","outdent","indent"],
-    ["separator","inserthorizontalrule","createlink","insertimage","inserttable"],
+    ["separator","insertlinebreak","inserthorizontalrule","createlink","insertimage","inserttable"],
     ["separator","undo","redo","selectall","print"], (HTMLArea.is_gecko ? [] : ["cut","copy","paste","overwrite","saveas"]),
     ["separator","killword","clearfonts","removeformat","toggleborders","splitblock","lefttoright", "righttoleft"],
     ["separator","htmlmode","showhelp","about"]
@@ -480,6 +480,7 @@ HTMLArea.Config = function()
     paste: [ "Paste from clipboard", ["ed_buttons_main.gif",4,1], false, cut_copy_paste ],
     selectall: [ "Select all", "ed_selectall.gif", false, function(e) {e.execCommand("selectall");} ],
 
+    insertlinebreak: [ "Line Break", ["ed_buttons_main.gif",2,4], false, function(e) { e.execCommand("insertlinebreak"); } ],
     inserthorizontalrule: [ "Horizontal Rule", ["ed_buttons_main.gif",6,0], false, function(e) { e.execCommand("inserthorizontalrule"); } ],
     createlink: [ "Insert Web Link", ["ed_buttons_main.gif",6,1], false, function(e) { e._createLink(); } ],
     insertimage: [ "Insert/Modify Image", ["ed_buttons_main.gif",6,3], false, function(e) { e.execCommand("insertimage"); } ],
@@ -3988,6 +3989,14 @@ HTMLArea.prototype._createLink = function(link)
 
 // Called when the user clicks on "InsertImage" button.  If an image is already
 // there, it will just modify it's properties.
+HTMLArea.prototype._insertLineBreak = function()
+{
+  var editor = this;	// for nested functions
+  var br = document.createElement('br');
+  editor.insertNodeAtSelection(br);
+  editor.updateToolbar();
+};
+
 HTMLArea.prototype._insertImage = function(image)
 {
   var editor = this;	// for nested functions
@@ -4060,7 +4069,7 @@ HTMLArea.prototype._insertImage = function(image)
         switch (field)
         {
           case "f_alt":
-            img.alt = value;
+            img.alt = (value == "")?" ":value;
           break;
           case "f_border":
             img.border = parseInt(value || "0", 10);
@@ -4183,7 +4192,7 @@ HTMLArea.prototype._comboSelected = function(el, txt)
     break;
     case "formatblock":
       // (HTMLArea.is_ie) && (value = "<" + value + ">");
-      if( !HTMLArea.is_gecko || value !== 'blockquote' )
+      if( !HTMLArea.is_gecko || (value !== 'blockquote' && value !== 'div'))
       {
         value = "<" + value + ">";
       }
@@ -4283,6 +4292,10 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param)
       }
     break;
 
+    case "insertlinebreak":
+      this._insertLineBreak();
+    break;
+
     case "inserttable":
       this._insertTable();
     break;
@@ -4351,7 +4364,7 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param)
       {
         if ( this.config.debug )
         {
-          alert(e + "\n\nby execCommand(" + cmdID + ");");
+          alert(ex + "\n\nby execCommand(" + cmdID + ");");
         }
       }
     break;

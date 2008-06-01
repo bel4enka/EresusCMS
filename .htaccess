@@ -9,11 +9,11 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
   RewriteEngine on
-  RewriteRule (core/editor/.*\.html)$ core/gziph.php?file=$1&type=text/html [L]
-  RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
-  RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
+  RewriteRule (core/editor/.*\.html)$ core/gziph.php?file=$1&type=text/html&cache=private [L]
+  RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css&cache=private [L]
+  RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript&cache=private [L]
   RewriteRule ^(core|ext|data|style)/ - [L]
   RewriteRule ^admin admin.php [L]
-  RewriteRule \.(jpg|gif|jpeg|bmp|png|ico|zip|7z|rar)$ - [L]
+  RewriteRule \.(jpg|jpeg|gif|png|bmp|ico|zip|7z|rar|txt)$ - [L]
   RewriteRule \.* index.php
 </IfModule>

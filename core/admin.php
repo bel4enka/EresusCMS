@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.00
+# Версия 2.01
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -11,7 +11,7 @@ define('ADMINUI', true);
 
 # Подключаем ядро системы #
 if (file_exists('core/kernel.php')) include_once('core/kernel.php'); else {
-  echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br>\nThis error can take place during site update.<br>\nPlease try again later.";
+  echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
   exit;
 }
 
@@ -169,7 +169,7 @@ class TAdminUI {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function box($text, $class, $caption='')
   {
-    $result = "<div".(empty($class)?'':' class="'.$class.'"').">\n".(empty($caption)?'':'<span class="'.$class.'Caption">'.$caption.'</span><br>').$text."</div>\n";
+    $result = "<div".(empty($class)?'':' class="'.$class.'"').">\n".(empty($caption)?'':'<span class="'.$class.'Caption">'.$caption.'</span><br />').$text."</div>\n";
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -277,7 +277,7 @@ class TAdminUI {
     $url_toggle = $this->url(array($prefix.'toggle'=>"%s"));
     $columnCount = count($table['columns'])+1;
     if (count($items)) foreach($items as $item) {
-      $result .= '<tr onMouseOut="tableRow(this, '.($columnCount).', 0)" onMouseOver="tableRow(this, '.($columnCount).', 1)"><td class="ctrl">';
+      $result .= '<tr><td class="ctrl">';
       if (isset($table['controls']['delete']) && (empty($table['controls']['delete']) || $this->module->$table['controls']['delete']($item))) $result .= ' <a href="'.sprintf($url_delete, $item[$table['key']]).'" title="'.admDelete.'" onClick="askdel(this)">'.img('core/img/delete.gif', admDelete, admDelete, 16, 16).'</a>';
       if (isset($table['controls']['edit']) && (empty($table['controls']['edit']) || $this->module->$table['controls']['edit']($item)))  $result .= ' <a href="'.sprintf($url_edit, $item[$table['key']]).'" title="'.admEdit.'">'.img('core/img/edit.gif', admEdit, admEdit, 16, 16).'</a>';
       if (isset($table['controls']['position']) && (empty($table['controls']['position']) || $this->module->$table['controls']['position']($item)) && $sortMode == 'position')  {
@@ -330,21 +330,20 @@ class TAdminUI {
       if ((!isset($item['access'])) || (UserRights($item['access']))) {
         if (isset($item['label'])) $label = !empty($item['hint']) ? '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>': $item['label']; else $label = '';
         if (isset($item['pattern'])) $validator .= "if (!document.".$form['name'].".".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\ndocument.".$form['name'].".".$item['name'].".select();\n} else ";
-        $value = StripSlashes(
-          isset($item['value'])
-            ? $item['value']
-            : (isset($item['name']) && isset($values[$item['name']])
-                ? $values[$item['name']] 
-                : (isset($item['default'])
-                    ? $item['default']
-                    : ''
-                  )
-              )
-          );
+        $value = isset($item['value'])
+          ? $item['value']
+          : (isset($item['name']) && isset($values[$item['name']])
+              ? $values[$item['name']] 
+              : (isset($item['default'])
+                  ? $item['default']
+                  : ''
+                )
+            );
+        if (is_string($value)) $value = StripSlashes($value);
         $width = isset($item['width'])?' style="width: '.$item['width'].';"':'';
         $disabled = isset($item['disabled']) && $item['disabled']?' disabled':'';
         $extra = isset($item['extra'])?' '.$item['extra']:'';
-        $comment = isset($item['comment'])?$item['comment']:'';
+        $comment = isset($item['comment'])?' '.$item['comment']:'';
         switch(strtolower($item['type'])) {
           case 'hidden':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
@@ -365,6 +364,7 @@ class TAdminUI {
           case 'select': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select name="'.$item['name'].'"'.$width.$disabled.$extra.'>'."\n";
+            if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
               $body .= '<option value="'.$value.'" '.($value == (isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'')) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
@@ -374,6 +374,7 @@ class TAdminUI {
           case 'listbox':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
+            if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
               $body .= '<option value="'.$value.'" '.(count($values) && in_array($value, $values[$item['name']]) ? 'selected' : '').">".$item['items'][$i]."</option>\n";
@@ -386,12 +387,12 @@ class TAdminUI {
           break;
           case 'memo': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="admFormLabel">'.$label.'</span><br>').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$disabled.$extra.' style="width: 100%;">'.EncodeHTML($value)."</textarea></td></tr>\n"; 
+            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="admFormLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$disabled.$extra.' style="width: 100%;">'.EncodeHTML($value)."</textarea></td></tr>\n"; 
           break;
           case 'html': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $value = isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'');
-            $body .= '<tr><td colspan="2">'.$label.'<br><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.EncodeHTML($value).'</textarea></td></tr>'."\n";
+            $body .= '<tr><td colspan="2">'.$label.'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.EncodeHTML($value).'</textarea></td></tr>'."\n";
             $this->htmlEditors[] = 'wyswyg_'.$item['name'];
           break;
           case 'file': 
@@ -415,7 +416,7 @@ class TAdminUI {
       "<table width=\"100%\">\n".
       "<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td></tr>\n".
       $body.
-      "<tr><td colspan=\"2\" align=\"center\"><br>".
+      "<tr><td colspan=\"2\" align=\"center\"><br />".
       (!isset($form['buttons']) || in_array('ok', $form['buttons'])?"<input type=\"submit\" class=\"button\" value=\"".strOk."\"> ":''). # onClick=\"formOKClick('".$form['name']."')\"> ":'').
       (!isset($form['buttons']) || in_array('apply', $form['buttons'])?"<input type=\"submit\" class=\"button\" value=\"".strApply."\" onClick=\"formApplyClick('".$form['name']."')\"> ":'').
       (isset($form['buttons']) && in_array('reset', $form['buttons'])?"<input type=\"reset\" class=\"button\" value=\"".strReset."\"> ":'').
@@ -588,7 +589,7 @@ class TAdminUI {
       '<body class="admin">'."\n".
       '<div class="pageHeader">'."\n".
       $logo.
-      '  <h1>'.getOption('siteName').' - '.$this->title.'</h1>CMS '.CMSNAME.' '.CMSVERSION."\n".
+      '  <h1>'.option('siteName').' - '.$this->title.'</h1>CMS '.CMSNAME.' '.CMSVERSION."\n".
       '</div>'."\n".
       '<table width="100%" cellSpacing="0" cellPadding="0">'."\n".
       '  <tr>'."\n".
@@ -627,7 +628,7 @@ if (!UserRights(EDITOR)) {
     "<table border=\"0\" style=\"width: 100%; height: 100%; vertical-align: middle\">\n<tr>\n<td align=\"center\">".
     "<form name=\"auth\" action=\"\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"login\">\n".
     "<table style=\"background-color: #eee; font-size: 8pt;\">\n".
-    "<tr><th colspan=\"2\" style=\"background-color: #25b; border: solid 1 black;	color: gold;\">".getOption('siteName')."</th></tr>\n".
+    "<tr><th colspan=\"2\" style=\"background-color: #25b; border: solid 1 black;	color: gold;\">".option('siteName')."</th></tr>\n".
     "<tr><td>Пользователь:</td><td><input type=\"text\" name=\"user\"></td></tr>\n".
     "<tr><td>Пароль:</td><td><input type=\"password\" name=\"password\"></td></tr>\n".
     "<tr><td>Запомнить</td><td><input type=\"checkbox\" name=\"autologin\" value=\"1\" style=\"border-width: 0px; margin: 0px;\"></td></tr>\n".

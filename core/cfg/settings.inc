@@ -1,7 +1,8 @@
 <?
   define('siteName', 'Новый сайт');
   define('siteTitle', 'Новый сайт');
-  define('siteTitleReverse', true);
+  define('siteTitleReverse', false);
+  define('siteTitleDivider', '');
   define('siteKeywords', '');
   define('siteDescription', '');
   define('mailFromAddr', '');
@@ -13,8 +14,10 @@
   define('sendNotifyTo', '');
   define('filesOwnerSetOnUpload', false);
   define('filesOwnerDefault', '');
-  define('filesModeSetOnUpload', true);
+  define('filesModeSetOnUpload', false);
   define('filesModeDefault', '0644');
-  define('contentTypeDefault', 'html');
+  define('filesTranslitNames', false);
+  define('contentTypeDefault', 'default');
   define('pageTemplateDefault', 'default');
+  define('clientPagesAtOnce', '10');
 ?>

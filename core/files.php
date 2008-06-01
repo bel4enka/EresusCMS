@@ -1,11 +1,11 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ
-# пїЅпїЅпїЅпїЅпїЅпїЅ 2.00
-# пїЅ 2004-2006, ProCreat Systems
+# Система управления контентом Eresus™
+# Версия 2.01
+# © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Файловый менеджер
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
@@ -56,25 +56,25 @@ class TFiles{
     $menu = array (
       array (
         'name' => 'folder',
-        'caption' => 'пїЅпїЅпїЅпїЅпїЅ',
+        'caption' => 'Папка',
         'action' => "javascript:filesMkDir()",
         'active' => true,
       ),
       array (
         'name' => 'copy',
-        'caption' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+        'caption' => 'Копировать',
         'action' => 'javascript:filesCopy()',
         'active' => true,
       ),
       array (
         'name' => 'move',
-        'caption' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+        'caption' => 'Переместить',
         'action' => 'javascript:filesMove()',
         'active' => UserRights(ADMIN),
       ),
       array (
         'name' => 'delete',
-        'caption' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+        'caption' => 'Удалить',
         'action' => "javascript:filesDelete()",
         'active' => UserRights(ADMIN),
       ),
@@ -118,7 +118,7 @@ class TFiles{
       switch (filetype(filesRoot.$this->root.$dir.'/'.$name)) {
         case 'dir':
           $result[$i]['icon'] = 'folder'; 
-          $result[$i]['size'] = 'пїЅпїЅпїЅпїЅпїЅ';
+          $result[$i]['size'] = 'Папка';
           $result[$i]['link'] = ($name == '..')?substr($path, 0, strrpos($path, '/')):$path.'/'.$name;
           $result[$i]['action'] = 'cd';
         break;
@@ -164,7 +164,7 @@ class TFiles{
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"filesList\" id=\"".$side."Panel\">\n".
       "<tr class=\"filesListPath\"><th colspan=\"5\">.".((empty($path)) ? '/' : $path)."</th></tr>\n".
-      "<tr class=\"filesListHdr\"><th>&nbsp;</th><th>пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</th><th>пїЅпїЅпїЅпїЅпїЅпїЅ</th><th>пїЅпїЅпїЅпїЅпїЅ</th><th>пїЅпїЅпїЅпїЅпїЅпїЅ</th><th>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</th><th style=\"width: 100%\">&nbsp;</th></tr>\n";
+      "<tr class=\"filesListHdr\"><th>&nbsp;</th><th>Имя файла</th><th>Размер</th><th>Время</th><th>Доступ</th><th>Владелец</th><th style=\"width: 100%\">&nbsp;</th></tr>\n";
     for ($i = 0; $i < count($items);  $i++) {
       $result .= "<tr onClick=\"rowSelect(this)\" onDblClick=\"";
       switch ($items[$i]['action']) {
@@ -182,8 +182,8 @@ class TFiles{
   global $request;
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-      "<tr><td align=\"center\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</td><td><form name=\"upload\" action=\"".$request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"upload\" size=\"50\"> <input type=\"submit\" value=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"> пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: ".ini_get('upload_max_filesize')."</form></td></tr>".
-      "<tr><td align=\"center\"><a href=\"javascript:Copy('SelFileName');\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ</a></td><td style=\"width: 100%;\"><input type=\"text\" id=\"SelFileName\" value=\"пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\" style=\"width: 100%;\"></td></tr>".
+      "<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".$request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"upload\" size=\"50\"> <input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</form></td></tr>".
+      "<tr><td align=\"center\"><a href=\"javascript:Copy('SelFileName');\">Скопировать имя</a></td><td style=\"width: 100%;\"><input type=\"text\" id=\"SelFileName\" value=\"Нет выбранных объектов\" style=\"width: 100%;\"></td></tr>".
       "</table>";
     return $result;
   }
@@ -193,7 +193,7 @@ class TFiles{
   global $request;
     $result =
       "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-      "<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: ".FormatSize(disk_free_space(filesRoot.$this->root))."</td></tr>".
+      "<tr><td>Доступное место: ".FormatSize(disk_free_space(filesRoot.$this->root))."</td></tr>".
       "</table>";
     return $result;
   }
@@ -202,8 +202,9 @@ class TFiles{
   {
   global $request;
   
+    $path = (isset($request['arg']['sp'])?$request['arg'][$request['arg']['sp'].'f']:'').'/';
     foreach($_FILES as $name => $file) {
-      upload($name, substr(filesRoot.$this->root, 0, strlen(filesRoot.$this->root)-1).$request['arg'][$request['arg']['sp'].'f'].'/'.$file['name']);
+      upload($name, substr(filesRoot.$this->root, 0, strlen(filesRoot.$this->root)-1).$path);
     }
     goto($request['referer']);
   }
@@ -279,7 +280,7 @@ class TFiles{
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  # Административные функции
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function adminRender()
   {

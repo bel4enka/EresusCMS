@@ -137,7 +137,7 @@
           <tr>
             <th>Загрузить файл</th>
             <td>
-              <form name="Upload" action="$(httpRoot)core/dlg/OpenFile.php" method="post" enctype="multipart/form-data">
+              <form name="Upload" action="$(httpRoot)core/dlg/BrowseFile.php" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" size="35"> <input type="submit" value="OK">
               </form>
             </td>
@@ -145,7 +145,7 @@
           <tr>
             <th>Создать папку</th>
             <td>
-              <form name="CreateFolder" action="$(httpRoot)core/dlg/OpenFile.php" method="post">
+              <form name="CreateFolder" action="$(httpRoot)core/dlg/BrowseFile.php" method="post">
                 <input type="text" name="folder" size="35"> <input type="submit" value="Создать">
               </form>
             </td>
@@ -164,9 +164,9 @@
       <td style="text-align: center; padding: 5px; height: 50px;">
         <form name="controls" action="">
         <select name="hrefStyle">
-          <option value="httpRoot">Использовать макрос httpRoot</option>
           <option value="">Использовать полный путь</option>
-        </select><br>
+          <option value="httpRoot">Использовать макрос httpRoot</option>
+        </select><br />
         <button type="button" onclick="return AcceptFile();">OK</button>&nbsp; 
         <button type="button" onClick="window.close();return false;">Отмена</button>
         </form>

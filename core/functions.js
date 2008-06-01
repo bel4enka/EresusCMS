@@ -1,11 +1,14 @@
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.00
+# Версия 2.01
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Скрипты интерфейса администратора
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+var HttpRequest = null;
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function replaceMacros(sURL)
 {
   var macros = new Array();
@@ -43,14 +46,6 @@ function askdel(objCaller)
   if (!confirm('Подверждаете удаление?')) objCaller.href = window.location;
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function tableRow(objCaller, intCols, intState)
-{
-  var strColor, i;
-  if (intState) strColor = '#cfc';
-  else strColor = 'white';
-  for (i=0; i<intCols; i++) objCaller.cells[i].style.backgroundColor = strColor;
-}
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function formApplyClick(strForm)
 {
   var objForm = document.forms[strForm];
@@ -61,4 +56,23 @@ function BrowseFileDialog(id, Folder)
 {
   var hnd = window.open('$(httpRoot)core/dlg/BrowseFile.php?id='+id+'&root='+Folder, 'OpenFileDialog', 'dependent=yes,width=500,height=550,resizable=yes,menubar=no,directories=no,personalbar=no,scrollbars=no,status=no,titlebar=no,toolbar=no');
 }
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function SendRequest(url, handler) 
+{
+  // branch for native XMLHttpRequest object
+  if (window.XMLHttpRequest) {
+    HttpRequest = new XMLHttpRequest();
+    HttpRequest.onreadystatechange = handler;
+    HttpRequest.open('GET', url, true);
+    HttpRequest.send(null);
+  // branch for IE/Windows ActiveX version
+  } else if (window.ActiveXObject) {
+    HttpRequest = new ActiveXObject('Microsoft.XMLHTTP');
+    if (HttpRequest) {
+      HttpRequest.onreadystatechange = handler;
+      HttpRequest.open('GET', url, true);
+      HttpRequest.send();
+    }
+  }
+}        
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

@@ -3,7 +3,6 @@ function xinha_init()
   var xinha_plugins = [
     'ContextMenu',
     'InsertAnchor',
-    'TableOperations'
   ];
   if(!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
   var xinha_config = new HTMLArea.Config();
@@ -12,13 +11,9 @@ function xinha_init()
     "$(httpRoot)style/default.css"
   ];
   // specify a base href for relative links
+  xinha_config.stripBaseHref = true;
   xinha_config.baseHref = "$(httpRoot)";
   xinha_config.baseHref = xinha_config.baseHref.substr(0, xinha_config.baseHref.length-1);
-  // we can strip the base href out of relative links to leave them relative, reason for this
-  //   especially if you don't specify a baseHref is that mozilla at least (& IE ?) will prefix
-  //   the baseHref to any relative links to make them absolute, which isn't what you want most the time.
-  this.stripBaseHref = true;
-
 
   xinha_config.toolbar =
   [
@@ -28,7 +23,7 @@ function xinha_init()
     ["separator","subscript","superscript"],
     ["linebreak","separator","justifyleft","justifycenter","justifyright","justifyfull"],
     ["separator","insertorderedlist","insertunorderedlist","outdent","indent"],
-    ["separator","inserthorizontalrule","createlink","insertimage","inserttable"],
+    ["separator","insertlinebreak","inserthorizontalrule","createlink","insertimage","inserttable"],
     (HTMLArea.is_gecko ? [] : ["separator","cut","copy","paste"]),
     ["separator","killword","clearfonts","removeformat"]
   ];
@@ -66,6 +61,7 @@ function xinha_init()
     "Heading 4": "h4",
     "Heading 5": "h5",
     "Heading 6": "h6",
+    "Block"    : "div",
     "Address"  : "address",
     "Formatted": "pre"
   };

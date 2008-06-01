@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.00
+# Версия 2.01
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -24,7 +24,7 @@ $type = isset($_REQUEST['type'])?$_REQUEST['type']:'text/plain';
 $file = isset($_REQUEST['file'])?$_REQUEST['file']:'';
 if (empty($file)) exit;
 Header('Content-type: '.$type);
-Header('Cache-Control: must-revalidate');
+Header('Cache-Control: '.(isset($_GET['cache'])?$_GET['cache']:'no-cache'));
 Header("Expires: " .gmdate("D, d M Y H:i:s", time() + 3600) . " GMT");
 $filename = AddSlashes($filesRoot.$file);
 $text = file_get_contents($filename);

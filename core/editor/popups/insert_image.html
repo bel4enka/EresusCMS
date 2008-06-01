@@ -78,14 +78,6 @@ function onPreview() {
 }
 
 function onBrowse() {
-  /*var f_url = document.getElementById("f_url");
-  var url = f_url.value;
-  if (!url) {
-    alert(i18n("You must enter the URL"));
-    f_url.focus();
-    return false;
-  }
-  window.ipreview.location.replace(url);*/
   BrowseFileDialog("f_url", "");
   return false;
 }
@@ -176,7 +168,7 @@ title="Vertical padding" />
     <iframe name="ipreview" id="ipreview" frameborder="0" style="border : 1px solid gray;" height="200" width="300" src=""></iframe>
   </td>
   <td valign="bottom" style="text-align: right">
-    <button type="button" name="ok" onclick="return onOK();">OK</button><br>
+    <button type="button" name="ok" onclick="return onOK();">OK</button><br />
     <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>
   </td>
  </tr>

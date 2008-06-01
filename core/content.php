@@ -1,8 +1,8 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ
-# пїЅпїЅпїЅпїЅпїЅпїЅ 2.00
-# пїЅ 2004-2006, ProCreat Systems
+# Система управления контентом Eresus™
+# Версия 2.01
+# © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TContent {
@@ -25,7 +25,7 @@ class TContent {
               $original = $item['content'];
               $item['content'] = $request['arg']['content'];
               $db->updateItem('pages', $item, "`id`='".$item['id']."'");
-              sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br>'.$item['content']);
+              sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$item['content']);
               goto($request['arg']['submitURL']);
             } else {
               $form = array(
@@ -46,7 +46,7 @@ class TContent {
               $original = $item['content'];
               $item['content'] = $request['arg']['url'];
               $db->updateItem('pages', $item, "`id`='".$item['id']."'");
-              sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br>'.$original.' &rarr; '.$item['content']);
+              sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$original.' &rarr; '.$item['content']);
               goto($request['arg']['submitURL']);
             } else {
               $form = array(

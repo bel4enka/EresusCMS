@@ -1,31 +1,31 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ
-# пїЅпїЅпїЅпїЅпїЅпїЅ 2.00
-# пїЅ 2004-2006, ProCreat Systems
+# Система управления контентом Eresus™
+# Версия 2.01
+# © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Ядро интерактивной системы управления сайтом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-define('CMSNAME', 'Eresus'); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('CMSVERSION', '2.00'); # пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('CMSLINK', 'http://procreat.ru/'); # пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ
+define('CMSNAME', 'Eresus'); # Название системы
+define('CMSVERSION', '2.01'); # Версия системы
+define('CMSLINK', 'http://procreat.ru/'); # Веб-сайт
 
-define('KERNELNAME', 'ERESUS'); # пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
-define('KERNELDATE', '31.03.06'); # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+define('KERNELNAME', 'ERESUS'); # Имя ядра
+define('KERNELDATE', '05.05.06'); # Дата обновления ядра
 
-# пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('ROOT',   1); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('ADMIN',  2); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('EDITOR', 3); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('USER',   4); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('GUEST',  5); # пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
+# Уровни доступа
+define('ROOT',   1); # Главный администратор
+define('ADMIN',  2); # Администратор
+define('EDITOR', 3); # Редактор
+define('USER',   4); # Пользователь
+define('GUEST',  5); # Гость (не зарегистрирован)
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# ОБРАБОТКА ОШИБОК
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function CMSError($msg = 'Unknown', $task = 'Unknown', $FILE = 'Unknown', $LINE= 'Unknown')
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Функция выводит сообщение об ошибке ядра и прекращает работу скрипта
 {
   $result =
     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
@@ -39,7 +39,7 @@ function CMSError($msg = 'Unknown', $task = 'Unknown', $FILE = 'Unknown', $LINE=
     "    <table width=\"80%\" bgcolor=\"red\" style=\"border-style: solid; border-width: 1; border-color: #f77 #a00 #a00 #f77; font-family: verdana; font-size: 8pt;\">\n".
     "      <tr><td bgcolor=\"black\" align=\"center\" style=\"color: yellow; font-weight: bold; border-style: solid; border-width: 1; border-color: #a00 #f77 #f77 #a00;\">INTERNAL ERROR</td></tr>\n".
     "      <tr><td bgcolor=\"red\" style=\"color: white; text-align: left; padding: 10; font-weight: bold; border-style: solid; border-width: 1; border-color: #a00 #f77 #f77 #a00;\">".
-    "        Error: ".$msg."<br> Action: ".$task."<br> Address: ".$GLOBALS['PHP_SELF']."<br> Script: ".$FILE."<br> Line: ".$LINE;
+    "        Error: ".$msg."<br /> Action: ".$task."<br /> Address: ".$GLOBALS['PHP_SELF']."<br /> Script: ".$FILE."<br /> Line: ".$LINE;
     "      </td></tr>\n".
     "    </table>".
     "  </div>\n\n".
@@ -50,7 +50,7 @@ function CMSError($msg = 'Unknown', $task = 'Unknown', $FILE = 'Unknown', $LINE=
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function FatalError($msg)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+# Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
 {
   $result =
     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
@@ -65,7 +65,7 @@ function FatalError($msg)
     "      <tr><td style=\"border-style: solid; border-width: 2px; border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; font-weight: bold; text-align: center; font-size: 10pt;\">".errError."</td></tr>\n".
     "      <tr><td style=\"border-style: solid; border-width: 2px; border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
     "        <p style=\"text-align: center\">".$msg."</p>\n".
-    "        <div align=\"center\"><br><a href=\"javascript:history.back()\" style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
+    "        <div align=\"center\"><br /><a href=\"javascript:history.back()\" style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
     "      </td></tr>\n".
     "    </table>\n".
     "  </div>\n".
@@ -76,7 +76,7 @@ function FatalError($msg)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function ErrorBox($text, $caption=errError)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+# Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
 {
   $result =
     (empty($caption)?'':"<div class=\"errorBoxCap\">".$caption."</div>\n").
@@ -87,7 +87,7 @@ function ErrorBox($text, $caption=errError)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function InfoBox($text, $caption=strInformation)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+# Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
 {
   $result =
     (empty($caption)?'':"<div class=\"infoBoxCap\">".$caption."</div>\n").
@@ -106,7 +106,7 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
     break;
     case E_WARNING:
       if (DEBUG_MODE) {
-        FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br><br>'.callStack());
+        FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.callStack());
       }
     break;
     default:
@@ -129,32 +129,32 @@ function InfoMessage($message)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# БЕЗОПАСНОСТЬ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function UserRights($level) {
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+# Функция проверяет права пользователя на соответствие заданной маске
 global $user;
 
   return ((($user['auth']) && ($user['access'] <= $level) && ($user['access'] != 0)) || ($level == GUEST));
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function Login($login, $hash, $autologin = false, $cookieLogin = false)
-#  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+#  Функция авторизует пользователя и, если нужно, сохраняет в кукисах информацию для автологина
 {
 global $db, $user, $session;
 
   $result = false;
   $session['errorMessage'] = '';
   $item = $db->selectItem('users', "`login`='$login'");
-  if (!is_null($item)) { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ...
-    if ($item['active']) { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ...
+  if (!is_null($item)) { # Если такой пользователь есть...
+    if ($item['active']) { # Если учетная запись активна...
       if (time() - $item['lastLoginTime'] > $item['loginErrors']) {
-        if ($hash == $item['hash']) { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ...
-          if ($autologin) { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        if ($hash == $item['hash']) { # Если пароль верен...
+          if ($autologin) { # Если установлен переключатель "Запомнить логин", то сохраняем его в кукисах
             setcookie('autologin[active]', '1', time()+2592000, cookiePath, cookieHost);
             setcookie('autologin[login]', $login, time()+2592000, cookiePath, cookieHost);
             setcookie('autologin[hash]', $hash, time()+2592000, cookiePath, cookieHost);
-          } else { # ...пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+          } else { # ...иначе, удаляем кукисы
             setcookie('autologin[active]', '', time() - 3600, cookiePath, cookieHost);
             setcookie('autologin[login]', '', time() - 3600, cookiePath, cookieHost);
             setcookie('autologin[hash]', '', time() - 3600, cookiePath, cookieHost);
@@ -163,15 +163,15 @@ global $db, $user, $session;
           $lastVisit = isset($user['lastVisit'])?$user['lastVisit']:'';
           $user = $item;
           $user['profile'] = decodeOptions($user['profile']);
-          $user['auth'] = true; # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-          if ($setVisitTime) $item['lastVisit'] = gettime(); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+          $user['auth'] = true; # Устанавливаем флаг авторизации
+          if ($setVisitTime) $item['lastVisit'] = gettime(); # Записываем время последнего входа
           $item['lastLoginTime'] = time();
           $item['loginErrors'] = 0;
           $db->updateItem('users', $item,"`id`='".$item['id']."'");
-          $session['time'] = time(); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+          $session['time'] = time(); # Инициализируем время последней активности сессии.
           $session['msg'] = array();
           $result = true;
-        } else { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ...
+        } else { # Если пароль не верен...
           if (!$cookieLogin) {
             $session['msg']['errors'][] = errInvalidPassword;
             $item['lastLoginTime'] = time();
@@ -179,7 +179,7 @@ global $db, $user, $session;
             $db->updateItem('users', $item,"`id`='".$item['id']."'");
           }
         }
-      } else { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+      } else { # Если авторизация проведена слишком рано
         $session['msg']['errors'][] = sprintf(errTooEarlyRelogin, $item['loginErrors']);
         $item['lastLoginTime'] = time();
         $db->updateItem('users', $item,"`id`='".$item['id']."'");
@@ -190,7 +190,7 @@ global $db, $user, $session;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function Logout($clearCookies=true)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Функция завершает сеанс работы с системой и удалаяет кукисы
 {
 global $user;
 
@@ -207,11 +207,12 @@ function ResetLogin()
 {
 global $db, $user, $session;
 
+  session_register('user');
   $user['auth'] = isset($user['auth'])?$user['auth']:false;
   if ($user['auth']) {
     $item = $db->selectItem('users', "`id`='".$user['id']."'");
-    if (!is_null($item)) { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ...
-      if ($item['active']) { # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ...
+    if (!is_null($item)) { # Если такой пользователь есть...
+      if ($item['active']) { # Если учетная запись активна...
         $user['name'] = $item['name'];
         $user['mail'] = $item['mail'];
         $user['access'] = $item['access'];
@@ -241,16 +242,16 @@ global $db, $user;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# ПОЧТОВЫЕ ФУНКЦИИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='', $fromSign='', $replyTo='')
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Функция отсылает письмо по указанному адресу
 {
-  if (empty($fromName)) $fromName = getOption('mailFromName');
-  if (empty($fromAddr)) $fromAddr = getOption('mailFromAddr');
-  if (empty($fromOrg)) $fromOrg = getOption('mailFromOrg');
-  if (empty($fromSign)) $fromSign = getOption('mailFromSign');
-  if (empty($replyTo)) $replyTo = getOption('mailReplyTo');
+  if (empty($fromName)) $fromName = option('mailFromName');
+  if (empty($fromAddr)) $fromAddr = option('mailFromAddr');
+  if (empty($fromOrg)) $fromOrg = option('mailFromOrg');
+  if (empty($fromSign)) $fromSign = option('mailFromSign');
+  if (empty($replyTo)) $replyTo = option('mailReplyTo');
   if (empty($replyTo)) $replyTo = $fromAddr;
 
   if (strlen($fromName)) $sender = "\"".$fromName."\" <".$fromAddr.">"; else $sender = $fromAddr;
@@ -259,7 +260,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
   if ($html) $fromSign = nl2br($fromSign);
   if (strlen($fromSign)) $text .= $fromSign;
 
-  $charset = getOption('mailCharset');
+  $charset = option('mailCharset');
   if (empty($charset)) $charset = CHARSET;
 
   $headers =
@@ -297,19 +298,19 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 function sendNotify($notify, $params=null)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-#   subject (string) - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-#   title (string) - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-#   url (string) - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-#   user (string) - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Посылает административное или редакторское уведомление по почте
+# Возможные параметры
+#   subject (string) - заголовок письма, по умолчанию название сайта
+#   title (string) - название раздела
+#   url (string) - адрес раздела
+#   user (string) - имя пользователя
 {
 global $user, $page, $request;
 
   if (NOTIFICATIONS_ENABLED) {
-    $subject = isset($params['subject'])?$params['subject']:getOption('siteName');
+    $subject = isset($params['subject'])?$params['subject']:option('siteName');
     $username = isset($params['user'])?$params['user']:$user['name'];
-    $usermail = $user['auth']?$user['mail']:getOption('mailFormAddr');
+    $usermail = $user['auth']?$user['mail']:option('mailFormAddr');
     if (defined('ADMINUI')) {
       $editors = isset($params['editors'])?$params['editors']:false;
       $title = isset($params['title'])?$params['title']:$page->title;
@@ -327,18 +328,18 @@ global $user, $page, $request;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅ
+# ДАТА/ВРЕМЯ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function gettime($format = 'Y-m-d H:i:s')
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Возвращает время с учетом смещения
 {
-  #$delta = (GMT_ZONE * 3600) - date('Z'); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+  #$delta = (GMT_ZONE * 3600) - date('Z'); // Смещение на нужный часовой пояс
   $delta = 0;
-  return date($format , time() + $delta); // пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+  return date($format , time() + $delta); // Время, со смещением на наш часовой пояс
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function FormatDate($date, $format=DATETIME_NORMAL)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+# Функция выполняет форматирование даты
 {
   if (empty($date)) $result = DATETIME_UNKNOWN; else {
     $year = substr($date, 0, 4);
@@ -354,30 +355,30 @@ function FormatDate($date, $format=DATETIME_NORMAL)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# РАБОТА С ДАННЫМИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function encodeHTML($text)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTML
+# Кодирует спецсимволы HTML
 {
   $trans_tbl = get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES);
   return strtr ($text, $trans_tbl);
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function decodeHTML($text)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTML
+# Декодирует спецсимволы HTML
 {
   $trans_tbl = get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES);
   $trans_tbl = array_flip ($trans_tbl);
   $trans_tbl['%28'] = '(';
   $trans_tbl['%29'] = ')';
-  $text = strtr ($text, $trans_tbl);
+  $text = strtr ($text, $trans_tbl); 
   $text = preg_replace('/ilo-[^\s>]*/i', '', $text);
   return $text;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function text2array($value, $assoc=false)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-# пїЅпїЅпїЅпїЅ $assoc = true, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ key=value
+# Разбивает текст на строки и возвращает их массив
+# Если $assoc = true, то возвращается ассоциативный массив key=value
 {
   $result = trim($value);
   if (!empty($result)) {
@@ -395,8 +396,8 @@ function text2array($value, $assoc=false)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function array2text($value, $assoc=false)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-# пїЅпїЅпїЅпїЅ $assoc = true, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Собирает из массива текст
+# Если $assoc = true, то массив рассматривается как ассоциативный
 {
   $result = '';
   if (count($value)) {
@@ -411,7 +412,7 @@ function array2text($value, $assoc=false)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function encodeOptions($options)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Собирает настройки из массива в строку
 {
 global $db;
 
@@ -420,7 +421,7 @@ global $db;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function decodeOptions($options, $defaults = array())
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Функция разбивает записанные в строковом виде опции на массив
 {
   if (empty($options)) $result = $defaults; else {
     $options = $options;
@@ -432,33 +433,42 @@ function decodeOptions($options, $defaults = array())
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function getArgs($fields)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ $fields, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ $request['arg']
+function GetArgs($item, $checkboxes = array(), $prevent = array())
+# Заполняет массив $item соответствующими значениями из $request['arg']
 {
 global $request;
-
-  foreach ($fields as $field) if (isset($request['arg'][$field])) $item[$field] = StripSlashes($request['arg'][$field]);
+   
+  if ($clear = (key($item) == '0')) $item = array_flip($item);
+  foreach ($item as $key => $value) {
+    if ($clear) unset($item[$key]);
+    if (!in_array($key, $prevent)) {
+      if (isset($request['arg'][$key])) $item[$key] = $request['arg'][$key];
+      if (in_array($key, $checkboxes)&& (!isset($request['arg'][$key]))) $item[$key] = false;
+    }
+  }
   return $item;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function setArgs($item)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ $item пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ $request['arg']
+function setArgs($fields, $checkboxes = array(), $prevent = array()) /* OBSOLETE */
 {
-global $request;
-
-  foreach ($item as $key => $value) if (isset($request['arg'][$key])) $item[$key] = StripSlashes($request['arg'][$key]);
-  return $item;
+  return GetArgs($fields);
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function arg($arg)
+{
+  global $request;
+  return isset($request['arg'][$arg])?$request['arg'][$arg]:'';
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function saveRequest()
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Функция сохраняет в сессии текущие аргументы
 {
   global $request, $session;
   $session['request'] = $request;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function restoreRequest()
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Функция сохраняет в сессии текущие аргументы
 {
   global $request, $session;
   if (isset($session['request'])) {
@@ -469,10 +479,9 @@ function restoreRequest()
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
+# РАБОТА С БД
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function getOption($name) /* OBSOLETE */ { return constant($name); }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function getOption($name) /* OBSOLETE */ {return option($name);}
 function setOption($name, $data) /* OBSOLETE */ {}
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function dbReorderItems($table, $condition='', $id='id')
@@ -499,32 +508,42 @@ global $db;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# РАБОТА С ФАЙЛАМИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function upload($name, $filename)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ $name пїЅ $filename
+# Функция помещает загруженный файл с именем $name в $filename
 {
   $result = false;
-  if ($filename[strlen($filename)-1] == '/') $filename .= $_FILES[$name]['name'];
-  if (is_uploaded_file($_FILES[$name]['tmp_name'])) {
-    move_uploaded_file($_FILES[$name]['tmp_name'], $filename);
-    if (getOption('filesOwnerSetOnUpload')) {
-      $owner = getOption('filesOwnerDefault');
-      if (empty($owner)) $owner = fileowner(__FILE__);
-      chown($filename, $owner);
-    }
-    if (getOption('filesModeSetOnUpload')) {
-      $mode = getOption('filesModeDefault');
-      if (empty($mode)) $mode = 0644;
-      chmod($filename, $mode);
-    }
-    $result = true;
+  if ($filename[strlen($filename)-1] == '/') $filename .= option('filesTranslitNames')?Translit($_FILES[$name]['name']):$_FILES[$name]['name'];
+  switch($_FILES[$name]['error']) {
+    case UPLOAD_ERR_OK: 
+      if (is_uploaded_file($_FILES[$name]['tmp_name'])) {
+        $moved = @move_uploaded_file($_FILES[$name]['tmp_name'], $filename);
+        if ($moved) {
+          if (option('filesOwnerSetOnUpload')) {
+            $owner = option('filesOwnerDefault');
+            if (empty($owner)) $owner = fileowner(__FILE__);
+            @chown($filename, $owner);
+          }
+          if (option('filesModeSetOnUpload')) {
+            $mode = option('filesModeDefault');
+            if (empty($mode)) $mode = 0644;
+            @chmod($filename, $mode);
+          }
+          $result = true;
+        } else ErrorMessage(sprintf(errFileMove, $_FILES[$name]['name'], $filename));
+      }
+    break;
+    case UPLOAD_ERR_INI_SIZE: ErrorMessage(sprintf(errUploadSizeINI, $_FILES[$name]['name'])); break;
+    case UPLOAD_ERR_FORM_SIZE: ErrorMessage(sprintf(errUploadSizeFORM, $_FILES[$name]['name'])); break;
+    case UPLOAD_ERR_PARTIAL: ErrorMessage(sprintf(errUploadPartial, $_FILES[$name]['name'])); break;
+    case UPLOAD_ERR_NO_FILE: ErrorMessage(sprintf(errUploadNoFile, $_FILES[$name]['name'])); break;
   }
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function loadTemplate($name)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Считывает указанный шаблон
 {
   $filename = filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.tmpl':'');
   if (file_exists($filename)) {
@@ -537,7 +556,7 @@ function loadTemplate($name)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function saveTemplate($name, $template)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Сохраняет указанный шаблон
 {
   $file = "<!-- ".$template['description']." -->\r\n\r\n".$template['html'];
   $fp = fopen(filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.tmpl':''), 'w');
@@ -547,11 +566,11 @@ function saveTemplate($name, $template)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# ОБЩИЕ ФУНКЦИИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function goto($url)
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-#   $url - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+# Перенаправляет браузер на новый адрес
+#   $url - новый адрес
 {
   $url = str_replace('&amp;','&',$url);
   if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
@@ -562,8 +581,21 @@ function goto($url)
   exit;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function HttpAnswer($answer)
+{
+  Header('Content-type: text/html; charset='.CHARSET);
+  echo $answer;
+  exit;
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function option($name) 
+{ 
+  $result = defined($name)?constant($name):'';
+  return $result; 
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function img($filename, $params=array(), $title='', $width=0, $height=0, $style='')
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ <img>
+# Функция возвращает заполненный тэг <img>
 {
   if (gettype($params) == 'string') {
     $params = array (
@@ -590,29 +622,35 @@ function img($filename, $params=array(), $title='', $width=0, $height=0, $style=
     $result .= ' '.$info[3];
   }
   $result .= ' '.
-    (isset($params['style'])?' style="'.$params['style'].'"':'').
-    (isset($params['title'])?' title="'.$params['title'].'"':'').
-    (isset($params['extra'])?' '.$params['extra']:'').
+    (empty($params['style'])?'':' style="'.$params['style'].'"').
+    (empty($params['title'])?'':' title="'.$params['title'].'"').
+    (empty($params['extra'])?'':' '.$params['extra']).
   ' />';
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function FormatSize($size)
 {
-  if ($size > 1073741824) {$size = $size / 1073741824; $units = 'пїЅпїЅ';}
-  elseif ($size > 1048576) {$size = $size / 1048576; $units = 'пїЅпїЅ';}
-  elseif ($size > 1024) {$size = $size / 1024; $units = 'пїЅпїЅ';}
-  else $units = 'пїЅпїЅпїЅпїЅ';
+  if ($size > 1073741824) {$size = $size / 1073741824; $units = 'Гб';}
+  elseif ($size > 1048576) {$size = $size / 1048576; $units = 'Мб';}
+  elseif ($size > 1024) {$size = $size / 1024; $units = 'Кб';}
+  else $units = 'Байт';
   return number_format($size, 2, '.', ' ').' '.$units;
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function Translit($s) #: String
+{
+  $s = strtr($s, $GLOBALS['translit_table']);
+  return $s;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# ВНУТРЕННИЕ ФУНКЦИИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __clearargs($args)
 {
-  if (count($args)) foreach($args as $key => $value)
+  if (count($args)) foreach($args as $key => $value) 
     if (gettype($args[$key]) == 'array') {
       $args[$key] = __clearargs($args[$key]);
     } else {
@@ -620,7 +658,6 @@ function __clearargs($args)
       if (strpos($key, 'wyswyg_') === 0) {
         unset($args[$key]);
         $key = substr($key, 7);
-        $value = DecodeHTML($value);
       }
       $args[$key] = $value;
     }
@@ -628,57 +665,45 @@ function __clearargs($args)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Инициализация перехватчика ошибок
 $KERNEL['oldErrorHandler'] = set_error_handler('ErrorHandler');
 
-session_name('sid');  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-session_start(); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-if (!array_key_exists('session', $_SESSION))
-{
-	$_SESSION['session'] = array();
-}
-$session =& $_SESSION['session'];  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+session_name('sid');  # Установка имени идентификатора сессии
+session_start(); # Включение сессий
+session_register('session');  # Регистрация массива переменных сессии
 
-if (!array_key_exists('user', $_SESSION))
-{
-	$_SESSION['user'] = array('auth' => false);
-}
-$user =& $_SESSION['user'];
+set_magic_quotes_runtime(1); # Принудительно включаем закавычивание передаваемых данных
 
-if (version_compare(PHP_VERSION, '5.3', '<'))
-{
-	set_magic_quotes_runtime(1); # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-}
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Определяем директории
 $KERNEL['filesRoot'] = __FILE__;
 $KERNEL['filesRoot'] = str_replace('\\','/',$KERNEL['filesRoot']);
 $KERNEL['filesRoot'] = substr($KERNEL['filesRoot'], 0, strpos($KERNEL['filesRoot'], '/core/kernel.php')+1);
 define('httpPath', substr($KERNEL['filesRoot'], strpos($KERNEL['filesRoot'], $_SERVER['DOCUMENT_ROOT'])+strlen($_SERVER['DOCUMENT_ROOT'])-($_SERVER['DOCUMENT_ROOT'][strlen($_SERVER['DOCUMENT_ROOT'])-1] == '/'?1:0)));
 if ($KERNEL['filesRoot'][1] == ':') $KERNEL['filesRoot'] = substr($KERNEL['filesRoot'], 2);
-define('filesRoot', $KERNEL['filesRoot']); # пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-define('httpHost', $_SERVER['HTTP_HOST']); # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+define('filesRoot', $KERNEL['filesRoot']); # Путь к файлам сайта
+define('httpHost', $_SERVER['HTTP_HOST']); # Хост сайта
 define('httpRoot', 'http://'.httpHost.httpPath);
 define('styleRoot', httpRoot.'style/');
 define('dataRoot', httpRoot.'data/');
-define('cookieHost', httpHost); # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-define('cookiePath', httpPath); # пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+define('cookieHost', httpHost); # Хост кукисов
+define('cookiePath', httpPath); # Путь к кукисам
 define('dataFiles', filesRoot.'data/');
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Подключение основного файла конфигурации
 if(file_exists(filesRoot.'core/cfg/main.inc')) include_once(filesRoot.'core/cfg/main.inc');
   else CMSError('File not found', 'Open file '.filesRoot.'core/cfg/main.inc', __FILE__, __LINE__);
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Подключение файла настроек
 if(file_exists(filesRoot.'core/cfg/settings.inc')) include_once(filesRoot.'core/cfg/settings.inc');
   else CMSError('File not found', 'Open file '.filesRoot.'core/cfg/settings.inc', __FILE__, __LINE__);
 
-# пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Если установлен флаг отладки, подключаем отладочную библиотеку
 if (constant('DEBUG_MODE')) {
   if(file_exists(filesRoot.'core/debug.php')) include_once(filesRoot.'core/debug.php');
 }
 
 if (strcasecmp(httpPath, substr($_SERVER['REQUEST_URI'], 0, strlen(httpPath))) == 0) $s = substr($_SERVER['REQUEST_URI'], strlen(httpPath));
-# пїЅпїЅпїЅпїЅ SID пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ URL, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.
+# Если SID передается в URL, вырезаем его.
 $sid = 'sid='.session_id();
 if ($x = strpos($s, $sid)) {
   $s = substr_replace($s, '', $x, strlen($sid));
@@ -688,13 +713,13 @@ if ($x = strpos($s, $sid)) {
   unset($_GET[$x]);
 }
 $request['url'] = httpRoot.$s;
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ URL пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Создаем безопасный URL для ссылок
 $request['link'] = $request['url'];
 if ((strpos($request['link'], '?') === false) && ($request['link'][strlen($request['link'])-1] != '/')) $request['link'] .= '/';
 $request['referer'] = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
-# пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Сбор аргументов вызова
 $request['arg'] = __clearargs(array_merge($_GET, $_POST));
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Разбивка параметров вызова скрипта
 if (defined('CLIENTUI')) {
   $request['params'] = explode('/', $s);
   while (empty($request['params']) && (count($request['params'])>0)) array_shift($argv);
@@ -707,22 +732,22 @@ if (MULTILANGUAGE && !empty($request['params'])) $locale['lang'] = array_shift($
 if (defined('ADMINUI_VERSION') && !empty($request['arg']['lang'])) $locale['lang'] = $request['arg']['lang'];
 if ($locale['lang'] != DEFAULT_LANGUAGE) $locale['prefix'] = $locale['lang'].'_';
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+# Подключение строковых данных
 if(file_exists(filesRoot.'lang/'.$locale['lang'].'.inc')) include_once(filesRoot.'lang/'.$locale['lang'].'.inc');
   else CMSError('File not found', 'Open file '.filesRoot.'lang/'.$locale['lang'].'.inc', __FILE__, __LINE__);
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Подключаем модуль классов
 if(file_exists(filesRoot."core/classes.php")) include_once(filesRoot."core/classes.php");
   else CMSError(errFileNotFound, sprintf(errFileOpening, filesRoot.'core/classes.php'), __FILE__, __LINE__);
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
+# Подключаем модуль работы с БД
 if(file_exists(filesRoot."core/mysql.php")) include_once(filesRoot."core/mysql.php");
   else CMSError(errFileNotFound, sprintf(errFileOpening, filesRoot.'core/mysql.php'), __FILE__, __LINE__);
 
 $db = new TMySQL;
 $db->init(dbHost, dbUser, dbPswd, dbName, dbPrefix);
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Проверка сессии на таймаут
 if (isset($user)) {
   if ((time() - $session['time'] > SESSION_TIMEOUT*3600)&&($user['auth'])) Logout(false);
   else $session['time'] = time();
@@ -732,16 +757,16 @@ if (isset($request['arg']['action'])) switch ($request['arg']['action']) {
   case 'logout': Logout(true); goto(httpRoot); break;
 }
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ cookie-пїЅпїЅпїЅпїЅпїЅпїЅ
+# Попытка cookie-логина
 if ((!isset($user['auth']) || !$user['auth']) && isset($_COOKIE['autologin']) && $_COOKIE['autologin']['active']) {
   if (!Login($_COOKIE['autologin']['login'], $_COOKIE['autologin']['hash'], true, true))
     setcookie("autologin[active]", "0", time()+2592000, cookiePath, cookieHost);
 }
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Обновление данных о пользователе
 ResetLogin();
 
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Загрузка плагинов
 $plugins = new TPlugins;
 
-$KERNEL['loaded'] = true; # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+$KERNEL['loaded'] = true; # Флаг загрузки ядра
 ?>

@@ -1,10 +1,12 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # MYSQL.PHP - Класс для работы с БД MySQL
-# Версия 1.18
-# Дата обновления: 30.03.06
-# © Михалыч (http://mihalych.net/)
+# Версия 1.19
+# Дата обновления: 10.05.06
+# © ProCreat Syste,s (http://procreat.ru/)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# 1.19
+#    + Добавлен метод tableStatus
 # 1.18
 #    * Незначительные изменения в методе insert()
 # 1.17
@@ -66,14 +68,14 @@ class TMySQL {
   {
   global $PHP_SELF;
     if (constant('DEBUG_MODE')) {
-      foreach($this->functionStack as $func) $_stack .= "&nbsp;&nbsp;TMySQL.".$func."<br>\n";
-      $_stack = "<br>Call stack:<br>\n".$_stack;
+      foreach($this->functionStack as $func) $_stack .= "&nbsp;&nbsp;TMySQL.".$func."<br />\n";
+      $_stack = "<br />Call stack:<br />\n".$_stack;
     }
     echo "<div align=\"center\">\n".
       "<table width=\"80%\" style=\"background-color: #79c; border-style: solid; border-width: 1; border-color: #acf #025 #025 #acf; font-family: verdana; font-size: 8pt;\">\n".
       "<tr><td bgcolor=\"black\" align=\"center\" style=\"color: yellow; font-weight: bold; border-style: solid; border-width: 1; border-color: #025 #acf #acf #025;\">MySQL Error</td></tr>\n".
       "<tr><td style=\"background-color: #79c; color: white; text-align: left; padding: 10; font-weight: bold; border-style: solid; border-width: 1; border-color: #025 #acf #acf #025;\">".
-      "Error: $msg<br> Action: ".$task."<br> Adress: ".$PHP_SELF."<br> Sript file: ".__FILE__."<br> Line: ". $LINE.$_stack."</td></tr>\n".
+      "Error: $msg<br /> Action: ".$task."<br /> Adress: ".$PHP_SELF."<br /> Sript file: ".__FILE__."<br /> Line: ". $LINE.$_stack."</td></tr>\n".
       "</table></div>\n";
     exit();
   }
@@ -87,9 +89,6 @@ class TMySQL {
     @$this->Connection = mysql_connect($mysqlHost, $mysqlUser, $mysqlPswd, true);
     if (!$this->Connection) $this->ErrorMessage("Can not connect","Connecting to MySQL server. Check login and password",__LINE__);
     if (!mysql_select_db($this->name, $this->Connection)) $this->ErrorMessage(mysql_error($this->Connection),"Selecting database \"".$this->name."\"",__LINE__);
-	mysql_query ("set character_set_client='cp1251'");
-	mysql_query ("set character_set_results='cp1251'");
-	mysql_query ("set collation_connection='cp1251_general_ci'");
     if (constant('DEBUG_MODE')) $this->functionStackPop();
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -243,7 +242,7 @@ class TMySQL {
     if ($hnd === false) $this->ErrorMessage(mysql_error($this->Connection),"Listing fields of \"".$this->dbname.'.'.$this->prefix.$table."\"",__LINE__);
     $values = '';
     $i = 0;
-    while (($field = @mysql_field_name($hnd, $i++))) $values .= " , `$field`='".AddSlashes($item[$field])."'";
+    while (($field = @mysql_field_name($hnd, $i++))) $values .= " , `$field`='".(isset($item[$field])?AddSlashes($item[$field]):'')."'";
     $values = substr($values, 2);
     $result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition); 
     if (constant('DEBUG_MODE')) $this->functionStackPop();
@@ -271,6 +270,13 @@ class TMySQL {
   function getInsertedID()
   {
     return mysql_insert_id($this->Connection);
+  }
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  function tableStatus($table, $param='')
+  {
+    $result = $this->query_array("SHOW TABLE STATUS LIKE '".$table."'");
+    if (!empty($param)) $result = $result[0][$param];
+    return $result;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 }

@@ -1,11 +1,11 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ
-# пїЅпїЅпїЅпїЅпїЅпїЅ 2.00
-# пїЅ 2004-2006, ProCreat Systems
+# Система управления контентом Eresus™
+# Версия 2.01
+# © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+# Управление оформлением
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TThemes {
   var $access = ADMIN;
@@ -39,7 +39,7 @@ class TThemes {
     '417' => array('caption' => 'HTTP 417 - Expectation Failed'),
   );
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ / TEMPLATES
+  # ШАБЛОНЫ / TEMPLATES
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionTemplatesInsert()
   {
@@ -129,8 +129,8 @@ class TThemes {
       'sortMode' => 'filename',
       'sortDesc' => false,
       'columns' => array(
-        array('name' => 'description', 'caption' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
-        array('name' => 'filename', 'caption' => 'пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+        array('name' => 'description', 'caption' => 'Описание'),
+        array('name' => 'filename', 'caption' => 'Имя файла'),
       ),
       'controls' => array (
         'delete' => '',
@@ -143,7 +143,7 @@ class TThemes {
         )
       ),
     );
-    # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    # Загружаем список шаблонов
     $dir = filesRoot.'templates/';
     $hnd = opendir($dir);
     while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
@@ -179,7 +179,7 @@ class TThemes {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ / STANDARD TEMPLATES
+  # СТАНДАРТНЫЕ ШАБЛОНЫ / STANDARD TEMPLATES
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStdInsert()
   {
@@ -283,8 +283,8 @@ class TThemes {
       'sortMode' => 'filename',
       'sortDesc' => false,
       'columns' => array(
-        array('name' => 'description', 'caption' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
-        array('name' => 'filename', 'caption' => 'пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+        array('name' => 'description', 'caption' => 'Описание'),
+        array('name' => 'filename', 'caption' => 'Имя файла'),
       ),
       'controls' => array (
         'delete' => '',
@@ -297,7 +297,7 @@ class TThemes {
         )
       ),
     );
-    # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    # Загружаем список шаблонов
     $dir = filesRoot.'templates/std/';
     $hnd = opendir($dir);
     while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.tmpl$/', $filename)) {
@@ -333,7 +333,7 @@ class TThemes {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # пїЅпїЅпїЅпїЅпїЅ / CSS
+  # СТИЛИ / CSS
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function sectionStylesInsert()
   {
@@ -403,7 +403,7 @@ class TThemes {
         array('type'=>'hidden','name'=>'action', 'value'=>'update'),
         array('type'=>'hidden','name'=>'section', 'value'=>$request['arg']['section']),
         array('type'=>'hidden','name'=>'filename'),
-        array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl', 'disabled' => true, 'value' => $item['filename']),
+        array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
         array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
         array('type'=>'memo','name'=>'html', 'height'=>'30'),
       ),
@@ -423,8 +423,8 @@ class TThemes {
       'sortMode' => 'filename',
       'sortDesc' => false,
       'columns' => array(
-        array('name' => 'description', 'caption' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
-        array('name' => 'filename', 'caption' => 'пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+        array('name' => 'description', 'caption' => 'Описание'),
+        array('name' => 'filename', 'caption' => 'Имя файла'),
       ),
       'controls' => array (
         'delete' => '',
@@ -437,7 +437,7 @@ class TThemes {
         )
       ),
     );
-    # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    # Загружаем список шаблонов
     $dir = filesRoot.'style/';
     $hnd = opendir($dir);
     while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.css$/', $filename)) {

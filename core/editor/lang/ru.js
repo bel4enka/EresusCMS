@@ -1,4 +1,4 @@
-﻿// I18N constants
+﻿﻿// I18N constants
 //
 //LANG: "base", ENCODING: UTF-8
 //Author: Mikhail Krasilnikov, <mk@procreat.ru>
@@ -25,6 +25,7 @@
  "Alternate text:": "Альт. текст",
  "Background Color": "Цвет фона",
  "Baseline": "Базовая линия",
+ "Block": "Блок &lt;div&gt;",
  "Bold": "Полужирный",
  "Border thickness:": "Толщина рамки",
  "Bottom": "Низ",
