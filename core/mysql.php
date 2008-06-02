@@ -1,41 +1,9 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # MYSQL.PHP - Класс для работы с БД MySQL
-# Версия 1.19
-# Дата обновления: 10.05.06
-# © ProCreat Syste,s (http://procreat.ru/)
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# 1.19
-#    + Добавлен метод tableStatus
-# 1.18
-#    * Незначительные изменения в методе insert()
-# 1.17
-#    * Незначительные изменения
-# 1.16
-#    # Исправлена ошибка в методе selectItem()
-# 1.15
-#    + Добавлено принудительное установление нового соединения в методе init
-# 1.14
-#    * Изменены методы insert() и updateItem() - сделана экранизация кавычек
-#    * Изменен метод query_array() и наследуемые от него select() и selectItem() - сделана обработка экранизации кавычек
-# 1.13
-#    + Добавлен метод getInsertedID() - возвращающий значние AUTO_INCREMENT поля для последнего запроса INSERT
-# 1.12
-#    * Изменено имя флага _log_queries на logQueries
-# 1.11
-#    * Изменен порядок аргументов в методе select
-# 1.10
-#    + Добавлен метод query_array
-# 1.09
-#    * В методе count добавлена возможность группировки
-# 1.08
-#    # В методе select теперь нормально обрабатываются списки таблиц
-# 1.07
-#    + function count($table) - возвращает количество записей в таблице
-#    + При установленном DEBUG_MODE в сообщениях об ошибках теперь выводится и стек вызова функций
-# 1.06
-#    * select возвращает только ассоциативный массив
-#    + в методе query добавлен аргумент $error_reporting=true
+# @version: 1.20
+# @modified: 2007-02-06
+# © ProCreat Systems (http://procreat.ru/)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге DEBUG_MODE)
@@ -128,9 +96,6 @@ class TMySQL {
       if (count($row)) foreach($row as $key => $value) $row[$key] = StripSlashes($value);
       $values[] = $row;
     }
-    #plaintext();
-    #print_r($values);
-    #exit;
     if (constant('DEBUG_MODE')) $this->functionStackPop();
     return $values;
   }
@@ -183,7 +148,7 @@ class TMySQL {
     $values = '';
     while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) {
       $cols .= ", `$field`";
-      $values .= " , '".mysql_escape_string($item[$field])."'";
+      $values .= " , '".mysql_real_escape_string($item[$field])."'";
     }
     $cols = substr($cols, 2);
     $values = substr($values, 2);
@@ -244,7 +209,7 @@ class TMySQL {
     if ($hnd === false) $this->ErrorMessage(mysql_error($this->Connection),"Listing fields of \"".$this->dbname.'.'.$this->prefix.$table."\"",__LINE__);
     $values = '';
     $i = 0;
-    while (($field = @mysql_field_name($hnd, $i++))) $values .= " , `$field`='".(isset($item[$field])?AddSlashes($item[$field]):'')."'";
+    while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) $values .= " , `$field`='".mysql_real_escape_string($item[$field])."'";
     $values = substr($values, 2);
     $result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition); 
     if (constant('DEBUG_MODE')) $this->functionStackPop();

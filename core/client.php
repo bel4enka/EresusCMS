@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.07
+# Версия 2.08
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -411,7 +411,7 @@ class TClientUI {
       if ((!isset($item['access'])) || (UserRights($item['access']))) {
         if (isset($item['label'])) $label = !empty($item['hint']) ? '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>': $item['label']; else $label = '';
         if (isset($item['pattern'])) $validator .= "if (!form.".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\nform.".$item['name'].".select();\n} else ";
-        $value = StripSlashes(
+        $value = 
           isset($item['value'])
             ? $item['value']
             : (isset($item['name']) && isset($values[$item['name']])
@@ -420,8 +420,7 @@ class TClientUI {
                     ? $item['default']
                     : ''
                   )
-              )
-          );
+              );
         $width = isset($item['width'])?' style="width: '.$item['width'].';"':'';
         $disabled = isset($item['disabled']) && $item['disabled']?' disabled':'';
         $extra = isset($item['extra'])?' '.$item['extra']:'';
@@ -506,7 +505,7 @@ class TClientUI {
       "<div style=\"width: ".$form['width']."\" class=\"form\">\n".
       "<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onSubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
       "<div class=\"hidden\"><input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
-      $hidden."</div>\n";
+      $hidden."</div>\n".
       "<table>\n".
       (empty($form['caption'])?'':"<tr><th colspan=\"2\">".$form['caption']."</th></tr>\n").
       "<colgroup><col width=\"0*\" /><col width=\"100%\" /></colgroup>\n".

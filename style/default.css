@@ -38,6 +38,8 @@ h4 {font-size: 130%;}
 h5 {font-size: 120%;}
 h6 {font-size: 110%;}
 
+.hidden {display: none;}
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * Стиль области контента                                                           *
 * Внутри этой области не допускается никаких вложенных элементов шаблона страницы  *
@@ -46,15 +48,24 @@ h6 {font-size: 110%;}
   padding: 0.5em 1em;
 }
 
+/* Переключатель страниц */
+div.pages {}
+.pages span.selected {} /* Выбранная страница */
+
 /* * * * * * * * *
 * Стили веб-форм *
 * * * * * * * * */
 div.form {}
-.form th {}
+.form th {} /* Заголовок */
 .form td {}
 .form input {}
 .form textarea {}
 .form input.button {}
+.form td.formLabel {} /* Ячейка, содержащая метку (подпись) элемента управления */
+.form span.hint {} /* Метка, имеющая подсказку */
+.form th.formHeader {} /* Подзаголовок */
+.form td.formText {} /* Ячейка, содержащая простой текст */
+.form td.buttons {} /* Ячейка, содержащая кнопки формы */
 
 input.contentButton {}
 

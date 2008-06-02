@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.07
+# Версия 2.08
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -294,7 +294,7 @@ class TAdminUI {
       $result .= '</td>';
       # Обрабатываем ячейки данных
       if (count($table['columns'])) foreach($table['columns'] as $column) {
-        $value = isset($column['value'])?$column['value']:StripSlashes($item[$column['name']]);
+        $value = isset($column['value'])?$column['value']:$item[$column['name']];
         if (isset($column['replace']) && count($column['replace']))
           $value = array_key_exists($value, $column['replace'])?$column['replace'][$value]:$value;
         if (isset($column['macros'])) {
@@ -345,7 +345,6 @@ class TAdminUI {
                   : ''
                 )
             );
-        if (is_string($value)) $value = StripSlashes($value);
         $width = isset($item['width'])?' style="width: '.$item['width'].';"':'';
         $disabled = isset($item['disabled']) && $item['disabled']?' disabled':'';
         $extra = isset($item['extra'])?' '.$item['extra']:'';

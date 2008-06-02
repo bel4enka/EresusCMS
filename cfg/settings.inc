@@ -10,11 +10,11 @@
   define('mailFromOrg', '');
   define('mailReplyTo', '');
   define('mailCharset', 'windows-1251');
-  define('mailFromSign', "Система управления сайтом\r\nEresus");
+  define('mailFromSign', "Система управления сайтом.");
   define('sendNotifyTo', 'support@procreat.ru');
   define('filesOwnerSetOnUpload', false);
   define('filesOwnerDefault', '');
-  define('filesModeSetOnUpload', false);
+  define('filesModeSetOnUpload', true);
   define('filesModeDefault', '0666');
   define('filesTranslitNames', true);
   define('contentTypeDefault', 'html');

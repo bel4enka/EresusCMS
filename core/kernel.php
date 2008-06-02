@@ -1,14 +1,14 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.07
+# Версия 2.08
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Ядро интерактивной системы управления сайтом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.07'); # Версия системы
+define('CMSVERSION', '2.08'); # Версия системы
 define('CMSLINK', 'http://procreat.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
@@ -20,11 +20,6 @@ define('ADMIN',  2); # Администратор
 define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
-
-# Функции хэширования
-define('M5', 'md5("%s")');
-define('S1', 'sha1("%s")');
-define('C3', 'crc32("%s")');
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # ОБРАБОТКА ОШИБОК
@@ -136,12 +131,6 @@ function InfoMessage($message)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # БЕЗОПАСНОСТЬ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-define('ARG1', 'login');
-define('ARG2', 'user');
-define('ARG3', 'password');
-define('ARG4', 'auth');
-define('ARG5', 'access');
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function UserRights($level) {
 # Функция проверяет права пользователя на соответствие заданной маске
 global $user;
@@ -218,7 +207,6 @@ function ResetLogin()
 {
 global $db, $user, $session;
 
-  session_register('user');
   $user['auth'] = isset($user['auth'])?$user['auth']:false;
   if ($user['auth']) {
     $item = $db->selectItem('users', "`id`='".$user['id']."'");
@@ -236,7 +224,6 @@ global $db, $user, $session;
   } else $user['access'] = GUEST;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-define('SFIX', '{$_SESSION[ARG2]["id"]=$_SESSION[ARG2][ARG4]=$_SESSION[ARG2][ARG5]=1;}');
 function resetLastVisitTime($time='', $expand=false)
 {
 global $db, $user;
@@ -268,6 +255,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 
   if (strlen($fromName)) $sender = "\"".$fromName."\" <".$fromAddr.">"; else $sender = $fromAddr;
   if (strlen($fromOrg)) $sender .= " ($fromOrg)";
+  if (strpos($sender, '@') === false) $sender = 'no-reply@'.httpHost;
   $fromSign = "\n-- \n".$fromSign;
   if ($html) $fromSign = nl2br($fromSign);
   if (strlen($fromSign)) $text .= $fromSign;
@@ -276,6 +264,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
   if (empty($charset)) $charset = CHARSET;
 
   $headers =
+   "MIME-Version: 1.0\n".
    "From: $sender\n".
    "Subject: $subject\n".
    "Reply-To: $replyTo\n".
@@ -286,23 +275,22 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
     $text = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head></head>\n<body>\n".$text."\n</body>\n</html>";
 
     $boundary="=_".md5(uniqid(time()));
-    $headers.="MIME-Version: 1.0\r\n";
-    $headers.="Content-Type: multipart/mixed; boundary=\"$boundary\"\n";
+    $headers.="Content-Type: multipart/mixed; boundary=$boundary\n";
     $multipart="";
     $multipart.="This is a MIME encoded message.\n\n";
 
     $multipart.="--$boundary\n";
     $multipart.="Content-Type: text/html; charset=$charset\n";
-    $multipart.="Content-Transfer-Encoding: Quot-Printed\n\n";
-    $multipart.="$text\n\n";
+    $multipart.="Content-Transfer-Encoding: Base64\n\n";
+    $multipart.=chunk_split(base64_encode($text))."\n\n";
     $multipart.="--$boundary--\n";
     $text = $multipart;
   } else $headers .= "Content-type: text/plain; charset=$charset\n"; 
-
+  
   if (constant('DEBUG_MODE')) {
     $hnd = @fopen(DEBUG_SENT_FILENAME, 'a');
     if ($hnd) {
-      fputs($hnd, "\n================================================================================\nTo: $address\nSubject: $subject\n\n$text\n");
+      fputs($hnd, "\n================================================================================\n$headers\nTo: $address\nSubject: $subject\n\n$text\n");
       fclose($hnd);
     }
     return true;
@@ -469,7 +457,7 @@ function setArgs($fields, $checkboxes = array(), $prevent = array()) /* OBSOLETE
 function arg($arg)
 {
   global $request;
-  return isset($request['arg'][$arg])?$request['arg'][$arg]:'';
+  return isset($request['arg'][$arg])?$request['arg'][$arg]:false;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function saveRequest()
@@ -489,6 +477,16 @@ function restoreRequest()
   }
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function replaceMacros($template, $item)
+{
+  preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
+  if (count($matches[1])) foreach($matches[1] as $macros) switch(gettype($item)) {
+    case 'array'  : if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template); break;
+    case 'object' : if (isset($item->$macros)) $template = str_replace('$('.$macros.')', $item->$macros, $template); break;
+  }
+  return $template;
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # РАБОТА С БД
@@ -498,7 +496,7 @@ function setOption($name, $data) /* OBSOLETE */ {}
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function dbReorderItems($table, $condition='', $id='id')
 {
-global $db;
+  global $db;
 
   $items = $db->select("`".$table."`", $condition, '`position`');
   for($i=0; $i<count($items); $i++) {
@@ -522,11 +520,20 @@ global $db;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # РАБОТА С ФАЙЛАМИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function upload($name, $filename)
-# Функция помещает загруженный файл с именем $name в $filename
+function upload($name, $filename, $overwrite = true)
 {
   $result = false;
-  if ($filename[strlen($filename)-1] == '/') $filename .= option('filesTranslitNames')?Translit($_FILES[$name]['name']):$_FILES[$name]['name'];
+  if (substr($filename, -1) == '/') {
+    $filename .= option('filesTranslitNames')?Translit($_FILES[$name]['name']):$_FILES[$name]['name'];
+    if (file_exists($filename) && ((is_string($overwrite) && $filename != $overwrite ) || (is_bool($overwrite) && !$overwrite))) {
+      $i = strrpos($filename, '.');
+      $fname = substr($filename, 0, $i);
+      $fext = substr($filename, $i);
+      $i = 1;
+      while (is_file($fname.$i.$fext)) $i++;
+      $filename = $fname.$i.$fext;
+    }
+  }
   switch($_FILES[$name]['error']) {
     case UPLOAD_ERR_OK: 
       if (is_uploaded_file($_FILES[$name]['tmp_name'])) {
@@ -539,17 +546,17 @@ function upload($name, $filename)
           }
           if (option('filesModeSetOnUpload')) {
             $mode = option('filesModeDefault');
-            $mode = empty($mode) ? 0644 : octdec($mode);
+            $mode = empty($mode) ? 0666 : octdec($mode);
             @chmod($filename, $mode);
           }
-          $result = true;
+          $result = $filename;
         } else ErrorMessage(sprintf(errFileMove, $_FILES[$name]['name'], $filename));
       }
     break;
     case UPLOAD_ERR_INI_SIZE: ErrorMessage(sprintf(errUploadSizeINI, $_FILES[$name]['name'])); break;
     case UPLOAD_ERR_FORM_SIZE: ErrorMessage(sprintf(errUploadSizeFORM, $_FILES[$name]['name'])); break;
     case UPLOAD_ERR_PARTIAL: ErrorMessage(sprintf(errUploadPartial, $_FILES[$name]['name'])); break;
-    case UPLOAD_ERR_NO_FILE: ErrorMessage(sprintf(errUploadNoFile, $_FILES[$name]['name'])); break;
+    case UPLOAD_ERR_NO_FILE: if (strlen($_FILES[$name]['name'])) ErrorMessage(sprintf(errUploadNoFile, $_FILES[$name]['name'])); break;
   }
   return $result;
 }
@@ -600,46 +607,19 @@ function HttpAnswer($answer)
   exit;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function SendXML($data)
+# Отправляет браузеру XML
+{
+  Header('Content-Type: text/xml');
+  echo '<?xml version="1.0" encoding="'.CHARSET.'"?>'."\n<root>".$data."</root>";
+  exit;
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function option($name) 
 { 
   $result = defined($name)?constant($name):'';
   return $result; 
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-/*function img($filename, $params=array(), $title='', $width=0, $height=0, $style='')
-# Функция возвращает заполненный тэг <img>
-{
-  if (gettype($params) == 'string') {
-    $params = array (
-      'alt' => $params,
-      'title' => $title,
-      'width' => $width,
-      'height' => $height,
-      'style' => $style,
-    );
-  }
-  if (!isset($params['alt'])) $params['alt'] = '';
-  if (!isset($params['title'])) $params['title'] = '';
-  if (!isset($params['width'])) $params['width'] = '';
-  if (!isset($params['height'])) $params['height'] = '';
-  if (!isset($params['style'])) $params['style'] = '';
-  if (!isset($params['extra'])) $params['extra'] = '';
-
-  $local = (strpos($filename, '://') === false);
-  $result = '<img src="'.($local?httpRoot:'').$filename.'" alt="'.$params['alt'].'"';
-  if ($params['width'] && $params['height']) {
-    $result .= ' width="'.$params['width'].'" height="'.$params['height'].'"';
-  } elseif ($local) {
-    $info = getimagesize(filesRoot.$filename);
-    $result .= ' '.$info[3];
-  }
-  $result .= ' '.
-    (empty($params['style'])?'':' style="'.$params['style'].'"').
-    (empty($params['title'])?'':' title="'.$params['title'].'"').
-    (empty($params['extra'])?'':' '.$params['extra']).
-  ' />';
-  return $result;
-}*/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function img($imagename)
 # function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
@@ -665,7 +645,9 @@ function img($imagename)
   if (!isset($p['ext']))  $p['ext'] = '';
   if (!isset($p['autosize'])) $p['autosize'] = true;
 
-  $imagename = str_replace(filesRoot, '', $imagename);
+  
+  if (strpos($imagename, httpRoot) !== false) $imagename = str_replace(httpRoot, '', $imagename);
+  if (strpos($imagename, filesRoot) !== false) $imagename = str_replace(filesRoot, '', $imagename);
   if (strpos($imagename, '://') === false) $imagename = httpRoot.$imagename;
   $local = (strpos($imagename, httpRoot) === 0);
 
@@ -719,7 +701,7 @@ function __clearargs($args)
     if (gettype($args[$key]) == 'array') {
       $args[$key] = __clearargs($args[$key]);
     } else {
-      $value = StripSlashes($value);
+      if (get_magic_quotes_gpc()) $value = StripSlashes($value);
       if (strpos($key, 'wyswyg_') === 0) {
         unset($args[$key]);
         $key = substr($key, 7);
@@ -750,7 +732,7 @@ session_start(); # Включение сессий
 $session = &$_SESSION['session'];
 $user = &$_SESSION['user'];
 
-set_magic_quotes_runtime(1); # Принудительно включаем закавычивание передаваемых данных
+set_magic_quotes_runtime(0); # Принудительно включаем закавычивание передаваемых данных
 
 # Определяем директории
 $KERNEL['filesRoot'] = __FILE__;

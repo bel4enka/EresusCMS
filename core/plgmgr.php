@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.07
+# Версия 2.08
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -81,6 +81,7 @@ class TPlgMgr {
   
     $hnd=opendir(filesRoot.'ext/');
     $i = 0;
+    $files=array();
     while (($name = readdir($hnd))!==false) if (preg_match("/\.php$/i", $name)) $files[] = substr($name, 0, strlen($name)-4);
     closedir($hnd); 
     if (count($files) && count($items)) foreach($items as $item) for($i = 0; $i < count($files); $i++) {

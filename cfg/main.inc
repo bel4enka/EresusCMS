@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.07
+# Версия 2.08
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -31,8 +31,7 @@ define('execScript', 'exec.php'); # Виртуальный скрипт
 define('DEBUG_MODE', true); # Включить функции отладки
 if (constant('DEBUG_MODE')) {
   error_reporting(E_ALL);
-  define('DEBUG_LOG_FILENAME', '/tmp/debug.log'); # Имя лог-файла отладки
-  define('DEBUG_SENT_FILENAME', '/tmp/sent.log'); # Имя лог-файла отправленной почты
+  define('DEBUG_LOG_FILENAME', './../data/.debug'); # Имя лог-файла отладки
+  define('DEBUG_SENT_FILENAME', './../data/.sent'); # Имя лог-файла отправленной почты
 } else error_reporting(0);
-
 ?>

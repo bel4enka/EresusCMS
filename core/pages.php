@@ -1,12 +1,13 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.07
+# Версия 2.08
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Управление структурой сайта
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+define('PAGES_MAX_CAPTION_LENGTH', 28);
 class TPages {
   var $access = ADMIN;
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -116,7 +117,11 @@ class TPages {
     $result = '';
     if (count($items)) foreach($items as $item) {
       $item['caption'] = trim($item['caption']);
-      if (empty($item['caption'])) $item['caption'] = '---';
+      if (empty($item['caption'])) $item['caption'] = admNA;
+      if (strlen($item['caption']) > PAGES_MAX_CAPTION_LENGTH) {
+        $item['description'] = $item['caption'].(empty($item['description'])?'':'; '.$item['description']);
+        $item['caption'] = substr($item['caption'], 0, floor(PAGES_MAX_CAPTION_LENGTH / 2)).'...'.substr($item['caption'], -ceil(PAGES_MAX_CAPTION_LENGTH / 2));
+      }
       $result .= '<tr><td>'.str_repeat('&nbsp;',$level*2).'<a'.((isset($request['arg']['id']) && ($request['arg']['id'] == $item['id']))?' class="selected"':($item['active']?'':' class="disabled"')).' href="'.$page->url(array('id'=>$item['id'])).'" title="'.$item['description'].'">'.$item['caption'].'</a> ';
       $result .=
         img('core/img/aru.gif', array('alt'=>admUp, 'title'=>admUp, 'ext'=>'onclick="moveItem(\'up\', '.$item['id'].')"')).' '.
