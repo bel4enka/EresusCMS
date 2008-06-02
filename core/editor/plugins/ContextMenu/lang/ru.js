@@ -1,4 +1,4 @@
-﻿// I18N constants
+﻿﻿// I18N constants
 //
 //LANG: "base", ENCODING: UTF-8
 //Author: Mikhail Krasilnikov, <mk@procreat.ru>

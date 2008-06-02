@@ -1,26 +1,54 @@
 /* Стандартные стили */
 
+/** * * * * * * * * * * * * * * * *
+* Базовый файл стилей для Eresus  *
+* * * * * * * * * * * * * * * * * *
+* В этом файле заданы стили основных элементов 
+* и перечислены встроенные селекторы и идетификаторы
+* ---
+* Для указания пути к картинкам используйте макрос $(styleRoot)
+*/
+
 /* Основные стили */
-html {margin: 0; padding: 0;}
-body {margin: 0; padding: 0; font-family: verdana, tahoma, sans-serif;}
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  font-family: verdana, tahoma, sans-serif;
+  font-size: 8pt;
+}
 img {border: 0;}
-sup,sub {font-size: 80%;}
+sup, sub {font-size: 80%;}
 
-a:link {color: blue;}
-a:visited {color: navy;}
-a:hover {color: red;}
+a {text-decoration: underline;}
+a:link {color: #00f;}
+a:visited {color: #008;}
+a:hover {color: #f00;}
 
-p {text-indent: 1em; margin: 0.2em 0 0.3em 0; text-align: justify;}
+p {
+  text-align: justify;
+  text-indent: 1em;
+  margin: 2px 0 3px;
+}
 
-h1 {font-family: 'Arial', sans-serif; font-style: italic; font-size: 13pt; margin: 1em 0px 7px 0px;}
-h2 {font-family: 'Arial', sans-serif; font-size: 11pt;}
-h3 {font-family: 'Arial', sans-serif; font-size: 10pt; font-style: italic;}
-h4 {font-family: 'Arial', sans-serif; font-size: 9pt; margin: 1em 0px 2px 0px;}
-h5 {font-family: 'Arial', sans-serif; font-size: 8pt; margin: 1em 0px 2px 1em;}
+h1, h2, h3, h4, h5, h6 {font-family: arial, verdana, tahoma, sans-serif;  margin: 1em 0 0.2em;}
+h1 {font-size: 200%;}
+h2 {font-size: 160%;}
+h3 {font-size: 140%;}
+h4 {font-size: 130%;}
+h5 {font-size: 120%;}
+h6 {font-size: 110%;}
 
-/* Стили области контента */
-#Content {padding: 5px 10px; font-size: 90%;}
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* Стиль области контента                                                           *
+* Внутри этой области не допускается никаких вложенных элементов шаблона страницы  *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#Content {
+  padding: 0.5em 1em;
+}
 
+/* * * * * * * * *
+* Стили веб-форм *
+* * * * * * * * */
 div.form {}
 .form th {}
 .form td {}
@@ -30,6 +58,9 @@ div.form {}
 
 input.contentButton {}
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * *
+* Стили, используемые информационными сообщениями  *
+* * * * * * * * * * * * * * * * * * * * * * * * * */
 /* Сообщения об ошибках */
 div.errorBox {background: #fff; border: solid 2px #f00; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}
 div.errorBoxCap {background: #f00; color: #fff; font-weight: bold; padding: 2px 5px 0px 5px; margin: 2px 2px 0 2px;}
@@ -37,4 +68,7 @@ div.errorBoxCap {background: #f00; color: #fff; font-weight: bold; padding: 2px 
 div.infoBox {background: #fff; border: solid 2px #25b; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}
 div.infoBoxCap {background: #25b; color: #fff; font-weight: bold; padding: 2px 5px 0px 5px; margin: 2px 2px 0 2px;}
 
-/* PLUGINS */
+/* * * * * * * * * * * * * * * * * * * * * *
+* Дополнительные стили модулей расширения  *
+* * * * * * * * * * * * * * * * * * * * * */
+

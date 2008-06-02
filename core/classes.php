@@ -1,8 +1,8 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Классы системы
@@ -67,14 +67,14 @@ class TPlugins {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function load($name)
   {
-    $result = isset($this->items[$name]);
+    $result = isset($this->items[$name]) ? $this->items[$name] : false;
     if (isset($this->list[$name]) && !$result) {
       $filename = filesRoot.'ext/'.$name.'.php';
       if (file_exists($filename)) {
         include_once($filename);
         $Class = 'T'.$name;
-        $this->items[$name] = new $Class;
-        $result = true;
+        $this->items[$name] = &new $Class;
+        $result = $this->items[$name];
       } else $result = false;
     }
     return $result;
@@ -372,7 +372,7 @@ function toggle($id)
 global $db, $page, $request;
 
   $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-  $item['active'] = !$item['active'];
+  $item['active'] = (integer)!$item['active'];
   $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$id."'");
   $caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
   sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$request['url']).'">'.$caption.'</a>', array('title'=>$this->title));

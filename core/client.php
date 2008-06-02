@@ -1,8 +1,8 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Интерфейс посетителя
@@ -410,7 +410,7 @@ class TClientUI {
     if (count($form['fields'])) foreach($form['fields'] as $item) {
       if ((!isset($item['access'])) || (UserRights($item['access']))) {
         if (isset($item['label'])) $label = !empty($item['hint']) ? '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>': $item['label']; else $label = '';
-        if (isset($item['pattern'])) $validator .= "if (!document.".$form['name'].".".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\ndocument.".$form['name'].".".$item['name'].".select();\n} else ";
+        if (isset($item['pattern'])) $validator .= "if (!form.".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\nform.".$item['name'].".select();\n} else ";
         $value = StripSlashes(
           isset($item['value'])
             ? $item['value']
@@ -441,7 +441,7 @@ class TClientUI {
           case 'password': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="formLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.' />'.$comment."</td></tr>\n";
-            if (isset($item['equal'])) $validator .= "if (".$form['name'].".".$item['name'].".value != ".$form['name'].".".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\n".$form['name'].".".$item['name'].".value = '';\n".$form['name'].".".$item['equal'].".value = ''\n".$form['name'].".".$item['equal'].".select();\n} else ";
+            if (isset($item['equal'])) $validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
           break;
           case 'select': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
@@ -480,7 +480,28 @@ class TClientUI {
         }
       }
     }
-    if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
+    $this->scripts .= "
+      function ".$form['name']."Submit()
+      {
+        var result = true;
+        var form = document.forms.namedItem('".$form['name']."');
+        ".(empty($validator)?'':$validator)."
+        if (result) {
+          var controls = form.elements;
+          var count = controls.length;
+          for (var i=0; i < count; i++) if (controls[i].type == 'checkbox') {
+            var control = document.createElement('input');
+            control.type = 'hidden';
+            control.name = controls[i].name;
+            control.value = controls[i].checked?controls[i].value:0;
+            controls[i].name = '';
+            form.appendChild(control);
+          }
+        }
+        return result;
+      }
+    ";
+    #if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
     $result .=
       "<div style=\"width: ".$form['width']."\" class=\"form\">\n".
       "<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onSubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".

@@ -1,8 +1,8 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Файловый менеджер
@@ -16,7 +16,7 @@ function files_compare($a, $b)
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
 
-class TFiles{
+class TFiles {
   var 
     $access = EDITOR,
     $icons = array(
@@ -37,6 +37,7 @@ class TFiles{
       array('ext'=>'pdf','icon'=>'pdf'),
     );
   var $root;
+  var $panels = array('l'=>'', 'r'=>'');
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function url($args = null)
   {
@@ -58,6 +59,18 @@ class TFiles{
         'name' => 'folder',
         'caption' => 'Папка',
         'action' => "javascript:filesMkDir()",
+        'active' => true,
+      ),
+      array (
+        'name' => 'rename',
+        'caption' => 'Переименовать',
+        'action' => "javascript:filesRename()",
+        'active' => true,
+      ),
+      array (
+        'name' => 'chmod',
+        'caption' => 'Права',
+        'action' => "javascript:filesChmod()",
         'active' => true,
       ),
       array (
@@ -200,12 +213,8 @@ class TFiles{
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function upload()
   {
-  global $request;
-  
-    $path = (isset($request['arg']['sp'])?$request['arg'][$request['arg']['sp'].'f']:'').'/';
-    foreach($_FILES as $name => $file) {
-      upload($name, substr(filesRoot.$this->root, 0, strlen(filesRoot.$this->root)-1).$path);
-    }
+    global $request;
+    foreach($_FILES as $name => $file) upload($name, $this->pannels[arg('sp')]);
     goto($request['referer']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
@@ -214,7 +223,7 @@ class TFiles{
   global $request;
   
     umask(0000);
-    mkdir(substr(filesRoot.$this->root, 0, strlen(filesRoot.$this->root)-1).$request['arg'][$request['arg']['sp'].'f'].'/'.$request['arg']['mkdir'], 0777);
+    mkdir($this->pannels[arg('sp')].arg('mkdir'), 0777);
     goto($this->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
@@ -237,12 +246,31 @@ class TFiles{
     }
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  function renameEntry()
+  {
+    global $request;
+  
+    $filename = $this->pannels[arg('sp')].arg('rename');
+    $newname = $this->pannels[arg('sp')].arg('newname');
+    if (file_exists($filename)) rename($filename, $newname);
+    goto($this->url());
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
+  function chmodEntry()
+  {
+    global $request;
+  
+    $filename = $this->pannels[arg('sp')].arg('chmod');
+    if (file_exists($filename)) chmod($filename, octdec(arg('perms')));
+    goto($this->url());
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function copyFile()
   {
   global $request;
   
-    $filename = filesRoot.$this->root.$request['arg'][$request['arg']['sp'].'f'].'/'.$request['arg']['copyfile'];
-    $dest = filesRoot.$this->root.$request['arg'][($request['arg']['sp']=='l'?'r':'l').'f'].'/'.$request['arg']['copyfile'];
+    $filename = $this->pannels[arg('sp')].arg('copyfile');
+    $dest = $this->pannels[arg('sp')=='l'?'r':'l'].arg('copyfile');
     if (is_file($filename)) copy($filename, $dest);
     elseif (is_dir($filename)) {
     }
@@ -254,12 +282,10 @@ class TFiles{
   global $request;
   
     if (UserRights(ADMIN)) {
-      $filename = filesRoot.$this->root.$request['arg'][$request['arg']['sp'].'f'].'/'.$request['arg']['movefile'];
-      $dest = filesRoot.$this->root.$request['arg'][($request['arg']['sp']=='l'?'r':'l').'f'].'/'.$request['arg']['movefile'];
-      if (is_file($filename)) {
-        copy($filename, $dest);
-        unlink($filename);
-      } elseif (is_dir($filename)) {
+      $filename = $this->pannels[arg('sp')].arg('movefile');
+      $dest = $this->pannels[arg('sp')=='l'?'r':'l'].arg('movefile');
+      if (is_file($filename)) rename($filename, $dest);
+      elseif (is_dir($filename)) {
       }
     }
     goto($this->url());
@@ -270,7 +296,7 @@ class TFiles{
   global $request;
   
     if (UserRights(ADMIN)) {
-      $filename = filesRoot.$this->root.$request['arg'][$request['arg']['sp'].'f'].'/'.$request['arg']['delete'];
+      $filename = $this->pannels[arg('sp')].$request['arg']['delete'];
       if (is_file($filename)) unlink($filename);
       elseif (is_dir($filename)) {
         $this->rmDir($filename);
@@ -287,8 +313,12 @@ class TFiles{
   global $request, $page;
     
     $this->root = UserRights(ADMIN)?'':'data/';
+    $this->pannels['l'] = filesRoot.$this->root.(arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
+    $this->pannels['r'] = filesRoot.$this->root.(arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
     if (count($_FILES)) $this->upload();
     elseif (isset($request['arg']['mkdir'])) $this->mkDir();
+    elseif (isset($request['arg']['rename'])) $this->renameEntry();
+    elseif (isset($request['arg']['chmod'])) $this->chmodEntry();
     elseif (isset($request['arg']['copyfile'])) $this->copyFile();
     elseif (isset($request['arg']['movefile'])) $this->moveFile();
     elseif (isset($request['arg']['delete'])) $this->deleteFile();

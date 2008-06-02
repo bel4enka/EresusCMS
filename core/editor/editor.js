@@ -21,6 +21,8 @@ function xinha_init()
   xinha_config.baseHref = "$(httpRoot)";
   xinha_config.baseHref = xinha_config.baseHref.substr(0, xinha_config.baseHref.length-1);
   xinha_config.stripBaseHref = false;
+  xinha_config.makeLinkShowsTarget = false;
+  xinha_config.showLoading = true;
 
   xinha_config.toolbar =
   [

@@ -1,7 +1,7 @@
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Скрипты пользовательской части файлового менеджера
@@ -72,7 +72,7 @@ function Copy(strControlName)
     var objControl = document.getElementById(strControlName);
     objControl.createTextRange().execCommand("Copy");
     objControl.focus();
-  } else alert('This function avaliable only in Internet Explorer!');
+  } else alert('Эта функция доступна только Internet Explorer :(');
 }
 
 function filesCD(url)
@@ -82,8 +82,43 @@ function filesCD(url)
 
 function filesMkDir()
 {
-  var folder = prompt('Folder name','');
+  var folder = prompt('Имя папки','');
   if (folder != undefined && folder.length) window.location = setPanel(window.location)+'&mkdir='+folder;
+}
+
+function filesRename()
+{
+  if (objRowSel != null) {
+    var filename = objRowSel.childNodes[1].innerHTML;
+    if (filename.substr(-2) != '..') {
+      var newname = prompt('Переименовать',filename);
+      if (newname != undefined && newname.length && newname != filename) 
+        window.location = setPanel(window.location)+'&rename='+filename+'&newname='+newname;
+    }
+  }
+}
+
+function filesChmod()
+{
+  if (objRowSel != null) {
+    var filename = objRowSel.childNodes[1].innerHTML;
+    if (filename.substr(-2) != '..') {
+      var perms = objRowSel.childNodes[4].innerHTML;
+      var a = new Array(perms.substr(0, 3), perms.substr(3, 3), perms.substr(6, 3));
+      perms = '0';
+      var value;
+      for (var i=0; i < 3; i++) {
+        value = 0;
+        if (a[i].substr(0, 1) == 'r') value += 4;
+        if (a[i].substr(1, 1) == 'w') value += 2;
+        if (a[i].substr(2, 1) == 'x') value += 1;
+        perms += value.toString();
+      }
+      var newperms = prompt('Установить права', perms);
+      if (newperms != undefined && newperms.length && newperms != perms) 
+        window.location = setPanel(window.location)+'&chmod='+filename+'&perms='+newperms;
+    }
+  }
 }
 
 function filesCopy()
@@ -94,7 +129,7 @@ function filesCopy()
       var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
       obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
       for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename) 
-        if (confirm('File "'+filename+'" already exists. Overwrite?')) break;
+        if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
         else return;
       window.location = setPanel(window.location)+'&copyfile='+filename;
     }
@@ -109,7 +144,7 @@ function filesMove()
       var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
       obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
       for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename) 
-        if (confirm('File "'+filename+'" already exists. Overwrite?')) break;
+        if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
         else return;
       window.location = setPanel(window.location)+'&movefile='+filename;
     }
@@ -120,7 +155,7 @@ function filesDelete()
 {
   if (objRowSel != null) {
     var filename = objRowSel.childNodes[1].innerHTML;
-    if ((filename.substr(-2) != '..') && confirm('Are you sure, you want to delete "'+filename+'"?')) {
+    if ((filename.substr(-2) != '..') && confirm('Подтверждаете удаление "'+filename+'"?')) {
       window.location = setPanel(window.location)+'&delete='+filename;
     }
   }

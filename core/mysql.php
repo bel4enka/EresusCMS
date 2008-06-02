@@ -89,6 +89,7 @@ class TMySQL {
     $this->prefix = $mysqlPrefix;
     @$this->Connection = mysql_connect($mysqlHost, $mysqlUser, $mysqlPswd, true);
     if (!$this->Connection) $this->ErrorMessage("Can not connect","Connecting to MySQL server. Check login and password",__LINE__);
+    if (defined('LOCALE_CHARSET')) $this->query("SET NAMES '".LOCALE_CHARSET."'", false);
     if (!mysql_select_db($this->name, $this->Connection)) $this->ErrorMessage(mysql_error($this->Connection),"Selecting database \"".$this->name."\"",__LINE__);
     if (constant('DEBUG_MODE')) $this->functionStackPop();
   }
@@ -104,7 +105,7 @@ class TMySQL {
       if ($this->logQueries) $__MYSQL_QUERY_LOG .= $query."\n";
     }
     $result = mysql_query($query, $this->Connection);
-    if ($error_reporting && ($result == false)) $this->ErrorMessage(mysql_error($this->Connection),"Query \"".$query."\"",__LINE__);
+    if ($error_reporting && !$result) $this->ErrorMessage(mysql_error($this->Connection),"Query \"".$query."\"",__LINE__);
     if (constant('DEBUG_MODE')) {
       $__MYSQL_QUERY_COUNT++;
       $__MYSQL_QUERY_TIME += microtime() - $time_start;

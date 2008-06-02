@@ -1,8 +1,8 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Интерфейс администратора
@@ -335,7 +335,7 @@ class TAdminUI {
     if (count($form['fields'])) foreach($form['fields'] as $item) {
       if ((!isset($item['access'])) || (UserRights($item['access']))) {
         if (isset($item['label'])) $label = !empty($item['hint']) ? '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>': $item['label']; else $label = '';
-        if (isset($item['pattern'])) $validator .= "if (!document.".$form['name'].".".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\ndocument.".$form['name'].".".$item['name'].".select();\n} else ";
+        if (isset($item['pattern'])) $validator .= "if (!form.".$item['name'].".value.match(".$item['pattern'].")) {\nalert('".(empty($item['errormsg'])?sprintf(errFormPatternError, $item['name'], $item['pattern']):$item['errormsg'])."');\nresult = false;\nform.".$item['name'].".select();\n} else ";
         $value = isset($item['value'])
           ? $item['value']
           : (isset($item['name']) && isset($values[$item['name']])
@@ -365,7 +365,7 @@ class TAdminUI {
           case 'password': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.'>'.$comment."</td></tr>\n";
-            if (isset($item['equal'])) $validator .= "if (".$form['name'].".".$item['name'].".value != ".$form['name'].".".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\n".$form['name'].".".$item['name'].".value = '';\n".$form['name'].".".$item['equal'].".value = ''\n".$form['name'].".".$item['equal'].".select();\n} else ";
+            if (isset($item['equal'])) $validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
           break;
           case 'select': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
@@ -414,9 +414,10 @@ class TAdminUI {
       function ".$form['name']."Submit()
       {
         var result = true;
+        var form = document.forms.namedItem('".$form['name']."');
         ".(empty($validator)?'':$validator)."
         if (result) {
-          var controls = document.".$form['name'].".elements;
+          var controls = form.elements;
           var count = controls.length;
           for (var i=0; i < count; i++) if (controls[i].type == 'checkbox') {
             var control = document.createElement('input');
@@ -424,7 +425,7 @@ class TAdminUI {
             control.name = controls[i].name;
             control.value = controls[i].checked?controls[i].value:0;
             controls[i].name = '';
-            document.".$form['name'].".appendChild(control);
+            form.appendChild(control);
           }
         }
         return result;
@@ -455,20 +456,19 @@ class TAdminUI {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderContent()
   {
-  global $request, $session;
+  global $request, $session, $plugins;
 
     $result = '';
     if (!empty($request['arg']['mod'])) {
       if(file_exists(filesRoot."core/".$request['arg']['mod'].".php")) {
         include_once(filesRoot."core/".$request['arg']['mod'].".php");
         $class = 'T'.$request['arg']['mod'];
+        $this->module = &new $class;
       } elseif (substr($request['arg']['mod'], 0, 4) == 'ext-') {
-        $class = substr($request['arg']['mod'], 4);
-        include_once(filesRoot."ext/".$class.".php");
-        $class = 'T'.$class;
+        $name = substr($request['arg']['mod'], 4);
+        $this->module = $plugins->load($name);
       } else $session['errorMessage'] = errFileNotFound.': "'.filesRoot.'core/'.$request['arg']['mod'].'.php"';
-      if (!empty($class)) {
-        $this->module = new $class;
+      if (is_object($this->module)) {
         if (method_exists($this->module, 'adminRender')) $result .= $this->module->adminRender();
         else $session['errorMessage'] = sprintf(errMethodNotFound, 'adminRender', get_class($this->module));
       }
@@ -504,9 +504,10 @@ class TAdminUI {
   {
   global $db, $user, $request;
     $result = '';
+    $ie = preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']);
     $items = $db->select('pages', "(`owner`='".$owner."') AND (`active`='1') AND (`access` >= '".($user['auth'] ? $user['access'] : GUEST)."')", "`position`");
     if (count($items)) foreach($items as $item) {
-      if (empty($item['caption'])) $item['caption'] = '(no caption)';
+      if (empty($item['caption'])) $item['caption'] = admNA;
       if (isset($request['arg']['section']) && ($item['id'] == $request['arg']['section'])) $this->title = $item['caption']; # title - массив?
       $sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
       $current = (isset($request['arg']['mod'])) && ($request['arg']['mod'] == 'content') && ($request['arg']['section'] == $item['id']);

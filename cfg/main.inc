@@ -1,8 +1,8 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Файл конфигурации
@@ -12,7 +12,7 @@
 define('dbHost', 'localhost'); # хост сервера MySQL
 define('dbUser', 'root'); # имя пользователя для MySQL
 define('dbPswd', 'mysql'); # пароль для доступа к MySQL
-define('dbName', '{%dbname}'); # Имя базы данных
+define('dbName', ''); # Имя базы данных
 define('dbPrefix', ''); # Префикс имени базы данных
 
 define('SESSION_TIMEOUT', 30); # Таймаут сессии в минутах
@@ -33,6 +33,6 @@ if (constant('DEBUG_MODE')) {
   error_reporting(E_ALL);
   define('DEBUG_LOG_FILENAME', '/tmp/debug.log'); # Имя лог-файла отладки
   define('DEBUG_SENT_FILENAME', '/tmp/sent.log'); # Имя лог-файла отправленной почты
-} else error_reporting(E_NONE);
+} else error_reporting(0);
 
 ?>

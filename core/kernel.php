@@ -1,18 +1,18 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.06
-# © 2004-2006, ProCreat Systems
+# Версия 2.07
+# © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Ядро интерактивной системы управления сайтом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.06'); # Версия системы
+define('CMSVERSION', '2.07'); # Версия системы
 define('CMSLINK', 'http://procreat.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '16.11.06'); # Дата обновления ядра
+define('KERNELDATE', '12.01.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -297,7 +297,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
     $multipart.="$text\n\n";
     $multipart.="--$boundary--\n";
     $text = $multipart;
-  }
+  } else $headers .= "Content-type: text/plain; charset=$charset\n"; 
 
   if (constant('DEBUG_MODE')) {
     $hnd = @fopen(DEBUG_SENT_FILENAME, 'a');
@@ -725,6 +725,16 @@ function __clearargs($args)
         $key = substr($key, 7);
         $value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
         $value = str_replace(httpRoot, '$(httpRoot)', $value);
+        preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
+        if (count($images[0])) {
+          $images = $images[0];
+          $delta = 0;
+          for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
+            $s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
+            $value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
+            $delta += strlen($s) - strlen($images[$i][0]);
+          }
+        }
       }
       $args[$key] = $value;
     }
@@ -770,7 +780,7 @@ if (constant('DEBUG_MODE')) {
   if(file_exists(filesRoot.'core/debug.php')) include_once(filesRoot.'core/debug.php');
 }
 
-if (strcasecmp(httpPath, substr($_SERVER['REQUEST_URI'], 0, strlen(httpPath))) == 0) $s = substr($_SERVER['REQUEST_URI'], strlen(httpPath));
+$s = (strcasecmp(httpPath, substr($_SERVER['REQUEST_URI'], 0, strlen(httpPath))) == 0) ? substr($_SERVER['REQUEST_URI'], strlen(httpPath)) : '';
 # Если SID передается в URL, вырезаем его.
 $sid = 'sid='.session_id();
 if ($x = strpos($s, $sid)) {
