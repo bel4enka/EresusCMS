@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08
+# Версия 2.09
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -280,14 +280,14 @@ class TClientUI {
     if (isset($request['arg']['HTTP_ERROR'])) $this->httpError($request['arg']['HTTP_ERROR']);
     # Отрисовываем контент
     $content = $plugins->clientRenderContent();
-    $this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
+    #$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
     #if ($this->updated < 0) $this->updated = 0;
     #$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
     $this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
     $template = filesRoot.'templates/'.$this->template.'.tmpl';
-    if (file_exists($template)) $template = StripSlashes(file_get_contents($template)); else {
+    if (file_exists($template)) $template = file_get_contents($template); else {
       $template = filesRoot.'templates/default.tmpl';
-      if (file_exists($template)) $template = StripSlashes(file_get_contents($template)); else CMSError('File not found', 'Open file '.$template, __FILE__, __LINE__);
+      if (file_exists($template)) $template = file_get_contents($template); else CMSError('File not found', 'Open file '.$template, __FILE__, __LINE__);
     }
     $this->template = trim(substr($template, strpos($template, "\n")));
     $content = $plugins->clientOnContentRender($content);
@@ -346,6 +346,7 @@ class TClientUI {
 
     if (count($this->headers)) foreach ($this->headers as $header) Header($header);
     
+    $result = $plugins->clientBeforeSend($result);
     if (!DEBUG_MODE) ob_start('ob_gzhandler');
     echo $result;
     if (!DEBUG_MODE) ob_end_flush();

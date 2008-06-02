@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08
+# Версия 2.09
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -72,7 +72,7 @@ class TPlugins {
       if (file_exists($filename)) {
         include_once($filename);
         $Class = 'T'.$name;
-        $this->items[$name] = &new $Class;
+        $this->items[$name] = new $Class;
         $result = $this->items[$name];
       } else $result = false;
     }
@@ -114,7 +114,7 @@ class TPlugins {
               $item['caption'],
               $item['description'],
               $item['hint'],
-              $request['url'].$item['name'].'/',
+              $request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
             ),
             $template['html']
           );
@@ -163,6 +163,13 @@ class TPlugins {
   {
     if (isset($this->events['clientOnPageRender']))
       foreach($this->events['clientOnPageRender'] as $plugin) $text = $this->items[$plugin]->clientOnPageRender($text);
+    return $text;
+  }
+  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  function clientBeforeSend($text)
+  {
+    if (isset($this->events['clientBeforeSend']))
+      foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
     return $text;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -247,10 +254,12 @@ function uninstall()
 function updateSettings()
 # Сохраняет в БД настройки плагина
 {
-global $db, $request;
+ global $db, $request;
 
   $item = $db->selectItem('`plugins`', "`name`='".$this->name."'");
+  $request['b'] = true;
   $item['settings'] = decodeOptions($item['settings']);
+  #var_dump($item['settings']); exit;
   foreach ($this->settings as $key => $value) if (isset($request['arg'][$key])) $this->settings[$key] = $request['arg'][$key];
   $item['settings'] = encodeOptions($this->settings);
   $db->updateItem('plugins', $item, "`name`='".$this->name."'");

@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08
+# Версия 2.09
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -30,7 +30,7 @@ class TSettings {
     if (isset($options['nobr']) && $options['nobr']) $value = str_replace(array("\n", "\r"), ' ', $value);
     if (isset($options['savebr']) && $options['savebr']) {
       $value = addcslashes($value, "\n\r\"");
-      $value = str_replace('\\','\\\\', $value);
+      #$value = str_replace('\\','\\\\', $value);
       $quot = '"';
     }
     if ($value != option($name)) $this->notify .= '<strong>'.$caption.':</strong> "'.option($name).'" &rarr; "'.$value."\"\n";

@@ -1,7 +1,7 @@
 ErrorDocument 403 /index.php?HTTP_ERROR=403
 ErrorDocument 404 /index.php?HTTP_ERROR=404
 
-Options -Indexes
+Options -Indexes +FollowSymLinks
 AddDefaultCharset Off
 
 <IfModule mod_charset.c>
@@ -11,11 +11,11 @@ AddDefaultCharset Off
 <IfModule mod_rewrite.c>
   RewriteEngine on
   RewriteRule (core/editor/.*\.html)$ core/gziph.php?file=$1&type=text/html [L]
-  RewriteRule (core/editor/.*\.js)$ core/gziph.php?file=$1&type=text/javascript&charset=utf8 [L]
+  RewriteRule (core/editor/.*\.js)$ core/gziph.php?file=$1&type=text/javascript&charset=utf-8 [L]
   RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
   RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
   RewriteRule ^(core|ext|data|style|linkex|links)/ - [L]
   RewriteRule ^admin admin.php [L]
   RewriteRule \.(jpg|gif|jpeg|bmp|png|ico|zip|7z|rar)$ - [L]
-  RewriteRule \.* index.php
+  RewriteRule .* index.php
 </IfModule>

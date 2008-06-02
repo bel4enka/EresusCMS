@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08
+# Версия 2.09
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -273,9 +273,10 @@ class TAdminUI {
       "</th>";
     if (count($table['columns'])) foreach($table['columns'] as $column) 
       $result .= '<th '.(isset($column['width'])?' style="width: '.$column['width'].'"':'').'>'.
-      ((isset($request['arg'][$prefix.'sort']) && ($request['arg'][$prefix.'sort'] == $column['name']))?'<span class="admSortBy">'.(isset($column['caption'])?$column['caption']:'&nbsp;').'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
-      ' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).'" title="'.admSortAscending.'">'.img('core/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
-      '<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).'" title="'.admSortDescending.'">'.img('core/img/aru.gif', admSortDescending, admSortDescending).'</a></th>';
+        ((isset($request['arg'][$prefix.'sort']) && ($request['arg'][$prefix.'sort'] == $column['name']))?'<span class="admSortBy">'.(isset($column['caption'])?$column['caption']:'&nbsp;').'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
+        (isset($table['name'])?
+        ' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).'" title="'.admSortAscending.'">'.img('core/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
+        '<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).'" title="'.admSortDescending.'">'.img('core/img/aru.gif', admSortDescending, admSortDescending).'</a></th>':'');
     $result .= "</tr>\n";
     $url_delete = $this->url(array($prefix.'delete'=>"%s"));
     $url_edit = $this->url(array($prefix.'id'=>"%s"));
@@ -294,7 +295,7 @@ class TAdminUI {
       $result .= '</td>';
       # Обрабатываем ячейки данных
       if (count($table['columns'])) foreach($table['columns'] as $column) {
-        $value = isset($column['value'])?$column['value']:$item[$column['name']];
+        $value = isset($column['value'])?$column['value']:(isset($item[$column['name']])?$item[$column['name']]:'');
         if (isset($column['replace']) && count($column['replace']))
           $value = array_key_exists($value, $column['replace'])?$column['replace'][$value]:$value;
         if (isset($column['macros'])) {
@@ -351,23 +352,23 @@ class TAdminUI {
         $comment = isset($item['comment'])?' '.$item['comment']:'';
         switch(strtolower($item['type'])) {
           case 'hidden':
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $hidden .= '<div class="admHidden"><input type="hidden" name="'.$item['name'].'" value="'.$value.'"></div>'."\n";
           break;
           case 'divider': $body .= "<tr><td colspan=\"2\"><hr class=\"admFormDivider\"></td></tr>\n"; break;
           case 'text': $body .= '<tr><td colspan="2" class="admFormText"'.$extra.'>'.$value."</td></tr>\n"; break;
           case 'header': $body .= '<tr><th colspan="2" class="admFormHeader">'.$value."</th></tr>\n"; break;
           case 'edit': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($value).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$width.$disabled.$extra.'>'.$comment."</td></tr>\n"; 
           break;
           case 'password': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><input type="password" name="'.$item['name'].'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength']).'"'.$width.$extra.'>'.$comment."</td></tr>\n";
             if (isset($item['equal'])) $validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
           break;
           case 'select': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select name="'.$item['name'].'"'.$width.$disabled.$extra.'>'."\n";
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
@@ -377,7 +378,7 @@ class TAdminUI {
             $body .= '</select>'.$comment."</td></tr>\n";
           break;
           case 'listbox':
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'[]"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
@@ -387,21 +388,21 @@ class TAdminUI {
             $body .= '</select>'.$comment."</td></tr>\n";
           break;
           case 'checkbox': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td>&nbsp;</td><td><input type="checkbox" name="'.$item['name'].'" value="'.($value ? $value : true).'" '.($value ? 'checked' : '').$disabled.$extra.' style="background-color: transparent; border-style: none; margin:0px;"><span style="vertical-align: baseline"> '.$label."</span></td></tr>\n"; 
           break;
           case 'memo': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="admFormLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$disabled.$extra.' style="width: 100%;">'.EncodeHTML($value)."</textarea></td></tr>\n"; 
           break;
           case 'html': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $value = isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'');
             $body .= '<tr><td colspan="2">'.$label.'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.str_replace('$(httpRoot)', httpRoot, EncodeHTML($value)).'</textarea></td></tr>'."\n";
             $this->htmlEditors[] = 'wyswyg_'.$item['name'];
           break;
           case 'file': 
-            if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
+            if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $body .= '<tr><td class="admFormLabel">'.$label."</td><td><input type=\"file\" name=\"".$item['name']."\" size=\"".$item['width']."\"".$disabled.">".$comment."</td></tr>\n";
             $file = true;
           break;

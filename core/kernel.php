@@ -1,18 +1,18 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08
+# Версия 2.09
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Ядро интерактивной системы управления сайтом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.08'); # Версия системы
+define('CMSVERSION', '2.09'); # Версия системы
 define('CMSLINK', 'http://procreat.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '12.01.07'); # Дата обновления ядра
+define('KERNELDATE', '31.05.07'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -144,6 +144,7 @@ function Login($login, $hash, $autologin = false, $cookieLogin = false)
 global $db, $user, $session;
 
   $result = false;
+  $login = mysql_real_escape_string($login);
   $session['errorMessage'] = '';
   $item = $db->selectItem('users', "`login`='$login'");
   if (!is_null($item)) { # Если такой пользователь есть...
@@ -253,7 +254,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
   if (empty($replyTo)) $replyTo = option('mailReplyTo');
   if (empty($replyTo)) $replyTo = $fromAddr;
 
-  if (strlen($fromName)) $sender = "\"".$fromName."\" <".$fromAddr.">"; else $sender = $fromAddr;
+  $sender = strlen($fromName) ? "\"$fromName\" <$fromAddr>" : $fromAddr;
   if (strlen($fromOrg)) $sender .= " ($fromOrg)";
   if (strpos($sender, '@') === false) $sender = 'no-reply@'.httpHost;
   $fromSign = "\n-- \n".$fromSign;
@@ -262,6 +263,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 
   $charset = option('mailCharset');
   if (empty($charset)) $charset = CHARSET;
+  $sender= '=?'.$charset.'?B?'.base64_encode($sender).'?=';
 
   $headers =
    "MIME-Version: 1.0\n".
@@ -317,7 +319,7 @@ global $user, $page, $request;
       $url = isset($params['url'])?$params['url']:(isset($request['arg']['submitURL'])?$request['arg']['submitURL']:$request['referer']);
     } else {
       $editors = isset($params['editors'])?$params['editors']:true;
-      $title = 'SECTION';#isset($params['title'])?$params['title']:$page->content['section'];
+      $title = isset($params['title'])?$params['title']:$page->title;
       $url = isset($params['url'])?$params['url']:$request['arg']['submitURL'];
     }
     $target = sendNotifyTo;
@@ -414,7 +416,7 @@ function array2text($value, $assoc=false)
 function encodeOptions($options)
 # Собирает настройки из массива в строку
 {
-global $db;
+  global $db;
 
   $result = serialize($options);
   return $result;
@@ -424,7 +426,6 @@ function decodeOptions($options, $defaults = array())
 # Функция разбивает записанные в строковом виде опции на массив
 {
   if (empty($options)) $result = $defaults; else {
-    $options = $options;
     $result = unserialize($options);
     if (gettype($result) != 'array') $result = $defaults; else {
       if (count($defaults)) foreach($defaults as $key => $value) if (!array_key_exists($key, $result)) $result[$key] = $value;
@@ -566,7 +567,7 @@ function loadTemplate($name)
 {
   $filename = filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.tmpl':'');
   if (file_exists($filename)) {
-    $result['html'] = StripSlashes(file_get_contents($filename));
+    $result['html'] = file_get_contents($filename);
     preg_match('/<!--(.*?)-->/', $result['html'], $result['description']);
     $result['description'] = trim($result['description'][1]);
     $result['html'] = trim(substr($result['html'], strpos($result['html'], "\n")));
@@ -732,14 +733,14 @@ session_start(); # Включение сессий
 $session = &$_SESSION['session'];
 $user = &$_SESSION['user'];
 
-set_magic_quotes_runtime(0); # Принудительно включаем закавычивание передаваемых данных
+set_magic_quotes_runtime(0); # Принудительно выключаем закавычивание передаваемых данных
 
 # Определяем директории
 $KERNEL['filesRoot'] = __FILE__;
 $KERNEL['filesRoot'] = str_replace('\\','/',$KERNEL['filesRoot']);
 $KERNEL['filesRoot'] = substr($KERNEL['filesRoot'], 0, strpos($KERNEL['filesRoot'], '/core/kernel.php')+1);
-define('httpPath', substr($KERNEL['filesRoot'], strpos($KERNEL['filesRoot'], $_SERVER['DOCUMENT_ROOT'])+strlen($_SERVER['DOCUMENT_ROOT'])-($_SERVER['DOCUMENT_ROOT'][strlen($_SERVER['DOCUMENT_ROOT'])-1] == '/'?1:0)));
-if ($KERNEL['filesRoot'][1] == ':') $KERNEL['filesRoot'] = substr($KERNEL['filesRoot'], 2);
+define('httpPath', substr($KERNEL['filesRoot'], strpos($KERNEL['filesRoot'], $_SERVER['DOCUMENT_ROOT'])+strlen($_SERVER['DOCUMENT_ROOT'])-($_SERVER['DOCUMENT_ROOT']{strlen($_SERVER['DOCUMENT_ROOT'])-1} == '/'?1:0)));
+if ($KERNEL['filesRoot']{1} == ':') $KERNEL['filesRoot'] = substr($KERNEL['filesRoot'], 2);
 define('filesRoot', $KERNEL['filesRoot']); # Путь к файлам сайта
 define('httpHost', $_SERVER['HTTP_HOST']); # Хост сайта
 define('httpRoot', 'http://'.httpHost.httpPath);
@@ -772,10 +773,11 @@ if ($x = strpos($s, $sid)) {
   $x = substr($sid, 0, strpos($sid, '='));
   unset($_GET[$x]);
 }
+$request['method'] = $_SERVER['REQUEST_METHOD'];
 $request['url'] = httpRoot.$s;
 # Создаем безопасный URL для ссылок
 $request['link'] = $request['url'];
-if ((strpos($request['link'], '?') === false) && ($request['link'][strlen($request['link'])-1] != '/')) $request['link'] .= '/';
+if ((strpos($request['link'], '?') === false) && (substr($request['link'], -1) != '/')) $request['link'] .= '/';
 $request['referer'] = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
 # Сбор аргументов вызова
 $request['arg'] = __clearargs(array_merge($_GET, $_POST));

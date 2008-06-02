@@ -46,7 +46,7 @@ class TMySQL {
       "<tr><td style=\"background-color: #79c; color: white; text-align: left; padding: 10; font-weight: bold; border-style: solid; border-width: 1; border-color: #025 #acf #acf #025;\">".
       "Error: $msg<br /> Action: ".$task."<br /> Adress: ".$PHP_SELF."<br /> Sript file: ".__FILE__."<br /> Line: ". $LINE.$_stack."</td></tr>\n".
       "</table></div>\n";
-    exit();
+    exit;
   }
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   function init($mysqlHost, $mysqlUser, $mysqlPswd, $mysqlName, $mysqlPrefix='')
@@ -93,7 +93,7 @@ class TMySQL {
     $result = $this->query($query, $error_reporting);
     $values = Array();
     while($row = mysql_fetch_assoc($result)) {
-      if (count($row)) foreach($row as $key => $value) $row[$key] = StripSlashes($value);
+      if (count($row)) foreach($row as $key => $value) $row[$key] = $value;
       $values[] = $row;
     }
     if (constant('DEBUG_MODE')) $this->functionStackPop();

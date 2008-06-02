@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08
+# Версия 2.09
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -68,7 +68,7 @@ class TPlgMgr {
 
     if (count($request['arg']['files'])) foreach ($request['arg']['files'] as $name) {
       $plugins->install($name);
-      SendNotify(admPluginsAdded.': '.$name, '', false, '', $page->url(array('action'=>'')));
+      SendNotify(admPluginsAdded.': '.$name, array('url' => $page->url(array('action'=>''))));
     }
     goto($request['arg']['submitURL']);
   }
@@ -101,7 +101,7 @@ class TPlgMgr {
     if (count($files)) foreach($files as $file) {
       $hnd = fopen(filesRoot.'ext/'.$file.'.php','r');
       $s = '';
-      while (!feof($hnd)) $s .= StripSlashes(fgets($hnd, 1024));
+      while (!feof($hnd)) $s .= fgets($hnd, 1024);
       fclose($hnd);
       $valid = preg_match('/var.*\$title\s*=\s*\'(.+)\'.*\$version\s*=\s*\'(.+)\'.*\$description\s*=\s*\'(.+)\'/Usi',$s, $match);
       if (!$valid) {

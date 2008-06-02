@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.08RC1
+# Версия 2.09RC1
 # © 2004-2007, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -97,7 +97,7 @@ foreach($files as $file) {
  $content .= '<div>'.img('core/img/icon_'.$file['icon'].'.gif').$file['filename'].'</div>';
 }
 
-$template = StripSlashes(file_get_contents(filesRoot.'core/dlg/BrowseFile.tmpl'));
+$template = file_get_contents(filesRoot.'core/dlg/BrowseFile.tmpl');
 
 $template = str_replace(
   array(

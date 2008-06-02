@@ -3972,9 +3972,7 @@ HTMLArea.prototype._createLink = function(link)
     outparam =
     {
       f_href : '',
-      f_title : '',
-      f_target : '',
-      f_usetarget : editor.config.makeLinkShowsTarget
+      f_title : ''
     };
   }
   else
@@ -3982,9 +3980,7 @@ HTMLArea.prototype._createLink = function(link)
     outparam =
     {
       f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
-      f_title  : link.title,
-      f_target : link.target,
-      f_usetarget : editor.config.makeLinkShowsTarget
+      f_title  : link.title
     };
   }
   this._popupDialog(
@@ -4013,7 +4009,6 @@ HTMLArea.prototype._createLink = function(link)
               // Found one.
               if (!a) a = anchor;
               anchor.href =  param.f_href;
-              if (param.f_target) anchor.target =  param.f_target;
               if (param.f_title)  anchor.title =  param.f_title;
             }
           }

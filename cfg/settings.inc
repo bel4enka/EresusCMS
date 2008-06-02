@@ -11,7 +11,7 @@
   define('mailReplyTo', '');
   define('mailCharset', 'windows-1251');
   define('mailFromSign', "Система управления сайтом.");
-  define('sendNotifyTo', 'support@procreat.ru');
+  define('sendNotifyTo', '');
   define('filesOwnerSetOnUpload', false);
   define('filesOwnerDefault', '');
   define('filesModeSetOnUpload', true);

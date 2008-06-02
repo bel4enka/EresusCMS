@@ -74,7 +74,7 @@ CREATE TABLE `plugins` (
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `login` varchar(16) NOT NULL default '',
-  `hash` varchar(32) NOT NULL default '',
+  `hash` char(32) NOT NULL default '',
   `active` tinyint(1) unsigned NOT NULL default '1',
   `lastVisit` datetime default NULL,
   `lastLoginTime` int(10) unsigned default NULL,

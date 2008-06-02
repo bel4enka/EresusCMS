@@ -9,7 +9,8 @@ function xinha_init()
     'ImageManager',
     'InsertAnchor',
     'PasteText',
-    'TableOperations'
+    'TableOperations',
+    'SuperClean'
   ];
   if(!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
   var xinha_config = new HTMLArea.Config();

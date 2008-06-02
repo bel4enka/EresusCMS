@@ -1,8 +1,4 @@
 User-agent: *
-Disallow: /cfg/
 Disallow: /core/
 Disallow: /ext/
-Disallow: /lang/
 Disallow: /style/
-Disallow: /templates/
-
