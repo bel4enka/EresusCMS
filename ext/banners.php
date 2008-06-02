@@ -8,7 +8,7 @@ class TBanners extends TListContentPlugin {
   var $name = 'banners';
   var $title = 'Баннеры';
   var $type = 'client,admin';
-  var $version = '1.01';
+  var $version = '1.04';
   var $description = 'Система показа баннеров';
   var $table = array (
     'name' => 'banners',
@@ -42,7 +42,7 @@ class TBanners extends TListContentPlugin {
       `active` tinyint(1) unsigned default NULL,
       `section` varchar(255) default NULL,
       `priority` int(10) unsigned default NULL,
-      `block` int(10) unsigned default NULL,
+      `block` varchar(31) default NULL,
       `showFrom` date default NULL,
       `showTill` date default NULL,
       `showCount` int(10) unsigned default NULL,
@@ -104,8 +104,8 @@ class TBanners extends TListContentPlugin {
   {
   global $db, $request;
 
-    $item = getArgs($db->fields($this->table['name']));
-    $item['section'] = ($item['section'] != 'all')?':'.implode(':', $request['arg']['section']).':':'all';
+    $item = GetArgs($db->fields($this->table['name']));
+    if (isset($item['section'])) $item['section'] = ($item['section'] != 'all')?':'.implode(':', $request['arg']['section']).':':'all';
     $db->insert($this->table['name'], $item);
     $item['id'] = $db->getInsertedID();
     if (is_uploaded_file($_FILES['image']['tmp_name'])) {
@@ -124,7 +124,7 @@ class TBanners extends TListContentPlugin {
 
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
     $old_file = $item['image'];
-    $item = setArgs($item);
+    $item = GetArgs($item);
     $item['section'] = ($item['section'] != 'all')?':'.implode(':', $request['arg']['section']).':':'all';
     if (!isset($request['arg']['active'])) $item['active'] = false;
     if (is_uploaded_file($_FILES['image']['tmp_name'])) {
@@ -183,7 +183,7 @@ class TBanners extends TListContentPlugin {
         array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%', 'maxlength' => '255', 'pattern'=>'/.+/', 'errormsg'=>'Заголовок не может быть пустым!'),
         array ('type' => 'listbox', 'name' => 'section[]', 'label' => 'Разделы', 'height'=> 5,'items'=>$sections[0], 'values'=>$sections[1]),
         array ('type' => 'edit', 'name' => 'priority', 'label' => 'Приоритет', 'width' => '20px', 'comment' => 'Большие значения - больший приоритет', 'value'=>0, 'pattern'=>'/\d+/', 'errormsg'=>'Приоритет задается только цифрами!'),
-        array ('type' => 'edit', 'name' => 'block', 'label' => 'Номер блока', 'width' => '20px', 'pattern'=>'/(\d+)|(^$)/', 'errormsg'=>'Номер блока задается только цифрами!'),
+        array ('type' => 'edit', 'name' => 'block', 'label' => 'Блок', 'width' => '100px', 'maxlength' => 31),
         array ('type' => 'edit', 'name' => 'showFrom', 'label' => 'Начало показов', 'width' => '100px', 'comment' => 'ГГГГ-ММ-ДД', 'value'=>gettime('Y-m-d'), 'pattern'=>'/[12]\d{3,3}-[01]\d-[0-3]\d/', 'errormsg'=>'Неправильный формат даты!'),
         array ('type' => 'edit', 'name' => 'showTill', 'label' => 'Конец показов', 'width' => '100px', 'comment' => 'ГГГГ-ММ-ДД; Пустое - без ограничений', 'pattern'=>'/([12]\d{3,3}-[01]\d-[0-3]\d)|(^$)/', 'errormsg'=>'Неправильный формат даты!'),
         array ('type' => 'edit', 'name' => 'showCount', 'label' => 'Макс. кол-во показов', 'width' => '100px', 'comment' => '0 - без ограничений', 'value'=>0, 'pattern'=>'/(\d+)|(^$)/', 'errormsg'=>'Кол-во показов задается только цифрами!'),
@@ -219,8 +219,8 @@ class TBanners extends TListContentPlugin {
         array ('type' => 'hidden','name'=>'update', 'value'=>$item['id']),
         array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%', 'maxlength' => '255', 'pattern'=>'/.+/', 'errormsg'=>'Заголовок не может быть пустым!'),
         array ('type' => 'listbox', 'name' => 'section[]', 'label' => 'Разделы', 'height'=> 5,'items'=>$sections[0], 'values'=>$sections[1]),
-        array ('type' => 'edit', 'name' => 'priority', 'label' => 'Приоритет', 'width' => '20px', 'comment' => 'Большие значения - больший приоритет', 'value'=>0, 'pattern'=>'/\d+/', 'errormsg'=>'Приоритет задается только цифрами!'),
-        array ('type' => 'edit', 'name' => 'block', 'label' => 'Номер блока', 'width' => '20px', 'pattern'=>'/(\d+)|(^$)/', 'errormsg'=>'Номер блока задается только цифрами!'),
+        array ('type' => 'edit', 'name' => 'priority', 'label' => 'Приоритет', 'width' => '20px', 'comment' => 'Большие значения - больший приоритет', 'pattern'=>'/\d+/', 'errormsg'=>'Приоритет задается только цифрами!'),
+        array ('type' => 'edit', 'name' => 'block', 'label' => 'Блок', 'width' => '100px', 'maxlength' => 31),
         array ('type' => 'edit', 'name' => 'showFrom', 'label' => 'Начало показов', 'width' => '100px', 'comment' => 'ГГГГ-ММ-ДД', 'value'=>gettime('Y-m-d'), 'pattern'=>'/[12]\d{3,3}-[01]\d-[0-3]\d/', 'errormsg'=>'Неправильный формат даты!'),
         array ('type' => 'edit', 'name' => 'showTill', 'label' => 'Конец показов', 'width' => '100px', 'comment' => 'ГГГГ-ММ-ДД; Пустое - без ограничений', 'pattern'=>'/(\d{4,4}-[01]\d-[0-3]\d)|(^$)/', 'errormsg'=>'Неправильный формат даты!'),
         array ('type' => 'edit', 'name' => 'showCount', 'label' => 'Макс. кол-во показов', 'width' => '100px', 'comment' => '0 - без ограничений', 'value'=>0, 'pattern'=>'/(\d+)|(^$)/', 'errormsg'=>'Кол-во показов задается только цифрами!'),
@@ -307,9 +307,9 @@ class TBanners extends TListContentPlugin {
       goto($item['url']);
       exit;
     } else {
-      preg_match_all('/\$\(plgBanners:(\d+?)\)/', $text, $blocks);
+      preg_match_all('/{%Banners:([^}]+)\}/', $text, $blocks);
       foreach($blocks[1] as $block) {
-        $sql = "(`active`=1) AND (`section` LIKE '%:".$page->id.":%' OR `section` = ':all:') AND (`block`=".$block.") AND (`showFrom`<='".gettime()."') AND (`showCount`=0 OR `shows` <= `showCount`) AND (`showTill` = '0000-00-00' OR `showTill` > '".gettime()."')";
+        $sql = "(`active`=1) AND (`section` LIKE '%:".$page->id.":%' OR `section` = ':all:') AND (`block`='".$block."') AND (`showFrom`<='".gettime()."') AND (`showCount`=0 OR `shows` <= `showCount`) AND (`showTill` = '0000-00-00' OR `showTill` > '".gettime()."')";
         $item = $db->select($this->name, $sql, '`priority`', true);
         if (count($item)) {
           $item = $item[0];
@@ -321,10 +321,10 @@ class TBanners extends TListContentPlugin {
           }
           $item['shows']++;
           $db->updateItem($this->name, $item, "`id`='".$item['id']."'");
-          $text = str_replace('$(plgBanners:'.$block.')', $banner, $text);
+          $text = str_replace('{%Banners:'.$block.'}', $banner, $text);
         }
       }
-      $text = preg_replace('/\$\(plgBanners:\d?\)/','', $text);
+      $text = preg_replace('/{%Banners:[^}]+}/','', $text);
       $items = $db->select($this->table['name'], "(`showCount` != 0 AND `shows` > `showCount`) AND ((`showTill` < '".gettime()."') AND (`showTill` != '0000-00-00'))");
       if (count($items)) {
         foreach($items as $item) {

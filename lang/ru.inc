@@ -1,13 +1,20 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.00
+# Версия 2.02
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Русский языковой файл
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 define('CHARSET','windows-1251');
+
+
+/* Таблица транслитерации */
+$translit_table = array(
+  'а'=> 'a', 'б'=> 'b', 'в'=> 'v', 'г'=> 'g', 'д'=> 'd', 'е'=> 'e', 'ё'=> 'yo', 'ж'=> 'zh', 'з'=> 'z', 'и'=> 'i', 'й'=> 'y', 'к'=> 'k', 'л'=> 'l', 'м'=> 'm', 'н'=> 'n', 'о'=> 'o', 'п'=> 'p', 'р'=> 'r', 'с'=> 's', 'т'=> 't', 'у'=> 'u', 'ф'=> 'f', 'х'=> 'h', 'ц'=> 'tc', 'ч'=> 'ch', 'ш'=> 'sh', 'щ'=> 'sch', 'ь'=> '', 'ы'=> 'y', 'ъ'=> '', 'э'=> 'e', 'ю'=> 'yu', 'я'=> 'ya',
+  'А'=> 'a', 'Б'=> 'b', 'В'=> 'v', 'Г'=> 'g', 'Д'=> 'd', 'Е'=> 'e', 'Ё'=> 'yo', 'Ж'=> 'zh', 'З'=> 'z', 'И'=> 'i', 'Й'=> 'y', 'К'=> 'k', 'Л'=> 'l', 'М'=> 'm', 'Н'=> 'n', 'О'=> 'o', 'П'=> 'p', 'Р'=> 'r', 'С'=> 's', 'Т'=> 't', 'У'=> 'u', 'Ф'=> 'f', 'Х'=> 'h', 'Ц'=> 'tc', 'Ч'=> 'ch', 'Ш'=> 'sh', 'Щ'=> 'sch', 'Ь'=> '', 'Ы'=> 'y', 'Ъ'=> '', 'Э'=> 'e', 'Ю'=> 'yu', 'Я'=> 'ya'
+);
 
 /* ДАТА И ВРЕМЯ */
 define('MONTH_00', '00');
@@ -62,6 +69,8 @@ define('strPredModeration', 'Предмодерация');
 define('strReadOnly', 'Только чтение');
 
 /* ОШИБКИ */
+
+# Общие 
 define('errNotice', 'Замечание');
 define('errWarning', 'Предупреждение');
 define('errError', 'Ошибка');
@@ -69,16 +78,29 @@ define('errUnknownError', 'Неизвестная ошибка');
 define('errUnknownAction', 'Неизвестное действие');
 define('errUnknownFile', 'Неизвестный файл');
 define('errUnknownLine', 'Неизвестная строка');
+# Внутренние
 define('errInternalError', 'Внутренняя ошибка');
+define('errNoMainPage', 'В списке страниц не найдена корневая страница с именем "main"');
+define('errContentPluginNotFound', 'Не найдено модуля поддержки типа контента "%s"');
+define('errMethodNotFound', 'Метод "%s" не найден в классе "%s".');
+# Файловые
 define('errFileNotFound', 'Файл не найден');
 define('errFileOpening', 'Открытие файла "%s"');
 define('errFileWriteError', 'Ошибка записи в файл');
 define('errFileWriting', 'Запись в файл "%s"');
+define('errFileCopy', 'Не удается скопировать файл "%s" в "%s"');
+define('errFileMove', 'Не удается переместить файл "%s" в "%s"');
+# Загрузка файлов
+define('errUploadSizeINI', 'Размер файла "%s" превышает максимально допустимый размер '.ini_get('upload_max_filesize').'.');
+define('errUploadSizeFORM', 'Размер файла "%s" превышает максимально допустимый размер указанный в форме.');
+define('errUploadPartial', 'Файл "%s" получен только частично.');
+define('errUploadNoFile', 'Файл "%s" не был загружен.');
+
 define('errInvalidPassword', 'Неверный пароль');
 define('errAccountNotActive', 'Учетная запись "%s" отключена администратором сайта');
 define('errAccountNotExists', 'Учетная запись "%s" отсутствует. Проверьте правильность ввода');
 define('errTooEarlyRelogin',"Перед попыткой повторного логина должно пройти не менее %s секунд!");
-define('errNoMainPage', 'В списке страниц не найдена корневая страница с именем "main"');
+# Формы
 define('errFormUnknownType', 'Неизвестный тип поля "%s" в форме "%s"');
 define('errFormFieldHasNoName', 'Не указано имя для поля типа "%s" в форме "%s"');
 define('errFormHasNoName', 'Не указано имя формы');
@@ -86,8 +108,7 @@ define('errFormPatternError', 'Введенное значение в поле "%s" не соответствует т
 define('errFormBadConfirm', 'Пароль и подтверждение не совпадают!');
 define('errAccessDenied', 'Доступ к данному разделу запрещен!');
 define('errNonexistedDomain', 'Несуществующий домен: "%s"');
-define('errContentPluginNotFound', 'Не найдено модуля поддержки типа контента "%s"');
-define('errMethodNotFound', 'Метод "%s" не найден в классе "%s".');
+
 define('errItemWithSameName', 'Элемент с именем "%s" уже существует.');
 
 /* Описание ответов HTTP */
@@ -109,7 +130,7 @@ define('strExit', 'Выход');
 
 /* ОПОВЕЩЕНИЯ */
 define('strNotification', "Оповещение");
-define('strNotifyTemplate', "%s (%s)<br>Раздел: <a href=\"%s\">%s</a><br><hr>%s<hr>");
+define('strNotifyTemplate', "%s (%s)<br />Раздел: <a href=\"%s\">%s</a><br /><hr>%s<hr>");
 
 /* Управление страницами */
 define('strPages', 'Страницы: ');
@@ -191,6 +212,7 @@ define('admConfigSecurity', 'Безопасность');
 define('admConfigSiteName', 'Название сайта');
 define('admConfigSiteTitle', 'Заголовок сайта');
 define('admConfigTitleReverse', 'Выводить в обратном порядке');
+define('admConfigTitleDivider', 'Разделитель');
 define('admConfigSiteKeywords', 'Ключевые слова');
 define('admConfigSiteDescription', 'Описание сайта');
 define('admConfigMailFromAddr', 'Адрес отправителя');
@@ -207,6 +229,7 @@ define('admConfigPostsResolveIP', 'Определять имена хостов');
 define('admConfigAccessPolicy', 'Для неавторизованных');
 define('admConfigSiteNameHint', 'Короткое название сайта. Будет доступно через макрос $(siteName)');
 define('admConfigSiteTitleHint', 'Заголовок страниц. Будет доступен через макрос $(siteTitle)');
+define('admConfigTitleDividerHint', 'Разделитель элементов заголовка сайта');
 define('admConfigKeywordsHint', 'Список глобальных ключевых слов. Будет доступен через макрос $(siteKeywords)');
 define('admConfigDescriptionHint', 'Описание сайта (META-тэг). Будет доступно через макрос $(siteDescription)');
 define('admConfigMailFromAddrHint', 'От: имя <АДРЕС> (оргнизация)');
@@ -214,13 +237,16 @@ define('admConfigMailFromNameHint', 'От: ИМЯ <адрес> (оргнизация)');
 define('admConfigMailFromOrgHint', 'От: имя <адрес> (ОРГАНИЗАЦИЯ)');
 define('admConfigSendNotifyToHint', 'Адреса для рассылки административных сообщений');
 define('admConfigFiles', 'Файловые операции');
-define('admConfigFilesOwnerSetOnUpload', 'Устанавливать владельца загружаемых файлов');
+define('admConfigFilesOwnerSetOnUpload', 'Устанавливать владельца загружаемых файлов (только для суперпользователя)');
 define('admConfigFilesOwnerDefault', 'Владелец');
 define('admConfigFilesModeSetOnUpload', 'Устанавливать атрибуты на загружаемые файлы');
 define('admConfigFilesModeDefault', 'Атрибуты');
+define('admConfigTranslitNames', 'Транслитерировать имена загружаемых файлов');
 define('admConfigStructure', 'Структура сайта');
 define('admConfigDefaultContentType', 'Тип контента по умолчанию');
-define('admConfigDefaultPageTamplate', 'Тип контента по умолчанию');
+define('admConfigDefaultPageTamplate', 'Шаблон страницы по умолчанию');
+define('admConfigClientPagesAtOnce', 'Показывать');
+define('admConfigClientPagesAtOnceComment', 'элементов в переключателе страниц');
 
 /* Оформление */
 define('admThemesTabWidth', '180px');
@@ -236,7 +262,9 @@ define('admPluginsAdd', 'Добавить плагин');
 define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эндом, <strong>admin</strong> - работает с бэк-эндом, <strong>content</strong> - плагин контента, <strong>ondemand</strong> - загружается только при необходимости");
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
+define('admPluginsInvalidVersion', 'Для работы модуля расширения %s требуется ядро %s или выше.');
 define('admPluginsAdded', 'Подключен новый плагин');
+define('admPluginTopicTable', 'Таблица топиков');
 
 define('admUsersName', 'Имя');
 define('admUsersLogin', 'Логин');

@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.01
+# Версия 2.04
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -184,17 +184,23 @@ class TAdminUI {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function renderTabs($tabs)
   {
-    global $request;
+    global $request, $page;
+    
     if (count($tabs)) {
       $result = "<table class=\"admTabs\"><tr>\n";
       $width = empty($tabs['width'])?'':' style="width: '.$tabs['width'].'"';
-      if (count($tabs['items'])) foreach($tabs['items'] as $item) {
-        #$url = isset($item['url'])?$item['url']:$this->url(array($item['name']=>$item['value']));
-        $url = $request['url'];
-        if (($p = strpos($url, $item['name'].'=')) !== false) $url = substr($url, 0, $p-1);
-        $url .= (strpos($url, '?') !== false?'&':'?').$item['name'].'='.$item['value'];
-        $url = str_replace('&', '&amp;', $url);
-        $result .= '<td'.$width.' onClick="window.location.href=\''.$url.'\'"><a href="'.$url.'">'.$item['caption'].'</a></td>';
+      if (isset($tabs['items']) && count($tabs['items'])) foreach($tabs['items'] as $item) {
+        if (isset($item['url'])) {
+          $url = $item['url'];
+        } else {
+          $url = $request['url'];
+          if (isset($item['name'])) {
+            if (($p = strpos($url, $item['name'].'=')) !== false) $url = substr($url, 0, $p-1);
+            $url .= (strpos($url, '?') !== false?'&':'?').$item['name'].'='.$item['value'];
+          } else $url = $page->url();
+        }
+        $url = preg_replace('/&(?!amp;)/', '&amp;', $url);
+        $result .= '<td'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').' onclick="window.location.href=\''.$url.'\'"><a href="'.$url.'">'.$item['caption'].'</a></td>';
       }
 
       $result .= "</tr></table>\n";
@@ -373,7 +379,7 @@ class TAdminUI {
           break;
           case 'listbox':
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
+            $body .= '<tr><td class="admFormLabel">'.$label.'</td><td><select multiple name="'.$item['name'].'[]"'.$width.(isset($item['height'])?' size="'.$item['height'].'"':'').$disabled.$extra.">\n";
             if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
             for($i = 0; $i< count($item['items']); $i++) {
               if (isset($item['values'])) $value = $item['values'][$i]; else $value = $i;
@@ -392,7 +398,7 @@ class TAdminUI {
           case 'html': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
             $value = isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'');
-            $body .= '<tr><td colspan="2">'.$label.'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.EncodeHTML($value).'</textarea></td></tr>'."\n";
+            $body .= '<tr><td colspan="2">'.$label.'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.str_replace('$(httpRoot)', httpRoot, EncodeHTML($value)).'</textarea></td></tr>'."\n";
             $this->htmlEditors[] = 'wyswyg_'.$item['name'];
           break;
           case 'file': 
@@ -404,13 +410,33 @@ class TAdminUI {
         }
       }
     }
-    if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
+    $this->scripts .= "
+      function ".$form['name']."Submit()
+      {
+        var result = true;
+        ".(empty($validator)?'':$validator)."
+        if (result) {
+          var controls = document.".$form['name'].".elements;
+          var count = controls.length;
+          for (var i=0; i < count; i++) if (controls[i].type == 'checkbox') {
+            var control = document.createElement('input');
+            control.type = 'hidden';
+            control.name = controls[i].name;
+            control.value = controls[i].checked?controls[i].value:0;
+            controls[i].name = '';
+            document.".$form['name'].".appendChild(control);
+          }
+        }
+        return result;
+      }
+    ";
+    #"function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
     $referer = isset($request['arg']['sub_id'])?$this->url(array('sub_id'=>'')):$this->url(array('id'=>''));
     $wnd['caption'] = $form['caption'];
     $wnd['width'] = isset($form['width'])?$form['width']:'';
     $wnd['style'] = 'padding: 0px;';
     $wnd['body'] = 
-      "<form ".(empty($form['name'])?'':'name="'.$form['name'].'" ')."action=\"".$this->url()."\" method=\"post\"".(empty($validator)?'':' onSubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
+      "<form ".(empty($form['name'])?'':'name="'.$form['name'].'" ')."action=\"".$this->url()."\" method=\"post\" onSubmit=\"return ".$form['name']."Submit();\"".($file?' enctype="multipart/form-data"':'').">\n".
       $hidden.
       '<div class="admHidden"><input type="hidden" name="submitURL" value="'.$referer.'"></div>'."\n".
       "<table width=\"100%\">\n".
@@ -486,7 +512,7 @@ class TAdminUI {
       $current = (isset($request['arg']['mod'])) && ($request['arg']['mod'] == 'content') && ($request['arg']['section'] == $item['id']);
       if ($current) $opened = $level;
       if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
-      $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('extra'=>'id="root'.$item['id'].'" class="link" onClick="toggleMenuBrunch(\''.$item['id'].'\');"'));
+      $icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onClick="toggleMenuBrunch(\''.$item['id'].'\');"'));
       $result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
       if (!empty($sub)) $result .= '<ul id="brunch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
     }
@@ -628,7 +654,7 @@ if (!UserRights(EDITOR)) {
     "<table border=\"0\" style=\"width: 100%; height: 100%; vertical-align: middle\">\n<tr>\n<td align=\"center\">".
     "<form name=\"auth\" action=\"\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"login\">\n".
     "<table style=\"background-color: #eee; font-size: 8pt;\">\n".
-    "<tr><th colspan=\"2\" style=\"background-color: #25b; border: solid 1 black;	color: gold;\">".option('siteName')."</th></tr>\n".
+    "<tr><th colspan=\"2\" style=\"background-color: #25b; border: solid 1 black;	color: gold;\" title=\"".$_SERVER["HTTP_HOST"]."\">".option('siteName')."</th></tr>\n".
     "<tr><td>Пользователь:</td><td><input type=\"text\" name=\"user\"></td></tr>\n".
     "<tr><td>Пароль:</td><td><input type=\"password\" name=\"password\"></td></tr>\n".
     "<tr><td>Запомнить</td><td><input type=\"checkbox\" name=\"autologin\" value=\"1\" style=\"border-width: 0px; margin: 0px;\"></td></tr>\n".

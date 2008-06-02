@@ -12,25 +12,25 @@ a {color: blue; text-decoration: none;}
 a:visited {color: blue; text-decoration: none;}
 a:hover {color: red; text-decoration: none;}
 
+p {text-indent: 1em; margin: 2px 0px 3px 0px; text-align: justify;}
+
+h1 {font-family: 'Arial', sans-serif; font-style: italic; font-size: 13pt; margin: 1em 0px 7px 0px;}
+h2 {font-family: 'Arial', sans-serif; font-size: 11pt;}
+h3 {font-family: 'Arial', sans-serif; font-size: 10pt; font-style: italic;}
+h4 {font-family: 'Arial', sans-serif; font-size: 9pt; margin: 1em 0px 2px 0px;}
+h5 {font-family: 'Arial', sans-serif; font-size: 8pt; margin: 1em 0px 2px 1em;}
+
 /* Стили области контента */
-#content {padding: 5px 10px; font-size: 8pt;}
+#Content {padding: 5px 10px; font-size: 8pt;}
 
-#content p {text-indent: 1em; margin: 2px 0px 3px 0px; text-align: justify;}
+div.form {}
+.form th {}
+.form td {;}
+.form input {}
+.form textarea {}
+.form input.button {}
 
-#content h1 {font-family: 'Arial', sans-serif; font-style: italic; font-size: 13pt; margin: 1em 0px 7px 0px;}
-#content h2 {font-family: 'Arial', sans-serif; font-size: 11pt;}
-#content h3 {font-family: 'Arial', sans-serif; font-size: 10pt; font-style: italic;}
-#content h4 {font-family: 'Arial', sans-serif; font-size: 9pt; margin: 1em 0px 2px 0px;}
-#content h5 {font-family: 'Arial', sans-serif; font-size: 8pt; margin: 1em 0px 2px 1em;}
-
-table.form {border: solid 1px #b50031;}
-.form th {background-color: #b50031; color: white; font-family: 'Arial', sans-serif; font-size: 10pt;}
-.form td {color: #000; font-family: 'Verdana', sans-serif; font-size: 8pt;}
-.form input {border: solid 1px #b50031; background-color: #eee; font-size: 8pt; padding: 1px 3px;}
-.form textarea {border: solid 1px #b50031; background-color: #eee; font-size: 8pt; padding: 1px 3px;}
-.form input.button {background-color: #c6d3e7; border: solid 2px; border-color: #deebff #426984 #426984 #deebff; font-size: 8pt; width: 100px; color: black;}
-
-input.contentButton {background-color: #c6d3e7; border: solid 2px; border-color: #deebff #426984 #426984 #deebff; font-size: 8pt; padding: 0px 5px; color: black;}
+input.contentButton {}
 
 /* Сообщения об ошибках */
 div.errorBox {background: #fff; border: solid 2px #f00; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}

@@ -10,21 +10,21 @@ class THtml extends TContentPlugin {
   var $name = 'html';
   var $type = 'client,content,ondemand';
   var $title = 'HTML';
-  var $version = '2.02';
+  var $version = '2.03';
   var $description = 'HTML страница';
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   # Внутренние функции
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function update()
   {
-  global $db, $page, $request;
+  global $db, $page;
 
-    $item = $db->selectItem('pages', "`id`='".$request['arg']['update']."'");
-    $item['content'] = $request['arg']['content'];
+    $item = $db->selectItem('pages', "`id`='".arg('update')."'");
+    $item['content'] = arg('content');
     $item['options'] = decodeOptions($item['options']);
-    $item['options']['allowGET'] = $request['arg']['allowGET'];
+    $item['options']['allowGET'] = arg('allowGET');
     $item['options'] = encodeOptions($item['options']);
-    $db->updateItem('pages', $item, "`id`='".$request['arg']['update']."'");
+    $db->updateItem('pages', $item, "`id`='".$item['id']."'");
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -45,7 +45,7 @@ class THtml extends TContentPlugin {
         'fields' => array (
           array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
           array ('type' => 'html','name' => 'content','height' => '400px', 'value'=>$item['content']),
-          array ('type' => 'checkbox','name' => 'allowGET', 'label' => 'Разрешить аргументы GET', 'value'=>$item['options']['allowGET']),
+          array ('type' => 'checkbox','name' => 'allowGET', 'label' => 'Разрешить аргументы GET', 'value'=>isset($item['options']['allowGET'])?$item['options']['allowGET']:false),
         ),
         'buttons'=> array('ok', 'reset'),
       );

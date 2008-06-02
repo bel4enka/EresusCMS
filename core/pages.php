@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.01
+# Версия 2.04
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -50,7 +50,7 @@ class TPages {
   function intallScripts()
   {
     global $page, $request;
-    
+
     $page->scripts .= "
       function updatePages()
       {
@@ -58,7 +58,7 @@ class TPages {
           document.getElementById('admPagesList').innerHTML = HttpRequest.responseText;
         }
       }
-    
+
       function moveItem(dir, id)
       {
         SendRequest('".$request['url']."&'+dir+'='+id, updatePages);
@@ -72,6 +72,7 @@ class TPages {
   global $db, $page, $request;
 
     $item = GetArgs($db->fields('pages'), array('active', 'visible'));
+    $item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
     $temp = $db->selectItem('pages', "(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
     if (is_null($temp)) {
       $item['created'] = gettime('Y-m-d H:i:s');
@@ -97,6 +98,7 @@ class TPages {
 
     $old = $db->selectItem('pages', "`id`='".$request['arg']['update']."'");
     $item = GetArgs($old, array('active', 'visible'));
+    $item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
     $item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
     $item['updated'] = gettime('Y-m-d H:i:s');
     if (isset($request['arg']['updatedAuto'])) $item['updated'] = gettime();
@@ -109,7 +111,7 @@ class TPages {
   # Выводит список страниц
   {
   global $db, $user, $page, $request;
-  
+
     $items = $db->select('`pages`', "(`owner`='".$owner."') AND (`access` >= '".$user['access']."')", "`position`", false, '`id`,`caption`,`description`,`active`');
     $result = '';
     if (count($items)) foreach($items as $item) {
@@ -117,8 +119,8 @@ class TPages {
       if (empty($item['caption'])) $item['caption'] = '---';
       $result .= '<tr><td>'.str_repeat('&nbsp;',$level*2).'<a'.((isset($request['arg']['id']) && ($request['arg']['id'] == $item['id']))?' class="selected"':($item['active']?'':' class="disabled"')).' href="'.$page->url(array('id'=>$item['id'])).'" title="'.$item['description'].'">'.$item['caption'].'</a> ';
       $result .=
-        img('core/img/aru.gif', array('alt'=>admUp, 'title'=>admUp, 'extra'=>'onclick="moveItem(\'up\', '.$item['id'].')"')).' '.
-        img('core/img/ard.gif', array('alt'=>admDown, 'title'=>admDown, 'extra'=>'onclick="moveItem(\'down\', '.$item['id'].')"')).' '.
+        img('core/img/aru.gif', array('alt'=>admUp, 'title'=>admUp, 'ext'=>'onclick="moveItem(\'up\', '.$item['id'].')"')).' '.
+        img('core/img/ard.gif', array('alt'=>admDown, 'title'=>admDown, 'ext'=>'onclick="moveItem(\'down\', '.$item['id'].')"')).' '.
         "</td></tr>\n";
       $result .= $this->pagesList($item['id'], $level+1);
     }
@@ -128,7 +130,7 @@ class TPages {
   function selectList($default, $skip=0, $owner = 0, $level = 0)
   {
   global $db, $user;
-  
+
     $items = $db->select('`pages`', "(`owner`='".$owner."') AND (`access` >= '".$user['access']."')", "`position`", false, '`id`,`caption`');
     $result = '';
     if (count($items)) foreach($items as $item) {
@@ -168,7 +170,7 @@ class TPages {
         "<div><select name=\"to\" style=\"width: 100%;\"><option value=\"0\">".admPagesRoot."</option>\n".$this->selectList(0, $request['arg']['id'])."</select></div><br />\n</form></td></tr>\n";
       if (UserRights(ADMIN)) $wnd['body'] .= "<tr><td><hr><form action=\"".httpRoot."admin.php\" method=\"post\"><div><input type=\"hidden\" name=\"mod\" value=\"pages\"><input type=\"hidden\" name=\"action\" value=\"delete\"><input type=\"hidden\" name=\"id\" value=\"".$request['arg']['id']."\"><input type=\"submit\" value=\"".admPagesDeleteBrunch."\" class=\"button\" style=\"width: 100%\"></div></form></td></tr>\n";
     }
-    $wnd['body'] .= 
+    $wnd['body'] .=
       "</table>\n";
     $result = $page->window($wnd);
     return $result;
@@ -178,7 +180,7 @@ class TPages {
   # Функция перемещает страницу вверх в списке
   {
   global $db, $request;
-  
+
     $item = $db->selectItem('pages',"`id`='".$request['arg']['up']."'");
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
     $item = $db->selectItem('pages',"`id`='".$request['arg']['up']."'");
@@ -196,7 +198,7 @@ class TPages {
   # Функция перемещает страницу вниз в списке
   {
   global $db, $request;
-  
+
     $item = $db->selectItem('pages',"`id`='".$request['arg']['down']."'");
     dbReorderItems('pages', "`owner`='".$item['owner']."'");
     $item = $db->selectItem('pages',"`id`='".$request['arg']['down']."'");
@@ -223,11 +225,11 @@ class TPages {
     goto($page->url());
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function deleteBrunch($id) 
+  function deleteBrunch($id)
   {
     global $db, $plugins;
-  
-    $item = $db->selectItem('pages', "`id`='".$id."'"); 
+
+    $item = $db->selectItem('pages', "`id`='".$id."'");
     if ($plugins->load($item['type'])) {
       if (isset($plugins->items[$item['type']]->table)) {
         $fields = $db->fields($plugins->items[$item['type']]->table['name']);
@@ -296,7 +298,7 @@ class TPages {
       'fields' => array (
         array ('type' => 'hidden','name'=>'owner','value'=>$request['arg']['owner']),
         array ('type' => 'hidden','name'=>'action', 'value'=>'insert'),
-        array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/[\w]+/', 'errormsg'=>admPagesNameInvalid),
+        array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
         array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%','maxlength' => '255', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
         array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
         array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%','maxlength' => '255'),
@@ -312,7 +314,7 @@ class TPages {
       ),
       'buttons' => array('ok', 'cancel'),
     );
-  
+
     $result = $page->renderForm($form, $request['arg']);
     return $result;
   }

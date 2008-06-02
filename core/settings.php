@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.01
+# Версия 2.04
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -26,10 +26,10 @@ class TSettings {
     
     $result = "  define('".(isset($options['locale'])?($options['locale']?$locale['prefix']:''):'').$name."', ";
     $quot = "'";
-    $value = (isset($request['arg'][$name]))?$request['arg'][$name]:($type == 'bool'?false:option($name));
+    $value = (isset($request['arg'][$name]))?$request['arg'][$name]:option($name);
     if (isset($options['nobr']) && $options['nobr']) $value = str_replace(array("\n", "\r"), ' ', $value);
     if (isset($options['savebr']) && $options['savebr']) {
-      $value = addcslashes($value, "\n\r");
+      $value = addcslashes($value, "\n\r\"");
       $value = str_replace('\\','\\\\', $value);
       $quot = '"';
     }
@@ -72,7 +72,7 @@ class TSettings {
     $settings .= $this->mkstr('clientPagesAtOnce', admConfigClientPagesAtOnce.admConfigClientPagesAtOnceComment, 'string');
 
     $settings .= "?>";
-    $fp = fopen(filesRoot.'core/cfg/settings.inc', 'w');
+    $fp = fopen(filesRoot.'cfg/settings.inc', 'w');
     fwrite($fp, $settings);
     fclose($fp);
     SendNotify(str_replace(array('<?', '?>'), '', $settings));

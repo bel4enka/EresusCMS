@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.01
+# Версия 2.04
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -129,7 +129,7 @@ class TClientUI {
     $name = 'main';
     $tmp = $db->selectItem('pages', "`name`='main' AND `owner`='0' AND `access`>='".($user['auth']?$user['access']:GUEST)."' AND `active`='1'");
     $url = '';
-    if ($tmp == null) $this->Error404(); else {
+    if ($tmp == null) $this->httpError(404); else {
       $item = $tmp;
       $tmp['id'] = 0;
       $this->section[] = $item['title'];
@@ -140,7 +140,7 @@ class TClientUI {
           if (!$tmp['active']) $this->httpError(404);
           $item = $tmp;
           $url .= $item['name'].'/';
-          $plugins->clientOnPathSplit($item, $url);
+          $plugins->clientOnURLSplit($item, $url);
           $this->section[] = $item['title'];
           array_shift($request['params']);
         }
@@ -160,6 +160,8 @@ class TClientUI {
   global $db, $user, $plugins, $request;
 
     $plugins->preload(array('client'),array('ondemand'));
+    $plugins->clientOnStart();
+    
     $item = $this->loadPage();
     if (!is_null($item)) {
       if (count($request['params'])) {
@@ -186,8 +188,6 @@ class TClientUI {
       $this->styles = '';
     }
     $this->options = decodeOptions($item['options']);
-
-    $plugins->clientOnStart();
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
   function Error404()
@@ -466,7 +466,7 @@ class TClientUI {
           break;
           case 'memo': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));
-            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="formLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="1" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$width.$disabled.$extra.' >'.EncodeHTML($value)."</textarea></td></tr>\n"; 
+            $body .= '<tr><td colspan="2">'.(empty($label)?'':'<span class="formLabel">'.$label.'</span><br />').'<textarea name="'.$item['name'].'" cols="40" rows="'.(empty($item['height'])?'1':$item['height']).'" '.$width.$disabled.$extra.' >'.EncodeHTML($value)."</textarea></td></tr>\n"; 
           break;
           case 'file': 
             if (empty($item['name'])) ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $form['name']));

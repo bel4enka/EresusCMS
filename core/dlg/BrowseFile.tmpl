@@ -25,11 +25,10 @@
       var url = window.location.search;
       var sId = url.substring(url.indexOf("id=")+3, url.indexOf("&"));
       url = url.substr(url.lastIndexOf("=")+1);
+      window.opener.BrowseFileLast = url;
       url += current.lastChild.data;
-      if (document.controls.hrefStyle.value.length) url = "$("+document.controls.hrefStyle.value+")"+url;
-      else url = "$(uRoot)"+url;
       var oTarget = window.opener.document.getElementById(sId);
-      oTarget.value = url;
+      oTarget.value = "$(uRoot)"+url;
       window.close();
     }
     
@@ -163,10 +162,6 @@
     <tr>
       <td style="text-align: center; padding: 5px; height: 50px;">
         <form name="controls" action="">
-        <select name="hrefStyle">
-          <option value="">Использовать полный путь</option>
-          <option value="httpRoot">Использовать макрос httpRoot</option>
-        </select><br />
         <button type="button" onclick="return AcceptFile();">OK</button>&nbsp; 
         <button type="button" onClick="window.close();return false;">Отмена</button>
         </form>

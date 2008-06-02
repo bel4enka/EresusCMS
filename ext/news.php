@@ -9,11 +9,11 @@ class TNews extends TListContentPlugin {
     $name = 'news',
     $type = 'client,content',
     $title = 'Новости',
-    $version = '2.00b1m',
+    $version = '2.02',
     $description = 'Публикация новостей',
     $settings = array(
       'itemsPerPage' => 10,
-      'tmplListItem' => '<div class="plgNewsListItem"><div class="cation">$(caption) ($(posted))</div>$(preview)<br /><a href="$(link)">Полный текст...</a>',
+      'tmplListItem' => '<div class="NewsListItem"><div class="caption">$(caption) ($(posted))</div>$(preview)<br /><a href="$(link)">Полный текст...</a></div>',
       'tmplItem' => '<h3>$(caption)</h3>$(posted)<br /><br />$(text)',
       'tmplLastNews' => '<b>$(posted)</b><br /><a href="$(link)">$(caption)</a><br />',
       'previewMaxSize' => 500,
@@ -75,10 +75,13 @@ class TNews extends TListContentPlugin {
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function createPreview($text)
   {
-    $text = trim(preg_replace('/<.+>/Us',' ',$text));
+    $text = trim(preg_replace('/<[^>]+?>/Us',' ',$text));
     if ($this->settings['previewSmartSplit']) {
-      preg_match("/\A.{1,".$this->settings['previewMaxSize']."}(\.\s|\.|\Z)/", $text, $result);
-      $result = $result[0];
+      if (preg_match("/\A.{1,".$this->settings['previewMaxSize']."}([\.;]|$)/s", $text, $result)) $result = str_replace(array("\n","\r"),' ',$result[0]);
+      else {
+        $this->settings['previewSmartSplit'] = false;
+        $result = $this->createPreview($text);
+      }
     } else {
       $result = substr($text, 1, $this->settings['previewMaxSize']);
       if (strlen($text)>$this->settings['previewMaxSize']) $result .= '...';
@@ -119,7 +122,7 @@ class TNews extends TListContentPlugin {
 
     $item['preview'] = '<p>'.str_replace("\n", "</p>\n<p>", $item['preview']).'</p>';
     $item['posted'] = FormatDate($item['posted'], $dateFormat);
-    $item['link'] = $page->clientURL($item['section']).$item['id'];
+    $item['link'] = $page->clientURL($item['section']).$item['id'].'/';
     $result = parent::replaceMacros($template, $item);
     return $result;
   }
@@ -162,6 +165,7 @@ class TNews extends TListContentPlugin {
         array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%', 'maxlength' => '100'),
         array ('type' => 'html', 'name' => 'text', 'label' => 'Полный текст', 'height' => '200px'),
         array ('type' => 'memo', 'name' => 'preview', 'label' => 'Краткое описание', 'height' => '5'),
+        array ('type' => 'checkbox', 'name'=>'updatePreview', 'label'=>'Обновить краткое описание автоматически'),
         array ('type' => 'divider'),
         array ('type' => 'edit', 'name' => 'section', 'label' => 'Раздел', 'access'=>ADMIN),
         array ('type' => 'edit', 'name'=>'posted', 'label'=>'Написано'),
@@ -194,7 +198,7 @@ class TNews extends TListContentPlugin {
         array('type'=>'edit','name'=>'dateFormatFullText','label'=>'Формат даты', 'width'=>'200px'),
         array('type'=>'header', 'value' => 'Последние новости'),
         array('type'=>'memo','name'=>'tmplLastNews','label'=>'Шаблон последних новостей','height'=>'3'),
-        array('type'=>'select','name'=>'lastNewsMode','label'=>'Режим', 'items'=>array('отключить', 'Заменять макрос $(plgNewsLast)')),
+        array('type'=>'select','name'=>'lastNewsMode','label'=>'Режим', 'items'=>array('отключить', 'Заменять макрос $(NewsLast)')),
         array('type'=>'edit','name'=>'lastNewsCount','label'=>'Показывать новостей', 'width'=>'100px'),
     ),
       'buttons' => array('ok', 'apply', 'cancel'),
@@ -221,14 +225,6 @@ class TNews extends TListContentPlugin {
     return $result;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientRenderList()
-  {
-    global $request;
-    
-    $result = '<table class="plgNews"><tr><td id="plgNewsLast">'.$this->renderLastNews().'</td><td>'.parent::clientRenderList().'</td></tr></table>';
-    return $result;
-  }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
   function clientRenderItem()
   {
     global $db, $page;
@@ -246,7 +242,7 @@ class TNews extends TListContentPlugin {
   {
   global $page;
   
-    $text = str_replace('$(plgNewsLast)', $this->renderLastNews(), $text);
+    $text = str_replace('$(NewsLast)', $this->renderLastNews(), $text);
     return $text;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

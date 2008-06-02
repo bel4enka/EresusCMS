@@ -68,6 +68,7 @@ class TMySQL {
   {
   global $PHP_SELF;
     if (constant('DEBUG_MODE')) {
+      $_stack = '';
       foreach($this->functionStack as $func) $_stack .= "&nbsp;&nbsp;TMySQL.".$func."<br />\n";
       $_stack = "<br />Call stack:<br />\n".$_stack;
     }

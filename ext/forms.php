@@ -10,7 +10,7 @@ class TForms extends TListContentPlugin {
   var $name = 'forms';
   var $type = 'client,admin';
   var $title = 'Формы ввода';
-  var $version = '1.00b';
+  var $version = '1.00';
   var $description = 'Создание собственных форм ввода';
   var $table = array (
     'name' => 'forms',
@@ -55,7 +55,7 @@ class TForms extends TListContentPlugin {
   global $plugins, $request;
   
     parent::TListContentPlugin();
-    if (isset($request['arg']['plgFormsActionMailto'])) $this->sendMail($request['arg']['plgFormsActionMailto']);
+    if (isset($request['arg']['FormsActionMailto'])) $this->sendMail($request['arg']['FormsActionMailto']);
     $plugins->events['clientOnPageRender'][] = $this->name;
     $plugins->events['adminOnMenuRender'][] = $this->name;
   }
@@ -193,15 +193,15 @@ class TForms extends TListContentPlugin {
   {
     global $db, $page;
     
-    preg_match_all('/(\$\(|{%)plgForms:([\d\w_]+)(\)|})/', $text, $matches);
+    preg_match_all('/\$\(Forms:([\d\w_]+)\)/', $text, $matches);
     for($i = 0; $i < count($matches[0]); $i++) {
-      $item = $db->selectItem($this->table['name'], "`name`='".$matches[2][$i]."' AND `active`='1'");
+      $item = $db->selectItem($this->table['name'], "`name`='".$matches[1][$i]."' AND `active`='1'");
       if (!is_null($item)) {
         $form = '$form = array('.$item['form'].');';
-        eval($form);
+        eval(StripSlashes($form));
         switch ($item['actionMode']) {
           case 'action': $form['action'] = $item['actionValue']; break;
-          case 'mailto': array_unshift($form['fields'], array('type'=>'hidden', 'name'=>'plgFormsActionMailto', 'value'=>$item['name'])); break;
+          case 'mailto': array_unshift($form['fields'], array('type'=>'hidden', 'name'=>'FormsActionMailto', 'value'=>$item['name'])); break;
         }
         $text = str_replace($matches[0][$i], $page->renderForm($form), $text);
       }

@@ -9,22 +9,22 @@ class TAutoReplace extends TListContentPlugin {
     $name = 'autoreplace',
     $title = 'Автозамена',
     $type = 'client,admin',
-    $version = '0.01',
+    $version = '0.02',
     $description = 'Автозамена фрагментов страницы',
     $settings = array(
     );
   var $table = array (
     'name' => 'autoreplace',
     'key'=> 'id',
-    'sortMode' => 'id',
+    'sortMode' => 'position',
     'sortDesc' => false,
     'columns' => array(
-      array('name' => 'src', 'caption' => 'Что заменять', 'maxlength' => 100, 'striptags' => true),
-      array('name' => 'dst', 'caption' => 'На что заменять', 'maxlength' => 100, 'striptags' => true),
+      array('name' => 'caption', 'caption' => 'Замена'),
     ),
     'controls' => array (
       'delete' => '',
       'edit' => '',
+      'position' => '',
       'toggle' => '',
     ),
     'tabs' => array(
@@ -36,11 +36,14 @@ class TAutoReplace extends TListContentPlugin {
     'sql' => "(
       `id` int(10) unsigned NOT NULL auto_increment,
       `active` tinyint(1) unsigned NOT NULL default '1',
-      `src` varchar(255) NOT NULL,
-      `dst` varchar(255) NOT NULL,
+      `position` int(10) unsigned default NULL,
+      `caption` varchar(255) default '',
+      `src` varchar(255) default '',
+      `dst` varchar(255) default '',
       `regexp` tinyint(1) default '0',
       PRIMARY KEY  (`id`),
-      KEY `active` (`active`)
+      KEY `active` (`active`),
+      KEY `position` (`position`)
     ) TYPE=MyISAM;",
   );
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------# 
@@ -90,6 +93,7 @@ class TAutoReplace extends TListContentPlugin {
       'width'=>'100%',
       'fields' => array (
         array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
+        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
         array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
         array ('type' => 'checkbox', 'name' => 'regexp', 'label' => 'Регулярное выражение'),
         array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
@@ -112,6 +116,7 @@ class TAutoReplace extends TListContentPlugin {
       'width' => '500px',
       'fields' => array (
         array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
+        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
         array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
         array ('type' => 'checkbox', 'name' => 'regexp', 'label' => 'Регулярное выражение'),
         array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
@@ -133,7 +138,7 @@ class TAutoReplace extends TListContentPlugin {
   {
     global $db;
     
-    $items = $db->select($this->table['name'], '`active`=1');
+    $items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'], $this->table['sortDesc']);
     if (count($items)) foreach ($items as $item) {
       if ($item['regexp'])
         $text = preg_replace(StripSlashes($item['src']), $item['dst'], $text);

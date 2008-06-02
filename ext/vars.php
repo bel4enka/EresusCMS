@@ -9,18 +9,18 @@ class TVars extends TListContentPlugin {
     $name = 'vars',
     $title = 'Vars',
     $type = 'client,admin',
-    $version = '0.01',
+    $version = '1.00',
     $description = 'Создание собственных текстовых переменных',
     $settings = array(
     );
   var $table = array (
     'name' => 'vars',
     'key'=> 'name',
-    'sortMode' => 'name',
+    'sortMode' => 'caption',
     'sortDesc' => false,
     'columns' => array(
-      array('name' => 'name', 'caption' => 'Переменная'),
-      array('name' => 'value', 'caption' => 'Значение', 'maxlength' => 100, 'striptags' => true),
+      array('name' => 'caption', 'caption' => 'Переменная'),
+      array('name' => 'name', 'caption' => 'Имя', 'value' => '&#36;($(name))', 'macros' => true),
     ),
     'controls' => array (
       'delete' => '',
@@ -34,6 +34,7 @@ class TVars extends TListContentPlugin {
     ),
     'sql' => "(
       `name` varchar(31) NOT NULL,
+      `caption` varchar(63) NOT NULL,
       `value` text NOT NULL,
       PRIMARY KEY  (`name`)
     ) TYPE=MyISAM;",
@@ -57,7 +58,7 @@ class TVars extends TListContentPlugin {
   {
   global $db, $request;
 
-    $item = getArgs($db->fields($this->table['name']));
+    $item = GetArgs($db->fields($this->table['name']));
     $db->insert($this->table['name'], $item);
     goto($request['arg']['submitURL']);
   }
@@ -67,7 +68,7 @@ class TVars extends TListContentPlugin {
   global $db, $page, $request;
 
     $item = $db->selectItem($this->table['name'], "`name`='".$request['arg']['update']."'");
-    $item = setArgs($item);
+    $item = GetArgs($item);
     $db->updateItem($this->table['name'], $item, "`name`='".$request['arg']['update']."'");
     goto($request['arg']['submitURL']);
   }
@@ -84,7 +85,8 @@ class TVars extends TListContentPlugin {
       'width'=>'500px',
       'fields' => array (
         array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-        array ('type' => 'edit', 'name' => 'name', 'label' => 'Переменная $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')'),
+        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Переменная ', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'Не указано название переменной'),
+        array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'Не указано имя переменной'),
         array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
       ),
       'buttons' => array('ok', 'cancel'),
@@ -105,7 +107,8 @@ class TVars extends TListContentPlugin {
       'width' => '500px',
       'fields' => array (
         array('type'=>'hidden','name'=>'update', 'value'=>$item['name']),
-        array ('type' => 'edit', 'name' => 'name', 'label' => 'Переменная $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')'),
+        array ('type' => 'edit', 'name' => 'caption', 'label' => 'Переменная ', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'Не указано название переменной'),
+        array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '300px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'Не указано имя переменной'),
         array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
       ),
       'buttons' => array('ok', 'cancel'),

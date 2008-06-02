@@ -11,9 +11,9 @@ function xinha_init()
     "$(httpRoot)style/default.css"
   ];
   // specify a base href for relative links
-  xinha_config.stripBaseHref = true;
   xinha_config.baseHref = "$(httpRoot)";
   xinha_config.baseHref = xinha_config.baseHref.substr(0, xinha_config.baseHref.length-1);
+  xinha_config.stripBaseHref = false;
 
   xinha_config.toolbar =
   [

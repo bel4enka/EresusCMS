@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
---
+-- 
 -- Структура таблицы `pages`
---
+-- 
 
 CREATE TABLE `pages` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -28,22 +28,22 @@ CREATE TABLE `pages` (
   KEY `position` (`position`),
   KEY `active` (`active`),
   KEY `access` (`access`),
-  KEY `visibility` (`visible`),
+  KEY `visible` (`visible`),
   KEY `created` (`created`),
   KEY `updated` (`updated`)
 ) TYPE=MyISAM PACK_KEYS=0 COMMENT='Структура и страницы сайта' AUTO_INCREMENT=2 ;
 
---
+-- 
 -- Дамп данных таблицы `pages`
---
+-- 
 
-INSERT INTO `pages` VALUES (1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, 'default', 'html', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `pages` VALUES (1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
---
+-- 
 -- Структура таблицы `plugins`
---
+-- 
 
 CREATE TABLE `plugins` (
   `name` varchar(32) NOT NULL default '',
@@ -56,20 +56,20 @@ CREATE TABLE `plugins` (
   `description` varchar(255) default NULL,
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
-  KEY `priority` (`position`),
-  KEY `class` (`type`)
+  KEY `position` (`position`),
+  KEY `type` (`type`)
 ) TYPE=MyISAM COMMENT='Модули расширения';
 
---
+-- 
 -- Дамп данных таблицы `plugins`
---
+-- 
 
-INSERT INTO `plugins` VALUES ('html', 'client,content,ondemand', 1, 2, '', 'HTML', '2.00b', 'HTML страница');
 
 -- --------------------------------------------------------
---
+
+-- 
 -- Структура таблицы `users`
---
+-- 
 
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -82,15 +82,16 @@ CREATE TABLE `users` (
   `access` tinyint(3) unsigned default NULL,
   `name` varchar(64) default NULL,
   `mail` varchar(64) default NULL,
-  `profile` text default NULL,
+  `profile` text,
   PRIMARY KEY  (`id`),
   KEY `login` (`login`),
   KEY `active` (`active`)
-) TYPE=MyISAM PACK_KEYS=0 COMMENT='Пользователи' AUTO_INCREMENT=2;
+) TYPE=MyISAM PACK_KEYS=0 COMMENT='Пользователи';
 
---
+-- 
 -- Дамп данных таблицы `users`
---
+-- 
 
-INSERT INTO `users` VALUES (1, 'root', 'd41d8cd98f00b204e9800998ecf8427e', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Главный администратор', '', '');
-INSERT INTO `users` VALUES (2, 'admin', 'd41d8cd98f00b204e9800998ecf8427e', 1, '0000-00-00 00:00:00', 0, 0, 2, 'Администратор', '', '');
+INSERT INTO `users` VALUES (1, 'root', 'd41d8cd98f00b204e9800998ecf8427e', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Служба поддержки', 'support@procreat.ru', NULL);
+INSERT INTO `users` VALUES (2, 'admin', 'd41d8cd98f00b204e9800998ecf8427e', 1, '0000-00-00 00:00:00', 0, 0, 2, 'Администратор', 'info@{%host}', NULL);
+INSERT INTO `users` VALUES (3, 'editor', 'd41d8cd98f00b204e9800998ecf8427e', 1, '0000-00-00 00:00:00', 0, 0, 3, 'Редактор', 'editor@{%host}', NULL);
