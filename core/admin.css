@@ -1,6 +1,6 @@
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.04
+# Версия 2.05
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
@@ -146,4 +146,6 @@ table.filesList {width: 100%; color: black;}
 .filesControls a:hover {color: #B22222; text-decoration: underline;}
 
 /* Pages list */
+#admPagesList table {border-collapse: collapse;}
+#admPagesList td {padding: 0;}
 #admPagesList img {cursor: pointer;}

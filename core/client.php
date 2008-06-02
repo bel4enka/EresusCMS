@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.04
+# Версия 2.05
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -22,7 +22,7 @@ function __macroConst($matches) {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __macroVar($matches) {
   $result = $GLOBALS[$matches[2]];
-  if (!empty($matches[3])) eval('$result = $result'.$matches[3].';');
+  if (!empty($matches[3])) @eval('$result = $result'.$matches[3].';');
   return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -281,8 +281,9 @@ class TClientUI {
     # Отрисовываем контент
     $content = $plugins->clientRenderContent();
     $this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
-    if ($this->updated < 0) $this->updated = 0;
-    $this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
+    #if ($this->updated < 0) $this->updated = 0;
+    #$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
+    $this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
     $template = filesRoot.'templates/'.$this->template.'.tmpl';
     if (file_exists($template)) $template = StripSlashes(file_get_contents($template)); else {
       $template = filesRoot.'templates/default.tmpl';
@@ -327,6 +328,7 @@ class TClientUI {
     if (!empty($this->scripts)) $this->scripts = "  <script type=\"text/javascript\">\n  ".str_replace("\n", "\n    ", trim($this->scripts))."\n  </script>\n";
     $this->scripts =
       '  <script type="text/javascript">'."\n".
+      "  //<!-- <![CDATA[\n".
       "    var iBrowser = new Array();\n".
       "    iBrowser['UserAgent'] = navigator.userAgent.toLowerCase();\n".
       "    if ((iBrowser['UserAgent'].indexOf('msie') != -1) && (iBrowser['UserAgent'].indexOf('opera') == -1) && (iBrowser['UserAgent'].indexOf('webtv') == -1)) iBrowser['Engine'] = 'IE';\n".
@@ -335,6 +337,7 @@ class TClientUI {
       "    if (iBrowser['UserAgent'].indexOf('safari') != -1) iBrowser['Engine'] = 'Safari';\n".
       "    if (iBrowser['UserAgent'].indexOf('konqueror') != -1) iBrowser['Engine'] = 'Konqueror';\n".
       "    iBrowser['UserAgent'] = navigator.userAgent;\n".
+      "  //]] -->".
       "  </script>\n".
       $this->scripts;
     $result = preg_replace('|(.*)</head>|i', '$1'.$this->scripts."\n</head>", $result);
@@ -480,12 +483,12 @@ class TClientUI {
     if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
     $result .=
       "<div style=\"width: ".$form['width']."\" class=\"form\">\n".
-      "<form ".(empty($form['name'])?'':'name="'.$form['name'].'" id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onSubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
-      "<input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
-      $hidden.
+      "<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onSubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
+      "<div class=\"hidden\"><input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
+      $hidden."</div>\n";
       "<table>\n".
       (empty($form['caption'])?'':"<tr><th colspan=\"2\">".$form['caption']."</th></tr>\n").
-      "<tr><td>".img('style/dot.gif')."</td><td style=\"width: 100%\">".img('style/dot.gif')."</td></tr>\n".
+      "<colgroup><col width=\"0*\" /><col width=\"100%\" /></colgroup>\n".
       $body.
       "<tr><td colspan=\"2\" class=\"buttons\"><br />".
       (in_array('ok', $form['buttons'])?'<input type="submit" class="button" value="OK" /> ':'').

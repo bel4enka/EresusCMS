@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.04
+# Версия 2.05
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -299,7 +299,7 @@ class TAdminUI {
           $value = array_key_exists($value, $column['replace'])?$column['replace'][$value]:$value;
         if (isset($column['macros'])) {
           preg_match_all('/\$\((.+)\)/U', $value, $matches);
-          if (count($matches[1])) foreach($matches[1] as $macros) if (isset($item[$macros])) $value = str_replace('$('.$macros.')', $item[$macros], $value);
+          if (count($matches[1])) foreach($matches[1] as $macros) if (isset($item[$macros])) $value = str_replace('$('.$macros.')', encodeHTML($item[$macros]), $value);
         }
         $value = $this->replaceMacros($value);
         if (isset($column['striptags'])) $value = strip_tags($value);

@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.04
+# Версия 2.05
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -55,7 +55,7 @@ class TPages {
       function updatePages()
       {
         if ((HttpRequest.readyState == 4) && (HttpRequest.status == 200)) {
-          document.getElementById('admPagesList').innerHTML = HttpRequest.responseText;
+          document.getElementById('admPagesList').innerHTML = '<table>'+HttpRequest.responseText+'<table>';
         }
       }
 
@@ -153,7 +153,7 @@ class TPages {
     $wnd['width'] = '100%';
     $wnd['body'] =
       "<table width=\"100%\">\n".
-      "<tr><td style=\"padding: 0px;\"><table cellPadding=\"0\" cellSpacing=\"0\" id=\"admPagesList\">\n".$this->pagesList()."\n</table>\n".
+      "<tr><td style=\"padding: 0px;\" id=\"admPagesList\"><table>\n".$this->pagesList()."\n</table>\n".
       "<tr><td><hr></td></tr>\n".
       "<tr><td>".
       '<form action="'.httpRoot.'admin.php" method="get">'."\n".
@@ -299,11 +299,11 @@ class TPages {
         array ('type' => 'hidden','name'=>'owner','value'=>$request['arg']['owner']),
         array ('type' => 'hidden','name'=>'action', 'value'=>'insert'),
         array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
-        array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%','maxlength' => '255', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
+        array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
         array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
-        array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%','maxlength' => '255'),
-        array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%','maxlength' => '255'),
-        array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%','maxlength' => '255'),
+        array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
+        array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%'),
+        array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
         array ('type' => 'select','name' => 'template','label' => admPagesTemplate, 'items' => $templates[0], 'values' => $templates[1], 'value'=>pageTemplateDefault),
         array ('type' => 'select','name' => 'type','label' => admPagesContentType, 'items' => $content[0], 'values' => $content[1], 'value'=>contentTypeDefault),
         array ('type' => 'checkbox','name' => 'active','label' => admPagesActive, 'value'=>true),
@@ -340,11 +340,11 @@ class TPages {
         array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
         array ('type' => 'edit','name' => 'id','label' => admPagesID,'width' => '50px','maxlength' => '5', 'access'=>ROOT),
         array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/[a-z0-9_]+/i', 'errormsg'=>admPagesNameInvalid),
-        array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%','maxlength' => '255', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
+        array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
         array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
-        array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%','maxlength' => '128'),
-        array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%','maxlength' => '255'),
-        array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%','maxlength' => '255'),
+        array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
+        array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%'),
+        array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
         array ('type' => 'select','name' => 'template','label' => admPagesTemplate, 'items' => $templates[0], 'values' => $templates[1]),
         array ('type' => 'select','name' => 'type','label' => admPagesContentType, 'items' => $content[0], 'values' => $content[1]),
         array ('type' => 'checkbox','name' => 'active','label' => admPagesActive),
