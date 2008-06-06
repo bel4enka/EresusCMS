@@ -427,6 +427,8 @@ function replaceMacros($template, $source)
  * @param array $prevent     Список полей массива изменять которые не следует
  *
  * @return array  Заполненный массив
+ *
+ * @deprecated since 2.10
  */
 function GetArgs($item, $checkboxes = array(), $prevent = array())
 {
@@ -498,7 +500,7 @@ function restoreRequest()
 
  /*
  	* РАБОТА С БД
-	*/
+  */
 
 /**
  * Упорядочивание элементов
@@ -1021,7 +1023,7 @@ class Eresus {
 		$request['link'] = $request['url'];
 		if (substr($request['link'], -1) == '/') $request['link'] .= '?';
 		if (strpos($request['link'], '?') === false)  $request['link'] .= '?';
-		if (substr($request['link'], -1) == '?') $request['link'] .= '&';
+		if (substr($request['link'], -1) != '?') $request['link'] .= '&';
 		# Адрес, откуда был совершён переход
 		$request['referer'] = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
 		# Сбор аргументов вызова
@@ -1113,8 +1115,14 @@ class Eresus {
 	function check_loginout()
 	{
 		if (arg('action')) switch (arg('action')) {
-			case 'login': $this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int')); break;
-			case 'logout': $this->logout(true); goto($this->root.'admin/'); break;
+			case 'login':
+				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
+				goto($this->request['url']);
+			break;
+			case 'logout':
+				$this->logout(true);
+				goto($this->root.'admin/');
+			break;
 		}
 	}
 	//------------------------------------------------------------------------------
