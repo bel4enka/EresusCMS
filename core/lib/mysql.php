@@ -1,8 +1,13 @@
 <?php
 /**
+ * Eresus 2.10
+ *
  * Библиотека для работы с СУБД MySQL
  *
- * @version 1.3.3
+ * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/

@@ -1244,8 +1244,14 @@ class Eresus {
 	function check_loginout()
 	{
 		if (arg('action')) switch (arg('action')) {
-			case 'login': $this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int')); break;
-			case 'logout': $this->logout(true); goto($this->root.'admin/'); break;
+			case 'login':
+				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
+				goto($this->request['url']);
+			break;
+			case 'logout':
+				$this->logout(true);
+				goto($this->root.'admin/');
+			break;
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1448,3 +1454,5 @@ class Eresus {
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
+###cut:end (testing purpose)
+?>

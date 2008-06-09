@@ -4,9 +4,8 @@
 *
 * Создаёт миниатюру
 *
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.1
-* @modified: 2007-07-26
+ * @author   Mikhail Krasilnikov <mk@procreat.ru>
+ * @version  0.0.1
 *
 * @param  string   file    Имя исходного файла относительно /data
 * @param  integer  width   Ширина миниатюры в пикселях

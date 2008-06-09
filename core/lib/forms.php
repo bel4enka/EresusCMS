@@ -4,10 +4,28 @@
 *
 * Библиотека для работы с HTML-формами
 *
-* @maintainer Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
 * @author Mikhail Krasilnikov <mk@procreat.ru>
 * @author БерсЪ <bersz@procreat.ru>
-* @version 0.0.3
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
 */
 
 
@@ -355,7 +373,7 @@ class Form {
   */
   function render()
   {
-    global $page, $request;
+    global $page;
 
     $result = '';     # Выходной код
     $hidden = '';     # Скрытые поля???
@@ -384,17 +402,16 @@ class Form {
         return result;
       }
     ";
+    if ($this->syntax) $page->linkScripts(httpRoot.'core/codepress/codepress.js');
     # FIXME: sub_id - устаревший элемент
-    $referer = isset($request['arg']['sub_id'])?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
+    $referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
     $this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
     $this->hidden = "\t<div class=\"hidden\">\n\t\t{$this->hidden}\n\t</div>";
-    $width = isset($this->form['width']) ? ' style="width: '.$this->form['width'].'"' : '';
     $result =
-      "<div class=\"form\"$width><form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".(isset($this->form['action'])?$this->form['action']:$page->url())."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
+      "<form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".$page->url()."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
       $this->hidden.
       "\n\t<table width=\"100%\">\n".
-      #"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
-      "\t\t<colgroup><col /><col width=\"100%\"></colgroup>\n".
+      "\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
       $result.
       "\t\t<tr><td colspan=\"2\" align=\"center\"><br />".
       ((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<input name="form_ok" type="submit" class="button" value="'.$this->form['buttons']['ok'].'" /> ':'').
@@ -411,7 +428,7 @@ class Form {
       ((isset($this->form['buttons']['cancel']) && (is_array($this->form['buttons']['cancel'])))?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".$this->form['buttons']['cancel']['label']."\" onclick=\"window.location.href='".$this->form['buttons']['cancel']['url']."'\" />":'').
 
       "</td>\n\t\t</tr>\n".
-      "\t</table>\n</form></div>\n";
+      "\t</table>\n</form>\n";
 
     return $result;
   }

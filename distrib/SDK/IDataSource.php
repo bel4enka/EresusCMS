@@ -2,9 +2,7 @@
 /**
  * Eresus 2.11
  *
- * Интерфейс к внешним источникам данных (базам данныъ)
- *
- * @version 0.2.0
+ * Пример файла-коннектора для подключения к Eresus стороннего расширения
  *
  * Система управления контентом Eresus™ 2
  * © 2004-2007, ProCreat Systems, http://procreat.ru/
@@ -38,7 +36,7 @@ class IDataSource {
   *
   * @return  bool  Результат соединения
   */
-  function init($server, $username, $password, $source, $prefix='') {}
+  function init($server, $username, $password, $source, $prefix='');
 
  /**
   * Выполняет запрос к источнику
@@ -47,7 +45,7 @@ class IDataSource {
   *
   * @return  mixed  Результат запроса. Тип зависит от источника, запроса и результата
   */
-  function query($query) {}
+  function query($query);
 
  /**
   * Выполняет запрос к источнику и возвращает ассоциативный массив значений
@@ -56,7 +54,7 @@ class IDataSource {
   *
   * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
   */
-  function query_array($query) {}
+  function query_array($query);
 
 	/**
 	 * Создание новой таблицы
@@ -67,7 +65,7 @@ class IDataSource {
 	 *
 	 * @return bool Результат
 	 */
-  function create($name, $structure, $options = '') {}
+  function create($name, $structure, $options = '');
 
 	/**
 	 * Удаление таблицы
@@ -76,7 +74,7 @@ class IDataSource {
 	 *
 	 * @return bool Результат
 	 */
-  function drop($name) {}
+  function drop($name);
 
  /**
   * Производит выборку данных из источника
@@ -92,7 +90,7 @@ class IDataSource {
 	*
   * @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
   */
-  function select($tables, $condition = '', $order = '', $fields = '', $rows = 0, $offset = 0, $group = '', $distinct = false) {}
+  function select($tables, $condition = '', $order = '', $fields = '', $rows = 0, $offset = 0, $group = '', $distinct = false);
 
  /**
   * Вставка элементов в источник
@@ -102,7 +100,7 @@ class IDataSource {
   *
   * @return  mixed  Результат выполнения операции
   */
-  function insert($table, $item) {}
+  function insert($table, $item);
 
  /**
   * Выполняет обновление информации в источнике
@@ -112,9 +110,9 @@ class IDataSource {
   * @param string $condition  Условие
   * @return unknown
   */
-  function update($table, $set, $condition) {}
+  function update($table, $set, $condition);
 
-  function delete($table, $condition) {}
+  function delete($table, $condition);
   # Выполняет запрос DELETE к базе данных используя метод query().
   #  $table - таблица, из которой требуется удалить записи
   #  $condition - признаки удаляемых записей
@@ -125,19 +123,19 @@ class IDataSource {
   * @param string $table  Имя таблицы
   * @return array  Описание полей
   */
-  function fields($table) {}
+  function fields($table);
 
-  function selectItem($table, $condition, $fields = '') {}
+  function selectItem($table, $condition, $fields = '');
 
-  function updateItem($table, $item, $condition) {}
+  function updateItem($table, $item, $condition);
 
-  function count($table, $condition='', $group='', $rows=false) {}
+  function count($table, $condition='', $group='', $rows=false);
   # Возвращает количество записей в таблице используя метод query().
   #  $table - таблица, для которой требуется посчитать кол-во записей
 
-  function getInsertedID() {}
+  function getInsertedID();
 
-  function tableStatus($table, $param='') {}
+  function tableStatus($table, $param='');
 
  /**
 	* Экранирует потенциально опасные символы
@@ -146,7 +144,7 @@ class IDataSource {
 	*
 	* @return mixed
 	*/
-	function escape($src) {}
+	function escape($src);
 
 }
 
