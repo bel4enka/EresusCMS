@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.11
+ * Eresus {$M{VERSION}}
  *
  * Конфигурация расширений
  *
@@ -16,9 +16,10 @@
  * расширения. В качестве ключа должно использоваться имя директории, в которой расположено
  * расширение. Формат данных пока не определён, используйте значение null.
  *
- * Система управления контентом Eresus™ 2
- * © 2004-2007, ProCreat Systems, http://procreat.ru/
- * © 2007-2008, Eresus Group, http://eresus.ru/
+ * Система управления контентом Eresus 2
+ *
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
@@ -38,5 +39,3 @@ $GLOBALS['Eresus']->conf['extensions'] = array(
 		),
 	),
 );
-
-?>

@@ -2,11 +2,9 @@
 /**
  *	Accounts
  *
- * Eresus 2
+ * Eresus {$M{VERSION}}
  *
  * Библиотека для работы с учётными записями пользователей
- *
- * @version 0.1.0
  *
  * @copyright    2007-2008, Eresus Group, http://eresus.ru/
  * @license      http://www.gnu.org/licenses/gpl.txt GPL License 3
@@ -143,8 +141,7 @@ class EresusAccounts {
 }
 
 /**
- * @deprecated since 0.1.0
+ * @deprecated since Eresus 2.11
  *
  */
 class	Accounts extends EresusAccounts {}
-?>

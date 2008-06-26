@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.11
+ * Eresus {$M{VERSION}}
  *
  * Основные классы системы
  *
@@ -616,7 +616,7 @@ function saveSettings()
 	$result = $this->__item($result);
 	$result['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
 	$result = $Eresus->db->updateItem('plugins', $result, "`name`='".$this->name."'");
-  
+
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -1120,4 +1120,3 @@ class EresusExtensions {
 	}
 	//-----------------------------------------------------------------------------
 }
-?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus {$M{VERSION}}
  *
  * Библиотека для работы с СУБД MySQL
  *
@@ -23,22 +23,22 @@ class MySQL {
 	var $prefix;
 	var $logQueries = false;
  /**
-  * Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
-  *
-  * @var  bool  $display_errors
-  */
+	* Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
+	*
+	* @var  bool  $display_errors
+	*/
 	var $error_reporting = true;
  /**
-  * Открывает соединение сервером данных и выбирает источник
-  *
-  * @param  string  $server    Сервер данных
-  * @param  string  $username  Имя пользователя для доступа к серверу
-  * @param  string  $password  Пароль пользователя
-  * @param  string  $source    Имя источника данных
-  * @param  string  $prefix    Префикс для имён таблиц. По умолчанию ''
-  *
-  * @return  bool  Результат соединения
-  */
+	* Открывает соединение сервером данных и выбирает источник
+	*
+	* @param  string  $server    Сервер данных
+	* @param  string  $username  Имя пользователя для доступа к серверу
+	* @param  string  $password  Пароль пользователя
+	* @param  string  $source    Имя источника данных
+	* @param  string  $prefix    Префикс для имён таблиц. По умолчанию ''
+	*
+	* @return  bool  Результат соединения
+	*/
 	function init($server, $username, $password, $source, $prefix='')
 	{
 		$result = false;
@@ -57,12 +57,12 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
  /**
-  * Выполняет запрос к источнику
-  *
-  * @param  string  $query    Запрос в формате источника
-  *
-  * @return  mixed  Результат запроса. Тип зависит от источника, запроса и результата
-  */
+	* Выполняет запрос к источнику
+	*
+	* @param  string  $query    Запрос в формате источника
+	*
+	* @return  mixed  Результат запроса. Тип зависит от источника, запроса и результата
+	*/
 	function query($query)
 	{
 		global $Eresus;
@@ -73,12 +73,12 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
  /**
-  * Выполняет запрос к источнику и возвращает ассоциативный массив значений
-  *
-  * @param  string  $query    Запрос в формате источника
-  *
-  * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
-  */
+	* Выполняет запрос к источнику и возвращает ассоциативный массив значений
+	*
+	* @param  string  $query    Запрос в формате источника
+	*
+	* @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
+	*/
 	function query_array($query)
 	{
 		$result = $this->query($query);
@@ -123,9 +123,9 @@ class MySQL {
 	}
 	//------------------------------------------------------------------------------
  /**
-  * Производит выборку данных из источника
-  *
-  * @param  string   $tables     Список таблиц из которых проводится выборка
+	* Производит выборку данных из источника
+	*
+	* @param  string   $tables     Список таблиц из которых проводится выборка
 	* @param  string   $condition  Условие для выборки (WHERE)
 	* @param  string   $order      Поля для сортировки (ORDER BY)
 	* @param  string   $fields     Список полей для получения
@@ -134,8 +134,8 @@ class MySQL {
 	* @param  string   $group      Поле для группировки
 	* @param  bool     $distinct   Вернуть только уникальные записи
 	*
-  * @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
-  */
+	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
+	*/
 	function select($tables, $condition = '', $order = '', $fields = '', $rows = 0, $offset = 0, $group = '', $distinct = false)
 	{
 		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($rows)) {
@@ -192,13 +192,13 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
  /**
-  * Вставка элементов в источник
-  *
-  * @param  string  $table  Таблица, в которую надо вставтиь элемент
-  * @param  array   $item   Ассоциативный массив значений
-  *
-  * @return  mixed  Результат выполнения операции
-  */
+	* Вставка элементов в источник
+	*
+	* @param  string  $table  Таблица, в которую надо вставтиь элемент
+	* @param  array   $item   Ассоциативный массив значений
+	*
+	* @return  mixed  Результат выполнения операции
+	*/
 	function insert($table, $item)
 	{
 		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
@@ -215,13 +215,13 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
  /**
-  * Выполняет обновление информации в источнике
-  *
-  * @param string $table      Таблица
-  * @param mixed  $set        Изменения
-  * @param string $condition  Условие
-  * @return unknown
-  */
+	* Выполняет обновление информации в источнике
+	*
+	* @param string $table      Таблица
+	* @param mixed  $set        Изменения
+	* @param string $condition  Условие
+	* @return unknown
+	*/
 	function update($table, $set, $condition)
 	{
 		if (is_array($set)) {
@@ -250,17 +250,15 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
  /**
-  * Получение списка полей таблицы
-  *
-  * @param string $table  Имя таблицы
-  * @return array  Описание полей
-  */
+	* Получение списка полей таблицы
+	*
+	* @param string $table  Имя таблицы
+	* @return array  Описание полей
+	*/
 	function fields($table, $info = false)
 	{
 		global $Eresus;
 
-		$result = $Eresus->cache->get('lib.mysql', "fields.$table.$info");
-		if (is_null($result)) {
 		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
 		if ($fields) {
 			$result = array();
@@ -306,9 +304,7 @@ class MySQL {
 					}
 				} else $result[] = $item['Field'];
 			}
-				$Eresus->cache->put('lib.mysql', "fields.$table.$info", $result);
 		} else FatalError(mysql_error($this->Connection));
-		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -380,4 +376,3 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
 }
-?>

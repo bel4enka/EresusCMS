@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus {$M{VERSION}}
  *
  * Библиотека для работы с изображениями
  *
@@ -49,7 +49,7 @@ function imageCreateFromFile($filename)
 				case 'png':  $result = imageCreateFromPNG($filename); break;
 				case 'wbmp': $result = imageCreateFromWBMP($filename); break;
 				case 'xpm':  $result = imageCreateFromXPM($filename); break;
-		default:       $result = false;
+				default:       $result = false;
 			}
 	}
 	return $result;
@@ -151,5 +151,3 @@ function imageConvert($srcFile, $dstFile, $format = IMG_JPG)
 	return $result;
 }
 
-
-?>

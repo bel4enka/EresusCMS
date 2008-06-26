@@ -32,11 +32,11 @@
  */
 
 class MyPlugin extends Plugin {
-  var $version = '1.00a';
-  var $kernel = '2.10b4';
-  var $title = 'Мой плагин';
-  var $description = 'Описание плагина';
-  var $type = 'client';
+	var $version = '1.00a';
+	var $kernel = '2.10';
+	var $title = 'Мой плагин';
+	var $description = 'Описание плагина';
+	var $type = 'client';
 	/**
 	 * Диалог настроек плагина
 	 *
@@ -44,20 +44,19 @@ class MyPlugin extends Plugin {
 	 */
 	function settings()
 	{
-  	global $page;
+		global $page;
 
-  	$form = array(
+		$form = array(
 			'name'=>'SettingsForm', # Может быть произвольным
 			'caption' => $this->title.' '.$this->version, # Рекомендуемое значение
 			'width' => '500px', # Может быть произвольным
 			'fields' => array (
-	  		array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
-	  		# Необходимые поля формы
+				array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
+				# Необходимые поля формы
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
-  	);
-  	$result = $page->renderForm($form, $this->settings);
-  	return $result;
+		);
+		$result = $page->renderForm($form, $this->settings);
+		return $result;
 	}
 }
-?>

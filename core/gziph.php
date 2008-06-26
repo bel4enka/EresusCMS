@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.11
+ * Eresus {$M{VERSION}}
  *
  * GZIP-сжатие файлов
  *
@@ -37,8 +37,8 @@ set_magic_quotes_runtime(0);
  */
 function ContentLength($content)
 {
-  header("Content-Length: ".strlen($content));
-  return $content;
+	header("Content-Length: ".strlen($content));
+	return $content;
 }
 
 /**
@@ -86,21 +86,20 @@ if (is_file($filename)) {
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
 	$text = file_get_contents($filename);
 	$text = str_replace(array(
-	  '$(httpHost)',
-	  '$(httpPath)',
-	  '$(httpRoot)',
-	  '$(styleRoot)',
-	  '$(dataRoot)',
-	  '$(dataFiles)',
+		'$(httpHost)',
+		'$(httpPath)',
+		'$(httpRoot)',
+		'$(styleRoot)',
+		'$(dataRoot)',
+		'$(dataFiles)',
 	), array(
-	  $_SERVER['HTTP_HOST'],
-	  $httpPath,
-	  $httpRoot,
-	  $styleRoot,
-	  $dataRoot,
-	  $dataFiles,
+		$_SERVER['HTTP_HOST'],
+		$httpPath,
+		$httpRoot,
+		$styleRoot,
+		$dataRoot,
+		$dataFiles,
 	), $text);
 	echo $text;
 	ob_end_flush();
 } else NotFound();
-?>

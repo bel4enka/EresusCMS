@@ -7,7 +7,7 @@
  * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright		2007-2008, Eresus Group, http://eresus.ru/
  * @license     {$M{LICENSE_URI}}  {$M{LICENSE}}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
  * {$M{LICENSE_TEXT}}
  *
@@ -434,7 +434,6 @@ function replaceMacros($template, $source)
 	return $template;
 }
 //------------------------------------------------------------------------------
-
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Работа с HTTP-запросом
@@ -911,10 +910,10 @@ class Eresus {
 	var $db;
 	var $plugins;
  /**
-  * Учётная запись пользователя
-  *
-  * @var EresusAccount
-  */
+	* Учётная запись пользователя
+	*
+	* @var EresusAccount
+	*/
 	var $user;
 
 	var $host;
@@ -1173,9 +1172,9 @@ class Eresus {
 	}
 	//------------------------------------------------------------------------------
 	/**
-  * Инициализация учётной записи пользователя
-  *
-  */
+	* Инициализация учётной записи пользователя
+	*
+	*/
 	function init_user()
 	{
 		useLib('accounts');
@@ -1409,5 +1408,6 @@ class Eresus {
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
+
 ###cut:end (testing purpose)
 ?>
