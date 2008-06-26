@@ -1,0 +1,16 @@
+/**
+ * Eresus Murash build config file
+ *
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ */
+
+NAME="Eresus"
+DESCRIPTION="Eresus 2 CMS"
+VENDOR="Eresus Project"
+VERSION=2.10
+LICENSE=@license
+
+[license]
+@="GPL License 3"
+URI="http://www.gnu.org/licenses/gpl.txt"
+TEXT=@@license
