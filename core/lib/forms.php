@@ -401,7 +401,6 @@ class Form {
 				return result;
 			}
 		";
-		if ($this->syntax) $page->linkScripts(httpRoot.'core/codepress/codepress.js');
 		# FIXME: sub_id - устаревший элемент
 		$referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
 		$this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
