@@ -1,7 +1,5 @@
 <?php
 
-class EresusFatalException extends Exception {}
-
 function require_test($filename)
 {
 	static $included = array();
@@ -19,9 +17,27 @@ function require_test($filename)
 	}
 }
 //-----------------------------------------------------------------------------
+
+class EresusFatalException extends Exception {}
+
+
 function FatalError($message)
 {
 	throw new EresusFatalException(strip_tags($message));
 }
 //-----------------------------------------------------------------------------
-?>
+
+$GLOBALS['__SERVERS'] = array(
+	'Apache' => array(
+		'basic' => array(
+			'REQUEST_METHOD' => 'GET',
+			'HTTP_HOST' => 'example.org',
+		),
+	),
+);
+
+function load_server($server, $suite)
+{
+	$_SERVER = $GLOBALS['__SERVERS'][$server][$suite];
+}
+//-----------------------------------------------------------------------------

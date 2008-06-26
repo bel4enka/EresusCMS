@@ -9,23 +9,23 @@ class EresusInitTest extends PHPUnit_Framework_TestCase {
 	{
 		global $Eresus;
 
+		load_server('Apache', 'basic');
 		$this->assertNull($Eresus->init());
 	}
 	//-----------------------------------------------------------------------------
-	/*function testSectionsCreated()
+	function testSectionsCreated()
 	{
 		global $Eresus;
 
 		$this->assertTrue(is_object($Eresus->sections));
 	}
 	//-----------------------------------------------------------------------------
-	/*function testSectionsCreated()
+	function testSectionsClass()
 	{
 		global $Eresus;
 
 		$this->assertEquals('Sections', get_class($Eresus->sections));
-	}*/
+	}
 	//-----------------------------------------------------------------------------
+	/**/
 }
-
-?>

@@ -1,8 +1,6 @@
 <?php
 	require_once('lib.php');
 
-	require_test('../cfg/main.php');
-	require_test('../cfg/settings.inc');
 	require_test('../core/kernel.php');
 	require_once('Eresus.class.php');
 

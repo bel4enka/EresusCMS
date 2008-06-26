@@ -1,37 +1,24 @@
 <?php
 /**
- * Eresus 2.11
+ * Eresus {$M{VERSION}}
  *
  * Система управления контентом Eresus 2
  *
  * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @license     {$M{LICENSE_URI}}  {$M{LICENSE}}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
- * Software Foundation.
+ * {$M{LICENSE_TEXT}}
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
- *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
- * <http://www.gnu.org/licenses/>
  */
 
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.11a'); # Версия системы
+define('CMSVERSION', '{$M{VERSION}}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '22.03.08'); # Дата обновления ядра
+define('KERNELDATE', '{$M{$BUILD_DATE}}'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -41,8 +28,6 @@ define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
 if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
-
-### ОБРАБОТКА ОШИБОК ###
 
 ###cut:start (testing purpose)
 /**
@@ -905,16 +890,6 @@ class Eresus {
 			'timeout' => 30,
 		),
 		'extensions' => array(),
-		'cache' => array(
-			'memory' => array(
-				'driver' => 'EresusMemoryCache',
-				'limit' => 0,
-			),
-			'session' => array(
-				'driver' => 'EresusSessionCache',
-				'limit' => 0,
-			),
-		),
 		'backward' => array(
 			'TPlugins' => false,
 			'TPlugin' => false,
@@ -933,12 +908,6 @@ class Eresus {
 	* @var unknown_type
 	*/
 	var $extensions;
- /**
-  * Инетрфейс к системе кэширования
-  *
-  * @var EresusCache
-  */
-	var $cache;
 	var $db;
 	var $plugins;
  /**
@@ -1180,18 +1149,6 @@ class Eresus {
 	}
 	//-----------------------------------------------------------------------------
 	/**
-  * Инициадизация кэширования
-  */
-	function init_cache()
-	{
-		useClass('cache');
-		$this->cache = new EresusCache();
-		$items = $this->conf['cache'];
-		foreach($items as $system => $options)
-			$this->cache->create($system, $options);
-	}
-	//-----------------------------------------------------------------------------
-	/**
 	* Подключение к источнику данных
 	*
 	* @access private
@@ -1319,8 +1276,6 @@ class Eresus {
 		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
-		# Инициализация системы кэширования
-		$this->init_cache();
 		# Подключение к источнику данных
 		$this->init_datasource();
 		# Инициализация механизма плагинов

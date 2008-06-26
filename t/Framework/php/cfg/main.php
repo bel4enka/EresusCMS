@@ -11,7 +11,7 @@ $Eresus->conf['debug']['enable'] = true;
 #-------------------------------------------------------------------------------
 
 # Используемая СУБД. По умолчанию: 'mysql'
-#$Eresus->conf['db']['engine'] = 'mysql';
+$Eresus->conf['db']['engine'] = 'test_db';
 
 # Хост сервера СУБД. По умолчанию: 'localhost'
 #$Eresus->conf['db']['host'] = 'localhost';
@@ -23,7 +23,7 @@ $Eresus->conf['db']['user'] = 'user';
 $Eresus->conf['db']['password'] = 'password';
 
 # Имя базы данных
-$Eresus->conf['db']['name'] = 'eresus_trunk';
+$Eresus->conf['db']['name'] = 'eresus';
 
 # Префикс таблиц. По умолчанию: '' (без префикса)
 #$Eresus->conf['db']['prefix']   = '';
@@ -64,10 +64,10 @@ $Eresus->conf['timezone'] = 'Europe/Moscow';
 # Этот параметр управляет параметрами обратной совместимости
 $Eresus->conf['backward'] = array(
 	# Делает доступным класс TPlugins в версиях старше 2.10b
-  'TPlugins' => false,
+	'TPlugins' => false,
 	# Делает доступным класс TPlugin в версиях старше 2.10b
-  'TPlugin' => true,
-  # Делает доступным класс TContentPlugin в версиях старше 2.10b
+	'TPlugin' => true,
+	# Делает доступным класс TContentPlugin в версиях старше 2.10b
 	'TContentPlugin' => true,
 	# Делает доступным класс TListContentPlugin в версиях старше 2.10b
 	'TListContentPlugin' => true,
@@ -85,12 +85,12 @@ $Eresus->conf['backward'] = array(
 # = <имя_файла> - записывать в файл
 
 if ($Eresus->conf['debug']['enable']) {
-  ini_set('display_errors', true);
-  error_reporting(E_ALL);
-  $Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
+	ini_set('display_errors', true);
+	error_reporting(E_ALL);
+	$Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
 } else {
-  ini_set('display_errors', false);
-  error_reporting(0);
+	ini_set('display_errors', false);
+	error_reporting(0);
 }
 
 
