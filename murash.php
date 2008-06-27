@@ -1,12 +1,12 @@
 <?php
 /**
- * Eresus Murash
+ * ProCreat Murash
  *
- * PHP build tool
+ * PHP Project Build Tool
  *
- * @version 0.0.1
+ * @version 1.0
  *
- * @copyright 2008, Eresus Project, http://procreat.ru/
+ * @copyright 2008, ProCreat Systems, http://procreat.ru/
  * @license   http://www.gnu.org/licenses/gpl.txt  GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,4 +25,15 @@
  * @author  Mikhail Krasilnikov <mk@procreat.ru>, <mk@dvaslona.ru>
  */
 
-echo "OK!\n";
+execute();
+
+exit($EXIT_STATUS);
+
+/**
+ * Execute build instructions
+ */
+function execute()
+{
+	;
+}
+//-----------------------------------------------------------------------------
