@@ -25,15 +25,40 @@
  * @author  Mikhail Krasilnikov <mk@procreat.ru>, <mk@dvaslona.ru>
  */
 
-execute();
+prepare_project();
+build_project();
+cleanup();
 
 exit($EXIT_STATUS);
 
 /**
- * Execute build instructions
+ * Prepare project
  */
-function execute()
+function prepare_project()
+{
+	$GLOBALS['EXIT_STATUS'] = 0;
+}
+//-----------------------------------------------------------------------------
+/**
+ * Build project
+ */
+function build_project()
 {
 	;
 }
 //-----------------------------------------------------------------------------
+/**
+ * Attempt cleanup
+ */
+function cleanup()
+{
+	;
+}
+//-----------------------------------------------------------------------------
+
+
+/*
+ * MBF/1.0 Instructions
+ *
+ */
+ */

@@ -7,4 +7,4 @@
 
 SET('VERSION', '2.10');
 
-PREPARE_TARGET_FOLDER();
+
