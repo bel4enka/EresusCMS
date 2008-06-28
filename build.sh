@@ -24,4 +24,6 @@ MURASH="$DIR/murash.php"
 
 if [[ ! -f $MURASH ]]; then	error "Murash main module not found!"; fi
 
+if [[ -e "distrib" ]]; then rm -r "distrib"; fi
+
 $PHP $MURASH

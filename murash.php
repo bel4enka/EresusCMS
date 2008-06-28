@@ -34,7 +34,7 @@ cleanup();
  */
 function prepare_project()
 {
-
+	$GLOBALS['MURASH']['ROOT'] = dirname(realpath(__FILE__)).'/';
 }
 //-----------------------------------------------------------------------------
 /**
@@ -60,9 +60,66 @@ function cleanup()
 
 
 /*
- * MBF/1.0 Instructions
+ * MBF/1.0 Workset
  *
  */
+
+/**
+ * Abstract Hook
+ *
+ */
+class Hook {
+	/**
+	 * Unique hook ID
+	 *
+	 * @var string
+	 */
+	protected $hookID;
+	/**
+	 * PHP5
+	 *
+	 */
+	function __construct()
+	{
+		$this->hookID = uniqid();
+		$GLOBALS['HOOKS'][$this->hookID] = $this;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+class FunctionHook extends Hook {
+	/**
+	 * PHP5
+	 * @param string $function_name
+	 */
+	function __construct($function_name)
+	{
+		parent::__construct();
+		$GLOBALS['FHOOKS'][$function_name][] = $this->hookID;
+	}
+	//-----------------------------------------------------------------------------
+	}
+
+/**
+ * Call hooks
+ */
+function function_hooks($function_name, $method, $return = null)
+{
+	$args = func_get_args();
+	$method = 'on'.$method;
+	array_shift($args);array_shift($args);array_shift($args);
+	array_unshift($args, $return);
+	$registered = $GLOBALS['FHOOKS'][$function_name];
+	if ($registered) foreach($registered as $hookID) {
+		$hook = $GLOBALS['HOOKS'][$hookID];
+		if ($hook && method_exists($hook, $method))
+			$args[0] = call_user_func_array(array($hook, $method), $args);
+		return $args[0];
+	}
+	return $return;
+}
+//-----------------------------------------------------------------------------
+
 
 /**
  * Create target directory
@@ -72,19 +129,38 @@ function cleanup()
 function create_target($target)
 {
 	$GLOBALS['MURASH']['TARGET'] = $target;
-	if (!is_dir($target)) mkdir($target, 0644);
+	if (is_dir($target)) die('Target exists.');
+	mkdir($target, 0755);
 }
 //-----------------------------------------------------------------------------
 /**
  * Recursivly copy files from source to TARGET
  *
  * @param string $source  Source directory
+ * @param string $target  Target directory relative to TARGET
  */
-function copy_files_from($source)
+function copy_files_from($source, $target = '')
 {
+	$prefix = strpos($source, DIRECTORY_SEPARATOR) !== false ? substr($source, 0, strpos($source, DIRECTORY_SEPARATOR)) : $source;
+
 	if (is_dir($source)) {
 		$list = array_merge(glob($source.'/*'), glob($source.'/.*'));
-		print_r($list);
+		if ($list) foreach($list as $from) if (!preg_match('!/\.{1,2}$!', $from)) {
+			switch (true) {
+				case is_file($from):
+					$to = $GLOBALS['MURASH']['ROOT'].$GLOBALS['MURASH']['TARGET'].$target.substr($from, strlen($prefix));
+					$from = $GLOBALS['MURASH']['ROOT'].$from;
+					if (!is_dir(dirname($to))) mkdir(dirname($to), 0755, true);
+					copy($from, $to);
+				break;
+				case is_dir($from) && function_hooks(__FUNCTION__, 'dircopy', true, $from):
+					$to = $GLOBALS['MURASH']['ROOT'].$GLOBALS['MURASH']['TARGET'].$target.substr($from, strlen($prefix));
+					#echo "$to\n";
+					mkdir($to, 0755, true);
+					copy_files_from($from, $target);
+				break;
+			}
+		}
 	}
 }
 //-----------------------------------------------------------------------------
