@@ -29,14 +29,12 @@ prepare_project();
 build_project();
 cleanup();
 
-exit($EXIT_STATUS);
-
 /**
  * Prepare project
  */
 function prepare_project()
 {
-	$GLOBALS['EXIT_STATUS'] = 0;
+
 }
 //-----------------------------------------------------------------------------
 /**
@@ -44,7 +42,11 @@ function prepare_project()
  */
 function build_project()
 {
-	;
+	$build_php = file('build.php');
+	array_shift($build_php);
+	$build_php = implode('', $build_php);
+	$build_php = str_replace(array('<?php', '?>'), '', $build_php);
+	eval($build_php);
 }
 //-----------------------------------------------------------------------------
 /**
@@ -61,4 +63,30 @@ function cleanup()
  * MBF/1.0 Instructions
  *
  */
+
+/**
+ * Create target directory
+ *
+ * @param string $target  Directory name
  */
+function create_target($target)
+{
+	$GLOBALS['MURASH']['TARGET'] = $target;
+	if (!is_dir($target)) mkdir($target, 0644);
+}
+//-----------------------------------------------------------------------------
+/**
+ * Recursivly copy files from source to TARGET
+ *
+ * @param string $source  Source directory
+ */
+function copy_files_from($source)
+{
+	if (is_dir($source)) {
+		$list = array_merge(glob($source.'/*'), glob($source.'/.*'));
+		print_r($list);
+	}
+}
+//-----------------------------------------------------------------------------
+
+
