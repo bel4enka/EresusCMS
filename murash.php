@@ -35,8 +35,32 @@ cleanup();
 function prepare_project()
 {
 	$GLOBALS['MURASH']['ROOT'] = dirname(realpath(__FILE__)).'/';
+	get_config();
+	get_options();
 }
 //-----------------------------------------------------------------------------
+function get_config()
+{
+	$config = parse_ini_file('build.cfg', true);
+	foreach($config['general'] as $section => $include) if ($include) {
+		$GLOBALS['MURASH']['OPTIONS'][$section] = true;
+		foreach($config[$section] as $option => $set) if ($set) {
+			$GLOBALS['MURASH']['OPTIONS']["$section-$option"] = true;
+		}
+	}
+}
+//-----------------------------------------------------------------------------
+function get_options()
+{
+	;
+}
+//-----------------------------------------------------------------------------
+function option($option)
+{
+	return isset($GLOBALS['MURASH']['OPTIONS'][$option]);
+}
+//-----------------------------------------------------------------------------
+
 /**
  * Build project
  */
@@ -74,9 +98,9 @@ class Hook {
 	 *
 	 * @var string
 	 */
-	protected $hookID;
+	var $hookID;
 	/**
-	 * PHP5
+	 * Constructor
 	 *
 	 */
 	function __construct()
@@ -89,7 +113,6 @@ class Hook {
 
 class FunctionHook extends Hook {
 	/**
-	 * PHP5
 	 * @param string $function_name
 	 */
 	function __construct($function_name)
@@ -144,8 +167,8 @@ function copy_files_from($source, $target = '')
 	$prefix = strpos($source, DIRECTORY_SEPARATOR) !== false ? substr($source, 0, strpos($source, DIRECTORY_SEPARATOR)) : $source;
 
 	if (is_dir($source)) {
-		$list = array_merge(glob($source.'/*'), glob($source.'/.*'));
-		if ($list) foreach($list as $from) if (!preg_match('!/\.{1,2}$!', $from)) {
+		$list = array_merge(glob($source.DIRECTORY_SEPARATOR.'*'), glob($source.DIRECTORY_SEPARATOR.'.*'));
+		if ($list) foreach($list as $from) if (!preg_match('!'.DIRECTORY_SEPARATOR.'\.{1,2}$!', $from)) {
 			switch (true) {
 				case is_file($from):
 					$to = $GLOBALS['MURASH']['ROOT'].$GLOBALS['MURASH']['TARGET'].$target.substr($from, strlen($prefix));

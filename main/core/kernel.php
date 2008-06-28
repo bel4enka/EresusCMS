@@ -9,7 +9,7 @@
  * @license     {$M{LICENSE_URI}}  {$M{LICENSE}}
  * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
- * {$M{LICENSE_TEXT}}
+{$M{LICENSE_TEXT}}
  *
  */
 

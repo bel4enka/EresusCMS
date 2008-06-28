@@ -52,5 +52,12 @@ new CopyFilesHook('copy_files_from');
 
 create_target('distrib');
 copy_files_from('main');
-copy_files_from('lang', '/lang');
-copy_files_from('t', '/t');
+
+if (option('lang')) copy_files_from('lang', '/lang');
+if (option('lib')) copy_files_from('lib', '/core/lib');
+if (option('ext-3rd')) copy_files_from('ext-3rd', '/ext-3rd');
+if (option('tools')) copy_files_from('tools', '/distrib');
+if (option('tests')) copy_files_from('t', '/t');
+
+#if (option('mod')) copy_files_from('lang', '/lang');
+#if (option('sdk')) copy_files_from('lang', '/lang');
