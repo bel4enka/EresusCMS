@@ -6,7 +6,29 @@ MBF/1.0
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
-#SET('VERSION', '2.10');
+SET('BUILD_DATE', date('d.m.y'));
+SET('VERSION', '2.10');
+SET('LICENSE', 'GPL License 3');
+SET('LICENSE_URI', 'http://www.gnu.org/licenses/gpl.txt');
+SET('LICENSE_TEXT',<<<EOT
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+EOT
+);
+
 
 #define('TARGET', '');
 
@@ -17,13 +39,18 @@ class CopyFilesHook extends FunctionHook {
 		return $allow;
 	}
 	//-----------------------------------------------------------------------------
+	function onfilecopied($null, $name)
+	{
+		if (preg_match('!\.(php|js)$!', $name)) substitute($name);
+		return $null;
+	}
+	//-----------------------------------------------------------------------------
 }
 
 
+new CopyFilesHook('copy_files_from');
 
 create_target('distrib');
-
-new CopyFilesHook('copy_files_from');
 copy_files_from('main');
 copy_files_from('lang', '/lang');
 copy_files_from('t', '/t');

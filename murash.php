@@ -152,10 +152,10 @@ function copy_files_from($source, $target = '')
 					$from = $GLOBALS['MURASH']['ROOT'].$from;
 					if (!is_dir(dirname($to))) mkdir(dirname($to), 0755, true);
 					copy($from, $to);
+					function_hooks(__FUNCTION__, 'filecopied', null, $to);
 				break;
 				case is_dir($from) && function_hooks(__FUNCTION__, 'dircopy', true, $from):
 					$to = $GLOBALS['MURASH']['ROOT'].$GLOBALS['MURASH']['TARGET'].$target.substr($from, strlen($prefix));
-					#echo "$to\n";
 					mkdir($to, 0755, true);
 					copy_files_from($from, $target);
 				break;
@@ -164,5 +164,19 @@ function copy_files_from($source, $target = '')
 	}
 }
 //-----------------------------------------------------------------------------
-
-
+function substitute($filename)
+{
+	$contents = file_get_contents($filename);
+	if (isset($GLOBALS['MURASH']['SUBST']) && strpos($contents, '{$M{')) {
+		foreach ($GLOBALS['MURASH']['SUBST'] as $key => $value)
+			$contents = str_replace($key, $value, $contents);
+		file_put_contents($filename, $contents);
+	}
+}
+//-----------------------------------------------------------------------------
+function SET($name, $value)
+{
+	$GLOBALS['MURASH']['VARS'][$name] = $value;
+	$GLOBALS['MURASH']['SUBST']['{$M{'.$name.'}}'] = $value;
+}
+//-----------------------------------------------------------------------------
