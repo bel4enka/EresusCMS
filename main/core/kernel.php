@@ -1114,7 +1114,7 @@ class Eresus {
 		$locale['prefix'] = '';
 
 		# Подключение строковых данных
-		$filename = $this->froot.'lang/'.$locale['lang'].'.inc';
+		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Locale file '$filename' not found!");
 	}

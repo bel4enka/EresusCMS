@@ -7,7 +7,7 @@ MBF/1.0
  */
 
 SET('BUILD_DATE', date('d.m.y'));
-SET('VERSION', '2.10');
+SET('VERSION', '2.11');
 SET('LICENSE', 'GPL License 3');
 SET('LICENSE_URI', 'http://www.gnu.org/licenses/gpl.txt');
 SET('LICENSE_TEXT',<<<EOT
