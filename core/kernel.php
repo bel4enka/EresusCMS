@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus 2.10.1
  *
  * Система управления контентом Eresus 2
  *
@@ -31,7 +31,7 @@ define('CMSVERSION', '2.10'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '06.06.08'); # Дата обновления ядра
+define('KERNELDATE', '07.07.08'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор

@@ -6,7 +6,6 @@ function xinha_init()
     'EnterParagraphs',
     'FullScreen',
     'GetHtml',
-    'ImageManager',
     'InsertAnchor',
     'PasteText',
     'TableOperations',

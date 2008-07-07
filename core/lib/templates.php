@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus™ 2.10
+ * Eresus™ 2.10.1
  *
  * Библиотека для работы с шаблонами
  *
@@ -51,20 +51,20 @@ class Templates {
 		}
 		return $result;
 	}
-  //------------------------------------------------------------------------------
-  /**
-   * Возвращает шаблон
-   *
-   * @param string $name  Имя шаблона
-   * @param string $type  Тип шаблона (соответствует поддиректории в /templates)
-   * @param bool   $array Вернуть шаблон в виде массива
-   * @return mixed Шаблон
-   */
-  function get($name = '', $type = '', $array = false)
-  {
-  	$result = false;
-  	if (empty($name)) $name = 'default';
-  	$filename = filesRoot.'templates/';
+	//------------------------------------------------------------------------------
+	/**
+	 * Возвращает шаблон
+	 *
+	 * @param string $name  Имя шаблона
+	 * @param string $type  Тип шаблона (соответствует поддиректории в /templates)
+	 * @param bool   $array Вернуть шаблон в виде массива
+	 * @return mixed Шаблон
+	 */
+	function get($name = '', $type = '', $array = false)
+	{
+		$result = false;
+		if (empty($name)) $name = 'default';
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = fileread($filename);
@@ -84,22 +84,22 @@ class Templates {
 			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
 			if (!$result) $result = '';
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
-  /**
-   * Новый шаблон
-   *
-   * @param string $name Имя шаблона
-   * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-   * @param string $code Содержимое шаблона
-   * @param string $desc Описание шаблона (необязательно)
-   * @return bool Результат выполенния
-   */
-  function add($name, $type, $code, $desc = '')
-  {
-  	$result = false;
-  	$filename = filesRoot.'templates/';
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	 * Новый шаблон
+	 *
+	 * @param string $name Имя шаблона
+	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 * @param string $code Содержимое шаблона
+	 * @param string $desc Описание шаблона (необязательно)
+	 * @return bool Результат выполенния
+	 */
+	function add($name, $type, $code, $desc = '')
+	{
+		$result = false;
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
@@ -111,22 +111,22 @@ class Templates {
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
-  /**
-   * Изменяет шаблон
-   *
-   * @param string $name Имя шаблона
-   * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-   * @param string $code Содержимое шаблона
-   * @param string $desc Описание шаблона (необязательно)
-   * @return bool Результат выполенния
-   */
-  function update($name, $type, $code, $desc = null)
-  {
-  	$result = false;
-  	$filename = filesRoot.'templates/';
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	 * Изменяет шаблон
+	 *
+	 * @param string $name Имя шаблона
+	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 * @param string $code Содержимое шаблона
+	 * @param string $desc Описание шаблона (необязательно)
+	 * @return bool Результат выполенния
+	 */
+	function update($name, $type, $code, $desc = null)
+	{
+		$result = false;
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$item = $this->get($name, $type, true);
@@ -141,20 +141,20 @@ class Templates {
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
-  /**
-   * Удаляет шаблон
-   *
-   * @param string $name Имя шаблона
-   * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-   * @return bool Результат выполенния
-   */
-  function delete($name, $type = '')
-  {
-  	$result = false;
-  	$filename = filesRoot.'templates/';
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	 * Удаляет шаблон
+	 *
+	 * @param string $name Имя шаблона
+	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 * @return bool Результат выполенния
+	 */
+	function delete($name, $type = '')
+	{
+		$result = false;
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = filedelete($filename);
@@ -165,9 +165,9 @@ class Templates {
 		} else {
 			ErrorMessage(sprintf(errFileDelete, $filename));
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 }
 
 ?>

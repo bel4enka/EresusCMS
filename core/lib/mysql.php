@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus 2.10.1
  *
  * Библиотека для работы с СУБД MySQL
  *
@@ -206,13 +206,13 @@ class MySQL {
 		return $result;
 	}
  /**
-  * Выполняет обновление информации в БД
-  *
-  * @param string $table      Таблица
-  * @param string $set        Изменения
-  * @param string $condition  Условие
-  * @return unknown
-  */
+	* Выполняет обновление информации в БД
+	*
+	* @param string $table      Таблица
+	* @param string $set        Изменения
+	* @param string $condition  Условие
+	* @return unknown
+	*/
 	function update($table, $set, $condition)
 	{
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);

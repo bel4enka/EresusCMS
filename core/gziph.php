@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus 2.10.1
  *
  * GZIP-сжатие файлов
  *
@@ -30,6 +30,33 @@ error_reporting(0);
 set_magic_quotes_runtime(0);
 
 /**
+ * Отправляет заголовок кода результата
+ *
+ */
+function HttpError($code)
+{
+	$message = array(
+		403 => '403 Access Not Alowed',
+		404 => '404 Not Found',
+	);
+	header('HTTP/'.$_SERVER['PROTOCOL_VERSION'].' '.$message[$code], true, $code);
+	die(
+		"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n".
+		"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n".
+		"<head>\n".
+		"  <title>".$message[$code]."</title>\n".
+		"</head>\n".
+		"<body>\n".
+		"	<h1>".$message[$code]."</h1>\n".
+		"	<address>{$_SERVER['REQUEST_URI']}</address>\n".
+		"	<hr />".
+		$_SERVER['SERVER_SIGNATURE'].
+		"</body>\n".
+	"</html>"
+	);
+}
+
+/**
  * Отправляет заголовок Content-Length
  *
  * @param string $content
@@ -37,31 +64,8 @@ set_magic_quotes_runtime(0);
  */
 function ContentLength($content)
 {
-  header("Content-Length: ".strlen($content));
-  return $content;
-}
-
-/**
- * Отправляет заголовок 404 Not Found
- *
- */
-function NotFound()
-{
-	header('HTTP/'.$_SERVER['PROTOCOL_VERSION'].' 404 Not Found', true, 404);
-	die(
-		"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n".
-		"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n".
-		"<head>\n".
-		"  <title>Not found</title>\n".
-		"</head>\n".
-		"<body>\n".
-		"	<h1>Resource not found</h1>\n".
-		"	<address>{$_SERVER['REQUEST_URI']}</address>\n".
-		"	<hr />".
-		$_SERVER['SERVER_SIGNATURE'].
-		"</body>\n".
-	"</html>"
-	);
+	header("Content-Length: ".strlen($content));
+	return $content;
 }
 
 $filesRoot = __FILE__;
@@ -76,7 +80,8 @@ $dataFiles = $filesRoot.'data/';
 
 $type = isset($_REQUEST['type'])?$_REQUEST['type']:'text/plain';
 $file = isset($_REQUEST['file'])?$_REQUEST['file']:'';
-if (empty($file)) NotFound();
+if (empty($file)) HttpError(404);
+if (!preg_match('/\.(js|css|html)/',$file)) HttpError(403);
 $filename = AddSlashes($filesRoot.$file);
 if (is_file($filename)) {
 	ob_start('ContentLength');
@@ -86,19 +91,19 @@ if (is_file($filename)) {
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
 	$text = file_get_contents($filename);
 	$text = str_replace(array(
-	  '$(httpHost)',
-	  '$(httpPath)',
-	  '$(httpRoot)',
-	  '$(styleRoot)',
-	  '$(dataRoot)',
-	  '$(dataFiles)',
+		'$(httpHost)',
+		'$(httpPath)',
+		'$(httpRoot)',
+		'$(styleRoot)',
+		'$(dataRoot)',
+		'$(dataFiles)',
 	), array(
-	  $_SERVER['HTTP_HOST'],
-	  $httpPath,
-	  $httpRoot,
-	  $styleRoot,
-	  $dataRoot,
-	  $dataFiles,
+		$_SERVER['HTTP_HOST'],
+		$httpPath,
+		$httpRoot,
+		$styleRoot,
+		$dataRoot,
+		$dataFiles,
 	), $text);
 	echo $text;
 	ob_end_flush();
