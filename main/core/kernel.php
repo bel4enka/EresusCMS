@@ -97,10 +97,10 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 
 	if (error_reporting()) switch ($errno) {
 		case E_NOTICE:
-			if ($Eresus->conf['debug']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
+			if ($Eresus->conf['debug']['enable']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
 		break;
 		case E_WARNING:
-			if ($Eresus->conf['debug'])
+			if ($Eresus->conf['debug']['enable'])
 				FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.(function_exists('callStack')?callStack():''));
 		break;
 		default:
