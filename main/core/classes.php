@@ -564,7 +564,7 @@ function Plugin()
 	$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
 	$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 	$this->urlStyle = $Eresus->style.$this->name.'/';
-	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
+	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 	if (is_file($filename)) include_once($filename);
 }
 //------------------------------------------------------------------------------

@@ -1025,7 +1025,7 @@ class Eresus {
 	*/
 	function init_settings()
 	{
-		$filename = $this->froot.'cfg/settings.inc';
+		$filename = $this->froot.'cfg/settings.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Settings file '$filename' not found!");
 	}

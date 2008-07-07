@@ -37,7 +37,7 @@ function TPlugin()
 		# то необходимо произвести обновление информации о плагине в БД
 		if ($this->version != $plugins->list[$this->name]['version']) $this->resetPlugin();
 	}
-	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
+	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 	if (is_file($filename)) include_once($filename);
 }
 //------------------------------------------------------------------------------

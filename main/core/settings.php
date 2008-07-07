@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus {$M{VERSION}}
+ * Eresus 2.10
  *
  * Управление конфигурацией
  *
@@ -89,8 +89,7 @@ class TSettings {
 		$settings .= $this->mkstr('pageTemplateDefault', admConfigDefaultPageTamplate, 'string');
 		$settings .= $this->mkstr('clientPagesAtOnce', admConfigClientPagesAtOnce.admConfigClientPagesAtOnceComment, 'string');
 
-		$settings .= "?>";
-		$fp = fopen(filesRoot.'cfg/settings.inc', 'w');
+		$fp = fopen(filesRoot.'cfg/settings.php', 'w');
 		fwrite($fp, $settings);
 		fclose($fp);
 		SendNotify(str_replace(array('<?', '?>'), '', $settings));
