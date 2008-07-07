@@ -19,7 +19,7 @@ class test_db {
 	var $functions = array();
 	function tablename($table)
 	{
-		$result = realpath(dirname(__FILE__).'/../../../db/'.str_replace('`', '', $table).'.csv');
+		$result = realpath(dirname(__FILE__).'/../../../Framework/db/'.str_replace('`', '', $table).'.csv');
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
