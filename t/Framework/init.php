@@ -2,7 +2,7 @@
 	require_once('lib.php');
 
 	overwrite('main.php', '/cfg/');
-	overwrite('settings.inc', '/cfg/');
+	overwrite('settings.php', '/cfg/');
 	overwrite('test_db.php', '/core/lib/');
 
 	require_test('../core/kernel.php');
@@ -11,7 +11,7 @@
 	require_test('../core/lib/sections.php');
 	require_test('../core/classes.php');
 	require_test('../core/client.php');
-	require_test('../lang/ru.inc');
+	require_test('../lang/ru.php');
 
 
 ?>

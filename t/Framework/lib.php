@@ -4,13 +4,16 @@ function require_test($filename)
 {
 	static $included = array();
 
-	$filename = realpath($filename);
+	$fullname = realpath($filename);
 
-	if (!in_array($filename, $included)) {
+	if (!$fullname) die("File '$filename' not found\n");
 
-		$tempname = dirname(__FILE__).'/php'.substr($filename, strlen(realpath(dirname(__FILE__).'/../..')));
-		$included[] = $filename;
-		$code = file_get_contents($filename);
+	if (!in_array($fullname, $included)) {
+
+		$tempname = dirname(__FILE__).'/../tmp'.substr($fullname, strlen(realpath(dirname(__FILE__).'/../..')));
+
+		$included[] = $fullname;
+		$code = file_get_contents($fullname);
 		$code = preg_replace('/^\s*###cut:start\s.*###cut:end.*$/Ums', '', $code);
 		if (!is_dir(dirname($tempname))) mkdir(dirname($tempname), 0777, true);
 		file_put_contents($tempname, $code);
@@ -20,7 +23,7 @@ function require_test($filename)
 //-----------------------------------------------------------------------------
 function overwrite($file, $path)
 {
-	$target = dirname(__FILE__).'/php'.$path;
+	$target = dirname(__FILE__).'/../tmp'.$path;
 	@mkdir($target, 0777, true);
 	$target .= $file;
 	@unlink($target);
