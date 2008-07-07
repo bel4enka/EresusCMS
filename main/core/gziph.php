@@ -82,8 +82,7 @@ $type = isset($_REQUEST['type'])?$_REQUEST['type']:'text/plain';
 $file = isset($_REQUEST['file'])?$_REQUEST['file']:'';
 
 if (empty($file)) HttpError(404);
-if (!preg_match('/\.(js|css|html)/',$file)) HttpError(403);
-
+if (!preg_match('/\.(js|css|html)^/i',$file)) HttpError(403);
 $filename = AddSlashes($filesRoot.$file);
 if (is_file($filename)) {
 	ob_start('ContentLength');
