@@ -4,8 +4,10 @@
 #
 # @author Mikhail Krasilnikov <mk@procreat.ru>
 #
+# $Id$
+#
 
-chmod a+rw ../cfg/settings.inc
+chmod a+rw ../cfg/settings.php
 chmod -R a+rw ../data
 chmod -R a+rw ../style
 chmod -R a+rw ../templates
