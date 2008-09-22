@@ -24,6 +24,9 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
+ * $LastChangedDate$
  */
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -129,10 +132,11 @@ class TFiles {
 		global $Eresus;
 
 		$result = '';
-		 @$hnd=opendir(filesRoot.$this->root.$dir);
+		@$hnd=opendir(filesRoot.$this->root.$dir);
 		if ($hnd) {
 			$i = 0;
 			while (($name = readdir($hnd))!==false) if ($name != '.') {
+				if (empty($path) && $name == '..') continue;
 				$result[$i]['filename'] = $name;
 				$perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
 				$perm = $perm - 32768;
