@@ -1,5 +1,5 @@
 /**
- * $Id: mclayer.js 520 2008-01-07 16:30:32Z spocke $
+ * $Id$
  *
  * Moxiecode floating layer script.
  *

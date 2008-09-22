@@ -1,5 +1,5 @@
 /**
- * $Id: form_utils.js 614 2008-02-20 17:57:57Z spocke $
+ * $Id$
  *
  * Various form utilitiy functions.
  *
