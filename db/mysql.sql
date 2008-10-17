@@ -1,27 +1,27 @@
+-- Eresus 2 MySQL 4.x dump
+--
+-- $Id$
 -- --------------------------------------------------------
---
--- Структура таблицы `pages`
---
 
 CREATE TABLE `pages` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL default '',
   `owner` int(10) unsigned NOT NULL default '0',
-	`title` text NOT NULL default '',
-	`caption` varchar(64) NOT NULL default '',
-	`description` text NOT NULL default '',
-	`hint` text NOT NULL default '',
-	`keywords` text NOT NULL default '',
-	`position` smallint(5) unsigned NOT NULL default '0',
+  `title` text NOT NULL,
+  `caption` varchar(64) NOT NULL default '',
+  `description` text NOT NULL,
+  `hint` text NOT NULL,
+  `keywords` text NOT NULL,
+  `position` smallint(5) unsigned NOT NULL default '0',
   `active` tinyint(1) NOT NULL default '0',
-	`access` tinyint(1) unsigned NOT NULL default 5,
-	`visible` tinyint(1) unsigned NOT NULL default '1',
-	`template` varchar(64) NOT NULL default '',
+  `access` tinyint(1) unsigned NOT NULL default '5',
+  `visible` tinyint(1) unsigned NOT NULL default '1',
+  `template` varchar(64) NOT NULL default '',
   `type` varchar(32) NOT NULL default 'default',
-	`content` longtext NOT NULL default '',
-	`options` text NOT NULL default '',
-	`created` datetime NOT NULL default '0000-00-00 00:00:00',
-	`updated` datetime NOT NULL default '0000-00-00 00:00:00',
+  `content` longtext NOT NULL,
+  `options` text NOT NULL,
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `owner` (`owner`),
@@ -33,17 +33,9 @@ CREATE TABLE `pages` (
   KEY `updated` (`updated`)
 ) TYPE=MyISAM;
 
---
--- Дамп данных таблицы `pages`
---
-
 INSERT INTO `pages` VALUES (1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
-
---
--- Структура таблицы `plugins`
---
 
 CREATE TABLE `plugins` (
   `name` varchar(32) NOT NULL default '',
@@ -58,18 +50,9 @@ CREATE TABLE `plugins` (
   KEY `active` (`active`),
   KEY `position` (`position`),
   KEY `type` (`type`)
-) TYPE=MyISAM COMMENT='Модули расширения';
-
---
--- Дамп данных таблицы `plugins`
---
-
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
-
---
--- Структура таблицы `users`
---
 
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -86,10 +69,6 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`id`),
   KEY `login` (`login`),
   KEY `active` (`active`)
-) TYPE=MyISAM PACK_KEYS=0 COMMENT='Пользователи';
-
---
--- Дамп данных таблицы `users`
---
+) TYPE=MyISAM;
 
 INSERT INTO `users` VALUES (1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Служба поддержки', 'support@example.org', NULL);
