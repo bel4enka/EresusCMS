@@ -7,7 +7,8 @@
 	<!-- Prepeare project for build -->
 	<target name="prepare">
 
-		<echo msg="${builddir}" />
+		<echo msg="builddir: ${builddir}" />
+		<echo msg="basedir: ${basedir}" />
 
 		<mkdir dir="${builddir}" />
 
