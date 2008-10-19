@@ -4,7 +4,7 @@
 
 	<property file="build.properties" />
 
-	<property name="builddir" value="${project.builddir}" override="true" />
+	<property name="builddir" value="${project.basedir}/build" override="true" />
 
 	<!-- Prepeare project for build -->
 	<target name="prepare">
