@@ -2,7 +2,7 @@
 
 <project name="eresus2" default="build" basedir=".">
 
-	<property file="./build.properties" />
+	<property file="${basedir}/build.properties" />
 
 	<!-- Prepeare project for build -->
 	<target name="prepare">
