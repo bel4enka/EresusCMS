@@ -4,13 +4,10 @@
 
 	<property file="build.properties" />
 
-	<property name="builddir" value="${project.basedir}/build" override="true" />
-
 	<!-- Prepeare project for build -->
 	<target name="prepare">
 
 		<echo msg="builddir: ${builddir}" />
-		<echo msg="basedir: ${project.basedir}" />
 
 		<mkdir dir="${builddir}" />
 
