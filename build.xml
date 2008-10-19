@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="eresus2" default="build" basedir=".">
+<project name="eresus2" default="build">
 
-	<property file="${basedir}/build.properties" />
+	<property file="build.properties" />
 
 	<!-- Prepeare project for build -->
 	<target name="prepare">
