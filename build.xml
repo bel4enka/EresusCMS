@@ -23,22 +23,22 @@
 		  </filterchain>
 		</copy>
 
-		<copy todir="${builddir}core/lib">
+		<copy todir="${builddir}/core/lib">
 			<fileset refid="libs_files" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
 		</copy>
 
-		<mkdir dir="${builddir}distrib" />
-		<copy todir="${builddir}distrib">
+		<mkdir dir="${builddir}/distrib" />
+		<copy todir="${builddir}/distrib">
 			<fileset refid="db_files" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
 		</copy>
 
-		<copy todir="${builddir}">
+		<copy todir="${builddir}/">
 			<fileset refid="l10n_files" />
 			<filterchain>
 			    <expandproperties />
@@ -49,8 +49,8 @@
 			<fileset refid="3rdparty_files" />
 		</copy>
 
-		<mkdir dir="${builddir}distrib" />
-		<copy todir="${builddir}distrib">
+		<mkdir dir="${builddir}/distrib" />
+		<copy todir="${builddir}/distrib">
 			<fileset refid="SDK_files" />
 			<filterchain>
 			    <expandproperties />
