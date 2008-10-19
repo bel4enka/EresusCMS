@@ -2,13 +2,11 @@
 
 <project name="eresus2" default="build" basedir=".">
 
-	<property name="builddir" value="./build/" override="true" />
-	<property name="distdir" value="./distr/" override="true" />
+	<property file="./build.properties" />
 
 	<!-- Prepeare project for build -->
 	<target name="prepare">
 
-		<echo msg="Making directory ./build" />
 		<mkdir dir="${builddir}" />
 
 	</target>
@@ -16,37 +14,46 @@
 	<!-- Build project -->
 	<target name="build" depends="prepare">
 
-		<echo msg="Copying main files..." />
 		<copy todir="${builddir}">
 			<fileset refid="main_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
-		<echo msg="Copying libs..." />
 		<copy todir="${builddir}core/lib">
 			<fileset refid="libs_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
-		<echo msg="Copying DB templates..." />
 		<mkdir dir="${builddir}distrib" />
 		<copy todir="${builddir}distrib">
 			<fileset refid="db_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
-		<echo msg="Copying locale files..." />
 		<copy todir="${builddir}">
 			<fileset refid="l10n_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
-		<!-- echo msg="Copying 3rd party extensions..." />
 		<copy todir="${builddir}">
 			<fileset refid="3rdparty_files" />
 		</copy>
 
-		<echo msg="Copying SDK files..." />
 		<mkdir dir="${builddir}distrib" />
 		<copy todir="${builddir}distrib">
 			<fileset refid="SDK_files" />
-		</copy -->
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
 
 	</target>
 
