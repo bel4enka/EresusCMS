@@ -10,7 +10,7 @@
 	<target name="prepare">
 
 		<echo msg="builddir: ${builddir}" />
-		<echo msg="basedir: ${basedir}" />
+		<echo msg="basedir: ${project.basedir}" />
 
 		<mkdir dir="${builddir}" />
 
