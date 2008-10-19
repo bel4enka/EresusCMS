@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="eresus2" default="prepare" basedir="./">
+<project name="eresus2" default="build" basedir="./">
 
 	<property file="build.properties" />
 
