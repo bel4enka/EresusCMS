@@ -135,7 +135,7 @@ class TFiles {
 		if ($hnd) {
 			$i = 0;
 			while (($name = readdir($hnd))!==false) if ($name != '.') {
-				if (empty($path) && $name == '..') continue;
+				if (empty($dir) && $name == '..') continue;
 				$result[$i]['filename'] = $name;
 				$perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
 				$perm = $perm - 32768;
