@@ -3,6 +3,9 @@
 <project name="eresus2" default="build" basedir="./">
 
 	<property file="build.properties" />
+	<php function="date" returnProperty="builddate">
+	  <param value="Y-m-d"/>
+	</php>
 
 	<!--
 		Build only main targets
