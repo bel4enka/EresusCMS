@@ -4,15 +4,12 @@
 
 	<property file="build.properties" />
 
-	<!-- Prepeare project for build -->
-	<target name="prepare">
+	<!--
+		Build only main targets
+	-->
+	<target name="core" description="Build only core modules">
 
 		<mkdir dir="${builddir}" />
-
-	</target>
-
-	<!-- Build project -->
-	<target name="build" depends="prepare">
 
 		<copy todir="${builddir}">
 			<fileset refid="main_files" />
@@ -28,6 +25,20 @@
 		  </filterchain>
 		</copy>
 
+		<copy todir="${builddir}/">
+			<fileset refid="l10n_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+	</target>
+
+	<!--
+		Build project
+	-->
+	<target name="build" depends="core" description="Build basic set of modules">
+
 		<mkdir dir="${builddir}/distrib" />
 		<copy todir="${builddir}/distrib">
 			<fileset refid="db_files" />
@@ -36,16 +47,16 @@
 		  </filterchain>
 		</copy>
 
-		<copy todir="${builddir}/">
-			<fileset refid="l10n_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
 		<copy todir="${builddir}">
 			<fileset refid="3rdparty_files" />
 		</copy>
+
+	</target>
+
+	<!--
+		Build all
+	-->
+	<target name="all" depends="build" description="Build all modules">
 
 		<mkdir dir="${builddir}/distrib" />
 		<copy todir="${builddir}/distrib">
@@ -57,6 +68,30 @@
 
 	</target>
 
+
+	<!--
+		Run unit tests
+	-->
+	<target name="test" depends="core" description="Run unit tests">
+
+		<copy todir="${builddir}">
+			<fileset refid="tests_files" />
+		</copy>
+
+		<phpunit printsummary="true">
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir="${builddir}/t">
+					<include name="init.php"/>
+					<include name="**/*Test.php"/>
+					<exclude name="**/AllTests.php"/>
+				</fileset>
+			</batchtest>
+		</phpunit>
+
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - -->
 
 	<!-- Main project files -->
 	<fileset dir="main" id="main_files">
@@ -91,6 +126,12 @@
 	<!-- SDK files -->
 	<fileset dir="." id="SDK_files">
 		<include name="SDK/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Unit tests -->
+	<fileset dir="." id="tests_files">
+		<include name="t/**" />
 		<exclude name=".svn" />
 	</fileset>
 

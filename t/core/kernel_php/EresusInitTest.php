@@ -2,7 +2,7 @@
 /**
  * Test Eresus::init method
  */
-	require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework.php';
 
 class EresusInitTest extends PHPUnit_Framework_TestCase {
 	function testInit()
