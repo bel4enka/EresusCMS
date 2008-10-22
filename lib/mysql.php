@@ -329,11 +329,19 @@ class MySQL {
 	//-----------------------------------------------------------------------------
 	function updateItem($table, $item, $condition)
 	{
-		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
-		if ($hnd === false) FatalError(mysql_error($this->Connection));
+		$fields = $this->fields($table, true);
+
 		$values = array();
-		$i = 0;
-		while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) $values[] = "`$field`='{$item[$field]}'";
+		foreach($fields as $field => $info) if (isset($item[$field])) {
+			switch ($info['type']) {
+				case 'int':
+					$value = $item[$field];
+					if (!$value) $value = 0;
+				break;
+				default: $value = "'".$item[$field]."'";
+			}
+			$values[] = "`$field` = $value";
+		}
 		$values = implode(', ', $values);
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition);
 		return $result;
