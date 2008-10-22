@@ -163,7 +163,7 @@ class TAdminUI extends WebPage {
 			);
 			$ptr = &$this->extmenu[count($this->extmenu)-1];
 		}
-		$ptr['items'][] = $item;
+		$ptr['items'][] = encodeHTML($item);
 		if ($ptr['access'] < $item['access']) $ptr['access'] = $item['access'];
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#

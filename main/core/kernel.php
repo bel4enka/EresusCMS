@@ -352,14 +352,28 @@ function FormatDate($date, $format=DATETIME_NORMAL)
 
 //------------------------------------------------------------------------------
 # РАБОТА С ДАННЫМИ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function encodeHTML($text)
-# Кодирует спецсимволы HTML
+
+/**
+ * Кодирует спецсимволы HTML
+ *
+ * @param mixed $source
+ * @return mixed
+ */
+function encodeHTML($source)
 {
-	$trans_tbl = get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES);
-	return strtr ($text, $trans_tbl);
+	$translationTable = get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES);
+	switch (true) {
+		case is_string($source):
+			$source = strtr($source, $translationTable);
+		break;
+		case is_array($source):
+			foreach($source as $key => $value)
+				$source[$key] = strtr($value, $translationTable);
+		break;
+	}
+	return $source;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 function decodeHTML($text)
 # Декодирует спецсимволы HTML
 {
