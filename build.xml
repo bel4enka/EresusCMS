@@ -54,7 +54,14 @@
 			<fileset refid="3rdparty_files" />
 		</copy>
 
-	</target>
+		<copy todir="${builddir}/distrib">
+			<fileset refid="tools_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+  </target>
 
 	<!--
 		Build all
@@ -117,6 +124,12 @@
 	<!-- l10n files -->
 	<fileset dir="." id="l10n_files">
 		<include name="lang/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Tools files -->
+	<fileset dir="." id="tools_files">
+		<include name="tools/**" />
 		<exclude name=".svn" />
 	</fileset>
 
