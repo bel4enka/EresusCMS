@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This script sets file permissions
 #
@@ -7,7 +7,13 @@
 # $Id$
 #
 
-chmod a+rw ../cfg/settings.php
-chmod -R a+rw ../data
-chmod -R a+rw ../style
-chmod -R a+rw ../templates
+home=$0
+if [ $home = "." ]; then
+	home=`pwd`
+fi
+home=`realpath $home/../..`
+
+chmod a+rw "$home/cfg/settings.php"
+chmod -R a+rw "$home/data"
+chmod -R a+rw "$home/style"
+chmod -R a+rw "$home/templates"
