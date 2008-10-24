@@ -7,11 +7,11 @@
 # $Id$
 #
 
-home=$0
+home=`dirname $0`
 if [ $home = "." ]; then
 	home=`pwd`
 fi
-home=`realpath $home/../../..`
+home="$home/../.."
 
 chmod a+rw "$home/cfg/settings.php"
 chmod -R a+rw "$home/data"
