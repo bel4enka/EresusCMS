@@ -1228,7 +1228,7 @@ class Eresus {
 	*/
 	function check_loginout()
 	{
-		if (arg('action')) switch (arg('action')) {
+		switch (arg('action')) {
 			case 'login':
 				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				goto($this->request['url']);
@@ -1286,10 +1286,10 @@ class Eresus {
 		$this->init_config();
 		# В PHP 5.1.0 должна быть установлена временная зона по умолчанию
 		if (PHP_VERSION >= '5.1.0') date_default_timezone_set($this->conf['timezone']);
-		# Инициализация сессии
-		$this->init_session();
 		# Определение путей
 		$this->init_resolve();
+		# Инициализация сессии
+		$this->init_session();
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__).DIRECTORY_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
 		# Если установлен флаг отладки, подключаем отладочную библиотеку
