@@ -178,10 +178,26 @@ table.admTabs {margin: 2px 0px;}
 
 /* File manager */
 
-table.files {background-color: white;}
-td.filesMenu {background-color: silver; border-style: solid; border-width: 1px; border-color: #ddd #555 #555 #ddd;}
+#fileManager {
+	background-color: white;
+	border-collapse: collapse;
+	border-style: none;
+	border-spacing: 0;
+	width: 100%;
+}
+#fileManager td {
+	padding: 0;
+}
+td.filesMenu {
+	background-color: silver; border-style: solid; border-width: 1px; border-color: #ddd #555 #555 #ddd;
+}
 .filesMenu td {padding: 2px 5px; color: black; width: 5em; text-align: center; border: solid 1px silver; cursor : default;}
-td.filesPanel {border-style: solid; border-width: 0px 1px; border-color: #ddd #555 #555 #ddd;}
+td.filesPanel {
+	border-style: solid;
+	border-width: 0px 1px;
+	border-color: #ddd #555 #555 #ddd;
+	width: 50%;
+}
 table.filesList {width: 100%; color: black;}
 .filesListPath th {background-color: white; padding: 2px 5px; text-align: left; cursor : default;}
 .filesList td {padding: 2px 5px; cursor : default; white-space: nowrap;}

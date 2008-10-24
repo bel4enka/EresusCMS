@@ -210,7 +210,7 @@ class TFiles {
 				case 'cd': $result .= "javascript:filesCD('".$this->url(array($side.'f'=>$items[$i]['link']))."')"; break;
 				case 'new': $result .= "window.open('".$items[$i]['link']."');"; break;
 			}
-			$result .= "\"><td>".img('core/img/icon_'.$items[$i]['icon'].'.gif')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td width=\"100%\">&nbsp;</td></tr>\n";
+			$result .= "\"><td>".img('core/img/icon_'.$items[$i]['icon'].'.gif')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
 		}
 		$result .= "</table>\n";
 		return $result;
@@ -221,7 +221,7 @@ class TFiles {
 		global $Eresus;
 		$result =
 			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-			"<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".$Eresus->request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"upload\" size=\"50\"> <input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</form></td></tr>".
+			"<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".$Eresus->request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><div id=\"fm_upload\"><input type=\"file\" name=\"upload\" size=\"50\"><input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</div></form></td></tr>".
 			"<tr><td align=\"center\"><a href=\"javascript:Copy('SelFileName');\">Скопировать имя</a></td><td style=\"width: 100%;\"><input type=\"text\" id=\"SelFileName\" value=\"Нет выбранных объектов\" style=\"width: 100%;\"></td></tr>".
 			"</table>";
 		return $result;
@@ -238,7 +238,7 @@ class TFiles {
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function upload()
 	{
-	 global $Eresus;
+	global $Eresus;
 
 		foreach($_FILES as $name => $file) upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
 		goto($Eresus->request['referer']);
@@ -347,16 +347,16 @@ class TFiles {
 		else {
 			$page->linkScripts(httpRoot.'core/files.js');
 			$result =
-				"<table id=\"fileManager\"width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"files\">\n".
+				"<table id=\"fileManager\">\n".
 				'<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".
 				'<tr><td colspan="2" class="filesControls">'.$this->renderControls()."</td></tr>".
 				'<tr>'.
-				'<td valign="top" width="50%" class="filesPanel">'.$this->renderFileList('l')."</td>\n".
-				'<td valign="top" width="50%" class="filesPanel">'.$this->renderFileList('r')."</td>\n".
+				'<td valign="top" class="filesPanel">'.$this->renderFileList('l')."</td>\n".
+				'<td valign="top" class="filesPanel">'.$this->renderFileList('r')."</td>\n".
 				"</tr>\n".
 				'<tr><td colspan="2" class="filesControls">'.$this->renderStatus()."</td></tr>".
 				"</table>".
-				"<script language=javascript type=\"text/javascript\"><!--\n".
+				"<script type=\"text/javascript\"><!--\n".
 				" filesInit('".httpRoot.$this->root."', '".$this->sp."');\n".
 				"--></script>\n";
 			return $result;
