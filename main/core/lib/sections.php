@@ -72,7 +72,10 @@ class Sections {
 		$result = array();
 		if (isset($this->index[$owner])) {
 			$result = $this->index[$owner];
-			foreach($result as $section) $result = array_merge($result, $this->branch_ids($section));
+			foreach($result as $section) {
+				if (!$section) continue;
+				$result = array_merge($result, $this->branch_ids($section));
+			}
 		}
 		return $result;
 	}
