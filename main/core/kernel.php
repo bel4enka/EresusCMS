@@ -386,9 +386,14 @@ function decodeHTML($text)
 	return $text;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function text2array($value, $assoc=false)
-# Разбивает текст на строки и возвращает их массив
-# Если $assoc = true, то возвращается ассоциативный массив key=value
+/**
+ * Разбивает текст на строки и возвращает массив из них
+ *
+ * @param string $value
+ * @param bool   $assoc[optional]
+ * @return array
+ */
+function text2array($value, $assoc = false)
 {
 	$result = trim($value);
 	if (!empty($result)) {
@@ -397,14 +402,18 @@ function text2array($value, $assoc=false)
 		if ($assoc && count($result)) {
 			foreach($result as $item) {
 				$item = explode('=', $item);
-				$items[trim($item[0])] = trim($item[1]);
+				$key = trim($item[0]);
+				if ($key !== '') {
+					$value = isset($item[1]) ? trim($item[1]) : null;
+					$items[$key] = $value;
+				}
 			}
 			$result = $items;
 		}
 	} else $result = array();
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 function array2text($value, $assoc=false)
 # Собирает из массива текст
 # Если $assoc = true, то массив рассматривается как ассоциативный
