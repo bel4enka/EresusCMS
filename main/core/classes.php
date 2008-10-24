@@ -1076,6 +1076,10 @@ class EresusExtensionConnector {
 				header('Content-type: text/css');
 				echo file_get_contents($filename);
 			break;
+			case $ext == 'html':
+				header('Content-type: text/html');
+				echo file_get_contents($filename);
+			break;
 			case $ext == 'php':
 				$Eresus->conf['debug']['enable'] = false;
 				restore_error_handler();
