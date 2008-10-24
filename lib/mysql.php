@@ -186,8 +186,8 @@ class MySQL {
 			if (strlen($order)) {
 				$order = explode(',', $order);
 				for($i = 0; $i < count($order); $i++) switch ($order[$i]{0}) {
-					case '+': $order[$i] = substr($order[$i], 1); break;
-					case '-': $order[$i] = substr($order[$i], 1).' DESC'; break;
+					case '+': $order[$i] = '`'.substr($order[$i], 1).'`'; break;
+					case '-': $order[$i] = '`'.substr($order[$i], 1).'` DESC'; break;
 				}
 				$query .= " ORDER BY ".implode(', ',$order);
 			}
