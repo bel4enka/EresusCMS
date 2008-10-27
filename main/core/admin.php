@@ -488,7 +488,7 @@ class TAdminUI extends WebPage {
 				$menu .= "<tr><th>".$this->extmenu[$section]['caption']."</th></tr>\n<tr><td>";
 				foreach ($this->extmenu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->extmenu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
 					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
-					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
 				}
 				$menu .= "</td></tr>\n";
 			}
@@ -498,7 +498,7 @@ class TAdminUI extends WebPage {
 				$menu .= "<tr><th>".$this->menu[$section]['caption']."</th></tr>\n<tr><td>";
 				foreach ($this->menu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->menu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
 					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
-					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'').' onclick="window.location.href=\''.httpRoot."admin.php?mod=".$item['link']."'\"><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
 				}
 				$menu .= "</td></tr>\n";
 			}
