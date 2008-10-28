@@ -414,18 +414,21 @@ function text2array($value, $assoc = false)
 	return $result;
 }
 //-----------------------------------------------------------------------------
-function array2text($value, $assoc=false)
-# Собирает из массива текст
-# Если $assoc = true, то массив рассматривается как ассоциативный
+/**
+ * Собирает текст из массива
+ * @param string $value
+ * @param bool   $assoc[optional]
+ * @return string
+ */
+function array2text($items, $assoc = false)
 {
 	$result = '';
-	if (count($value)) {
-		$result = $value;
-		if ($assoc && count($result)) {
-			foreach($result as $key => $value) $items[] = $key.'='.$value;
+	if (count($items)) {
+		if ($assoc)
+			foreach($items as $key => $value) $result[] = $key.'='.$value;
+		else
 			$result = $items;
-		}
-		$result = implode("\r\n", $result);
+		$result = implode("\n", $result);
 	}
 	return $result;
 }

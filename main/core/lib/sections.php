@@ -221,14 +221,13 @@ class Sections {
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Добавляет раздел
-	*
-	* @access public
-	*
-	* @param  array  $item  Раздел
-	*
-	* @return  mixed  Описание нового раздела или false в случае неудачи
-	*/
+	 * Добавляет раздел
+	 *
+	 * @access public
+	 *
+	 * @param  array  $item  Раздел
+	 * @return  mixed  Описание нового раздела или false в случае неудачи
+	 */
 	function add($item)
 	{
 		global $Eresus;

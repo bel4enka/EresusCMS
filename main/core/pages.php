@@ -96,7 +96,7 @@ class TPages {
 		$old = $Eresus->sections->get(arg('update', 'int'));
 		$item = GetArgs($old, array('active', 'visible'));
 		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
-		$item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
+		$item['options'] = text2array($item['options'], true);
 		$item['updated'] = gettime('Y-m-d H:i:s');
 		if (arg('updatedAuto')) $item['updated'] = gettime();
 		$Eresus->sections->update($item);
@@ -296,7 +296,7 @@ class TPages {
 		$item = $Eresus->sections->get($id);
 		$content = $this->loadContentTypes();
 		$templates = $this->loadTemplates();
-		$item['options'] = array2text($item['options']);
+		$item['options'] = array2text($item['options'], true);
 		$form['caption'] = $item['caption'];
 		# Вычисляем адрес страницы
 		$urlAbs = $page->clientURL($item['id']);
