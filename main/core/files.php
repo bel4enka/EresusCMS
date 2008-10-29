@@ -281,7 +281,7 @@ class TFiles {
 	function chmodEntry()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
-		if (file_exists($filename)) chmod($filename, octdec(arg('perms')));
+		if (file_exists($filename)) chmod($filename, octdec(arg('perms', '/\D/')));
 		goto($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#

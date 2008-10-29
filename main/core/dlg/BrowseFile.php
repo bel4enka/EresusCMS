@@ -45,6 +45,7 @@ if (count($_FILES)) {
   upload('file', $folder);
   goto($Eresus->request['referer']);
 }
+#FIXME: Потенциальная угроза
 if (arg('folder')) {
   $folder = arg('folder');
   parse_str($Eresus->request['referer'], $Eresus->request['arg']);

@@ -47,7 +47,7 @@ class TSettings {
 
 		$result = "  define('".(isset($options['locale'])?($options['locale']?$locale['prefix']:''):'').$name."', ";
 		$quot = "'";
-		$value = is_null(arg($name)) ? option($name) : arg($name);
+		$value = is_null(arg($name)) ? option($name) : arg($name, 'dbsafe');
 		if (isset($options['nobr']) && $options['nobr']) $value = str_replace(array("\n", "\r"), ' ', $value);
 		if (isset($options['savebr']) && $options['savebr']) {
 			$value = addcslashes($value, "\n\r\"");

@@ -308,7 +308,7 @@ class TAdminUI extends WebPage {
 				$forTo = $pageCount+1;
 				$forDelta = 1;
 			}
-			$pageIndex = arg($prefix.'pg')?arg($prefix.'pg'):$forFrom;
+			$pageIndex = arg($prefix.'pg') ? arg($prefix.'pg', 'int') : $forFrom;
 			for ($i = $forFrom; $i != $forTo; $i += $forDelta)
 				if ($i == $pageIndex) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
 				else $result .= '<a href="'.$this->url(array($prefix.'pg' => $i)).'">&nbsp;'.$i.'&nbsp;</a>';
@@ -327,14 +327,14 @@ class TAdminUI extends WebPage {
 		$pagesDesc = isset($table['sortDesc'])?$table['sortDesc']:false;
 		if (isset($table['tabs']) && count($table['tabs'])) $result .= $this->renderTabs($table['tabs']);
 		if (isset($table['hint'])) $result .= '<div class="admListHint">'.$table['hint']."</div>\n";
-		$sortMode = arg($prefix.'sort')?arg($prefix.'sort'):(isset($table['sortMode'])?$table['sortMode']:'');
-		$sortDesc = arg($prefix.'desc')?arg($prefix.'desc'):(arg($prefix.'sort')?'':(isset($table['sortDesc'])?$table['sortDesc']:false));
+		$sortMode = arg($prefix.'sort') ? arg($prefix.'sort', 'word') : (isset($table['sortMode'])?$table['sortMode']:'');
+		$sortDesc = arg($prefix.'desc') ? arg($prefix.'desc', 'int') : (arg($prefix.'sort')?'':(isset($table['sortDesc'])?$table['sortDesc']:false));
 		if (is_null($values)) {
 			$count = $Eresus->db->count($table['name'], isset($table['condition'])?$table['condition']:'');
 			if ($itemsPerPage) {
 				$pageCount = ((integer)($count / $itemsPerPage)+(($count % $itemsPerPage) > 0));
 				if ($count > $itemsPerPage) $pages = $this->renderPages($count, $itemsPerPage, $pageCount, $pagesDesc, $sub_prefix); else $pages = '';
-				$page = arg($prefix.'pg')?arg($prefix.'pg'):($pagesDesc?$pageCount:1);
+				$page = arg($prefix.'pg') ? arg($prefix.'pg', 'int') : ($pagesDesc ? $pageCount : 1);
 			} else {
 				$pageCount = $count;
 				$pages = '';
@@ -428,7 +428,7 @@ class TAdminUI extends WebPage {
 
 		$result = '';
 		if (arg('mod')) {
-			$module = arg('mod');
+			$module = arg('mod', '/[^\w-]/');
 			if(file_exists(filesRoot."core/$module.php")) {
 				include_once(filesRoot."core/$module.php");
 				$class = "T$module";

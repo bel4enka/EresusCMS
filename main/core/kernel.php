@@ -498,7 +498,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
 	foreach ($item as $key => $value) {
 		if ($clear) unset($item[$key]);
 		if (!in_array($key, $prevent)) {
-			if (!is_null(arg($key))) $item[$key] = arg($key);
+			if (!is_null(arg($key))) $item[$key] = arg($key, 'dbsafe');
 			if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
 		}
 	}

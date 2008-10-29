@@ -125,7 +125,7 @@ global $Eresus, $page;
 
 	$result = '';
 	if (!is_null(arg('id'))) {
-		$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id')."'");
+		$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
 		$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
 	}
 	switch (true) {
@@ -133,16 +133,16 @@ global $Eresus, $page;
 			if (method_exists($this, 'update')) $result = $this->update(); else ErrorMessage(sprintf(errMethodNotFound, 'update', get_class($this)));
 		break;
 		case !is_null(arg('toggle')) && isset($this->table['controls']['toggle']):
-			if (method_exists($this, 'toggle')) $result = $this->toggle(arg('toggle')); else ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
+			if (method_exists($this, 'toggle')) $result = $this->toggle(arg('toggle', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
 		break;
 		case !is_null(arg('delete')) && isset($this->table['controls']['delete']):
-			if (method_exists($this, 'delete')) $result = $this->delete(arg('delete')); else ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
+			if (method_exists($this, 'delete')) $result = $this->delete(arg('delete', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
 		break;
 		case !is_null(arg('up')) && isset($this->table['controls']['position']):
-			if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up')):$this->up(arg('up')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
+			if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up', 'dbsafe')):$this->up(arg('up', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
 		break;
 		case !is_null(arg('down')) && isset($this->table['controls']['position']):
-			if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arG('down')):$this->down(arg('down')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
+			if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arg('down', 'dbsafe')):$this->down(arg('down', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
 		break;
 		case !is_null(arg('id')) && isset($this->table['controls']['edit']):
 			if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else ErrorMessage(sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));
@@ -160,7 +160,7 @@ global $Eresus, $page;
 			}
 		break;
 		default:
-			if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section')."'";
+			if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section', 'int')."'";
 			$result = $page->renderTable($this->table);
 	}
 	return $result;
