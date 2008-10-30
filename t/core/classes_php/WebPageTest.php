@@ -29,13 +29,11 @@ class WebPageTest extends PHPUnit_Framework_TestCase {
 	*/
 	function testMethod_clientURL_ordering()
 	{
-		#$expect = 'http://example.org/tmp/services/delivery/level3/level4/';
-		$expect = 'http://example.org/build/t/tmp/services/delivery/level3/level4/';
+		$expect = 'http://example.org/tmp/services/delivery/level3/level4/';
+		#$expect = 'http://example.org/build/t/tmp/services/delivery/level3/level4/';
 
 		$this->assertEquals($expect, $this->fixture->clientURL(24), self::$ClassName."::clientURL: invalid order of page names");
 	}
 	//-----------------------------------------------------------------------------
 	/**/
 }
-
-?>

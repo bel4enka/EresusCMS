@@ -46,6 +46,7 @@ $GLOBALS['__SERVERS'] = array(
 		'basic' => array(
 			'REQUEST_METHOD' => 'GET',
 			'HTTP_HOST' => 'example.org',
+			'REQUEST_URI' => '/first_dir/second_dir/some_file.ext?key1=val1&key2=val2',
 		),
 	),
 );
