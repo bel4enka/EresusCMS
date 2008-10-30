@@ -1098,7 +1098,7 @@ class Eresus {
 
 		$request = array_merge($request, parse_url($request['url']));
 		$request['file'] = substr($request['path'], strrpos($request['path'], '/')+1);
-		$request['path'] = substr($request['path'], 0, -strlen($request['file']));
+		if ($request['file']) $request['path'] = substr($request['path'], 0, -strlen($request['file']));
 
 		# —оздаем заготовку URL дл€ GET-запросов с параметрами
 		$request['link'] = $request['url'];
