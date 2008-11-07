@@ -51,6 +51,7 @@ class ClientUITest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(22, intval($test['id']), 'loadPage can\'t find child section of a root one');
 	}
 	//-----------------------------------------------------------------------------
+	/**/
 }
 
 ?>

@@ -9,5 +9,3 @@ class EresusTestClass extends Eresus {
 }
 
 $GLOBALS['Eresus'] = new EresusTestClass();
-
-?>
