@@ -5,7 +5,7 @@
  * Пример файла-коннектора для подключения к Eresus стороннего расширения
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Group, http://eresus.ru/
+ * @copyright 2007-2009, Eresus Group, http://eresus.ru/
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -17,25 +17,27 @@
  */
 
 class IDataSource {
+
  /**
 	* Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
 	*
-	* @var  bool  $display_errors
+	* @var bool
+	* @access public
 	*/
 	var $display_errors = true;
 
  /**
 	* Открывает соединение сервером данных и выбирает источник
 	*
-	* @param  string  $server    Сервер данных
-	* @param  string  $username  Имя пользователя для доступа к серверу
-	* @param  string  $password  Пароль пользователя
-	* @param  string  $source    Имя источника данных
-	* @param  string  $prefix    Префикс для имён таблиц. По умолчанию ''
+	* @param string $server    Сервер данных. Можно указать порт через двоеточие
+	* @param string $username  Имя пользователя для доступа к серверу
+	* @param string $password  Пароль пользователя
+	* @param string $source    Имя источника данных
+	* @param string $prefix    Префикс для имён таблиц. По умолчанию ''
 	*
-	* @return  bool  Результат соединения
+	* @return bool  Результат соединения
 	*/
-	function init($server, $username, $password, $source, $prefix='');
+	function init($server, $username, $password, $source, $prefix = '');
 
  /**
 	* Выполняет запрос к источнику

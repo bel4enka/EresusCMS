@@ -13,7 +13,10 @@ $Eresus->conf['debug']['enable'] = true;
 # Используемая СУБД. По умолчанию: 'mysql'
 #$Eresus->conf['db']['engine'] = 'mysql';
 
-# Хост сервера СУБД. По умолчанию: 'localhost'
+/*
+ * Хост сервера СУБД. По умолчанию: 'localhost'
+ * Можно указать порт через доветочие: 'localhost:3306'
+ */
 #$Eresus->conf['db']['host'] = 'localhost';
 
 # Имя пользователя СУБД
