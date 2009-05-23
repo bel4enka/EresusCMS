@@ -25,8 +25,13 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ * @subpackage Main
+ *
  * $Id$
  */
+
+#TODO: Этот файл больше не является ядром. Надо перенести его содержимое в другие модули
 
 define('CMSNAME', 'Eresus'); # Название системы
 define('CMSVERSION', '${product.version}'); # Версия системы
@@ -42,9 +47,6 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
-if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
-
-###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *
@@ -78,7 +80,7 @@ function FatalError($msg)
 	die($result);
 }
 //------------------------------------------------------------------------------
-###cut:end (testing purpose)
+
 /**
  * Вывод сообщения о пользовательской ошибке
  *
@@ -905,14 +907,14 @@ function __property($object, $property)
 //-----------------------------------------------------------------------------
 
 /**
-* Основной класс приложения
-*
-* @var  function  $oldErrorHandler  Предыдущий обработчик ошибок
-* @var  array     $conf             Конфигурация
-* @var  array     $session          Данные сессии
-* @var  object    $db               Интерфейс к СУБД
-* @var  array     $user             Учётная запись пользователя
-*/
+ * Основной класс приложения
+ *
+ * @var  function  $oldErrorHandler  Предыдущий обработчик ошибок
+ * @var  array     $conf             Конфигурация
+ * @var  array     $session          Данные сессии
+ * @var  object    $db               Интерфейс к СУБД
+ * @var  array     $user             Учётная запись пользователя
+ */
 class Eresus {
 	var $oldErrorHandler;
 	var $conf = array(
@@ -1445,9 +1447,9 @@ class Eresus {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 ###cut:start (testing purpose)
-
+/*
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
-
+*/
 ###cut:end (testing purpose)
