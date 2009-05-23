@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты ядра системы
+ * Модульные тесты класса Eresus
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -33,26 +33,21 @@
  * $Id$
  */
 
+/**
+ * Test Eresus::init method
+ */
 require_once 'PHPUnit/Framework.php';
 
-#require_once 'ArgTest.php';
-#require_once 'EresusInitTest.php';
-#require_once 'EresusTest.php';
+class EresusTest extends PHPUnit_Framework_TestCase {
 
-require_once 'LegacyTest.php';
-
-class Core_Kernel_AllTests
-{
-	public static function suite()
+	function testInit()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Kernel Tests');
+		global $Eresus;
 
-		#$suite->addTestSuite('ArgTest');
-		#$suite->addTestSuite('EresusInitTest');
-		#$suite->addTestSuite('EresusTest');
-
-		$suite->addTestSuite('LegacyTest');
-
-		return $suite;
+		load_server('Apache', 'basic');
+		$this->assertNull($Eresus->init());
 	}
+	//-----------------------------------------------------------------------------
+
+	/**/
 }
