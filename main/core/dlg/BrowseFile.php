@@ -1,12 +1,12 @@
-<?
+<?php
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Система управления контентом Eresus™
-# Версия 2.11
-# © 2004-2007, ProCreat Systems
-# © 2007-2008, Eresus Group
+# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ EresusпїЅ
+# пїЅпїЅпїЅпїЅпїЅпїЅ 2.11
+# пїЅ 2004-2007, ProCreat Systems
+# пїЅ 2007-2008, Eresus Group
 # http://eresus.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
+/*
 $icons = array(
   array('ext'=>'php|inc|js','icon'=>'script'),
   array('ext'=>'jpg|jpeg','icon'=>'jpeg'),
@@ -33,7 +33,7 @@ function files_compare($a, $b)
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-require_once('../kernel.php');
+require_once 'kernel.php';
 
 $uRoot = UserRights(ADMIN)?'':'data/';
 
@@ -45,7 +45,7 @@ if (count($_FILES)) {
   upload('file', $folder);
   goto($Eresus->request['referer']);
 }
-#FIXME: Потенциальная угроза
+#FIXME: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 if (arg('folder')) {
   $folder = arg('folder');
   parse_str($Eresus->request['referer'], $Eresus->request['arg']);
@@ -118,5 +118,5 @@ $template = str_replace(
   $template
 );
 
-echo $template;
+echo $template;*/
 ?>

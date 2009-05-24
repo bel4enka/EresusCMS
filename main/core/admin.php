@@ -9,20 +9,20 @@
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅ
+ * пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ/пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 3 пїЅпїЅпїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ) пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+ * пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ GNU, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅ
+ * пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+ * GNU пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ
  * <http://www.gnu.org/licenses/>
  *
  * $Id$
@@ -30,14 +30,14 @@
 
 define('ADMINUI', true);
 
-# Подключаем ядро системы #
+# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ #
 $filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
 if (is_file($filename)) include_once($filename); else {
 	echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
 	exit;
 }
 
-function __macroConst($matches) {
+/*function __macroConst($matches) {
 	return constant($matches[1]);
 }
 function __macroVar($matches) {
@@ -45,36 +45,36 @@ function __macroVar($matches) {
 	if (!empty($matches[3])) eval('$result = $result'.$matches[3].';');
 	return $result;
 }
-
+*/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС "СТРАНИЦА"
+# пїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 class TAdminUI extends WebPage {
-	var $module; # Загружаемый модуль
-	var $title; # Заголовок страницы
-	var $styles; # Стили CSS
-	var $scripts; # Скрипты
-	var $menu; # Меню администратора
-	var $extmenu; # Меню раширений
-	var $sub; # Уровень вложенности
-	var $headers; # Заголовки ответа сервера
-	var $options; # Для совместимости с TClientUI
+	var $module; # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	var $title; # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	var $styles; # пїЅпїЅпїЅпїЅпїЅ CSS
+	var $scripts; # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	var $menu; # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	var $extmenu; # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	var $sub; # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	var $headers; # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	var $options; # пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ TClientUI
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function init()
-	# Проводит инициализацию страницы
+	# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	{
 		global $Eresus;
 
 		$this->title = admControls;
-		# Определяем уровень вложенности
+		# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		do {
 			$this->sub++;
 			$i = strpos($Eresus->request['url'], str_repeat('sub_', $this->sub).'id');
 		} while ($i !== false);
 		$this->sub--;
-		# Загружаем плагины
+		# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		$Eresus->plugins->preload(array('admin'),array('ondemand'));
-		# Создаем меню
+		# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 		$this->menu = array(
 			array(
 				"access"  => EDITOR,
@@ -92,10 +92,10 @@ class TAdminUI extends WebPage {
 		$Eresus->plugins->adminOnMenuRender();
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# Общие методы
+	# пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function replaceMacros($text)
-	# Подставляет значения макросов
+	# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	{
 		global $Eresus;
 
@@ -167,7 +167,7 @@ class TAdminUI extends WebPage {
 		if ($ptr['access'] < $item['access']) $ptr['access'] = $item['access'];
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# Построение интерфейса
+	# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function box($text, $class, $caption='')
 	{
@@ -185,15 +185,15 @@ class TAdminUI extends WebPage {
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	/**
-	* Отрисовывает элемент управления
+	* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	*
 	* @access  public
 	*
-	* @param  string  $type    Тип ЭУ (delete,toggle,move,custom...)
-	* @param  string  $href    Ссылка
-	* @param  string  $custom  Индивидуальные настройки
+	* @param  string  $type    пїЅпїЅпїЅ пїЅпїЅ (delete,toggle,move,custom...)
+	* @param  string  $href    пїЅпїЅпїЅпїЅпїЅпїЅ
+	* @param  string  $custom  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	*
-	* @return  string  Отрисованный ЭУ
+	* @return  string  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ
 	*/
 	function control($type, $href, $custom = array())
 	{
@@ -377,7 +377,7 @@ class TAdminUI extends WebPage {
 			}
 			if (isset($table['controls']['toggle']) && (empty($table['controls']['toggle']) || $this->module->$table['controls']['toggle']($item))) $result .= ' <a href="'.sprintf($url_toggle, $item[$table['key']]).'" title="'.($item['active']?admDeactivate:admActivate).'">'.img('core/img/'.($item['active']?'on':'off').'.gif', $item['active']?admDeactivate:admActivate, $item['active']?admDeactivate:admActivate).'</a>';
 			$result .= '</td>';
-			# Обрабатываем ячейки данных
+			# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 			if (count($table['columns'])) foreach($table['columns'] as $column) {
 				$value = isset($column['value'])?$column['value']:(isset($item[$column['name']])?$item[$column['name']]:'');
 				if (isset($column['replace']) && count($column['replace']))
@@ -466,7 +466,7 @@ class TAdminUI extends WebPage {
 		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
 		if (count($items)) foreach($items as $item) {
 			if (empty($item['caption'])) $item['caption'] = admNA;
-			if (isset($Eresus->request['arg']['section']) && ($item['id'] == arg('section'))) $this->title = $item['caption']; # title - массив?
+			if (isset($Eresus->request['arg']['section']) && ($item['id'] == arg('section'))) $this->title = $item['caption']; # title - пїЅпїЅпїЅпїЅпїЅпїЅ?
 			$sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
 			$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
 			if ($current) $opened = $level;
@@ -524,7 +524,7 @@ class TAdminUI extends WebPage {
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function render()
-	# Отправляет созданную страницу пользователю.
+	# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 	{
 		global $locale;
 
@@ -546,7 +546,7 @@ class TAdminUI extends WebPage {
 			'  <title>'.option('siteName').' - '.strip_tags($this->title).'</title>'."\n".
 			'  <link rel="StyleSheet" href="'.httpRoot.'core/admin.css" type="text/css">'."\n".
 			(empty($this->styles)?'':"  <style type=\"text/css\">\n".$this->styles."  </style>\n").
-			# TODO: Заменить определение браузера на подключение ua.js
+			# TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ua.js
 			'  <script type="text/javascript">'."\n".
 			'    var iBrowser = new Array();'."\n".
 			'    iBrowser["UserAgent"] = navigator.userAgent.toLowerCase();'."\n".
@@ -583,8 +583,8 @@ class TAdminUI extends WebPage {
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-# Проверям права доступа и если надо, проводим авторизацию
+/*
+# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 if (!UserRights(EDITOR)) {
 	$messages = '';
 	if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
@@ -595,7 +595,7 @@ if (!UserRights(EDITOR)) {
 	echo
 		"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html>\n".
 		"<head>\n".
-		"  <title>Авторизация</title>\n".
+		"  <title>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</title>\n".
 		"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\">\n".
 		"  <link rel=\"StyleSheet\" href=\"".httpRoot."core/admin.css\" type=\"text/css\">".
 		"</head>".
@@ -605,10 +605,10 @@ if (!UserRights(EDITOR)) {
 		"<form name=\"auth\" action=\"\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"login\">\n".
 		"<table style=\"background-color: #eee; font-size: 8pt;\">\n".
 		"<tr><th colspan=\"2\" style=\"background-color: #25b; border: solid 1 black;	color: gold;\" title=\"".$_SERVER["HTTP_HOST"]."\">".option('siteName')."</th></tr>\n".
-		"<tr><td>Пользователь:</td><td><input type=\"text\" name=\"user\"></td></tr>\n".
-		"<tr><td>Пароль:</td><td><input type=\"password\" name=\"password\"></td></tr>\n".
-		"<tr><td>Запомнить</td><td><input type=\"checkbox\" name=\"autologin\" value=\"1\" style=\"border-width: 0px; margin: 0px;\"></td></tr>\n".
-		"<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Вход\" style=\"color: #25b; width: 8em; font-weight: bold; border: solid 1px #25b; background-color: white; font-family : 'MS Sans Serif', Geneva, sans-serif; \"></td></tr>\n".
+		"<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td><input type=\"text\" name=\"user\"></td></tr>\n".
+		"<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅ:</td><td><input type=\"password\" name=\"password\"></td></tr>\n".
+		"<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</td><td><input type=\"checkbox\" name=\"autologin\" value=\"1\" style=\"border-width: 0px; margin: 0px;\"></td></tr>\n".
+		"<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"пїЅпїЅпїЅпїЅ\" style=\"color: #25b; width: 8em; font-weight: bold; border: solid 1px #25b; background-color: white; font-family : 'MS Sans Serif', Geneva, sans-serif; \"></td></tr>\n".
 		"</table>\n</form>\n".
 		"</td>\n</tr>\n</table>\n</body></html>";
 	exit;
@@ -617,3 +617,4 @@ if (!UserRights(EDITOR)) {
 $page = new TAdminUI;
 $page->init();
 $page->render();
+*/
