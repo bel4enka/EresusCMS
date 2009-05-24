@@ -59,7 +59,7 @@ class EresusCMS extends MvcApplication {
 
 		} else {
 
-			$this->runWWW();
+			$this->runWeb();
 			return 0;
 
 		}
@@ -68,11 +68,11 @@ class EresusCMS extends MvcApplication {
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Выполнение в режиме WWW
+	 * Выполнение в режиме Web
 	 */
-	protected function runWWW()
+	protected function runWeb()
 	{
-		$this->initWWW();
+		$this->initWeb();
 
 		/*
 		 * Выбор маршрута и следование по нему
@@ -98,17 +98,32 @@ class EresusCMS extends MvcApplication {
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Инициализация WWW
+	 * Инициализация Web
 	 */
-	protected function initWWW()
+	protected function initWeb()
 	{
 		$this->request = HTTP::request();
 		$this->response = new HttpResponse();
-
+		$this->detectWebRoot();
 		$this->initRoutes();
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Определение корневого веб-адреса сайта
+	 *
+	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
+	 * образом localRoot объекта EresusCMS::request
+	 */
+	protected function detectWebRoot()
+	{
+		$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
+		$SUFFIX = dirname(__FILE__);
+		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
+		$SUFFIX = substr($SUFFIX, 0, -strlen('/core'));
+		$this->request->setLocalRoot($SUFFIX);
+	}
+	//-----------------------------------------------------------------------------
 	/**
 	 * Инициализация маршрутов
 	 */

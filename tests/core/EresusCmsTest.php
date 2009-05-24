@@ -55,18 +55,18 @@ class EresusCmsTest extends PHPUnit_Framework_TestCase {
 	/**
 	 *
 	 */
-	public function testMainWWW()
+	public function testMainWeb()
 	{
 		$stub = $this->getMock(
 			'EresusCMS',
-			array('runWWW', 'runCLI')
+			array('runWeb', 'runCLI')
 		);
 
 		$stub->expects($this->never())
 			->method('runCLI');
 
 		$stub->expects($this->once())
-			->method('runWWW')
+			->method('runWeb')
 			->will($this->returnValue(0));
 
 		Core::testModeSet('PHP::isCLI', false);
@@ -81,17 +81,32 @@ class EresusCmsTest extends PHPUnit_Framework_TestCase {
 	{
 		$stub = $this->getMock(
 			'EresusCMS',
-			array('runWWW', 'runCLI')
+			array('runWeb', 'runCLI')
 		);
 
 		$stub->expects($this->never())
-			->method('runWWW');
+			->method('runWeb');
 
 		$stub->expects($this->once())
 			->method('runCLI')
 			->will($this->returnValue(0));
 
 		$this->assertEquals(0, $stub->main());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function testDetectWebRoot()
+	{
+		$stub = new EresusCmsTest_EresusCMS();
+
+		$_SERVER['DOCUMENT_ROOT'] = realpath(ERESUS_TEST_ROOT . DIRECTORY_SEPARATOR . '..');
+		$SUFFIX = substr(ERESUS_TEST_ROOT, strlen($_SERVER['DOCUMENT_ROOT']));
+		$stub->test_setRequest(new HttpRequest('http://example.com/'.$SUFFIX.'/path/to/script.cgi'));
+		$stub->detectWebRoot();
+		$this->assertEquals($SUFFIX, $stub->test_getRequest()->getLocalRoot());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -110,25 +125,25 @@ class EresusCmsTest extends PHPUnit_Framework_TestCase {
 	/**
 	 *
 	 */
-	public function testInitWWW()
+	public function testInitWeb()
 	{
 		$stub = $this->getMock(
 			'EresusCmsTest_EresusCMS',
 			array('initRoutes')
 		);
 
-		$stub->initWWW();
+		$stub->initWeb();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 *
 	 */
-	public function testRunWWW()
+	public function testRunWeb()
 	{
 		$stub = new EresusCmsTest_EresusCMS();
 
-		$stub->runWWW();
+		$stub->runWeb();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -141,11 +156,30 @@ class EresusCmsTest_EresusCMS extends EresusCMS {
 	/**
 	 *
 	 */
+	public function test_getRequest()
+	{
+		return $this->request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @param HttpRequest $request
+	 */
+	public function test_setRequest($request)
+	{
+		$this->request = $request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
 	public function test_getRouter()
 	{
 		return $this->router;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * (non-PHPdoc)
 	 * @see main/core/EresusCMS#initRoutes()
@@ -158,21 +192,31 @@ class EresusCmsTest_EresusCMS extends EresusCMS {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see main/core/EresusCMS#initWWW()
+	 * @see main/core/EresusCMS#initWeb()
 	 */
-	public function initWWW()
+	public function initWeb()
 	{
-		return parent::initWWW();
+		return parent::initWeb();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * (non-PHPdoc)
-	 * @see main/core/EresusCMS#runWWW()
+	 * @see main/core/EresusCMS#detectWebRoot()
 	 */
-	public function runWWW()
+	public function detectWebRoot()
 	{
-		return parent::runWWW();
+		return parent::detectWebRoot();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see main/core/EresusCMS#runWeb()
+	 */
+	public function runWeb()
+	{
+		return parent::runWeb();
 	}
 	//-----------------------------------------------------------------------------
 }

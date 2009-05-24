@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Вспомогательный файл для модульных тестов
+ * Контроллёр бэкэнда
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -28,42 +28,26 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
- * @subpackage Tests
+ * @subpackage Main
  *
  * $Id$
  */
 
-/* Устанавливаем путь для подключения тестируемых файлов */
-if ( !defined('ERESUS_TEST_ROOT') )
-	define('ERESUS_TEST_ROOT', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..'));
 
-set_include_path(get_include_path() . PATH_SEPARATOR . ERESUS_TEST_ROOT);
+class AdminFrontController extends FrontController {
 
-/* Включаем в Eresus режим тестирования и режит отладки */
-ini_set('error_log', 'debug.log');
-define('ERESUS_LOG_LEVEL' , LOG_DEBUG);
-$GLOBALS['ERESUS_CORE_TESTMODE'] = array();
+	/**
+	 * (non-PHPdoc)
+	 * @see framework/classes/controllers/FrontController#execute()
+	 */
+	public function execute()
+	{
+		include_once 'kernel-legacy.php';
+		$GLOBALS['Eresus'] = new Eresus;
+		$GLOBALS['Eresus']->init();
+		$GLOBALS['Eresus']->execute();
+		include_once 'admin.php';
+	}
+	//-----------------------------------------------------------------------------
 
-if ( !defined('ERESUS_ROOT') )
-	define('ERESUS_ROOT', ERESUS_TEST_ROOT . DIRECTORY_SEPARATOR . 'core'  . DIRECTORY_SEPARATOR . 'framework');
-
-set_include_path(get_include_path() . PATH_SEPARATOR . ERESUS_ROOT);
-
-/* Настраиваем фильтрацию Code Covarage */
-PHPUnit_Util_Filter::addDirectoryToFilter(ERESUS_TEST_ROOT . DIRECTORY_SEPARATOR . 'tests');
-PHPUnit_Util_Filter::addDirectoryToFilter(ERESUS_ROOT);
-
-/**
- * Подключение Eresus Core
- */
-require 'EresusFramework.php';
-Core::testMode(true);
-
-set_include_path(get_include_path() . PATH_SEPARATOR . ERESUS_TEST_ROOT . DIRECTORY_SEPARATOR . 'core');
-
-#TODO: Временная необходимость
-include_once 'core/kernel.php';
-include_once 'lang/ru.php';
-
-/* Удаляем локальные переменные */
-
+}

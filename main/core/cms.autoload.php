@@ -34,5 +34,9 @@
  */
 
 return array(
-	'ClientFrontController' => 'client/ClientFrontController.php'
+	/* Классы фронтэнда */
+	'ClientFrontController' => 'client/ClientFrontController.php',
+
+	/* Классы бэкэнда */
+	'AdminFrontController' => 'admin/AdminFrontController.php',
 );
