@@ -33,9 +33,37 @@
  * $Id$
  */
 
-define('TEST_DIR_ROOT', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..'));
-set_include_path(get_include_path() . PATH_SEPARATOR . TEST_DIR_ROOT);
+/* Устанавливаем путь для подключения тестируемых файлов */
+$local_include_path = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
+set_include_path(get_include_path() . PATH_SEPARATOR . $local_include_path);
+
+/* Включаем в Eresus режим тестирования и режит отладки */
+ini_set('error_log', 'debug.log');
+define('ERESUS_LOG_LEVEL' , LOG_DEBUG);
+$GLOBALS['ERESUS_CORE_TESTMODE'] = array();
+
+if ( !defined('ERESUS_ROOT') ) {
+
+	define('ERESUS_ROOT', $local_include_path . DIRECTORY_SEPARATOR . 'core'  . DIRECTORY_SEPARATOR . 'framework');
+
+}
+set_include_path(get_include_path() . PATH_SEPARATOR . ERESUS_ROOT);
+
+/* Настраиваем фильтрацию Code Covarage */
+PHPUnit_Util_Filter::addDirectoryToFilter($local_include_path . DIRECTORY_SEPARATOR . 'tests');
+PHPUnit_Util_Filter::addDirectoryToFilter(ERESUS_ROOT);
+
+/**
+ * Подключение Eresus Core
+ */
+require 'EresusFramework.php';
+Core::testMode(true);
+
+set_include_path(get_include_path() . PATH_SEPARATOR . $local_include_path . DIRECTORY_SEPARATOR . 'core');
 
 #TODO: Временная необходимость
 include_once 'core/kernel.php';
 include_once 'lang/ru.php';
+
+/* Удаляем локальные переменные */
+unset($local_include_path);
