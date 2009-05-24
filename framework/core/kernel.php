@@ -1419,17 +1419,19 @@ class EresusClassAutoloadTable {
 	 */
 	public function __construct($filename)
 	{
-		elog(__METHOD__, LOG_DEBUG, 'Creating autoload table: %s', $filename);
+		elog(__METHOD__, LOG_DEBUG, $filename);
 		if (substr($filename , -4) != '.php') {
 			elog(__METHOD__, LOG_DEBUG, 'Adding ".php" extension');
 			$filename .= '.php';
 		}
 		$this->filename = $filename;
+		elog(__METHOD__, LOG_DEBUG, 'Table file: %s', $this->filename);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Try to load class
+	 *
 	 * @param string $className
 	 * @return bool
 	 */
@@ -1444,10 +1446,11 @@ class EresusClassAutoloadTable {
 
 		if (isset($this->table[$className])) {
 
-			$filename = $this->table[$className] . '.php';
+			$filename = $this->table[$className];
+			if (substr($filename, -4) != '.php') $filename .= '.php';
 			try {
 
-				include_once $filename;
+				Core::safeInclude($filename);
 
 			} catch (EresusRuntimeException $e) {
 
@@ -1470,8 +1473,16 @@ class EresusClassAutoloadTable {
 	{
 		elog(__METHOD__, LOG_DEBUG, 'Loading autoload table from %s', $this->filename);
 
-		$this->table = include $this->filename;
-		if (!$this->table) $this->filename = false;
+		try {
+
+			$this->table = Core::safeInclude($this->filename, true);
+
+		} catch (EresusRuntimeException $e) {
+
+			elog(__METHOD__, LOG_ERR, 'Can\'t load table from "%s": %s', $this->filename, $e->getDescription());
+			$this->filename = false;
+
+		}
 
 		elog(__METHOD__, LOG_DEBUG, $this->table ? 'success' : 'failed');
 	}
@@ -1828,7 +1839,7 @@ class Core {
 			elog(__METHOD__, LOG_DEBUG, 'registering handler "%s"', $callback);
 		}
 
-		if (PHP::checkVersion('5.1.2')) {
+		if (function_exists('spl_autoload_register')) {
 
 			spl_autoload_register($autoloader);
 
@@ -1837,6 +1848,34 @@ class Core {
 			array_unshift(self::$autoloaders, $autoloader);
 
 		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Perform safe include of a PHP-file
+	 *
+	 * @param string $filename
+	 * @param bool   $force     if "true" then "include" will be used instead of
+	 *                          "include_once"
+	 *
+	 * @return mixed  Result of file inclusion
+	 *
+	 * @throws EresusRuntimeException
+	 */
+	static public function safeInclude($filename, $force = false)
+	{
+		$filename = FS::nativeForm($filename);
+		$dirs = explode(PATH_SEPARATOR, get_include_path());
+
+		foreach($dirs as $dir) if (FS::exists($dir . DIRECTORY_SEPARATOR . $filename)) {
+
+			if ($force)
+				return include $filename;
+			else
+				return include_once $filename;
+		}
+
+		throw new EresusRuntimeException("File '$filename' not found in '".get_include_path()."'", 'File not found');
 	}
 	//-----------------------------------------------------------------------------
 

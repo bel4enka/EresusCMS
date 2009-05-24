@@ -26,7 +26,7 @@
  * @subpackage DB
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: DB.php 159 2009-05-21 07:59:07Z mekras $
+ * $Id: DB.php 285 2009-05-20 20:40:51Z mekras $
  */
 
 /**
