@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты системы
+ * Вспомогательный файл для модульных тестов
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -33,22 +33,9 @@
  * $Id$
  */
 
-require_once 'PHPUnit/Framework.php';
-require_once 'helpers.php';
+define('TEST_DIR_ROOT', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..'));
+set_include_path(get_include_path() . PATH_SEPARATOR . TEST_DIR_ROOT);
 
-require_once 'core/AllTests.php';
-
-class AllTests
-{
-	/**
-	 * @return PHPUnit_Framework_TestSuite
-	 */
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite('Eresus 2');
-
-		$suite->addTest(Core_AllTests::suite());
-
-		return $suite;
-	}
-}
+#TODO: Временная необходимость
+include_once 'core/kernel.php';
+include_once 'lang/ru.php';
