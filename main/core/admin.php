@@ -607,6 +607,6 @@ if (!UserRights(EDITOR)) {
 	exit;
 }
 
-$page = new TAdminUI;
-$page->init();
-$page->render();
+$GLOBALS['page'] = new TAdminUI;
+$GLOBALS['page']->init();
+$GLOBALS['page']->render();

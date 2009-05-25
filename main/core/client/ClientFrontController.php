@@ -36,4 +36,17 @@
 
 class ClientFrontController extends FrontController {
 
+	/**
+	 * (non-PHPdoc)
+	 * @see framework/classes/controllers/FrontController#execute()
+	 */
+	public function execute()
+	{
+		include_once 'kernel-legacy.php';
+		$GLOBALS['Eresus'] = new Eresus;
+		$GLOBALS['Eresus']->init();
+		$GLOBALS['Eresus']->execute();
+		include_once 'client.php';
+	}
+	//-----------------------------------------------------------------------------
 }
