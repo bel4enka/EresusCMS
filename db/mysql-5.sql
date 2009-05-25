@@ -3,6 +3,8 @@
 -- $Id$
 -- --------------------------------------------------------
 
+SET NAMES CP1251;
+
 CREATE TABLE `pages` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL default '',

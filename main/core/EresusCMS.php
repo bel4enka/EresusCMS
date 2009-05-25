@@ -131,7 +131,7 @@ class EresusCMS extends MvcApplication {
 	{
 		$this->router = new Router($this->request, $this->response);
 		$this->router->add(
-			new Route('/admin/', '*', 'AdminFrontController')
+			new Route('/admin', '*', 'AdminFrontController')
 		);
 		$this->router->setDefault(new Route('', '*', 'ClientFrontController'));
 	}
