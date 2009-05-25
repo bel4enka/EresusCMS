@@ -35,7 +35,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once 'kernel/AllTests.php';
+require_once 'kernel-legacy/AllTests.php';
 /*require_once 'lib/AllTests.php';
 require_once 'classes_php/AllTests.php';
 require_once 'client_php/AllTests.php';

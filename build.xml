@@ -74,6 +74,14 @@
 		  </filterchain>
 		</copy>
 
+		<echo msg="Copying libraries..." level="info" />
+		<copy todir="${dir.build}/core/lib">
+			<fileset refid="files.lib" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
 		<echo msg="Copying l10n files..." level="info" />
 		<copy todir="${dir.build}/lang">
 			<fileset refid="files.l10n" />

@@ -62,7 +62,6 @@ Core::testMode(true);
 set_include_path(get_include_path() . PATH_SEPARATOR . ERESUS_TEST_ROOT . DIRECTORY_SEPARATOR . 'core');
 
 #TODO: Временная необходимость
-include_once 'core/kernel.php';
 include_once 'lang/ru.php';
 
 /* Удаляем локальные переменные */
