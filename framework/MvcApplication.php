@@ -29,11 +29,6 @@
  */
 
 /**
- * Parent class for MvcApplication
- */
-include_once 'EresusApplication.php';
-
-/**
  * Abstract MVC application
  * @package Framework
  * @author  mekras

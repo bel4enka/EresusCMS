@@ -11,4 +11,4 @@ spl_autoload_register('dwooAutoload');
 
 set_include_path(str_replace(PATH_SEPARATOR.dirname(__FILE__), '', get_include_path()) . PATH_SEPARATOR . dirname(__FILE__));
 
-include 'Dwoo.php';
+include 'Dwoo.compiled.php';

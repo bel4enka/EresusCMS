@@ -891,14 +891,7 @@ class FS {
 
 			if (System::isWindows()) {
 
-				try {
-
-					include_once 'File' . DIRECTORY_SEPARATOR . 'FS' . DIRECTORY_SEPARATOR . 'Windows.php';
-					self::$driver = new WindowsFS();
-
-				} catch (EresusRuntimeException $e) {
-					elog(__METHOD__, LOG_ERR, 'Error loading FS driver: WindowsFS');
-				}
+				self::$driver = new WindowsFS();
 
 			}
 
@@ -1161,6 +1154,66 @@ class GenericFS {
 	//-----------------------------------------------------------------------------
 }
 
+/**
+ * Microsoft(R) Windows(TM) file system driver class
+ *
+ * @package Core
+ * @subpackage FS
+ */
+class WindowsFS extends GenericFS {
+
+	/**
+	 * Convert canonical (UNIX) filename to Windows native form
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see WindowsFS::canonicalForm()
+	 */
+	public function nativeForm($filename)
+	{
+		/* Look for drive letter */
+		if (preg_match('~^/[a-z]:/~i', $filename)) {
+
+			$drive = substr($filename, 1, 1);
+			$filename = substr($filename, 4);
+
+		} else $drive = false;
+
+		/* Convert slashes */
+		$filename = str_replace('/', '\\', $filename);
+
+		/* Prepend drive letter if needed */
+		if ($drive) {
+			$filename = $drive . ':\\' . $filename;
+		}
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Convert filename from Windows native form to canonical (UNIX)
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see WindowsFS::nativeForm()
+	 */
+	public function canonicalForm($filename)
+	{
+		/* Convert slashes */
+		$filename = str_replace('\\', '/', $filename);
+
+		/* Prepend drive letter with slash if needed */
+		if (substr($filename, 1, 1) == ':')
+			$filename = '/' . $filename;
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+}
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1658,6 +1711,11 @@ class Core {
 		 */
 		include_once '3rdparty/ezcomponents/Base/src/base.php';
 		self::registerAutoloader(array('ezcBase', 'autoload'));
+
+		/*
+		 * If Eresus Core was built with a "compile" option
+		 */
+		if ('1') include_once 'eresus-core.compiled.php';
 
 		elog(__METHOD__, LOG_DEBUG, 'done');
 		# Indicate that init complete

@@ -26,7 +26,7 @@
  * @subpackage MVC
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: GenericModel.php 157 2009-05-20 13:07:28Z mekras $
+ * $Id: GenericModel.php 170 2009-05-27 14:07:22Z mekras $
  */
 
 /**
@@ -286,7 +286,7 @@ class GenericModel extends MvcModel {
 		$q = $q->insertInto($this->dbTable);
 
 		foreach($this->raw as $column => $value)
-			$q = $q->set($column, $q->bindValue($this->$column));
+			$q = $q->set($column, $q->bindValue($value));
 
 		DB::execute($q);
 

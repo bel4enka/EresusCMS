@@ -36,23 +36,26 @@ return array(
 	/* Console */
 
 	/* DB */
-	'DB' => 'DB/DB',
+	'DB' => 'DB/DB.php',
 
 	/* File */
-	'WindowsFS' => 'File/FS/WindowsFS',
+	'WindowsFS' => 'File/FS/WindowsFS.php',
 
 	/* Misc */
-	'Registry' => 'Misc/Registry',
+	'Registry' => 'Misc/Registry.php',
 
 	/* Template */
-	'Template' => 'Template/Template',
-	'TemplateFile' => 'Template/Template',
+	'Template' => 'Template/Template.php',
+	'TemplateFile' => 'Template/Template.php',
 
 	/* WWW */
-	'HTTP' => 'WWW/HTTP',
-	'HttpRequest' => 'WWW/HTTP',
-	'HttpResponse' => 'WWW/HttpResponse',
-	'HttpHeaders' => 'WWW/HttpHeaders',
-	'HttpHeader' => 'WWW/HttpHeaders',
+	'HTTP' => 'WWW/HTTP.php',
+	'HttpRequest' => 'WWW/HTTP.php',
+	'HttpResponse' => 'WWW/HttpResponse.php',
+	'HttpHeaders' => 'WWW/HttpHeaders.php',
+	'HttpHeader' => 'WWW/HttpHeaders.php',
+
+	/* Applications */
+	'EresusApplication' => 'EresusApplication.php',
 
 );
