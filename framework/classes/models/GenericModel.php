@@ -26,7 +26,7 @@
  * @subpackage MVC
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: GenericModel.php 170 2009-05-27 14:07:22Z mekras $
+ * $Id: GenericModel.php 172 2009-05-27 16:11:34Z mekras $
  */
 
 /**
@@ -85,6 +85,8 @@ class GenericModel extends MvcModel {
 
 			case is_array($source):
 				$this->raw = $source;
+				if (isset($this->raw[$this->dbKey]))
+					$this->dbId = $this->raw[$this->dbKey];
 			break;
 
 			default:

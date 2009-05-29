@@ -1513,7 +1513,7 @@ class EresusClassAutoloadTable {
 
 		}
 
-		elog(__METHOD__, LOG_DEBUG, class_exists($className, false) ? 'success' : 'failed');
+		elog(__METHOD__, LOG_DEBUG, '%s loading %s from table %s',class_exists($className, false) ? 'Success' : 'Failed', $className, $this->filename);
 
 		return class_exists($className, false);
 	}
