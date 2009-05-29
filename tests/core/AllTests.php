@@ -33,7 +33,8 @@
  * $Id$
  */
 
-require_once 'PHPUnit/Framework.php';
+require_once 'classes/AllTests.php';
+require_once 'models/AllTests.php';
 
 require_once 'kernel-legacy/AllTests.php';
 /*require_once 'lib/AllTests.php';
@@ -51,6 +52,9 @@ class Core_AllTests
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core Tests');
+
+		$suite->addTest(Core_Classes_AllTests::suite());
+		$suite->addTest(Core_Models_AllTests::suite());
 
 		$suite->addTest(Core_Kernel_AllTests::suite());
 		/*$suite->addTest(Core_Lib_AllTests::suite());

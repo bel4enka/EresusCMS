@@ -45,7 +45,7 @@ class AllTests
 	 */
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Eresus 2');
+		$suite = new PHPUnit_Framework_TestSuite('${product.title} ${product.version}');
 
 		$suite->addTest(Core_AllTests::suite());
 

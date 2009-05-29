@@ -33,24 +33,71 @@
 
 #TODO: Этот файл больше не является ядром. Надо перенести его содержимое в другие модули
 
-define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '${product.version}'); # Версия системы
-define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
+/**
+ * Название системы
+ * @deprecated 2.12
+ */
+define('CMSNAME', 'Eresus');
+
+/**
+ * Версия системы
+ * @deprecated 2.12
+ */
+define('CMSVERSION', '${product.version}');
+
+/**
+ * Веб-сайт
+ * @deprecated 2.12
+ */
+define('CMSLINK', 'http://eresus.ru/');
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
 define('KERNELDATE', '${builddate}'); # Дата обновления ядра
 
-# Уровни доступа
-define('ROOT',   1); # Главный администратор
-define('ADMIN',  2); # Администратор
-define('EDITOR', 3); # Редактор
-define('USER',   4); # Пользователь
-define('GUEST',  5); # Гость (не зарегистрирован)
+/*
+ * Уровни доступа
+ * * * * * * * * * */
+
+/**
+ * Главный администратор
+ *
+ * @deprecated 2.12
+ */
+define('ROOT',   1);
+
+/**
+ * Администратор
+ *
+ * @deprecated 2.12
+ */
+define('ADMIN',  2);
+
+/**
+ * Редактор
+ *
+ * @deprecated 2.12
+ */
+define('EDITOR', 3);
+
+/**
+ * Пользователь
+ *
+ * @deprecated 2.12
+ */
+define('USER',   4);
+
+/**
+ * Гость (не зарегистрирован)
+ *
+ * @deprecated 2.12
+ */
+define('GUEST',  5);
 
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *
  * @param string $msg  Текст сообщения
+ * @deprecated 2.12
  */
 function FatalError($msg)
 {
@@ -86,6 +133,7 @@ function FatalError($msg)
  *
  * @param string $text     Текст сообщения
  * @param string $caption  Заголовок окна сообщения
+ * @deprecated 2.12
  */
 function ErrorBox($text, $caption=errError)
 {
@@ -97,8 +145,16 @@ function ErrorBox($text, $caption=errError)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
+/**
+ * Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
+ *
+ * @param string $text
+ * @param string $caption [optional]
+ * @return string
+ * @deprecated 2.12
+ */
 function InfoBox($text, $caption=strInformation)
-# Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
 {
 	$result =
 		(empty($caption)?'':"<div class=\"infoBoxCap\">".$caption."</div>\n").
@@ -108,6 +164,16 @@ function InfoBox($text, $caption=strInformation)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
+/**
+ *
+ * @param $errno
+ * @param $errstr
+ * @param $errfile
+ * @param $errline
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function ErrorHandler($errno, $errstr, $errfile, $errline)
 {
 	global $Eresus;
@@ -126,12 +192,26 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 	}
 }
 //------------------------------------------------------------------------------
+
+/**
+ *
+ * @param $message
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function ErrorMessage($message)
 {
 	global $Eresus;
 	$Eresus->session['msg']['errors'][] = $message;
 }
 //------------------------------------------------------------------------------
+
+/**
+ *
+ * @param $message
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function InfoMessage($message)
 {
 	global $Eresus;
@@ -142,6 +222,13 @@ function InfoMessage($message)
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # БЕЗОПАСНОСТЬ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $level
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function UserRights($level)
 # Функция проверяет права пользователя на соответствие заданной маске
 {
@@ -150,7 +237,14 @@ function UserRights($level)
 	return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
 }
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
+
+/**
+ *
+ * @param $time
+ * @param $expand
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function resetLastVisitTime($time='', $expand=false)
 {
 	global $Eresus;
@@ -175,6 +269,7 @@ function resetLastVisitTime($time='', $expand=false)
  * @param  string  $libaray  Имя библиотеки
  *
  * @return  bool  Результат
+ * @deprecated 2.12
  */
 function useLib($library)
 {
@@ -190,14 +285,13 @@ function useLib($library)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 /**
  * Подключает описание класса
  *
- * @access  public
- *
- * @param  string  $className   Имя класса
- *
- * @return  bool  Результат выполнения
+ * @param string  $className   Имя класса
+ * @return bool  Результат выполнения
+ * @deprecated 2.12
  */
 function useClass($className)
 {
@@ -212,11 +306,24 @@ function useClass($className)
 }
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # ПОЧТОВЫЕ ФУНКЦИИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $address
+ * @param $subject
+ * @param $text
+ * @param $html
+ * @param $fromName
+ * @param $fromAddr
+ * @param $fromOrg
+ * @param $fromSign
+ * @param $replyTo
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='', $fromSign='', $replyTo='')
 # Функция отсылает письмо по указанному адресу
 {
@@ -275,6 +382,14 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	} else return (mail($address, $subject, $text, $headers)===0);
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+/**
+ *
+ * @param $notify
+ * @param $params
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function sendNotify($notify, $params=null)
 # Посылает административное или редакторское уведомление по почте
 # Возможные параметры
@@ -308,6 +423,13 @@ function sendNotify($notify, $params=null)
 //------------------------------------------------------------------------------
 # ДАТА/ВРЕМЯ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $format
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function gettime($format = 'Y-m-d H:i:s')
 # Возвращает время с учетом смещения
 {
@@ -324,6 +446,7 @@ function gettime($format = 'Y-m-d H:i:s')
  * @param string $format  Правила форматирования даты
  *
  * @return string Отформатированная дата
+ * @deprecated 2.12
  */
 function FormatDate($date, $format=DATETIME_NORMAL)
 {
@@ -360,6 +483,7 @@ function FormatDate($date, $format=DATETIME_NORMAL)
  *
  * @param mixed $source
  * @return mixed
+ * @deprecated 2.12
  */
 function encodeHTML($source)
 {
@@ -376,6 +500,13 @@ function encodeHTML($source)
 	return $source;
 }
 //-----------------------------------------------------------------------------
+
+/**
+ *
+ * @param $text
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function decodeHTML($text)
 # Декодирует спецсимволы HTML
 {
@@ -388,12 +519,14 @@ function decodeHTML($text)
 	return $text;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 /**
  * Разбивает текст на строки и возвращает массив из них
  *
  * @param string $value
  * @param bool   $assoc[optional]
  * @return array
+ * @deprecated 2.12
  */
 function text2array($value, $assoc = false)
 {
@@ -416,11 +549,13 @@ function text2array($value, $assoc = false)
 	return $result;
 }
 //-----------------------------------------------------------------------------
+
 /**
  * Собирает текст из массива
  * @param string $value
  * @param bool   $assoc[optional]
  * @return string
+ * @deprecated 2.12
  */
 function array2text($items, $assoc = false)
 {
@@ -435,6 +570,13 @@ function array2text($items, $assoc = false)
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $options
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function encodeOptions($options)
 # Собирает настройки из массива в строку
 {
@@ -442,6 +584,14 @@ function encodeOptions($options)
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $options
+ * @param $defaults
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function decodeOptions($options, $defaults = array())
 # Функция разбивает записанные в строковом виде опции на массив
 {
@@ -454,6 +604,7 @@ function decodeOptions($options, $defaults = array())
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 /**
  * Замена макросов
  *
@@ -462,6 +613,7 @@ function decodeOptions($options, $defaults = array())
  * @return Обработанный текст
  *
  * @see __propery
+ * @deprecated 2.12
  */
 function replaceMacros($template, $source)
 {
@@ -507,6 +659,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
 	return $item;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 /**
  * Получение аргумента запроса
  *
@@ -514,6 +667,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
  * @param mixed  $filter  Фильтр на значение
  *
  * @return mixed
+ * @deprecated 2.12
  */
 function arg($arg, $filter = null)
 {
@@ -541,6 +695,12 @@ function arg($arg, $filter = null)
 	return $arg;
 }
 //-----------------------------------------------------------------------------
+
+/**
+ *
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function saveRequest()
 # Функция сохраняет в сессии текущие аргументы
 {
@@ -548,6 +708,12 @@ function saveRequest()
 	$Eresus->session['request'] = $Eresus->request;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function restoreRequest()
 # Функция сохраняет в сессии текущие аргументы
 {
@@ -581,6 +747,7 @@ function dbReorderItems($table, $condition='', $id='id')
 	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 	}
 //------------------------------------------------------------------------------
+
 /**
  * Сдвиг позиций элементов
  *
@@ -607,6 +774,7 @@ global $Eresus;
  *
  * @param string $filename Имя файла
  * @return mixed Содержимое файла или false
+ * @deprecated 2.12
  */
 function fileread($filename)
 {
@@ -619,6 +787,7 @@ function fileread($filename)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 /**
  * Запись в файл
  *
@@ -626,6 +795,7 @@ function fileread($filename)
  * @param string $content  Содержимое
  * @param int    $flags    Флаги
  * @return bool Результат выполнения
+ * @deprecated 2.12
  */
 function filewrite($filename, $content, $flags = 0)
 {
@@ -638,11 +808,13 @@ function filewrite($filename, $content, $flags = 0)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 /**
  * Удаляет файл
  *
  * @param string $filename Имя файла
  * @return bool Результат выполнения
+ * @deprecated 2.12
  */
 function filedelete($filename)
 {
@@ -655,6 +827,15 @@ function filedelete($filename)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
+/**
+ *
+ * @param $name
+ * @param $filename
+ * @param $overwrite
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function upload($name, $filename, $overwrite = true)
 {
 	$result = false;
@@ -696,7 +877,7 @@ function upload($name, $filename, $overwrite = true)
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# TODO: Удалить как устаревшую
+
 /**
  * @deprecated
  */
@@ -713,7 +894,7 @@ function loadTemplate($name)
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# TODO: Удалить как устаревшую
+
 /**
  * @deprecated
  */
@@ -733,6 +914,7 @@ function saveTemplate($name, $template)
  * Переадресация на URL
  *
  * @param string $url  Новый URL
+ * @deprecated 2.12
  */
 function goto($url)
 {
@@ -744,6 +926,13 @@ function goto($url)
 //------------------------------------------------------------------------------
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $answer
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function HttpAnswer($answer)
 {
 	Header('Content-type: text/html; charset='.CHARSET);
@@ -751,6 +940,13 @@ function HttpAnswer($answer)
 	exit;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $data
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function SendXML($data)
 # Отправляет браузеру XML
 {
@@ -759,12 +955,26 @@ function SendXML($data)
 	exit;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $name
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function option($name)
 {
 	$result = defined($name)?constant($name):'';
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $imagename
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function img($imagename)
 # function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
 # function img($imagename, $params=array())
@@ -814,6 +1024,13 @@ function img($imagename)
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $size
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function FormatSize($size)
 {
 	if ($size > 1073741824) {$size = $size / 1073741824; $units = 'Гб'; $z = 2;}
@@ -823,6 +1040,13 @@ function FormatSize($size)
 	return number_format($size, $z, '.', ' ').' '.$units;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $s
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function Translit($s) #: String
 {
 	$s = strtr($s, $GLOBALS['translit_table']);
@@ -839,6 +1063,13 @@ function Translit($s) #: String
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # ВНУТРЕННИЕ ФУНКЦИИ
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
+/**
+ *
+ * @param $args
+ * @return unknown_type
+ * @deprecated 2.12
+ */
 function __clearargs($args)
 {
 	global $Eresus;
@@ -869,6 +1100,7 @@ function __clearargs($args)
 	return $args;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 /**
  * Определяет установлено ли свойство у элемента
  *
@@ -877,6 +1109,7 @@ function __clearargs($args)
  * @return bool Значение
  *
  * @see replaceMacros
+ * @deprecated 2.12
  */
 function __isset($object, $property)
 {
@@ -895,6 +1128,7 @@ function __isset($object, $property)
  * @return string Значение
  *
  * @see replaceMacros
+ * @deprecated 2.12
  */
 function __property($object, $property)
 {
@@ -1098,7 +1332,7 @@ class Eresus {
 
 		$request['url'] = $request['scheme'].'://'.$request['host'].$_SERVER['REQUEST_URI'];
 
-		$request = array_merge($request, parse_url($request['url']));
+		@$request = array_merge($request, parse_url($request['url']));
 		$request['file'] = substr($request['path'], strrpos($request['path'], '/')+1);
 		if ($request['file']) $request['path'] = substr($request['path'], 0, -strlen($request['file']));
 

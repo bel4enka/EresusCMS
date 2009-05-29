@@ -28,25 +28,64 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
- * @subpackage Main
  *
  * $Id$
  */
 
-
-class AdminFrontController extends FrontController {
+/**
+ * Контроллёр бэкэнда
+ *
+ * @package EresusCMS
+ */
+class AdminFrontController extends FrontController implements IAclResource {
 
 	/**
-	 * (non-PHPdoc)
-	 * @see framework/classes/controllers/FrontController#execute()
+	 * Запуск бэкэнда
 	 */
 	public function execute()
 	{
+		$acl = ACL::getInstance();
+
+		$acl->addRole('guest');
+		$acl->addRole('user');
+		$acl->addRole('editor');
+		$acl->addRole('admin');
+		$acl->addRole('root');
+
+		$acl->addResource($this);
+
+		$acl->allow('root');
+		$acl->allow('admin', $this);
+		$acl->allow('editor', $this, 'edit');
+
+		if ($acl->isAllowed(UserModel::getCurrent(), $this)) {
+
+			die('ACCESS GRANTED');
+
+		} else {
+
+			die('DENIED');
+
+		}
+
 		include_once 'kernel-legacy.php';
 		$GLOBALS['Eresus'] = new Eresus;
 		$GLOBALS['Eresus']->init();
 		$GLOBALS['Eresus']->execute();
+
 		include_once 'admin.php';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Идентификатор ресурса
+	 *
+	 * @return string
+	 * @see main/core/classes/IAclResource#getResourceId()
+	 */
+	public function getResourceId()
+	{
+		return get_class($this);
 	}
 	//-----------------------------------------------------------------------------
 

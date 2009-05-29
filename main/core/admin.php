@@ -578,7 +578,7 @@ class TAdminUI extends WebPage {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 # Проверям права доступа и если надо, проводим авторизацию
-if (!UserRights(EDITOR)) {
+/*if (!UserRights(EDITOR)) {
 	$messages = '';
 	if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
 		foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message, errError);
@@ -610,3 +610,4 @@ if (!UserRights(EDITOR)) {
 $GLOBALS['page'] = new TAdminUI;
 $GLOBALS['page']->init();
 $GLOBALS['page']->render();
+*/

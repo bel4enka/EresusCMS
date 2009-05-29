@@ -93,6 +93,9 @@
 		<echo msg="Copying unit tests..." level="info" />
 		<copy todir="${dir.build}/tests">
 			<fileset refid="files.tests" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
 <!--

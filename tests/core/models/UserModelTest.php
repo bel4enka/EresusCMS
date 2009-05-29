@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты ядра системы
+ * Модульные тесты модели пользователя
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -33,26 +33,25 @@
  * $Id$
  */
 
-require_once 'core/kernel-legacy.php';
+require_once 'core/models/UserModel.php';
 
-#require_once 'ArgTest.php';
-#require_once 'EresusInitTest.php';
-#require_once 'EresusTest.php';
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ */
+class UserModelTest extends PHPUnit_Framework_TestCase {
 
-require_once 'LegacyTest.php';
-
-class Core_Kernel_AllTests
-{
-	public static function suite()
+	/**
+	 * Проверка работы "одиночки"
+	 */
+	public function testGetCurrent()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Kernel Legacy Tests');
+		$instance1 = UserModel::getCurrent();
+		$instance2 = UserModel::getCurrent();
 
-		#$suite->addTestSuite('ArgTest');
-		#$suite->addTestSuite('EresusInitTest');
-		#$suite->addTestSuite('EresusTest');
-
-		$suite->addTestSuite('LegacyTest');
-
-		return $suite;
+		$this->assertSame($instance1, $instance2);
 	}
+	//-----------------------------------------------------------------------------
+
+	/**/
 }

@@ -33,6 +33,11 @@
  * $Id$
  */
 
+/**
+ * Класс приложения Eresus CMS
+ *
+ * @package EresusCMS
+ */
 class EresusCMS extends MvcApplication {
 
 	/**

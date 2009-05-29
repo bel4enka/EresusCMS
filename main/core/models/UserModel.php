@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты ядра системы
+ * Модель пользователя
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -28,31 +28,54 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
- * @subpackage Tests
  *
  * $Id$
  */
 
-require_once 'core/kernel-legacy.php';
 
-#require_once 'ArgTest.php';
-#require_once 'EresusInitTest.php';
-#require_once 'EresusTest.php';
+/**
+ * Модель пользователя
+ *
+ * Модель описывает пользователя сайта.
+ *
+ * @package EresusCMS
+ */
+class UserModel extends GenericModel {
 
-require_once 'LegacyTest.php';
+	/**
+	 * Имя таблицы пользователей
+	 *
+	 * @var string
+	 */
+	protected $dbTable = 'users';
 
-class Core_Kernel_AllTests
-{
-	public static function suite()
+	/**
+	 * Экземпляр модели текущего пользователя
+	 *
+	 * @var UserModel
+	 * @see getCurrent
+	 */
+	private static $current;
+
+	/**
+	 * Получение модели текущего пользователя
+	 *
+	 * Метод реализует паттерн "Одиночка" для получения
+	 * экземпляра модели пользователя, работающего в данный
+	 * момент с сайтом.
+	 *
+	 * @return UserModel
+	 * @see $current
+	 */
+	public static function getCurrent()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Kernel Legacy Tests');
+		if (!self::$current) {
 
-		#$suite->addTestSuite('ArgTest');
-		#$suite->addTestSuite('EresusInitTest');
-		#$suite->addTestSuite('EresusTest');
+			self::$current = new UserModel();
 
-		$suite->addTestSuite('LegacyTest');
+		}
 
-		return $suite;
+		return self::$current;
 	}
+	//-----------------------------------------------------------------------------
 }

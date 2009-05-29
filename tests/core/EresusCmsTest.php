@@ -33,8 +33,6 @@
  * $Id$
  */
 
-require_once 'PHPUnit/Framework.php';
-
 require_once 'core/EresusCMS.php';
 
 /**
@@ -138,7 +136,7 @@ class EresusCmsTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 *
-	 */
+	 * /
 	public function testRunWeb()
 	{
 		$stub = new EresusCmsTest_EresusCMS();

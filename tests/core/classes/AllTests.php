@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты ядра системы
+ * Модульные тесты различных классов системы
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -33,25 +33,19 @@
  * $Id$
  */
 
-require_once 'core/kernel-legacy.php';
+require_once 'AclResourceTest.php';
+require_once 'AclRoleTest.php';
+require_once 'AclTest.php';
 
-#require_once 'ArgTest.php';
-#require_once 'EresusInitTest.php';
-#require_once 'EresusTest.php';
+class Core_Classes_AllTests {
 
-require_once 'LegacyTest.php';
-
-class Core_Kernel_AllTests
-{
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Kernel Legacy Tests');
+		$suite = new PHPUnit_Framework_TestSuite('Core Classes Tests');
 
-		#$suite->addTestSuite('ArgTest');
-		#$suite->addTestSuite('EresusInitTest');
-		#$suite->addTestSuite('EresusTest');
-
-		$suite->addTestSuite('LegacyTest');
+		$suite->addTestSuite('AclResourceTest');
+		$suite->addTestSuite('AclRoleTest');
+		$suite->addTestSuite('AclTest');
 
 		return $suite;
 	}

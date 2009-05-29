@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты ядра системы
+ * Модульные тесты ресурса доступа
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -33,26 +33,57 @@
  * $Id$
  */
 
-require_once 'core/kernel-legacy.php';
+require_once 'core/classes/ACL.php';
 
-#require_once 'ArgTest.php';
-#require_once 'EresusInitTest.php';
-#require_once 'EresusTest.php';
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ */
+class AclResourceTest extends PHPUnit_Framework_TestCase {
 
-require_once 'LegacyTest.php';
-
-class Core_Kernel_AllTests
-{
-	public static function suite()
+	/**
+	 * Простая проверка создания
+	 */
+	public function testBaseConstruct()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Kernel Legacy Tests');
+		$stub = new AclResource('SomeResource');
 
-		#$suite->addTestSuite('ArgTest');
-		#$suite->addTestSuite('EresusInitTest');
-		#$suite->addTestSuite('EresusTest');
-
-		$suite->addTestSuite('LegacyTest');
-
-		return $suite;
+		$this->assertTrue($stub instanceof IAclResource);
+		$this->assertEquals('SomeResource', $stub->getResourceId());
 	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка указания родительской роли
+	 */
+	public function testParent()
+	{
+		$stub = new AclResource('SomeResource', 'ParentResource');
+
+		$this->assertEquals(array('ParentResource'), $stub->getParentResources());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка указания родительских ролей
+	 */
+	public function testParents()
+	{
+		$stub = new AclResource('SomeResource', array('ParentResource1', 'ParentResource2'));
+
+		$this->assertEquals(array('ParentResource1', 'ParentResource2'), $stub->getParentResources());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка исключения
+	 * @expectedException EresusTypeException
+	 */
+	public function testParentsException()
+	{
+		$stub = new AclResource('SomeResource', 123);
+	}
+	//-----------------------------------------------------------------------------
+
+	/* */
 }

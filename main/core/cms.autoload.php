@@ -34,6 +34,12 @@
  */
 
 return array(
+  /* ACL */
+	'IAclResource' => 'classes/ACL.php',
+	'IAclRole' => 'classes/ACL.php',
+	'AclRole' => 'classes/ACL.php',
+	'ACL' => 'classes/ACL.php',
+
 	/* Классы фронтэнда */
 	'ClientFrontController' => 'client/ClientFrontController.php',
 
