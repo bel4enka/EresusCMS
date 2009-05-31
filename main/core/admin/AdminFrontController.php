@@ -44,13 +44,15 @@ class AdminFrontController extends FrontController implements IAclResource {
 	 */
 	public function execute()
 	{
+		Registry::set('core.template.templateDir', Core::app()->getFsRoot() . 'core/admin/themes/classic');
+
 		$acl = ACL::getInstance();
 
-		$acl->addRole('guest');
-		$acl->addRole('user');
-		$acl->addRole('editor');
-		$acl->addRole('admin');
-		$acl->addRole('root');
+		$acl->addRole(new AclRole('guest'));
+		$acl->addRole(new AclRole('user'));
+		$acl->addRole(new AclRole('editor'));
+		$acl->addRole(new AclRole('admin'));
+		$acl->addRole(new AclRole('root'));
 
 		$acl->addResource($this);
 
@@ -60,20 +62,22 @@ class AdminFrontController extends FrontController implements IAclResource {
 
 		if ($acl->isAllowed(UserModel::getCurrent(), $this)) {
 
-			die('ACCESS GRANTED');
+			include_once 'kernel-legacy.php';
+			$GLOBALS['Eresus'] = new Eresus;
+			$GLOBALS['Eresus']->init();
+			$GLOBALS['Eresus']->execute();
+
+			include_once 'admin.php';
 
 		} else {
 
-			die('DENIED');
+			$ctrl = new AdminAuthController();
 
 		}
 
-		include_once 'kernel-legacy.php';
-		$GLOBALS['Eresus'] = new Eresus;
-		$GLOBALS['Eresus']->init();
-		$GLOBALS['Eresus']->execute();
-
-		include_once 'admin.php';
+		$ctrl->setRequest($this->request);
+		$ctrl->setResponse($this->response);
+		$ctrl->execute();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -86,6 +90,15 @@ class AdminFrontController extends FrontController implements IAclResource {
 	public function getResourceId()
 	{
 		return get_class($this);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see main/core/classes/IAclResource#getParentResources()
+	 */
+	public function getParentResources()
+	{
+		return array();
 	}
 	//-----------------------------------------------------------------------------
 

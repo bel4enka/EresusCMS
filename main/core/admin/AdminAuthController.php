@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модель пользователя
+ * Контроллёр аутентификации в АИ
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -32,75 +32,22 @@
  * $Id$
  */
 
-
 /**
- * Модель пользователя
- *
- * Модель описывает пользователя сайта.
+ * Контроллёр аутентификации в АИ
  *
  * @package EresusCMS
  */
-class UserModel extends GenericModel implements IAclRole {
+class AdminAuthController extends FrontController {
 
 	/**
-	 * Имя таблицы пользователей
-	 *
-	 * @var string
+	 * Запуск
 	 */
-	protected $dbTable = 'users';
-
-	/**
-	 * Экземпляр модели текущего пользователя
-	 *
-	 * @var UserModel
-	 * @see getCurrent
-	 */
-	private static $current;
-
-	/**
-	 * Получение модели текущего пользователя
-	 *
-	 * Метод реализует паттерн "Одиночка" для получения
-	 * экземпляра модели пользователя, работающего в данный
-	 * момент с сайтом.
-	 *
-	 * @return UserModel
-	 * @see $current
-	 */
-	public static function getCurrent()
+	public function execute()
 	{
-		if (!self::$current) {
-
-			self::$current = new UserModel();
-
-		}
-
-		return self::$current;
+		$tmpl = new Template('auth.html');
+		echo $tmpl->compile();
+		exit;
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * @see main/core/classes/IAclRole#getRoleId()
-	 */
-	public function getRoleId()
-	{
-		#FIXME Устаревшие константы
-		switch ($this->access) {
-			case ROOT: return 'root';
-			case ADMIN: return 'admin';
-			case EDITOR: return 'editor';
-			case USER: return 'user';
-			case GUEST: return 'guest';
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see main/core/classes/IAclRole#getParentRoles()
-	 */
-	public function getParentRoles()
-	{
-		return array();
-	}
-	//-----------------------------------------------------------------------------
 }

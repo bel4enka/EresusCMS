@@ -36,6 +36,8 @@
 require_once 'classes/AllTests.php';
 require_once 'models/AllTests.php';
 
+require_once 'admin/AllTests.php';
+
 require_once 'kernel-legacy/AllTests.php';
 /*require_once 'lib/AllTests.php';
 require_once 'classes_php/AllTests.php';
@@ -55,6 +57,8 @@ class Core_AllTests
 
 		$suite->addTest(Core_Classes_AllTests::suite());
 		$suite->addTest(Core_Models_AllTests::suite());
+
+		$suite->addTest(Core_Admin_AllTests::suite());
 
 		$suite->addTest(Core_Kernel_AllTests::suite());
 		/*$suite->addTest(Core_Lib_AllTests::suite());

@@ -35,14 +35,22 @@
 
 return array(
   /* ACL */
+	'AclLogicException' => 'classes/ACL.php',
+	'AclUnknownResourceException' => 'classes/ACL.php',
+	'AclUnknownRoleException' => 'classes/ACL.php',
 	'IAclResource' => 'classes/ACL.php',
 	'IAclRole' => 'classes/ACL.php',
 	'AclRole' => 'classes/ACL.php',
+	'AclResource' => 'classes/ACL.php',
 	'ACL' => 'classes/ACL.php',
+
+	/* Пользователь */
+	'UserModel' => 'models/UserModel.php',
 
 	/* Классы фронтэнда */
 	'ClientFrontController' => 'client/ClientFrontController.php',
 
 	/* Классы бэкэнда */
 	'AdminFrontController' => 'admin/AdminFrontController.php',
+	'AdminAuthController' => 'admin/AdminAuthController.php',
 );

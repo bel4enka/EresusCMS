@@ -107,6 +107,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initWeb()
 	{
+		Registry::set('core.template.compileDir', Core::app()->getFsRoot() . 'cache/templates');
+
 		$this->request = HTTP::request();
 		$this->response = new HttpResponse();
 		$this->detectWebRoot();
@@ -127,6 +129,13 @@ class EresusCMS extends MvcApplication {
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
 		$SUFFIX = substr($SUFFIX, 0, -strlen('/core'));
 		$this->request->setLocalRoot($SUFFIX);
+
+		TemplateSettings::setGlobalValue('siteRoot',
+			$this->request->getScheme() . '://' .
+			$this->request->getHost() .
+			$this->request->getLocalRoot() . '/'
+		);
+
 	}
 	//-----------------------------------------------------------------------------
 	/**

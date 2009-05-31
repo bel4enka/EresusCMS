@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модель пользователя
+ * Модульные тесты административного интерфейса
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -28,79 +28,23 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
+ * @subpackage Tests
  *
- * $Id$
+ * $Id: AllTests.php 676 2009-05-29 18:03:45Z mekras $
  */
 
+require_once 'AdminAuthControllerTest.php';
+require_once 'AdminFrontControllerTest.php';
 
-/**
- * Модель пользователя
- *
- * Модель описывает пользователя сайта.
- *
- * @package EresusCMS
- */
-class UserModel extends GenericModel implements IAclRole {
+class Core_Admin_AllTests {
 
-	/**
-	 * Имя таблицы пользователей
-	 *
-	 * @var string
-	 */
-	protected $dbTable = 'users';
-
-	/**
-	 * Экземпляр модели текущего пользователя
-	 *
-	 * @var UserModel
-	 * @see getCurrent
-	 */
-	private static $current;
-
-	/**
-	 * Получение модели текущего пользователя
-	 *
-	 * Метод реализует паттерн "Одиночка" для получения
-	 * экземпляра модели пользователя, работающего в данный
-	 * момент с сайтом.
-	 *
-	 * @return UserModel
-	 * @see $current
-	 */
-	public static function getCurrent()
+	public static function suite()
 	{
-		if (!self::$current) {
+		$suite = new PHPUnit_Framework_TestSuite('Core Admin Tests');
 
-			self::$current = new UserModel();
+		$suite->addTestSuite('AdminAuthControllerTest');
+		$suite->addTestSuite('AdminFrontControllerTest');
 
-		}
-
-		return self::$current;
+		return $suite;
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see main/core/classes/IAclRole#getRoleId()
-	 */
-	public function getRoleId()
-	{
-		#FIXME Устаревшие константы
-		switch ($this->access) {
-			case ROOT: return 'root';
-			case ADMIN: return 'admin';
-			case EDITOR: return 'editor';
-			case USER: return 'user';
-			case GUEST: return 'guest';
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see main/core/classes/IAclRole#getParentRoles()
-	 */
-	public function getParentRoles()
-	{
-		return array();
-	}
-	//-----------------------------------------------------------------------------
 }
