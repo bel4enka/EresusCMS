@@ -56,7 +56,21 @@ class EresusCMS extends MvcApplication {
 	 */
 	public function main()
 	{
+		/* Отключение закавычивания передаваемых данных */
+		set_magic_quotes_runtime(0);
+
+		/* Подключение таблицы автозагрузки классов */
 		EresusClassAutoloader::add('cms.autoload.php');
+
+		/* Подключение старого ядра */
+		include_once 'kernel-legacy.php';
+		$GLOBALS['Eresus'] = new Eresus;
+		$GLOBALS['Eresus']->init();
+
+		/* Общая инициализация */
+		$this->initConf();
+		$this->initDB();
+		$this->initSession();
 
 		if (PHP::isCLI()) {
 
@@ -170,4 +184,54 @@ class EresusCMS extends MvcApplication {
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Инициализация конфигурации
+	 */
+	protected function initConf()
+	{
+		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+
+		@include_once 'cfg/main.php';
+
+		// TODO: Сделать проверку успешного подключения файла
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация БД
+	 */
+	protected function initDB()
+	{
+		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+
+		// FIXME Использование устаревших настроек
+		$dsn = ($Eresus->conf['db']['engine'] ? $Eresus->conf['db']['engine'] : 'mysql') .
+			'://' . $Eresus->conf['db']['user'] .
+			':' . $Eresus->conf['db']['password'] .
+			'@' . ($Eresus->conf['db']['host'] ? $Eresus->conf['db']['host'] : 'localhost') .
+			'/' . $Eresus->conf['db']['name'];
+
+		DBSettings::setDSN($dsn);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация сессии
+	 */
+	protected function initSession()
+	{
+		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+
+		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
+		session_name('sid');
+		session_start();
+
+		# Обратная совместимость
+		$Eresus->session = &$_SESSION['session'];
+		if (!isset($Eresus->session['msg'])) $Eresus->session['msg'] = array('error' => array(), 'information' => array());
+		$Eresus->user = &$_SESSION['user'];
+		$GLOBALS['session'] = &$_SESSION['session'];
+		$GLOBALS['user'] = &$_SESSION['user'];
+	}
+	//-----------------------------------------------------------------------------
 }

@@ -26,7 +26,7 @@
  * @subpackage MVC
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: GenericModel.php 172 2009-05-27 16:11:34Z mekras $
+ * $Id: GenericModel.php 175 2009-05-28 08:52:37Z mekras $
  */
 
 /**
@@ -195,6 +195,7 @@ class GenericModel extends MvcModel {
 	protected function internalRead()
 	{
 		if (! $this->internalReadAllowed()) return;
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createSelectQuery();
 
@@ -241,6 +242,7 @@ class GenericModel extends MvcModel {
 	protected function internalWrite()
 	{
 		if (! $this->internalWriteAllowed()) return;
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createUpdateQuery();
 
@@ -282,6 +284,7 @@ class GenericModel extends MvcModel {
 	protected function internalCreate()
 	{
 		if (! $this->internalCreateAllowed()) return;
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createInsertQuery();
 
@@ -313,9 +316,10 @@ class GenericModel extends MvcModel {
 	 */
 	protected function internalDeleteAllowed()
 	{
-		if ($this->isNew()) return;
-		if (! $this->dbTable) return;
-		if (! $this->dbKey) return;
+		if ($this->isNew()) return false;
+		if (! $this->dbTable) return false;
+		if (! $this->dbKey) return false;
+		if (! $this->dbId) return false;
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -330,6 +334,7 @@ class GenericModel extends MvcModel {
 	protected function internalDelete()
 	{
 		if (! $this->internalDeleteAllowed()) return;
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createDeleteQuery();
 

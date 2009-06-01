@@ -26,7 +26,7 @@
  * @subpackage Models
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: GenericListModel.php 158 2009-05-20 13:11:41Z mekras $
+ * $Id: GenericListModel.php 175 2009-05-28 08:52:37Z mekras $
  */
 
 
@@ -60,10 +60,11 @@ class GenericListModel extends MvcListModel {
 	 */
 	protected function internalSize()
 	{
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 		$q = DB::createSelectQuery();
 
 		$q->select('count(`'.$this->dbTable.'`.`'.$this->dbKey.'`) as `count`')
-			->where($this->where($q));
+		->where($this->where($q));
 		$this->fromTables($q);
 
 		$result = DB::fetch($q);
@@ -77,6 +78,8 @@ class GenericListModel extends MvcListModel {
 	protected function internalLoad()
 	{
 		if ($this->dbTable) {
+			elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+
 			$q = DB::createSelectQuery();
 
 			$this->fields($q);
@@ -144,7 +147,7 @@ class GenericListModel extends MvcListModel {
 
 				if (!is_object($value)) $value = new EqualModelFilter($value);
 				elseif ( ! ($value instanceof ModelFilterInterface))
-					throw new EresusRuntimeException('Key "' . $key . '" filter object '.get_class($value).' is not an implementation of a ModelFilterInterface', 'Invalid object');
+				throw new EresusRuntimeException('Key "' . $key . '" filter object '.get_class($value).' is not an implementation of a ModelFilterInterface', 'Invalid object');
 
 				if ($this->dbTable) $key = $this->dbTable.'.'.$key;
 				$asserts []= $value->value($key, $e, $query);
@@ -199,6 +202,7 @@ class GenericListModel extends MvcListModel {
 	 */
 	protected function fetchAll($query)
 	{
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 		return DB::fetchAll($query);
 	}
 	//-----------------------------------------------------------------------------

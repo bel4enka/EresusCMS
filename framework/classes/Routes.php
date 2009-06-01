@@ -26,7 +26,7 @@
  * @subpackage MVC
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: Routes.php 156 2009-05-19 14:17:17Z mekras $
+ * $Id: Routes.php 177 2009-05-31 14:08:30Z mekras $
  */
 
 /**
@@ -94,8 +94,8 @@ class Route {
 		$this->pattern = $pattern;
 		$this->httpMethod = $httpMethod;
 
-		if (!is_string($handler) && !is_array($handler))
-			throw new EresusTypeException($handler, 'string or array(2)', 'Invalid type of route handler');
+		if (!is_string($handler) && !is_array($handler) && !is_object($handler))
+			throw new EresusTypeException($handler, 'object, string or array(2)', 'Invalid type of route handler');
 
 		$this->handler = $handler;
 	}
@@ -186,8 +186,27 @@ class Route {
 	protected function getHandlerInstance()
 	{
 		if ($this->instance) return $this->instance;
-		$class = is_array($this->handler) ? reset($this->handler) : $this->handler;
-		$this->instance = new $class();
+
+		switch (true) {
+
+			case is_object($this->handler):
+				$this->instance = $this->handler;
+			break;
+
+			case is_array($this->handler):
+				$class = reset($this->handler);
+				$this->instance = new $class();
+			break;
+
+			case is_string($this->handler):
+				$class = $this->handler;
+				$this->instance = new $class();
+			break;
+
+			default:
+				throw new EresusTypeException($this->handler, 'object, array(2) or string');
+		}
+
 		return $this->instance;
 	}
 	//-----------------------------------------------------------------------------

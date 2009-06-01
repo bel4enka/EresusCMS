@@ -46,6 +46,7 @@ return array(
 
 	/* Пользователь */
 	'UserModel' => 'models/UserModel.php',
+	'UserListModel' => 'models/UserListModel.php',
 
 	/* Классы фронтэнда */
 	'ClientFrontController' => 'client/ClientFrontController.php',

@@ -44,9 +44,52 @@ class AdminAuthController extends FrontController {
 	 */
 	public function execute()
 	{
+		$this->initRoutes();
+		$route = $this->router->find();
+		$route->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Диалог аутентификации
+	 */
+	public function authDialog()
+	{
 		$tmpl = new Template('auth.html');
-		echo $tmpl->compile();
-		exit;
+		$html = $tmpl->compile();
+		$this->response->setBody($html);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Вход в систему
+	 */
+	public function login()
+	{
+		$username = $this->request->arg('user');
+		$password = $this->request->arg('password');
+
+		$user = UserModel::findByCredentials($username, $password);
+
+		if ($user) {
+			UserModel::setCurrent($user);
+			HTTP::goback();
+		}
+
+		die('Error!');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Установка путей для аутентификации
+	 */
+	protected function initRoutes()
+	{
+		$this->router = new Router($this->request, $this->response);
+		$this->router->add(
+			new Route('/login/', 'POST', array($this, 'login'))
+		);
+		$this->router->setDefault(new Route('', '*', array($this, 'authDialog')));
 	}
 	//-----------------------------------------------------------------------------
 

@@ -1235,20 +1235,6 @@ class Eresus {
 	function isCli()    { return PHP_SAPI == 'cli'; }
 	#-------------------------------------------------------------------------------
 	/**
-	* Читает и применяет конфигурационный файл
-	*
-	* @access  private
-	*/
-	function init_config()
-	{
-		global $Eresus;
-
-		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.php';
-		if (is_file($filename)) include_once($filename);
-		else FatalError("Main config file '$filename' not found!");
-	}
-	#-------------------------------------------------------------------------------
-	/**
 	* Инициирует сессии
 	*
 	* @access  private
@@ -1257,9 +1243,7 @@ class Eresus {
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
-		###cut:start (testing purpose)
 		session_start();
-		###cut:end (testing purpose)
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
 		$this->user = &$_SESSION['user'];
@@ -1528,12 +1512,6 @@ class Eresus {
 	*/
 	function init()
 	{
-		# Отключение закавычивания передаваемых данных
-		set_magic_quotes_runtime(0);
-		# Читаем конфигурацию
-		$this->init_config();
-		# В PHP 5.1.0 должна быть установлена временная зона по умолчанию
-		if (PHP_VERSION >= '5.1.0') date_default_timezone_set($this->conf['timezone']);
 		# Определение путей
 		$this->init_resolve();
 		# Инициализация сессии
@@ -1572,17 +1550,17 @@ class Eresus {
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Хеширует пароль
-	*
-	* @param string $password  Пароль
-	* @return string  Хеш
-	*/
+
+	/**
+	 * Хеширует пароль
+	 *
+	 * @param string $password  Пароль
+	 * @return string  Хеш
+	 * @deprecated 2.12
+	 */
 	function password_hash($password)
 	{
-		$result = md5($password);
-		if (!$this->conf['backward']['weak_password']) $result = md5($result);
-		return $result;
+		return UserModel::hash($password);
 	}
 	//-----------------------------------------------------------------------------
  /**

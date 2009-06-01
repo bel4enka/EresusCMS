@@ -149,6 +149,74 @@ abstract class EresusApplication {
 
 
 
+class DBSettings implements ezcBaseConfigurationInitializer
+{
+	
+	static private $dsn;
+
+	
+	static private $codepage = 'UTF8';
+
+	
+	public static function setDSN($dsn)
+	{
+		self::$dsn = $dsn;
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public static function setCodepage($codepage)
+	{
+		self::$codepage = $codepage;
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public static function configureObject($instance)
+	{
+		switch ( $instance ) {
+			case false:
+				$app = Core::app();
+
+				if (self::$dsn) {
+
+					$dsn = self::$dsn;
+					$codepage = self::$codepage;
+
+				} elseif (Registry::exists('core.db.dsn')) {  # FIXME: Deprecated
+
+					elog(__METHOD__, LOG_NOTICE, 'Use Registry to configure DB module is depricated. Use DBSettings instead');
+
+					$dsn = Registry::get('core.db.dsn');
+					$codepage = Registry::exists('core.db.codepage') ? Registry::get('core.db.codepage') : null;
+
+				} elseif ($app) { # FIXME: Deprecated
+
+					elog(__METHOD__, LOG_NOTICE, 'Use Core::$app->getOpt to configure DB module is depricated. Use DBSettings instead');
+
+					$dsn = $app->getOpt('database', 'dsn');
+					if (is_null($dsn)) throw new EresusRuntimeException(get_class($app) . '::getOpt returned NULL', 'DB connection not configured.');
+					$codepage = $app->getOpt('database', 'codepage');
+
+				} else return null;
+
+				$db = ezcDbFactory::create($dsn);
+
+				#FIXME Next line may be valid only for MySQL
+				try {
+
+					if ($codepage) $db->query('SET NAMES ' . $codepage);
+
+				} catch (Exception $e) {}
+
+				return $db;
+		}
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
 class DB {
 
 	
@@ -269,42 +337,7 @@ class DB {
 }
 
 
-
-
-class EresusLazyDatabaseConfiguration implements ezcBaseConfigurationInitializer
-{
-	public static function configureObject( $instance )
-	{
-		switch ( $instance ) {
-			case false:
-				$app = Core::app();
-
-				if (Registry::exists('core.db.dsn')) {
-
-					$dsn = Registry::get('core.db.dsn');
-					$codepage = Registry::exists('core.db.codepage') ? Registry::get('core.db.codepage') : null;
-
-				} elseif ($app) { # FIXME: Deprecated
-
-					$dsn = $app->getOpt('database', 'dsn');
-					if (is_null($dsn)) throw new EresusRuntimeException(get_class($app) . '::getOpt returned NULL', 'DB connection not configured.');
-					$codepage = $app->getOpt('database', 'codepage');
-
-				} else return null;
-
-				$db = ezcDbFactory::create($dsn);
-
-				#FIXME Next line may be valid only for MySQL
-				try {
-					if ($codepage) $db->query('SET NAMES ' . $codepage);
-				} catch (Exception $e) {}
-
-				return $db;
-		}
-	}
-}
-
-if (!Core::testMode()) ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'EresusLazyDatabaseConfiguration');
+if (!Core::testMode()) ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'DBSettings');
 
 
 

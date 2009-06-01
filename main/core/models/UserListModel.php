@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модель пользователя
+ * Модель списка пользователей
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -34,13 +34,23 @@
 
 
 /**
- * Модель пользователя
+ * Модель списка пользователя
  *
- * Модель описывает пользователя сайта.
+ * @property int      $filterId           Фильтр по идентификатору
+ * @property string   $filterUsername     Фильтр по имени пользователя
+ * @property string   $filterPassword     Фильтр по паролю
+ * @property bool     $filterActive       Фильтр по активности
+ * @property datetime $filterLastVisit    Фильтр по времени последнего визита
+ * @property int      $filterLoginErrors  Фильтр по количеству ошибок ввода
+ * @property int      $filterAccess       Фильтр по уровню доступа
+ * @property string   $filterFullname     Фильтр по полному имени
+ * @property string   $filterMail         Фильтр по адресу E-mail
+ *
+ * @see UserModel
  *
  * @package EresusCMS
  */
-class UserModel extends GenericModel implements IAclRole {
+class UserListModel extends GenericListModel {
 
 	/**
 	 * Имя таблицы пользователей
@@ -50,105 +60,67 @@ class UserModel extends GenericModel implements IAclRole {
 	protected $dbTable = 'users';
 
 	/**
-	 * Экземпляр модели текущего пользователя
-	 *
-	 * @var UserModel
-	 * @see getCurrent
+	 * Установка фильтра по имени пользователя
+	 * @param mixed $value
 	 */
-	private static $current;
-
-	/**
-	 * Получение модели текущего пользователя
-	 *
-	 * Метод реализует паттерн "Одиночка" для получения
-	 * экземпляра модели пользователя, работающего в данный
-	 * момент с сайтом.
-	 *
-	 * @return UserModel
-	 * @see $current
-	 */
-	public static function getCurrent()
+	protected function setFilterUsername($value)
 	{
-		if (!self::$current) {
-
-			$user = ecArrayValue($_SESSION, 'user');
-			$id = $user ? $user['id'] : null;
-			self::$current = new UserModel($id);
-
-		}
-
-		return self::$current;
+		$this->filter['login'] = $value;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Установка модели текущего пользователя
-	 *
-	 * @param UserModel $model
-	 *
-	 * @see function getCurrent
+	 * Получение фильтра по имени пользователя
+	 * @return mixed
 	 */
-	public static function setCurrent(UserModel $model)
+	protected function getFilterUsername()
 	{
-		self::$current = $model;
-		$_SESSION['user']['id'] = $model->id;
+		return ecArrayValue($this->filter, 'login');
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Поиск пользователя по имени и паролю
+	 * Установка фильтра по паролю
+	 * @param mixed $value
+	 */
+	protected function setFilterPassword($value)
+	{
+		$this->filter['hash'] = UserModel::hash($value);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Получение фильтра по паролю
 	 *
-	 * @param string $username  Имя пользователя
-	 * @param string $password  Пароль
-	 * @return UserModel|null  Модель пользователя или null если пользователь не найден
-	 */
-	public static function findByCredentials($username, $password)
-	{
-		$list = new UserListModel();
-		$list->filterUsername = $username;
-		$list->filterPassword = $password;
-
-		return $list->count() ? $list->item(0) : null;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see main/core/classes/IAclRole#getRoleId()
-	 */
-	public function getRoleId()
-	{
-		#FIXME Устаревшие константы
-		switch ($this->access) {
-			case ROOT: return 'root';
-			case ADMIN: return 'admin';
-			case EDITOR: return 'editor';
-			case USER: return 'user';
-			case GUEST: return 'guest';
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see main/core/classes/IAclRole#getParentRoles()
-	 */
-	public function getParentRoles()
-	{
-		return array();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Хэширует строку
+	 * Внимание! При чтениии можно только узнать - был ли установлен фильтр или
+	 * нет, но нельзя узнать само значение фильтра.
 	 *
-	 * @param string $source
-	 * @return string
+	 * @return bool
 	 */
-	public static function hash($source)
+	protected function getFilterPassword()
 	{
-		#FIXME Метод использует устаревший глобальный объект Eresus
-		$result = md5($source);
-		if (!$GLOBALS['Eresus']->conf['backward']['weak_password']) $result = md5($result);
-		return $result;
+		return isset($this->filter['hash']);
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Установка фильтра по полному имени пользователя
+	 * @param mixed $value
+	 */
+	protected function setFilterFullname($value)
+	{
+		$this->filter['name'] = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Получение фильтра по полному имени пользователя
+	 * @return mixed
+	 */
+	protected function getFilterFullname()
+	{
+		return ecArrayValue($this->filter, 'name');
+	}
+	//-----------------------------------------------------------------------------
+
 }

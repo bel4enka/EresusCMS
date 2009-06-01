@@ -125,6 +125,7 @@ class EresusCmsTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testInitWeb()
 	{
+		$this->markTestSkipped();
 		$stub = $this->getMock(
 			'EresusCmsTest_EresusCMS',
 			array('initRoutes')

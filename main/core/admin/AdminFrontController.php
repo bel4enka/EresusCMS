@@ -40,12 +40,51 @@
 class AdminFrontController extends FrontController implements IAclResource {
 
 	/**
+	 * Роутер
+	 * @var Router
+	 */
+	protected $router;
+
+	/**
 	 * Запуск бэкэнда
 	 */
 	public function execute()
 	{
+		$acl = ACL::getInstance();
+		$this->initACL();
+
 		Registry::set('core.template.templateDir', Core::app()->getFsRoot() . 'core/admin/themes/classic');
 
+		if ($acl->isAllowed(UserModel::getCurrent(), $this)) {
+
+			/*$this->initRoutes();*/
+			include_once 'kernel-legacy.php';
+			$GLOBALS['Eresus']->execute();
+
+			include_once 'admin.php';
+
+		} else {
+
+			$this->auth();
+
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	public function auth()
+	{
+		$ctrl = new AdminAuthController();
+		$ctrl->setRequest($this->request);
+		$ctrl->setResponse($this->response);
+		$ctrl->execute();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Установка прав доступа
+	 */
+	protected function initACL()
+	{
 		$acl = ACL::getInstance();
 
 		$acl->addRole(new AclRole('guest'));
@@ -59,25 +98,19 @@ class AdminFrontController extends FrontController implements IAclResource {
 		$acl->allow('root');
 		$acl->allow('admin', $this);
 		$acl->allow('editor', $this, 'edit');
+	}
+	//-----------------------------------------------------------------------------
 
-		if ($acl->isAllowed(UserModel::getCurrent(), $this)) {
-
-			include_once 'kernel-legacy.php';
-			$GLOBALS['Eresus'] = new Eresus;
-			$GLOBALS['Eresus']->init();
-			$GLOBALS['Eresus']->execute();
-
-			include_once 'admin.php';
-
-		} else {
-
-			$ctrl = new AdminAuthController();
-
-		}
-
-		$ctrl->setRequest($this->request);
-		$ctrl->setResponse($this->response);
-		$ctrl->execute();
+	/**
+	 * Установка путей
+	 */
+	protected function initRoutes()
+	{
+		$this->router = new Router($this->request, $this->response);
+		$this->router->add(
+			new Route('vdfvsfvsdvfs', 'POST', array($this, 'auth'))
+		);
+		$this->router->setDefault('', '*', 'AdminNotFoundView');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -101,5 +134,4 @@ class AdminFrontController extends FrontController implements IAclResource {
 		return array();
 	}
 	//-----------------------------------------------------------------------------
-
 }

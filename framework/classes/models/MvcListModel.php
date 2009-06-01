@@ -26,7 +26,7 @@
  * @subpackage Models
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: MvcListModel.php 157 2009-05-20 13:07:28Z mekras $
+ * $Id: MvcListModel.php 175 2009-05-28 08:52:37Z mekras $
  */
 
 /**
@@ -212,7 +212,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function __get($property)
 	{
-		elog(__METHOD__, LOG_DEBUG, '%s::%s', get_class($this), $property);
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s', get_class($this), $property);
 
 		switch (true) {
 
@@ -220,7 +220,7 @@ class MvcListModel implements Iterator {
 			case $property == 'size': return $this->size();
 			case substr($property, 0, 6) == 'filter':
 				$getter = 'get' . $property;
-				elog(__METHOD__, LOG_DEBUG, 'Calling getter: %s', $getter);
+				elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'Calling getter: %s', $getter);
 				return $this->$getter();
 			break;
 
@@ -261,7 +261,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function __call($name, $arguments)
 	{
-		elog(__METHOD__, LOG_DEBUG, '%s::%s()', get_class($this), $name);
+		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s()', get_class($this), $name);
 		switch (true) {
 
 			case strncasecmp($name, 'getfilter', 9) == 0:

@@ -52,10 +52,10 @@ define('ERESUS_MEMORY_OVERFLOW_BUFFER', 64);
 /**
  * Write message to log
  *
- * @param string $sender                    Sender name. Use __METHOD__ or __FUNCTION__
- * @param int    $priority                  Message priority. See LOG_XXX
- * @param string $message                   Message. Can contain substitutions (see sprintf)
- * @param mixed  $args1..$argsN [optional]  Some variables
+ * @param string|array $sender                  Sender name. Use __METHOD__, array(get_class($this), __METHOD__) or __FUNCTION__
+ * @param int          $priority                Message priority. See LOG_XXX
+ * @param string       $message                 Message. Can contain substitutions (see sprintf)
+ * @param mixed        $arg1..$argN [optional]  Some variables
  */
 function elog($sender, $priority, $message)
 {
@@ -65,7 +65,11 @@ function elog($sender, $priority, $message)
 	 */
 	$ERESUS_LOG_LEVEL = defined('ERESUS_LOG_LEVEL') ? ERESUS_LOG_LEVEL : LOG_ERR;
 
-	if ($priority > $ERESUS_LOG_LEVEL) return;
+	if ($priority > $ERESUS_LOG_LEVEL)
+		return;
+
+	if (is_array($sender))
+		$sender = implode('/', $sender);
 
 	/* Substitute vars if any */
 	if (@func_num_args() > 3) {
@@ -79,7 +83,9 @@ function elog($sender, $priority, $message)
 	}
 
 	/* Add sender */
-	if (empty($sender)) $sender = 'unknown';
+	if (empty($sender))
+		$sender = 'unknown';
+
 	$message = $sender . ': ' . $message;
 
 	/* Add priority info */
