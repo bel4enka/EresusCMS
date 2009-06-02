@@ -33,8 +33,6 @@
  * $Id$
  */
 
-require_once 'core/classes/ACL.php';
-
 /**
  * @package EresusCMS
  * @subpackage Tests

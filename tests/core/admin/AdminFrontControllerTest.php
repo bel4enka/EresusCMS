@@ -33,8 +33,6 @@
  * $Id: AclTest.php 676 2009-05-29 18:03:45Z mekras $
  */
 
-require_once 'core/admin/AdminFrontController.php';
-
 /**
  * @package EresusCMS
  * @subpackage Tests

@@ -54,4 +54,12 @@ return array(
 	/* Классы бэкэнда */
 	'AdminFrontController' => 'admin/AdminFrontController.php',
 	'AdminAuthController' => 'admin/AdminAuthController.php',
+
+	/* Устаревшие классы */
+	'ContentPlugin' => 'classes.php',
+	'ListContentPlugin' => 'classes/ListContentPlugin.php',
+	'TPlugins' => 'classes/backward/TPlugins.php',
+	'TPlugin' => 'classes/backward/TPlugin.php',
+	'TContentPlugin' => 'classes/backward/TContentPlugin.php',
+	'TListContentPlugin' => 'classes/backward/TListContentPlugin.php',
 );

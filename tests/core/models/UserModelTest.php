@@ -33,8 +33,6 @@
  * $Id$
  */
 
-require_once 'core/models/UserModel.php';
-
 /**
  * @package EresusCMS
  * @subpackage Tests

@@ -33,7 +33,6 @@
  * $Id$
  */
 
-require_once 'core/kernel-legacy.php';
 /**
  * @package EresusCMS
  * @subpackage Tests

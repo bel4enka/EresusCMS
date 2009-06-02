@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты роли доступа
+ * Модульные тесты TPlugins
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -30,56 +30,21 @@
  * @package EresusCMS
  * @subpackage Tests
  *
- * $Id$
+ * $Id: AclRoleTest.php 676 2009-05-29 18:03:45Z mekras $
  */
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class AclRoleTest extends PHPUnit_Framework_TestCase {
+class TPluginsTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Простая проверка создания
 	 */
 	public function testBaseConstruct()
 	{
-		$stub = new AclRole('SomeRole');
-
-		$this->assertTrue($stub instanceof IAclRole);
-		$this->assertEquals('SomeRole', $stub->getRoleId());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка указания родительской роли
-	 */
-	public function testParent()
-	{
-		$stub = new AclRole('SomeRole', 'ParentRole');
-
-		$this->assertEquals(array('ParentRole'), $stub->getParentRoles());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка указания родительских ролей
-	 */
-	public function testParents()
-	{
-		$stub = new AclRole('SomeRole', array('ParentRole1', 'ParentRole2'));
-
-		$this->assertEquals(array('ParentRole1', 'ParentRole2'), $stub->getParentRoles());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка исключения
-	 * @expectedException EresusTypeException
-	 */
-	public function testParentsException()
-	{
-		$stub = new AclRole('SomeRole', 123);
+		$stub = new TPlugins();
 	}
 	//-----------------------------------------------------------------------------
 

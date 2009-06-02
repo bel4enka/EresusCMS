@@ -32,6 +32,7 @@
  *
  * $Id$
  */
+require_once 'PHPUnit/Framework.php';
 
 /* Устанавливаем путь для подключения тестируемых файлов */
 if ( !defined('ERESUS_TEST_ROOT') )
@@ -60,9 +61,8 @@ require 'EresusFramework.php';
 Core::testMode(true);
 
 set_include_path(get_include_path() . PATH_SEPARATOR . ERESUS_TEST_ROOT . DIRECTORY_SEPARATOR . 'core');
+/* Подключение таблицы автозагрузки классов */
+EresusClassAutoloader::add('cms.autoload.php');
 
 #TODO: Временная необходимость
 include_once 'lang/ru.php';
-
-/* Удаляем локальные переменные */
-

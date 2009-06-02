@@ -33,7 +33,6 @@
  * $Id$
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'helpers.php';
 
 require_once 'core/AllTests.php';

@@ -63,9 +63,9 @@ class EresusCMS extends MvcApplication {
 		EresusClassAutoloader::add('cms.autoload.php');
 
 		/* Подключение старого ядра */
-		include_once 'kernel-legacy.php';
-		$GLOBALS['Eresus'] = new Eresus;
-		$GLOBALS['Eresus']->init();
+		#include_once 'kernel-legacy.php';
+		#$GLOBALS['Eresus'] = new Eresus;
+		#$GLOBALS['Eresus']->init();
 
 		/* Общая инициализация */
 		$this->initConf();
@@ -228,8 +228,8 @@ class EresusCMS extends MvcApplication {
 
 		# Обратная совместимость
 		$Eresus->session = &$_SESSION['session'];
-		if (!isset($Eresus->session['msg'])) $Eresus->session['msg'] = array('error' => array(), 'information' => array());
-		$Eresus->user = &$_SESSION['user'];
+		#if (!isset($Eresus->session['msg'])) $Eresus->session['msg'] = array('error' => array(), 'information' => array());
+		#$Eresus->user = &$_SESSION['user'];
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];
 	}

@@ -33,9 +33,13 @@
  * $Id$
  */
 
+require_once 'backward/AllTests.php';
+
 require_once 'AclResourceTest.php';
 require_once 'AclRoleTest.php';
 require_once 'AclTest.php';
+
+require_once 'ListContentPluginTest.php';
 
 class Core_Classes_AllTests {
 
@@ -43,9 +47,13 @@ class Core_Classes_AllTests {
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core Classes Tests');
 
+		$suite->addTest(Core_Classes_Backward_AllTests::suite());
+
 		$suite->addTestSuite('AclResourceTest');
 		$suite->addTestSuite('AclRoleTest');
 		$suite->addTestSuite('AclTest');
+
+		$suite->addTestSuite('ListContentPluginTest');
 
 		return $suite;
 	}

@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Модульные тесты роли доступа
+ * Модульные тесты различных классов системы
  *
  * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright 2007-${build.year}, Eresus Project, http://eresus.ru/
@@ -30,58 +30,27 @@
  * @package EresusCMS
  * @subpackage Tests
  *
- * $Id$
+ * $Id: AllTests.php 676 2009-05-29 18:03:45Z mekras $
  */
 
-/**
- * @package EresusCMS
- * @subpackage Tests
- */
-class AclRoleTest extends PHPUnit_Framework_TestCase {
+require_once 'TPluginTest.php';
+require_once 'TContentPluginTest.php';
+require_once 'TListContentPluginTest.php';
 
-	/**
-	 * Простая проверка создания
-	 */
-	public function testBaseConstruct()
+require_once 'TPluginsTest.php';
+
+class Core_Classes_Backward_AllTests {
+
+	public static function suite()
 	{
-		$stub = new AclRole('SomeRole');
+		$suite = new PHPUnit_Framework_TestSuite('Backward Classes Tests');
 
-		$this->assertTrue($stub instanceof IAclRole);
-		$this->assertEquals('SomeRole', $stub->getRoleId());
+		$suite->addTestSuite('TPluginTest');
+		$suite->addTestSuite('TContentPluginTest');
+		$suite->addTestSuite('TListContentPluginTest');
+
+		$suite->addTestSuite('TPluginsTest');
+
+		return $suite;
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка указания родительской роли
-	 */
-	public function testParent()
-	{
-		$stub = new AclRole('SomeRole', 'ParentRole');
-
-		$this->assertEquals(array('ParentRole'), $stub->getParentRoles());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка указания родительских ролей
-	 */
-	public function testParents()
-	{
-		$stub = new AclRole('SomeRole', array('ParentRole1', 'ParentRole2'));
-
-		$this->assertEquals(array('ParentRole1', 'ParentRole2'), $stub->getParentRoles());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка исключения
-	 * @expectedException EresusTypeException
-	 */
-	public function testParentsException()
-	{
-		$stub = new AclRole('SomeRole', 123);
-	}
-	//-----------------------------------------------------------------------------
-
-	/* */
 }
