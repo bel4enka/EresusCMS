@@ -26,7 +26,7 @@
  * @subpackage MVC
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: GenericModel.php 175 2009-05-28 08:52:37Z mekras $
+ * $Id: GenericModel.php 197 2009-06-29 11:22:37Z mekras $
  */
 
 /**
@@ -195,7 +195,7 @@ class GenericModel extends MvcModel {
 	protected function internalRead()
 	{
 		if (! $this->internalReadAllowed()) return;
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createSelectQuery();
 
@@ -206,7 +206,7 @@ class GenericModel extends MvcModel {
 		$this->raw = DB::fetch($q);
 
 		if (!$this->raw)
-			throw new EresusRuntimeException('Query "' . $q . '" returns empty result', 'Object not found');
+			throw new DBQueryException($q, 'Object not found');
 
 		$this->modified = false;
 	}
@@ -242,7 +242,7 @@ class GenericModel extends MvcModel {
 	protected function internalWrite()
 	{
 		if (! $this->internalWriteAllowed()) return;
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createUpdateQuery();
 
@@ -284,7 +284,7 @@ class GenericModel extends MvcModel {
 	protected function internalCreate()
 	{
 		if (! $this->internalCreateAllowed()) return;
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createInsertQuery();
 
@@ -297,7 +297,10 @@ class GenericModel extends MvcModel {
 
 		$db = ezcDbInstance::get();
 		$id = $db->lastInsertId();
-		if ($id) $this->raw[$this->dbKey] = $id;
+		if ($id) {
+			$this->raw[$this->dbKey] = $id;
+			$this->dbId = $id;
+		}
 
 		$this->new = false;
 		$this->modified = false;
@@ -334,7 +337,7 @@ class GenericModel extends MvcModel {
 	protected function internalDelete()
 	{
 		if (! $this->internalDeleteAllowed()) return;
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 		$q = DB::createDeleteQuery();
 

@@ -37,6 +37,7 @@ abstract class MvcApplication extends EresusApplication {
 
 	/**
 	 * Class autoloading
+	 *
 	 * @param $className
 	 */
 	public function autoload($className)
@@ -46,7 +47,7 @@ abstract class MvcApplication extends EresusApplication {
 
 		try {
 
-			$this->load('classes/'.$className);
+			Core::safeInclude('classes/'.$className);
 
 		} catch (Exception $e) {}
 

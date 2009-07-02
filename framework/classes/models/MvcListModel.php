@@ -26,7 +26,7 @@
  * @subpackage Models
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: MvcListModel.php 175 2009-05-28 08:52:37Z mekras $
+ * $Id: MvcListModel.php 195 2009-06-11 05:11:40Z mekras $
  */
 
 /**
@@ -52,7 +52,7 @@ class MvcListModel implements Iterator {
 	 * Current item index
 	 * @var int
 	 */
-	private $index = 0;
+	protected $iteratorIndex = 0;
 
 	/**
 	 * List page size
@@ -127,7 +127,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function current()
 	{
-		return $this->item($this->index);
+		return $this->item($this->iteratorIndex);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -137,7 +137,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function key()
 	{
-		return $this->index;
+		return $this->iteratorIndex;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -146,7 +146,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function next()
 	{
-		$this->index++;
+		$this->iteratorIndex++;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -155,7 +155,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function rewind()
 	{
-		$this->index = 0;
+		$this->iteratorIndex = 0;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -165,9 +165,24 @@ class MvcListModel implements Iterator {
 	 */
 	public function valid()
 	{
-		if ($this->index < 0) return false;
-		if ($this->index >= $this->count()) return false;
+		if ($this->iteratorIndex < 0) return false;
+		if ($this->iteratorIndex >= $this->count()) return false;
 		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Manually adds item to list
+	 *
+	 * @param array $value  Raw data for new item
+	 * @return int  Index of added item
+	 */
+	public function add($value)
+	{
+		$this->items []= $value;
+		$this->size = $this->count();
+
+		return $this->count() - 1;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -185,10 +200,26 @@ class MvcListModel implements Iterator {
 
 	/**
 	 * Get real list size
+	 *
+	 * Descedants must override this method to calculate real list size and put it
+	 * to $this->size
 	 */
-	protected function internalSize() {}
+	protected function internalSize()
+	{
+	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Returns class name for item instances
+	 * @return string
+	 */
+	protected function getItemClass()
+	{
+		$className = str_replace('List', '', get_class($this));
+
+		return $className;
+	}
+	//-----------------------------------------------------------------------------
 	/**
 	 * Element factory
 	 *
@@ -199,7 +230,7 @@ class MvcListModel implements Iterator {
 	 */
 	protected function itemFactory($raw)
 	{
-		$className = str_replace('List', '', get_class($this));
+		$className = $this->getItemClass();
 		return new $className($raw);
 	}
 	//-----------------------------------------------------------------------------
@@ -212,7 +243,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function __get($property)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s', get_class($this), $property);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s', get_class($this), $property);
 
 		switch (true) {
 
@@ -220,7 +251,7 @@ class MvcListModel implements Iterator {
 			case $property == 'size': return $this->size();
 			case substr($property, 0, 6) == 'filter':
 				$getter = 'get' . $property;
-				elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'Calling getter: %s', $getter);
+				eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'Calling getter: %s', $getter);
 				return $this->$getter();
 			break;
 
@@ -261,7 +292,7 @@ class MvcListModel implements Iterator {
 	 */
 	public function __call($name, $arguments)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s()', get_class($this), $name);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s()', get_class($this), $name);
 		switch (true) {
 
 			case strncasecmp($name, 'getfilter', 9) == 0:
@@ -345,7 +376,9 @@ class MvcListModel implements Iterator {
 	 */
 	public function count()
 	{
-		if (is_null($this->items)) $this->internalLoad();
+		if (is_null($this->items))
+			$this->internalLoad();
+
 		return count($this->items);
 	}
 	//-----------------------------------------------------------------------------
@@ -358,9 +391,14 @@ class MvcListModel implements Iterator {
 	 */
 	public function item($index)
 	{
-		if (is_null($this->items)) $this->internalLoad();
+		if (is_null($this->items))
+			$this->internalLoad();
 
-		if (! isset($this->items[$index])) return null;
+		if (! isset($this->items[$index]))
+			return null;
+
+		if (is_object($this->items[$index]))
+			return $this->items[$index];
 
 		return $this->itemFactory($this->items[$index]);
 	}

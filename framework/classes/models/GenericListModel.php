@@ -26,7 +26,7 @@
  * @subpackage Models
  * @author  Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: GenericListModel.php 175 2009-05-28 08:52:37Z mekras $
+ * $Id: GenericListModel.php 196 2009-06-18 15:45:31Z mekras $
  */
 
 
@@ -54,13 +54,50 @@ class GenericListModel extends MvcListModel {
 	protected $dbKey = 'id';
 
 	/**
+	 * Creates list from array of id
+	 * @param array $list  List of Id
+	 *
+	 * @return GenericListModel
+	 */
+	public static function createFromIdList($list)
+	{
+		$className = get_class($this);
+		$instance = new $className(MvcListModel::EMPTY_LIST);
+		foreach ($list as $id)
+			$instance->add($id);
+
+		return $instance;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Manually adds item to list
+	 *
+	 * $value can be an entity id (scalar) or any other value supported by parent
+	 * class method.
+	 *
+	 * @param mixed $value  Data for new item
+	 * @return int  Index of added item
+	 * @see framework/classes/models/MvcListModel#add()
+	 */
+	public function add($value)
+	{
+		if (is_scalar($value)) {
+			$className = $this->getItemClass();
+			$value = new $className($value);
+		}
+		return parent::add($value);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Count list size
 	 *
 	 * @see main/AbstractListModel#internalSize()
 	 */
 	protected function internalSize()
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 		$q = DB::createSelectQuery();
 
 		$q->select('count(`'.$this->dbTable.'`.`'.$this->dbKey.'`) as `count`')
@@ -78,7 +115,7 @@ class GenericListModel extends MvcListModel {
 	protected function internalLoad()
 	{
 		if ($this->dbTable) {
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 
 			$q = DB::createSelectQuery();
 
@@ -173,7 +210,7 @@ class GenericListModel extends MvcListModel {
 	{
 		if ($this->pageSize) {
 			if ($this->pageIndex > 1) {
-				$offset = ($this->pageIndex - 1) * $this->size;
+				$offset = ($this->pageIndex - 1) * $this->pageSize;
 				return $query->limit($this->pageSize, $offset);
 			}
 			return $query->limit($this->pageSize);
@@ -202,7 +239,7 @@ class GenericListModel extends MvcListModel {
 	 */
 	protected function fetchAll($query)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '()');
 		return DB::fetchAll($query);
 	}
 	//-----------------------------------------------------------------------------

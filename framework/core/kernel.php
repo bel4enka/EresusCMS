@@ -48,16 +48,15 @@ define('ERESUS_MEMORY_OVERFLOW_BUFFER', 64);
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
 /**
- * Write message to log
+ * Log message
  *
  * @param string|array $sender                  Sender name. Use __METHOD__, array(get_class($this), __METHOD__) or __FUNCTION__
  * @param int          $priority                Message priority. See LOG_XXX
  * @param string       $message                 Message. Can contain substitutions (see sprintf)
- * @param mixed        $arg1..$argN [optional]  Some variables
+ * @param mixed        $arg,... [optional]      Some variables
  */
-function elog($sender, $priority, $message)
+function eresus_log($sender, $priority, $message)
 {
 	/*
 	 * Because of LOG_XXX constants values order, we use ">" to check if message
@@ -76,7 +75,8 @@ function elog($sender, $priority, $message)
 		$args = array();
 		for($i = 3; $i < @func_num_args(); $i++) {
 			$var = func_get_arg($i);
-			if (is_object($var)) $var = get_class($var);
+			if (is_object($var))
+				$var = get_class($var);
 			$args []= $var;
 		}
 		$message = vsprintf($message, $args);
@@ -102,18 +102,19 @@ function elog($sender, $priority, $message)
 	}
 	$message = '[' . $priorityName . '] ' . $message;
 
-	# Log message
+	/* Log message */
 	if (!error_log($message)) {
 
 		if (!syslog($priority, $message)) {
 			fputs(STDERR, "Can not log message!\n");
-			exit(-1);
+			if (Core::testMode()) exit(-1);
 		}
 
 	}
 
 }
 //-----------------------------------------------------------------------------
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -149,20 +150,6 @@ interface EresusExceptionInterface {
 	 * @return string
 	 */
 	public function getDescription();
-
-	/**
-	 * Exception class name
-	 *
-	 * @return string
-	 */
-	public function getClass();
-
-	/**
-	 * Call trace as string
-	 *
-	 * @return string
-	 */
-	public function getBacktraceAsString();
 
 	/**
 	 * Get previous exception
@@ -208,10 +195,13 @@ class EresusRuntimeException extends RuntimeException implements EresusException
 	 */
 	function __construct($description = null, $message = null, $previous = null)
 	{
-		if (is_null($description) || empty($description)) $description = 'Description unavailable';
-		if (is_null($message)) $message = get_class($this);
+		if (is_null($description) || empty($description))
+			$description = 'Description unavailable';
 
-		if (Core::testMode()) $message .= ': ' . $description;
+		if (is_null($message))
+			$message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
+
+		if (Core::testMode()) $message .= " ($description)";
 
 		if (PHP::checkVersion('5.3')) {
 
@@ -236,26 +226,6 @@ class EresusRuntimeException extends RuntimeException implements EresusException
 	public function getDescription()
 	{
 		return $this->description;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return exception class name
-	 * @return string
-	 */
-	public function getClass()
-	{
-		return get_class($this);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return call trace as string
-	 * @return array
-	 */
-	public function getBacktraceAsString()
-	{
-		return $this->getTraceAsString();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -311,10 +281,13 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 	 */
 	function __construct($description = null, $message = null, $previous = null)
 	{
-		if (is_null($description) || empty($description)) $description = 'Description unavailable';
-		if (is_null($message)) $message = get_class($this);
+		if (is_null($description) || empty($description))
+			$description = 'Description unavailable';
 
-		if (Core::testMode()) $message .= ': ' . $description;
+		if (is_null($message))
+			$message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
+
+		if (Core::testMode()) $message .= " ($description)";
 
 		if (PHP::checkVersion('5.3')) {
 
@@ -343,26 +316,6 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Return exception class name
-	 * @return string
-	 */
-	public function getClass()
-	{
-		return get_class($this);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return call trace as string
-	 * @return array
-	 */
-	public function getBacktraceAsString()
-	{
-		return $this->getTraceAsString();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Get previous exception
 	 *
 	 * @return Exception
@@ -379,45 +332,6 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 }
 
 
-/**
- * Extends stardard Exception class
- *
- * This is a parent class for all Eresus exceptions
- *
- * @deprecated
- *
- * @package Core
- * @subpackage Kernel
- */
-class EresusException extends EresusRuntimeException {
-
-	/**
-	 * Creates new exception object and logs info about exception
-	 *
-	 * $message must be a short exception description wich can be safely
-	 * showed to user. And $description can contain a full description
-	 * wich will be logged.
-	 *
-	 * @param string $description [optional]  Extended information
-	 * @param string $message	[optional]      Error message
-	 * @param int    $code [optional]         Error code
-	 */
-	function __construct($description = null, $message = null, $code = null)
-	{
-		/* Legacy argument order support */
-		if ((is_null($code) || is_string($code)) && is_numeric($message)) {
-			$tmp = $code;
-			$code = $message;
-			$message = $description;
-			$description = $tmp;
-			unset($tmp);
-		}
-
-		parent::__construct($description, $message);
-		$this->code = intval($code);
-	}
-	//-----------------------------------------------------------------------------
-}
 
 /**
  * "Type" exception
@@ -451,7 +365,9 @@ class EresusTypeException extends EresusRuntimeException {
 			else
 				$message = 'Expecting ' .	$expectedType . ' but got "' . $actualType .'"';
 
-			if ($description) $message .= ' ' . $description;
+			if ($description)
+				$message .= ' ' . $description;
+
 			parent::__construct($message, 'Type error', $previous);
 
 		} else parent::__construct('Type error');
@@ -489,7 +405,9 @@ class EresusValueException extends EresusLogicException {
 			else
 				$message = "\"$valueName\" has invalid value: $value";
 
-			if ($description) $message .= ' ' . $description;
+			if ($description)
+				$message .= ' ' . $description;
+
 			parent::__construct($message, 'Invalid value', $previous);
 
 		} else parent::__construct('Invalid value');
@@ -528,7 +446,9 @@ class EresusPropertyNotExistsException extends EresusRuntimeException {
 			else
 				$message = "Property \"$property\" does not exists in class \"$class\"";
 
-			if ($description) $message .= ' ' . $description;
+			if ($description)
+				$message .= ' ' . $description;
+
 			parent::__construct($message, 'Property not exists', $previous);
 
 		} else parent::__construct('Property not exists');
@@ -567,7 +487,9 @@ class EresusMethodNotExistsException extends EresusRuntimeException {
 			else
 				$message = "Method \"$method\" does not exists in class \"$class\"";
 
-			if ($description) $message .= ' ' . $description;
+			if ($description)
+				$message .= ' ' . $description;
+
 			parent::__construct($message, 'Method not exists', $previous);
 
 		} else parent::__construct('Method not exists');
@@ -631,6 +553,13 @@ class PHP {
 	 */
 	private static $version = null;
 
+	/**
+	 * Parsed open_basedir list
+	 *
+	 * @var array
+	 */
+	protected static $open_basedir;
+
   /**
    * Substitute PHP version with specified value
    *
@@ -653,7 +582,8 @@ class PHP {
 	 */
 	public static function version($part = null)
 	{
-		if (is_null($part)) return self::$phpVersion;
+		if (is_null($part))
+			return self::$phpVersion;
 
 		if (is_null(self::$version)) {
 			/* Parse PHP version only once */
@@ -679,6 +609,18 @@ class PHP {
 	static function checkVersion($version)
 	{
 		return version_compare(self::$phpVersion, $version, '>=');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get php.ini option
+	 *
+	 * @param string $key  Option name
+	 * @return mixed
+	 */
+	public static function iniGet($key)
+	{
+		return Core::testModeIsSet("ini.$key") ? Core::testModeGet("ini.$key") : ini_get($key);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -726,31 +668,60 @@ class PHP {
 	 */
 	static function loadExtension($ext)
 	{
-		if (extension_loaded($ext)) return true;
-		elog(__METHOD__, LOG_DEBUG, '(%s)', $ext);
+		if (extension_loaded($ext))
+			return true;
 
-		$enable_dl = Core::testMode() ? Core::testModeGet('enable_dl') : ini_get('enable_dl');
+		eresus_log(__METHOD__, LOG_DEBUG, '(%s)', $ext);
+
+		$enable_dl = self::iniGet('enable_dl');
 		if (!$enable_dl) {
-			elog(__METHOD__, LOG_NOTICE, 'Dynamic extension loading disabled by PHP settings');
+			eresus_log(__METHOD__, LOG_NOTICE, 'Dynamic extension loading disabled by PHP settings');
 			return false;
 		}
 
-		$safe_mode = Core::testMode() ? Core::testModeGet('safe_mode') : ini_get('safe_mode');
+		$safe_mode = self::iniGet('safe_mode');
 		if ($safe_mode) {
-			elog(__METHOD__, LOG_NOTICE, 'Dynamic extension loading not allowed in a Safe Mode');
+			eresus_log(__METHOD__, LOG_NOTICE, 'Dynamic extension loading not allowed in a Safe Mode');
 			return false;
 		}
 
 		$prefix = System::isWindows() ? 'php_' : '';
 		$filename = $prefix . $ext . '.' . PHP_SHLIB_SUFFIX;
 
-		elog(__METHOD__, LOG_DEBUG, 'Trying to load "%s"', $filename);
+		eresus_log(__METHOD__, LOG_DEBUG, 'Trying to load "%s"', $filename);
 
 		@$result = dl($filename);
 
-		elog(__METHOD__, LOG_DEBUG, 'result: %d', $result);
+		eresus_log(__METHOD__, LOG_DEBUG, 'result: %d', $result);
 
 		return Core::testMode() ? $filename : $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if path is in open_basedir list
+	 *
+	 * If open_basedir option not set method returns 'true' for any path.
+	 *
+	 * @param string $path  Path to check
+	 * @return bool
+	 */
+	public static function inOpenBaseDir($path)
+	{
+		if (! self::iniGet('open_basedir'))
+			return true;
+
+		if (! self::$open_basedir)
+			self::$open_basedir = explode(PATH_SEPARATOR, self::iniGet('open_basedir'));
+
+		if ($path == '.')
+			$path = getcwd();
+
+		foreach (self::$open_basedir as $dir)
+			if (substr($path, 0, strlen($dir)) == $dir)
+				return true;
+
+		return false;
 	}
 	//-----------------------------------------------------------------------------
 }
@@ -877,7 +848,7 @@ class FS {
 	 */
 	static public function init($driver = null)
 	{
-		elog(__METHOD__, LOG_DEBUG, '(%s)', $driver);
+		eresus_log(__METHOD__, LOG_DEBUG, '(%s)', $driver);
 		self::$driver = null;
 
 		/* User defined driver */
@@ -886,14 +857,14 @@ class FS {
 			if ($driver instanceof GenericFS)
 				self::$driver = $driver;
 			else
-				elog(__METHOD__, LOG_ERR, 'Invalid FS driver: '.gettype($driver));
+				eresus_log(__METHOD__, LOG_ERR, 'Invalid FS driver: '.gettype($driver));
 
 		}
 
 		/* Autodetect */
 		if (is_null(self::$driver)) {
 
-			elog(__METHOD__, LOG_DEBUG, 'Autodetecting file system...');
+			eresus_log(__METHOD__, LOG_DEBUG, 'Autodetecting file system...');
 
 			if (System::isWindows()) {
 
@@ -904,9 +875,10 @@ class FS {
 		}
 
 		/* Generic driver */
-		if (is_null(self::$driver)) self::$driver = new GenericFS();
+		if (is_null(self::$driver))
+			self::$driver = new GenericFS();
 
-		elog(__METHOD__, LOG_DEBUG, 'Using FS driver: %s', self::$driver);
+		eresus_log(__METHOD__, LOG_DEBUG, 'Using FS driver: %s', self::$driver);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1023,7 +995,8 @@ class GenericFS {
 		switch ($type) {
 			case 'dir':
 			case 'directory':
-				if (substr($filename, -1) != '/') $filename .= '/';
+				if (substr($filename, -1) != '/')
+					$filename .= '/';
 			break;
 
 			case 'file':
@@ -1031,7 +1004,8 @@ class GenericFS {
 				# Do nothing
 			break;
 
-			default: throw new EresusValueException('$type', $type);
+			default:
+				throw new EresusValueException('$type', $type);
 		}
 
 		$filename = $this->expandParentLinks($filename);
@@ -1068,7 +1042,8 @@ class GenericFS {
 	 */
 	protected function expandParentLinks($filename)
 	{
-		if (strpos($filename, '..') === false) return $filename;
+		if (strpos($filename, '..') === false)
+			return $filename;
 
 		$path = $filename;
 
@@ -1138,9 +1113,11 @@ class GenericFS {
 		$path = $filename;
 
 		$lastDirSep = strrpos($path, '/');
-		if ($lastDirSep !== false) $path = substr($path, 0, $lastDirSep+1);
+		if ($lastDirSep !== false)
+			$path = substr($path, 0, $lastDirSep+1);
 
-		if ($path === '') $path = '.';
+		if ($path === '')
+			$path = '.';
 
 		$path = $this->normalize($path, 'dir');
 
@@ -1230,53 +1207,6 @@ class WindowsFS extends GenericFS {
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/**
- * Stardard Exception class wrapper
- *
- * @package Core
- * @subpackage Kernel
- */
-class EresusExceptionDecorator extends EresusRuntimeException {
-
-	/**
-	 * @var Exception  Parent Exception
-	 */
-	protected $parent;
-
-	/**
-	 * Constructor
-	 *
-	 * @param Exception $e
-	 */
-	function __construct($e)
-	{
-		$this->parent = $e;
-		parent::__construct($this->parent->getMessage(), $this->getClass(), $this->parent);
-		$this->code = $this->parent->getCode();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return exception class name
-	 * @return string
-	 */
-	function getClass()
-	{
-		return get_class($this->parent);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 *
-	 * Return call trace as string
-	 * @return array
-	 */
-	function getBacktraceAsString()
-	{
-		return $this->parent->getTraceAsString();
-	}
-	//-----------------------------------------------------------------------------
-}
 
 /**
  * Error wrapper
@@ -1329,13 +1259,16 @@ class EresusErrorDecorator extends EresusRuntimeException {
 		foreach ($this->trace as $item) {
 
 			$line = $item['function'];
-			if (isset($item['class'])) $line = $item['class'] . $item['type'] . $line;
+			if (isset($item['class']))
+				$line = $item['class'] . $item['type'] . $line;
+
 			if (isset($item['args'])) {
 				for($i = 0; $i < count($item['args']); $i++) {
 					switch (true) {
 
 						case is_string($item['args'][$i]):
-							if (strlen($item['args'][$i]) > 48) $item['args'][$i] = substr($item['args'][$i], 0, 48) . '...';
+							if (strlen($item['args'][$i]) > 48)
+								$item['args'][$i] = substr($item['args'][$i], 0, 48) . '...';
 							$item['args'][$i] = "'" . $item['args'][$i] . "'";
 						break;
 						case is_array($item['args'][$i]): $item['args'][$i] = 'array(' . count($item['args'][$i]) . ')'; break;
@@ -1343,7 +1276,8 @@ class EresusErrorDecorator extends EresusRuntimeException {
 					}
 				}
 				$line .= '(' . implode(', ', $item['args']) . ')';
-				if (isset($item['file'])) $line .= ' in '.$item['file'].':'.$item['line'];
+				if (isset($item['file']))
+					$line .= ' in '.$item['file'].':'.$item['line'];
 			}
 			$trace .= '#' . ($level++) . ' ' . $line . "\n";
 
@@ -1390,7 +1324,8 @@ function EresusErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 
 	if ($level < LOG_NOTICE) {
 
-		throw new EresusErrorDecorator($errstr, $errno, $errfile, $errline, $errcontext);
+		throw new ErrorException($errstr, $errno, $level, $errfile, $errline);
+		//EresusErrorDecorator($errstr, $errno, $errfile, $errline, $errcontext);
 
 	} else {
 
@@ -1400,7 +1335,7 @@ function EresusErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 			$errfile,
 			$errline
 		);
-		elog(__FUNCTION__, $level, $logMessage);
+		eresus_log(__FUNCTION__, $level, $logMessage);
 
 	}
 
@@ -1416,7 +1351,9 @@ function EresusErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
  */
 function EresusExceptionHandler($e)
 {
-	if (! ($e instanceof EresusExceptionInterface)) $e = new EresusExceptionDecorator($e);
+	if (! ($e instanceof EresusExceptionInterface))
+		$e = new EresusRuntimeException(null, null, $e);
+
 	Core::handleException($e);
 }
 //-----------------------------------------------------------------------------
@@ -1438,8 +1375,10 @@ function EresusFatalErrorHandler($output)
 			case 'fatal': $priority = LOG_CRIT; $message = 'Fatal error (see log for more info)'; break;
 			case 'parse': $priority = LOG_EMERG; $message = 'Parse error (see log for more info)'; break;
 	}
-		elog(__FUNCTION__, $priority, trim($output));
-		if (!PHP::isCLI()) header('Content-type: text/plain', true);
+		eresus_log(__FUNCTION__, $priority, trim($output));
+		if (!PHP::isCLI())
+			header('Content-type: text/plain', true);
+
 		return $message . "\n";
 	}
 	$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] = str_repeat('x', ERESUS_MEMORY_OVERFLOW_BUFFER * 1024);
@@ -1478,13 +1417,13 @@ class EresusClassAutoloadTable {
 	 */
 	public function __construct($filename)
 	{
-		elog(__METHOD__, LOG_DEBUG, $filename);
+		eresus_log(__METHOD__, LOG_DEBUG, $filename);
 		if (substr($filename , -4) != '.php') {
-			elog(__METHOD__, LOG_DEBUG, 'Adding ".php" extension');
+			eresus_log(__METHOD__, LOG_DEBUG, 'Adding ".php" extension');
 			$filename .= '.php';
 		}
 		$this->filename = $filename;
-		elog(__METHOD__, LOG_DEBUG, 'Table file: %s', $this->filename);
+		eresus_log(__METHOD__, LOG_DEBUG, 'Table file: %s', $this->filename);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1496,17 +1435,23 @@ class EresusClassAutoloadTable {
 	 */
 	public function load($className)
 	{
-		if (!$this->filename) return false;
+		if (!$this->filename)
+			return false;
 
-		if (!$this->table) $this->loadTable();
-		if (!$this->table) return false;
+		if (!$this->table)
+			$this->loadTable();
 
-		elog(__METHOD__, LOG_DEBUG, 'Searching for %s in %s', $className, $this->filename);
+		if (!$this->table)
+			return false;
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'Searching for %s in %s', $className, $this->filename);
 
 		if (isset($this->table[$className])) {
 
 			$filename = $this->table[$className];
-			if (substr($filename, -4) != '.php') $filename .= '.php';
+			if (substr($filename, -4) != '.php')
+				$filename .= '.php';
+
 			try {
 
 				Core::safeInclude($filename);
@@ -1519,7 +1464,7 @@ class EresusClassAutoloadTable {
 
 		}
 
-		elog(__METHOD__, LOG_DEBUG, '%s loading %s from table %s',class_exists($className, false) ? 'Success' : 'Failed', $className, $this->filename);
+		eresus_log(__METHOD__, LOG_DEBUG, '%s loading %s from table %s',class_exists($className, false) ? 'Success' : 'Failed', $className, $this->filename);
 
 		return class_exists($className, false);
 	}
@@ -1530,7 +1475,7 @@ class EresusClassAutoloadTable {
 	 */
 	protected function loadTable()
 	{
-		elog(__METHOD__, LOG_DEBUG, 'Loading autoload table from %s', $this->filename);
+		eresus_log(__METHOD__, LOG_DEBUG, 'Loading autoload table from %s', $this->filename);
 
 		try {
 
@@ -1538,12 +1483,12 @@ class EresusClassAutoloadTable {
 
 		} catch (EresusRuntimeException $e) {
 
-			elog(__METHOD__, LOG_ERR, 'Can\'t load table from "%s": %s', $this->filename, $e->getDescription());
+			eresus_log(__METHOD__, LOG_ERR, 'Can\'t load table from "%s": %s', $this->filename, $e->getDescription());
 			$this->filename = false;
 
 		}
 
-		elog(__METHOD__, LOG_DEBUG, $this->table ? 'success' : 'failed');
+		eresus_log(__METHOD__, LOG_DEBUG, $this->table ? 'success' : 'failed');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1582,7 +1527,9 @@ class EresusClassAutoloader {
 	 */
 	static public function load($className)
 	{
-		foreach (self::$tables as $table) if ($table->load($className)) break;
+		foreach (self::$tables as $table)
+			if ($table->load($className))
+				break;
 	}
 	//-----------------------------------------------------------------------------
 }
@@ -1629,6 +1576,319 @@ class Core {
 	 * @var array
 	 */
 	static private $autoloaders = array();
+
+	/**
+	 * Init Eresus Core
+	 */
+	static public function init()
+	{
+		/* Allow only one call of this method */
+		if (self::$initState)
+			return;
+
+		/* Indicate that init in progress */
+		self::$initState = 1;
+
+		System::init();
+		FS::init();
+
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		self::initExceptionHandling();
+		EresusClassAutoloader::add('core.autoload');
+		self::registerAutoloader(array('EresusClassAutoloader', 'load'));
+
+		/**
+		 * eZ Components
+		 */
+		include_once '3rdparty/ezcomponents/Base/src/base.php';
+		self::registerAutoloader(array('ezcBase', 'autoload'));
+
+		/*
+		 * If Eresus Core was built with a "compile" option
+		 */
+		if ('1') include_once 'eresus-core.compiled.php';
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'done');
+
+		/* Indicate that init complete */
+		self::$initState = 2;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Class autoloading
+	 *
+	 * @param string $className
+	 *
+	 * @internal
+	 * @ignore
+	 */
+	static public function autoload($className)
+	{
+		eresus_log(__METHOD__, LOG_DEBUG, $className);
+
+		if (!class_exists($className, false)) {
+
+			for ($i = 0; $i < count(self::$autoloaders); $i++) {
+
+				call_user_func(self::$autoloaders[$i], $className);
+				if (class_exists($className, false))
+					break;
+
+			}
+
+		}
+
+		eresus_log(__METHOD__, LOG_DEBUG, class_exists($className, false) ? 'success' : 'failed');
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Init exception handling
+	 *
+	 */
+	static private function initExceptionHandling()
+	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		/* Reserve memory for emergency needs */
+		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] = str_repeat('x', ERESUS_MEMORY_OVERFLOW_BUFFER * 1024);
+
+		/* Override php.ini settings */
+		ini_set('html_errors', 0); // Some cosmetic setup
+
+		set_error_handler('EresusErrorHandler');
+		eresus_log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+
+		set_exception_handler('EresusExceptionHandler');
+		eresus_log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+
+		/*
+		 * PHP has no standart methods to intersept some error types (e.g. E_PARSE or E_ERROR),
+		 * but there is a way to do this - register callback function via ob_start.
+		 * (Second arg "1" is a special value for 4096-byte output chunks)
+		 */
+		if (ob_start('EresusFatalErrorHandler', 1))
+			eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+		else
+			eresus_log(LOG_NOTICE, __METHOD__, 'Fatal error handler not instaled! Fatal error will be not handled!');
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'done');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Writes exception description to log
+	 *
+	 * @param Exception $e
+	 * @param string    $msg [optional]  Message
+	 */
+	static public function logException($e, $msg = null)
+	{
+		if ($e instanceof EresusExceptionInterface) {
+
+			$description = $e->getDescription();
+			$previous = $e->getPreviousException();
+
+		} else {
+
+			$description = 'Description not available';
+			$previous = null;
+
+		}
+
+		$logMessage = sprintf(
+			"%s in %s at %s\nMessage: %s\nDescription: %s\nBacktrace:\n%s\n",
+			get_class($e),
+			$e->getFile(),
+			$e->getLine(),
+			$e->getMessage(),
+			$description,
+			$trace = $e->getTraceAsString()
+		);
+		eresus_log(__METHOD__, LOG_ERR, $logMessage);
+
+		if ($previous)
+			self::logException($previous, 'Previous exception:');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Default Eresus Core exception handler.
+	 *
+	 * If exception was not caught by application it will be handled with this method.
+	 *
+	 * @param Exception $e
+	 */
+	static public function handleException($e)
+	{
+		$app = self::app();
+		if ($app && method_exists($app, 'handleException')) {
+
+			$app->handleException($e);
+
+		} else {
+
+			Core::logException($e, 'Unhandled exception:');
+
+			if (!PHP::isCLI())
+				header('Content-type: text/plain', true);
+
+			echo get_class($e);
+
+			if ($e instanceof EresusExceptionInterface)
+				echo ': ' . $e->getMessage();
+
+			if (PHP::isCLI() && !self::testMode())
+				exit($e->getCode());
+
+		}
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Make instance of application and execute it
+	 * @param string $class  Application class name
+	 * @return int  Exit code
+	 */
+	static public function exec($class)
+	{
+		if (!class_exists($class, false))
+			throw new EresusRuntimeException("Application class '$class' does not exists", 'Invalid application class');
+
+		if (!is_subclass_of($class, 'EresusApplication'))
+			throw new EresusRuntimeException("Application '$class' must be descendant of EresusApplication", 'Invalid application class');
+
+		self::$app = new $class();
+
+		try {
+
+			eresus_log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
+			$exitCode = self::$app->main();
+			eresus_log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
+
+		} catch (Exception $e) {
+
+			self::handleException($e);
+			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
+
+		}
+		self::$app = null;
+		return $exitCode;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get application object
+	 * @return object(EresusApplication)
+	 */
+	static public function app()
+	{
+		return self::$app;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Register new autoload handler
+	 *
+	 * With PHP > 5.1.2 method uses spl_autoload_register function otherwise
+	 * internal autoload stack will be used
+	 *
+	 * @param callback $autoloader
+	 */
+	static public function registerAutoloader($autoloader)
+	{
+		if (defined('ERESUS_LOG_LEVEL') && ERESUS_LOG_LEVEL == LOG_DEBUG) {
+
+			switch(true) {
+				case is_array($autoloader):
+					$callback = is_object(reset($autoloader)) ? 'object('.get_class(current($autoloader)).')' : current($autoloader);
+					$callback .= '::'.next($autoloader);
+				break;
+				default: $callback = $autoloader;
+			}
+			eresus_log(__METHOD__, LOG_DEBUG, 'registering handler "%s"', $callback);
+		}
+
+		if (function_exists('spl_autoload_register') && !self::testModeGet('Core::registerAutoloader::internal')) {
+
+			spl_autoload_register($autoloader);
+
+		} else {
+
+			array_unshift(self::$autoloaders, $autoloader);
+
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Perform safe include of a PHP-file
+	 *
+	 * @param string $filename
+	 * @param bool   $force     if "true" then "include" will be used instead of
+	 *                          "include_once"
+	 *
+	 * @return mixed  Result of file inclusion
+	 *
+	 * @throws EresusRuntimeException
+	 */
+	static public function safeInclude($filename, $force = false)
+	{
+		if (substr($filename, -4) != '.php')
+			$filename .= '.php';
+
+		$filename = FS::nativeForm($filename);
+		$dirs = explode(PATH_SEPARATOR, get_include_path());
+
+		$unsafe = array();
+
+		/*
+		 * At first, check directories in open_basedir list
+		 */
+		foreach($dirs as $dir) {
+
+			if (! PHP::inOpenBaseDir($dir)) {
+				eresus_log(__METHOD__, LOG_DEBUG, 'Path "%s" is out of open_basedir list. Skipping for now.', $dir);
+				$unsafe []= $dir;
+				continue;
+			}
+
+			eresus_log(__METHOD__, LOG_DEBUG, 'Trying "%s"', $dir . DIRECTORY_SEPARATOR . $filename);
+			if (FS::exists($dir . DIRECTORY_SEPARATOR . $filename)) {
+
+				eresus_log(__METHOD__, LOG_DEBUG, 'OK!');
+
+				if ($force)
+					return include $filename;
+				else
+					return include_once $filename;
+			}
+
+		}
+
+		/*
+		 * Now try other dirs
+		 */
+		eresus_log(__METHOD__, LOG_DEBUG, 'Trying unsafe directories...');
+
+		try {
+
+			if ($force)
+				return include $filename;
+			else
+				return include_once $filename;
+
+		} catch (Exception $e) {
+
+			throw new EresusRuntimeException("File '$filename' not found in '".get_include_path()."'", 'File not found', $e);
+
+		}
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Switch test mode
@@ -1693,253 +1953,23 @@ class Core {
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Init Eresus Core
+	 * Object to be returned by app() method in a test mode
+	 *
+	 * @param object $app
 	 */
-	static public function init()
+	static public function testSetApplication($app)
 	{
-		# Allow only one call of this method
-		if (self::$initState) return;
-
-		# Indicate that init in progress
-		self::$initState = 1;
-
-		System::init();
-		FS::init();
-
-		elog(__METHOD__, LOG_DEBUG, '()');
-
-		self::initExceptionHandling();
-		EresusClassAutoloader::add('core.autoload');
-		self::registerAutoloader(array('EresusClassAutoloader', 'load'));
-
-		/**
-		 * eZ Components
-		 */
-		include_once '3rdparty/ezcomponents/Base/src/base.php';
-		self::registerAutoloader(array('ezcBase', 'autoload'));
-
-		/*
-		 * If Eresus Core was built with a "compile" option
-		 */
-		if ('1') include_once 'eresus-core.compiled.php';
-
-		elog(__METHOD__, LOG_DEBUG, 'done');
-		# Indicate that init complete
-		self::$initState = 2;
+		if (self::testMode()) self::$app = $app;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Class autoloading
-	 *
-	 * @param string $className
-	 *
-	 * @internal
-	 * @ignore
+	 * Test initExceptionHandling method
 	 */
-	static public function autoload($className)
+	static public function testInitExceptionHandling()
 	{
-		elog(__METHOD__, LOG_DEBUG, $className);
-
-		if (!class_exists($className, false)) {
-			for ($i = 0; $i < count(self::$autoloaders); $i++) {
-
-				call_user_func(self::$autoloaders[$i], $className);
-				if (class_exists($className, false)) break;
-
-			}
-		}
-
-		elog(__METHOD__, LOG_DEBUG, class_exists($className, false) ? 'success' : 'failed');
-
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Init exception handling
-	 *
-	 */
-	static private function initExceptionHandling()
-	{
-		if (self::testMode()) return;
-		elog(__METHOD__, LOG_DEBUG, '()');
-
-		# Reserve memory for emergency needs
-		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] = str_repeat('x', ERESUS_MEMORY_OVERFLOW_BUFFER * 1024);
-
-		# Override php.ini settings
-		ini_set('html_errors', false); # Some cosmetic setup
-
-		set_error_handler('EresusErrorHandler');
-		elog(__METHOD__, LOG_DEBUG, 'Error handler installed');
-
-		set_exception_handler('EresusExceptionHandler');
-		elog(__METHOD__, LOG_DEBUG, 'Exception handler installed');
-
-		/*
-		 * PHP has no standart methods to intersept some error types (e.g. E_PARSE or E_ERROR),
-		 * but there is a way to do this - register callback function via ob_start.
-		 * (Second arg "1" is a special value for 4096-byte output chunks)
-		 */
-		if (ob_start('EresusFatalErrorHandler', 1))
-			elog(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-		else
-			elog(LOG_NOTICE, __METHOD__, 'Fatal error handler not instaled! Fatal error will be not handled!');
-
-		elog(__METHOD__, LOG_DEBUG, 'done');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Default Eresus Core exception handler.
-	 *
-	 * If exception was not caught by application it will be handled with this method.
-	 *
-	 * @param Exception $e
-	 */
-	static public function handleException($e)
-	{
-		if ($e instanceof EresusExceptionInterface) {
-
-			$class = $e->getClass();
-			$message = $e->getMessage();
-			$description = $e->getDescription();
-			$trace = $e->getBacktraceAsString();
-
-		} else {
-
-			$class = get_class($e);
-			$message = $e->getMessage() === '' ? $class : $e->getMessage();
-			$description = 'Description not available';
-			$trace = $e->getTraceAsString();
-
-		}
-
-		$logMessage = sprintf(
-			"Unhandled %s in %s at %s\nMessage: %s\nDescription: %s\nBacktrace/context:\n%s\n",
-			$class,
-			$e->getFile(),
-			$e->getLine(),
-			$e->getMessage(),
-			$description,
-			$trace
-		);
-		elog(__METHOD__, LOG_ERR, $logMessage);
-
-		$app = self::app();
-		if ($app && method_exists($app, 'handleException')) {
-
-			$app->handleException($e);
-
-		} else {
-
-			if (!PHP::isCLI()) header('Content-type: text/plain', true);
-			echo $message;
-			if (PHP::isCLI() && !self::testMode()) exit($e->getCode());
-
-		}
-
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Make instance of application and execute it
-	 * @param string $class  Application class name
-	 * @return int  Exit code
-	 */
-	static public function exec($class)
-	{
-		if (!class_exists($class, false)) throw new EresusRuntimeException("Application class '$class' does not exists", 'Invalid application class');
-		if (!is_subclass_of($class, 'EresusApplication')) throw new EresusRuntimeException("Application '$class' must be descendant of EresusApplication", 'Invalid application class');
-
-		self::$app = new $class();
-
-		try {
-
-			elog(__METHOD__, LOG_DEBUG, 'executing %s', $class);
-			$exitCode = self::$app->main();
-			elog(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
-
-		} catch (Exception $e) {
-
-			self::handleException($e);
-			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
-
-		}
-		self::$app = null;
-		return $exitCode;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get application object
-	 * @return object(EresusApplication)
-	 */
-	static public function app()
-	{
-		return self::$app;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Register new autoload handler
-	 *
-	 * With PHP > 5.1.2 method uses spl_autoload_register function otherwise
-	 * internal autoload stack will be used
-	 *
-	 * @param callback $autoloader
-	 */
-	static public function registerAutoloader($autoloader)
-	{
-		if (defined('ERESUS_LOG_LEVEL') && ERESUS_LOG_LEVEL == LOG_DEBUG) {
-
-			switch(true) {
-				case is_array($autoloader):
-					$callback = is_object(reset($autoloader)) ? 'object('.get_class(current($autoloader)).')' : current($autoloader);
-					$callback .= '::'.next($autoloader);
-				break;
-				default: $callback = $autoloader;
-			}
-			elog(__METHOD__, LOG_DEBUG, 'registering handler "%s"', $callback);
-		}
-
-		if (function_exists('spl_autoload_register')) {
-
-			spl_autoload_register($autoloader);
-
-		} else {
-
-			array_unshift(self::$autoloaders, $autoloader);
-
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Perform safe include of a PHP-file
-	 *
-	 * @param string $filename
-	 * @param bool   $force     if "true" then "include" will be used instead of
-	 *                          "include_once"
-	 *
-	 * @return mixed  Result of file inclusion
-	 *
-	 * @throws EresusRuntimeException
-	 */
-	static public function safeInclude($filename, $force = false)
-	{
-		$filename = FS::nativeForm($filename);
-		$dirs = explode(PATH_SEPARATOR, get_include_path());
-
-		foreach($dirs as $dir) if (FS::exists($dir . DIRECTORY_SEPARATOR . $filename)) {
-
-			if ($force)
-				return include $filename;
-			else
-				return include_once $filename;
-		}
-
-		throw new EresusRuntimeException("File '$filename' not found in '".get_include_path()."'", 'File not found');
+		if (self::testMode())
+			self::initExceptionHandling();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1964,5 +1994,30 @@ class Core {
 function ecArrayValue($array, $key)
 {
 	return isset($array[$key]) ? $array[$key] : null;
+}
+//-----------------------------------------------------------------------------
+
+/**
+ * Recursive slash stripping
+ *
+ * @param string|array $source
+ * @return string|array
+ *
+ * @author Ghost
+ */
+function ecStripSlashes($source)
+{
+	if (is_array($source)) {
+
+		foreach ($source as $key => $value) {
+			$source[$key] = ecStripSlashes($source[$key]);
+		}
+
+	} else {
+
+		$source = stripslashes($source);
+	}
+
+	return $source;
 }
 //-----------------------------------------------------------------------------

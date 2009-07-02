@@ -26,7 +26,7 @@
  * @subpackage Models
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: MvcModel.php 176 2009-05-28 16:22:55Z mekras $
+ * $Id: MvcModel.php 182 2009-06-04 08:50:52Z mekras $
  */
 
 /**
@@ -72,10 +72,10 @@ class MvcModel {
 	 */
 	protected function getRaw($property)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s)', $property);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s)', $property);
 		if (isset($this->raw[$property])) {
 			$value = $this->raw[$property];
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'return: %s', is_object($value) ? get_class($value) : $value);
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'return: %s', is_object($value) ? get_class($value) : $value);
 			return $value;
 		}
 
@@ -92,7 +92,7 @@ class MvcModel {
 	protected function setRaw($property, $value)
 	{
 		if (is_null($this->raw)) $this->raw = array();
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s, %s)', $property, is_object($value) ? get_class($value) : $value);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s, %s)', $property, is_object($value) ? get_class($value) : $value);
 		$this->raw[$property] = $value;
 	}
 	//-----------------------------------------------------------------------------
@@ -106,13 +106,13 @@ class MvcModel {
 	 */
 	protected function getGetCache($property)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s)', $property);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s)', $property);
 		if (isset($this->getCache[$property])) {
 			$value = $this->getCache[$property];
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'return: %s', is_object($value) ? get_class($value) : $value);
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'return: %s', is_object($value) ? get_class($value) : $value);
 			return $value;
 		}
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'not cached');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'not cached');
 		return null;
 	}
 	//-----------------------------------------------------------------------------
@@ -126,7 +126,7 @@ class MvcModel {
 	protected function setGetCache($property, $value)
 	{
 		if (is_null($this->getCache)) return;
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s, %s)', $property, is_object($value) ? get_class($value) : $value);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '(%s, %s)', $property, is_object($value) ? get_class($value) : $value);
 		$this->getCache[$property] = $value;
 	}
 	//-----------------------------------------------------------------------------
@@ -183,19 +183,19 @@ class MvcModel {
 	 */
 	public function __get($property)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s', get_class($this), $property);
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s', get_class($this), $property);
 
 		/* 1. Try virtual getter */
 		$getter = 'virtual' . $property;
 		if (method_exists($this, $getter)) {
 			$value = $this->$getter();
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'Virtual: %s', is_object($value) ? get_class($value) : $value);
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'Virtual: %s', is_object($value) ? get_class($value) : $value);
 			return $value;
 		}
 
 		/* 2. Try getters cache */
 		if (! is_null($value = $this->getGetCache($property))) {
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'From getters cache: %s', is_object($value) ? get_class($value) : $value);
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'From getters cache: %s', is_object($value) ? get_class($value) : $value);
 			return $value;
 		}
 
@@ -207,7 +207,7 @@ class MvcModel {
 		if (method_exists($this, $getter)) {
 			$value = $this->$getter();
 			$this->setGetCache($property, $value);
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'Getter: %s', is_object($value) ? get_class($value) : $value);
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'Getter: %s', is_object($value) ? get_class($value) : $value);
 			return $value;
 		}
 
@@ -215,12 +215,12 @@ class MvcModel {
 		try {
 
 			$value = $this->getRaw($property);
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'From raw: %s', is_object($value) ? get_class($value) : $value);
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'From raw: %s', is_object($value) ? get_class($value) : $value);
 			return $value;
 
 		} catch (Exception $e) {}
 
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'null');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'null');
 		return null;
 	}
 	//-----------------------------------------------------------------------------
@@ -233,23 +233,23 @@ class MvcModel {
 	 */
 	public function __set($property, $value)
 	{
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s = %s', get_class($this), $property, var_export($value, true));
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, '%s::%s = %s', get_class($this), $property, var_export($value, true));
 
 		$setter = 'set' . $property;
 		if (method_exists($this, $setter)) {
 
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'Using setter');
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'Using setter');
 			$this->$setter($value);
 
 		} else {
 
-			elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'Setting raw value');
+			eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'Setting raw value');
 			$this->setRaw($property, $value);
 			$this->modified = true;
 
 		}
 
-		elog(array(get_class($this), __METHOD__), LOG_DEBUG, 'modified');
+		eresus_log(array(get_class($this), __METHOD__), LOG_DEBUG, 'modified');
 	}
 	//-----------------------------------------------------------------------------
 

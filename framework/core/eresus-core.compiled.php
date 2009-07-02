@@ -36,20 +36,19 @@
 abstract class EresusApplication {
 
 	
-	protected $opt = array();
-
-	
 	protected $fsRoot;
 
 	
 	abstract public function main();
+	//-----------------------------------------------------------------------------
 
 	
 	function __construct()
 	{
 
 		$this->initFS();
-		if (method_exists($this, 'autoload')) Core::registerAutoloader(array($this, 'autoload'));
+		if (method_exists($this, 'autoload'))
+			Core::registerAutoloader(array($this, 'autoload'));
 
 	}
 	//-----------------------------------------------------------------------------
@@ -63,19 +62,20 @@ abstract class EresusApplication {
 	
 	protected function detectFsRoot()
 	{
-		elog(__METHOD__, LOG_DEBUG, '()');
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		$path = false;
 
 		switch (true) {
 
 			case PHP::isCLI():
-				elog(__METHOD__, LOG_DEBUG, 'Using global $argv variable');
+				eresus_log(__METHOD__, LOG_DEBUG, 'Using global $argv variable');
 				$path = reset($GLOBALS['argv']);
 				$path = FS::canonicalForm($path);
 				$path = FS::dirname($path);
-				if (Core::testMode()) $path = null;
+				if (Core::testMode())
+					$path = null;
 				if (!$path) {
-					elog(__METHOD__, LOG_DEBUG, 'In addition using getcwd()');
+					eresus_log(__METHOD__, LOG_DEBUG, 'In addition using getcwd()');
 					$path = getcwd();
 
 					$path = FS::canonicalForm($path);
@@ -83,7 +83,7 @@ abstract class EresusApplication {
 			break;
 
 			default:
-				elog(__METHOD__, LOG_DEBUG, 'Using getcwd()');
+				eresus_log(__METHOD__, LOG_DEBUG, 'Using getcwd()');
 				$path = getcwd();
 				$path = FS::canonicalForm($path);
 				#TODO: The CGI SAPI supports CLI SAPI behaviour with a -C switch when run from the command line.
@@ -91,57 +91,19 @@ abstract class EresusApplication {
 		}
 
 		$path = FS::normalize($path, 'dir');
-		elog(__METHOD__, LOG_DEBUG, '"%s"', $path);
+		eresus_log(__METHOD__, LOG_DEBUG, '"%s"', $path);
 
 		return $path;
 	}
 	//-----------------------------------------------------------------------------
 
 	
-	public function getOpt($section, $key)
-	{
-		return isset($this->opt[$section][$key]) ? $this->opt[$section][$key] : null;
-	}
-	//-----------------------------------------------------------------------------
-
-	
-	protected function setOpt($section, $key, $value, $force = true)
-	{
-		if ($force || isset($this->opt[$section][$key])) $this->opt[$section][$key] = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	
 	public function getFsRoot($filename = null)
 	{
-		if ($filename) return FS::normalize($this->fsRoot . $filename);
+		if ($filename)
+			return FS::normalize($this->fsRoot . $filename);
 
 		return $this->fsRoot;
-	}
-	//-----------------------------------------------------------------------------
-
-	
-	public function load($module, $silent = false)
-	{
-		elog(__METHOD__, LOG_DEBUG, "($module)");
-		$filename = FS::nativeForm($this->getFsRoot($module . '.php'));
-
-		try {
-
-			$exists = is_file($filename);
-			elog(__METHOD__, LOG_DEBUG, 'File "%s" %s', $filename, $exists ? 'exists' : 'not exists');
-
-			if ($silent && !$exists) return null;
-
-			$result = include_once $filename;
-
-		} catch (EresusRuntimeException $e) {
-
-			throw new EresusRuntimeException($e->getDescription(), 'Can not load module "'.$module.'"', $e);
-
-		}
-		elog(__METHOD__, LOG_DEBUG, "loaded module '$filename'");
-		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -175,37 +137,27 @@ class DBSettings implements ezcBaseConfigurationInitializer
 	public static function configureObject($instance)
 	{
 		switch ( $instance ) {
+
 			case false:
-				$app = Core::app();
 
 				if (self::$dsn) {
 
 					$dsn = self::$dsn;
 					$codepage = self::$codepage;
 
-				} elseif (Registry::exists('core.db.dsn')) {  # FIXME: Deprecated
+				} else {
 
-					elog(__METHOD__, LOG_NOTICE, 'Use Registry to configure DB module is depricated. Use DBSettings instead');
+					return null;
 
-					$dsn = Registry::get('core.db.dsn');
-					$codepage = Registry::exists('core.db.codepage') ? Registry::get('core.db.codepage') : null;
-
-				} elseif ($app) { # FIXME: Deprecated
-
-					elog(__METHOD__, LOG_NOTICE, 'Use Core::$app->getOpt to configure DB module is depricated. Use DBSettings instead');
-
-					$dsn = $app->getOpt('database', 'dsn');
-					if (is_null($dsn)) throw new EresusRuntimeException(get_class($app) . '::getOpt returned NULL', 'DB connection not configured.');
-					$codepage = $app->getOpt('database', 'codepage');
-
-				} else return null;
+				}
 
 				$db = ezcDbFactory::create($dsn);
 
 				#FIXME Next line may be valid only for MySQL
 				try {
 
-					if ($codepage) $db->query('SET NAMES ' . $codepage);
+					if ($codepage)
+						$db->query('SET NAMES ' . $codepage);
 
 				} catch (Exception $e) {}
 
@@ -214,6 +166,40 @@ class DBSettings implements ezcBaseConfigurationInitializer
 	}
 	//-----------------------------------------------------------------------------
 }
+
+
+
+
+class DBRuntimeException extends EresusRuntimeException {
+}
+
+
+
+
+class DBQueryException extends DBRuntimeException {
+
+	
+	function __construct($query = null, $message = null, $previous = null)
+	{
+		if ($query instanceof ezcQuery) {
+
+			$insider = new DBQueryInsider;
+			$query->doBind($insider);
+			$query = $insider->subst($query);
+		}
+
+		if (is_null($message))
+			$message = 'Database query failed';
+
+		if (!is_null($previous))
+			$query = $previous->getMessage() . ': ' . $query;
+
+		parent::__construct($query, $message, $previous);
+	}
+	//-----------------------------------------------------------------------------
+
+}
+
 
 
 
@@ -230,11 +216,11 @@ class DB {
 	//-----------------------------------------------------------------------------
 
 	
-	private static function getInstance()
+	public static function getInstance()
 	{
-		if (self::$testInstance) return self::$testInstance;
+		if (!self::$testInstance) return ezcDbInstance::get();
 
-		return ezcDbInstance::get();
+		return self::$testInstance;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -277,12 +263,14 @@ class DB {
 
 		try {
 
-			elog(__METHOD__, LOG_DEBUG, 'Query "%s"', $query);
+			eresus_log(__METHOD__, LOG_DEBUG, 'Query "%s"', $query);
 			$result = $stmt->execute();
 
 		} catch (Exception $e) {
 
-			Core::handleException(new EresusRuntimeException($stmt->queryString, 'Database query failed'));
+			$exception = new DBQueryException($query, null, $e);
+			if (Core::testMode()) throw new $exception;
+			Core::handleException($exception);
 			$result = false;
 
 		}
@@ -294,7 +282,7 @@ class DB {
 	
 	public static function fetch($query)
 	{
-		elog(__METHOD__, LOG_DEBUG, 'Query "%s"', $query->getQuery());
+		eresus_log(__METHOD__, LOG_DEBUG, 'Query "%s"', $query->getQuery());
 		$stmt = $query->prepare();
 
 		try {
@@ -303,7 +291,7 @@ class DB {
 
 		} catch (Exception $e) {
 
-			throw new EresusRuntimeException($query->getQuery(), $e->getMessage(), $e);
+			throw new DBQueryException($query, null, $e);
 
 		}
 
@@ -316,7 +304,7 @@ class DB {
 	
 	public static function fetchAll($query)
 	{
-		elog(__METHOD__, LOG_DEBUG, 'Query "%s"', $query->getQuery());
+		eresus_log(__METHOD__, LOG_DEBUG, 'Query "%s"', $query->getQuery());
 		$stmt = $query->prepare();
 
 		try {
@@ -325,7 +313,7 @@ class DB {
 
 		} catch (Exception $e) {
 
-			throw new EresusRuntimeException($query->getQuery(), $e->getMessage(), $e);
+			throw new DBQueryException($query, null, $e);
 
 		}
 
@@ -337,7 +325,54 @@ class DB {
 }
 
 
-if (!Core::testMode()) ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'DBSettings');
+
+
+class DBQueryInsider extends PDOStatement {
+
+	
+	protected $values = array();
+
+	
+	public function bindValue($paramno, $param, $type = null)
+	{
+		switch ($type) {
+
+			case PDO::PARAM_BOOL:
+			break;
+
+			case PDO::PARAM_INT:
+			break;
+
+			case PDO::PARAM_STR:
+				$param = '"' . addslashes($param) . '"';
+			break;
+		}
+
+		$this->values[$paramno] = $param;
+
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public function bindParam($paramno, &$param, $type = null, $maxlen = null, $driverdata = null)
+	{
+		$this->bindValue($paramno, $param, $type);
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public function subst($query)
+	{
+		foreach ($this->values as $key => $value)
+			$query = preg_replace("/$key(\s|,|$)/", "$value$1", $query);
+
+		return $query;
+	}
+	//-----------------------------------------------------------------------------
+
+}
+
+ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'DBSettings');
 
 
 
@@ -440,12 +475,6 @@ class Template
 
 			$compileDir = Registry::get('core.template.templateDir');
 
-		}	elseif ($app = Core::app()) { #TODO Deprecated. Remove.
-
-			$compileDir = $app->getOpt('templates', 'templateDir');
-			if ($compileDir)
-				$compileDir = $app->getFsRoot() . $compileDir;
-
 		} else $compileDir = '';
 
 		return $compileDir;
@@ -457,9 +486,6 @@ class Template
 	{
 		if (Registry::exists('core.template.fileExtension'))
 			$fileExtension = Registry::get('core.template.fileExtension');
-
-		elseif ($app = Core::app()) #TODO Deprecated. Remove.
-			$fileExtension = $app->getOpt('templates', 'fileExt');
 
 		else $fileExtension = '';
 
@@ -473,12 +499,6 @@ class Template
 		if (Registry::exists('core.template.compileDir')) {
 
 			$compileDir = Registry::get('core.template.compileDir');
-
-		}	elseif ($app = Core::app()) { #TODO Deprecated. Remove.
-
-			$compileDir = $app->getOpt('templates', 'compileDir');
-			if ($compileDir)
-				$compileDir = $app->getFsRoot() . $compileDir;
 
 		} else $compileDir = '';
 
@@ -625,6 +645,14 @@ class HTTP {
 	static private $request;
 
 	
+	static public function setTestRequest($request)
+	{
+		if (Core::testMode())
+			self::$request = $request;
+	}
+	//-----------------------------------------------------------------------------
+
+	
 	static public function request()
 	{
 		if (!self::$request) self::$request = new HttpRequest();
@@ -635,13 +663,16 @@ class HTTP {
 	
 	static public function redirect($uri, $permanent = false)
 	{
-		elog(__METHOD__, LOG_DEBUG, $uri);
+		eresus_log(__METHOD__, LOG_DEBUG, $uri);
 
 		$header = 'Location: '.$uri;
 
-		if ($permanent) header($header, true, 301);
-		else header($header);
-		die;
+		if ($permanent)
+			header($header, true, 301);
+		else
+			header($header);
+
+		if (!Core::testMode()) exit;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -685,7 +716,14 @@ class HttpRequest {
 				if (!PHP::isCLI()) {
 					if (isset($_SERVER['REQUEST_URI'])) $this->request = @parse_url($_SERVER['REQUEST_URI']);
 					$this->request['local'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
-					$this->request['args'] = array_merge($_GET, $_POST);
+					$this->request['args'] = $_POST;
+					foreach($_GET as $key => $value)
+						if (!isset($this->request['args'][$key]))
+							$this->request['args'][$key] = $value;
+
+					if ($this->request['args'] && (get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc')))
+						$this->request['args'] = ecStripSlashes($this->request['args']);
+
 				}
 			break;
 
@@ -729,6 +767,13 @@ class HttpRequest {
 		$result = $this->request['method'];
 
 		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public function setMethod($value)
+	{
+		$this->request['method'] = $value;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -829,10 +874,21 @@ class HttpRequest {
 	{
 		$result = isset($this->request['args'][$arg]) ? $this->request['args'][$arg] : null;
 
-		if ($result && (get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc')))
-			$result = stripslashes($result);
-
 		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public function getArg($arg)
+	{
+		return $this->arg($arg);
+	}
+	//-----------------------------------------------------------------------------
+
+	
+	public function setArg($arg, $value)
+	{
+		$this->request['args'][$arg] = $value;
 	}
 	//-----------------------------------------------------------------------------
 
