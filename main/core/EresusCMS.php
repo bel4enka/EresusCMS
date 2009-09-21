@@ -56,21 +56,24 @@ class EresusCMS extends MvcApplication {
 	 */
 	public function main()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		/* Отключение закавычивания передаваемых данных */
 		set_magic_quotes_runtime(0);
 
 		/* Подключение таблицы автозагрузки классов */
 		EresusClassAutoloader::add('cms.autoload.php');
 
-		/* Подключение старого ядра */
-		#include_once 'kernel-legacy.php';
-		#$GLOBALS['Eresus'] = new Eresus;
-		#$GLOBALS['Eresus']->init();
-
 		/* Общая инициализация */
 		$this->initConf();
 		$this->initDB();
 		$this->initSession();
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+		/* Подключение старого ядра */
+		include_once 'kernel-legacy.php';
+		$GLOBALS['Eresus'] = new Eresus;
+		$GLOBALS['Eresus']->init();
 
 		if (PHP::isCLI()) {
 
@@ -91,6 +94,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function runWeb()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		$this->initWeb();
 
 		/*
@@ -121,6 +126,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initWeb()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		Registry::set('core.template.compileDir', Core::app()->getFsRoot() . 'cache/templates');
 
 		$this->request = HTTP::request();
@@ -138,6 +145,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function detectWebRoot()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
 		$SUFFIX = dirname(__FILE__);
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
@@ -157,6 +166,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initRoutes()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		$this->router = new Router($this->request, $this->response);
 		$this->router->add(
 			new Route('/admin', '*', 'AdminFrontController')
@@ -170,6 +181,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function runCLI()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		$this->initCLI();
 		return 0;
 	}
@@ -180,7 +193,7 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initCLI()
 	{
-		;
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -189,6 +202,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initConf()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
 		@include_once 'cfg/main.php';
@@ -202,6 +217,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initDB()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
 		// FIXME Использование устаревших настроек
@@ -220,6 +237,8 @@ class EresusCMS extends MvcApplication {
 	 */
 	protected function initSession()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);

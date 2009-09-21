@@ -2,7 +2,7 @@
 /**
  * Eresus Core
  *
- * @version 0.1.0
+ * @version 0.1.1
  *
  * Kernel module
  *
@@ -22,10 +22,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  *
- * @author  Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * $Id$
  */
@@ -33,7 +32,7 @@
 /**
  * Eresus Core version
  */
-define('ERESUS_CORE_VERSION', '0.1.0');
+define('ERESUS_CORE_VERSION', '0.1.1');
 
 /**
  * Emergency memory buffer size in KiB
@@ -49,12 +48,18 @@ define('ERESUS_MEMORY_OVERFLOW_BUFFER', 64);
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /**
- * Log message
+ * Write message to log
  *
- * @param string|array $sender                  Sender name. Use __METHOD__, array(get_class($this), __METHOD__) or __FUNCTION__
- * @param int          $priority                Message priority. See LOG_XXX
- * @param string       $message                 Message. Can contain substitutions (see sprintf)
- * @param mixed        $arg,... [optional]      Some variables
+ * This function writes message to log. By default only messages with
+ * LOG_ERR or higher priorities are logging. This can be changed by
+ * defining constant with name ERESUS_LOG_LEVEL.
+ *
+ * Log file defined by PHP ini settings error_log and log_errors.
+ *
+ * @param string|array $sender              Sender name. Use __METHOD__, array(get_class($this), __METHOD__) or __FUNCTION__
+ * @param int          $priority            Message priority. See LOG_XXX
+ * @param string       $message             Message. Can contain substitutions (see sprintf)
+ * @param mixed        $arg,... [optional]  Some variables
  */
 function eresus_log($sender, $priority, $message)
 {
@@ -139,8 +144,7 @@ function eresus_log($sender, $priority, $message)
  * standard PHP exceptions they must all implement this interface
  * class.
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 interface EresusExceptionInterface {
 
@@ -163,8 +167,7 @@ interface EresusExceptionInterface {
 /**
  * Runtime exception
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusRuntimeException extends RuntimeException implements EresusExceptionInterface {
 
@@ -249,8 +252,7 @@ class EresusRuntimeException extends RuntimeException implements EresusException
 /**
  * Logic exception
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusLogicException extends LogicException implements EresusExceptionInterface {
 
@@ -336,8 +338,7 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 /**
  * "Type" exception
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusTypeException extends EresusRuntimeException {
 
@@ -378,8 +379,7 @@ class EresusTypeException extends EresusRuntimeException {
 /**
  * "Value" exception
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusValueException extends EresusLogicException {
 
@@ -419,8 +419,7 @@ class EresusValueException extends EresusLogicException {
 /**
  * "Property not exists" exception
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusPropertyNotExistsException extends EresusRuntimeException {
 
@@ -460,8 +459,7 @@ class EresusPropertyNotExistsException extends EresusRuntimeException {
 /**
  * "Method not exists" exception
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusMethodNotExistsException extends EresusRuntimeException {
 
@@ -536,8 +534,7 @@ define('VERSION_EXTRA', 0x05);
  *
  * Part of functions was taken from a {@link http://limb-project.com/ Limb3 project}
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class PHP {
 
@@ -740,8 +737,7 @@ class PHP {
  *
  * Part of functions was taken from a Limb3 project - http://limb-project.com/
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class System {
 
@@ -830,8 +826,8 @@ class System {
  * The most important goal of FS is uniform file names for UNIX and Windows
  * systems.
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
+ * @subpackage FS
  */
 class FS {
 
@@ -970,8 +966,8 @@ class FS {
 /**
  * Generic file system class
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
+ * @subpackage FS
  */
 class GenericFS {
 
@@ -1138,9 +1134,9 @@ class GenericFS {
 }
 
 /**
- * Microsoft(R) Windows(TM) file system driver class
+ * Microsoft® Windows® file system driver class
  *
- * @package Core
+ * @package Kernel
  * @subpackage FS
  */
 class WindowsFS extends GenericFS {
@@ -1211,8 +1207,7 @@ class WindowsFS extends GenericFS {
 /**
  * Error wrapper
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class EresusErrorDecorator extends EresusRuntimeException {
 
@@ -1391,10 +1386,9 @@ function EresusFatalErrorHandler($output)
 /**
  * Class autoload table
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  *
- * @author mekras
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 class EresusClassAutoloadTable {
 
@@ -1497,10 +1491,9 @@ class EresusClassAutoloadTable {
 /**
  * Eresus class autoloader
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  *
- * @author mekras
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 class EresusClassAutoloader {
 
@@ -1538,8 +1531,7 @@ class EresusClassAutoloader {
 /**
  * Main Eresus Core class
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  */
 class Core {
 

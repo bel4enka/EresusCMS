@@ -22,8 +22,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * $Id$
@@ -136,6 +135,8 @@ class DBSettings implements ezcBaseConfigurationInitializer
 	
 	public static function configureObject($instance)
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '(%s)', $instance);
+
 		switch ( $instance ) {
 
 			case false:
@@ -147,13 +148,15 @@ class DBSettings implements ezcBaseConfigurationInitializer
 
 				} else {
 
+					eresus_log(__METHOD__, LOG_DEBUG, 'null');
 					return null;
 
 				}
 
+				eresus_log(__METHOD__, LOG_DEBUG, 'Using DSN: %s', $dsn);
 				$db = ezcDbFactory::create($dsn);
 
-				#FIXME Next line may be valid only for MySQL
+				#FIXME Next may be valid only for MySQL
 				try {
 
 					if ($codepage)

@@ -2,7 +2,7 @@
 /**
  * Eresus Core
  *
- * @version 0.1.0
+ * @version 0.1.1
  *
  * Init module
  *
@@ -22,8 +22,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package Core
- * @subpackage Kernel
+ * @package Kernel
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * $Id$

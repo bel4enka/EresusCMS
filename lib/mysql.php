@@ -99,7 +99,7 @@ class MySQL {
 			$values[] = $row;
 		}
 		return $values;*/
-		$db = ezcDbInstance::get();
+		$db = DB::getInstance();
 		$rows = $db->query($query);
 		return $rows;
 	}

@@ -41,7 +41,7 @@ ini_set('error_log', 'cms.log');
 /**
  * Уровень детализации журнала
  */
-define('ERESUS_LOG_LEVEL' , LOG_WARNING);
+define('ERESUS_LOG_LEVEL' , ${log.level});
 
 
 /**
