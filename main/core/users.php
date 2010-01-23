@@ -100,7 +100,12 @@ class TUsers extends Accounts {
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function update()
+
+	/**
+	 * @param void $dummy  Используется для совместимости с родителтским методом
+	 * @see main/core/lib/EresusAccounts#update($item)
+	 */
+	function update($dummy = null)
 	{
 		global $Eresus, $page;
 
@@ -149,7 +154,12 @@ class TUsers extends Accounts {
 		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function delete()
+
+	/**
+	 * @param void $dummy  Используется для совместимости с родителтским методом
+	 * @see main/core/lib/EresusAccounts#delete($id)
+	 */
+	function delete($dummy = null)
 	{
 		global $Eresus, $page;
 

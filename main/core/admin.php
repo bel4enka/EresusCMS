@@ -31,7 +31,7 @@
 define('ADMINUI', true);
 
 # Подключаем ядро системы #
-$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
+$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel-legacy.php';
 if (is_file($filename)) include_once($filename); else {
 	echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
 	exit;
