@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+ Eresus 2
+
+ Файл сборки проекта
+
+ $Id$
+ -->
 <project name="eresus2" default="build" basedir="./">
 
 	<property file="build.properties" />
@@ -8,9 +15,11 @@
 	</php>
 
 	<!--
-		Build only main targets
+	=====================================================================
+		Сборка основных модулей
+	=====================================================================
 	-->
-	<target name="core" description="Build only core modules">
+	<target name="core" description="Build core modules only">
 
 		<mkdir dir="${builddir}" />
 
@@ -19,6 +28,15 @@
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
+		</copy>
+
+		<!-- Eresus Core -->
+		<echo msg="Copying Eresus Core..." level="info" />
+		<copy todir="${build.dir}/core/framework">
+			<fileset refid="files.framework" />
+			<filterchain>
+				<expandproperties />
+			</filterchain>
 		</copy>
 
 		<copy todir="${builddir}/core/lib">
@@ -105,6 +123,12 @@
 
 	<!-- Main project files -->
 	<fileset dir="main" id="main_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Framework files -->
+	<fileset dir="framework" id="files.framework">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
