@@ -1,0 +1,23 @@
+#Sat Jan 23 12:01:11 MSK 2010
+eclipse.preferences.version=1
+encoding//main/core/admin.css=windows-1251
+encoding//main/core/admin.php=windows-1251
+encoding//main/core/classes.php=windows-1251
+encoding//main/core/classes/ListContentPlugin.php=windows-1251
+encoding//main/core/classes/backward/TContentPlugin.php=windows-1251
+encoding//main/core/classes/backward/TListContentPlugin.php=windows-1251
+encoding//main/core/classes/backward/TPlugins.php=windows-1251
+encoding//main/core/client.php=windows-1251
+encoding//main/core/content.php=windows-1251
+encoding//main/core/dlg/BrowseFile.php=windows-1251
+encoding//main/core/files.php=windows-1251
+encoding//main/core/kernel-legacy.php=windows-1251
+encoding//main/core/lib/accounts.php=windows-1251
+encoding//main/core/lib/sections.php=windows-1251
+encoding//main/core/pages.php=windows-1251
+encoding//main/core/plgmgr.php=windows-1251
+encoding//main/core/settings.php=windows-1251
+encoding//main/core/themes.php=windows-1251
+encoding//main/core/users.php=windows-1251
+encoding/build.properties=windows-1251
+encoding/readme.txt=windows-1251
