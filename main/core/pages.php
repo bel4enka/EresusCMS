@@ -125,13 +125,33 @@ class TPages
 		global $Eresus, $page;
 
 		$old = $Eresus->sections->get(arg('update', 'int'));
-		$item = GetArgs($old, array('active', 'visible'));
-		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
-		$item['options'] = text2array($item['options'], true);
-		$item['updated'] = gettime('Y-m-d H:i:s');
-		if (arg('updatedAuto')) $item['updated'] = gettime();
+		$item = $old;
+
+		if (arg('id'))
+			$item['id'] = arg('id', 'int');
+		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', arg('name', 'dbsafe'));
+		$item['title'] = arg('title', 'dbsafe');
+		$item['caption'] = arg('caption', 'dbsafe');
+		$item['description'] = arg('description', 'dbsafe');
+		$item['hint'] = arg('hint', 'dbsafe');
+		$item['keywords'] = arg('keywords', 'dbsafe');
+		$item['template'] = arg('template', 'dbsafe');
+		$item['type'] = arg('type', 'dbsafe');
+		$item['active'] = arg('active', 'int');
+		$item['visible'] = arg('visible', 'int');
+		$item['access'] = arg('access', 'int');
+		$item['position'] = arg('position', 'int');
+		$item['options'] = text2array(arg('options'), true);
+		if (arg('created'))
+			$item['created'] = arg('created', 'dbsafe');
+		$item['updated'] = arg('updated', 'dbsafe');
+		if (arg('updatedAuto'))
+			$item['updated'] = gettime('Y-m-d H:i:s');
+
 		$Eresus->sections->update($item);
+
 		SendNotify($this->notifyMessage($item, $old));
+
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
