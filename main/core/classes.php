@@ -432,7 +432,7 @@ class Plugins {
 				}
 			break;
 			case 'url':
-				goto($page->replaceMacros($page->content));
+				HTTP::redirect($page->replaceMacros($page->content));
 			break;
 			default:
 			if ($this->load($page->type)) {
@@ -985,7 +985,7 @@ function updateContent($content)
 function adminUpdate()
 {
 	$this->updateContent(arg('content', 'dbsafe'));
-	goto(arg('submitURL'));
+	HTTP::redirect(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
 /**

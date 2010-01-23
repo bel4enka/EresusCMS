@@ -70,7 +70,7 @@ class TThemes {
 		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), '', arg('code', 'int'), arg('desc'));
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionTemplatesUpdate()
@@ -78,7 +78,7 @@ class TThemes {
 		useLib('templates');
 		$templates = new Templates();
 		$templates->update(arg('name'), '', arg('code', 'int'), arg('desc'));
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionTemplatesDelete()
@@ -88,7 +88,7 @@ class TThemes {
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'));
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionTemplatesAdd()
@@ -195,7 +195,7 @@ class TThemes {
 		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionStdUpdate()
@@ -210,7 +210,7 @@ class TThemes {
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'), 'std');
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionStdAdd()
@@ -335,7 +335,7 @@ class TThemes {
 		fwrite($fp, $file);
 		fclose($fp);
 		SendNotify((arg('update')?admUpdated:admAdded).': '.arg('filename').'.css');
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionStylesUpdate()
@@ -352,7 +352,7 @@ class TThemes {
 		$filename = filesRoot.'style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
 		SendNotify(admDeleted.': '.arg('delete'));
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionStylesAdd()

@@ -692,7 +692,7 @@ class ListContentPlugin extends ContentPlugin {
 		$item = new $this->ItemClassName($this);
 		$item->setFromRequest();
 		$item->insert();
-		goto(arg('submitURL'));
+		HTTP::redirecto(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -720,7 +720,7 @@ class ListContentPlugin extends ContentPlugin {
 		$item->load(arg('id', 'int'));
 		$item->setFromRequest();
 		$item->update();
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -734,7 +734,7 @@ class ListContentPlugin extends ContentPlugin {
 		$item = new $this->ItemClassName($this);
 		$item->load(arg('id', 'int'));
 		$item->toggle();
-		goto($Eresus->request['referer']);
+		HTTP::redirect($Eresus->request['referer']);
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -748,7 +748,7 @@ class ListContentPlugin extends ContentPlugin {
 		$item = new $this->ItemClassName($this);
 		$item->load(arg('id', 'int'));
 		$item->delete();
-		goto($Eresus->request['referer']);
+		HTTP::redirect($Eresus->request['referer']);
 	}
 	//-----------------------------------------------------------------------------
 	function adminActionUp()
@@ -758,7 +758,7 @@ class ListContentPlugin extends ContentPlugin {
 		$item = new $this->ItemClassName($this);
 		$item->load(arg('id', 'int'));
 		$item->position(-1);
-		goto($Eresus->request['referer']);
+		HTTP::redirect($Eresus->request['referer']);
 	}
 	//-----------------------------------------------------------------------------
 	function adminActionDown()
@@ -768,7 +768,7 @@ class ListContentPlugin extends ContentPlugin {
 		$item = new $this->ItemClassName($this);
 		$item->load(arg('id', 'int'));
 		$item->position(+1);
-		goto($Eresus->request['referer']);
+		HTTP::redirect($Eresus->request['referer']);
 	}
 	//-----------------------------------------------------------------------------
 	/**

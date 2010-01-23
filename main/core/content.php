@@ -50,7 +50,7 @@ class TContent {
 							$item['content'] = arg('content', 'dbsafe');
 							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
 							sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$item['content']);
-							goto(arg('submitURL'));
+							HTTP::redirect(arg('submitURL'));
 						} else {
 							$form = array(
 								'name' => 'editURL',
@@ -71,7 +71,7 @@ class TContent {
 							$item['content'] = arg('url', 'dbsafe');
 							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
 							sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$original.' &rarr; '.$item['content']);
-							goto(arg('submitURL'));
+							HTTP::redirect(arg('submitURL'));
 						} else {
 							$form = array(
 								'name' => 'editURL',

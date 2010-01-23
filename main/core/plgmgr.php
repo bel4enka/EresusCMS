@@ -38,7 +38,7 @@ class TPlgMgr {
 		$Eresus->db->update('plugins', "`active` = NOT `active`", "`name`='".$Eresus->request['arg']['toggle']."'");
 		$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['toggle']."'");
 		SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['title']);
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function delete()
@@ -48,7 +48,7 @@ class TPlgMgr {
 		$Eresus->plugins->load($Eresus->request['arg']['delete']);
 		$Eresus->plugins->uninstall($Eresus->request['arg']['delete']);
 		SendNotify(admDeleted.': '.$Eresus->plugins->list[$Eresus->request['arg']['delete']]['title']);
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function edit()
@@ -79,7 +79,7 @@ class TPlgMgr {
 
 		$Eresus->plugins->load($Eresus->request['arg']['update']);
 		$Eresus->plugins->items[$Eresus->request['arg']['update']]->updateSettings();
-		goto($Eresus->request['arg']['submitURL']);
+		HTTP::redirect($Eresus->request['arg']['submitURL']);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function insert()
@@ -93,7 +93,7 @@ class TPlgMgr {
 				SendNotify(admPluginsAdded.': '.$plugin, array('url' => $page->url(array('action'=>''))));
 			}
 		}
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function add()
@@ -176,7 +176,7 @@ class TPlgMgr {
 			$Eresus->db->update('plugins', "`position` = `position`+1", "`position` = '".($item['position']-1)."'");
 			$Eresus->db->update('plugins', "`position` = `position`-1", "`name` = '".$item['name']."'");
 		}
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function down()
@@ -189,7 +189,7 @@ class TPlgMgr {
 			$Eresus->db->update('plugins', "`position` = `position`-1", "`position` = '".($item['position']+1)."'");
 			$Eresus->db->update('plugins', "`position` = `position`+1", "`name` = '".$item['name']."'");
 		}
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function adminRender()

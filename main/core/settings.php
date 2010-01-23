@@ -95,7 +95,7 @@ class TSettings {
 		fwrite($fp, $settings);
 		fclose($fp);
 		SendNotify(str_replace(array('<?', '?>'), '', $settings));
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function sectionMain()

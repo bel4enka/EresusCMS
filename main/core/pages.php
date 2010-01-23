@@ -81,11 +81,11 @@ class TPages {
 			$item = $Eresus->sections->add($item);
 			SendNotify($this->notifyMessage($item));
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
-			goto($page->url(array('id'=>'')));
+			HTTP::redirect($page->url(array('id'=>'')));
 		} else {
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			goto($Eresus->request['referer']);
+			HTTP::redirect($Eresus->request['referer']);
 		}
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -101,7 +101,7 @@ class TPages {
 		if (arg('updatedAuto')) $item['updated'] = gettime();
 		$Eresus->sections->update($item);
 		SendNotify($this->notifyMessage($item, $old));
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function selectList($skip=0, $owner = 0, $level = 0)
@@ -142,7 +142,7 @@ class TPages {
 				$Eresus->sections->update($temp);
 			}
 		}
-		goto($page->url(array('id'=>'')));
+		HTTP::redirect($page->url(array('id'=>'')));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function moveDown()
@@ -163,7 +163,7 @@ class TPages {
 				$Eresus->sections->update($temp);
 			}
 		}
-		goto($page->url(array('id'=>'')));
+		HTTP::redirect($page->url(array('id'=>'')));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function move()
@@ -177,7 +177,7 @@ class TPages {
 			$item['owner'] = arg('to', 'int');
 			$item['position'] = count($Eresus->sections->children($item['owner']));
 			$Eresus->sections->update($item);
-			goto($page->url(array('id'=>'')));
+			HTTP::redirect($page->url(array('id'=>'')));
 		} else {
 			$select = $this->selectList($item['id']);
 			array_unshift($select[0], 0);
@@ -223,7 +223,7 @@ class TPages {
 		$Eresus->sections->delete(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		SendNotify(admDeleted.":\n".$this->notifyMessage($item));
-		goto($page->url(array('id'=>'')));
+		HTTP::redirect($page->url(array('id'=>'')));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function loadContentTypes()
