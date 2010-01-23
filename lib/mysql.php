@@ -52,7 +52,7 @@ class MySQL {
 	*/
 	function init($server, $username, $password, $source, $prefix='')
 	{
-		/* $result = false;
+		$result = false;
 		$this->name = $source;
 		$this->prefix = $prefix;
 		@$this->Connection = mysql_connect($server, $username, $password, true);
@@ -64,7 +64,7 @@ class MySQL {
 			if (mysql_select_db($this->name, $this->Connection)) $result = true;
 			elseif ($this->error_reporting) FatalError(mysql_error($this->Connection));
 		} elseif ($this->error_reporting) FatalError("Can not connect to MySQL server. Check login and password");
-		return $result;*/
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
  /**
@@ -92,16 +92,13 @@ class MySQL {
 	*/
 	function query_array($query)
 	{
-		/*$result = $this->query($query);
+		$result = $this->query($query);
 		$values = Array();
 		while($row = mysql_fetch_assoc($result)) {
 			if (count($row)) foreach($row as $key => $value) $row[$key] = $value;
 			$values[] = $row;
 		}
-		return $values;*/
-		$db = DB::getInstance();
-		$rows = $db->query($query);
-		return $rows;
+		return $values;
 	}
 	//------------------------------------------------------------------------------
 	/**

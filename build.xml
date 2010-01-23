@@ -1,122 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
 
- $Id$
- -->
-<project name="eresus-cms" default="build" basedir="./">
+<project name="eresus2" default="build" basedir="./">
 
 	<property file="build.properties" />
-
 	<php function="date" returnProperty="builddate">
 	  <param value="Y-m-d"/>
 	</php>
 
 	<!--
-		Clean up
+		Build only main targets
 	-->
-	<target name="clean" description="Clean up build files">
+	<target name="core" description="Build only core modules">
 
-		<echo msg="Clean up: ${dir.build}..." level="info" />
+		<mkdir dir="${builddir}" />
 
-		<if>
-			<available file="${dir.build}" />
-
-			<then>
-				<delete includeemptydirs="true" failonerror="true">
-					<fileset dir="${dir.build}">
-						<include name="**/*" />
-						<exclude name=".svn" />
-						<exclude name=".svn/*" />
-					</fileset>
-				</delete>
-			</then>
-
-		</if>
-
-	</target>
-
-	<!--
-		Prepare for build
-	-->
-	<target name="prepare" depends="clean" description="Prepare for build">
-
-		<echo msg="Build directory: ${dir.build}" level="info" />
-
-		<echo msg="Create build directory..." level="info" />
-		<mkdir dir="${dir.build}" />
-
-		<echo msg="Ready to build" level="info" />
-
-	</target>
-
-	<!--
-		Build project
-	-->
-	<target name="build" depends="prepare" description="Build project">
-
-		<php function="date" returnProperty="build.year">
-		  <param value="Y"/>
-		</php>
-
-		<echo msg="Copying main files..." level="info" />
-		<copy todir="${dir.build}">
-			<fileset refid="files.main" />
+		<copy todir="${builddir}">
+			<fileset refid="main_files" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
 		</copy>
 
-		<mkdir dir="${dir.build}/cache" />
-		<chmod file="${dir.build}/cache" mode="0777" />
-		<mkdir dir="${dir.build}/cache/templates" />
-		<chmod file="${dir.build}/cache/templates" mode="0777" />
-
-		<echo msg="Copying AdminUI themes files..." level="info" />
-		<copy todir="${dir.build}/core/admin/themes">
-			<fileset refid="files.admin.themes" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<echo msg="Copying Eresus Framework..." level="info" />
-		<copy todir="${dir.build}/core/framework">
-			<fileset refid="files.framework" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<echo msg="Copying libraries..." level="info" />
-		<copy todir="${dir.build}/core/lib">
-			<fileset refid="files.lib" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<echo msg="Copying l10n files..." level="info" />
-		<copy todir="${dir.build}/lang">
-			<fileset refid="files.l10n" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<echo msg="Copying reset.css..." level="info" />
-		<copy todir="${dir.build}/core/admin/themes/">
-			<fileset refid="files.reset.css" />
-		</copy>
-
-		<echo msg="Copying unit tests..." level="info" />
-		<copy todir="${dir.build}/tests">
-			<fileset refid="files.tests" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-<!--
 		<copy todir="${builddir}/core/lib">
 			<fileset refid="libs_files" />
 			<filterchain>
@@ -124,7 +28,20 @@
 		  </filterchain>
 		</copy>
 
-		<echo msg="" />
+		<copy todir="${builddir}/">
+			<fileset refid="l10n_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+	</target>
+
+	<!--
+		Build project
+	-->
+	<target name="build" depends="core" description="Build basic set of modules">
+
 		<mkdir dir="${builddir}/distrib" />
 		<copy todir="${builddir}/distrib">
 			<fileset refid="db_files" />
@@ -142,7 +59,7 @@
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
-		</copy>-->
+		</copy>
 
   </target>
 
@@ -165,7 +82,11 @@
 	<!--
 		Run unit tests
 	-->
-	<target name="test" description="Run unit tests">
+	<target name="test" depends="core" description="Run unit tests">
+
+		<copy todir="${builddir}">
+			<fileset refid="tests_files" />
+		</copy>
 
 		<phpunit printsummary="true">
 			<formatter type="plain" usefile="false" />
@@ -183,67 +104,50 @@
 	<!-- - - - - - - - - - - - - - - - - - - - - -->
 
 	<!-- Main project files -->
-	<fileset dir="main" id="files.main">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- AdminUI themes -->
-	<fileset dir="themes" id="files.admin.themes">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- Framework files -->
-	<fileset dir="framework" id="files.framework">
+	<fileset dir="main" id="main_files">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
 
 	<!-- libs files -->
-	<fileset dir="lib" id="files.lib">
+	<fileset dir="lib" id="libs_files">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
 
 	<!-- DB templates -->
-	<fileset dir="db" id="files.db">
+	<fileset dir="db" id="db_files">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
 
 	<!-- l10n files -->
-	<fileset dir="lang" id="files.l10n">
-		<include name="**" />
+	<fileset dir="." id="l10n_files">
+		<include name="lang/**" />
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- reset.css -->
-	<fileset dir="3rdparty/reset" id="files.reset.css">
-		<include name="reset.css" />
-	</fileset>
-
 	<!-- Tools files -->
-	<fileset dir="." id="files.tools">
+	<fileset dir="." id="tools_files">
 		<include name="tools/**" />
 		<exclude name=".svn" />
 	</fileset>
 
 	<!-- 3rd party extensions -->
-	<fileset dir="." id="files.3rdparty">
+	<fileset dir="." id="3rdparty_files">
 		<include name="ext-3rd/**" />
 		<exclude name=".svn" />
 	</fileset>
 
 	<!-- SDK files -->
-	<fileset dir="." id="files.sdk">
+	<fileset dir="." id="SDK_files">
 		<include name="SDK/**" />
 		<exclude name=".svn" />
 	</fileset>
 
 	<!-- Unit tests -->
-	<fileset dir="tests" id="files.tests">
-		<include name="**" />
+	<fileset dir="." id="tests_files">
+		<include name="t/**" />
 		<exclude name=".svn" />
 	</fileset>
 

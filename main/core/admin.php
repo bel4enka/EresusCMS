@@ -30,6 +30,13 @@
 
 define('ADMINUI', true);
 
+# Подключаем ядро системы #
+$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
+if (is_file($filename)) include_once($filename); else {
+	echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
+	exit;
+}
+
 function __macroConst($matches) {
 	return constant($matches[1]);
 }
@@ -578,7 +585,7 @@ class TAdminUI extends WebPage {
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 # Проверям права доступа и если надо, проводим авторизацию
-/*if (!UserRights(EDITOR)) {
+if (!UserRights(EDITOR)) {
 	$messages = '';
 	if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
 		foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message, errError);
@@ -607,7 +614,6 @@ class TAdminUI extends WebPage {
 	exit;
 }
 
-$GLOBALS['page'] = new TAdminUI;
-$GLOBALS['page']->init();
-$GLOBALS['page']->render();
-*/
+$page = new TAdminUI;
+$page->init();
+$page->render();

@@ -37,8 +37,8 @@ class TPlugins {
   {
   	global $Eresus;
 
-    //$items = $Eresus->db->select('`plugins`', '', '`position`');
-    //if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
+    $items = $Eresus->db->select('`plugins`', '', '`position`');
+    if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
   }
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	/**

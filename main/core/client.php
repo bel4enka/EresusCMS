@@ -30,6 +30,16 @@
 
 define('CLIENTUI', true);
 
+###cut:start (testing purpose)
+# Подключаем ядро системы #
+$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel.php';
+if (is_file($filename)) include_once($filename); else {
+	echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
+	exit;
+}
+
+###cut:end (testing purpose)
+
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __macroConst($matches) {
 	return constant($matches[1]);
@@ -544,8 +554,8 @@ class TClientUI extends WebPage {
 
 ###cut:start (testing purpose)
 
-$GLOBALS['page'] = new TClientUI;
-$GLOBALS['page']->init();
-$GLOBALS['page']->render();
+$page = new TClientUI;
+$page->init();
+$page->render();
 
 ###cut:end (testing purpose)
