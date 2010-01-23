@@ -412,11 +412,11 @@ class Form {
 			"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
 			$result.
 			"\t\t<tr><td colspan=\"2\" align=\"center\"><br />".
-			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<input name="form_ok" type="submit" class="button" value="'.$this->form['buttons']['ok'].'" /> ':'').
-			(!isset($this->form['buttons']) || in_array('ok', $this->form['buttons'])?"<input name=\"form_ok\" type=\"submit\" class=\"button\" value=\"".strOk."\" /> ":''). # onClick=\"formOKClick('".$form['name']."')\"> ":'').
+			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<input name="form_ok" type="submit" class="button" value="'.$this->form['buttons']['ok'].'" onclick=\"this.disabled = true;\" /> ':'').
+			(!isset($this->form['buttons']) || in_array('ok', $this->form['buttons'])?"<input name=\"form_ok\" type=\"submit\" class=\"button\" value=\"".strOk."\" onclick=\"this.disabled = true;\" /> ":''). # onClick=\"formOKClick('".$form['name']."')\"> ":'').
 
-			((isset($this->form['buttons']) && isset($this->form['buttons']['apply']))?'<input name="form_apply" type="submit" class="button" value="'.$this->form['buttons']['apply']."\" onclick=\"formApplyClick('".$this->form['name']."')\" /> ":'').
-			(!isset($this->form['buttons']) || in_array('apply', $this->form['buttons'])?"<input name=\"form_apply\" type=\"submit\" class=\"button\" value=\"".strApply."\" onclick=\"formApplyClick('".$this->form['name']."')\" /> ":'').
+			((isset($this->form['buttons']) && isset($this->form['buttons']['apply']))?'<input name="form_apply" type="submit" class="button" value="'.$this->form['buttons']['apply']."\" onclick=\"this.disabled=true;formApplyClick('".$this->form['name']."')\" /> ":'').
+			(!isset($this->form['buttons']) || in_array('apply', $this->form['buttons'])?"<input name=\"form_apply\" type=\"submit\" class=\"button\" value=\"".strApply."\" onclick=\"this.disabled=true;formApplyClick('".$this->form['name']."')\" /> ":'').
 
 			((isset($this->form['buttons']) && isset($this->form['buttons']['reset']))?'<input name="form_reset" type="reset" class="button" value="'.$this->form['buttons']['reset'].'" /> ':'').
 			(isset($this->form['buttons']) && in_array('reset', $this->form['buttons'])?"<input name=\"form_reset\" type=\"reset\" class=\"button\" value=\"".strReset."\" /> ":'').
