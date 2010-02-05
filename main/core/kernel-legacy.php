@@ -851,7 +851,11 @@ function __clearargs($args)
 			}
 				else
 			{
-				if (get_magic_quotes_gpc()) $value = StripSlashes($value);
+				if ( ! PHP::checkVersion('5.3') )
+				{
+					if (get_magic_quotes_gpc())
+						$value = StripSlashes($value);
+				}
 				if (strpos($key, 'wyswyg_') === 0)
 				{
 					unset($args[$key]);

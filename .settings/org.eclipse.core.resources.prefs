@@ -1,4 +1,4 @@
-#Sat Jan 23 12:46:05 MSK 2010
+#Fri Feb 05 15:53:21 MSK 2010
 eclipse.preferences.version=1
 encoding//main/core/admin.css=windows-1251
 encoding//main/core/admin.php=windows-1251
@@ -11,6 +11,7 @@ encoding//main/core/client.php=windows-1251
 encoding//main/core/content.php=windows-1251
 encoding//main/core/dlg/BrowseFile.php=windows-1251
 encoding//main/core/files.php=windows-1251
+encoding//main/core/gziph.php=windows-1251
 encoding//main/core/kernel-legacy.php=windows-1251
 encoding//main/core/lib/accounts.php=windows-1251
 encoding//main/core/lib/forms.php=windows-1251
