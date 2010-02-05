@@ -31,20 +31,24 @@
 /**
  * Родительский класс веб-интерфейсов
  *
+ * @package Eresus2
  */
-class WebPage {
+class WebPage
+{
 	/**
 	 * Идентификатор текущего раздела
 	 *
 	 * @var int
 	 */
 	var $id = 0;
+
 	/**
 	 * HTTP-заголовки ответа
 	 *
 	 * @var array
 	 */
 	var $headers = array();
+
 	/**
 	 * Описание секции HEAD
 	 * 	meta-http - мета-теги HTTP-заголовков
@@ -64,10 +68,11 @@ class WebPage {
 		'script' => array(),
 		'content' => '',
 	);
- /**
-	* Значения по умолчанию
-	* @var array
-	*/
+
+	/**
+	 * Значения по умолчанию
+	 * @var array
+	 */
 	var $defaults = array(
 		'pageselector' => array(
 			'<div class="pages">$(pages)</div>',
@@ -77,10 +82,11 @@ class WebPage {
 			'<a href="$(href)">&rarr;</a>',
 		),
 	);
- /**
-	* Конструктор
-	* @return WebPage
-	*/
+
+	/**
+	 * Конструктор
+	 * @return WebPage
+	 */
 	function WebPage()
 	{
 	}

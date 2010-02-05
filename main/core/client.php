@@ -52,11 +52,14 @@ function __macroVar($matches) {
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС "СТРАНИЦА"
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TClientUI extends WebPage {
-	var $dbItem = array(); # Информация о страниуе из БД
+/**
+ * Страница клиентского интерфейса
+ *
+ * @package Eresus2
+ */
+class TClientUI extends WebPage
+{
+	var $dbItem = array(); # Информация о странице из БД
 	var $name = ''; # Имя страницы
 	var $owner = 0; # Идентификатор родительской страницы
 	var $title = ''; # Заголовок страницы
@@ -64,7 +67,7 @@ class TClientUI extends WebPage {
 	var $caption = ''; # Название страницы
 	var $hint = ''; # Подсказка с описанием страницы
 	var $description = ''; # Описание страницы
-	var $keywords = ''; # Описание страницы
+	var $keywords = ''; # Ключевые слова страницы
 	var $access = GUEST; # Базовый уровень доступа к странице
 	var $visible = true; # Видимость страницы
 	var $type = 'default'; # Тип страницы
@@ -74,14 +77,21 @@ class TClientUI extends WebPage {
 	var $plugin; # Плагин контента
 	var $scripts = ''; # Скрипты
 	var $styles = ''; # Стили
-	var $subpage = 0; # Стили
-	var $topic = false; # 2.10b2
+	var $subpage = 0; # Подстраница списка элементов
+
+	/**
+	 * Идентификатор объекта контента
+	 *
+	 * @var string|bool
+	 */
+	var $topic = false;
+
 	//------------------------------------------------------------------------------
 	/**
-	* Конструктор
-	*
-	* @access  public
-	*/
+	 * Конструктор
+	 *
+	 * @access  public
+	 */
 	function TClientUI()
 	{
 	}
@@ -224,9 +234,13 @@ class TClientUI extends WebPage {
 
 		$item = $this->loadPage();
 		if ($item) {
-			if (count($Eresus->request['params'])) {
-				if (preg_match('/p[\d]+/i', $Eresus->request['params'][0])) $this->subpage = substr(array_shift($Eresus->request['params']), 1);
-				if (count($Eresus->request['params'])) $this->topic = array_shift($Eresus->request['params']);
+			if (count($Eresus->request['params']))
+			{
+				if (preg_match('/p[\d]+/i', $Eresus->request['params'][0]))
+					$this->subpage = substr(array_shift($Eresus->request['params']), 1);
+
+				if (count($Eresus->request['params']))
+					$this->topic = array_shift($Eresus->request['params']);
 			}
 			$this->dbItem = $item;
 			$this->id = $item['id'];
