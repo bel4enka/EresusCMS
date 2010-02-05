@@ -1,11 +1,11 @@
 Options -Indexes +FollowSymLinks
 AddDefaultCharset Off
 
-<IfModule mod_charset.c>
+<IfModule charset_module>
 	CharsetDisable On
 </IfModule>
 
-<IfModule mod_rewrite.c>
+<IfModule rewrite_module>
 	RewriteEngine on
 
 	# Proxy all requests to 3rd party extensions through their connectors
