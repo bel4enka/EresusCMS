@@ -1007,7 +1007,7 @@ function adminUpdate()
 */
 function clientRenderContent()
 {
-	global $page;
+	global $Eresus, $page;
 
 	/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
 	if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
