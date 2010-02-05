@@ -400,13 +400,19 @@ class Plugins {
 		global $Eresus, $page;
 
 		$result = '';
-		switch ($page->type) {
+		switch ($page->type)
+		{
+
 			case 'default':
 				$plugin = new ContentPlugin;
 				$result = $plugin->clientRenderContent();
 			break;
+
 			case 'list':
-				if ($page->topic) $page->httpError(404);
+				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
+				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->topic)
+					$page->httpError(404);
+
 				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
 				$template = loadTemplate('std/SectionListItem');
