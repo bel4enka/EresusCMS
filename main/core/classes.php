@@ -410,7 +410,7 @@ class Plugins {
 
 			case 'list':
 				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->topic)
+				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
 					$page->httpError(404);
 
 				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
@@ -1008,6 +1008,10 @@ function adminUpdate()
 function clientRenderContent()
 {
 	global $page;
+
+	/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
+	if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+		$page->httpError(404);
 
 	return $page->content;
 }
