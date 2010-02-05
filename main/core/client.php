@@ -525,7 +525,7 @@ class TClientUI extends WebPage
 		#if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
 		$result .=
 			"<div style=\"width: ".$form['width']."\" class=\"form\">\n".
-			"<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$Eresus->request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onsubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
+			"<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$Eresus->request['path']:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onsubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
 			"<div class=\"hidden\"><input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
 			$hidden."</div>\n".
 			"<table>\n".
@@ -547,7 +547,7 @@ class TClientUI extends WebPage
 	function buttonAddItem($caption = '', $value = '')
 	{
 		global $Eresus;
-		return '<form class="contentButton" action="'.$Eresus->request['url'].execScript.'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
+		return '<form class="contentButton" action="'.$Eresus->request['url'].'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function buttonBack($caption = '', $url='')

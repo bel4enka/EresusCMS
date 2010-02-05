@@ -4,7 +4,7 @@
  */
 
 # Включить или выключить режим отладки. По умолчанию: false
-$Eresus->conf['debug']['enable'] = true;
+$Eresus->conf['debug']['enable'] = false;
 
 #-------------------------------------------------------------------------------
 #  Настройки источника данных (СУБД)
@@ -92,8 +92,3 @@ if ($Eresus->conf['debug']['enable']) {
   ini_set('display_errors', false);
   error_reporting(0);
 }
-
-
-### Обратная совместимость ###
-define('execScript', 'exec.php'); # Виртуальный скрипт
-
