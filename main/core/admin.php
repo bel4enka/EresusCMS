@@ -516,66 +516,41 @@ class TAdminUI extends WebPage {
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	/**
+	 * Отправляет созданную страницу пользователю
+	 *
+	 * @return void
+	 */
 	function render()
-	# Отправляет созданную страницу пользователю.
 	{
 		global $locale;
 
-		$menu = $this->renderMenu();
+		$data = array();
 
-		$content = $this->renderContent();
+		$data['page'] = $this;
+		$data['menu'] = $this->renderMenu();
+		$data['content'] = $this->renderContent();
+		$data['siteName'] = option('siteName');
+		$data['head'] = $this->renderHeadSection();
+		$data['cms'] = array(
+			'name' => CMSNAME,
+			'version' => CMSVERSION,
+			'link' => CMSLINK,
+		);
 
-		$logo = defined('CMSLOGO')
-			?(CMSLOGO === false
-				?''
-				:'<a href="'.(defined('CMSLOGOHREF')?CMSLOGOHREF:'').'"><img src="'.CMSLOGO.'" alt="'.(defined('CMSLOGOALT')?CMSLOGOALT:'').'" style="border: none; float: right;"></a>'
-			)
-			:'  <div id="cmsLogo"><a href="http://eresus.ru/"><img src="'.httpRoot.'core/img/logo.png" alt="'.CMSNAME.' '.CMSVERSION.'" width="150" height="30" style="border: none;"></a></div>';
-		$result =
-			'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n".
-			'<html>'."\n".
-			'<head>'."\n".
-			'  <meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'">'."\n".
-			'  <title>'.option('siteName').' - '.strip_tags($this->title).'</title>'."\n".
-			'  <link rel="StyleSheet" href="'.httpRoot.'core/admin.css" type="text/css">'."\n".
-			(empty($this->styles)?'':"  <style type=\"text/css\">\n".$this->styles."  </style>\n").
-			# TODO: Заменить определение браузера на подключение ua.js
-			'  <script type="text/javascript">'."\n".
-			'    var iBrowser = new Array();'."\n".
-			'    iBrowser["UserAgent"] = navigator.userAgent.toLowerCase();'."\n".
-			'    if ((iBrowser["UserAgent"].indexOf("msie") != -1) && (iBrowser["UserAgent"].indexOf("opera") == -1) && (iBrowser["UserAgent"].indexOf("webtv") == -1)) iBrowser["Engine"] = "IE";'."\n".
-			'    if (iBrowser["UserAgent"].indexOf("gecko") != -1) iBrowser["Engine"] = "Gecko";'."\n".
-			'    if (iBrowser["UserAgent"].indexOf("opera") != -1) iBrowser["Engine"] = "Opera";'."\n".
-			'    if (iBrowser["UserAgent"].indexOf("safari") != -1) iBrowser["Engine"] = "Safari";'."\n".
-			'    if (iBrowser["UserAgent"].indexOf("konqueror") != -1) iBrowser["Engine"] = "Konqueror";'."\n".
-			'   </script>'."\n".
-			'   <script src="'.httpRoot.'core/functions.js" type="text/javascript"></script>'."\n".
-			'   <script type="text/javascript">'."\n".
-			'     '.trim(str_replace("\n", "\n     ",$this->scripts))."\n".
-			'   </script>'."\n".
-			$this->renderHeadSection()."\n".
-			'</head>'."\n".
-			'<body class="admin">'."\n".
-			'<div class="pageHeader">'."\n".
-			$logo.
-			'  <h1>'.option('siteName').' - '.$this->title.'</h1>CMS '.CMSNAME.' '.CMSVERSION."\n".
-			'</div>'."\n".
-			'<table width="100%" cellSpacing="0" cellPadding="0">'."\n".
-			'  <tr>'."\n".
-			'    <td id="adminMenu">'."\n".$menu."\n</td>\n".
-			'    <td id="adminContent">'.$content."&nbsp;</td>\n".
-			'  </tr>'."\n".
-			'</table>'."\n".
-			'</body>'."\n".
-			'</html>'."\n";
+		$tmpl = new Template('admin/themes/default/page.default.html');
+		$html = $tmpl->compile($data);
 
-		if (count($this->headers)) foreach ($this->headers as $header) Header($header);
+		if (count($this->headers))
+			foreach ($this->headers as $header)
+				header($header);
 
-		echo $result;
+		echo $html;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 
 # Проверям права доступа и если надо, проводим авторизацию
 if (!UserRights(EDITOR)) {
