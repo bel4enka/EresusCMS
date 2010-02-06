@@ -160,10 +160,20 @@ class EresusCMS extends EresusApplication {
 
 		$this->initWeb();
 
-		if (substr($this->request->getLocal(), 0, 6) == '/admin')
-			include_once 'admin.php';
-		else
-			include_once 'client.php';
+		switch (true)
+		{
+			case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
+				$this->call3rdPartyExtension();
+			break;
+
+			case substr($this->request->getLocal(), 0, 6) == '/admin':
+				include_once 'admin.php';
+			break;
+
+			default:
+				include_once 'client.php';
+			break;
+		}
 
 	}
 	//-----------------------------------------------------------------------------
@@ -285,6 +295,34 @@ class EresusCMS extends EresusApplication {
 		#$Eresus->user = &$_SESSION['user'];
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];*/
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Обрабатывает запрос к стороннему расширению
+	 *
+	 * Вызов производитеся через коннектор этого расширения
+	 *
+	 * @return void
+	 */
+	protected function call3rdPartyExtension()
+	{
+		$extension = substr($this->request->getLocal(), 9);
+		$extension = substr($extension, 0, strpos($extension, '/'));
+
+		$filename = $this->getFsRoot().'/ext-3rd/'.$extension.'/eresus-connector.php';
+		if ($extension && is_file($filename))
+		{
+			include_once $filename;
+			$className = $extension.'Connector';
+			$connector = new $className;
+			$connector->proxy();
+		}
+			else
+		{
+			header('404 Not Found', true, 404);
+			echo '404 Not Found';
+		}
 	}
 	//-----------------------------------------------------------------------------
 }

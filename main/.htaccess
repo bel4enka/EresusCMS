@@ -46,7 +46,7 @@ AddDefaultCharset Off
 	RewriteEngine on
 
 	# Проксируем все запросы к сторонним расширениям через их коннекторы
-	RewriteRule ^ext-3rd/.* ext-3rd/index.php [L]
+	RewriteRule ^ext-3rd/.* index.php [L]
 
 	# Включаем gzip-сжатие CSS и JavaScript
 	#RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
