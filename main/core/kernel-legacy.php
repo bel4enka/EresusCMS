@@ -103,24 +103,7 @@ function InfoBox($text, $caption=strInformation)
 	return $result;
 }
 //------------------------------------------------------------------------------
-function ErrorHandler($errno, $errstr, $errfile, $errline)
-{
-	global $Eresus;
 
-	if (error_reporting()) switch ($errno) {
-		case E_NOTICE:
-			if ($Eresus->conf['debug']['enable']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
-		break;
-		case E_WARNING:
-			if ($Eresus->conf['debug']['enable'])
-				FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.(function_exists('callStack')?callStack():''));
-		break;
-		default:
-			FatalError('Error <b>'.$errno.'</b>: <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b>');
-		break;
-	}
-}
-//------------------------------------------------------------------------------
 function ErrorMessage($message)
 {
 	global $Eresus;
@@ -896,14 +879,13 @@ function __property($object, $property)
 /**
 * Основной класс приложения
 *
-* @var  function  $oldErrorHandler  Предыдущий обработчик ошибок
 * @var  array     $conf             Конфигурация
 * @var  array     $session          Данные сессии
 * @var  object    $db               Интерфейс к СУБД
 * @var  array     $user             Учётная запись пользователя
 */
-class Eresus {
-	var $oldErrorHandler;
+class Eresus
+{
 	var $conf = array(
 		'lang' => 'ru',
 		'timezone' => '',
@@ -962,18 +944,6 @@ class Eresus {
 	var $request;
 	var $sections;
 
-	var $PHP5 = false;
-
-	/**
-	* Конструктор
-	*/
-	function Eresus()
-	{
-		# Инициализация перехватчика ошибок
-		$this->oldErrorHandler = set_error_handler('ErrorHandler');
-		# Флаг использования PHP5
-		$this->PHP5 = version_compare(PHP_VERSION, '5.0.0', '>=');
-	}
 	//------------------------------------------------------------------------------
 	// Информация о системе
 	//------------------------------------------------------------------------------
@@ -1185,7 +1155,8 @@ class Eresus {
 		if (useLib($this->conf['db']['engine'])) {
 			$this->db = new $this->conf['db']['engine'];
 			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-			if ($this->PHP5) $GLOBALS['db'] = $this->db; else $GLOBALS['db'] =& $this->db;
+			// FIXME Обратная совместимость
+			$GLOBALS['db'] = $this->db;
 		} else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
 	}
 	//------------------------------------------------------------------------------
@@ -1195,8 +1166,8 @@ class Eresus {
 	function init_plugins()
 	{
 		$this->plugins = new Plugins;
-		#FIX Обратная совместимость
-		if ($this->PHP5) $GLOBALS['plugins'] = $this->plugins; else $GLOBALS['plugins'] =& $this->plugins;;
+		// FIXME Глобальная переменная нужна для обратной совместимости
+		$GLOBALS['plugins'] = $this->plugins;
 	}
 	//------------------------------------------------------------------------------
 	/**
@@ -1284,8 +1255,8 @@ class Eresus {
 			set_magic_quotes_runtime(0);
 		# Читаем конфигурацию
 		$this->init_config();
-		# В PHP 5.1.0 должна быть установлена временная зона по умолчанию
-		if (PHP_VERSION >= '5.1.0') date_default_timezone_set($this->conf['timezone']);
+		if ($this->conf['timezone'])
+			date_default_timezone_set($this->conf['timezone']);
 		# Определение путей
 		$this->init_resolve();
 		# Инициализация сессии
