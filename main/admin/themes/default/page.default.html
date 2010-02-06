@@ -9,6 +9,7 @@
 		{$page->styles}
 	</style>{/if}
 	{$head}
+	<script src="{$siteRoot}core/js/query-${jquery.version}.js" type="text/javascript"></script>
 </head>
 <body>
 	<div id="header">
@@ -30,7 +31,6 @@
 		{$content}
 	</div>
 
-	<script src="{$siteRoot}core/js/query-${jquery.version}.js" type="text/javascript"></script>
 	<script src="{$siteRoot}core/functions.js" type="text/javascript"></script>
 	{if $page->scripts}<script type="text/javascript">
 		{$page->scripts}

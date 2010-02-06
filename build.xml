@@ -48,10 +48,10 @@
 
 	<!--
 	=====================================================================
-		Сборка основных модулей
+		Сборка проекта
 	=====================================================================
 	-->
-	<target name="core" depends="prepare" description="Build core modules only">
+	<target name="build" depends="prepare" description="Build basic set of modules">
 
 		<if>
 			<available file="${build.dir}" />
@@ -105,13 +105,6 @@
 		  </filterchain>
 		</copy>
 
-	</target>
-
-	<!--
-		Build project
-	-->
-	<target name="build" depends="core" description="Build basic set of modules">
-
 		<mkdir dir="${build.dir}/distrib" />
 		<copy todir="${build.dir}/distrib">
 			<fileset refid="db_files" />
@@ -121,7 +114,15 @@
 		</copy>
 
 		<copy todir="${build.dir}">
-			<fileset refid="3rdparty_files" />
+			<fileset refid="files.3rd-ext" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+		<!-- Tiny MCE -->
+		<copy todir="${build.dir}/ext-3rd/tinymce">
+			<fileset refid="files.3rd.tiny_mce" />
 		</copy>
 
 		<copy todir="${build.dir}/distrib">
@@ -145,29 +146,6 @@
 			    <expandproperties />
 		  </filterchain>
 		</copy>
-
-	</target>
-
-
-	<!--
-		Run unit tests
-	-->
-	<target name="test" depends="core" description="Run unit tests">
-
-		<copy todir="${build.dir}">
-			<fileset refid="tests_files" />
-		</copy>
-
-		<phpunit printsummary="true">
-			<formatter type="plain" usefile="false" />
-			<batchtest>
-				<fileset dir="${build.dir}/t">
-					<include name="init.php"/>
-					<include name="**/*Test.php"/>
-					<exclude name="**/AllTests.php"/>
-				</fileset>
-			</batchtest>
-		</phpunit>
 
 	</target>
 
@@ -210,14 +188,20 @@
 	</fileset>
 
 	<!-- 3rd party extensions -->
-	<fileset dir="." id="3rdparty_files">
+	<fileset dir="." id="files.3rd-ext">
 		<include name="ext-3rd/**" />
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- 3rd party components -->
-	<fileset dir="." id="files.3rd.jquery">
-		<include name="3rdparty/jquery/**" />
+	<!-- 3rd party: jQuery -->
+	<fileset dir="3rdparty/jquery" id="files.3rd.jquery">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party: Tiny MCE -->
+	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
+		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
 
