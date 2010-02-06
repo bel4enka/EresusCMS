@@ -133,7 +133,8 @@ class EresusCMS extends EresusApplication {
 	{
 		$dirs = array(
 			'/var/log',
-			'/var/cache'
+			'/var/cache',
+			'/var/cache/templates',
 		);
 
 		$errors = array();
@@ -185,7 +186,7 @@ class EresusCMS extends EresusApplication {
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		Core::setValue('core.template.templateDir', $this->getFsRoot() . '/templates');
+		Core::setValue('core.template.templateDir', $this->getFsRoot());
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 
 		$this->request = HTTP::request();
