@@ -56,14 +56,14 @@ class EresusCMS extends EresusApplication {
 		/* Общая инициализация */
 		$this->checkEnviroment();
 		$this->createFileStructure();
-		$this->initConf();
-		//$this->initDB();
-		//$this->initSession();
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 		/* Подключение старого ядра */
 		include_once 'kernel-legacy.php';
 		$GLOBALS['Eresus'] = new Eresus;
+		$this->initConf();
+		//$this->initDB();
+		//$this->initSession();
 		$GLOBALS['Eresus']->init();
 
 		if (PHP::isCLI()) {
@@ -151,7 +151,9 @@ class EresusCMS extends EresusApplication {
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		//$this->initWeb();
+		$this->initWeb();
+
+		include_once 'client.php';
 
 	}
 	//-----------------------------------------------------------------------------
@@ -163,11 +165,12 @@ class EresusCMS extends EresusApplication {
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		Registry::set('core.template.compileDir', Core::app()->getFsRoot() . 'cache/templates');
+		Core::setValue('core.template.templateDir', $this->getFsRoot() . '/templates');
+		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 
 		//$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
-		//$this->detectWebRoot();
+		$this->detectWebRoot();
 		//$this->initRoutes();
 	}
 	//-----------------------------------------------------------------------------
@@ -181,8 +184,8 @@ class EresusCMS extends EresusApplication {
 	protected function detectWebRoot()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		/*$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
+/*
+		$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
 		$SUFFIX = dirname(__FILE__);
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
 		$SUFFIX = substr($SUFFIX, 0, -strlen('/core'));
