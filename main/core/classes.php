@@ -1160,16 +1160,19 @@ class EresusExtensions {
 		$result = false;
 		$name = $this->get_name($class, $function, $name);
 
-		if (isset($this->items[$name])) {
-			if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
-		} else {
+		if (isset($this->items[$name]))
+		{
+			$result = $this->items[$name];
+		}
+			else
+		{
 			$filename = $Eresus->froot.'ext-3rd/'.$name.'/eresus-connector.php';
 			if (is_file($filename)) {
 				include_once $filename;
 				$class = $name.'Connector';
 				if (class_exists($class)) {
 					$this->items[$name] = new $class();
-					if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
+					$result = $this->items[$name];
 				}
 			}
 		}
