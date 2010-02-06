@@ -1,7 +1,8 @@
-#Sat Feb 06 21:28:20 MSK 2010
+#Sat Feb 06 22:10:24 MSK 2010
 eclipse.preferences.version=1
 encoding//db/mysql-4.sql=windows-1251
 encoding//db/mysql-5.sql=windows-1251
+encoding//main/admin/themes/default/page.default.html=UTF-8
 encoding//main/cfg/main.template.php=windows-1251
 encoding//main/cfg/settings.php=windows-1251
 encoding//main/core/admin.css=windows-1251

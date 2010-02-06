@@ -93,6 +93,11 @@
 		  </filterchain>
 		</copy>
 
+		<!-- jQuery -->
+		<copy todir="${build.dir}/core/js">
+			<fileset refid="files.3rd.jquery" />
+		</copy>
+
 		<copy todir="${build.dir}/">
 			<fileset refid="l10n_files" />
 			<filterchain>
@@ -209,6 +214,13 @@
 		<include name="ext-3rd/**" />
 		<exclude name=".svn" />
 	</fileset>
+
+	<!-- 3rd party components -->
+	<fileset dir="." id="files.3rd.jquery">
+		<include name="3rdparty/jquery/**" />
+		<exclude name=".svn" />
+	</fileset>
+
 
 	<!-- SDK files -->
 	<fileset dir="." id="SDK_files">
