@@ -556,6 +556,6 @@ class TClientUI extends WebPage
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-$page = new TClientUI;
-$page->init();
-$page->render();
+$GLOBALS['page'] = new TClientUI;
+$GLOBALS['page']->init();
+$GLOBALS['page']->render();

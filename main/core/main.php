@@ -40,6 +40,13 @@
 class EresusCMS extends EresusApplication {
 
 	/**
+	 * HTTP-запрос
+	 *
+	 * @var HttpRequest
+	 */
+	protected $request;
+
+	/**
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
@@ -153,7 +160,10 @@ class EresusCMS extends EresusApplication {
 
 		$this->initWeb();
 
-		include_once 'client.php';
+		if (substr($this->request->getLocal(), 0, 6) == '/admin')
+			include_once 'admin.php';
+		else
+			include_once 'client.php';
 
 	}
 	//-----------------------------------------------------------------------------
@@ -168,7 +178,7 @@ class EresusCMS extends EresusApplication {
 		Core::setValue('core.template.templateDir', $this->getFsRoot() . '/templates');
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 
-		//$this->request = HTTP::request();
+		$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
 		$this->detectWebRoot();
 		//$this->initRoutes();
@@ -184,7 +194,7 @@ class EresusCMS extends EresusApplication {
 	protected function detectWebRoot()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-/*
+
 		$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
 		$SUFFIX = dirname(__FILE__);
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
@@ -196,7 +206,7 @@ class EresusCMS extends EresusApplication {
 			$this->request->getHost() .
 			$this->request->getLocalRoot() . '/'
 		);
-*/
+
 	}
 	//-----------------------------------------------------------------------------
 
