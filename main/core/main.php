@@ -55,15 +55,16 @@ class EresusCMS extends EresusApplication {
 
 		/* Общая инициализация */
 		$this->checkEnviroment();
-		//$this->initConf();
+		$this->createFileStructure();
+		$this->initConf();
 		//$this->initDB();
 		//$this->initSession();
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 		/* Подключение старого ядра */
-		//include_once 'kernel-legacy.php';
-		//$GLOBALS['Eresus'] = new Eresus;
-		//$GLOBALS['Eresus']->init();
+		include_once 'kernel-legacy.php';
+		$GLOBALS['Eresus'] = new Eresus;
+		$GLOBALS['Eresus']->init();
 
 		if (PHP::isCLI()) {
 
@@ -97,7 +98,7 @@ class EresusCMS extends EresusApplication {
 		/* Проверяем доступность для записи */
 		$writable = array(
 			'cfg/settings.php',
-			'tmp',
+			'var',
 			'data',
 			'templates',
 			'style'
@@ -112,6 +113,33 @@ class EresusCMS extends EresusApplication {
 				require_once 'errors.html.php';
 			else
 				die("Errors...\n"); // TODO Доделать
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Создание файловой структуры
+	 *
+	 * @return void
+	 */
+	protected function createFileStructure()
+	{
+		$dirs = array(
+			'/var/log',
+			'/var/cache'
+		);
+
+		$errors = array();
+
+		foreach ($dirs as $dir)
+		{
+			if (!FS::exists($this->getFsRoot() . $dir))
+			{
+				$umask = umask(0000);
+				mkdir($this->getFsRoot() . $dir, 0777);
+				umask($umask);
+			}
+			// TODO Сделать проверку на запись в созданные директории
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -197,9 +225,9 @@ class EresusCMS extends EresusApplication {
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		//global $Eresus; // FIXME: Устаревшая переменная $Eresus
+		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
-		//@include_once 'cfg/main.php';
+		@include_once $this->getFsRoot() . '/cfg/main.php';
 
 		// TODO: Сделать проверку успешного подключения файла
 	}

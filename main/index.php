@@ -36,7 +36,7 @@
  * Установка имени файла журнала
  * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
  */
-ini_set('error_log', dirname(__FILE__) . '/../data/eresus.log');
+ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
 
 /**
  * Уровень детализации журнала
