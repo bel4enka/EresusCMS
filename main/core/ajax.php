@@ -61,11 +61,11 @@ class AjaxUI extends WebPage {
 	*/
 	function AjaxUI()
 	{
-		global $plugins;
+		global $Eresus;
 
 		parent::WebPage();
-		$plugins->preload(array('client'),array('ondemand'));
-		$plugins->clientOnStart();
+		$Eresus->plugins->preload(array('client'),array('ondemand'));
+		$Eresus->plugins->clientOnStart();
 
 	}
 	//------------------------------------------------------------------------------
@@ -74,12 +74,12 @@ class AjaxUI extends WebPage {
 	*/
 	function process()
 	{
-		global $Eresus, $plugins;
+		global $Eresus;
 
 		$plugin = next($Eresus->request['params']);
-		$plugins->load($plugin);
-		$plugins->ajaxOnRequest();
-		$plugins->items[$plugin]->ajaxProcess();
+		$Eresus->plugins->load($plugin);
+		$Eresus->plugins->ajaxOnRequest();
+		$Eresus->plugins->items[$plugin]->ajaxProcess();
 	}
 	//-----------------------------------------------------------------------------
  /**

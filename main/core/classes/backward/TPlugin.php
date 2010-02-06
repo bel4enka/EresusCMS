@@ -59,13 +59,13 @@ class TPlugin {
 */
 function TPlugin()
 {
-	global $plugins, $locale;
+	global $Eresus, $locale;
 
-	if (!empty($this->name) && isset($plugins->list[$this->name])) {
-		$this->settings = decodeOptions($plugins->list[$this->name]['settings'], $this->settings);
+	if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
+		$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
 		# Если установлена версия плагина отличная от установленной ранее
 		# то необходимо произвести обновление информации о плагине в БД
-		if ($this->version != $plugins->list[$this->name]['version']) $this->resetPlugin();
+		if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
 	}
 	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 	if (is_file($filename)) include_once($filename);

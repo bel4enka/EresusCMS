@@ -926,7 +926,11 @@ class Eresus
 	 */
 	public $db;
 
-	var $plugins;
+	/**
+	 * Плагины
+	 * @var Plugins
+	 */
+	public $plugins;
  /**
 	* Учётная запись пользователя
 	*
@@ -1172,8 +1176,6 @@ class Eresus
 	function init_plugins()
 	{
 		$this->plugins = new Plugins;
-		// FIXME Глобальная переменная нужна для обратной совместимости
-		$GLOBALS['plugins'] = $this->plugins;
 	}
 	//------------------------------------------------------------------------------
 	/**
