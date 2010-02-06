@@ -919,7 +919,13 @@ class Eresus
 	* @var unknown_type
 	*/
 	var $extensions;
-	var $db;
+
+	/**
+	 * Интерфейс к БД
+	 * @var MySQL
+	 */
+	public $db;
+
 	var $plugins;
  /**
 	* Учётная запись пользователя
@@ -1152,12 +1158,12 @@ class Eresus
 	*/
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine'])) {
+		if (useLib($this->conf['db']['engine']))
+		{
 			$this->db = new $this->conf['db']['engine'];
 			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-			// FIXME Обратная совместимость
-			$GLOBALS['db'] = $this->db;
-		} else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		}
+			else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
 	}
 	//------------------------------------------------------------------------------
  /**
