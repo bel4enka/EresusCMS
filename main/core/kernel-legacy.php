@@ -902,7 +902,6 @@ class Eresus
 		),
 		'extensions' => array(),
 		'backward' => array(
-			'TPlugins' => false,
 			'TPlugin' => false,
 			'TContentPlugin' => false,
 			'TListContentPlugin' => false,
@@ -1138,7 +1137,6 @@ class Eresus
 		$filename = $this->froot.'core/classes.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Classes file '$filename' not found!");
-		if ($this->conf['backward']['TPlugins']) useClass('backward/TPlugins');
 		if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
 		elseif ($this->conf['backward']['TContentPlugin']) useClass('backward/TContentPlugin');
 		elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
