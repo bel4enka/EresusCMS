@@ -28,22 +28,6 @@
  * $Id$
  */
 
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', dirname(__FILE__) . '/../data/eresus.log');
-
-/**
- * Уровень детализации журнала
- */
-define('ERESUS_LOG_LEVEL' , ${log.level});
-
-/**
- * Подключение Eresus Core
- */
-include_once 'framework/core/eresus-core.php';
-
 define('CMSNAME', 'Eresus'); # Название системы
 define('CMSVERSION', '${product.version}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
@@ -58,9 +42,6 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
-if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
-
-###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *
@@ -94,7 +75,7 @@ function FatalError($msg)
 	die($result);
 }
 //------------------------------------------------------------------------------
-###cut:end (testing purpose)
+
 /**
  * Вывод сообщения о пользовательской ошибке
  *
@@ -180,8 +161,6 @@ function resetLastVisitTime($time='', $expand=false)
 	}
 }
 //------------------------------------------------------------------------------
-
-### Подключаемые модули (библиотеки, классы) ###
 
 /**
  * Подключение библиотеки
@@ -741,8 +720,6 @@ function saveTemplate($name, $template)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-### ОБЩИЕ ФУНКЦИИ ###
-
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function HttpAnswer($answer)
 {
@@ -1033,9 +1010,7 @@ class Eresus {
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
-		###cut:start (testing purpose)
 		session_start();
-		###cut:end (testing purpose)
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
 		$this->user = &$_SESSION['user'];
@@ -1445,22 +1420,5 @@ class Eresus {
 		if ($clearCookies) $this->clear_login_cookies();
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Исполнение
-	*
-	* @access public
-	*/
-	function execute()
-	{
-	}
-	//------------------------------------------------------------------------------
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-###cut:start (testing purpose)
-
-$GLOBALS['Eresus'] = new Eresus;
-$GLOBALS['Eresus']->init();
-$GLOBALS['Eresus']->execute();
-
-###cut:end (testing purpose)
