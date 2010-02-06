@@ -1,25 +1,62 @@
+##
+# ${product.title} ${product.version}
+#
+# ${product.description}
+#
+# Конфигурация для веб-сервера Apache
+#
+# @copyright 2004, ProCreat Systems, http://procreat.ru/
+# @copyright 2007, Eresus Project, http://eresus.ru/
+# @license ${license.uri} ${license.name}
+# @author Mikhail Krasilnikov <mk@procreat.ru>
+#
+# Данная программа является свободным программным обеспечением. Вы
+# вправе распространять ее и/или модифицировать в соответствии с
+# условиями версии 3 либо (по вашему выбору) с условиями более поздней
+# версии Стандартной Общественной Лицензии GNU, опубликованной Free
+# Software Foundation.
+#
+# Мы распространяем эту программу в надежде на то, что она будет вам
+# полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+# числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+# ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+# информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+#
+# Вы должны были получить копию Стандартной Общественной Лицензии
+# GNU с этой программой. Если Вы ее не получили, смотрите документ на
+# <http://www.gnu.org/licenses/>
+#
+# $Id$
+#
+
+# Отключаем автоматический индекс директорий (-Indexes)
 Options -Indexes +FollowSymLinks
+
+# Отключаем установку кодировки по умолчанию
 AddDefaultCharset Off
 
 <IfModule charset_module>
 	CharsetDisable On
 </IfModule>
 
+#
+# Конфигурация трансформации URL
+#
 <IfModule rewrite_module>
 	RewriteEngine on
 
-	# Proxy all requests to 3rd party extensions through their connectors
+	# Проксируем все запросы к сторонним расширениям через их коннекторы
 	RewriteRule ^ext-3rd/.* ext-3rd/index.php [L]
 
-	# GZip compression
+	# Включаем gzip-сжатие CSS и JavaScript
 	#RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
 	#RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
 
-	# Direct requestes
+	# Отключаем перехват запросов в следующих директориях
 	RewriteRule ^(core|ext|data|style)/ - [L]
-
-	RewriteRule ^admin core/admin.php [L]
-	RewriteRule ^ajax/ core/ajax.php [L]
+	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.ico)$ - [L]
-	RewriteRule .* core/client.php
+
+	# Все остальные запросы должны перехватываться запускающим скриптом
+	RewriteRule .* index.php
 </IfModule>
