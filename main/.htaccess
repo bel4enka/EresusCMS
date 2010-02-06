@@ -52,8 +52,11 @@ AddDefaultCharset Off
 	#RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
 	#RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
 
+	# Отдаём статические файлы без обработки
+	RewriteRule (.*\.(css|js))$ - [L]
+
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(core|ext|data|style)/ - [L]
+	RewriteRule ^(core|admin/themes|ext|data|style)/ - [L]
 	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.ico)$ - [L]
 
