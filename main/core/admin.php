@@ -497,25 +497,17 @@ class TAdminUI extends WebPage {
 			}
 
 		$opened = -1;
-		$result =
-			'<table>'."\n".
-			'  <tr><th>'.admContent."</th></tr>\n".
-			"  <tr><td>\n<ul id=\"menuContent\">\n".$this->renderPagesMenu($opened)."</ul>\n</td></tr>\n".
-			$menu.
-			'  <tr><td align="center">'."\n".
-			'    <a href="'.httpRoot.'admin.php?mod=users&amp;id='.$Eresus->user['id'].'">'.admUsersChangePassword.'</a>'."\n".
-			'    <form action="'.httpRoot.'admin.php" method="post" style="margin:5px;">'."\n".
-			'      <div>'."\n".
-			'        <input type="hidden" name="action" value="logout">'."\n".
-			'        <input type="submit" value="'.strExit.'" class="button">'."\n".
-			'      </div>'."\n".
-			'    </form>'."\n".
-			'  </td></tr>'."\n".
-			'</table>'."\n";
 
-		return $result;
+		$tmpl = new Template('admin/themes/default/menu.main.html');
+		$data = array();
+		$data['menu'] = $menu;
+		$data['sectionMenu'] = $this->renderPagesMenu($opened);
+		$data['userId'] = $Eresus->user['id'];
+
+		$html = $tmpl->compile($data);
+		return $html;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отправляет созданную страницу пользователю

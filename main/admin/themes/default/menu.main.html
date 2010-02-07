@@ -1,0 +1,26 @@
+<table>
+	<tr>
+		<th>{$i18n->getText('admContent')}</th>
+	</tr>
+	<tr>
+		<td>
+			<ul id="menuContent">
+				{$sectionMenu}
+			</ul>
+		</td>
+	</tr>
+	{$menu}
+	<tr>
+		<td align="center">
+			<a href="{$siteRoot}/admin.php?mod=users&amp;id={$userId}">
+				{$i18n->getText('admUsersChangePassword')}
+			</a>
+			<form action="{$siteRoot}/admin.php" method="post" style="margin: 5px;">
+				<div>
+					<input type="hidden" name="action" value="logout">
+					<input type="submit" value="{$i18n->getText('strExit')}" class="button">
+				</div>
+			</form>
+		</td>
+	</tr>
+</table>

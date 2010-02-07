@@ -58,7 +58,7 @@ class EresusCMS extends EresusApplication {
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		/* Подключение таблицы автозагрузки классов */
-		//EresusClassAutoloader::add('cms.autoload.php');
+		EresusClassAutoloader::add('core/cms.autoload.php');
 
 		/* Общая инициализация */
 		$this->checkEnviroment();
@@ -69,6 +69,8 @@ class EresusCMS extends EresusApplication {
 		include_once 'kernel-legacy.php';
 		$GLOBALS['Eresus'] = new Eresus;
 		$this->initConf();
+		$i18n = I18n::getInstance();
+		TemplateSettings::setGlobalValue('i18n', $i18n);
 		//$this->initDB();
 		//$this->initSession();
 		$GLOBALS['Eresus']->init();
