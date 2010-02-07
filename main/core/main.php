@@ -215,7 +215,7 @@ class EresusCMS extends EresusApplication {
 		TemplateSettings::setGlobalValue('siteRoot',
 			$this->request->getScheme() . '://' .
 			$this->request->getHost() .
-			$this->request->getLocalRoot() . '/'
+			$this->request->getLocalRoot()
 		);
 
 	}
