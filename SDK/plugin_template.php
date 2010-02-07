@@ -1,18 +1,17 @@
 <?php
 /**
- * Краткое название плагина
+ * [Краткое название плагина]
  *
- * Eresus 2
+ * Eresus [номера совместимых версий]
  *
- * Описание плагина (допустимо несколько строк)
+ * [Описание плагина (допустимо несколько строк)]
  *
- * @version версия плагина (x.xx)
+ * @version [версия плагина (x.xx)]
  *
- * @copyright   год_начала-текущий_год, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Ответственный <e-mail ответственного>
- * @author      Автор1 <E-mail автора1>
- * @author      АвторN <E-mail автораN>
+ * @copyright [год], [владелец], [адрес, если нужен]
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author [Автор1 <E-mail автора1>]
+ * @author [АвторN <E-mail автораN>]
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -29,14 +28,51 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * @package [Имя пакета]
+ *
+ * $Id$
  */
 
-class MyPlugin extends Plugin {
-	var $version = '1.00a';
-	var $kernel = '2.10';
-	var $title = 'Мой плагин';
-	var $description = 'Описание плагина';
-	var $type = 'client';
+/**
+ * [Название класса]
+ *
+ * [Описание класса]
+ *
+ * @package [Имя пакета]
+ */
+class MyPlugin extends Plugin
+{
+	/**
+	 * Версия плагина
+	 * @var string
+	 */
+	public $version = '1.00';
+
+	/**
+	 * Нужная версия ядра
+	 * @var string
+	 */
+	public $kernel = '2.10';
+
+	/**
+	 * Название плагина
+	 * @var string
+	 */
+	public $title = 'Мой плагин';
+
+	/**
+	 * Описание плагина
+	 * @var string
+	 */
+	public $description = 'Описание плагина';
+
+	/**
+	 * Типы плагина
+	 * @var string
+	 */
+	public $type = 'client';
+
 	/**
 	 * Диалог настроек плагина
 	 *
