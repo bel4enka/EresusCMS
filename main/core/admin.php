@@ -464,7 +464,7 @@ class TAdminUI extends WebPage {
 			$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
 			if ($current) $opened = $level;
 			if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
-			$icon = empty($sub)?img('core/img/br_empty.gif'):img('core/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
+			$icon = empty($sub)?img('admin/themes/default/img/br_empty.gif'):img('admin/themes/default/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
 			$result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
 			if (!empty($sub)) $result .= '<ul id="branch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
 		}
