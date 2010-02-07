@@ -1047,15 +1047,29 @@ function adminRenderContent()
 /**
  * Базовый класс коннектора сторонних расширений
  *
+ * @package Eresus2
  */
-class EresusExtensionConnector {
-	var $root;
-	var $froot;
- /**
-	* Конструктор
-	*
-	* @return EresusExtensionConnector
-	*/
+class EresusExtensionConnector
+{
+	/**
+	 * Корневой URL расширения
+	 *
+	 * @var string
+	 */
+	protected $root;
+
+	/**
+	 * Корневой путь расширения
+	 *
+	 * @var string
+	 */
+	protected $froot;
+
+	/**
+	 * Конструктор
+	 *
+	 * @return EresusExtensionConnector
+	 */
 	function EresusExtensionConnector()
 	{
 		global $Eresus;
@@ -1065,6 +1079,7 @@ class EresusExtensionConnector {
 		$this->froot = $Eresus->froot.'ext-3rd/'.$name.'/';
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Метод вызывается при проксировании прямых запросов к расширению
 	 *
@@ -1073,29 +1088,35 @@ class EresusExtensionConnector {
 	{
 		global $Eresus;
 
-		if(!UserRights(EDITOR))	die;
+		if (!UserRights(EDITOR))
+			die;
 
-		$ext = strtolower(substr($Eresus->request['file'], strrpos($Eresus->request['file'], '.')+1));
-		$filename = dirname($Eresus->request['url']).'/'.$Eresus->request['file'];
-		$filename = $Eresus->froot.substr($filename, strlen($Eresus->root));
-		switch (true) {
+		$ext = strtolower(substr($Eresus->request['file'], strrpos($Eresus->request['file'], '.') + 1));
+		$filename = dirname($Eresus->request['url']) . '/' . $Eresus->request['file'];
+		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
+		switch (true)
+		{
 			case in_array($ext, array('png', 'jpg', 'jpeg', 'gif')):
 				$info = getimagesize($filename);
 				header('Content-type: '.$info['mime']);
 				echo file_get_contents($filename);
 			break;
+
 			case $ext == 'js':
 				header('Content-type: text/javascript');
 				echo file_get_contents($filename);
 			break;
+
 			case $ext == 'css':
 				header('Content-type: text/css');
 				echo file_get_contents($filename);
 			break;
+
 			case $ext == 'html':
 				header('Content-type: text/html');
 				echo file_get_contents($filename);
 			break;
+
 			case $ext == 'php':
 				$Eresus->conf['debug']['enable'] = false;
 				restore_error_handler();
@@ -1106,6 +1127,8 @@ class EresusExtensionConnector {
 	}
 	//-----------------------------------------------------------------------------
 }
+
+
 
 /**
  * Класс для работы с расширениями системы
