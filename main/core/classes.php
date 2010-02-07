@@ -1113,6 +1113,7 @@ class EresusExtensionConnector
 			break;
 
 			case $ext == 'html':
+			case $ext == 'htm':
 				header('Content-type: text/html');
 				echo file_get_contents($filename);
 			break;
