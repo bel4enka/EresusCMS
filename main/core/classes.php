@@ -1092,7 +1092,7 @@ class EresusExtensionConnector
 			die;
 
 		$ext = strtolower(substr($Eresus->request['file'], strrpos($Eresus->request['file'], '.') + 1));
-		$filename = dirname($Eresus->request['url']) . '/' . $Eresus->request['file'];
+		$filename = $Eresus->request['path'] . $Eresus->request['file'];
 		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
 		switch (true)
 		{
