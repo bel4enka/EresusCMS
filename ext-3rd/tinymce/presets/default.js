@@ -66,8 +66,9 @@ tinyMCE.init(
 	 *                  merge_cells.
 	 * - fullscreen   - Позволяет разворачивать редактор на всю страницу.
 	 *                  Кнопки: fullscreen
+	 * - advimage     - Расширенный диалог вставки картинок
 	 */
-	plugins : "safari,inlinepopups,fullscreen,paste,table,advlist",
+	plugins : "safari,inlinepopups,fullscreen,paste,table,advlist,advimage",
 
 	/*
 	 * Тема оформления
