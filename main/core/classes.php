@@ -40,27 +40,28 @@ class WebPage
 	 *
 	 * @var int
 	 */
-	var $id = 0;
+	public $id = 0;
 
 	/**
 	 * HTTP-заголовки ответа
 	 *
 	 * @var array
 	 */
-	var $headers = array();
+	public $headers = array();
 
 	/**
 	 * Описание секции HEAD
-	 * 	meta-http - мета-теги HTTP-заголовков
-	 * 	meta-tags - мета-теги
-	 * 	link - подключение внешних ресурсов
-	 * 	style - CSS
-	 * 	script - Скрипты
-	 * 	content - прочее
+	 *
+	 * -	meta-http - мета-теги HTTP-заголовков
+	 * -	meta-tags - мета-теги
+	 * -	link - подключение внешних ресурсов
+	 * -	style - CSS
+	 * -	script - Скрипты
+	 * -	content - прочее
 	 *
 	 * @var array
 	 */
-	var $head = array (
+	protected $head = array (
 		'meta-http' => array(),
 		'meta-tags' => array(),
 		'link' => array(),
@@ -73,7 +74,7 @@ class WebPage
 	 * Значения по умолчанию
 	 * @var array
 	 */
-	var $defaults = array(
+	protected $defaults = array(
 		'pageselector' => array(
 			'<div class="pages">$(pages)</div>',
 			'&nbsp;<a href="$(href)">$(number)</a>&nbsp;',
@@ -85,41 +86,47 @@ class WebPage
 
 	/**
 	 * Конструктор
+	 *
 	 * @return WebPage
 	 */
-	function WebPage()
+	public function __construct()
 	{
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Установка мета-тега HTTP-заголовка
-	*
-	* @param string $httpEquiv  Имя тега
-	* @param string $content  	Значение тега
-	*/
-	function setMetaHeader($httpEquiv, $content)
+
+	/**
+	 * Установить мета-тег HTTP-заголовка
+	 *
+	 * Добавляет или изменяет мета-тег <meta http-equiv="$httpEquiv" content="$content" />
+	 *
+	 * @param string $httpEquiv  Имя заголовка HTTP
+	 * @param string $content  	  Значение заголовка
+	 */
+	public function setMetaHeader($httpEquiv, $content)
 	{
 		$this->head['meta-http'][$httpEquiv] = $content;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Установка мета-тега
-	*
-	* @param string $name  		Имя тега
-	* @param string $content  Значение тега
-	*/
-	function setMetaTag($name, $content)
+
+	/**
+	 * Установка мета-тега
+	 *
+	 * @param string $name  		 Имя тега
+	 * @param string $content  Значение тега
+	 */
+	public function setMetaTag($name, $content)
 	{
 		$this->head['meta-tags'][$name] = $content;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Подключение CSS-файла
-	*
-	* @param string $url    URL файла
-	* @param string $media  Тип носителя
-	*/
-	function linkStyles($url, $media = '')
+
+	/**
+	 * Подключение CSS-файла
+	 *
+	 * @param string $url    URL файла
+	 * @param string $media  Тип носителя
+	 */
+	public function linkStyles($url, $media = '')
 	{
 		for($i=0; $i<count($this->head['link']); $i++) if ($this->head['link'][$i]['href'] == $url) return;
 		$item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
@@ -127,13 +134,14 @@ class WebPage
 		$this->head['link'][] = $item;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Встраивание CSS
-	*
-	* @param string $content  Стили CSS
-	* @param string $media 	  Тип носителя
-	*/
-	function addStyles($content, $media = '')
+
+	/**
+	 * Встраивание CSS
+	 *
+	 * @param string $content  Стили CSS
+	 * @param string $media 	  Тип носителя
+	 */
+	public function addStyles($content, $media = '')
 	{
 		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
 		$content = rtrim($content);
@@ -142,13 +150,14 @@ class WebPage
 		$this->head['style'][] = $item;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Подключение клиентского скрипта
-	*
-	* @param string $url   URL скрипта
-	* @param string $type  Тип скрипта
-	*/
-	function linkScripts($url, $type = 'javascript')
+
+	/**
+	 * Подключение клиентского скрипта
+	 *
+	 * @param string $url   URL скрипта
+	 * @param string $type  Тип скрипта
+	 */
+	public function linkScripts($url, $type = 'javascript')
 	{
 		for($i=0; $i<count($this->head['script']); $i++) if (isset($this->head['script'][$i]['src']) && $this->head['script'][$i]['src'] == $url) return;
 		if (strpos($type, '/') === false) switch (strtolower($type)) {
@@ -161,13 +170,14 @@ class WebPage
 		$this->head['script'][] = array('type' => $type, 'src' => $url);
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Добавление клиентских скриптов
-	*
-	* @param string $content  Код скрипта
-	* @param string $type     Тип скрипта
-	*/
-	function addScripts($content, $type = 'javascript')
+
+	/**
+	 * Добавление клиентских скриптов
+	 *
+	 * @param string $content  Код скрипта
+	 * @param string $type     Тип скрипта
+	 */
+	public function addScripts($content, $type = 'javascript')
 	{
 		if (strpos($type, '/') === false) switch (strtolower($type)) {
 			case 'emca': $type = 'text/emcascript'; break;
@@ -180,12 +190,13 @@ class WebPage
 		$this->head['script'][] = array('type' => $type, 'content' => $content);
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Отрисовка секции <head>
-	*
-	* @return string  Отрисованная секция <head>
-	*/
-	function renderHeadSection()
+
+	/**
+	 * Отрисовка секции <head>
+	 *
+	 * @return string  Отрисованная секция <head>
+	 */
+	protected function renderHeadSection()
 	{
 		$result = array();
 		# <meta> теги
@@ -214,13 +225,14 @@ class WebPage
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Построение GET-запроса
-	*
-	* @param array $args      Установить аргументы
-	* @return string
-	*/
-	function url($args = array())
+
+	/**
+	 * Построение GET-запроса
+	 *
+	 * @param array $args      Установить аргументы
+	 * @return string
+	 */
+	public function url($args = array())
 	{
 		global $Eresus;
 
@@ -234,13 +246,14 @@ class WebPage
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Клиентский URL страницы с идентификатором $id
-	*
-	* @param int $id  Идентификатор страницы
-	* @return string URL страницы или NULL если раздела $id не существует
-	*/
-	function clientURL($id)
+
+	/**
+	 * Клиентский URL страницы с идентификатором $id
+	 *
+	 * @param int $id  Идентификатор страницы
+	 * @return string URL страницы или NULL если раздела $id не существует
+	 */
+	public function clientURL($id)
 	{
 		global $Eresus;
 
@@ -260,16 +273,16 @@ class WebPage
 	}
 	//-----------------------------------------------------------------------------
 
- /**
-	* Отрисовка переключателя страниц
-	*
-	* @param int     $total      Общее количество страниц
-	* @param int     $current    Номер текущей страницы
-	* @param string  $url        Шаблон адреса для перехода к подстранице.
-	* @param array   $templates  Шаблоны оформления
-	* @return string
-	*/
-	function pageSelector($total, $current, $url = null, $templates = null)
+	/**
+	 * Отрисовка переключателя страниц
+	 *
+	 * @param int     $total      Общее количество страниц
+	 * @param int     $current    Номер текущей страницы
+	 * @param string  $url        Шаблон адреса для перехода к подстранице.
+	 * @param array   $templates  Шаблоны оформления
+	 * @return string
+	 */
+	public function pageSelector($total, $current, $url = null, $templates = null)
 	{
 		global $Eresus;
 
