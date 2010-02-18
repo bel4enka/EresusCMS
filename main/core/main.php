@@ -164,6 +164,8 @@ class EresusCMS extends EresusApplication
 
 		$this->initWeb();
 
+		$output = '';
+
 		switch (true)
 		{
 			case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
@@ -171,7 +173,7 @@ class EresusCMS extends EresusApplication
 			break;
 
 			case substr($this->request->getLocal(), 0, 6) == '/admin':
-				include_once 'admin.php';
+				$output = $this->runWebAdminUI();
 			break;
 
 			default:
@@ -179,6 +181,7 @@ class EresusCMS extends EresusApplication
 			break;
 		}
 
+		echo $output;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -196,6 +199,22 @@ class EresusCMS extends EresusApplication
 		//$this->response = new HttpResponse();
 		$this->detectWebRoot();
 		//$this->initRoutes();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Запуск АИ
+	 * @return string
+	 * @deprecated Это временная функция
+	 */
+	protected function runWebAdminUI()
+	{
+		global $page;
+
+		include_once 'admin.php';
+
+		$page = new TAdminUI();
+		/*return */$page->render();
 	}
 	//-----------------------------------------------------------------------------
 
