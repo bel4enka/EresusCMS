@@ -204,6 +204,7 @@ class TClientUI extends WebPage
 				$this->section[] = $item['title'];
 				next($Eresus->request['params']);
 				array_shift($Eresus->request['params']);
+				break;
 			}
 			if ($item && $item['id'] == 1 && $main_fake) $item['id'] = 0;
 		} while ($item && current($Eresus->request['params']));
