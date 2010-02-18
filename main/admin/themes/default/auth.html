@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Вход - ${product.title}</title>
+	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/main.css" />
+	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/auth.css" />
+</head>
+<body onload="document.getElementById('AuthForm').user.focus();">
+
+	<table id="body">
+		<tr>
+			<td>
+
+				<form id="auth-form" action="./" method="post">
+
+					<table id="auth-dialog">
+						<tr>
+							<th colspan="2">Вход в панель управления</th>
+						</tr>
+						<tr>
+							<td colspan="2" class="v-spacer"></td>
+						</tr>
+						{if $errors}
+						<tr>
+							<td colspan="2">
+								{foreach $errors message}
+								<div class="box error">{$message}</div>
+								{/foreach}
+							</td>
+						</tr>
+						{/if}
+						<tr>
+							<td class="label"><label for="user">Пользователь:</label></td>
+							<td><input type="text" name="user" id="user"{if $user} value="{$user}"{/if} /></td>
+						</tr>
+						<tr>
+							<td class="label"><label for="password">Пароль:</label></td>
+							<td><input type="password" name="password" id="password" /></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<label for="autologin" class="checkbox">
+									<input type="checkbox" name="autologin" id="autologin" value="1"{if $autologin} checked="checked"{/if} />
+									Запомнить
+								</label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="v-spacer"></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="buttons"><input type="submit" value="Войти" /></td>
+						</tr>
+					</table>
+
+				</form>
+
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
