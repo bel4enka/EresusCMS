@@ -33,15 +33,15 @@ class AdminList {
 	var $head = array();
 	var $body = array();
 	var $__controls = array(
-		'add'           => array('image' => 'core/img/ctrl_add.gif', 'title' => strAdd, 'alt' => '+'),
-		'edit' 	        => array('image' => 'core/img/ctrl_edit.gif', 'title' => strEdit, 'alt' => '&plusmn;'),
-		'delete'        => array('image' => 'core/img/ctrl_delete.gif', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
-		'setup'         => array('image' => 'core/img/ctrl_setup.gif', 'title' => strProperties, 'alt' => '*'),
-		'move'          => array('image' => 'core/img/ctrl_move.gif', 'title' => strMove, 'alt' => '-&gt;'),
-		'on'        	  => array('image' => 'core/img/ctrl_off.gif', 'title' => admActivate, 'alt' => '0'),
-		'off'       	  => array('image' => 'core/img/ctrl_on.gif', 'title' => admDeactivate, 'alt' => '1'),
-		'position'      => array('image' => 'core/img/ctrl_up.gif', 'title' => admUp, 'alt' => '&uarr;'),
-		'position_down' => array('image' => 'core/img/ctrl_down.gif', 'title' => admDown, 'alt' => '&darr;'),
+		'add'           => array('image' => 'admin/themes/default/img/item-add.png', 'title' => strAdd, 'alt' => '+'),
+		'edit' 	        => array('image' => 'admin/themes/default/img/item-edit.png', 'title' => strEdit, 'alt' => '&plusmn;'),
+		'delete'        => array('image' => 'admin/themes/default/img/item-delete.png', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
+		'setup'         => array('image' => 'admin/themes/default/img/configure.png', 'title' => strProperties, 'alt' => '*'),
+		'move'          => array('image' => 'admin/themes/default/img/item-move.png', 'title' => strMove, 'alt' => '-&gt;'),
+		'on'        	  => array('image' => 'admin/themes/default/img/ctrl_off.gif', 'title' => admActivate, 'alt' => '0'),
+		'off'       	  => array('image' => 'admin/themes/default/img/ctrl_on.gif', 'title' => admDeactivate, 'alt' => '1'),
+		'position'      => array('image' => 'admin/themes/default/img/move-up.png', 'title' => admUp, 'alt' => '&uarr;'),
+		'position_down' => array('image' => 'admin/themes/default/img/move-down.png', 'title' => admDown, 'alt' => '&darr;'),
 		);
 	/**
 	 * Отрисовывает элемент управления

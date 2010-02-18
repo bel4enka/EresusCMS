@@ -195,21 +195,21 @@ class TAdminUI extends WebPage {
 		switch($type) {
 			case 'add':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_add.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/item-add.png',
 					'title' => strAdd,
 					'alt' => '+',
 				);
 			break;
 			case 'edit':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_edit.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/item-edit.png',
 					'title' => strEdit,
 					'alt' => '&plusmn;',
 				);
 			break;
 			case 'delete':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_delete.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/item-delete.png',
 					'title' => strDelete,
 					'alt' => 'X',
 					'onclick' => 'return askdel(this)',
@@ -217,21 +217,21 @@ class TAdminUI extends WebPage {
 			break;
 			case 'setup':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_setup.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/configure.png',
 					'title' => strProperties,
 					'alt' => '*',
 				);
 			break;
 			case 'move':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_move.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/item-move.png',
 					'title' => strMove,
 					'alt' => '-&gt;',
 				);
 			break;
 			case 'position':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_up.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/move-up.png',
 					'title' => admUp,
 					'alt' => '&uarr;',
 				);
@@ -240,7 +240,7 @@ class TAdminUI extends WebPage {
 			break;
 			case 'position_down':
 				$control = array(
-					'image' => $Eresus->root.'core/img/ctrl_down.gif',
+					'image' => $Eresus->root.'admin/themes/default/img/move-down.png',
 					'title' => admDown,
 					'alt' => '&darr;',
 				);
@@ -346,14 +346,14 @@ class TAdminUI extends WebPage {
 		if (isset($pages)) $result .= $pages;
 		$result .= "<table class=\"admList\">\n".
 			'<tr><th style="width: 100px;">'.admControls.
-			(isset($table['controls']['position'])?' <a href="'.$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.admSortPosition.'">'.img('core/img/ard.gif', admSortPosition, admSortPosition).'</a>':'').
+			(isset($table['controls']['position'])?' <a href="'.$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.admSortPosition.'">'.img('admin/themes/default/img/ard.gif', admSortPosition, admSortPosition).'</a>':'').
 			"</th>";
 		if (count($table['columns'])) foreach($table['columns'] as $column)
 			$result .= '<th '.(isset($column['width'])?' style="width: '.$column['width'].'"':'').'>'.
 				(arg($prefix.'sort') == $column['name'] ? '<span class="admSortBy">'.(isset($column['caption'])?$column['caption']:'&nbsp;').'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
 				(isset($table['name'])?
-				' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).'" title="'.admSortAscending.'">'.img('core/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
-				'<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).'" title="'.admSortDescending.'">'.img('core/img/aru.gif', admSortDescending, admSortDescending).'</a></th>':'');
+				' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).'" title="'.admSortAscending.'">'.img('admin/themes/default/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
+				'<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).'" title="'.admSortDescending.'">'.img('admin/themes/default/img/aru.gif', admSortDescending, admSortDescending).'</a></th>':'');
 		$result .= "</tr>\n";
 		$url_delete = $this->url(array($prefix.'delete'=>"%s"));
 		$url_edit = $this->url(array($prefix.'id'=>"%s"));
@@ -362,13 +362,13 @@ class TAdminUI extends WebPage {
 		$columnCount = count($table['columns'])+1;
 		if (count($items)) foreach($items as $item) {
 			$result .= '<tr><td class="ctrl">';
-			if (isset($table['controls']['delete']) && (empty($table['controls']['delete']) || $this->module->$table['controls']['delete']($item))) $result .= ' <a href="'.sprintf($url_delete, $item[$table['key']]).'" title="'.admDelete.'" onclick="return askdel(this)">'.img('core/img/delete.gif', admDelete, admDelete, 16, 16).'</a>';
-			if (isset($table['controls']['edit']) && (empty($table['controls']['edit']) || $this->module->$table['controls']['edit']($item)))  $result .= ' <a href="'.sprintf($url_edit, $item[$table['key']]).'" title="'.admEdit.'">'.img('core/img/edit.gif', admEdit, admEdit, 16, 16).'</a>';
+			if (isset($table['controls']['delete']) && (empty($table['controls']['delete']) || $this->module->$table['controls']['delete']($item))) $result .= ' <a href="'.sprintf($url_delete, $item[$table['key']]).'" title="'.admDelete.'" onclick="return askdel(this)">'.img('admin/themes/default/img/item-delete.png', admDelete, admDelete, 16, 16).'</a>';
+			if (isset($table['controls']['edit']) && (empty($table['controls']['edit']) || $this->module->$table['controls']['edit']($item)))  $result .= ' <a href="'.sprintf($url_edit, $item[$table['key']]).'" title="'.admEdit.'">'.img('admin/themes/default/img/item-edit.png', admEdit, admEdit, 16, 16).'</a>';
 			if (isset($table['controls']['position']) && (empty($table['controls']['position']) || $this->module->$table['controls']['position']($item)) && $sortMode == 'position')  {
-				$result .= ' <a href="'.sprintf($url_position, 'up', $item[$table['key']]).'" title="'.admUp.'">'.img('core/img/up.gif', admUp, admUp).'</a>';
-				$result .= ' <a href="'.sprintf($url_position, 'down', $item[$table['key']]).'" title="'.admDown.'">'.img('core/img/down.gif', admDown, admDown).'</a>';
+				$result .= ' <a href="'.sprintf($url_position, 'up', $item[$table['key']]).'" title="'.admUp.'">'.img('admin/themes/default/img/move-up.png', admUp, admUp).'</a>';
+				$result .= ' <a href="'.sprintf($url_position, 'down', $item[$table['key']]).'" title="'.admDown.'">'.img('admin/themes/default/img/move-down.png', admDown, admDown).'</a>';
 			}
-			if (isset($table['controls']['toggle']) && (empty($table['controls']['toggle']) || $this->module->$table['controls']['toggle']($item))) $result .= ' <a href="'.sprintf($url_toggle, $item[$table['key']]).'" title="'.($item['active']?admDeactivate:admActivate).'">'.img('core/img/'.($item['active']?'on':'off').'.gif', $item['active']?admDeactivate:admActivate, $item['active']?admDeactivate:admActivate).'</a>';
+			if (isset($table['controls']['toggle']) && (empty($table['controls']['toggle']) || $this->module->$table['controls']['toggle']($item))) $result .= ' <a href="'.sprintf($url_toggle, $item[$table['key']]).'" title="'.($item['active']?admDeactivate:admActivate).'">'.img('admin/themes/default/img/'.($item['active']?'on':'off').'.gif', $item['active']?admDeactivate:admActivate, $item['active']?admDeactivate:admActivate).'</a>';
 			$result .= '</td>';
 			# ќбрабатываем €чейки данных
 			if (count($table['columns'])) foreach($table['columns'] as $column) {

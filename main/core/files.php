@@ -42,21 +42,20 @@ class TFiles {
 	var
 		$access = EDITOR,
 		$icons = array(
-			array('ext'=>'php|inc|js','icon'=>'script'),
-			array('ext'=>'jpg|jpeg','icon'=>'jpeg'),
-			array('ext'=>'gif','icon'=>'gif'),
-			array('ext'=>'bmp','icon'=>'bmp'),
-			array('ext'=>'swf','icon'=>'flash'),
-			array('ext'=>'htm|html|shtml','icon'=>'html'),
-			array('ext'=>'wav|mid|mp3','icon'=>'audio'),
-			array('ext'=>'avi|mov|mpg|mpeg','icon'=>'video'),
-			array('ext'=>'txt','icon'=>'text'),
-			array('ext'=>'exe','icon'=>'app'),
-			array('ext'=>'rar','icon'=>'rar'),
-			array('ext'=>'zip','icon'=>'zip'),
-			array('ext'=>'doc','icon'=>'word'),
-			array('ext'=>'xls','icon'=>'excel'),
-			array('ext'=>'pdf','icon'=>'pdf'),
+			array('ext'=>'js','icon'=>'application-javascript'),
+			array('ext'=>'php','icon'=>'application-x-php'),
+			array('ext'=>'png|jpg|jpeg|gif','icon'=>'image-x-generic'),
+			array('ext'=>'swf','icon'=>'application-x-shockwave-flash'),
+			array('ext'=>'htm|html|shtml','icon'=>'text-html'),
+			array('ext'=>'wav|mid|mp3','icon'=>'audio-x-generic'),
+			array('ext'=>'avi|mov|mpg|mpeg','icon'=>'video-x-generic'),
+			array('ext'=>'txt','icon'=>'text-plain'),
+			array('ext'=>'exe','icon'=>'application-x-ms-dos-executable'),
+			array('ext'=>'rar','icon'=>'application-x-rar'),
+			array('ext'=>'zip','icon'=>'application-zip'),
+			array('ext'=>'doc','icon'=>'application-msword'),
+			array('ext'=>'xls','icon'=>'application-vnd.ms-excel'),
+			array('ext'=>'pdf','icon'=>'application-pdf'),
 		);
 	var $root;
 	var $panels = array('l'=>'', 'r'=>'');
@@ -165,7 +164,7 @@ class TFiles {
 						$result[$i]['link'] = httpRoot.$dir.'/'.$name;
 						$result[$i]['size'] = number_format(filesize(filesRoot.$this->root.$dir.'/'.$name));
 						$result[$i]['action'] = 'new';
-						$result[$i]['icon'] = 'file';
+						$result[$i]['icon'] = 'application-octet-stream';
 						if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
 							$result[$i]['icon'] = $item['icon'];
 							break;
@@ -210,7 +209,7 @@ class TFiles {
 				case 'cd': $result .= "javascript:filesCD('".$this->url(array($side.'f'=>$items[$i]['link']))."')"; break;
 				case 'new': $result .= "window.open('".$items[$i]['link']."');"; break;
 			}
-			$result .= "\"><td>".img('core/img/icon_'.$items[$i]['icon'].'.gif')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
+			$result .= "\"><td>".img('admin/themes/default/img/mimetypes/'.$items[$i]['icon'].'.png')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
 		}
 		$result .= "</table>\n";
 		return $result;
