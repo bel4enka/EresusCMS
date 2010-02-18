@@ -46,7 +46,7 @@ define('ERESUS_LOG_LEVEL' , ${log.level});
 /**
  * Подключение Eresus Core
  */
-include_once 'core/framework/core/eresus-core.php';
+include_once 'core/framework/core/eresus-core.compiled.php';
 
 /**
  * Подключение главного приложения

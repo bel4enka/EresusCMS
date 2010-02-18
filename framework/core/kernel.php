@@ -2,7 +2,7 @@
 /**
  * Eresus Core
  *
- * @version 0.1.2
+ * @version 0.1.3
  *
  * Kernel module
  *
@@ -26,13 +26,13 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: kernel.php 435 2009-12-07 17:09:17Z mk $
+ * $Id: kernel.php 480 2010-02-18 18:24:45Z mk $
  */
 
 /**
  * Eresus Core version
  */
-define('ERESUS_CORE_VERSION', '0.1.2');
+define('ERESUS_CORE_VERSION', '0.1.3');
 
 /**
  * Emergency memory buffer size in KiB
@@ -1749,14 +1749,8 @@ class Core {
 		/*
 		 * If Eresus Core was NOT built with a "compile" option
 		 */
-		if ( ! ERESUS_CORE_USE_COMPILED )
+		if ( ! ERESUS_CORE_COMPILED )
 			EresusClassAutoloader::add('core.autoload');
-
-		/*
-		 * If Eresus Core was built with a "compile" option
-		 */
-		if (ERESUS_CORE_USE_COMPILED)
-			include_once 'eresus-core.compiled.php';
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'done');
 
@@ -1901,15 +1895,20 @@ class Core {
 		eresus_log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
 
 		/*
-		 * PHP has no standart methods to intersept some error types (e.g. E_PARSE or E_ERROR),
+		 * PHP has no standart methods to intercept some error types (e.g. E_PARSE or E_ERROR),
 		 * but there is a way to do this - register callback function via ob_start.
+		 * But not in CLI mode.
 		 */
-		if (ob_start('EresusFatalErrorHandler', 4096))
-			eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-		else
-			eresus_log(
-				LOG_NOTICE, __METHOD__, 'Fatal error handler not instaled! Fatal error will be not handled!'
-			);
+		if (! PHP::isCLI())
+		{
+			if (ob_start('EresusFatalErrorHandler', 4096))
+				eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+			else
+				eresus_log(
+					LOG_NOTICE, __METHOD__,
+					'Fatal error handler not instaled! Fatal error will be not handled!'
+				);
+		}
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'done');
 	}

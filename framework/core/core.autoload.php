@@ -4,7 +4,7 @@
  *
  * @version 0.1.3
  *
- * Init module
+ * Class autoloading table
  *
  * @copyright 2007-2009, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
@@ -22,35 +22,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package Core
+ * @package Kernel
+ * @internal
+ * @ignore
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: eresus-core.php 480 2010-02-18 18:24:45Z mk $
+ * $Id$
  */
 
+return array(
 
-/*
- * Ensure that we using supported PHP version
- */
+	/* Console */
 
-/**
- * Required PHP version
- */
-if ( !defined('ERESUS_CORE_PHP_VERSION') )
-	define('ERESUS_CORE_PHP_VERSION', '5.2.1');
+	/* DB */
+	'DB' => 'DB/DB.php',
+	'DBSettings' => 'DB/DB.php',
+	'DBRuntimeException' => 'DB/DB.php',
+	'DBQueryException' => 'DB/DBQueryException.php',
 
-/* Check PHP version */
-if (PHP_VERSION < ERESUS_CORE_PHP_VERSION)
-	die(
-		'Eresus Core: Invalid PHP version '.PHP_VERSION.
-		'. Needed '.ERESUS_CORE_PHP_VERSION." or later.\n"
-	);
+	/* File */
+	'WindowsFS' => 'File/FS/WindowsFS.php',
 
-define('ERESUS_CORE_COMPILED', false);
+	/* Misc */
+	'Registry' => 'Misc/Registry.php',
 
-/**
- * Including kernel
- */
-require_once 'kernel.php';
+	/* Template */
+	'Template' => 'Template/Template.php',
+	'TemplateFile' => 'Template/Template.php',
 
-Core::init();
+	/* WWW */
+	'HTTP' => 'WWW/HTTP.php',
+	'HttpRequest' => 'WWW/HTTP.php',
+	'HttpResponse' => 'WWW/HttpResponse.php',
+	'HttpHeaders' => 'WWW/HttpHeaders.php',
+	'HttpHeader' => 'WWW/HttpHeaders.php',
+
+	/* Applications */
+	'EresusApplication' => 'EresusApplication.php',
+
+);
