@@ -37,7 +37,8 @@
  *
  * @package EresusCMS
  */
-class EresusCMS extends EresusApplication {
+class EresusCMS extends EresusApplication
+{
 
 	/**
 	 * HTTP-запрос
