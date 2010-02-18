@@ -128,9 +128,16 @@ class WebPage
 	 */
 	public function linkStyles($url, $media = '')
 	{
-		for($i=0; $i<count($this->head['link']); $i++) if ($this->head['link'][$i]['href'] == $url) return;
+		/* Проверяем, не добавлен ли уже этот URL  */
+		for ($i = 0; $i < count($this->head['link']); $i++)
+			if ($this->head['link'][$i]['href'] == $url)
+				return;
+
 		$item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
-		if (!empty($media)) $item['media'] = $media;
+
+		if (!empty($media))
+			$item['media'] = $media;
+
 		$this->head['link'][] = $item;
 	}
 	//------------------------------------------------------------------------------
@@ -146,7 +153,8 @@ class WebPage
 		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
 		$content = rtrim($content);
 		$item = array('content' => $content);
-		if (!empty($media)) $item['media'] = $media;
+		if (!empty($media))
+			$item['media'] = $media;
 		$this->head['style'][] = $item;
 	}
 	//------------------------------------------------------------------------------
@@ -159,14 +167,23 @@ class WebPage
 	 */
 	public function linkScripts($url, $type = 'javascript')
 	{
-		for($i=0; $i<count($this->head['script']); $i++) if (isset($this->head['script'][$i]['src']) && $this->head['script'][$i]['src'] == $url) return;
-		if (strpos($type, '/') === false) switch (strtolower($type)) {
-			case 'emca': $type = 'text/emcascript'; break;
-			case 'javascript': $type = 'text/javascript'; break;
-			case 'jscript': $type = 'text/jscript'; break;
-			case 'vbscript': $type = 'text/vbscript'; break;
-			default: return;
-		}
+		for ($i = 0; $i < count($this->head['script']); $i++)
+		if (
+			isset($this->head['script'][$i]['src']) &&
+			$this->head['script'][$i]['src'] == $url
+		)
+			return;
+
+		if (strpos($type, '/') === false)
+			switch (strtolower($type))
+			{
+				case 'emca': $type = 'text/emcascript'; break;
+				case 'javascript': $type = 'text/javascript'; break;
+				case 'jscript': $type = 'text/jscript'; break;
+				case 'vbscript': $type = 'text/vbscript'; break;
+				default: return;
+			}
+
 		$this->head['script'][] = array('type' => $type, 'src' => $url);
 	}
 	//------------------------------------------------------------------------------
@@ -179,13 +196,16 @@ class WebPage
 	 */
 	public function addScripts($content, $type = 'javascript')
 	{
-		if (strpos($type, '/') === false) switch (strtolower($type)) {
-			case 'emca': $type = 'text/emcascript'; break;
-			case 'javascript': $type = 'text/javascript'; break;
-			case 'jscript': $type = 'text/jscript'; break;
-			case 'vbscript': $type = 'text/vbscript'; break;
-			default: return;
-		}
+		if (strpos($type, '/') === false)
+			switch (strtolower($type))
+			{
+				case 'emca': $type = 'text/emcascript'; break;
+				case 'javascript': $type = 'text/javascript'; break;
+				case 'jscript': $type = 'text/jscript'; break;
+				case 'vbscript': $type = 'text/vbscript'; break;
+				default: return;
+			}
+
 		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
 		$this->head['script'][] = array('type' => $type, 'content' => $content);
 	}
@@ -227,20 +247,38 @@ class WebPage
 	//------------------------------------------------------------------------------
 
 	/**
-	 * Построение GET-запроса
+	 * Строит URL GET-запроса на основе переданных аргументов
 	 *
-	 * @param array $args      Установить аргументы
+	 * URL будет состоять из двух частей:
+	 * 1. Адрес текущего раздела ($Eresus->request['path'])
+	 * 2. key=value аргументы
+	 *
+	 * Список аргументов составляется объединением списка аргументов текущего запроса
+	 * и элементов массива $args. Элементы $args имеют приоритет над аргументами текущего
+	 * запроса.
+	 *
+	 * Если значение аргумента - пустая строка, он будет удалён из запроса.
+	 *
+	 * @param array $args  Установить аргументы
 	 * @return string
 	 */
 	public function url($args = array())
 	{
 		global $Eresus;
 
+		/* Объединяем аргументы метода и аргументы текущего запроса */
 		$args = array_merge($Eresus->request['arg'], $args);
-		foreach($args as $key => $value) if (is_array($value)) $args[$key] = implode(',', $value);
+
+		/* Превращаем значения-массивы в строки, соединяя элементы запятой */
+		foreach ($args as $key => $value)
+			if (is_array($value))
+				$args[$key] = implode(',', $value);
 
 		$result = array();
-		foreach($args as $key => $value) if ($value !== '') $result []= "$key=$value";
+		foreach ($args as $key => $value)
+			if ($value !== '')
+				$result []= "$key=$value";
+
 		$result = implode('&amp;', $result);
 		$result = $Eresus->request['path'].'?'.$result;
 		return $result;
@@ -248,7 +286,7 @@ class WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Клиентский URL страницы с идентификатором $id
+	 * Возвращает клиентский URL страницы с идентификатором $id
 	 *
 	 * @param int $id  Идентификатор страницы
 	 * @return string URL страницы или NULL если раздела $id не существует
@@ -288,37 +326,49 @@ class WebPage
 
 		$result = '';
 		# Загрузка шаблонов
-		if (!is_array($templates)) $templates = array();
-		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $this->defaults['pageselector'][$i];
+		if (!is_array($templates))
+			$templates = array();
+		for ($i=0; $i < 5; $i++)
+			if (!isset($templates[$i]))
+				$templates[$i] = $this->defaults['pageselector'][$i];
 
-		if (is_null($url)) $url = $Eresus->request['path'].'p%d/';
+		if (is_null($url))
+			$url = $Eresus->request['path'].'p%d/';
 
 		$pages = array(); # Отображаемые страницы
 		# Определяем номера первой и последней отображаемых страниц
 		$visible = option('clientPagesAtOnce'); # TODO: Изменить переменную или сделать учёт client/admin
-		if ($total > $visible) {
+		if ($total > $visible)
+		{
 			# Будут показаны НЕ все страницы
 			$from = floor($current - $visible / 2); # Начинаем показ с текущей минус половину видимых
-			if ($from < 1) $from = 1; # Страниц меньше 1-й не существует
+			if ($from < 1)
+				$from = 1; # Страниц меньше 1-й не существует
 			$to = $from + $visible - 1; # мы должны показать $visible страниц
-			if ($to > $total) { # Но если это больше чем страниц всего, вносим исправления
+			if ($to > $total)
+			{ # Но если это больше чем страниц всего, вносим исправления
 				$to = $total;
 				$from = $to - $visible + 1;
 			}
-		} else {
+		}
+			else
+		{
 			# Будут показаны все страницы
 			$from = 1;
 			$to = $total;
 		}
-		for($i = $from; $i <= $to; $i++) {
+		for($i = $from; $i <= $to; $i++)
+		{
 			$src['href'] = sprintf($url, $i);
 			$src['number'] = $i;
 			$pages[] = replaceMacros($templates[$i != $current ? 1 : 2], $src);
 		}
 
 		$pages = implode('', $pages);
-		if ($from != 1) $pages = replaceMacros($templates[3], array('href' => sprintf($url, 1))).$pages;
-		if ($to != $total) $pages .= replaceMacros($templates[4], array('href' => sprintf($url, $total)));
+		if ($from != 1)
+			$pages = replaceMacros($templates[3], array('href' => sprintf($url, 1))).$pages;
+		if ($to != $total)
+			$pages .= replaceMacros($templates[4], array('href' => sprintf($url, $total)));
 		$result = replaceMacros($templates[0], array('pages' => $pages));
 
 		return $result;
