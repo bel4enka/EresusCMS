@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,8 +25,137 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Eresus2
+ *
  * $Id$
  */
+
+
+/**
+ * Тема оформления административного интерфейса
+ *
+ * Экземпляр этого класса доступен через переменную {$theme} в шаблонах и может быть использован
+ * для определения путей к файлам темы, вызова помощников (helpers) и других вспомогательных
+ * функций.
+ *
+ * Автор темы может создать потомка этого класса, размещённого в файле theme.php в корне темы.
+ * В этом случае его класс будет использован вместо стандартного.
+ *
+ * @package Eresus2
+ */
+class AdminUITheme
+{
+	/**
+	 * Маленькие иконки
+	 * @var string
+	 */
+	const ICON_SMALL  = '8x8';
+
+	/**
+	 * Обычные иконки
+	 * @var string
+	 */
+	const ICON_NORMAL = '16x16';
+
+	/**
+	 * Большие иконки
+	 * @var string
+	 */
+	const ICON_LARGE  = '22x22';
+
+	/**
+	 * Путь к директории тем относительно корня сайта
+	 *
+	 * @var string
+	 */
+	protected $prefix = 'admin/themes';
+
+	/**
+	 * Внутреннее имя темы
+	 *
+	 * Должно совпадать с именем директории темы.
+	 *
+	 * @var string
+	 * @see getName
+	 */
+	protected $name = 'default';
+
+	/**
+	 * Конструктор
+	 *
+	 * @param string $name  Внутреннее имя темы (директория внутри themes)
+	 * @return AdminUITheme
+	 */
+	public function __construct($name = null)
+	{
+		if ($name)
+			$this->name = $name;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает внутреннее имя темы
+	 *
+	 * @return string
+	 * @see $name
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает адрес ресурса относительно корня сайта
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public function getResource($path)
+	{
+		return $this->prefix . '/' . $this->getName() . '/' . $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает адрес картинки относительно корня сайта
+	 * @param string $image
+	 * @return string
+	 */
+	public function getImage($image)
+	{
+		return $this->getResource('img/' . $image);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает адрес иконки относительно корня сайта
+	 * @param string $icon             Имя иконки
+	 * @param string $size [optional]  Размер иконки. По умолчанию ICON_NORMAL
+	 * @return string
+	 */
+	public function getIcon($icon, $size = self::ICON_NORMAL)
+	{
+		return $this->getResource('img/' . $size . '/' . $icon);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает шаблон
+	 * @param string $name
+	 * @return Template
+	 */
+	public function getTemplate($name)
+	{
+		$filename = $this->getResource($name);
+		$template = new Template($filename);
+		return $template;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
 
 define('ADMINUI', true);
 
@@ -39,10 +168,14 @@ function __macroVar($matches) {
 	return $result;
 }
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС "СТРАНИЦА"
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-class TAdminUI extends WebPage {
+
+/**
+ * Класс представляет страницу административного интерфейса
+ *
+ * @package Eresus2
+ */
+class TAdminUI extends WebPage
+{
 	var $module; # Загружаемый модуль
 	var $title; # Заголовок страницы
 	var $styles; # Стили CSS
@@ -52,11 +185,27 @@ class TAdminUI extends WebPage {
 	var $sub; # Уровень вложенности
 	var $headers; # Заголовки ответа сервера
 	var $options; # Для совместимости с TClientUI
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function init()
-	# Проводит инициализацию страницы
+
+	/**
+	 * Тема оформления
+	 *
+	 * @var AdminUITheme
+	 */
+	protected $uiTheme;
+
+	/**
+	 * Констурктор
+	 * @return TAdminUI
+	 */
+	public function __construct()
 	{
 		global $Eresus;
+
+		parent::__construct();
+
+		$theme = new AdminUITheme();
+		$this->setUITheme($theme);
+		TemplateSettings::getGlobalValue('theme', $theme);
 
 		$this->title = admControls;
 		# Определяем уровень вложенности
@@ -84,9 +233,34 @@ class TAdminUI extends WebPage {
 		);
 		$Eresus->plugins->adminOnMenuRender();
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# Общие методы
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект текущей темы оформления
+	 * @return AdminUITheme
+	 */
+	public function getUITheme()
+	{
+		return $this->uiTheme;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает новую тему оформления
+	 * @param AdminUITheme $theme
+	 * @return void
+	 */
+	public function setUITheme(AdminUITheme $theme)
+	{
+		$this->uiTheme = $theme;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @param $text
+	 * @return unknown_type
+	 */
 	function replaceMacros($text)
 	# Подставляет значения макросов
 	{
@@ -516,6 +690,60 @@ class TAdminUI extends WebPage {
 	 */
 	function render()
 	{
+		/* Проверям права доступа и, если надо, проводим авторизацию */
+		if (!UserRights(EDITOR))
+			$this->auth();
+		else
+			$this->renderUI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Авторизация
+	 * @return void
+	 */
+	private function auth()
+	{
+		global $Eresus;
+
+		$req = HTTP::request();
+		$user = $req->arg('user');
+		$password = $req->arg('password');
+		$autologin = $req->arg('autologin');
+
+		$data = array('errors' => array());
+		$data['user'] = $user;
+		$data['autologin'] = $autologin;
+
+		if ($req->getMethod() == 'POST')
+		{
+			// FIXME Нужна фильтрация аргументов!
+
+			if ($Eresus->login($user, $Eresus->password_hash($password), $autologin))
+				HTTP::redirect('./admin.php');
+
+		}
+
+		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
+		{
+			foreach ($Eresus->session['msg']['errors'] as $message)
+				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
+
+			$Eresus->session['msg']['errors'] = array();
+		}
+
+		$tmpl = $this->getUITheme()->getTemplate('auth.html');
+    $html = $tmpl->compile($data);
+    echo $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отрисовка интерфейса
+	 * @return void
+	 */
+	private function renderUI()
+	{
 		global $locale;
 
 		$data = array();
@@ -542,38 +770,3 @@ class TAdminUI extends WebPage {
 	}
 	//-----------------------------------------------------------------------------
 }
-
-
-# Проверям права доступа и если надо, проводим авторизацию
-if (!UserRights(EDITOR)) {
-	$messages = '';
-	if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
-		foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message, errError);
-		$Eresus->session['msg']['errors'] = array();
-		$messages = '<div style="position: absolute; width: 100%; margin: 0;">'.$messages.'</div>';
-	}
-	echo
-		"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html>\n".
-		"<head>\n".
-		"  <title>Авторизация</title>\n".
-		"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\">\n".
-		"  <link rel=\"StyleSheet\" href=\"".httpRoot."core/admin.css\" type=\"text/css\">".
-		"</head>".
-		"<body class=\"admin\" style=\"background-color: black; font-family: verdana;\" onload=\"javascript:document.auth.user.focus();\">".
-		$messages.
-		"<table border=\"0\" style=\"width: 100%; height: 100%; vertical-align: middle\">\n<tr>\n<td align=\"center\">".
-		"<form name=\"auth\" action=\"\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"login\">\n".
-		"<table style=\"background-color: #eee; font-size: 8pt;\">\n".
-		"<tr><th colspan=\"2\" style=\"background-color: #25b; border: solid 1 black;	color: gold;\" title=\"".$_SERVER["HTTP_HOST"]."\">".option('siteName')."</th></tr>\n".
-		"<tr><td>Пользователь:</td><td><input type=\"text\" name=\"user\"></td></tr>\n".
-		"<tr><td>Пароль:</td><td><input type=\"password\" name=\"password\"></td></tr>\n".
-		"<tr><td>Запомнить</td><td><input type=\"checkbox\" name=\"autologin\" value=\"1\" style=\"border-width: 0px; margin: 0px;\"></td></tr>\n".
-		"<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Вход\" style=\"color: #25b; width: 8em; font-weight: bold; border: solid 1px #25b; background-color: white; font-family : 'MS Sans Serif', Geneva, sans-serif; \"></td></tr>\n".
-		"</table>\n</form>\n".
-		"</td>\n</tr>\n</table>\n</body></html>";
-	exit;
-}
-
-$GLOBALS['page'] = new TAdminUI;
-$GLOBALS['page']->init();
-$GLOBALS['page']->render();
