@@ -3,8 +3,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -87,6 +87,39 @@ h6
 {
 	color: #007acc;
 	border-width: 0;
+}
+
+/**************************************************************************************
+ ** КЛАССЫ
+ **
+ ** Абстрактные классы общего назначения
+ **
+ **************************************************************************************/
+
+
+
+/**************************************************************************************
+ ** ВИДЖЕТЫ
+ **
+ ** Стили виджетов
+ **
+ **************************************************************************************/
+
+/*** Обычный бокс ***/
+.box
+{
+	border-style: solid;
+	border-width: 2px;
+	padding: 0.5em 1em;
+	margin: 0.2em 0;
+}
+
+/*** Бокс сообщения об ошибках ***/
+.box.error
+{
+	border-color: #a00;
+	background: #fdd url(img/16x16/status/error.png) no-repeat 5px 50%;
+	padding-left: 25px;
 }
 
 
