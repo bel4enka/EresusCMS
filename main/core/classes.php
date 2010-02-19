@@ -593,32 +593,125 @@ class Plugins {
 /**
  * Родительский класс для всех плагинов
  *
- * @var  string  $name        Имя плагина
- * @var  string  $version	   	Версия плагина
- * @var  string  $kernel      Необходимая версия Eresus
- * @var  string  $title       Название плагина
- * @var  string  $description	Описание плагина
- * @var  string  $type        Тип плагина, перечисленые через запятую ключевые слова:
- *                            	client   - Загружать плагин в КИ
- *                              admin    - Загружать плагин в АИ
- *                              content  - Плагин предоставляет тип контента
- *                              ondemand - Не загружать плагин автоматически
- * @var  array   $settings    Настройки плагина
+ * @package Eresus2
  */
-class Plugin {
-	var $name;
-	var $version = '0.00';
-	var $kernel = '2.10b2';
-	var $title = 'no title';
-	var $description = '';
-	var $type;
-	var $settings = array();
-	var $dirData; # Директория данных (/data/имя_плагина)
-	var $urlData; # URL данных
-	var $dirCode; # Директория скриптов (/ext/имя_плагина)
-	var $urlCode; # URL скриптов
-	var $dirStyle; # Директория оформления (style/имя_плагина)
-	var $urlStyle; # URL оформления
+class Plugin
+{
+	/**
+	 * Имя плагина
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Версия плагина
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $version = '0.00';
+
+	/**
+	 * Необходимая версия Eresus
+	 *
+	 * Потомки могут перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $kernel = '2.10b2';
+
+	/**
+	 * Название плагина
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $title = 'no title';
+
+	/**
+	 * Описание плагина
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $description = '';
+
+	/**
+	 * Тип плагина
+	 *
+	 * Перечисление через запятую ключевых слов:
+	 * - client   - Загружать плагин в КИ
+	 * - admin    - Загружать плагин в АИ
+	 * - content  - Плагин предоставляет тип контента
+	 * - ondemand - Не загружать плагин автоматически
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $type;
+
+	/**
+	 * Настройки плагина
+	 *
+	 * Потомки могут перекрывать это своим значением
+	 *
+	 * @var array
+	 */
+	protected $settings = array();
+
+	/**
+	 * Директория данных
+	 *
+	 * /data/имя_плагина
+	 *
+	 * @var string
+	 */
+	protected $dirData;
+
+	/**
+	 * URL данных
+	 *
+	 * @var string
+	 */
+	protected $urlData;
+
+	/**
+	 * Директория скриптов
+	 *
+	 * /ext/имя_плагина
+	 *
+	 * @var string
+	 */
+	protected $dirCode;
+
+	/**
+	 * URL скриптов
+	 *
+	 * @var string
+	 */
+	protected $urlCode;
+
+	/**
+	 * Директория оформления
+	 *
+	 * style/имя_плагина
+	 *
+	 * @var string
+	 */
+	protected $dirStyle;
+
+	/**
+	 * URL оформления
+	 *
+	 * @var string
+	 */
+	protected $urlStyle;
+
 /**
  * Конструктор
  *
@@ -861,22 +954,15 @@ function dbDropTable($name = '')
  * @param int			$offset				Смещение выборки
  * @param bool		$distinct			Только уникальные результаты
  *
- * @return array	Список записей
+ * @return array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
  */
-function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0,
+	$offset = 0, $group = '', $distinct = false)
 {
 	global $Eresus;
 
-	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($limit)) {
-		# Обратная совместимость
-		$desc = $fields;
- 		$fields = $limit;
- 		$limit = $offset;
- 		$offset = $group;
- 		$group = $distinct;
- 		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-		$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
-	} else $result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit, $offset, $group, $distinct);
+	$result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit,
+		$offset, $group, $distinct);
 
 	return $result;
 }
