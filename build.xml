@@ -132,6 +132,19 @@
 		  </filterchain>
 		</copy>
 
+		<!-- Auto tests -->
+		<if>
+			<istrue value="${tests}" />
+			<then>
+				<copy todir="${build.dir}/tests">
+					<fileset refid="files.tests" />
+					<filterchain>
+					    <expandproperties />
+				  </filterchain>
+				</copy>
+			</then>
+
+		</if>
   </target>
 
 	<!--
@@ -212,9 +225,9 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- Unit tests -->
-	<fileset dir="." id="tests_files">
-		<include name="t/**" />
+	<!-- Auto tests -->
+	<fileset dir="tests" id="files.tests">
+		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
 
