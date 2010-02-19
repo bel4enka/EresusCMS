@@ -1,9 +1,10 @@
-#Wed Feb 17 23:27:25 MSK 2010
+#Fri Feb 19 08:34:49 MSK 2010
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
 encoding//db/mysql-4.sql=windows-1251
 encoding//db/mysql-5.sql=windows-1251
+encoding//lib/mysql.php=windows-1251
 encoding//main/admin/themes/default/page.default.html=UTF-8
 encoding//main/cfg/main.template.php=windows-1251
 encoding//main/cfg/settings.php=windows-1251
