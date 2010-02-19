@@ -510,7 +510,7 @@ class TAdminUI extends WebPage
 			$items = $Eresus->db->select(
 				$table['name'],
 				isset($table['condition'])?$table['condition']:'',
-				($sortDesc ? '-' : '_').$sortMode,
+				($sortDesc ? '-' : '+').$sortMode,
 				'',
 				$itemsPerPage,
 				($pagesDesc?($pageCount-$page)*$itemsPerPage:($page-1)*$itemsPerPage)
