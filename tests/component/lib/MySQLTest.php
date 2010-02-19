@@ -74,5 +74,28 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Проверка метода MySQL::selectItem
+	 */
+	public function testSelectItem()
+	{
+		$fixture = new MySQL();
+		$item = $fixture->selectItem('users', "login = 'root'", 'id,access');
+		$this->assertEquals(2, count($item));
+		$this->assertEquals(1, $item['access']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка выборки методом MySQL::selectItem несуществующего элемента
+	 */
+	public function testSelectItemFail()
+	{
+		$fixture = new MySQL();
+		$item = $fixture->selectItem('users', "login = '-nobody-'");
+		$this->assertFalse($item);
+	}
+	//-----------------------------------------------------------------------------
+
 	/**/
 }

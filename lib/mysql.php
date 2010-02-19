@@ -351,12 +351,30 @@ class MySQL
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Выбрать одну запись из БД
+	 *
+	 * @param string $table      Имя таблицы
+	 * @param string $condition  SQL-условие
+	 * @param string $fields     Выбираемые поля
+	 * @return array|false
+	 */
 	function selectItem($table, $condition, $fields = '')
 	{
-		if ($table{0} != "`") $table = "`".$table."`";
-		$tmp = $this->select($table, $condition, '', false, $fields);
-		$tmp = isset($tmp[0])?$tmp[0]:null;
-		return $tmp;
+		$q = DB::getHandler()->createSelectQuery();
+
+		if ($fields == '')
+			$fields = '*';
+
+		$q->select($fields)
+			->from($table)
+			->where($condition)
+			->limit(1);
+
+		$item = DB::fetch($q);
+
+		return $item;
 	}
 	//-----------------------------------------------------------------------------
 
