@@ -57,6 +57,17 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::escape
+	 */
+	public function testEscape()
+	{
+		$fixture = new MySQL();
+		$this->assertEquals('test', $fixture->escape('test'));
+		$this->assertEquals(array('a' => 'test'), $fixture->escape(array('a' => 'test')));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::select
 	 */
 	public function testSelect()

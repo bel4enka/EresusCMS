@@ -437,19 +437,16 @@ class MySQL
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Ёкранирует потенциально опасные символы
-	*
-	* @param mixed $src  ¬ходные данные
-	*
-	* @return mixed
-	*/
+	/**
+	 * Ёкранирует потенциально опасные символы
+	 *
+	 * Ќачина€ с 2.13 метод ничего не делает.
+	 *
+	 * @param mixed $src  ¬ходные данные
+	 * @return mixed
+	 */
 	function escape($src)
 	{
-		switch (true) {
-			case is_string($src): $src = mysql_real_escape_string($src); break;
-			case is_array($src): foreach($src as $key => $value) $src[$key] = mysql_real_escape_string($value); break;
-		}
 		return $src;
 	}
 	//-----------------------------------------------------------------------------
