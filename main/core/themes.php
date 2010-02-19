@@ -30,9 +30,25 @@
 
 #TODO: Проверить нет ли доступа к внешним директориям
 
-class TThemes {
-	var $access = ADMIN;
-	var $tabs = array(
+/**
+ * Упрвление темами оформления
+ *
+ * @package EresusCMS
+ * @author mekras
+ */
+class TThemes
+{
+	/**
+	 * ???
+	 * @var unknown_type
+	 */
+	public $access = ADMIN;
+
+	/**
+	 * ???
+	 * @var unknown_type
+	 */
+	public $tabs = array(
 		'width' => admThemesTabWidth,
 		'items' => array(
 			array('caption' => admThemesTemplates),
@@ -40,7 +56,12 @@ class TThemes {
 			array('caption' => admThemesStyles),
 		),
 	);
-	var $stdTemplates = array(
+
+	/**
+	 * ???
+	 * @var unknown_type
+	 */
+	public $stdTemplates = array(
 		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
 		'PageSelector' => array('caption' => admTemplPageSelector, 'hint' => admTemplPageSelectorLabel),
 		'400' => array('caption' => 'HTTP 400 - Bad Request'),
@@ -62,36 +83,53 @@ class TThemes {
 		'416' => array('caption' => 'HTTP 416 - Requested Range Not Satisfiable'),
 		'417' => array('caption' => 'HTTP 417 - Expectation Failed'),
 	);
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# ШАБЛОНЫ / TEMPLATES
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplatesInsert()
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplatesInsert()
 	{
 		useLib('templates');
 		$templates = new Templates();
-		$templates->add(arg('name'), '', arg('code', 'int'), arg('desc'));
-		goto(arg('submitURL'));
+		$templates->add(arg('name'), '', arg('code'), arg('desc'));
+		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplatesUpdate()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplatesUpdate()
 	{
 		useLib('templates');
 		$templates = new Templates();
-		$templates->update(arg('name'), '', arg('code', 'int'), arg('desc'));
-		goto(arg('submitURL'));
+		$templates->update(arg('name'), '', arg('code'), arg('desc'));
+		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplatesDelete()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplatesDelete()
 	{
 		global $page;
 
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'));
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplatesAdd()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplatesAdd()
 	{
 		global $page;
 
@@ -111,8 +149,13 @@ class TThemes {
 		$result = $page->renderForm($form);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplatesEdit()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplatesEdit()
 	{
 		global $page;
 
@@ -136,8 +179,13 @@ class TThemes {
 		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplatesList()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplatesList()
 	{
 		global $page;
 
@@ -169,8 +217,13 @@ class TThemes {
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionTemplates()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionTemplates()
 	{
 	global $Eresus, $page;
 
@@ -187,33 +240,51 @@ class TThemes {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# СТАНДАРТНЫЕ ШАБЛОНЫ / STANDARD TEMPLATES
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStdInsert()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStdInsert()
 	{
 		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStdUpdate()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStdUpdate()
 	{
 		$this->sectionStdInsert();
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStdDelete()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStdDelete()
 	{
 		global $page;
 
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'), 'std');
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStdAdd()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStdAdd()
 	{
 		global $page;
 
@@ -249,8 +320,13 @@ class TThemes {
 		$result = $page->renderForm($form);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStdEdit()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStdEdit()
 	{
 		global $page;
 
@@ -274,8 +350,13 @@ class TThemes {
 		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStdList()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStdList()
 	{
 		global $page;
 
@@ -307,8 +388,13 @@ class TThemes {
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStd()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStd()
 	{
 		global $page;
 
@@ -325,37 +411,54 @@ class TThemes {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# СТИЛИ / CSS
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStylesInsert()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStylesInsert()
 	{
 		$file = "/* ".arg('description')." */\r\n\r\n".arg('html');
 		$fp = fopen(filesRoot.'style/'.arg('filename').'.css', 'w');
 		fwrite($fp, $file);
 		fclose($fp);
 		SendNotify((arg('update')?admUpdated:admAdded).': '.arg('filename').'.css');
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStylesUpdate()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 */
+	public function sectionStylesUpdate()
 	{
 		global $Eresus;
 		$Eresus->request['update'] = true;
 		$this->sectionStylesInsert();
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStylesDelete()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStylesDelete()
 	{
 		global $page;
 
 		$filename = filesRoot.'style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
 		SendNotify(admDeleted.': '.arg('delete'));
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStylesAdd()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStylesAdd()
 	{
 		global $page;
 
@@ -375,8 +478,13 @@ class TThemes {
 		$result = $page->renderForm($form);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStylesEdit()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStylesEdit()
 	{
 		global $page;
 
@@ -403,8 +511,13 @@ class TThemes {
 		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStylesList()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStylesList()
 	{
 		global $page;
 
@@ -444,8 +557,13 @@ class TThemes {
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function sectionStyles()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function sectionStyles()
 	{
 	global $page;
 
@@ -461,8 +579,13 @@ class TThemes {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function adminRender()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function adminRender()
 	{
 		global $page;
 
@@ -481,5 +604,5 @@ class TThemes {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }

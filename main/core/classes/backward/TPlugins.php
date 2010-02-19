@@ -145,7 +145,7 @@ class TPlugins {
         }
       break;
       case 'url':
-        goto($page->replaceMacros($page->content));
+        HTTP::redirect($page->replaceMacros($page->content));
       break;
       default:
       if ($this->load($page->type)) {

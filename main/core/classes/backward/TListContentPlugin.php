@@ -68,7 +68,7 @@ function toggle($id)
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
 	sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
-	goto($page->url());
+	HTTP::redirect($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function delete($id)
@@ -79,7 +79,7 @@ function delete($id)
 	$Eresus->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
 	sendNotify(admDeleted.': '.'<a href="'.str_replace('delete',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
-	goto($page->url());
+	HTTP::redirect($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
@@ -97,7 +97,7 @@ function up($id)
 		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	goto($page->url());
+	HTTP::redirect($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
@@ -116,7 +116,7 @@ function down($id)
 		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	goto($page->url());
+	HTTP::redirect($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function adminRenderContent()

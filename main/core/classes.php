@@ -31,20 +31,24 @@
 /**
  * Родительский класс веб-интерфейсов
  *
+ * @package Eresus2
  */
-class WebPage {
+class WebPage
+{
 	/**
 	 * Идентификатор текущего раздела
 	 *
 	 * @var int
 	 */
 	var $id = 0;
+
 	/**
 	 * HTTP-заголовки ответа
 	 *
 	 * @var array
 	 */
 	var $headers = array();
+
 	/**
 	 * Описание секции HEAD
 	 * 	meta-http - мета-теги HTTP-заголовков
@@ -64,10 +68,11 @@ class WebPage {
 		'script' => array(),
 		'content' => '',
 	);
- /**
-	* Значения по умолчанию
-	* @var array
-	*/
+
+	/**
+	 * Значения по умолчанию
+	 * @var array
+	 */
 	var $defaults = array(
 		'pageselector' => array(
 			'<div class="pages">$(pages)</div>',
@@ -77,10 +82,11 @@ class WebPage {
 			'<a href="$(href)">&rarr;</a>',
 		),
 	);
- /**
-	* Конструктор
-	* @return WebPage
-	*/
+
+	/**
+	 * Конструктор
+	 * @return WebPage
+	 */
 	function WebPage()
 	{
 	}
@@ -394,13 +400,19 @@ class Plugins {
 		global $Eresus, $page;
 
 		$result = '';
-		switch ($page->type) {
+		switch ($page->type)
+		{
+
 			case 'default':
 				$plugin = new ContentPlugin;
 				$result = $plugin->clientRenderContent();
 			break;
+
 			case 'list':
-				if ($page->topic) $page->httpError(404);
+				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
+				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+					$page->httpError(404);
+
 				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
 				$template = loadTemplate('std/SectionListItem');
@@ -432,7 +444,7 @@ class Plugins {
 				}
 			break;
 			case 'url':
-				goto($page->replaceMacros($page->content));
+				HTTP::redirect($page->replaceMacros($page->content));
 			break;
 			default:
 			if ($this->load($page->type)) {
@@ -985,7 +997,7 @@ function updateContent($content)
 function adminUpdate()
 {
 	$this->updateContent(arg('content', 'dbsafe'));
-	goto(arg('submitURL'));
+	HTTP::redirect(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
 /**
@@ -995,7 +1007,11 @@ function adminUpdate()
 */
 function clientRenderContent()
 {
-	global $page;
+	global $Eresus, $page;
+
+	/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
+	if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+		$page->httpError(404);
 
 	return $page->content;
 }

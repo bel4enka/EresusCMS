@@ -43,7 +43,7 @@ if (count($_FILES)) {
   if (substr($root, 0, 1) == '/') $root = substr($root, 1);
   $folder = filesRoot.$uRoot.$root.(empty($root)?'':'/');
   upload('file', $folder);
-  goto($Eresus->request['referer']);
+  HTTP::goback();
 }
 #FIXME: Потенциальная угроза
 if (arg('folder')) {
@@ -54,7 +54,7 @@ if (arg('folder')) {
   $folder = filesRoot.$uRoot.$root.(empty($root)?'':'/').$folder;
   umask(0000);
   mkdir($folder, 0777);
-  goto($Eresus->request['referer']);
+  HTTP::goback();
 }
 
 

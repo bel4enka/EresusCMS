@@ -28,6 +28,22 @@
  * $Id$
  */
 
+/*
+ * Установка имени файла журнала
+ * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
+ */
+ini_set('error_log', dirname(__FILE__) . '/../data/eresus.log');
+
+/**
+ * Уровень детализации журнала
+ */
+define('ERESUS_LOG_LEVEL' , ${log.level});
+
+/**
+ * Подключение Eresus Core
+ */
+include_once 'framework/core/eresus-core.php';
+
 define('CMSNAME', 'Eresus'); # Название системы
 define('CMSVERSION', '${product.version}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
@@ -727,20 +743,6 @@ function saveTemplate($name, $template)
 
 ### ОБЩИЕ ФУНКЦИИ ###
 
-/**
- * Переадресация на URL
- *
- * @param string $url  Новый URL
- */
-function goto($url)
-{
-	$url = str_replace('&amp;','&',$url);
-	if(preg_match('/Apache/i', $_SERVER['SERVER_SOFTWARE'])) header("Location: $url");
-	else header("Refresh: 0; URL=$url");
-	exit;
-}
-//------------------------------------------------------------------------------
-
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function HttpAnswer($answer)
 {
@@ -841,29 +843,39 @@ function __clearargs($args)
 {
 	global $Eresus;
 
-	if (count($args)) foreach($args as $key => $value) if (gettype($args[$key]) == 'array') {
-		$args[$key] = __clearargs($args[$key]);
-	} else {
-		if (get_magic_quotes_gpc()) $value = StripSlashes($value);
-		if (strpos($key, 'wyswyg_') === 0) {
-			unset($args[$key]);
-			$key = substr($key, 7);
-			$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
-			$value = str_replace(array('%28', '%29'), array('(',')'), $value);
-			$value = str_replace($Eresus->root, '$(httpRoot)', $value);
-			preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
-			if (count($images[0])) {
-				$images = $images[0];
-				$delta = 0;
-				for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
-					$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
-					$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
-					$delta += strlen($s) - strlen($images[$i][0]);
-				}
+	if (count($args))
+		foreach($args as $key => $value)
+			if (gettype($args[$key]) == 'array')
+			{
+				$args[$key] = __clearargs($args[$key]);
 			}
-		}
-		$args[$key] = $value;
-	}
+				else
+			{
+				if ( ! PHP::checkVersion('5.3') )
+				{
+					if (get_magic_quotes_gpc())
+						$value = StripSlashes($value);
+				}
+				if (strpos($key, 'wyswyg_') === 0)
+				{
+					unset($args[$key]);
+					$key = substr($key, 7);
+					$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
+					$value = str_replace(array('%28', '%29'), array('(',')'), $value);
+					$value = str_replace($Eresus->root, '$(httpRoot)', $value);
+					preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
+					if (count($images[0])) {
+						$images = $images[0];
+						$delta = 0;
+						for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
+							$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
+							$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
+							$delta += strlen($s) - strlen($images[$i][0]);
+						}
+					}
+				}
+				$args[$key] = $value;
+			}
 	return $args;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -1243,11 +1255,11 @@ class Eresus {
 		switch (arg('action')) {
 			case 'login':
 				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
-				goto($this->request['url']);
+				HTTP::redirect($this->request['url']);
 			break;
 			case 'logout':
 				$this->logout(true);
-				goto($this->root.'admin/');
+				HTTP::redirect($this->root.'admin/');
 			break;
 		}
 	}
@@ -1292,8 +1304,9 @@ class Eresus {
 	*/
 	function init()
 	{
-		# Отключение закавычивания передаваемых данных
-		set_magic_quotes_runtime(0);
+		// Отключение закавычивания передаваемых данных
+		if (!PHP::checkVersion('5.3'))
+			set_magic_quotes_runtime(0);
 		# Читаем конфигурацию
 		$this->init_config();
 		# В PHP 5.1.0 должна быть установлена временная зона по умолчанию

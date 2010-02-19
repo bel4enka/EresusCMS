@@ -97,10 +97,15 @@ class TUsers extends Accounts {
 		$item['active'] = !$item['active'];
 		$this->accounts->update($item);
 		SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['name']);
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function update()
+
+	/**
+	 * @param void $dummy  Используется для совместимости с родителтским методом
+	 * @see main/core/lib/EresusAccounts#update($item)
+	 */
+	function update($dummy = null)
 	{
 		global $Eresus, $page;
 
@@ -112,7 +117,7 @@ class TUsers extends Accounts {
 			$this->accounts->update($item);
 			SendNotify($this->notifyMessage($item, $old));
 		};
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
  /**
@@ -141,22 +146,27 @@ class TUsers extends Accounts {
 		if ($check) { ErrorMessage(admUsersLoginExists); $error = true;}
 		if ($error) {
 			saveRequest();
-			goto($Eresus->request['referer']);
+			HTTP::redirect($Eresus->request['referer']);
 		}
 		if ($this->accounts->add($item))
 			SendNotify(admUsersAdded.': '.$this->notifyMessage($item), '', false, '', $page->url(array('action'=>'')));
 		else ErrorMessage('Error creating user account');
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function delete()
+
+	/**
+	 * @param void $dummy  Используется для совместимости с родителтским методом
+	 * @see main/core/lib/EresusAccounts#delete($id)
+	 */
+	function delete($dummy = null)
 	{
 		global $Eresus, $page;
 
 		$item = $this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
 		SendNotify(admDeleted.': '.$this->notifyMessage($item));
-		goto($page->url());
+		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function password()
@@ -169,7 +179,7 @@ class TUsers extends Accounts {
 			$this->accounts->update($item);
 			SendNotify(admUsersPasswordChanged.': '.$item['name']);
 		}
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function edit()

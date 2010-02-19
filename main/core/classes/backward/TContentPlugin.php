@@ -71,7 +71,7 @@ function updateContent($content)
 function update()
 {
 	$this->updateContent(arg('content', 'dbsafe'));
-  goto(arg('submitURL'));
+  HTTP::redirect(arg('submitURL'));
 }
 //------------------------------------------------------------------------------
 /**

@@ -241,14 +241,14 @@ class TFiles {
 	global $Eresus;
 
 		foreach($_FILES as $name => $file) upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
-		goto($Eresus->request['referer']);
+		HTTP::goback();
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function mkDir()
 	{
 		umask(0000);
 		mkdir(filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER), 0777);
-		goto($this->url());
+		HTTP::redirect($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function rmDir($path)
@@ -275,14 +275,14 @@ class TFiles {
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
 		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
 			if (file_exists($filename)) rename($filename, $newname);
-		goto($this->url());
+		HTTP::redirect($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function chmodEntry()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
 		if (file_exists($filename)) chmod($filename, octdec(arg('perms', '/\D/')));
-		goto($this->url());
+		HTTP::redirect($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function copyFile()
@@ -292,7 +292,7 @@ class TFiles {
 		if (is_file($filename)) copy($filename, $dest);
 		elseif (is_dir($filename)) {
 		}
-		goto($this->url());
+		HTTP::redirect($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function moveFile()
@@ -304,7 +304,7 @@ class TFiles {
 			elseif (is_dir($filename)) {
 			}
 		#}
-		goto($this->url());
+		HTTP::redirect($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function deleteFile()
@@ -317,7 +317,7 @@ class TFiles {
 				rmdir($filename);
 			}
 		#}
-		goto($this->url());
+		HTTP::redirect($this->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	# Административные функции

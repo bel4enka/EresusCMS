@@ -28,10 +28,31 @@
  * $Id$
  */
 
-class TPages {
-	var $access = ADMIN;
-	var $cache;
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+/**
+ * Управление разделами сайта
+ *
+ * @package EresusCMS
+ */
+class TPages
+{
+	/**
+	 * ???
+	 * @var unknown_type
+	 */
+	public $access = ADMIN;
+
+	/**
+	 * ???
+	 * @var unknown_type
+	 */
+	public $cache;
+
+	/**
+	 * ???
+	 * @param unknown_type $new
+	 * @param unknown_type $old
+	 * @return unknown_type
+	 */
 	function notifyMessage($new, $old=null)
 	{
 		$result = '';
@@ -68,7 +89,12 @@ class TPages {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function insert()
 	# Запись новой страницы в БД
 	{
@@ -81,29 +107,62 @@ class TPages {
 			$item = $Eresus->sections->add($item);
 			SendNotify($this->notifyMessage($item));
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
-			goto($page->url(array('id'=>'')));
+			HTTP::redirect($page->url(array('id'=>'')));
 		} else {
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			goto($Eresus->request['referer']);
+			HTTP::redirect($Eresus->request['referer']);
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function update()
 	{
 		global $Eresus, $page;
 
 		$old = $Eresus->sections->get(arg('update', 'int'));
-		$item = GetArgs($old, array('active', 'visible'));
-		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
-		$item['options'] = text2array($item['options'], true);
-		$item['updated'] = gettime('Y-m-d H:i:s');
-		if (arg('updatedAuto')) $item['updated'] = gettime();
+		$item = $old;
+
+		if (arg('id'))
+			$item['id'] = arg('id', 'int');
+		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', arg('name', 'dbsafe'));
+		$item['title'] = arg('title', 'dbsafe');
+		$item['caption'] = arg('caption', 'dbsafe');
+		$item['description'] = arg('description', 'dbsafe');
+		$item['hint'] = arg('hint', 'dbsafe');
+		$item['keywords'] = arg('keywords', 'dbsafe');
+		$item['template'] = arg('template', 'dbsafe');
+		$item['type'] = arg('type', 'dbsafe');
+		$item['active'] = arg('active', 'int');
+		$item['visible'] = arg('visible', 'int');
+		$item['access'] = arg('access', 'int');
+		$item['position'] = arg('position', 'int');
+		$item['options'] = text2array(arg('options'), true);
+		if (arg('created'))
+			$item['created'] = arg('created', 'dbsafe');
+		$item['updated'] = arg('updated', 'dbsafe');
+		if (arg('updatedAuto'))
+			$item['updated'] = gettime('Y-m-d H:i:s');
+
 		$Eresus->sections->update($item);
+
 		SendNotify($this->notifyMessage($item, $old));
-		goto(arg('submitURL'));
+
+		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @param $skip
+	 * @param $owner
+	 * @param $level
+	 * @return unknown_type
+	 */
 	function selectList($skip=0, $owner = 0, $level = 0)
 	{
 		global $Eresus;
@@ -123,7 +182,12 @@ class TPages {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function moveUp()
 	# Функция перемещает страницу вверх в списке
 	{
@@ -142,9 +206,14 @@ class TPages {
 				$Eresus->sections->update($temp);
 			}
 		}
-		goto($page->url(array('id'=>'')));
+		HTTP::redirect($page->url(array('id'=>'')));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function moveDown()
 	# Функция перемещает страницу вниз в списке
 	{
@@ -163,9 +232,14 @@ class TPages {
 				$Eresus->sections->update($temp);
 			}
 		}
-		goto($page->url(array('id'=>'')));
+		HTTP::redirect($page->url(array('id'=>'')));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function move()
 	# Перемещает страницу из одной ветки в другую
 	{
@@ -177,7 +251,7 @@ class TPages {
 			$item['owner'] = arg('to', 'int');
 			$item['position'] = count($Eresus->sections->children($item['owner']));
 			$Eresus->sections->update($item);
-			goto($page->url(array('id'=>'')));
+			HTTP::redirect($page->url(array('id'=>'')));
 		} else {
 			$select = $this->selectList($item['id']);
 			array_unshift($select[0], 0);
@@ -197,7 +271,13 @@ class TPages {
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @param unknown_type $id
+	 * @return unknown_type
+	 */
 	function deleteBranch($id)
 	{
 		global $Eresus;
@@ -213,7 +293,12 @@ class TPages {
 		if (count($items)) foreach($items as $item) $this->deleteBranch($item['id']);
 		$Eresus->db->delete('pages', "`id`='".$id."'");
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function delete()
 	# Удаляет страницу
 	{
@@ -223,9 +308,14 @@ class TPages {
 		$Eresus->sections->delete(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		SendNotify(admDeleted.":\n".$this->notifyMessage($item));
-		goto($page->url(array('id'=>'')));
+		HTTP::redirect($page->url(array('id'=>'')));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function loadContentTypes()
 	{
 		global $Eresus;
@@ -240,7 +330,12 @@ class TPages {
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function loadTemplates()
 	{
 		$result[0] = array();
@@ -252,7 +347,12 @@ class TPages {
 		$result[1]= array_keys($list);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function create()
 	# Функция выводит форму для добавления новой страницы
 	{
@@ -288,7 +388,13 @@ class TPages {
 		$result = $page->renderForm($form, $Eresus->request['arg']);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @param $id
+	 * @return unknown_type
+	 */
 	function edit($id)
 	{
 		global $Eresus, $page;
@@ -331,15 +437,16 @@ class TPages {
 		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	/**
-	* Отрисовывает подраздел индекса
-	*
-	* @param  int  $owner  Родительский раздел
-	* @param  int  $level  Уровень вложенности
-	*
-	* @return  string  Отрисованная часть таблицы
-	*/
+	 * Отрисовывает подраздел индекса
+	 *
+	 * @param  int  $owner  Родительский раздел
+	 * @param  int  $level  Уровень вложенности
+	 *
+	 * @return  string  Отрисованная часть таблицы
+	 */
 	function sectionIndexBranch($owner=0, $level=0)
 	{
 		global $Eresus;
@@ -361,6 +468,11 @@ class TPages {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function sectionIndex()
 	{
 		global $Eresus, $page;
@@ -382,7 +494,12 @@ class TPages {
 		$result = $table->render();
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
 	function adminRender()
 	{
 		global $Eresus, $page;
@@ -402,5 +519,5 @@ class TPages {
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }
