@@ -4,8 +4,8 @@
  *
  * Библиотека для работы с СУБД MySQL
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,82 +25,121 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Eresus2
+ *
  * $Id$
  */
 
-class MySQL {
-	var $Connection;
-	var $name;
-	var $prefix;
-	var $logQueries = false;
- /**
-	* Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
-	*
-	* @var  bool  $display_errors
-	*/
-	var $error_reporting = true;
- /**
-	* Открывает соединение сервером данных и выбирает источник
-	*
-	* @param  string  $server    Сервер данных
-	* @param  string  $username  Имя пользователя для доступа к серверу
-	* @param  string  $password  Пароль пользователя
-	* @param  string  $source    Имя источника данных
-	* @param  string  $prefix    Префикс для имён таблиц. По умолчанию ''
-	*
-	* @return  bool  Результат соединения
-	*/
-	function init($server, $username, $password, $source, $prefix='')
+class MySQL
+{
+	/**
+	 * Дескриптор соединения
+	 * @var resource
+	 */
+	protected $Connection;
+
+	/**
+	 * Имя БД
+	 * @var string
+	 */
+	protected $name;
+
+	/**
+	 * Префикс таблиц
+	 * @var string
+	 * @deprecated
+	 */
+	protected $prefix;
+
+	/**
+	 * Вести лог запросов
+	 * @var bool
+	 */
+	public $logQueries = false;
+
+	/**
+	 * Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
+	 *
+	 * @var bool
+	 */
+	public $error_reporting = true;
+
+	/**
+	 * Открывает соединение сервером данных и выбирает источник
+	 *
+	 * @param string $server    Сервер данных
+	 * @param string $username  Имя пользователя для доступа к серверу
+	 * @param string $password  Пароль пользователя
+	 * @param string $source    Имя источника данных
+	 * @param string $prefix    Префикс для имён таблиц. По умолчанию ''
+	 *
+	 * @return bool  Результат соединения
+	 */
+	function init($server, $username, $password, $source, $prefix = '')
 	{
 		$result = false;
 		$this->name = $source;
 		$this->prefix = $prefix;
 		@$this->Connection = mysql_connect($server, $username, $password, true);
-		if ($this->Connection) {
-			if (defined('LOCALE_CHARSET')) {
+		if ($this->Connection)
+		{
+			if (defined('LOCALE_CHARSET'))
+			{
 				$version = preg_replace('/[^\d\.]/', '', mysql_get_server_info());
-				if (version_compare($version, '4.1') >= 0) $this->query("SET NAMES '".LOCALE_CHARSET."'");
+				if (version_compare($version, '4.1') >= 0)
+					$this->query("SET NAMES '".LOCALE_CHARSET."'");
 			}
-			if (mysql_select_db($this->name, $this->Connection)) $result = true;
-			elseif ($this->error_reporting) FatalError(mysql_error($this->Connection));
-		} elseif ($this->error_reporting) FatalError("Can not connect to MySQL server. Check login and password");
+
+			if (mysql_select_db($this->name, $this->Connection))
+				$result = true;
+			elseif ($this->error_reporting)
+				FatalError(mysql_error($this->Connection));
+
+		}
+			elseif ($this->error_reporting)
+				FatalError("Can not connect to MySQL server. Check login and password");
+
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Выполняет запрос к источнику
-	*
-	* @param  string  $query    Запрос в формате источника
-	*
-	* @return  mixed  Результат запроса. Тип зависит от источника, запроса и результата
-	*/
+
+	/**
+	 * Выполняет запрос к источнику
+	 *
+	 * @param string $query  Запрос в формате источника
+	 * @return mixed  Результат запроса. Тип зависит от источника, запроса и результата
+	 */
 	function query($query)
 	{
-		global $Eresus;
-
 		$result = mysql_query($query, $this->Connection);
-		if ($this->error_reporting && !$result) FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
+		if ($this->error_reporting && !$result)
+			FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Выполняет запрос к источнику и возвращает ассоциативный массив значений
-	*
-	* @param  string  $query    Запрос в формате источника
-	*
-	* @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
-	*/
+
+	/**
+	 * Выполняет запрос к источнику и возвращает ассоциативный массив значений
+	 *
+	 * @param  string  $query    Запрос в формате источника
+	 *
+	 * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
+	 */
 	function query_array($query)
 	{
 		$result = $this->query($query);
 		$values = Array();
-		while($row = mysql_fetch_assoc($result)) {
-			if (count($row)) foreach($row as $key => $value) $row[$key] = $value;
+		while($row = mysql_fetch_assoc($result))
+		{
+			if (count($row))
+				foreach($row as $key => $value)
+					$row[$key] = $value;
 			$values[] = $row;
 		}
 		return $values;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Создание новой таблицы
 	 *
@@ -118,6 +157,7 @@ class MySQL {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Удаление таблицы
 	 *
@@ -140,20 +180,21 @@ class MySQL {
 	* @param  string   $condition  Условие для выборки (WHERE)
 	* @param  string   $order      Поля для сортировки (ORDER BY)
 	* @param  string   $fields     Список полей для получения
-	* @param  int      $rows       Максимльное количество получаемых записей
+	* @param  int      $limit      Максимльное количество получаемых записей
 	* @param  int      $offset     Начальное смещение для выборки
 	* @param  string   $group      Поле для группировки
 	* @param  bool     $distinct   Вернуть только уникальные записи
 	*
 	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
 	*/
-	function select($tables, $condition = '', $order = '', $fields = '', $rows = 0, $offset = 0, $group = '', $distinct = false)
+	function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 	{
-		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($rows)) {
+		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($limit))
+		{
 			# Обратная совместимость c 1.2.x
 			$desc = $fields;
-			$fields = $rows ? $rows : '*';
-			$rows = $offset;
+			$fields = $limit ? $limit : '*';
+			$limit = $offset;
 			$offset = $group;
 			$group = $distinct;
 			$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
@@ -169,10 +210,10 @@ class MySQL {
 				$query .= " ORDER BY $order";
 				if ($desc) $query .= ' DESC';
 			}
-			if ($rows) {
+			if ($limit) {
 				$query .= ' LIMIT ';
 				if ($offset) $query .= "$offset, ";
-				$query .= $rows;
+				$query .= $limit;
 			}
 		} else {
 			$query = 'SELECT ';
@@ -191,10 +232,10 @@ class MySQL {
 				}
 				$query .= " ORDER BY ".implode(', ',$order);
 			}
-			if ($rows) {
+			if ($limit) {
 				$query .= ' LIMIT ';
 				if ($offset) $query .= "$offset, ";
-				$query .= $rows;
+				$query .= $limit;
 			}
 		}
 		$result = $this->query_array($query);
