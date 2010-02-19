@@ -71,35 +71,25 @@ class MySQL
 	 * @param string $username  Имя пользователя для доступа к серверу
 	 * @param string $password  Пароль пользователя
 	 * @param string $source    Имя источника данных
-	 * @param string $prefix    Префикс для имён таблиц. По умолчанию ''
 	 *
 	 * @return bool  Результат соединения
 	 */
 	function init($server, $username, $password, $source, $prefix = '')
 	{
-		$result = false;
-		$this->name = $source;
-		$this->prefix = $prefix;
-		@$this->Connection = mysql_connect($server, $username, $password, true);
-		if ($this->Connection)
+		$dsn = "mysql://$username:$password@$server/$source";
+		if (defined('LOCALE_CHARSET'))
+			$dsn .= '?charset=' . LOCALE_CHARSET;
+
+		try
 		{
-			if (defined('LOCALE_CHARSET'))
-			{
-				$version = preg_replace('/[^\d\.]/', '', mysql_get_server_info());
-				if (version_compare($version, '4.1') >= 0)
-					$this->query("SET NAMES '".LOCALE_CHARSET."'");
-			}
-
-			if (mysql_select_db($this->name, $this->Connection))
-				$result = true;
-			elseif ($this->error_reporting)
-				FatalError(mysql_error($this->Connection));
-
+			DB::connect($dsn);
 		}
-			elseif ($this->error_reporting)
-				FatalError("Can not connect to MySQL server. Check login and password");
+			catch (DBRuntimeException $e)
+		{
+			return false;
+		}
 
-		return $result;
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -111,10 +101,9 @@ class MySQL
 	 */
 	function query($query)
 	{
-		$result = mysql_query($query, $this->Connection);
-		if ($this->error_reporting && !$result)
-			FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
-		return $result;
+		$db = DB::getHandler();
+		$db->exec($query);
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -173,6 +162,7 @@ class MySQL
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
  /**
 	* Производит выборку данных из источника
 	*
@@ -189,68 +179,66 @@ class MySQL
 	*/
 	function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 	{
-		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($limit))
+		$db = DB::getHandler();
+		$q = $db->createSelectQuery();
+		$e = $q->expr;
+
+		if (empty($fields))
+			$fields = '*';
+
+		if ($distinct)
+			$q->selectDistinct($fields);
+		else
+			$q->select($fields);
+
+		$tables = explode(',', $tables);
+		$q->from($tables);
+
+		if ($condition)
+			$q->where($condition);
+
+		if (strlen($order))
 		{
-			# Обратная совместимость c 1.2.x
-			$desc = $fields;
-			$fields = $limit ? $limit : '*';
-			$limit = $offset;
-			$offset = $group;
-			$group = $distinct;
-			$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-			$query = 'SELECT ';
-			if ($distinct) $query .= 'DISTINCT ';
-			if (!strlen($fields)) $fields = '*';
-			$tables = str_replace('`' ,'', $tables);
-			$tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
-			$query .= $fields." FROM ".$tables;
-			if (strlen($condition)) $query .= " WHERE $condition";
-			if (strlen($group)) $query .= " GROUP BY $group";
-			if (strlen($order)) {
-				$query .= " ORDER BY $order";
-				if ($desc) $query .= ' DESC';
-			}
-			if ($limit) {
-				$query .= ' LIMIT ';
-				if ($offset) $query .= "$offset, ";
-				$query .= $limit;
-			}
-		} else {
-			$query = 'SELECT ';
-			if ($distinct) $query .= 'DISTINCT ';
-			if (!strlen($fields)) $fields = '*';
-			$tables = str_replace('`','',$tables);
-			$tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
-			$query .= $fields." FROM ".$tables;
-			if (strlen($condition)) $query .= " WHERE ".$condition;
-			if (strlen($group)) $query .= " GROUP BY ".$group."";
-			if (strlen($order)) {
-				$order = explode(',', $order);
-				for($i = 0; $i < count($order); $i++) switch ($order[$i]{0}) {
-					case '+': $order[$i] = '`'.substr($order[$i], 1).'`'; break;
-					case '-': $order[$i] = '`'.substr($order[$i], 1).'` DESC'; break;
+			$order = explode(',', $order);
+			for($i = 0; $i < count($order); $i++)
+				switch ($order[$i]{0})
+				{
+					case '+':
+						$q->orderBy(substr($order[$i], 1));
+					break;
+
+					case '-':
+						$q->orderBy(substr($order[$i], 1), ezcQuerySelect::DESC);
+					break;
+
+					default:
+						$q->orderBy($order[$i]);
+					break;
 				}
-				$query .= " ORDER BY ".implode(', ',$order);
-			}
-			if ($limit) {
-				$query .= ' LIMIT ';
-				if ($offset) $query .= "$offset, ";
-				$query .= $limit;
-			}
 		}
-		$result = $this->query_array($query);
+
+		if ($limit && $offset)
+			$q->limit($limit, $offset);
+		elseif ($limit)
+			$q->limit($limit);
+
+		if ($group)
+			$q->groupBy($group);
+
+		$result = DB::fetchAll($q);
 
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Вставка элементов в источник
-	*
-	* @param  string  $table  Таблица, в которую надо вставтиь элемент
-	* @param  array   $item   Ассоциативный массив значений
-	*
-	* @return  mixed  Результат выполнения операции
-	*/
+
+	/**
+	 * Вставка элементов в источник
+	 *
+	 * @param  string  $table  Таблица, в которую надо вставтиь элемент
+	 * @param  array   $item   Ассоциативный массив значений
+	 *
+	 * @return  mixed  Результат выполнения операции
+	 */
 	function insert($table, $item)
 	{
 		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
@@ -266,30 +254,33 @@ class MySQL
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Выполняет обновление информации в источнике
-	*
-	* @param string $table      Таблица
-	* @param mixed  $set        Изменения
-	* @param string $condition  Условие
-	* @return unknown
-	*/
+
+	/**
+	 * Выполняет обновление информации в источнике
+	 *
+	 * @param string $table      Таблица
+	 * @param mixed  $set        Изменения
+	 * @param string $condition  Условие
+	 * @return unknown
+	 */
 	function update($table, $set, $condition)
 	{
-		if (is_array($set)) {
-			$pairs = array();
-			$fields = $this->fields($table, true);
-			foreach($set as $field => $value) {
-				if (isset($fields[$field])) {
-					switch ($fields[$field]) {
+		$q = DB::getHandler()->createUpdateQuery();
+		$q->update($table)
+			->where($condition);
 
-					}
-					#$pairs[]
-				}
-			}
+		$set = explode(',', $set);
+		foreach ($set as $each)
+		{
+			list($key, $value) = explode('=', $each);
+			$key = str_replace('`', '', $key);
+			$value = preg_replace('/(^\'|\'$)/', '', $value);
+			$q->set($key, $q->bindValue($value));
 		}
-		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
-		return $result;
+
+		DB::execute($q);
+		//$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
+		//return $result;
 	}
 	//-----------------------------------------------------------------------------
 	function delete($table, $condition)
@@ -368,6 +359,15 @@ class MySQL
 		return $tmp;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Обновляет одну запись
+	 *
+	 * @param string $table
+	 * @param array  $item
+	 * @param string $condition
+	 * @return void
+	 */
 	function updateItem($table, $item, $condition)
 	{
 		$fields = $this->fields($table, true);
