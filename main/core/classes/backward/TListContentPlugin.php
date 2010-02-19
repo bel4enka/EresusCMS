@@ -197,8 +197,7 @@ function clientRenderList($options = null)
 	$items = $Eresus->db->select(
 		$this->table['name'],
 		"(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
-		$this->table['sortMode'],
-		$this->table['sortDesc'],
+		($this->table['sortDesc'] ? '-' : '+').$this->table['sortMode'],
 		'',
 		$this->settings['itemsPerPage'],
 		$this->table['sortDesc'] && $options['oldordering']

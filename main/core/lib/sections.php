@@ -50,7 +50,7 @@ class Sections {
 		global $Eresus;
 
 		if ($force || !$this->index) {
-			$items = $Eresus->db->select($this->table, '', '`position`', false, '`id`,`owner`');
+			$items = $Eresus->db->select($this->table, '', '`position`', '`id`,`owner`');
 			if ($items) {
 				$this->index = array();
 				foreach($items as $item) $this->index[$item['owner']][] = $item['id'];
@@ -112,7 +112,7 @@ class Sections {
 				$fieldset = implode(',', array_diff($this->fields(), array('content')));
 				# Читаем из БД
 				$set = implode(',', $set);
-				$items = $Eresus->db->select($this->table, "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', false, $fieldset);
+				$items = $Eresus->db->select($this->table, "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
 				for($i=0; $i<count($items); $i++) {
 					$this->cache[$items[$i]['id']] = $items[$i];
 					$list[] = $items[$i];

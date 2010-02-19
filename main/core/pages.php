@@ -289,7 +289,7 @@ class TPages
 				if (in_array('section', $fields)) $Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'], "`section`='".$item['id']."'");
 			}
 		}
-		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', false, '`id`');
+		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
 		if (count($items)) foreach($items as $item) $this->deleteBranch($item['id']);
 		$Eresus->db->delete('pages', "`id`='".$id."'");
 	}
