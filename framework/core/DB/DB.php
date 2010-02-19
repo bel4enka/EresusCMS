@@ -25,7 +25,7 @@
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: DB.php 480 2010-02-18 18:24:45Z mk $
+ * $Id: DB.php 482 2010-02-19 13:19:50Z mk $
  */
 
 /**
@@ -150,6 +150,12 @@ class DB implements ezcBaseConfigurationInitializer
 		}
 
 		$db->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+
+		if (substr($dsn, 0, 5) == 'mysql' && preg_match('/charset=(.*?)(&|$)/', $dsn, $m))
+		{
+			$db->query("SET NAMES {$m[1]}");
+		}
+
 		ezcDbInstance::set($db, $name);
 		return $db;
 	}
@@ -211,11 +217,6 @@ class DB implements ezcBaseConfigurationInitializer
 
 		$dsn = self::$lazyConnectionDSNs[$name];
 		$db = self::connect($dsn, $name);
-
-		if (substr($dsn, 0, 5) == 'mysql' && preg_match('/charset=(.*?)(&|$)/', $dsn, $m))
-		{
-			$db->query("SET NAMES {$m[1]}");
-		}
 
 		return $db;
 	}
