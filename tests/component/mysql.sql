@@ -35,7 +35,7 @@ INSERT INTO `pages` VALUES(2, 'second', 0, 'Вторая страница', 'В�
 DROP TABLE IF EXISTS `plugins`;
 CREATE TABLE `plugins` (
   `name` varchar(32) NOT NULL DEFAULT '',
-  `type` set('client','admin','content','ondemand') DEFAULT NULL,
+--  `type` set('client','admin','content','ondemand') DEFAULT NULL,
   `active` tinyint(1) unsigned DEFAULT '1',
   `position` int(10) unsigned DEFAULT '0',
   `settings` text,
@@ -44,11 +44,13 @@ CREATE TABLE `plugins` (
   `description` varchar(255) DEFAULT '',
   PRIMARY KEY (`name`),
   KEY `active` (`active`),
-  KEY `position` (`position`),
-  KEY `type` (`type`)
+  KEY `position` (`position`)
+--  ,
+--  KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
-INSERT INTO `plugins` VALUES('html', 'client,content,ondemand', 1, 0, 'a:0:{}', 'HTML', '3.00', 'HTML страница');
+-- INSERT INTO `plugins` VALUES('html', 'client,content,ondemand', 1, 0, 'a:0:{}', 'HTML', '3.00', 'HTML страница');
+INSERT INTO `plugins` VALUES('html', 1, 0, 'a:0:{}', 'HTML', '3.00', 'HTML страница');
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -71,3 +73,13 @@ CREATE TABLE `users` (
 INSERT INTO `users` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '2010-02-19 12:35:10', 1266572110, 0, 1, 'Служба поддержки', 'support@example.org', NULL);
 INSERT INTO `users` VALUES(2, 'admin', '74be16979710d4c4e7c6647856088456', 1, '2010-02-20 12:35:10', 1266572110, 0, 2, 'Администратор', 'admin@example.org', NULL);
 INSERT INTO `users` VALUES(3, 'editor', '74be16979710d4c4e7c6647856088456', 1, '2010-02-21 12:35:10', 1266572110, 0, 3, 'Редактор', 'editor@example.org', NULL);
+
+DROP TABLE IF EXISTS `test_prefixed`;
+CREATE TABLE `test_prefixed` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251;
+
+INSERT INTO `test_prefixed` VALUES(1, 'main');
+INSERT INTO `test_prefixed` VALUES(2, 'second');
