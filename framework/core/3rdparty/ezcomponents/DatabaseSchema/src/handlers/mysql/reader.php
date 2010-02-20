@@ -91,6 +91,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
 
         foreach ( $resultArray as $row )
         {
+            $row = $this->lowercase($row);
             $fieldLength = false;
 
             // bool and boolean is synonyms for TINYINT(1) in MySQL
