@@ -41,6 +41,40 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 {
 
 	/**
+	 * Возвращает экземпляр MySQL
+	 * @return MySQL
+	 */
+	private function getInstance()
+	{
+		preg_match('/mysql:\/\/(.*):(.*)@(.*)\/(.*)(\?charset=(.*))/', $GLOBALS['TESTCONF']['DB']['dsn'], $m);
+		if (!defined('LOCALE_CHARSET'))
+			define('LOCALE_CHARSET', $m[6]);
+
+		$instance = new MySQL();
+		$instance->init($m[3], $m[1], $m[2], $m[4]);
+
+		return $instance;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает экземпляр MySQL с префиксом
+	 * @return MySQL
+	 */
+	private function getInstancePrefixed()
+	{
+		preg_match('/mysql:\/\/(.*):(.*)@(.*)\/(.*)(\?charset=(.*))/', $GLOBALS['TESTCONF']['DB']['dsn'], $m);
+		if (!defined('LOCALE_CHARSET'))
+			define('LOCALE_CHARSET', $m[6]);
+
+		$instance = new MySQL();
+		$instance->init($m[3], $m[1], $m[2], $m[4], 'test_');
+
+		return $instance;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::init
 	 */
 	public function testInit()
@@ -61,7 +95,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testEscape()
 	{
-		$fixture = new MySQL();
+		$fixture = $this->getInstance();
 		$this->assertEquals('test', $fixture->escape('test'));
 		$this->assertEquals(array('a' => 'test'), $fixture->escape(array('a' => 'test')));
 	}
@@ -72,7 +106,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testFields()
 	{
-		$fixture = new MySQL();
+		$fixture = $this->getInstance();
 		$fields = array('access', 'active', 'hash', 'id', 'lastLoginTime', 'lastVisit',
 			'login', 'loginErrors', 'mail', 'name', 'profile');
 
@@ -85,7 +119,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testSelect()
 	{
-		$fixture = new MySQL();
+		$fixture = $this->getInstance();
 		$items = $fixture->select('users', "active = 1", '-access', 'id,access', 2, 1, '', true);
 		$this->assertEquals(2, count($items));
 		$this->assertEquals(1, $items[1]['access']);
@@ -103,7 +137,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testSelectItem()
 	{
-		$fixture = new MySQL();
+		$fixture = $this->getInstance();
 		$item = $fixture->selectItem('users', "login = 'root'", 'id,access');
 		$this->assertEquals(2, count($item));
 		$this->assertEquals(1, $item['access']);
@@ -115,9 +149,113 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testSelectItemFail()
 	{
-		$fixture = new MySQL();
+		$fixture = $this->getInstance();
 		$item = $fixture->selectItem('users', "login = '-nobody-'");
 		$this->assertFalse($item);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::insert
+	 */
+	public function testInsert()
+	{
+		$fixture = $this->getInstance();
+		$item = array(
+			'access' => 1,
+			'active' => 1,
+			'hash' => '12345678901234567890123456789012',
+			'lastLoginTime' => time(),
+			'lastVisit' => time(),
+			'login' => 'test',
+			'loginErrors' => 0,
+			'mail' => 'test@example.org',
+			'name' => 'test',
+			'profile' => '',
+		);
+		$fixture->insert('users', $item);
+		$id = $fixture->getInsertedID();
+		$this->assertEquals(4, $id);
+		$item = $fixture->selectItem('users', "login = 'test'");
+		$this->assertEquals('test@example.org', $item['mail']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::update
+	 */
+	public function testUpdate()
+	{
+		$fixture = $this->getInstance();
+		$fixture->update('users', "login = 'editor2', mail = 'my@mail.org'", "id = 3");
+		$item = $fixture->selectItem('users', "id = 3");
+		$this->assertEquals('editor2', $item['login']);
+		$this->assertEquals('my@mail.org', $item['mail']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::updateItem
+	 */
+	public function testUpdateItem()
+	{
+		$fixture = $this->getInstance();
+		$item = array(
+			'id' => 3,
+			'login' => 'editor3',
+			'hash' => '1234567890123456789012',
+			'active' => 1,
+			'lastVisit' => 0,
+			'lastLoginTime' => 0,
+			'loginErrors' => 0,
+			'access' => 3,
+			'name' => 'Editor',
+			'mail' => 'editor3@example.org',
+			'profile' => ''
+		);
+		$fixture->updateItem('users', $item, "id = 3");
+		$item = $fixture->selectItem('users', "id = 3");
+		$this->assertEquals('editor3', $item['login']);
+		$this->assertEquals('editor3@example.org', $item['mail']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::init с использованием префиксов
+	 */
+	public function testInitWithPrefix()
+	{
+		$fixture = new MySQL();
+
+		preg_match('/mysql:\/\/(.*):(.*)@(.*)\/(.*)(\?charset=(.*))/', $GLOBALS['TESTCONF']['DB']['dsn'], $m);
+		if (!defined('LOCALE_CHARSET'))
+			define('LOCALE_CHARSET', $m[6]);
+
+		$this->assertTrue($fixture->init($m[3], $m[1], $m[2], $m[4], 'test_'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::fields с использованием префиксов
+	 */
+	public function testFieldsWithPrefixes()
+	{
+		$fixture = $this->getInstancePrefixed();
+		$fields = array('id', 'name');
+
+		$this->assertEquals($fields, $fixture->fields('prefixed'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::select с использованием префиксов
+	 */
+	public function testSelectWithPrefixes()
+	{
+		$fixture = $this->getInstancePrefixed();
+		$items = $fixture->select('prefixed', "id = 1");
+		$this->assertEquals(1, count($items));
+		$this->assertEquals('main', $items[0]['name']);
 	}
 	//-----------------------------------------------------------------------------
 

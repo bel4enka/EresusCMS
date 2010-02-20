@@ -65,6 +65,12 @@ class MySQL
 	public $error_reporting = true;
 
 	/**
+	 * ???
+	 * @var ezcDbSchema
+	 */
+	private $dbSchema = null;
+
+	/**
 	 * Открывает соединение сервером данных и выбирает источник
 	 *
 	 * @param string $server    Сервер данных
@@ -74,7 +80,7 @@ class MySQL
 	 *
 	 * @return bool  Результат соединения
 	 */
-	function init($server, $username, $password, $source, $prefix = '')
+	public function init($server, $username, $password, $source, $prefix = '')
 	{
 		$dsn = "mysql://$username:$password@$server/$source";
 		if (defined('LOCALE_CHARSET'))
@@ -82,14 +88,41 @@ class MySQL
 
 		try
 		{
-			DB::connect($dsn);
+			$db = DB::connect($dsn);
 		}
 			catch (DBRuntimeException $e)
 		{
 			return false;
 		}
 
+		if ($prefix)
+		{
+			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+			$db->setOptions($options);
+		}
+
 		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект-одиночку схемы БД
+	 * @return ezcDbSchema
+	 */
+	private function getSchema()
+	{
+		if (!$this->dbSchema)
+		{
+			$db = DB::getHandler();
+			if ($db->options->tableNamePrefix)
+			{
+				$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
+				ezcDbSchema::setOptions($options);
+			}
+			$this->dbSchema = ezcDbSchema::createFromDb($db);
+		}
+
+		return $this->dbSchema->getSchema();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -99,7 +132,7 @@ class MySQL
 	 * @param string $query  Запрос в формате источника
 	 * @return mixed  Результат запроса. Тип зависит от источника, запроса и результата
 	 */
-	function query($query)
+	public function query($query)
 	{
 		$db = DB::getHandler();
 		$db->exec($query);
@@ -114,7 +147,7 @@ class MySQL
 	 *
 	 * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
 	 */
-	function query_array($query)
+	public function query_array($query)
 	{
 		$result = $this->query($query);
 		$values = Array();
@@ -138,7 +171,7 @@ class MySQL
 	 *
 	 * @return bool Результат
 	 */
-	function create($name, $structure, $options = '')
+	public function create($name, $structure, $options = '')
 	{
 		$result = false;
 		$query = "CREATE TABLE `{$this->prefix}$name` ($structure) $options";
@@ -154,7 +187,7 @@ class MySQL
 	 *
 	 * @return bool Результат
 	 */
-	function drop($name)
+	public function drop($name)
 	{
 		$result = false;
 		$query = "DROP TABLE `{$this->prefix}$name`";
@@ -177,7 +210,7 @@ class MySQL
 	*
 	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
 	*/
-	function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 	{
 		$db = DB::getHandler();
 		$q = $db->createSelectQuery();
@@ -232,26 +265,28 @@ class MySQL
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Вставка элементов в источник
+	 * Вставка элемента в БД
 	 *
-	 * @param  string  $table  Таблица, в которую надо вставтиь элемент
-	 * @param  array   $item   Ассоциативный массив значений
+	 * @param string $table  Таблица, в которую надо вставтиь элемент
+	 * @param array  $item   Ассоциативный массив значений
 	 *
-	 * @return  mixed  Результат выполнения операции
+	 * @return mixed  Результат выполнения операции
 	 */
-	function insert($table, $item)
+	public function insert($table, $item)
 	{
-		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
-		$cols = '';
-		$values = '';
-		while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) {
-			$cols .= ", `$field`";
-			$values .= " , '{$item[$field]}'";
-		}
-		$cols = substr($cols, 2);
-		$values = substr($values, 2);
-		$result = $this->query("INSERT INTO ".$this->prefix.$table." (".$cols.") VALUES (".$values.")");
-		return $result;
+		$fields = $this->fields($table);
+		if (!$table)
+			return false;
+
+		$q = DB::getHandler()->createInsertQuery();
+		$q->insertInto($table);
+
+		foreach ($fields as $field)
+			if (isset($item[$field]))
+				$q->set($field, $q->bindValue($item[$field]));
+
+		DB::execute($q);
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -263,7 +298,7 @@ class MySQL
 	 * @param string $condition  Условие
 	 * @return unknown
 	 */
-	function update($table, $set, $condition)
+	public function update($table, $set, $condition)
 	{
 		$q = DB::getHandler()->createUpdateQuery();
 		$q->update($table)
@@ -273,20 +308,19 @@ class MySQL
 		foreach ($set as $each)
 		{
 			list($key, $value) = explode('=', $each);
-			$key = str_replace('`', '', $key);
-			$value = preg_replace('/(^\'|\'$)/', '', $value);
+			$key = str_replace('`', '', trim($key));
+			$value = preg_replace('/(^\'|\'$)/', '', trim($value));
 			$q->set($key, $q->bindValue($value));
 		}
 
 		DB::execute($q);
-		//$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
-		//return $result;
 	}
 	//-----------------------------------------------------------------------------
-	function delete($table, $condition)
+
 	# Выполняет запрос DELETE к базе данных используя метод query().
 	#  $table - таблица, из которой требуется удалить записи
 	#  $condition - признаки удаляемых записей
+	public function delete($table, $condition)
 	{
 		$result = $this->query("DELETE FROM `".$this->prefix.$table."` WHERE ".$condition);
 		return $result;
@@ -295,12 +329,17 @@ class MySQL
  /**
 	* Получение списка полей таблицы
 	*
-	* @param string $table  Имя таблицы
-	* @return array  Описание полей
+	* @param string $table            Имя таблицы
+	* @param bool   $info [optional]
+	* @return array  Список полей, с описанием, если $info = true
 	*/
-	function fields($table, $info = false)
+	public function fields($table, $info = false)
 	{
-		global $Eresus;
+		$schm = $this->getSchema();
+		if (isset($schm[$table]))
+			return array_keys($schm[$table]->fields);
+		return null;
+/*		global $Eresus;
 
 		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
 		if ($fields) {
@@ -348,7 +387,7 @@ class MySQL
 				} else $result[] = $item['Field'];
 			}
 		} else FatalError(mysql_error($this->Connection));
-		return $result;
+		return $result;*/
 	}
 	//-----------------------------------------------------------------------------
 
@@ -360,7 +399,7 @@ class MySQL
 	 * @param string $fields     Выбираемые поля
 	 * @return array|false
 	 */
-	function selectItem($table, $condition, $fields = '')
+	public function selectItem($table, $condition, $fields = '')
 	{
 		$q = DB::getHandler()->createSelectQuery();
 
@@ -386,29 +425,28 @@ class MySQL
 	 * @param string $condition
 	 * @return void
 	 */
-	function updateItem($table, $item, $condition)
+	public function updateItem($table, $item, $condition)
 	{
-		$fields = $this->fields($table, true);
+		$fields = $this->fields($table);
+		if (!$table)
+			return false;
 
-		$values = array();
-		foreach($fields as $field => $info) if (isset($item[$field])) {
-			switch ($info['type']) {
-				case 'int':
-					$value = $item[$field];
-					if (!$value) $value = 0;
-				break;
-				default: $value = "'".$item[$field]."'";
-			}
-			$values[] = "`$field` = $value";
-		}
-		$values = implode(', ', $values);
-		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition);
-		return $result;
+		$q = DB::getHandler()->createUpdateQuery();
+		$q->update($table)
+			->where($condition);
+
+		foreach ($fields as $field)
+			if (isset($item[$field]))
+				$q->set($field, $q->bindValue($item[$field]));
+
+		DB::execute($q);
+		return true;
 	}
 	//-----------------------------------------------------------------------------
-	function count($table, $condition='', $group='', $rows=false)
+
 	# Возвращает количество записей в таблице используя метод query().
 	#  $table - таблица, для которой требуется посчитать кол-во записей
+	public function count($table, $condition='', $group='', $rows=false)
 	{
 		$result = $this->query("SELECT count(*) FROM `".$this->prefix.$table."`".(empty($condition)?'':'WHERE '.$condition).(empty($group)?'':' GROUP BY `'.$group.'`'));
 		if ($rows) {
@@ -422,12 +460,20 @@ class MySQL
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
-	function getInsertedID()
+
+	/**
+	 * Возвращает идентификатор последней вставленной записи
+	 *
+	 * @return mixed
+	 */
+	public function getInsertedID()
 	{
-		return mysql_insert_id($this->Connection);
+		$db = DB::getHandler();
+		return $db->lastInsertId();
 	}
 	//-----------------------------------------------------------------------------
-	function tableStatus($table, $param='')
+
+	public function tableStatus($table, $param='')
 	{
 		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
 		if ($result) {
@@ -437,6 +483,7 @@ class MySQL
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Экранирует потенциально опасные символы
 	 *
@@ -445,7 +492,7 @@ class MySQL
 	 * @param mixed $src  Входные данные
 	 * @return mixed
 	 */
-	function escape($src)
+	public function escape($src)
 	{
 		return $src;
 	}
