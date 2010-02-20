@@ -451,20 +451,34 @@ class MySQL
 	}
 	//-----------------------------------------------------------------------------
 
-	# Возвращает количество записей в таблице используя метод query().
-	#  $table - таблица, для которой требуется посчитать кол-во записей
-	public function count($table, $condition='', $group='', $rows=false)
+	/**
+	 * Возвращает количество записей в таблице
+	 *
+	 * @param string $table      таблица, для которой требуется посчитать кол-во записей
+	 * @param string $condition
+	 * @param string $group
+	 * @param bool   $rows
+	 * @return int
+	 */
+	public function count($table, $condition = false, $group = false, $rows = false)
 	{
-		$result = $this->query("SELECT count(*) FROM `".$this->prefix.$table."`".(empty($condition)?'':'WHERE '.$condition).(empty($group)?'':' GROUP BY `'.$group.'`'));
-		if ($rows) {
-			$count = 0;
-			while (mysql_fetch_row($result)) $count++;
-			$result = $count;
-		} else {
-			$result = mysql_fetch_row($result);
-			$result = $result[0];
-		}
-		return $result;
+		$q = DB::getHandler()->createSelectQuery();
+		$e = $q->expr;
+
+		$q->select($q->alias($e->count('*'), 'count'))
+			->from($table);
+
+		if ($condition)
+			$q->where($condition);
+
+		if ($group)
+			$q->groupBy($group);
+
+		$result = DB::fetchAll($q);
+		if ($rows)
+			return count($result);
+		else
+			return $result[0]['count'];
 	}
 	//-----------------------------------------------------------------------------
 

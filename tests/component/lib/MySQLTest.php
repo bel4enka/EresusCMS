@@ -233,6 +233,17 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::count
+	 */
+	public function testCount()
+	{
+		$fixture = $this->getInstance();
+		$this->assertEquals(2, $fixture->count('pages'));
+		$this->assertEquals(2, $fixture->count('users', 'access = 1'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::init с использованием префиксов
 	 */
 	public function testInitWithPrefix()
