@@ -28,7 +28,7 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: Template.php 443 2009-12-23 06:28:45Z mk $
+ * $Id: Template.php 445 2009-12-23 06:43:56Z mk $
  */
 
 /**

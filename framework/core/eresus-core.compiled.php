@@ -25,7 +25,7 @@
  * @package Core
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: compiled.head.php 480 2010-02-18 18:24:45Z mk $
+ * $Id: compiled.head.php 475 2010-02-16 09:09:42Z mk $
  */
 
 /*
@@ -2571,8 +2571,7 @@ class DBSettings
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class DBRuntimeException extends EresusRuntimeException {
-}
+class DBRuntimeException extends EresusRuntimeException {}
 
 
 
@@ -2582,8 +2581,8 @@ class DBRuntimeException extends EresusRuntimeException {
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class DBQueryException extends DBRuntimeException {
-
+class DBQueryException extends DBRuntimeException
+{
 	/**
 	 * Creates new exception object
 	 *

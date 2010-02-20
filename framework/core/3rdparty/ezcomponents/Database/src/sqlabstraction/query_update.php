@@ -88,6 +88,7 @@ class ezcQueryUpdate extends ezcQuery
     public function update( $table )
     {
         $table = $this->getIdentifier( $table );
+        $table = $this->getPrefixedTableNames($table);
         $this->table = $table;
         return $this;
     }

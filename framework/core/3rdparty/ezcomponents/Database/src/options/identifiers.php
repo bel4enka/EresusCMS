@@ -16,7 +16,7 @@
  * @package Database
  * @version 1.4.6
  */
-class ezcDbMssqlOptions extends ezcBaseOptions
+class ezcDbMssqlOptions extends ezcDbOptions
 {
     /**
      * Constant represents mode of identifiers quoting that compliant to SQL92.

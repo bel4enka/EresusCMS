@@ -22,6 +22,13 @@
 abstract class ezcDbHandler extends PDO
 {
     /**
+     * Contains the options that are used to set up handler.
+     *
+     * @var ezcDbOptions
+     */
+    public $options;
+
+		/**
      * Stores the transaction nesting level.
      *
      * @var int
@@ -89,6 +96,25 @@ abstract class ezcDbHandler extends PDO
 
         $this->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
         $this->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
+    }
+
+    /**
+     * Associates an option object with this handler and changes settings for
+     * opened connections.
+     *
+     * @param ezcDbOptions $options
+     */
+    public function setOptions( ezcDbOptions $options )
+    {
+        $this->options = $options;
+        $this->setupConnection();
+    }
+
+    /**
+     * Sets up opened connection according to options.
+     */
+    private function setupConnection()
+    {
     }
 
     /**

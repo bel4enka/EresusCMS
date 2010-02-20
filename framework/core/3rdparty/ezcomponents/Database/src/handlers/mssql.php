@@ -18,13 +18,6 @@
 class ezcDbHandlerMssql extends ezcDbHandler
 {
     /**
-     * Contains the options that are used to set up handler.
-     *
-     * @var ezcDbMssqlOptions
-     */
-    public $options;
-
-    /**
      * Constructs a handler object from the parameters $dbParams.
      *
      * Supported database parameters are:
@@ -91,18 +84,6 @@ class ezcDbHandlerMssql extends ezcDbHandler
 
         // setup options
         $this->setOptions( new ezcDbMssqlOptions() );
-    }
-
-    /**
-     * Associates an option object with this handler and changes settings for
-     * opened connections.
-     *
-     * @param ezcDbMssqlOptions $options
-     */
-    public function setOptions( ezcDbMssqlOptions $options )
-    {
-        $this->options = $options;
-        $this->setupConnection();
     }
 
     /**

@@ -82,5 +82,21 @@ abstract class ezcDbSchemaCommonSqlReader implements ezcDbSchemaDbReader
         return $schemaDefinition;
     }
 
+    /**
+     * Lowercase all array keys to conform default Database behaviour
+     *
+     * @param array(string=>mixed) $source
+     * @return array
+     */
+    protected function lowercase( array $source )
+    {
+    	$result = array();
+
+    	foreach ($source as $key => $value )
+    		$result[strtolower($key)] = $value;
+
+    	return $result;
+    }
+
 }
 ?>

@@ -23,6 +23,7 @@ return array(
     'ezcDbHandlerPgsql'              => 'Database/handlers/pgsql.php',
     'ezcDbHandlerSqlite'             => 'Database/handlers/sqlite.php',
     'ezcDbInstance'                  => 'Database/instance.php',
+		'ezcDbOptions'                   => 'Database/options/db.php',
     'ezcDbMssqlOptions'              => 'Database/options/identifiers.php',
     'ezcDbUtilitiesMysql'            => 'Database/sqlabstraction/implementations/utilities_mysql.php',
     'ezcDbUtilitiesOracle'           => 'Database/sqlabstraction/implementations/utilities_oracle.php',

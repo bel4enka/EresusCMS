@@ -25,7 +25,7 @@
  * @package Core
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: eresus-core.php 480 2010-02-18 18:24:45Z mk $
+ * $Id: eresus-core.php 475 2010-02-16 09:09:42Z mk $
  */
 
 

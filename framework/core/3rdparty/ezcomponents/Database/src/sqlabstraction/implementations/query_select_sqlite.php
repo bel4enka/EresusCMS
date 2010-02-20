@@ -97,6 +97,7 @@ class ezcQuerySelectSqlite extends ezcQuerySelect
         }
         $this->lastInvokedMethod = 'from';
         $tables = $this->getIdentifiers( $tables );
+        $tables = $this->getPrefixedTableNames($tables);
 
         $this->fromTables = array_merge( $this->fromTables, $tables );
 

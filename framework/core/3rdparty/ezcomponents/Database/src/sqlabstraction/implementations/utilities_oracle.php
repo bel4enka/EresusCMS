@@ -88,6 +88,7 @@ class ezcDbUtilitiesOracle extends ezcDbUtilities
      */
     public function createTemporaryTable( $tableNamePattern, $tableDefinition )
     {
+    	$tableNamePattern = $this->getPrefixedTableNames($tableNamePattern);
         if ( strpos( $tableNamePattern, '%' ) === false )
         {
             $tableName = $tableNamePattern;
@@ -132,6 +133,7 @@ class ezcDbUtilitiesOracle extends ezcDbUtilities
      */
     public function dropTemporaryTable( $tableName )
     {
+    	$tableName = $this->getPrefixedTableNames($tableName);
         $this->db->exec( "TRUNCATE TABLE $tableName" );
         $this->db->exec( "DROP TABLE $tableName" );
     }

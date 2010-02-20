@@ -25,7 +25,7 @@
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: DB.php 482 2010-02-19 13:19:50Z mk $
+ * $Id: DB.php 486 2010-02-20 16:03:07Z mk $
  */
 
 /**
@@ -72,8 +72,7 @@ class DBSettings
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class DBRuntimeException extends EresusRuntimeException {
-}
+class DBRuntimeException extends EresusRuntimeException {}
 
 
 
@@ -83,8 +82,8 @@ class DBRuntimeException extends EresusRuntimeException {
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class DBQueryException extends DBRuntimeException {
-
+class DBQueryException extends DBRuntimeException
+{
 	/**
 	 * Creates new exception object
 	 *

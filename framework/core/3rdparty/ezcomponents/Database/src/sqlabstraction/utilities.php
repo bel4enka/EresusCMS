@@ -69,6 +69,7 @@ class ezcDbUtilities
     public function createTemporaryTable( $tableName, $tableDefinition )
     {
         $tableName = str_replace( '%', '', $tableName );
+        $tableName = $this->getPrefixedTableNames($tableName);
         $this->db->exec( "CREATE TEMPORARY TABLE $tableName ($tableDefinition)" );
         return $tableName;
     }
@@ -88,6 +89,7 @@ class ezcDbUtilities
      */
     public function dropTemporaryTable( $tableName )
     {
+				$tableName = $this->getPrefixedTableNames($tableName);
         $this->db->exec( "DROP TABLE $tableName" );
     }
 

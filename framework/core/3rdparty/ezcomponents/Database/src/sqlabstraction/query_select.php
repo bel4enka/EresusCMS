@@ -324,6 +324,7 @@ class ezcQuerySelect extends ezcQuery
         }
         $this->lastInvokedMethod = 'from';
         $tables = $this->getIdentifiers( $tables );
+        $tables = $this->getPrefixedTableNames($tables);
 
         // glue string should be inserted each time but not before first entry
         if ( $this->fromString != 'FROM ' )

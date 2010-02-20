@@ -75,6 +75,7 @@ class ezcQueryDelete extends ezcQuery
      */
     public function deleteFrom( $table )
     {
+				$table = $this->getPrefixedTableNames($table);
         $this->table = $table;
         return $this;
     }

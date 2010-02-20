@@ -78,6 +78,7 @@ class ezcQueryInsert extends ezcQuery
     public function insertInto( $table )
     {
         $table = $this->getIdentifier( $table );
+        $table = $this->getPrefixedTableNames($table);
         $this->table = $table;
         return $this;
     }

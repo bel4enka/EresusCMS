@@ -751,7 +751,7 @@ class ezcMailTools
      * $contentIdArray = array( 'consoletools-table.png@1421450' => 'http://localhost/consoletools-table.jpg' );
      * $text = "<html> Embedded image: <img src='cid:consoletools-table.png@1421450'/> </html>";
      * $htmlBody = ezcMailTools::replaceContentIdRefs( $text, $contentIdArray );
-     * // $htmlBody is now:
+     * // $htmlBody is now: 
      * // <html> Embedded image: <img src='http://localhost/consoletools-table.jpg'/> </html>
      * ?>
      * </code>

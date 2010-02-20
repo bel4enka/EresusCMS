@@ -280,6 +280,34 @@ abstract class ezcQuery
     }
 
     /**
+     * Returns prefixed table names if "tableNamePrefix" option not empty
+     * otherwise return untouched names
+     *
+     * @param array|string $tableNames
+     * @return array|string
+     */
+    protected function getPrefixedTableNames($tableNames)
+    {
+    	if ($this->db->options->tableNamePrefix)
+    	{
+    		switch (true)
+    		{
+    			case is_string($tableNames):
+    				$tableNames = $this->db->options->tableNamePrefix . $tableNames;
+    			break;
+
+    			case is_array($tableNames):
+		    		foreach ($tableNames as $key => $table)
+		    			$tableNames[$key] = $this->db->options->tableNamePrefix . $table;
+		    	break;
+    		}
+    	}
+
+    	return $tableNames;
+    }
+    //-----------------------------------------------------------------------------
+
+    /**
      * Binds the value $value to the specified variable name $placeHolder.
      *
      * This method provides a shortcut for PDOStatement::bindValue

@@ -26,7 +26,7 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: HTTP.php 480 2010-02-18 18:24:45Z mk $
+ * $Id: HTTP.php 478 2010-02-18 17:41:02Z mk $
  */
 
 

@@ -37,13 +37,13 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
         'decimal' => 'decimal',
         'numeric' => 'decimal',
         'fixed' => 'decimal',
-        
+
         'date' => 'date',
         'datetime' => 'timestamp',
         'timestamp' => 'timestamp',
         'time' => 'time',
         'year' => 'integer',
-       
+
         'char' => 'text',
         'varchar' => 'text',
         'binary' => 'blob',
@@ -94,7 +94,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
             $fieldLength = false;
 
             // bool and boolean is synonyms for TINYINT(1) in MySQL
-            if ( $row['type'] == 'tinyint(1)' ) 
+            if ( $row['type'] == 'tinyint(1)' )
             {
                 $fieldType = 'boolean';
             }
@@ -121,7 +121,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
                 {
                     $fieldDefault = ( $row['default'] == '0' ) ? 'false' : 'true';
                 }
-                else if ( $fieldType != 'timestamp' ) 
+                else if ( $fieldType != 'timestamp' )
                 {
                     $fieldDefault = $row['default'];
                 }
@@ -235,7 +235,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
         $indexBuffer = array();
 
         $resultArray = $this->db->query( "SHOW INDEX FROM `$tableName`" );
-        
+
         foreach ( $resultArray as $row )
         {
             $keyName = $row['key_name'];
