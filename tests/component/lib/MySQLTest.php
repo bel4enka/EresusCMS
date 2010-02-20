@@ -221,6 +221,18 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::delete
+	 */
+	public function testDelete()
+	{
+		$fixture = $this->getInstance();
+		$fixture->delete('users', "id = 3");
+		$item = $fixture->selectItem('users', "id = 3");
+		$this->assertFalse($item);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::init с использованием префиксов
 	 */
 	public function testInitWithPrefix()

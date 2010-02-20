@@ -317,13 +317,20 @@ class MySQL
 	}
 	//-----------------------------------------------------------------------------
 
-	# Выполняет запрос DELETE к базе данных используя метод query().
-	#  $table - таблица, из которой требуется удалить записи
-	#  $condition - признаки удаляемых записей
+	/**
+	 * Выполняет запрос DELETE к базе данных
+	 *
+	 * @param string $table      таблица, из которой требуется удалить записи
+	 * @param string $condition  признаки удаляемых записей
+	 * @return mixed
+	 */
 	public function delete($table, $condition)
 	{
-		$result = $this->query("DELETE FROM `".$this->prefix.$table."` WHERE ".$condition);
-		return $result;
+		$q = DB::getHandler()->createDeleteQuery();
+		$q->deleteFrom($table)
+			->where($condition);
+		DB::execute($q);
+		return null;
 	}
 	//-----------------------------------------------------------------------------
  /**
