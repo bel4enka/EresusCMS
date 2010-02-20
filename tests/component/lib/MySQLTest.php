@@ -68,6 +68,19 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::fields
+	 */
+	public function testFields()
+	{
+		$fixture = new MySQL();
+		$fields = array('access', 'active', 'hash', 'id', 'lastLoginTime', 'lastVisit',
+			'login', 'loginErrors', 'mail', 'name', 'profile');
+
+		$this->assertEquals($fields, $fixture->fields('users'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::select
 	 */
 	public function testSelect()

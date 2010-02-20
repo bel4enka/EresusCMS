@@ -109,7 +109,7 @@ class Sections {
 				$i--;
 			}
 			if (count($set)) {
-				$fieldset = implode(',', array_diff($this->fields(), array('content')));
+				$fieldset = '';//implode(',', array_diff($this->fields(), array('content')));
 				# Читаем из БД
 				$set = implode(',', $set);
 				$items = $Eresus->db->select($this->table, "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
