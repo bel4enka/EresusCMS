@@ -190,8 +190,9 @@ class MySQL
 	 */
 	public function drop($name)
 	{
-		$result = false;
-		$query = "DROP TABLE `{$this->prefix}$name`";
+		$db = DB::getHandler();
+		$name = $db->options->tableNamePrefix . $name;
+		$query = "DROP TABLE `$name`";
 		$result = $this->query($query);
 		return $result;
 	}
