@@ -173,8 +173,9 @@ class MySQL
 	 */
 	public function create($name, $structure, $options = '')
 	{
-		$result = false;
-		$query = "CREATE TABLE `{$this->prefix}$name` ($structure) $options";
+		$db = DB::getHandler();
+		$name = $db->options->tableNamePrefix . $name;
+		$query = "CREATE TABLE `$name` ($structure) $options";
 		$result = $this->query($query);
 		return $result;
 	}
@@ -343,9 +344,7 @@ class MySQL
 	public function fields($table, $info = false)
 	{
 		$schm = $this->getSchema();
-		if (isset($schm[$table]))
-			return array_keys($schm[$table]->fields);
-		return null;
+		return array_keys($schm[$table]->fields);
 /*		global $Eresus;
 
 		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");

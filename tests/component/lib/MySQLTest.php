@@ -244,6 +244,24 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::create
+	 */
+	public function testCreate()
+	{
+		$fixture = $this->getInstance();
+		$fixture->create('test', "
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `active` tinyint(1) unsigned DEFAULT '1',
+  `position` int(10) unsigned DEFAULT '0',
+  `title` varchar(64) DEFAULT '',
+  PRIMARY KEY (`name`),
+  KEY `active` (`active`)",
+  "ENGINE=MyISAM DEFAULT CHARSET=cp1251");
+		$this->assertEquals(array('active', 'name', 'position', 'title'), $fixture->fields('test'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::init с использованием префиксов
 	 */
 	public function testInitWithPrefix()
