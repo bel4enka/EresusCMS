@@ -32,21 +32,33 @@
 
 require_once dirname(__FILE__) . '/../../../helpers.php';
 
-require_once 'PluginTest.php';
-require_once 'ContentPluginTest.php';
-require_once 'backward/AllTests.php';
+require_once TEST_DIR_ROOT . '/core/lib/mysql.php';
+require_once TEST_DIR_ROOT . '/core/kernel-legacy.php';
+require_once TEST_DIR_ROOT . '/core/classes.php';
 
-class Main_Core_Classes_AllTests
+/**
+ * @package Tests
+ */
+class ContentPluginTest extends PHPUnit_Framework_TestCase
 {
-	public static function suite()
+
+	/**
+	 * Проверка метода Plugin::__item()
+	 */
+	public function test__itemEmpty()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Core Tests');
+		global $Eresus;
 
-		$suite->addTestSuite('PluginTest');
-		$suite->addTestSuite('ContentPluginTest');
+		$Eresus = new PropertySet();
+		$Eresus->db = new MySQL();
 
-		$suite->addTest(Main_Core_Classes_Backward_AllTests::suite());
+		$fixture = new ContentPlugin();
+		$test = $fixture->__item();
 
-		return $suite;
+		$this->assertEquals('contentplugin', $test['name'], 'name');
+		$this->assertTrue($test['content'], 'content');
 	}
+	//-----------------------------------------------------------------------------
+
+	/**/
 }
