@@ -159,16 +159,6 @@ class AdminUITheme
 
 define('ADMINUI', true);
 
-function __macroConst($matches) {
-	return constant($matches[1]);
-}
-function __macroVar($matches) {
-	$result = $GLOBALS[$matches[2]];
-	if (!empty($matches[3])) eval('$result = $result'.$matches[3].';');
-	return $result;
-}
-
-
 /**
  * Класс представляет страницу административного интерфейса
  *
@@ -484,6 +474,14 @@ class TAdminUI extends WebPage
 		}
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	/**
+	 *
+	 * @param array  $table
+	 * @param array  $values
+	 * @param string $sub_prefix
+	 * @return string
+	 */
 	function renderTable($table, $values=null, $sub_prefix='')
 	{
 		global $Eresus;
@@ -510,7 +508,7 @@ class TAdminUI extends WebPage
 			$items = $Eresus->db->select(
 				$table['name'],
 				isset($table['condition'])?$table['condition']:'',
-				($sortDesc ? '-' : '+').$sortMode,
+				($sortDesc ? '-' : '').$sortMode,
 				'',
 				$itemsPerPage,
 				($pagesDesc?($pageCount-$page)*$itemsPerPage:($page-1)*$itemsPerPage)
