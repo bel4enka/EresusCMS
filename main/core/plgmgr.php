@@ -36,7 +36,12 @@
  */
 class TPlgMgr
 {
-	var $access = ADMIN;
+	/**
+	 * Уровень доступа к модулю
+	 * @var int
+	 */
+	public $access = ADMIN;
+
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function toggle()
 	{
@@ -199,50 +204,56 @@ class TPlgMgr
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	/**
+	 * Отрисовка контента модуля
+	 *
+	 * @return string
+	 */
 	function adminRender()
 	{
-	global $page, $Eresus;
+		global $page, $Eresus;
 
-		if (UserRights($this->access)) {
-			$result = '';
-			$page->title = admPlugins;
-			if (isset($Eresus->request['arg']['update'])) $this->update();
-			elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
-			elseif (isset($Eresus->request['arg']['delete'])) $this->delete();
-			elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
-			elseif (isset($Eresus->request['arg']['up'])) $this->up();
-			elseif (isset($Eresus->request['arg']['down'])) $this->down();
-			elseif (isset($Eresus->request['arg']['action'])) switch($Eresus->request['arg']['action']) {
-				case 'add': $result = $this->add(); break;
-				case 'insert': $this->insert(); break;
-			} else {
-				$table = array (
-					'name' => 'plugins',
-					'key' => 'name',
-					'sortMode' => 'position',
-					'columns' => array(
-						array('name' => 'title', 'caption' => admPlugin, 'width' => '90px', 'wrap'=>false),
-						array('name' => 'description', 'caption' => admDescription),
-						array('name' => 'version', 'caption' => admVersion, 'width'=>'70px','align'=>'center'),
-						array('name' => 'type', 'caption' => admType, 'align' => 'center', 'width'=>'80px'),
-					),
-					'controls' => array (
-						'delete' => '',
-						'edit' => '',
-						'toggle' => '',
-						'position' => ''
-					),
-					'tabs' => array(
-						'width'=>'180px',
-						'items'=>array(
-							array('caption'=>admPluginsAdd, 'name'=>'action', 'value'=>'add')
-						)
+		if (!UserRights($this->access))
+			return '';
+
+		$result = '';
+		$page->title = admPlugins;
+		if (isset($Eresus->request['arg']['update'])) $this->update();
+		elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
+		elseif (isset($Eresus->request['arg']['delete'])) $this->delete();
+		elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
+		elseif (isset($Eresus->request['arg']['up'])) $this->up();
+		elseif (isset($Eresus->request['arg']['down'])) $this->down();
+		elseif (isset($Eresus->request['arg']['action'])) switch($Eresus->request['arg']['action']) {
+			case 'add': $result = $this->add(); break;
+			case 'insert': $this->insert(); break;
+		} else {
+			$table = array (
+				'name' => 'plugins',
+				'key' => 'name',
+				'sortMode' => 'position',
+				'columns' => array(
+					array('name' => 'title', 'caption' => admPlugin, 'width' => '90px', 'wrap'=>false),
+					array('name' => 'description', 'caption' => admDescription),
+					array('name' => 'version', 'caption' => admVersion, 'width'=>'70px','align'=>'center'),
+				),
+				'controls' => array (
+					'delete' => '',
+					'edit' => '',
+					'toggle' => '',
+					'position' => ''
+				),
+				'tabs' => array(
+					'width'=>'180px',
+					'items'=>array(
+						array('caption'=>admPluginsAdd, 'name'=>'action', 'value'=>'add')
 					)
-				);
-				$result = $page->renderTable($table);
-			}
-			return $result;
+				)
+			);
+			$result = $page->renderTable($table);
 		}
+		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }
