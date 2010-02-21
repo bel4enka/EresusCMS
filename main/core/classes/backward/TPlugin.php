@@ -72,14 +72,17 @@ class TPlugin
 	{
 		global $Eresus, $locale;
 
-		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
+		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
+		{
 			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
 			# Если установлена версия плагина отличная от установленной ранее
 			# то необходимо произвести обновление информации о плагине в БД
-			if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
+			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
+				$this->resetPlugin();
 		}
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
-		if (is_file($filename)) include_once($filename);
+		if (FS::isFile($filename))
+			Core::safeInclude($filename);
 	}
 	//------------------------------------------------------------------------------
 
@@ -105,9 +108,7 @@ class TPlugin
 		return $result;
 	}
 	//------------------------------------------------------------------------------
-# Обратная совместимость
-function createPluginItem($item = null) {return $this->__item($item);}
-//------------------------------------------------------------------------------
+
 /**
 * Чтение настроек плагина из БД
 *
