@@ -32,28 +32,35 @@
 
 
 /**
-* Родительский класс для всех плагинов
-*
-* @var  string  $name         Имя плагина
-* @var  string  $version	    Версия плагина
-* @var  string  $kernel       Необходимая версия Eresus
-* @var  string  $title        Название плагина
-* @var  string  $description	Описание плагина
-* @var  string  $type         Тип плагина, перечисленые через запятую ключевые слова:
-*                               client   - Загружать плагин в КИ
-*                               admin    - Загружать плагин в АИ
-*                               content  - Плагин предоставляет тип контента
-*                               ondemand - Не загружать плагин автоматически
-* @var  array   $settings     Настройки плагина
-*
-* @package Eresus2
-* @deprecated Используйте Plugin
-*/
+ * Родительский класс для всех плагинов
+ *
+ * @package Eresus2
+ * @deprecated Используйте Plugin
+ */
 class TPlugin
 {
+	/**
+	 * Имя плагина
+	 * @var string
+	 */
 	public $name;
+
+	/**
+	 * Версия плагина
+	 * @var string
+	 */
 	public $version;
+
+	/**
+	 * Название плагина
+	 * @var string
+	 */
 	public $title;
+
+	/**
+	 * Описание плагина
+	 * @var string
+	 */
 	public $description;
 
 	/**
@@ -61,6 +68,11 @@ class TPlugin
 	 * @var void
 	 */
 	public $type;
+
+	/**
+	 * Настройки плагина
+	 * @var array
+	 */
 	public $settings = array();
 
 	/**
@@ -98,7 +110,7 @@ class TPlugin
 		global $Eresus;
 
 		$result['name'] = $this->name;
-		$result['content'] = preg_match('/ContentPlugin$/i', get_class($this)) > 0;
+		$result['content'] = false;
 		$result['active'] = is_null($item) ? true : $item['active'];
 		$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
 		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
@@ -190,5 +202,3 @@ function replaceMacros($template, $item)
 }
 //------------------------------------------------------------------------------
 }
-
-?>

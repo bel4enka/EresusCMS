@@ -90,24 +90,6 @@ class TPluginTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * Проверка метода TPlugin::__item()
-	 */
-	public function test__itemContentPlugin()
-	{
-		global $Eresus;
-
-		$Eresus = new PropertySet();
-		$Eresus->db = new MySQL();
-
-		$fixture = new TPluginTest_ContentPlugin();
-		$test = $fixture->__item();
-
-		$this->assertEquals('testcontentplugin', $test['name'], 'name');
-		$this->assertTrue($test['content'], 'content');
-	}
-	//-----------------------------------------------------------------------------
-
 	/**/
 }
 
@@ -123,15 +105,4 @@ class TPluginTest_Plugin extends TPlugin
 	public $settings = array(
 		'a' => 'b'
 	);
-}
-
-/**
- * @package Tests
- */
-class TPluginTest_ContentPlugin extends TPlugin
-{
-	public $name = 'testcontentplugin';
-	public $version = '9.99';
-	public $title = 'Test plugin';
-	public $description = 'Test plugin description';
 }
