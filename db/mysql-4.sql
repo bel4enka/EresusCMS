@@ -41,8 +41,8 @@ INSERT INTO `pages` VALUES (1, 'main', 0, 'Главная', 'Главная', '', 'Главная стр
 
 CREATE TABLE `plugins` (
   `name` varchar(32) NOT NULL default '',
-  `type` set('client','admin','content','ondemand') default NULL,
   `active` tinyint(1) unsigned NOT NULL default '1',
+  `content` tinyint(1) unsigned NOT NULL default '0',
   `position` int(10) unsigned default NULL,
   `settings` text,
   `title` varchar(64) default NULL,
@@ -50,8 +50,8 @@ CREATE TABLE `plugins` (
   `description` varchar(255) default NULL,
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
+  KEY `content` (`content`),
   KEY `position` (`position`),
-  KEY `type` (`type`)
 ) TYPE=MyISAM;
 
 -- --------------------------------------------------------
