@@ -288,7 +288,7 @@ abstract class ezcQuery
      */
     protected function getPrefixedTableNames($tableNames)
     {
-    	if ($this->db->options->tableNamePrefix)
+    	if ($this->db->options && $this->db->options->tableNamePrefix)
     	{
     		switch (true)
     		{
