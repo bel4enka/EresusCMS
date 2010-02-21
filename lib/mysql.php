@@ -79,9 +79,11 @@ class MySQL
 	 * @param string $source    Имя источника данных
 	 *
 	 * @return bool  Результат соединения
+	 * @deprecated
 	 */
 	public function init($server, $username, $password, $source, $prefix = '')
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$dsn = "mysql://$username:$password@$server/$source";
 		if (defined('LOCALE_CHARSET'))
 			$dsn .= '?charset=' . LOCALE_CHARSET;
@@ -131,9 +133,11 @@ class MySQL
 	 *
 	 * @param string $query  Запрос в формате источника
 	 * @return mixed  Результат запроса. Тип зависит от источника, запроса и результата
+	 * @deprecated
 	 */
 	public function query($query)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
 		$db->exec($query);
 		return true;
@@ -144,11 +148,12 @@ class MySQL
 	 * Выполняет запрос к источнику и возвращает ассоциативный массив значений
 	 *
 	 * @param  string  $query    Запрос в формате источника
-	 *
 	 * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
+	 * @deprecated
 	 */
 	public function query_array($query)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
 		$stmt = $db->prepare($query);
 		if (!$stmt->execute())
@@ -167,9 +172,11 @@ class MySQL
 	 * @param string $options    Опции
 	 *
 	 * @return bool Результат
+	 * @deprecated
 	 */
 	public function create($name, $structure, $options = '')
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
 		$name = $db->options->tableNamePrefix . $name;
 		$query = "CREATE TABLE `$name` ($structure) $options";
@@ -184,9 +191,11 @@ class MySQL
 	 * @param string $name       Имя таблицы
 	 *
 	 * @return bool Результат
+	 * @deprecated
 	 */
 	public function drop($name)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
 		$name = $db->options->tableNamePrefix . $name;
 		$query = "DROP TABLE `$name`";
@@ -208,9 +217,11 @@ class MySQL
 	* @param  bool     $distinct   Вернуть только уникальные записи
 	*
 	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
+	* @deprecated
 	*/
 	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
 		$q = $db->createSelectQuery();
 		$e = $q->expr;
@@ -270,9 +281,11 @@ class MySQL
 	 * @param array  $item   Ассоциативный массив значений
 	 *
 	 * @return mixed  Результат выполнения операции
+	 * @deprecated
 	 */
 	public function insert($table, $item)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$fields = $this->fields($table);
 		if (!$table)
 			return false;
@@ -296,9 +309,11 @@ class MySQL
 	 * @param mixed  $set        Изменения
 	 * @param string $condition  Условие
 	 * @return unknown
+	 * @deprecated
 	 */
 	public function update($table, $set, $condition)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$q = DB::getHandler()->createUpdateQuery();
 		$q->update($table)
 			->where($condition);
@@ -322,9 +337,11 @@ class MySQL
 	 * @param string $table      таблица, из которой требуется удалить записи
 	 * @param string $condition  признаки удаляемых записей
 	 * @return mixed
+	 * @deprecated
 	 */
 	public function delete($table, $condition)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$q = DB::getHandler()->createDeleteQuery();
 		$q->deleteFrom($table)
 			->where($condition);
@@ -338,9 +355,11 @@ class MySQL
 	* @param string $table            Имя таблицы
 	* @param bool   $info [optional]
 	* @return array  Список полей, с описанием, если $info = true
+	* @deprecated
 	*/
 	public function fields($table, $info = false)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$schm = $this->getSchema();
 		return array_keys($schm[$table]->fields);
 /*		global $Eresus;
@@ -402,9 +421,11 @@ class MySQL
 	 * @param string $condition  SQL-условие
 	 * @param string $fields     Выбираемые поля
 	 * @return array|false
+	 * @deprecated
 	 */
 	public function selectItem($table, $condition, $fields = '')
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$q = DB::getHandler()->createSelectQuery();
 
 		if ($fields == '')
@@ -428,9 +449,11 @@ class MySQL
 	 * @param array  $item
 	 * @param string $condition
 	 * @return void
+	 * @deprecated
 	 */
 	public function updateItem($table, $item, $condition)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$fields = $this->fields($table);
 		if (!$table)
 			return false;
@@ -456,9 +479,11 @@ class MySQL
 	 * @param string $group
 	 * @param bool   $rows
 	 * @return int
+	 * @deprecated
 	 */
 	public function count($table, $condition = false, $group = false, $rows = false)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$q = DB::getHandler()->createSelectQuery();
 		$e = $q->expr;
 
@@ -483,16 +508,26 @@ class MySQL
 	 * Возвращает идентификатор последней вставленной записи
 	 *
 	 * @return mixed
+	 * @deprecated
 	 */
 	public function getInsertedID()
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
 		return $db->lastInsertId();
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 *
+	 * @param unknown_type $table
+	 * @param unknown_type $param
+	 * @return unknown_type
+	 * @deprecated
+	 */
 	public function tableStatus($table, $param='')
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
 		if ($result) {
 			$result = $result[0];
@@ -509,9 +544,11 @@ class MySQL
 	 *
 	 * @param mixed $src  Входные данные
 	 * @return mixed
+	 * @deprecated
 	 */
 	public function escape($src)
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		return $src;
 	}
 	//-----------------------------------------------------------------------------
