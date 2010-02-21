@@ -149,15 +149,12 @@ class MySQL
 	 */
 	public function query_array($query)
 	{
-		$result = $this->query($query);
-		$values = Array();
-		while($row = mysql_fetch_assoc($result))
-		{
-			if (count($row))
-				foreach($row as $key => $value)
-					$row[$key] = $value;
-			$values[] = $row;
-		}
+		$db = DB::getHandler();
+		$stmt = $db->prepare($query);
+		if (!$stmt->execute())
+			return false;
+
+		$values = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $values;
 	}
 	//------------------------------------------------------------------------------

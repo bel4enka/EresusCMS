@@ -265,6 +265,30 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::query_array
+	 */
+	public function testQuery_array()
+	{
+		$fixture = $this->getInstance();
+		$test = $fixture->query_array("SHOW TABLES LIKE '%'");
+		$this->assertEquals(4, count($test));
+		$test = $fixture->query_array("SHOW TABLES LIKE 'p%'");
+		$this->assertEquals(2, count($test));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::tableStatus
+	 */
+	public function testTableStatus()
+	{
+		$fixture = $this->getInstance();
+		$test = $fixture->tableStatus('plugins');
+		$this->assertEquals('plugins', $test['Name']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::init с использованием префиксов
 	 */
 	public function testInitWithPrefix()
