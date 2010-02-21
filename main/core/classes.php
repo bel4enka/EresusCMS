@@ -385,7 +385,7 @@ class Plugins {
 	var $items = array(); # Массив плагинов
 	var $events = array(); # Таблица обработчиков событий
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function Plugins()
+	function __construct()
 	{
 		global $Eresus;
 
@@ -1288,7 +1288,7 @@ class EresusExtensionConnector
 	 *
 	 * @return EresusExtensionConnector
 	 */
-	function EresusExtensionConnector()
+	function __construct()
 	{
 		global $Eresus;
 

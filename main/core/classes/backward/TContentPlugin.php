@@ -40,7 +40,7 @@ class TContentPlugin extends TPlugin {
 *
 * Устанавливает плагин в качестве плагина контента и читает локальные настройки
 */
-function TContentPlugin()
+function __construct()
 {
 	global $page;
 

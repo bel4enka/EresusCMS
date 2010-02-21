@@ -47,7 +47,7 @@ class TUsers extends Accounts
 	*
 	* @return TUsers
 	*/
-	function TUsers()
+	function __construct()
 	{
 		$this->accounts = new Accounts();
 	}

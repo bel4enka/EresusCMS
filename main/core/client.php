@@ -70,7 +70,7 @@ class TClientUI extends WebPage
 	 *
 	 * @access  public
 	 */
-	function TClientUI()
+	function __construct()
 	{
 	}
 	//------------------------------------------------------------------------------

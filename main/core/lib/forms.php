@@ -46,7 +46,7 @@ class Form {
 	* @param  array  $form    Описание формы
 	* @param  array  $values  Значения полей по умолчанию (необязательно)
 	*/
-	function Form($form, $values=array())
+	function __construct($form, $values=array())
 	{
 		$this->form = $form;
 		$this->values = $values;
