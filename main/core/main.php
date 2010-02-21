@@ -177,7 +177,7 @@ class EresusCMS extends EresusApplication
 			break;
 
 			default:
-				include_once 'client.php';
+				$output = $this->runWebClientUI();
 			break;
 		}
 
@@ -199,6 +199,23 @@ class EresusCMS extends EresusApplication
 		//$this->response = new HttpResponse();
 		$this->detectWebRoot();
 		//$this->initRoutes();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Запуск КИ
+	 * @return string
+	 * @deprecated Это временная функция
+	 */
+	protected function runWebClientUI()
+	{
+		global $page;
+
+		include_once 'client.php';
+
+		$page = new TClientUI();
+		$page->init();
+		/*return */$page->render();
 	}
 	//-----------------------------------------------------------------------------
 

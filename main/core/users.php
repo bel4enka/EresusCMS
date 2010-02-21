@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,17 +25,23 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Eresus2
+ *
  * $Id$
  */
 
 useLib('accounts');
 
-class TUsers extends Accounts {
-	var $accounts;
-	var
-		$access = ADMIN,
-		$itemsPerPage = 30,
-		$pagesDesc = false;
+class TUsers extends Accounts
+{
+	private $accounts;
+
+	public $access = ADMIN;
+
+	private $itemsPerPage = 30;
+
+	private $pagesDesc = false;
+
  /**
 	* Конструктор
 	*
@@ -246,19 +252,28 @@ class TUsers extends Accounts {
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function adminRender()
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function adminRender()
 	{
 		global $Eresus, $page;
 
 		$result = '';
 		$granted = false;
-		if (UserRights($this->access)) $granted = true; else {
+		if (UserRights($this->access))
+			$granted = true;
+			else
+		{
 			if (arg('id') == $Eresus->user['id']) {
 				if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
 				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
 			}
 		}
-		if ($granted) {
+		if ($granted)
+		{
 			if (arg('update')) $this->update();
 			elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
 			elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
@@ -305,5 +320,5 @@ class TUsers extends Accounts {
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }
