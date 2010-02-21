@@ -97,11 +97,8 @@ class MySQL
 			return false;
 		}
 
-		if ($prefix)
-		{
-			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
-			$db->setOptions($options);
-		}
+		$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+		$db->setOptions($options);
 
 		return true;
 	}
@@ -116,11 +113,9 @@ class MySQL
 		if (!$this->dbSchema)
 		{
 			$db = DB::getHandler();
-			if ($db->options->tableNamePrefix)
-			{
-				$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
-				ezcDbSchema::setOptions($options);
-			}
+			$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
+			ezcDbSchema::setOptions($options);
+
 			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}
 

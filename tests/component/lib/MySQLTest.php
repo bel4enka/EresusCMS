@@ -75,6 +75,45 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка метода MySQL::init с использованием префиксов
+	 */
+	public function testInitWithPrefixes()
+	{
+		$fixture = new MySQL();
+
+		preg_match('/mysql:\/\/(.*):(.*)@(.*)\/(.*)(\?charset=(.*))/', $GLOBALS['TESTCONF']['DB']['dsn'], $m);
+		if (!defined('LOCALE_CHARSET'))
+			define('LOCALE_CHARSET', $m[6]);
+
+		$this->assertTrue($fixture->init($m[3], $m[1], $m[2], $m[4], 'test_'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::fields с использованием префиксов
+	 */
+	public function testFieldsWithPrefixes()
+	{
+		$fixture = $this->getInstancePrefixed();
+		$fields = array('id', 'name');
+
+		$this->assertEquals($fields, $fixture->fields('prefixed'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка метода MySQL::select с использованием префиксов
+	 */
+	public function testSelectWithPrefixes()
+	{
+		$fixture = $this->getInstancePrefixed();
+		$items = $fixture->select('prefixed', "id = 1");
+		$this->assertEquals(1, count($items));
+		$this->assertEquals('main', $items[0]['name']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка метода MySQL::init
 	 */
 	public function testInit()
@@ -285,45 +324,6 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 		$fixture = $this->getInstance();
 		$test = $fixture->tableStatus('plugins');
 		$this->assertEquals('plugins', $test['Name']);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка метода MySQL::init с использованием префиксов
-	 */
-	public function testInitWithPrefix()
-	{
-		$fixture = new MySQL();
-
-		preg_match('/mysql:\/\/(.*):(.*)@(.*)\/(.*)(\?charset=(.*))/', $GLOBALS['TESTCONF']['DB']['dsn'], $m);
-		if (!defined('LOCALE_CHARSET'))
-			define('LOCALE_CHARSET', $m[6]);
-
-		$this->assertTrue($fixture->init($m[3], $m[1], $m[2], $m[4], 'test_'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка метода MySQL::fields с использованием префиксов
-	 */
-	public function testFieldsWithPrefixes()
-	{
-		$fixture = $this->getInstancePrefixed();
-		$fields = array('id', 'name');
-
-		$this->assertEquals($fields, $fixture->fields('prefixed'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка метода MySQL::select с использованием префиксов
-	 */
-	public function testSelectWithPrefixes()
-	{
-		$fixture = $this->getInstancePrefixed();
-		$items = $fixture->select('prefixed', "id = 1");
-		$this->assertEquals(1, count($items));
-		$this->assertEquals('main', $items[0]['name']);
 	}
 	//-----------------------------------------------------------------------------
 
