@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,6 +25,8 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Eresus2
+ *
  * $Id$
  */
 
@@ -43,55 +45,66 @@
 *                               content  - Плагин предоставляет тип контента
 *                               ondemand - Не загружать плагин автоматически
 * @var  array   $settings     Настройки плагина
-*/
-class TPlugin {
-	var $name;
-	var $version;
-	var $title;
-	var $description;
-	var $type;
-	var $settings = array();
-
-/**
-* Конструктор
 *
-* Производит чтение настроек плагина и подключение языковых файлов
+* @package Eresus2
+* @deprecated Используйте Plugin
 */
-function TPlugin()
+class TPlugin
 {
-	global $Eresus, $locale;
+	public $name;
+	public $version;
+	public $title;
+	public $description;
 
-	if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
-		$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
-		# Если установлена версия плагина отличная от установленной ранее
-		# то необходимо произвести обновление информации о плагине в БД
-		if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
+	/**
+	 * Не используется начиная с 2.13
+	 * @var void
+	 */
+	public $type;
+	public $settings = array();
+
+	/**
+	 * Конструктор
+	 *
+	 * Производит чтение настроек плагина и подключение языковых файлов
+	 */
+	public function __construct()
+	{
+		global $Eresus, $locale;
+
+		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
+			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+			# Если установлена версия плагина отличная от установленной ранее
+			# то необходимо произвести обновление информации о плагине в БД
+			if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
+		}
+		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
+		if (is_file($filename)) include_once($filename);
 	}
-	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
-	if (is_file($filename)) include_once($filename);
-}
-//------------------------------------------------------------------------------
-/**
-* Возвращает информацию о плагине
-*
-* @param  array  $item  Предыдущая версия информации (по умолчанию null)
-*
-* @return  array  Массив информации, пригодный для записи в БД
-*/
-function __item($item = null)
-{
-	global $Eresus;
+	//------------------------------------------------------------------------------
 
-	$result['name'] = $this->name;
-	$result['type'] = $this->type;
-	$result['active'] = is_null($item)? true : $item['active'];
-	$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
-	$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
-	$result['title'] = $this->title;
-	$result['version'] = $this->version;
-	$result['description'] = $this->description;
-	return $result;
-}
+	/**
+	 * Возвращает информацию о плагине
+	 *
+	 * @param  array  $item  Предыдущая версия информации (по умолчанию null)
+	 *
+	 * @return  array  Массив информации, пригодный для записи в БД
+	 */
+	function __item($item = null)
+	{
+		global $Eresus;
+
+		$result['name'] = $this->name;
+		$result['content'] = preg_match('/ContentPlugin$/i', get_class($this)) > 0;
+		$result['active'] = is_null($item) ? true : $item['active'];
+		$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
+		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+		$result['title'] = $this->title;
+		$result['version'] = $this->version;
+		$result['description'] = $this->description;
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 # Обратная совместимость
 function createPluginItem($item = null) {return $this->__item($item);}
 //------------------------------------------------------------------------------

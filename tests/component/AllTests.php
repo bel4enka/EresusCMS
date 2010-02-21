@@ -33,6 +33,7 @@
 require_once 'helpers.php';
 
 require_once 'lib/AllTests.php';
+require_once 'main/AllTests.php';
 
 class AllTests
 {
@@ -44,6 +45,7 @@ class AllTests
 		$suite = new PHPUnit_Framework_TestSuite('${product.title} ${product.version}');
 
 		$suite->addTest(Lib_AllTests::suite());
+		$suite->addTest(Main_AllTests::suite());
 
 		return $suite;
 	}

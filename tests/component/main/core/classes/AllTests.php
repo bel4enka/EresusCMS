@@ -4,8 +4,6 @@
  *
  * ${product.description}
  *
- * Помощник для компонентных тестов
- *
  * @copyright 2004, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -32,61 +30,18 @@
  * $Id$
  */
 
+require_once dirname(__FILE__) . '/../../../helpers.php';
 
-define('ERESUS_TEST_MODE', true);
+require_once 'backward/AllTests.php';
 
-if (!defined('yes'))
-	define('yes', true);
-
-if (!defined('no'))
-	define('no', false);
-
-define('TEST_DIR_ROOT', realpath(dirname(__FILE__) . '/../..'));
-set_include_path(get_include_path() . PATH_SEPARATOR . TEST_DIR_ROOT);
-
-require_once 'PHPUnit/Extensions/OutputTestCase.php';
-
-/* Настраиваем фильтрацию Code Covarage */
-PHPUnit_Util_Filter::addDirectoryToWhitelist(TEST_DIR_ROOT . '/core');
-PHPUnit_Util_Filter::removeDirectoryFromWhitelist(TEST_DIR_ROOT . '/core/framework');
-PHPUnit_Util_Filter::addFileToFilter(TEST_DIR_ROOT . '/core/errors.html.php');
-PHPUnit_Util_Filter::addFileToFilter(TEST_DIR_ROOT . '/core/gziph.php');
-
-
-$GLOBALS['TESTCONF'] = parse_ini_file(TEST_DIR_ROOT . '/tests/component/tests.conf', true);
-
-ini_set('error_log', TEST_DIR_ROOT . '/tests/component/tests.log');
-define('ERESUS_LOG_LEVEL' , LOG_DEBUG);
-
-#@include_once 'core/framework/core/3rdparty/ezcomponents/Base/src/ezc_bootstrap.php';
-require_once 'core/framework/core/eresus-core.php';
-
-Core::testMode(true);
-
-if (isset($GLOBALS['TESTCONF']['DB']['dsn']) && $GLOBALS['TESTCONF']['DB']['dsn']) {
-
-	DB::lazyConnection($GLOBALS['TESTCONF']['DB']['dsn']);
-
-}
-
-
-/**
- *
- * @package Tests
- */
-class PropertySet
+class Main_Core_Classes_AllTests
 {
-	private $p;
-
-	public function __set($key, $value)
+	public static function suite()
 	{
-		$this->p[$key] = $value;
-	}
-	//-----------------------------------------------------------------------------
+		$suite = new PHPUnit_Framework_TestSuite('Core Tests');
 
-	public function __get($key)
-	{
-		return $this->p[$key];
+		$suite->addTest(Main_Core_Classes_Backward_AllTests::suite());
+
+		return $suite;
 	}
-	//-----------------------------------------------------------------------------
 }
