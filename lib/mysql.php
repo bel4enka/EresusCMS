@@ -495,7 +495,7 @@ class MySQL
 		if ($rows)
 			return count($result);
 		else
-			return $result[0]['count'];
+			return intval($result[0]['count']);
 	}
 	//-----------------------------------------------------------------------------
 
