@@ -662,11 +662,6 @@ function upload($name, $filename, $overwrite = true)
 			if (is_uploaded_file($_FILES[$name]['tmp_name'])) {
 				$moved = @move_uploaded_file($_FILES[$name]['tmp_name'], $filename);
 				if ($moved) {
-					if (option('filesOwnerSetOnUpload')) {
-						$owner = option('filesOwnerDefault');
-						if (empty($owner)) $owner = fileowner(__FILE__);
-						@chown($filename, $owner);
-					}
 					if (option('filesModeSetOnUpload')) {
 						$mode = option('filesModeDefault');
 						$mode = empty($mode) ? 0666 : octdec($mode);
