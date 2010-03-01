@@ -961,7 +961,7 @@ class EresusForm
 		/* Создаём замену для тега tab */
 		$newNode = $this->xml->createElement('div');
 		$msgNode = $this->xml->createElement('div');
-		$msgNode->setAttribute('class', 'tab-messages');
+		$msgNode->setAttribute('class', 'tab-messages box error hidden');
 		$newNode->appendChild($msgNode);
 		/* Копируем в него содержимое tab */
 		$childNodes = $this->childrenAsArray($node->childNodes);

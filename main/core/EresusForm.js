@@ -360,7 +360,7 @@ function EresusForm(id)
 				if (!this.tabsHasMessages[tabName]) {
 					this.tabsHasMessages[tabName] = '<p>Ошибка ввода на вкладке ' + $('a[href="#' + tabName + '"]').eq(0).text() + '</p>';
 				}
-				$('#' + tabName + ' .tab-messages').append('<p>' + msg + '</p>');
+				$('#' + tabName + ' .tab-messages').show().append('<div>' + msg + '</div>');
 			}
 			else this.addFormMessage(msg);
 		}
