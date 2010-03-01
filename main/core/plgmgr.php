@@ -49,7 +49,6 @@ class TPlgMgr
 
 		$Eresus->db->update('plugins', "`active` = NOT `active`", "`name`='".$Eresus->request['arg']['toggle']."'");
 		$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['toggle']."'");
-		SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['title']);
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -59,7 +58,6 @@ class TPlgMgr
 
 		$Eresus->plugins->load($Eresus->request['arg']['delete']);
 		$Eresus->plugins->uninstall($Eresus->request['arg']['delete']);
-		SendNotify(admDeleted.': '.$Eresus->plugins->list[$Eresus->request['arg']['delete']]['title']);
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -99,12 +97,11 @@ class TPlgMgr
 		global $page, $Eresus;
 
 		$files = arg('files');
-		if ($files && is_array($files)) {
-			foreach ($files as $plugin => $install) if ($install) {
-				$Eresus->plugins->install($plugin);
-				SendNotify(admPluginsAdded.': '.$plugin, array('url' => $page->url(array('action'=>''))));
-			}
-		}
+		if ($files && is_array($files))
+			foreach ($files as $plugin => $install)
+				if ($install)
+					$Eresus->plugins->install($plugin);
+
 		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#

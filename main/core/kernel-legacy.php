@@ -263,35 +263,6 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	} else return (mail($address, $subject, $text, $headers)===0);
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-function sendNotify($notify, $params=null)
-# Посылает административное или редакторское уведомление по почте
-# Возможные параметры
-#   subject (string) - заголовок письма, по умолчанию название сайта
-#   title (string) - название раздела
-#   url (string) - адрес раздела
-#   user (string) - имя пользователя
-{
-	global $Eresus, $page;
-
-	$subject = isset($params['subject'])?$params['subject']:option('siteName');
-	$username = isset($params['user'])?$params['user']:(is_null($Eresus->user)?'Guest':$Eresus->user['name']);
-	$usermail = !is_null($Eresus->user) && $Eresus->user['auth'] ? $Eresus->user['mail'] : option('mailFormAddr');
-	if (defined('ADMINUI')) {
-		$editors = isset($params['editors'])?$params['editors']:false;
-		$title = isset($params['title'])?$params['title']:$page->title;
-		$url = isset($params['url'])?$params['url']:(arg('submitURL')?arg('submitURL'):$Eresus->request['referer']);
-	} else {
-		$editors = isset($params['editors'])?$params['editors']:true;
-		$title = isset($params['title'])?$params['title']:$page->title;
-		$url = isset($params['url'])?$params['url']:arg('submitURL');
-	}
-	$target = sendNotifyTo;
-	$host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-	if ($host != $_SERVER['REMOTE_ADDR']) $host = "$host ({$_SERVER['REMOTE_ADDR']})";
-	$notify = sprintf(strNotifyTemplate, $username, $host, $url, $title, $notify);
-	sendMail($target, $subject, nl2br($notify), true, $username, $usermail, '', '');
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 //------------------------------------------------------------------------------
 # ДАТА/ВРЕМЯ

@@ -66,8 +66,6 @@ function toggle($id)
 
 	$Eresus->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-	sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
 	HTTP::redirect($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -77,8 +75,6 @@ function delete($id)
 
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$Eresus->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-	sendNotify(admDeleted.': '.'<a href="'.str_replace('delete',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
 	HTTP::redirect($page->url());
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

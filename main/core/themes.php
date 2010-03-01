@@ -423,7 +423,6 @@ class TThemes
 		$fp = fopen(filesRoot.'style/'.arg('filename').'.css', 'w');
 		fwrite($fp, $file);
 		fclose($fp);
-		SendNotify((arg('update')?admUpdated:admAdded).': '.arg('filename').'.css');
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -449,7 +448,6 @@ class TThemes
 
 		$filename = filesRoot.'style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
-		SendNotify(admDeleted.': '.arg('delete'));
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------

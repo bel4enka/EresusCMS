@@ -102,7 +102,6 @@ class TUsers extends Accounts
 		$item = $this->accounts->get(arg('toggle', 'int'));
 		$item['active'] = !$item['active'];
 		$this->accounts->update($item);
-		SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['name']);
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -121,7 +120,6 @@ class TUsers extends Accounts
 		$item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user['id'] == $item['id']);
 		if ($this->checkMail($item['mail'])) {
 			$this->accounts->update($item);
-			SendNotify($this->notifyMessage($item, $old));
 		};
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -154,9 +152,8 @@ class TUsers extends Accounts
 			saveRequest();
 			HTTP::redirect($Eresus->request['referer']);
 		}
-		if ($this->accounts->add($item))
-			SendNotify(admUsersAdded.': '.$this->notifyMessage($item), '', false, '', $page->url(array('action'=>'')));
-		else ErrorMessage('Error creating user account');
+		if (!$this->accounts->add($item))
+			ErrorMessage('Error creating user account');
 		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -171,7 +168,6 @@ class TUsers extends Accounts
 
 		$item = $this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
-		SendNotify(admDeleted.': '.$this->notifyMessage($item));
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -183,7 +179,6 @@ class TUsers extends Accounts
 		if (arg('pswd1') == arg('pswd2')) {
 			$item['hash'] = $Eresus->password_hash(arg('pswd1'));
 			$this->accounts->update($item);
-			SendNotify(admUsersPasswordChanged.': '.$item['name']);
 		}
 		HTTP::redirect(arg('submitURL'));
 	}

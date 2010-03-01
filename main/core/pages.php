@@ -105,7 +105,6 @@ class TPages
 		$temp = $Eresus->sections->get("(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
 		if (count($temp) == 0) {
 			$item = $Eresus->sections->add($item);
-			SendNotify($this->notifyMessage($item));
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
 			HTTP::redirect($page->url(array('id'=>'')));
 		} else {
@@ -149,8 +148,6 @@ class TPages
 			$item['updated'] = gettime('Y-m-d H:i:s');
 
 		$Eresus->sections->update($item);
-
-		SendNotify($this->notifyMessage($item, $old));
 
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -307,7 +304,6 @@ class TPages
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		$Eresus->sections->delete(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		SendNotify(admDeleted.":\n".$this->notifyMessage($item));
 		HTTP::redirect($page->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------

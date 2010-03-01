@@ -109,7 +109,6 @@ class Templates {
 		if ($result) {
 			$message = admAdded.': '.$name;
 			InfoMessage($message);
-			SendNotify($message);
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));
 		}
@@ -139,7 +138,6 @@ class Templates {
 		if ($result) {
 			$message = admUpdated.': '.$name;
 			#InfoMessage($message);
-			SendNotify($message);
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));
 		}
@@ -163,7 +161,6 @@ class Templates {
 		if ($result) {
 			$message = admDeleted.': '.$name;
 			InfoMessage($message);
-			SendNotify($message);
 		} else {
 			ErrorMessage(sprintf(errFileDelete, $filename));
 		}
