@@ -1301,6 +1301,38 @@ class EresusExtensionConnector
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Заменяет глобальные макросы
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	protected function replaceMacros($text)
+	{
+		global $Eresus;
+
+		$text = str_replace(
+			array(
+				'$(httpHost)',
+				'$(httpPath)',
+				'$(httpRoot)',
+				'$(styleRoot)',
+				'$(dataRoot)',
+			),
+			array(
+				$Eresus->host,
+				$Eresus->path,
+				$Eresus->root,
+				$Eresus->style,
+				$Eresus->data
+			),
+			$text
+		);
+
+		return $text;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Метод вызывается при проксировании прямых запросов к расширению
 	 *
 	 */
@@ -1324,18 +1356,24 @@ class EresusExtensionConnector
 
 			case $ext == 'js':
 				header('Content-type: text/javascript');
-				echo file_get_contents($filename);
+				$s = file_get_contents($filename);
+				$s = $this->replaceMacros($s);
+				echo $s;
 			break;
 
 			case $ext == 'css':
 				header('Content-type: text/css');
-				echo file_get_contents($filename);
+				$s = file_get_contents($filename);
+				$s = $this->replaceMacros($s);
+				echo $s;
 			break;
 
 			case $ext == 'html':
 			case $ext == 'htm':
 				header('Content-type: text/html');
-				echo file_get_contents($filename);
+				$s = file_get_contents($filename);
+				$s = $this->replaceMacros($s);
+				echo $s;
 			break;
 
 			case $ext == 'php':
