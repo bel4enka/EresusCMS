@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -296,7 +296,7 @@ define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эн
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
 define('admPluginsInvalidVersion', 'Требуется ядро %s или выше.');
-define('admPluginsNotRequiredFields', 'Отсутствует олно или более из свойств: version, title, description');
+define('admPluginsNotRequiredFields', 'Отсутствует одно или более из свойств: version, title, description');
 define('admPluginsAdded', 'Подключен новый плагин');
 define('admPluginTopicTable', 'Таблица топиков');
 
