@@ -151,19 +151,20 @@ class TFiles {
 					$result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
 				}
 				if (function_exists('posix_getpwuid') && !$Eresus->isWin32()) {
-					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root.$dir.'/'.$name));
+					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
 				} else $result[$i]['owner'] = 'unknown';
-				switch (filetype(filesRoot.$this->root.$dir.'/'.$name)) {
+				switch (filetype(filesRoot.$this->root.$dir . $name))
+				{
 					case 'dir':
 						$result[$i]['icon'] = 'folder';
 						$result[$i]['size'] = 'Папка';
-						$result[$i]['link'] = ($name == '..')?preg_replace('![^/]+/$!', '', $dir):$dir.$name;
+						$result[$i]['link'] = ($name == '..') ? preg_replace('![^/]+/$!', '', $dir): $dir . $name;
 						$result[$i]['action'] = 'cd';
 					break;
 					case 'file':
-						$result[$i]['link'] = httpRoot.$dir.'/'.$name;
-						$result[$i]['size'] = number_format(filesize(filesRoot.$this->root.$dir.'/'.$name));
+						$result[$i]['link'] = httpRoot . $dir . $name;
+						$result[$i]['size'] = number_format(filesize(filesRoot . $this->root . $dir . $name));
 						$result[$i]['action'] = 'new';
 						$result[$i]['icon'] = 'file';
 						if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
