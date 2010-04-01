@@ -105,6 +105,8 @@ class TPlgMgr {
 		for ($i = 0; $i < count($items); $i++) $installed[] = filesRoot.'ext/'.$items[$i]['name'].'.php';
 
 		$files = glob(filesRoot.'ext/*.php');
+		if ($files === false)
+			$files = array();
 		$files = array_diff($files, $installed);
 
 		$page->scripts .= '
