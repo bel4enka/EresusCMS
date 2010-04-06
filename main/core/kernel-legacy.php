@@ -1125,8 +1125,6 @@ class Eresus {
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
 
-		# Сбор аргументов вызова
-		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
 		# Разбивка параметров вызова скрипта
 		$s = substr($request['path'], strlen($this->path));
 		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
@@ -1139,6 +1137,9 @@ class Eresus {
 		$this->root = $root.$this->path;
 		$this->data = $this->root.'data/';
 		$this->style = $this->root.'style/';
+
+		# Сбор аргументов вызова
+		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
 
 		# Обратная совместимость
 		# <= 2.9
