@@ -94,7 +94,7 @@
 		</copy>
 
 		<!-- jQuery -->
-		<copy todir="${build.dir}/core/js">
+		<copy todir="${build.dir}/core/jquery">
 			<fileset refid="files.3rd.jquery" />
 		</copy>
 
