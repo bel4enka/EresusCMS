@@ -461,24 +461,47 @@ class Plugins {
 					$this->load($item['name']);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function load($name)
+
+	/**
+	 * Загружает плагин и возвращает его экземпляр
+	 *
+	 * @param string $name  Имя плагина
+	 * @return Plugin|TPlugin|false  Экземпляр плагина или FASLE если не удалось загрузить плагин
+	 */
+	public function load($name)
 	{
-		$result = isset($this->items[$name]) ? $this->items[$name] : false;
-		if (isset($this->list[$name]) && !$result) {
-			$filename = filesRoot.'ext/'.$name.'.php';
-			if (file_exists($filename)) {
-				include_once($filename);
-				$ClassName = $name;
-				if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
-				if (class_exists($ClassName)) {
-					$this->items[$name] = new $ClassName;
-					$result = $this->items[$name];
-				} else FatalError(sprintf(errClassNotFound, $name));
-			} else $result = false;
-		}
-		return $result;
+		/* Если плагин уже был загружен возвращаем экземпляр из реестра */
+		if (isset($this->items[$name]))
+			return $this->items[$name];
+
+		/* Если такой плагин не зарегистрирован, возвращаем FASLE */
+		if (!isset($this->list[$name]))
+			return false;
+
+		// Путь к файлу плагина
+		$filename = filesRoot . 'ext/' . $name . '.php';
+
+		/* Если такого файла нет, возвращаем FASLE */
+		if (!file_exists($filename))
+			return false;
+
+		include_once $filename ;
+		$className = $name;
+
+		/* TODO: Обратная совместимость с версиями до 2.10b2. Отказаться в новых версиях */
+		if (!class_exists($className, false) && class_exists('T' . $className))
+			$className = 'T' . $className;
+
+		if (!class_exists($className, false))
+			FatalError(sprintf(errClassNotFound, $name));
+
+		// Заносим экземпляр в реестр
+		$this->items[$name] = new $className();
+
+		return $this->items[$name];
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * Отрисовка контента раздела
 	 *
