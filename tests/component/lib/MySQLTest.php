@@ -146,8 +146,8 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	public function testFields()
 	{
 		$fixture = $this->getInstance();
-		$fields = array('access', 'active', 'hash', 'id', 'lastLoginTime', 'lastVisit',
-			'login', 'loginErrors', 'mail', 'name', 'profile');
+		$fields = array('id', 'login', 'hash', 'active', 'lastVisit', 'lastLoginTime',
+			'loginErrors', 'access', 'name', 'mail', 'profile');
 
 		$this->assertEquals($fields, $fixture->fields('users'));
 	}
@@ -288,6 +288,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	public function testCreate()
 	{
 		$fixture = $this->getInstance();
+		$this->assertFalse($fixture->fields('test'), 'Table already exists!');
 		$fixture->create('test', "
   `name` varchar(32) NOT NULL DEFAULT '',
   `active` tinyint(1) unsigned DEFAULT '1',
@@ -296,10 +297,11 @@ class MySQLTest extends PHPUnit_Framework_TestCase
   PRIMARY KEY (`name`),
   KEY `active` (`active`)",
   "ENGINE=MyISAM DEFAULT CHARSET=cp1251");
-		$this->assertEquals(array('active', 'name', 'position', 'title'), $fixture->fields('test'));
+		$this->assertEquals(array('name', 'active', 'position', 'title'), $fixture->fields('test'),
+			'Invalid field list');
 
 		$fixture->drop('test');
-		$this->assertEquals(array('active', 'name', 'position', 'title'), $fixture->fields('test'));
+		$this->assertFalse($fixture->fields('test'), 'Table still exists!');
 	}
 	//-----------------------------------------------------------------------------
 

@@ -139,6 +139,7 @@ class MySQL
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
+		eresus_log(__METHOD__, LOG_DEBUG, $query);
 		$db->exec($query);
 		return true;
 	}
@@ -181,6 +182,13 @@ class MySQL
 		$name = $db->options->tableNamePrefix . $name;
 		$query = "CREATE TABLE `$name` ($structure) $options";
 		$result = $this->query($query);
+
+		if ($result)
+		{
+			$db = DB::getHandler();
+			$this->dbSchema = ezcDbSchema::createFromDb($db);
+		}
+
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -200,6 +208,13 @@ class MySQL
 		$name = $db->options->tableNamePrefix . $name;
 		$query = "DROP TABLE `$name`";
 		$result = $this->query($query);
+
+		if ($result)
+		{
+			$db = DB::getHandler();
+			$this->dbSchema = ezcDbSchema::createFromDb($db);
+		}
+
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -354,14 +369,18 @@ class MySQL
 	*
 	* @param string $table            Имя таблицы
 	* @param bool   $info [optional]
-	* @return array  Список полей, с описанием, если $info = true
-	* @deprecated
+	* @return array|false  Список полей, с описанием, если $info = true
+	*
+	* @deprecated с 2.14
 	*/
 	public function fields($table, $info = false)
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$schm = $this->getSchema()->getSchema();
-		return array_keys($schm[$table]->fields);
+		if ($schm[$table]->fields)
+			return array_keys($schm[$table]->fields);
+		else
+			return false;
 /*		global $Eresus;
 
 		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
