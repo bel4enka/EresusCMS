@@ -299,7 +299,8 @@ class TAdminUI extends WebPage
 		if (count($args)) foreach($args as $key => $value) $arg[$key] = $value;
 		if (count($arg)) foreach($arg as $key => $value) if (!empty($value)) $result .= '&'.$key.'='.$value;
 		if (!empty($result)) $result[0] = '?';
-		$result = str_replace('&', '&amp;', $result);
+		// —м. баг http://bugs.eresus.ru/view.php?id=365
+		//$result = str_replace('&', '&amp;', $result);
 		$result = httpRoot.'admin.php'.$result;
 		return $result;
 	}
