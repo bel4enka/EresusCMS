@@ -264,12 +264,15 @@ class TFiles
 	 * Создаёт директорию
 	 *
 	 * @return void
+	 *
+	 * @uses FS::mkDir()
+	 * @uses HTTP::redirect()
 	 */
 	function mkDir()
 	{
-		umask(0000);
-		mkdir(filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER), 0777);
-		HTTP::redirect($this->url());
+		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
+		FS::mkDir($pathname, 0777, true);
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -297,14 +300,14 @@ class TFiles
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
 		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
 			if (file_exists($filename)) rename($filename, $newname);
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function chmodEntry()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
 		if (file_exists($filename)) chmod($filename, octdec(arg('perms', '/\D/')));
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function copyFile()
@@ -314,7 +317,7 @@ class TFiles
 		if (is_file($filename)) copy($filename, $dest);
 		elseif (is_dir($filename)) {
 		}
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function moveFile()
@@ -326,7 +329,7 @@ class TFiles
 			elseif (is_dir($filename)) {
 			}
 		#}
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function deleteFile()
@@ -339,7 +342,7 @@ class TFiles
 				rmdir($filename);
 			}
 		#}
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	# Административные функции
