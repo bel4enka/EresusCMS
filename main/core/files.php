@@ -246,7 +246,7 @@ class TFiles
 	{
 		$result =
 			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-			"<tr><td>Доступное место: ".FormatSize(disk_free_space(filesRoot.$this->root))."</td></tr>".
+			"<tr><td>&nbsp;</td></tr>".
 			"</table>";
 		return $result;
 	}
