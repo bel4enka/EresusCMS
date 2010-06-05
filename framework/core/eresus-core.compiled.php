@@ -6,7 +6,7 @@
  *
  * Compiled version
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  * @package Core
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: compiled.head.php 475 2010-02-16 09:09:42Z mk $
+ * $Id: compiled.head.php 524 2010-06-05 12:53:45Z mk $
  */
 
 /*
@@ -1109,6 +1109,25 @@ class FS {
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public static function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		return self::$driver->mkDir($pathname, $mode, $recursive, $context);
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 
@@ -1117,7 +1136,13 @@ class FS {
  *
  * @package Core
  */
-class GenericFS {
+class GenericFS
+{
+	/**
+	 * Directory create umask
+	 * @var int
+	 */
+	public $dirUmask = 0000;
 
 	/**
 	 * Normalize file name
@@ -1326,6 +1351,31 @@ class GenericFS {
 	public function isWritable($filename)
 	{
 		return is_writable($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		$umask = umask($this->dirUmask);
+		if (is_null($context))
+			$result = mkdir($pathname, $mode, $recursive);
+		else
+			$result = mkdir($pathname, $mode, $recursive, $context);
+		umask($umask);
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -2975,10 +3025,13 @@ class DBQueryInsider extends PDOStatement {
 ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'DB');
 
 
-/**
+/*
  * Including Dwoo
  */
-include_once '3rdparty/dwoo/dwooAutoload.php';
+if ( ERESUS_CORE_COMPILED )
+	include_once '3rdparty/dwoo/Dwoo.compiled.php';
+else
+	include_once '3rdparty/dwoo/dwooAutoload.php';
 
 /**
  * Template package settings
@@ -3290,97 +3343,202 @@ class HttpHeader {
 	//-----------------------------------------------------------------------------
 }
 //-----------------------------------------------------------------------------
-
+//namespace Eresus\Core\WWW\HTTP;
 
 /**
- * HTTP Toolkit
+ * HTTP Message
  *
  * @package HTTP
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class HTTP
+class HttpMessage
 {
-
 	/**
-	 * HTTP request object
-	 * @var HTTPRequest
+	 * Message has is of no specific type
+	 * @var int
 	 */
-	static private $request;
+	const TYPE_NONE = 0;
 
 	/**
-	 * Sets test instance of HttpRequest
+	 * Message is a request style HTTP message
+	 * @var int
+	 */
+	const TYPE_REQUEST = 1;
+
+	/**
+	 * Message is a response style HTTP message
+	 * @var int
+	 */
+	const TYPE_RESPONSE = 2;
+
+	/**
+	 * Message type
+	 * @var int
+	 */
+	private $type;
+
+	/**
+	 * Protocol version
+	 * @var string
+	 */
+	private $httpVersion;
+
+	/**
+	 * Request method
+	 * @var string
+	 */
+	private $requestMethod;
+
+	/**
+	 * Create an HttpMessage object from script environment
 	 *
-	 * @param HttpRequest|null $request
+	 * Result always be NULL in CLI mode.
+	 *
+	 * @param int    $messageType          The message type. See HttpMessage type constants.
+	 * @param string $className[optional]  A class extending HttpMessage
+	 *
+	 * @return HttpMessage|null  Returns an HttpMessage object on success or NULL on failure.
+	 *
+	 * @throws EresusRuntimeException if $className not exists
+	 * @throws EresusValueException if $className not a descendent of HttpMessage
 	 */
-	static public function setTestRequest($request)
+	static public function fromEnv($messageType, $className = 'HttpMessage')
 	{
-		if (Core::testMode())
-			self::$request = $request;
-	}
-	//-----------------------------------------------------------------------------
+		if (PHP::isCLI())
+			return null;
 
-	/**
-	 * Returns an instance of a HttpRequest class
-	 *
-	 * Object instancing only once
-	 *
-	 * @return HttpRequest
-	 */
-	static public function request()
-	{
-		if (!self::$request) self::$request = new HttpRequest();
-		return self::$request;
-	}
-	//-----------------------------------------------------------------------------
+		/*
+		 * Create message instance
+		 */
+		if (!class_exists($className, true))
+			throw new EresusRuntimeException("Class \n$className\" not exists");
 
-	/**
-	 * Redirect UA to another URI and terminate program
-	 *
-	 * @param string $uri                  New URI
-	 * @param bool   $permanent[optional]  Send '301 Moved permanently'
-	 */
-	static public function redirect($uri, $permanent = false)
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, $uri);
+		$message = new $className();
 
-		$header = 'Location: '.$uri;
+		if (! ($message instanceof HttpMessage))
+			throw new EresusValueException('className', $className,
+				"\"$className\" must be a descendent of HttpMessage");
 
-		if ($permanent)
-			header($header, true, 301);
+		// Message type
+		$message->setType($messageType);
+
+		/*
+		 * Protocol version
+		 */
+		if (isset($_SERVER['SERVER_PROTOCOL']))
+		{
+			$dividerPosition = strpos($_SERVER['SERVER_PROTOCOL'], '/');
+
+			if ($dividerPosition)
+				$httpVersion = substr($_SERVER['SERVER_PROTOCOL'], $dividerPosition + 1);
+			else
+				$httpVersion = '1.0';
+		}
 		else
-			header($header);
+		{
+			$httpVersion = '1.0';
+		}
 
-		if (!Core::testMode()) exit;
+		$message->setHttpVersion($httpVersion);
+
+		return $message;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Redirect UA to previous URI
+	 * Set Message Type
 	 *
-	 * Method uses $_SERVER['HTTP_REFERER'] to determine previous URI. If this
-	 * variable not set then method will do nothing. In last case developers can
-	 * use next scheme:
-	 *
-	 * <code>
-	 *  # ...Some actions...
-	 *
-	 * 	HTTP::goback();
-	 *  HTTP::redirect('some_uri');
-	 * </code>
-	 *
-	 * So if there is nowhere to go back user will be redirected to some fixed URI.
-	 *
-	 * @see redirect
+	 * @param int $type  One of HttpMessage::TYPE_*
+	 * @return void
 	 */
-	static public function goback()
+	public function setType($type)
 	{
-		if (isset($_SERVER['HTTP_REFERER']))
-			self::redirect($_SERVER['HTTP_REFERER']);
+		$this->type = $type;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get Message Type
+	 *
+	 * @return int One of HttpMessage::TYPE_*
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Set the HTTP Protocol version of the Message
+	 *
+	 * @param string $version
+	 * @return bool  Returns TRUE on success, or FALSE if supplied version is out of range (1.0/1.1)
+	 */
+	public function setHttpVersion($version)
+	{
+		// Version validation pattern
+		$pattern = '~^1\.[01]$~';
+
+		if (! preg_match($pattern, $version))
+			return false;
+
+		$this->httpVersion = $version;
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get the HTTP Protocol Version of the Message
+	 *
+	 * @return string  Returns the HTTP protocol version as string
+	 */
+	public function getHttpVersion()
+	{
+		return $this->httpVersion;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Set the Request Method of the HTTP Message
+	 *
+	 * @param string $method  The request method name.
+	 *                         {@link http://tools.ietf.org/html/rfc2068#section-5.1.1 See RFC2068 section 5.1.1}
+	 *                         for list of acceptable methods
+	 * @return bool  TRUE on success, or FALSE if the message is not of type
+	 *                HttpMessage::TYPE_REQUEST or an invalid request method was supplied
+	 */
+	public function setRequestMethod($method)
+	{
+		if ($this->getType() !== self::TYPE_REQUEST)
+			return false;
+
+		$method = strtoupper($method);
+		$REQUEST_METHODS = array('OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE');
+
+		if (!in_array($method, $REQUEST_METHODS))
+			return false;
+
+		$this->requestMethod = $method;
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get the Request Method of the Message
+	 *
+	 * @return string  Request method name on success, or FALSE if the message is not of type
+	 *                  HttpMessage::TYPE_REQUEST.
+	 */
+	public function getRequestMethod()
+	{
+		if ($this->getType() !== self::TYPE_REQUEST)
+			return false;
+
+		return $this->requestMethod;
 	}
 	//-----------------------------------------------------------------------------
 }
-//-----------------------------------------------------------------------------
 
 /**
  * HTTP Request
@@ -3735,7 +3893,7 @@ class HttpRequest
 	/**
 	 * Set local root
 	 *
-	 * Local root is a part of URI after host name which will be cutted from result
+	 * Local root is a part of URL after host name which will be cutted from result
 	 * of HttpRequest::getLocal.
 	 *
 	 * <code>
@@ -3746,6 +3904,9 @@ class HttpRequest
 	 * </code>
 	 *
 	 * @param string $root
+	 * @return void
+	 *
+	 * @since 0.1.1
 	 */
 	public function setLocalRoot($root)
 	{
@@ -3768,18 +3929,309 @@ class HttpRequest
 
 
 
+/**
+ * HTTP Toolkit
+ *
+ * @package HTTP
+ *
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ */
+class HTTP
+{
+
+	/**
+	 * Replace every part of the first URL when there's one of the second URL
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_REPLACE = 1;
+
+	/**
+	 * Join relative paths
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_JOIN_PATH = 2;
+
+	/**
+	 * Join query strings
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_JOIN_QUERY = 4;
+
+	/**
+	 * Strip any user authentication information
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_USER = 8;
+
+	/**
+	 * Strip any password authentication information
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_PASS = 16;
+
+	/**
+	 * Strip any authentication information
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_AUTH = 32;
+
+	/**
+	 * Strip explicit port numbers
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_PORT = 64;
+
+	/**
+	 * Strip complete path
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_PATH = 128;
+
+	/**
+	 * Strip query string
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_QUERY = 256;
+
+	/**
+	 * Strip any fragments (#identifier)
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_FRAGMENT = 512;
+
+	/**
+	 * Strip anything but scheme and host
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_ALL = 1024;
+
+	/**
+	 * HTTP request object
+	 * @var HTTPRequest
+	 */
+	static private $request;
+
+	/**
+	 * Sets test instance of HttpRequest
+	 *
+	 * @param HttpRequest|null $request
+	 */
+	static public function setTestRequest($request)
+	{
+		if (Core::testMode())
+			self::$request = $request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Build an URL
+	 *
+	 * The parts of the second URL will be merged into the first according to the flags argument.
+	 *
+	 * @param	 mixed $url      (Part(s) of) an URL in form of a string or associative array like
+	 *                         parse_url() returns
+	 * @param	 mixed $parts    Same as the first argument
+	 * @param	 int   $flags    A bitmask of binary or'ed HTTP_URL constants (Optional)HTTP_URL_REPLACE
+	 *                         is the default
+	 * @param	 array $new_url  If set, it will be filled with the parts of the composed url like
+	 *                         parse_url() would return
+	 *
+	 * @author tycoonmaster(at)gmail(dot)com
+	 * @author Mikhail Krasilnikov <mk@procreat.ru>
+	 *
+	 * @todo Wiki docs
+	 */
+	public static function buildURL($url, $parts = array(), $flags = self::URL_REPLACE,
+		&$new_url = false)
+	{
+		$keys = array('user','pass','port','path','query','fragment');
+
+		/* HTTP::URL_STRIP_ALL becomes all the HTTP::URL_STRIP_Xs */
+		if ($flags & self::URL_STRIP_ALL)
+		{
+			$flags |= self::URL_STRIP_USER;
+			$flags |= self::URL_STRIP_PASS;
+			$flags |= self::URL_STRIP_PORT;
+			$flags |= self::URL_STRIP_PATH;
+			$flags |= self::URL_STRIP_QUERY;
+			$flags |= self::URL_STRIP_FRAGMENT;
+		}
+		/* HTTP::URL_STRIP_AUTH becomes HTTP::URL_STRIP_USER and HTTP::URL_STRIP_PASS */
+		else if ($flags & self::URL_STRIP_AUTH)
+		{
+			$flags |= self::URL_STRIP_USER;
+			$flags |= self::URL_STRIP_PASS;
+		}
+
+		// Parse the original URL
+		$parse_url = parse_url($url);
+
+		// Scheme and Host are always replaced
+		if (isset($parts['scheme']))
+			$parse_url['scheme'] = $parts['scheme'];
+		if (isset($parts['host']))
+			$parse_url['host'] = $parts['host'];
+
+		// (If applicable) Replace the original URL with it's new parts
+		if ($flags & self::URL_REPLACE)
+		{
+			foreach ($keys as $key)
+			{
+				if (isset($parts[$key]))
+					$parse_url[$key] = $parts[$key];
+			}
+		}
+		else
+		{
+			// Join the original URL path with the new path
+			if (isset($parts['path']) && ($flags & self::URL_JOIN_PATH))
+			{
+				if (isset($parse_url['path']))
+					$parse_url['path'] = rtrim(str_replace(basename($parse_url['path']), '',
+						$parse_url['path']), '/') . '/' . ltrim($parts['path'], '/');
+				else
+					$parse_url['path'] = $parts['path'];
+			}
+
+			// Join the original query string with the new query string
+			if (isset($parts['query']) && ($flags & self::URL_JOIN_QUERY))
+			{
+				if (isset($parse_url['query']))
+					$parse_url['query'] .= '&' . $parts['query'];
+				else
+					$parse_url['query'] = $parts['query'];
+			}
+		}
+
+		// Strips all the applicable sections of the URL
+		// Note: Scheme and Host are never stripped
+		foreach ($keys as $key)
+		{
+			if ($flags & (int)constant('HTTP::URL_STRIP_' . strtoupper($key)))
+				unset($parse_url[$key]);
+		}
+
+
+		$new_url = $parse_url;
+
+		return
+			 ((isset($parse_url['scheme'])) ? $parse_url['scheme'] . '://' : '')
+			.((isset($parse_url['user'])) ? $parse_url['user'] . ((isset($parse_url['pass'])) ? ':' .
+				$parse_url['pass'] : '') .'@' : '')
+			.((isset($parse_url['host'])) ? $parse_url['host'] : '')
+			.((isset($parse_url['port'])) ? ':' . $parse_url['port'] : '')
+			.((isset($parse_url['path'])) ? $parse_url['path'] : '')
+			.((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '')
+			.((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Returns an instance of a HttpRequest class
+	 *
+	 * Object instancing only once
+	 *
+	 * @return HttpRequest
+	 */
+	static public function request()
+	{
+		if (!self::$request)
+		{
+			self::$request = new HttpRequest();
+		}
+		return self::$request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Redirect UA to another URI and terminate program
+	 *
+	 * @param string $uri                  New URI
+	 * @param bool   $permanent[optional]  Send '301 Moved permanently'
+	 */
+	static public function redirect($uri, $permanent = false)
+	{
+		eresus_log(__METHOD__, LOG_DEBUG, $uri);
+
+		$header = 'Location: '.$uri;
+
+		if ($permanent)
+			header($header, true, 301);
+		else
+			header($header);
+
+		if (!Core::testMode()) exit;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Redirect UA to previous URI
+	 *
+	 * Method uses $_SERVER['HTTP_REFERER'] to determine previous URI. If this
+	 * variable not set then method will do nothing. In last case developers can
+	 * use next scheme:
+	 *
+	 * <code>
+	 *  # ...Some actions...
+	 *
+	 * 	HTTP::goback();
+	 *  HTTP::redirect('some_uri');
+	 * </code>
+	 *
+	 * So if there is nowhere to go back user will be redirected to some fixed URI.
+	 *
+	 * @see redirect
+	 */
+	static public function goback()
+	{
+		if (isset($_SERVER['HTTP_REFERER']))
+			self::redirect($_SERVER['HTTP_REFERER']);
+	}
+	//-----------------------------------------------------------------------------
+}
+//-----------------------------------------------------------------------------
+
+
+//namespace Eresus\Core\WWW\HTTP;
 
 /**
  * HTTP Response
  *
  * @package HTTP
  *
+ * @since 0.1.3
+ *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class HttpResponse {
+class HttpResponse
+{
 
 	/**
 	 * HTTP headers
+	 *
 	 * @var HttpHeaders
 	 */
 	private $headers;
@@ -3792,6 +4244,93 @@ class HttpResponse {
 	 * @var string|object
 	 */
 	private $body;
+
+	/**
+	 * Redirect to the given url
+	 *
+	 * @param string $url[optional]      The URL to redirect to
+	 * @param array  $params[optional]   Associative array of query parameters (not implemented yet!)
+	 * @param bool   $session[optional]  Whether to append session information (not implemented yet!)
+	 * @param int    $status[optional]   Custom response status code
+	 *
+	 * @return bool  FALSE or exits on success with the specified redirection status code
+	 *
+	 * @author based on function by w999d
+	 */
+	public static function redirect($url = null, $params = null, $session = false, $status = null)
+	{
+		/* No headers can be sent before redirect */
+		if (headers_sent())
+			return false;
+
+		$url = HTTP::buildURL($url);
+		$httpMessage = HttpMessage::fromEnv(HttpMessage::TYPE_REQUEST);
+
+		/* Choose HTTP status code */
+		switch (true)
+		{
+			case $status !== null:
+				$code = $status;
+			break;
+
+			case $httpMessage->getHttpVersion() == '1.0':
+				$code = 302;
+			break;
+
+			default:
+				$code = 303;
+			break;
+		}
+
+		/* Choose HTTP status message */
+		switch ($code)
+		{
+			case 302:
+				$message = '302 Found';
+			break;
+
+			case 303:
+				$message = '303 See Other';
+			break;
+
+			default:
+				$message = '';
+			break;
+		}
+
+		/* Sending headers */
+		header('HTTP/' . $httpMessage->getHttpVersion() . ' ' . $message, true, $code);
+		header('Location: ' . $url);
+
+		/* Sending HTML page for agents which does not support Location header */
+		header('Content-type: text/html; charset=UTF-8');
+
+		$hUrl = htmlspecialchars($url);
+		echo <<<PAGE
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<meta http-equiv="Refresh" content="0; url='{$hUrl}'">
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+		<title>{$message}</title>
+	</head>
+	<body>
+		<script>
+			function doRedirect()
+			{
+				location.replace("{$hUrl}");
+			}
+			setTimeout("doRedirect()", 1000);
+		</script>
+		<p>Your browser does not support automatic redirection. Please follow <a href="{$hUrl}">this link</a>.</p>
+	</body>
+</html>
+PAGE;
+
+		// Stopping application
+		exit($code);
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Constructor

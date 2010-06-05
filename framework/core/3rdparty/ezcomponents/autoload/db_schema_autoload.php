@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the DatabaseSchema component.
  *
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.4.3
+ * @version 1.4.4
  * @filesource
  * @package DatabaseSchema
  */
@@ -47,6 +47,7 @@ return array(
     'ezcDbSchemaMysqlReader'                     => 'DatabaseSchema/handlers/mysql/reader.php',
     'ezcDbSchemaMysqlWriter'                     => 'DatabaseSchema/handlers/mysql/writer.php',
     'ezcDbSchemaOptions'                         => 'DatabaseSchema/options/schema.php',
+    'ezcDbSchemaOracleHelper'                    => 'DatabaseSchema/handlers/oracle/helper.php',
     'ezcDbSchemaOracleReader'                    => 'DatabaseSchema/handlers/oracle/reader.php',
     'ezcDbSchemaOracleWriter'                    => 'DatabaseSchema/handlers/oracle/writer.php',
     'ezcDbSchemaPersistentClassWriter'           => 'DatabaseSchema/handlers/persistent/class_writer.php',

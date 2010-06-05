@@ -6,7 +6,7 @@
  *
  * Class autoloading table
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,11 +52,12 @@ return array(
 	'TemplateFile' => 'Template/Template.php',
 
 	/* WWW */
-	'HTTP' => 'WWW/HTTP.php',
-	'HttpRequest' => 'WWW/HTTP.php',
-	'HttpResponse' => 'WWW/HttpResponse.php',
-	'HttpHeaders' => 'WWW/HttpHeaders.php',
-	'HttpHeader' => 'WWW/HttpHeaders.php',
+	'HTTP' => 'WWW/HTTP/HTTP.php',
+	'HttpHeader' => 'WWW/HTTP/HttpHeaders.php',
+	'HttpHeaders' => 'WWW/HTTP/HttpHeaders.php',
+	'HttpMessage' => 'WWW/HTTP/HttpMessage.php',
+	'HttpRequest' => 'WWW/HTTP/HttpRequest.php',
+	'HttpResponse' => 'WWW/HTTP/HttpResponse.php',
 
 	/* Applications */
 	'EresusApplication' => 'EresusApplication.php',

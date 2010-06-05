@@ -3,8 +3,8 @@
  * File containing the ezcDbSchemaSqliteReader class.
  *
  * @package DatabaseSchema
- * @version 1.4.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -12,7 +12,7 @@
  * Handler for SQLite connections representing a DB schema.
  *
  * @package DatabaseSchema
- * @version 1.4.3
+ * @version 1.4.4
  */
 class ezcDbSchemaSqliteReader extends ezcDbSchemaCommonSqlReader implements ezcDbSchemaDbReader
 {
@@ -70,12 +70,14 @@ class ezcDbSchemaSqliteReader extends ezcDbSchemaCommonSqlReader implements ezcD
 
         foreach ( $resultArray as $row )
         {
+        		$row = $this->lowercase($row);
             $fieldLength = false;
             $fieldPrecision = null;
             $fieldType = self::convertToGenericType( $row[2], $fieldLength, $fieldPrecision );
 
             $fieldNotNull = false;
-            if ( $row[3] == '99' )
+            if ( ( $row[3] == '99' ) ||
+                 ( $row[3] == '1' ) )
             {
                 $fieldNotNull = true;
             }
@@ -218,6 +220,7 @@ class ezcDbSchemaSqliteReader extends ezcDbSchemaCommonSqlReader implements ezcD
 
         foreach ( $indexNamesArray as $row )
         {
+        		$row = $this->lowercase($row);
             $keyName = $row['1'];
             if ( $keyName == $tableName.'_pri' ) 
             {

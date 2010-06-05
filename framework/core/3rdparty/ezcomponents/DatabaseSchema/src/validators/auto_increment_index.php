@@ -3,8 +3,8 @@
  * File containing the ezcDbSchemaAutoIncrementIndexValidator class.
  *
  * @package DatabaseSchema
- * @version 1.4.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -13,7 +13,7 @@
  *
  * @todo implement from an interface
  * @package DatabaseSchema
- * @version 1.4.3
+ * @version 1.4.4
  */
 class ezcDbSchemaAutoIncrementIndexValidator
 {

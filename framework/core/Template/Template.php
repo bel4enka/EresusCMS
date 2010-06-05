@@ -6,7 +6,7 @@
  *
  * Dwoo template engine adapter
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,13 +28,16 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: Template.php 445 2009-12-23 06:43:56Z mk $
+ * $Id: Template.php 524 2010-06-05 12:53:45Z mk $
  */
 
-/**
+/*
  * Including Dwoo
  */
-include_once '3rdparty/dwoo/dwooAutoload.php';
+if ( ERESUS_CORE_COMPILED )
+	include_once '3rdparty/dwoo/Dwoo.compiled.php';
+else
+	include_once '3rdparty/dwoo/dwooAutoload.php';
 
 /**
  * Template package settings

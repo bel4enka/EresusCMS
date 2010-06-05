@@ -3,8 +3,8 @@
  * File containing the ezcDbSchemaOracleReader class.
  *
  * @package DatabaseSchema
- * @version 1.4.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -12,7 +12,7 @@
  * Handler for Oracle connections representing a DB schema.
  *
  * @package DatabaseSchema
- * @version 1.4.3
+ * @version 1.4.4
  */
 class ezcDbSchemaOracleReader extends ezcDbSchemaCommonSqlReader implements ezcDbSchemaDbReader
 {
@@ -89,6 +89,7 @@ class ezcDbSchemaOracleReader extends ezcDbSchemaCommonSqlReader implements ezcD
 
         foreach ( $resultArray as $row )
         {
+        		$row = $this->lowercase($row);
             $fieldLength = $row['length'];
             $fieldPrecision = null;
             $fieldType = self::convertToGenericType( $row['type'], $fieldLength, $fieldPrecision );
@@ -132,7 +133,13 @@ class ezcDbSchemaOracleReader extends ezcDbSchemaCommonSqlReader implements ezcD
 
             $fieldAutoIncrement = false;           
             // new sequence naming included
-            if ( in_array( $tableName.'_'.$row['field_pos'].'_seq', $sequences ) || in_array( $tableName.'_'.$row['field'].'_seq', $sequences ) )
+            if ( in_array( 
+                    ezcDbSchemaOracleHelper::generateSuffixCompositeIdentName( $tableName, $row['field_pos'], 'seq' ),
+                    $sequences
+                 ) || in_array(
+                    ezcDbSchemaOracleHelper::generateSuffixCompositeIdentName( $tableName, $row['field'], 'seq' ),
+                    $sequences
+                 ) )
             {
                 $fieldAutoIncrement = true;
             }
@@ -248,6 +255,7 @@ class ezcDbSchemaOracleReader extends ezcDbSchemaCommonSqlReader implements ezcD
         // getting columns to which each index related.
         foreach ( $indexesArray as $row )
         {
+        		$row = $this->lowercase($row);
             $keyName = $row['name'];
 
             if ( $keyName == $tableName.'_pkey' ) 

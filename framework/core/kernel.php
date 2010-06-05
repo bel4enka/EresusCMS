@@ -6,7 +6,7 @@
  *
  * Kernel module
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: kernel.php 475 2010-02-16 09:09:42Z mk $
+ * $Id: kernel.php 524 2010-06-05 12:53:45Z mk $
  */
 
 /**
@@ -1091,6 +1091,25 @@ class FS {
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public static function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		return self::$driver->mkDir($pathname, $mode, $recursive, $context);
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 
@@ -1099,7 +1118,13 @@ class FS {
  *
  * @package Core
  */
-class GenericFS {
+class GenericFS
+{
+	/**
+	 * Directory create umask
+	 * @var int
+	 */
+	public $dirUmask = 0000;
 
 	/**
 	 * Normalize file name
@@ -1308,6 +1333,31 @@ class GenericFS {
 	public function isWritable($filename)
 	{
 		return is_writable($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		$umask = umask($this->dirUmask);
+		if (is_null($context))
+			$result = mkdir($pathname, $mode, $recursive);
+		else
+			$result = mkdir($pathname, $mode, $recursive, $context);
+		umask($umask);
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
 

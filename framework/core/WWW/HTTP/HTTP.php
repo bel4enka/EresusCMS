@@ -4,9 +4,9 @@
  *
  * @version 0.1.3
  *
- * HTTP Module
+ * HTTP Toolkit
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: HTTP.php 478 2010-02-18 17:41:02Z mk $
+ * $Id: HTTP.php 524 2010-06-05 12:53:45Z mk $
  */
 
 
@@ -39,6 +39,94 @@
  */
 class HTTP
 {
+
+	/**
+	 * Replace every part of the first URL when there's one of the second URL
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_REPLACE = 1;
+
+	/**
+	 * Join relative paths
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_JOIN_PATH = 2;
+
+	/**
+	 * Join query strings
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_JOIN_QUERY = 4;
+
+	/**
+	 * Strip any user authentication information
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_USER = 8;
+
+	/**
+	 * Strip any password authentication information
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_PASS = 16;
+
+	/**
+	 * Strip any authentication information
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_AUTH = 32;
+
+	/**
+	 * Strip explicit port numbers
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_PORT = 64;
+
+	/**
+	 * Strip complete path
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_PATH = 128;
+
+	/**
+	 * Strip query string
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_QUERY = 256;
+
+	/**
+	 * Strip any fragments (#identifier)
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_FRAGMENT = 512;
+
+	/**
+	 * Strip anything but scheme and host
+	 *
+	 * @var int
+	 * @todo Wiki docs
+	 */
+	const URL_STRIP_ALL = 1024;
 
 	/**
 	 * HTTP request object
@@ -59,6 +147,110 @@ class HTTP
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Build an URL
+	 *
+	 * The parts of the second URL will be merged into the first according to the flags argument.
+	 *
+	 * @param	 mixed $url      (Part(s) of) an URL in form of a string or associative array like
+	 *                         parse_url() returns
+	 * @param	 mixed $parts    Same as the first argument
+	 * @param	 int   $flags    A bitmask of binary or'ed HTTP_URL constants (Optional)HTTP_URL_REPLACE
+	 *                         is the default
+	 * @param	 array $new_url  If set, it will be filled with the parts of the composed url like
+	 *                         parse_url() would return
+	 *
+	 * @author tycoonmaster(at)gmail(dot)com
+	 * @author Mikhail Krasilnikov <mk@procreat.ru>
+	 *
+	 * @todo Wiki docs
+	 */
+	public static function buildURL($url, $parts = array(), $flags = self::URL_REPLACE,
+		&$new_url = false)
+	{
+		$keys = array('user','pass','port','path','query','fragment');
+
+		/* HTTP::URL_STRIP_ALL becomes all the HTTP::URL_STRIP_Xs */
+		if ($flags & self::URL_STRIP_ALL)
+		{
+			$flags |= self::URL_STRIP_USER;
+			$flags |= self::URL_STRIP_PASS;
+			$flags |= self::URL_STRIP_PORT;
+			$flags |= self::URL_STRIP_PATH;
+			$flags |= self::URL_STRIP_QUERY;
+			$flags |= self::URL_STRIP_FRAGMENT;
+		}
+		/* HTTP::URL_STRIP_AUTH becomes HTTP::URL_STRIP_USER and HTTP::URL_STRIP_PASS */
+		else if ($flags & self::URL_STRIP_AUTH)
+		{
+			$flags |= self::URL_STRIP_USER;
+			$flags |= self::URL_STRIP_PASS;
+		}
+
+		// Parse the original URL
+		$parse_url = parse_url($url);
+
+		// Scheme and Host are always replaced
+		if (isset($parts['scheme']))
+			$parse_url['scheme'] = $parts['scheme'];
+		if (isset($parts['host']))
+			$parse_url['host'] = $parts['host'];
+
+		// (If applicable) Replace the original URL with it's new parts
+		if ($flags & self::URL_REPLACE)
+		{
+			foreach ($keys as $key)
+			{
+				if (isset($parts[$key]))
+					$parse_url[$key] = $parts[$key];
+			}
+		}
+		else
+		{
+			// Join the original URL path with the new path
+			if (isset($parts['path']) && ($flags & self::URL_JOIN_PATH))
+			{
+				if (isset($parse_url['path']))
+					$parse_url['path'] = rtrim(str_replace(basename($parse_url['path']), '',
+						$parse_url['path']), '/') . '/' . ltrim($parts['path'], '/');
+				else
+					$parse_url['path'] = $parts['path'];
+			}
+
+			// Join the original query string with the new query string
+			if (isset($parts['query']) && ($flags & self::URL_JOIN_QUERY))
+			{
+				if (isset($parse_url['query']))
+					$parse_url['query'] .= '&' . $parts['query'];
+				else
+					$parse_url['query'] = $parts['query'];
+			}
+		}
+
+		// Strips all the applicable sections of the URL
+		// Note: Scheme and Host are never stripped
+		foreach ($keys as $key)
+		{
+			if ($flags & (int)constant('HTTP::URL_STRIP_' . strtoupper($key)))
+				unset($parse_url[$key]);
+		}
+
+
+		$new_url = $parse_url;
+
+		return
+			 ((isset($parse_url['scheme'])) ? $parse_url['scheme'] . '://' : '')
+			.((isset($parse_url['user'])) ? $parse_url['user'] . ((isset($parse_url['pass'])) ? ':' .
+				$parse_url['pass'] : '') .'@' : '')
+			.((isset($parse_url['host'])) ? $parse_url['host'] : '')
+			.((isset($parse_url['port'])) ? ':' . $parse_url['port'] : '')
+			.((isset($parse_url['path'])) ? $parse_url['path'] : '')
+			.((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '')
+			.((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Returns an instance of a HttpRequest class
 	 *
 	 * Object instancing only once
@@ -67,7 +259,10 @@ class HTTP
 	 */
 	static public function request()
 	{
-		if (!self::$request) self::$request = new HttpRequest();
+		if (!self::$request)
+		{
+			self::$request = new HttpRequest();
+		}
 		return self::$request;
 	}
 	//-----------------------------------------------------------------------------
@@ -117,390 +312,6 @@ class HTTP
 			self::redirect($_SERVER['HTTP_REFERER']);
 	}
 	//-----------------------------------------------------------------------------
-}
-//-----------------------------------------------------------------------------
-
-/**
- * HTTP Request
- *
- * @package HTTP
- *
- * @author Mikhail Krasilnikov <mk@procreat.ru>
- */
-class HttpRequest
-{
-	/**
-	 * Parsed HTTP request
-	 * @var array
-	 */
-	protected $request = array();
-
-	/**
-	 * Local URI root
-	 * @var string
-	 * @see getLocal
-	 */
-	protected $localRoot = '';
-
-	/**
-	 * Constructor
-	 *
-	 * @param string|HTTPRequest $source [optional]  Source for request
-	 *
-	 * @throws EresusTypeException
-	 */
-	function __construct($source = null)
-	{
-		switch (true) {
-
-			case is_object($source) && $source instanceof HttpRequest:
-				$this->request = $source->toArray();
-			break;
-
-			case is_string($source):
-				$this->request = @parse_url($source);
-				$this->request['local'] = $this->getPath();
-				if ($this->getQuery()) {
-					$this->request['local'] .= '?' . $this->getQuery();
-					parse_str($this->getQuery(), $this->request['args']);
-					if (Core::testModeGet('magic_quotes_gpc') && !get_magic_quotes_gpc()) {
-						/* Emulating parse_str behavor... */
-						foreach ($this->request['args'] as $key => $value)
-							$this->request['args'][$key] = addslashes($value);
-					}
-					if (
-						$this->request['args'] &&
-						(get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc'))
-					)
-						$this->request['args'] = ecStripSlashes($this->request['args']);
-				}
-			break;
-
-			case is_null($source):
-				if (!PHP::isCLI()) {
-					if (isset($_SERVER['REQUEST_URI'])) $this->request = @parse_url($_SERVER['REQUEST_URI']);
-					$this->request['local'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
-					$this->request['args'] = $_POST;
-					foreach($_GET as $key => $value)
-						if (!isset($this->request['args'][$key]))
-							$this->request['args'][$key] = $value;
-
-					if (
-						$this->request['args'] &&
-						(get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc'))
-					)
-						$this->request['args'] = ecStripSlashes($this->request['args']);
-
-				}
-			break;
-
-			default:
-				throw new EresusTypeException($source, 'HttpRequest, string or NULL');
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return current request as array
-	 * @return array
-	 * @internal
-	 * @ignore
-	 */
-	public function toArray()
-	{
-		return $this->request;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get protocol scheme
-	 * @return string
-	 */
-	public function getScheme()
-	{
-		if (!isset($this->request['scheme'])) {
-
-			$this->request['scheme'] = 'http';
-
-		}
-
-		$result = $this->request['scheme'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get request method
-	 * @return string
-	 */
-	public function getMethod()
-	{
-		if (!isset($this->request['method'])) {
-
-			$this->request['method'] = isset($_SERVER['REQUEST_METHOD']) ?
-				strtoupper($_SERVER['REQUEST_METHOD']) :
-				'GET';
-
-		}
-
-		$result = $this->request['method'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Set request method
-	 *
-	 * @param string $value
-	 */
-	public function setMethod($value)
-	{
-		$this->request['method'] = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get host from request
-	 * @return string
-	 */
-	public function getHost()
-	{
-		if (!isset($this->request['host'])) {
-
-			$this->request['host'] = isset($_SERVER['HTTP_HOST']) ?
-				strtolower($_SERVER['HTTP_HOST']) :
-				'localhost';
-
-		}
-
-		$result = $this->request['host'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get path (directory and filename) from request
-	 * @return string
-	 */
-	public function getPath()
-	{
-		if (!isset($this->request['path'])) {
-
-			$this->request['path'] = '/';
-
-		}
-
-		$result = $this->request['path'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get directory name from request
-	 * @return string
-	 */
-	public function getDirectory()
-	{
-		if (!isset($this->request['directory'])) {
-
-			/*
-			 * dirname can ommit last directory if path does not contain file name.
-			 * To avoid this we can check trailing slash.
-			 */
-			$path = $this->getPath();
-			$this->request['directory'] = substr($path, -1) == '/' ? $path : dirname($path) . '/';
-
-		}
-
-		$result = $this->request['directory'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get file name (without directory) from request
-	 * @return string
-	 */
-	public function getFile()
-	{
-		if (!isset($this->request['file'])) {
-
-			$this->request['file'] = basename($this->getPath());
-
-		}
-
-		$result = $this->request['file'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get query (after the question mark "?")
-	 * @return string
-	 */
-	public function getQuery()
-	{
-		if (!isset($this->request['query'])) {
-
-			$this->request['query'] = '';
-
-		}
-
-		$result = $this->request['query'];
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return all values of GET or POST arguments
-	 * @return array
-	 */
-	public function getArgs()
-	{
-		$result = $this->request['args'];
-
-		if (get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc'))
-			$result = array_map('stripslashes', $result);
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return value of GET or POST argument
-	 *
-	 * @param string $arg                Atgument name
-	 * @param mixed  $filter [optional]  Filter
-	 * @return mixed
-	 */
-	public function arg($arg, $filter = null)
-	{
-		if (!isset($this->request['args'][$arg]))
-			return null;
-
-		$result =  $this->request['args'][$arg];
-
-		switch (true)
-		{
-			case is_callable($filter, false, $callback):
-				if (is_array($filter) && is_object($filter[0]))
-					$result = $filter[0]->$filter[1]($result);
-				else
-					$result = $callback($result);
-			break;
-
-			case is_string($filter):
-
-				switch ($filter)
-				{
-					case 'int':
-					case 'integer':
-							$result = intval(filter_var($result, FILTER_SANITIZE_NUMBER_INT));
-					break;
-					case 'float':
-							$result = floatval(filter_var($result, FILTER_SANITIZE_NUMBER_FLOAT,
-								FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND |
-								FILTER_FLAG_ALLOW_SCIENTIFIC));
-					break;
-					default:
-						$result = preg_replace($filter, '', $result);
-					break;
-				}
-
-			break;
-		}
-
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see function arg
-	 */
-	public function getArg($arg, $filter = null)
-	{
-		return $this->arg($arg, $filter);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Set value of GET or POST argument
-	 *
-	 * @param string $arg
-	 * @param mixed  $value
-	 */
-	public function setArg($arg, $value)
-	{
-		$this->request['args'][$arg] = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get local part of URI
-	 * @return string
-	 */
-	public function getLocal()
-	{
-		$result = $this->request['local'];
-
-		if ($this->localRoot && strpos($result, $this->localRoot) === 0)
-			$result = substr($result, strlen($this->localRoot));
-
-		if ($result === false) return '';
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Return full URI
-	 * @return string
-	 */
-	public function __toString()
-	{
-		$request = $this->getScheme().'://'.$this->getHost().$this->getPath();
-		if ($this->getQuery()) $request .= '?' . $this->getQuery();
-		return $request;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Set local root
-	 *
-	 * Local root is a part of URI after host name which will be cutted from result
-	 * of HttpRequest::getLocal.
-	 *
-	 * <code>
-	 * $req = new HttpRequest('http://example.org/some/path/script?query');
-	 * echo $req->getLocal(); // '/some/path/script?query'
-	 * $req->setLocalRoot('/some');
-	 * echo $req->getLocal(); // '/path/script?query'
-	 * </code>
-	 *
-	 * @param string $root
-	 */
-	public function setLocalRoot($root)
-	{
-		$this->localRoot = $root;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get local root
-	 * @return string
-	 */
-	public function getLocalRoot()
-	{
-		return $this->localRoot;
-	}
-	//-----------------------------------------------------------------------------
-
 }
 //-----------------------------------------------------------------------------
 

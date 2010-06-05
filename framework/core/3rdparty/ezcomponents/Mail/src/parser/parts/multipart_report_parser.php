@@ -3,8 +3,8 @@
  * File containing the ezcMailMultipartReportParser class
  *
  * @package Mail
- * @version 1.7
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.7.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -12,7 +12,7 @@
  * Parses multipart/report mail parts.
  *
  * @package Mail
- * @version 1.7
+ * @version 1.7.1
  * @access private
  */
 class ezcMailMultipartReportParser extends ezcMailMultipartParser

@@ -3,8 +3,8 @@
  * File containing the ezcQuerySelect class.
  *
  * @package Database
- * @version 1.4.6
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.7
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -40,7 +40,7 @@
  * TRUE/FALSE, MySQL accepts 0 and 1 as boolean values. PostgreSQL does not, but accepts TRUE/FALSE.
  * @todo introduction needs examples with clone(), reusing a query and advanced binding.
  * @package Database
- * @version 1.4.6
+ * @version 1.4.7
  * @mainclass
  */
 class ezcQuerySelect extends ezcQuery

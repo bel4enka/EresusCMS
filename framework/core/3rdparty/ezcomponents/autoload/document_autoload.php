@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the Document component.
  *
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.3
+ * @version 1.3.1
  * @filesource
  * @package Document
  */
@@ -26,12 +26,14 @@ return array(
     'ezcDocumentWikiMissingPluginHandlerException'       => 'Document/exceptions/missing_plugin_handler.php',
     'ezcDocumentWikiTokenizerException'                  => 'Document/exceptions/wiki_tokenizer.php',
     'ezcDocumentPdfRenderer'                             => 'Document/document/pdf/renderer.php',
+    'ezcDocumentBBCodeNode'                              => 'Document/document/bbcode/node.php',
     'ezcDocumentElementVisitorHandler'                   => 'Document/converters/element_visitor_handler.php',
     'ezcDocumentErrorReporting'                          => 'Document/interfaces/error_reporting.php',
     'ezcDocumentPdfBlockRenderer'                        => 'Document/document/pdf/renderer/block.php',
     'ezcDocumentWikiNode'                                => 'Document/document/wiki/node.php',
     'ezcDocumentWikiToken'                               => 'Document/document/wiki/token.php',
     'ezcDocument'                                        => 'Document/interfaces/document.php',
+    'ezcDocumentBBCodeBlockLevelNode'                    => 'Document/document/bbcode/nodes/block.php',
     'ezcDocumentConverter'                               => 'Document/interfaces/converter.php',
     'ezcDocumentConverterOptions'                        => 'Document/options/converter.php',
     'ezcDocumentDocbookToRstBaseHandler'                 => 'Document/converters/element_visitor/docbook/rst/handler.php',
@@ -51,6 +53,10 @@ return array(
     'ezcDocumentWikiInlineMarkupToken'                   => 'Document/document/wiki/token/inline_markup.php',
     'ezcDocumentWikiInlineNode'                          => 'Document/document/wiki/nodes/inline.php',
     'ezcDocumentAlnumListItemGenerator'                  => 'Document/document/pdf/item_generator/alnum.php',
+    'ezcDocumentBBCodeListNode'                          => 'Document/document/bbcode/nodes/list.php',
+    'ezcDocumentBBCodePlugin'                            => 'Document/document/bbcode/plugin.php',
+    'ezcDocumentBBCodeToken'                             => 'Document/document/bbcode/token.php',
+    'ezcDocumentBBCodeVisitor'                           => 'Document/document/bbcode/visitor.php',
     'ezcDocumentDocbookToHtmlBaseHandler'                => 'Document/converters/element_visitor/docbook/xhtml/handler.php',
     'ezcDocumentDocbookToOdtBaseHandler'                 => 'Document/converters/element_visitor/docbook/odt/element_handlers/handler.php',
     'ezcDocumentDocbookToRstMediaObjectHandler'          => 'Document/converters/element_visitor/docbook/rst/mediaobject.php',
@@ -105,6 +111,38 @@ return array(
     'ezcDocumentXsltConverter'                           => 'Document/converters/xslt.php',
     'ezcDocumentXsltConverterOptions'                    => 'Document/options/converter_xslt.php',
     'ezcDocumentAlphaListItemGenerator'                  => 'Document/document/pdf/item_generator/alpha.php',
+    'ezcDocumentBBCode'                                  => 'Document/document/bbcode.php',
+    'ezcDocumentBBCodeBulletListNode'                    => 'Document/document/bbcode/nodes/bullet_list.php',
+    'ezcDocumentBBCodeClosingTagNode'                    => 'Document/document/bbcode/nodes/tag_close.php',
+    'ezcDocumentBBCodeDocbookVisitor'                    => 'Document/document/bbcode/visitor/docbook.php',
+    'ezcDocumentBBCodeDocumentNode'                      => 'Document/document/bbcode/nodes/document.php',
+    'ezcDocumentBBCodeEmailPlugin'                       => 'Document/document/bbcode/plugins/email.php',
+    'ezcDocumentBBCodeEmphasisPlugin'                    => 'Document/document/bbcode/plugins/emphasis.php',
+    'ezcDocumentBBCodeEndOfFileToken'                    => 'Document/document/bbcode/token/end_of_file.php',
+    'ezcDocumentBBCodeEnumeratedListNode'                => 'Document/document/bbcode/nodes/enumerated_list.php',
+    'ezcDocumentBBCodeImagePlugin'                       => 'Document/document/bbcode/plugins/image.php',
+    'ezcDocumentBBCodeInlineLiteralNode'                 => 'Document/document/bbcode/nodes/inline_literal.php',
+    'ezcDocumentBBCodeLineBreakToken'                    => 'Document/document/bbcode/token/line_break.php',
+    'ezcDocumentBBCodeListEndNode'                       => 'Document/document/bbcode/nodes/list_end.php',
+    'ezcDocumentBBCodeListItemNode'                      => 'Document/document/bbcode/nodes/list_item.php',
+    'ezcDocumentBBCodeListItemToken'                     => 'Document/document/bbcode/token/list_item.php',
+    'ezcDocumentBBCodeLiteralBlockNode'                  => 'Document/document/bbcode/nodes/literal_block.php',
+    'ezcDocumentBBCodeLiteralBlockToken'                 => 'Document/document/bbcode/token/literal_block.php',
+    'ezcDocumentBBCodeNewLineToken'                      => 'Document/document/bbcode/token/new_line.php',
+    'ezcDocumentBBCodeNoMarkupPlugin'                    => 'Document/document/bbcode/plugins/no.php',
+    'ezcDocumentBBCodeOptions'                           => 'Document/options/document_bbcode.php',
+    'ezcDocumentBBCodeParagraphNode'                     => 'Document/document/bbcode/nodes/paragraph.php',
+    'ezcDocumentBBCodeParser'                            => 'Document/document/bbcode/parser.php',
+    'ezcDocumentBBCodeQuotePlugin'                       => 'Document/document/bbcode/plugins/quote.php',
+    'ezcDocumentBBCodeSpecialCharsToken'                 => 'Document/document/bbcode/token/special_chars.php',
+    'ezcDocumentBBCodeTagCloseToken'                     => 'Document/document/bbcode/token/tag_clsoe.php',
+    'ezcDocumentBBCodeTagNode'                           => 'Document/document/bbcode/nodes/tag.php',
+    'ezcDocumentBBCodeTagOpenToken'                      => 'Document/document/bbcode/token/tag_open.php',
+    'ezcDocumentBBCodeTextLineToken'                     => 'Document/document/bbcode/token/text_line.php',
+    'ezcDocumentBBCodeTextNode'                          => 'Document/document/bbcode/nodes/text.php',
+    'ezcDocumentBBCodeTokenizer'                         => 'Document/document/bbcode/tokenizer.php',
+    'ezcDocumentBBCodeUrlPlugin'                         => 'Document/document/bbcode/plugins/url.php',
+    'ezcDocumentBBCodeWhitespaceToken'                   => 'Document/document/bbcode/token/whitespace.php',
     'ezcDocumentBulletListItemGenerator'                 => 'Document/document/pdf/item_generator/bullet.php',
     'ezcDocumentConfluenceWiki'                          => 'Document/document/wiki/confluence.php',
     'ezcDocumentCreoleWiki'                              => 'Document/document/wiki/creole.php',

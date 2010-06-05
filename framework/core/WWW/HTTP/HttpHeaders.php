@@ -6,7 +6,7 @@
  *
  * HTTP Headers
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: HttpHeaders.php 445 2009-12-23 06:43:56Z mk $
+ * $Id: HttpHeaders.php 443 2009-12-23 06:28:45Z mk $
  */
 
 /**

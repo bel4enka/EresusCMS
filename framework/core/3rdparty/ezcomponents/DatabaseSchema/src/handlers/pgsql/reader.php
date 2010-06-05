@@ -3,8 +3,8 @@
  * File containing the ezcDbSchemaPgsqlReader class.
  *
  * @package DatabaseSchema
- * @version 1.4.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -12,7 +12,7 @@
  * Handler for PostgreSQL connections representing a DB schema.
  *
  * @package DatabaseSchema
- * @version 1.4.3
+ * @version 1.4.4
  */
 class ezcDbSchemaPgsqlReader extends ezcDbSchemaCommonSqlReader implements ezcDbSchemaDbReader
 {
@@ -109,6 +109,7 @@ class ezcDbSchemaPgsqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
 
         foreach ( $resultArray as $row )
         {
+        		$row = $this->lowercase($row);
             $fieldLength = false;
             $fieldType = self::convertToGenericType( $row['fulltype'], $fieldLength, $fieldPrecision );
             if ( !$fieldLength )
@@ -262,6 +263,7 @@ class ezcDbSchemaPgsqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
         // getting columns to which each index related.
         foreach ( $indexesArray as $row )
         {
+        		$row = $this->lowercase($row);
             $myIndex[]=$row['relname'];
 
             $colNumbers = explode( ' ', $row['indkey'] );

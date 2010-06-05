@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the Webdav component.
  *
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.1.3
+ * @version 1.1.4
  * @filesource
  * @package Webdav
  */
@@ -135,6 +135,7 @@ return array(
     'ezcWebdavMoveResponse'                             => 'Webdav/responses/move.php',
     'ezcWebdavMultistatusResponse'                      => 'Webdav/responses/multistatus.php',
     'ezcWebdavNamespaceRegistry'                        => 'Webdav/namespace_registry.php',
+    'ezcWebdavNautilusCompatibleTransport'              => 'Webdav/transports/nautilus.php',
     'ezcWebdavNautilusPropertyHandler'                  => 'Webdav/transports/property_handlers/nautilus.php',
     'ezcWebdavOptionsRequest'                           => 'Webdav/requests/options.php',
     'ezcWebdavOptionsResponse'                          => 'Webdav/responses/options.php',

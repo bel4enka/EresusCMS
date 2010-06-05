@@ -3,8 +3,8 @@
  * File containing the ezcDbSchemaMysqlReader class.
  *
  * @package DatabaseSchema
- * @version 1.4.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -12,7 +12,7 @@
  * Handler for files containing PHP arrays that represent DB schema.
  *
  * @package DatabaseSchema
- * @version 1.4.3
+ * @version 1.4.4
  */
 class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDbSchemaDbReader
 {
@@ -37,13 +37,13 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
         'decimal' => 'decimal',
         'numeric' => 'decimal',
         'fixed' => 'decimal',
-
+        
         'date' => 'date',
         'datetime' => 'timestamp',
         'timestamp' => 'timestamp',
         'time' => 'time',
         'year' => 'integer',
-
+       
         'char' => 'text',
         'varchar' => 'text',
         'binary' => 'blob',
@@ -95,7 +95,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
             $fieldLength = false;
 
             // bool and boolean is synonyms for TINYINT(1) in MySQL
-            if ( $row['type'] == 'tinyint(1)' )
+            if ( $row['type'] == 'tinyint(1)' ) 
             {
                 $fieldType = 'boolean';
             }
@@ -122,7 +122,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
                 {
                     $fieldDefault = ( $row['default'] == '0' ) ? 'false' : 'true';
                 }
-                else if ( $fieldType != 'timestamp' )
+                else if ( $fieldType != 'timestamp' ) 
                 {
                     $fieldDefault = $row['default'];
                 }
@@ -236,7 +236,7 @@ class ezcDbSchemaMysqlReader extends ezcDbSchemaCommonSqlReader implements ezcDb
         $indexBuffer = array();
 
         $resultArray = $this->db->query( "SHOW INDEX FROM `$tableName`" );
-
+        
         foreach ( $resultArray as $row )
         {
             $keyName = $row['key_name'];

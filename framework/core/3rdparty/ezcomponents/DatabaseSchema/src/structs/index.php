@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.4.3
+ * @version 1.4.4
  * @filesource
  * @package DatabaseSchema
  */
@@ -10,7 +10,7 @@
  * A container to store a table index in.
  *
  * @package DatabaseSchema
- * @version 1.4.3
+ * @version 1.4.4
  */
 class ezcDbSchemaIndex extends ezcBaseStruct
 {
@@ -46,10 +46,9 @@ class ezcDbSchemaIndex extends ezcBaseStruct
      */
     function __construct( $indexFields, $primary = false, $unique = true )
     {
-        ksort( $indexFields );
         $this->indexFields = $indexFields;
         $this->primary = (bool) $primary;
-        $this->unique = (bool) $unique;
+        $this->unique = (bool) ( $this->primary ? true : $unique );
     }
 
     static public function __set_state( array $array )

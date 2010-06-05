@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the Search component.
  *
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.0.8
+ * @version 1.0.9
  * @filesource
  * @package Search
  */
@@ -19,6 +19,7 @@ return array(
     'ezcSearchFieldNotDefinedException'          => 'Search/exceptions/field_not_defined.php',
     'ezcSearchIdNotFoundException'               => 'Search/exceptions/id_not_found.php',
     'ezcSearchIncompleteStateException'          => 'Search/exceptions/incomplete_state.php',
+    'ezcSearchInvalidResultException'            => 'Search/exceptions/invalid_result.php',
     'ezcSearchNetworkException'                  => 'Search/exceptions/network.php',
     'ezcSearchQueryVariableParameterException'   => 'Search/exceptions/query_variable_parameter.php',
     'ezcSearchTransactionException'              => 'Search/exceptions/transaction.php',

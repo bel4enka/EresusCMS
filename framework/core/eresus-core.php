@@ -6,7 +6,7 @@
  *
  * Init module
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  * @package Core
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * $Id: eresus-core.php 475 2010-02-16 09:09:42Z mk $
+ * $Id: eresus-core.php 524 2010-06-05 12:53:45Z mk $
  */
 
 
