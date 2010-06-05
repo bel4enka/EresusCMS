@@ -101,10 +101,16 @@ function filesCD(url)
 	window.location = setPanel(url);
 }
 
+/**
+ * Отсылает запрос на создание директории
+ *
+ * @return void
+ */
 function filesMkDir()
 {
 	var folder = prompt('Имя папки','');
-	if (folder != undefined && folder.length) window.location = setPanel(window.location)+'&mkdir='+folder;
+	if (folder != undefined && folder.length)
+		window.location = setPanel(window.location)+'&mkdir='+folder;
 }
 
 function filesRename()
