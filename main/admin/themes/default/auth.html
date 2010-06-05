@@ -7,56 +7,38 @@
 	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/main.css" />
 	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/auth.css" />
 </head>
-<body onload="document.getElementById('AuthForm').user.focus();">
+<body onload="document.getElementById('user').focus();">
 
 	<table id="body">
 		<tr>
 			<td>
 
-				<form id="auth-form" action="./" method="post">
+				<div id="auth-dialog">
+					<form id="auth-form" action="./" method="post">
 
-					<table id="auth-dialog">
-						<tr>
-							<th colspan="2">Вход в панель управления</th>
-						</tr>
-						<tr>
-							<td colspan="2" class="v-spacer"></td>
-						</tr>
-						{if $errors}
-						<tr>
-							<td colspan="2">
-								{foreach $errors message}
-								<div class="box error">{$message}</div>
-								{/foreach}
-							</td>
-						</tr>
-						{/if}
-						<tr>
-							<td class="label"><label for="user">Пользователь:</label></td>
-							<td><input type="text" name="user" id="user"{if $user} value="{$user}"{/if} /></td>
-						</tr>
-						<tr>
-							<td class="label"><label for="password">Пароль:</label></td>
-							<td><input type="password" name="password" id="password" /></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<label for="autologin" class="checkbox">
+						<div class="title">Вход в панель управления</div>
+						<div class="content">
+							{if $errors}
+							{foreach $errors message}
+							<div class="box error">{$message}</div>
+							{/foreach}
+							{/if}
+							<div class="label"><label for="user">Пользователь:</label></div>
+							<div><input type="text" name="user" id="user"{if $user} value="{$user}"{/if} /></div>
+							<div class="label"><label for="password">Пароль:</label></div>
+							<div><input type="password" name="password" id="password" /></div>
+							<div class="checkbox">
+								<label for="autologin">
 									<input type="checkbox" name="autologin" id="autologin" value="1"{if $autologin} checked="checked"{/if} />
 									Запомнить
 								</label>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" class="v-spacer"></td>
-						</tr>
-						<tr>
-							<td colspan="2" class="buttons"><input type="submit" value="Войти" /></td>
-						</tr>
-					</table>
-
-				</form>
+							</div>
+						</div>
+						<div class="buttons">
+							<button type="submit">Войти</button>
+						</div>
+					</form>
+				</div>
 
 			</td>
 		</tr>
