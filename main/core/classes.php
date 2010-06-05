@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
  * $Id$
  */
@@ -33,7 +33,7 @@
 /**
  * Родительский класс веб-интерфейсов
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class WebPage
 {
@@ -221,27 +221,46 @@ class WebPage
 	protected function renderHeadSection()
 	{
 		$result = array();
-		# <meta> теги
-		if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
-			$result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
-		if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value)
-			$result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
-		# <link>
-		if (count($this->head['link'])) foreach($this->head['link'] as $value)
-			$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
-		# <script>
-		if (count($this->head['script'])) foreach($this->head['script'] as $value) {
-			if (isset($value['content'])) {
-				$value['content'] = trim($value['content']);
-				$result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".$value['content']."\n	//]] -->\n	</script>";
-			} elseif (isset($value['src'])) $result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
-		}
-		# <style>
-		if (count($this->head['style'])) foreach($this->head['style'] as $value)
-			$result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
+		/* <meta> теги */
+		if (count($this->head['meta-http']))
+			foreach($this->head['meta-http'] as $key => $value)
+				$result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
+
+		if (count($this->head['meta-tags']))
+			foreach($this->head['meta-tags'] as $key => $value)
+				$result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
+
+		/* <link> */
+		if (count($this->head['link']))
+			foreach($this->head['link'] as $value)
+				$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.
+					$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
+
+		/* <script> */
+		if (count($this->head['script']))
+			foreach($this->head['script'] as $value)
+			{
+				if (isset($value['content']))
+				{
+					$value['content'] = trim($value['content']);
+					$result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".
+						$value['content']."\n	//]] -->\n	</script>";
+				}
+				elseif (isset($value['src']))
+				{
+					$result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
+				}
+			}
+
+		/* <style> */
+		if (count($this->head['style']))
+			foreach($this->head['style'] as $value)
+				$result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.
+					$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
 
 		$this->head['content'] = trim($this->head['content']);
-		if (!empty($this->head['content'])) $result[] = $this->head['content'];
+		if (!empty($this->head['content']))
+			$result[] = $this->head['content'];
 
 		$result = implode("\n" , $result);
 		return $result;
@@ -381,8 +400,11 @@ class WebPage
 
 /**
  * Работа с плагинами
+ *
+ * @package EresusCMS
  */
-class Plugins {
+class Plugins
+{
 	var $list = array(); # Список всех плагинов
 	var $items = array(); # Массив плагинов
 	var $events = array(); # Таблица обработчиков событий
@@ -642,7 +664,7 @@ class Plugins {
 /**
  * Родительский класс для всех плагинов
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class Plugin
 {
@@ -1166,7 +1188,7 @@ class Plugin
 /**
 * Базовый класс для плагинов, предоставляющих тип контента
 *
-*
+* @package EresusCMS
 */
 class ContentPlugin extends Plugin
 {
@@ -1290,7 +1312,7 @@ class ContentPlugin extends Plugin
 /**
  * Базовый класс коннектора сторонних расширений
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class EresusExtensionConnector
 {
@@ -1414,8 +1436,11 @@ class EresusExtensionConnector
 
 /**
  * Класс для работы с расширениями системы
+ *
+ * @package EresusCMS
  */
-class EresusExtensions {
+class EresusExtensions
+{
  /**
 	* Загруженные расширения
 	*

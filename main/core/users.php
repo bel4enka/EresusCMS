@@ -25,13 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
  * $Id$
  */
 
 useLib('accounts');
 
+/**
+ * Управление пользователями
+ *
+ * @package EresusCMS
+ */
 class TUsers extends Accounts
 {
 	private $accounts;

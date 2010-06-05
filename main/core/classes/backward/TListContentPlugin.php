@@ -25,11 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
 useClass('backward/TContentPlugin');
 
+/**
+ * Базовый класс для плагинов с контентом в виде списков
+ *
+ * @package EresusCMS
+ */
 class TListContentPlugin extends TContentPlugin {
 	var $table;
 	var $pagesCount = 0;

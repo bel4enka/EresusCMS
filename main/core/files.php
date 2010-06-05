@@ -25,10 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+/**
+ * Сравнение двух файлов
+ *
+ * @param array $a
+ * @param array $b
+ * @return int
+ */
 function files_compare($a, $b)
 {
 	if ($a['filename'] == $b['filename']) return 0;
@@ -38,7 +46,14 @@ function files_compare($a, $b)
 
 define('FILES_FILTER', '!\.\./!');
 
-class TFiles {
+
+/**
+ * Файловый менеджер
+ *
+ * @package EresusCMS
+ */
+class TFiles
+{
 	var
 		$access = EDITOR,
 		$icons = array(

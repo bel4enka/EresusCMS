@@ -25,9 +25,14 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
+/**
+ * Отправляет заголовок "text/plain"
+ */
 function plaintext()
 {
 	if (!headers_sent()) header("Content-type: text/plain");

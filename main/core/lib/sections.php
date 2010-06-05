@@ -25,15 +25,26 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  *
  * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
  *
  */
 
+/**
+ * Активные разделы
+ * @var int
+ */
 define('SECTIONS_ACTIVE',  0x0001);
 define('SECTIONS_VISIBLE', 0x0002);
 
+/**
+ * Работа с разделами сайта
+ *
+ * @package EresusCMS
+ */
 class Sections {
 	var $table = 'pages';
 	var $index = array();

@@ -25,10 +25,14 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-# Кодировка документов
+/**
+ * Кодировка документов
+ */
 define('LOCALE_CHARSET', 'CP1251');
 setlocale(LC_ALL, 'ru_RU.'.LOCALE_CHARSET);
 define('CHARSET','windows-1251');

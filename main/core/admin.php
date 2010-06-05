@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
  * $Id$
  */
@@ -41,7 +41,7 @@
  * Автор темы может создать потомка этого класса, размещённого в файле theme.php в корне темы.
  * В этом случае его класс будет использован вместо стандартного.
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class AdminUITheme
 {
@@ -162,7 +162,7 @@ define('ADMINUI', true);
 /**
  * Класс представляет страницу административного интерфейса
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class TAdminUI extends WebPage
 {

@@ -25,10 +25,16 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-define('CMSNAME', 'Eresus'); # Название системы
+/**
+ * Название системы
+ * @var string
+ */
+define('CMSNAME', 'Eresus');
 define('CMSVERSION', '${product.version}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
@@ -855,15 +861,17 @@ function __property($object, $property)
 //-----------------------------------------------------------------------------
 
 /**
-* Основной класс приложения
-*
-* @var  array     $conf             Конфигурация
-* @var  array     $session          Данные сессии
-* @var  object    $db               Интерфейс к СУБД
-* @var  array     $user             Учётная запись пользователя
-*/
+ * Основной класс приложения
+ *
+ * @package EresusCMS
+ */
 class Eresus
 {
+	/**
+	 * Конфигурация
+	 *
+	 * @var array
+	 */
 	var $conf = array(
 		'lang' => 'ru',
 		'timezone' => '',
@@ -889,6 +897,12 @@ class Eresus
 			'mail' => true,
 		),
 	);
+
+	/**
+	 * Данные сессии
+	 *
+	 * @var array
+	 */
 	var $session;
  /**
 	* Интерфейс к расширениям системы

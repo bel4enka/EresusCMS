@@ -25,9 +25,16 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
+/**
+ * Список
+ *
+ * @package EresusCMS
+ */
 class AdminList {
 	var $columns = array();
 	var $head = array();

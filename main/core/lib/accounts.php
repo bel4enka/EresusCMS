@@ -25,13 +25,15 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
 
 /**
  * Работа с учётными записями пользователей
- *
+ * @package EresusCMS
  */
 class EresusAccounts {
 	var $table = 'users';
@@ -148,5 +150,6 @@ class EresusAccounts {
 /**
  * @deprecated since Eresus 2.11
  *
+ * @package EresusCMS
  */
 class	Accounts extends EresusAccounts {}
