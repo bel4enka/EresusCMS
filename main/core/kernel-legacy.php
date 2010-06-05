@@ -58,9 +58,7 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
-if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 
-###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *

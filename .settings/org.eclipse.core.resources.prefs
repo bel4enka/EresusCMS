@@ -5,6 +5,7 @@ encoding//db/mysql-5.sql=windows-1251
 encoding//main/cfg/extensions.php=windows-1251
 encoding//main/core/admin.css=windows-1251
 encoding//main/core/admin.php=windows-1251
+encoding//main/core/ajax.php=windows-1251
 encoding//main/core/classes.php=windows-1251
 encoding//main/core/classes/ListContentPlugin.php=windows-1251
 encoding//main/core/classes/backward/TContentPlugin.php=windows-1251
