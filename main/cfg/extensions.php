@@ -1,6 +1,8 @@
 <?php
 /**
- * Eresus {$M{VERSION}}
+ * ${product.title} ${product.version}
+ *
+ * ${product.description}
  *
  * Конфигурация расширений
  *
@@ -16,23 +18,23 @@
  * расширения. В качестве ключа должно использоваться имя директории, в которой расположено
  * расширение. Формат данных пока не определён, используйте значение null.
  *
- * Система управления контентом Eresus 2
- *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Group, http://eresus.ru/
- *
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * $Id$
  */
 
 
 $GLOBALS['Eresus']->conf['extensions'] = array(
-	# Расширение возможностей форм ввода
+	// Расширение возможностей форм ввода
 	'forms' => array(
-		# Расширение полей типа memo
+		// Расширение полей типа memo
 		'memo_syntax' => array(
 			'codepress' => null,
 		),
-		# Расширение полей типа html
+		// Расширение полей типа html
 		'html' => array(
 			'xinha' => null,
 			'tinymce' => null,
