@@ -108,7 +108,7 @@ class MySQL
 	 * Возвращает объект-одиночку схемы БД
 	 * @return ezcDbSchema
 	 */
-	private function getSchema()
+	public function getSchema()
 	{
 		if (!$this->dbSchema)
 		{
@@ -119,7 +119,7 @@ class MySQL
 			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}
 
-		return $this->dbSchema->getSchema();
+		return $this->dbSchema;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -355,7 +355,7 @@ class MySQL
 	public function fields($table, $info = false)
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$schm = $this->getSchema();
+		$schm = $this->getSchema()->getSchema();
 		return array_keys($schm[$table]->fields);
 /*		global $Eresus;
 
