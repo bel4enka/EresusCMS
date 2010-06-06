@@ -46,24 +46,6 @@
 class AdminUITheme
 {
 	/**
-	 * Маленькие иконки
-	 * @var string
-	 */
-	const ICON_SMALL  = '8x8';
-
-	/**
-	 * Обычные иконки
-	 * @var string
-	 */
-	const ICON_NORMAL = '16x16';
-
-	/**
-	 * Большие иконки
-	 * @var string
-	 */
-	const ICON_LARGE  = '22x22';
-
-	/**
 	 * Путь к директории тем относительно корня сайта
 	 *
 	 * @var string
@@ -84,6 +66,7 @@ class AdminUITheme
 	 * Конструктор
 	 *
 	 * @param string $name  Внутреннее имя темы (директория внутри themes)
+	 *
 	 * @return AdminUITheme
 	 */
 	public function __construct($name = null)
@@ -109,6 +92,7 @@ class AdminUITheme
 	 * Возвращает адрес ресурса относительно корня сайта
 	 *
 	 * @param string $path
+	 *
 	 * @return string
 	 */
 	public function getResource($path)
@@ -119,7 +103,9 @@ class AdminUITheme
 
 	/**
 	 * Возвращает адрес картинки относительно корня сайта
+	 *
 	 * @param string $image
+	 *
 	 * @return string
 	 */
 	public function getImage($image)
@@ -130,11 +116,13 @@ class AdminUITheme
 
 	/**
 	 * Возвращает адрес иконки относительно корня сайта
+	 *
 	 * @param string $icon             Имя иконки
-	 * @param string $size [optional]  Размер иконки. По умолчанию ICON_NORMAL
+	 * @param string $size [optional]  Размер иконки. По умолчанию 'medium'
+	 *
 	 * @return string
 	 */
-	public function getIcon($icon, $size = self::ICON_NORMAL)
+	public function getIcon($icon, $size = 'medium')
 	{
 		return $this->getResource('img/' . $size . '/' . $icon);
 	}
@@ -142,7 +130,9 @@ class AdminUITheme
 
 	/**
 	 * Возвращает шаблон
+	 *
 	 * @param string $name
+	 *
 	 * @return Template
 	 */
 	public function getTemplate($name)
