@@ -136,7 +136,7 @@ sup
 .box.error
 {
 	border-color: #a00;
-	background: #fdd url(img/16x16/status/error.png) no-repeat 5px 50%;
+	background: #fdd url(img/medium/dialog-error.png) no-repeat 5px 50%;
 	padding-left: 25px;
 }
 

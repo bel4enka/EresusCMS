@@ -1,11 +1,10 @@
-#Sat Jun 05 15:01:27 MSD 2010
+#Sat Jun 05 23:16:44 MSD 2010
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
 encoding//db/mysql-4.sql=windows-1251
 encoding//db/mysql-5.sql=windows-1251
 encoding//lang/ru.php=windows-1251
-encoding//lib/mysql.php=windows-1251
 encoding//main/admin/themes/default/SiteSettings/form.html=windows-1251
 encoding//main/admin/themes/default/page.default.html=UTF-8
 encoding//main/cfg/extensions.php=windows-1251
@@ -19,7 +18,9 @@ encoding//main/core/classes/backward/TListContentPlugin.php=windows-1251
 encoding//main/core/classes/backward/TPlugin.php=windows-1251
 encoding//main/core/client.php=windows-1251
 encoding//main/core/content.php=windows-1251
+encoding//main/core/files.js=windows-1251
 encoding//main/core/files.php=windows-1251
+encoding//main/core/functions.js=windows-1251
 encoding//main/core/gziph.php=windows-1251
 encoding//main/core/kernel-legacy.php=windows-1251
 encoding//main/core/languages.php=windows-1251

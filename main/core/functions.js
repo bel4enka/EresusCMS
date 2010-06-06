@@ -66,10 +66,10 @@ function toggleMenuBranch(Id)
 	var root = document.getElementById('root'+Id);
 	if (branch.style.display == 'none') {
 		branch.style.display = 'block';
-		root.src = "$(httpRoot)core/img/br_opened.gif";
+		root.src = "$(httpRoot)admin/themes/default/img/small/branch-opened.png";
 	} else {
 		branch.style.display = 'none';
-		root.src = "$(httpRoot)core/img/br_closed.gif";
+		root.src = "$(httpRoot)admin/themes/default/img/small/branch-closed.png";
 	}
 	return false;
 }

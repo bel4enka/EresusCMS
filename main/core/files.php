@@ -225,7 +225,7 @@ class TFiles
 				case 'cd': $result .= "javascript:filesCD('".$this->url(array($side.'f'=>$items[$i]['link']))."')"; break;
 				case 'new': $result .= "window.open('".$items[$i]['link']."');"; break;
 			}
-			$result .= "\"><td>".img('admin/themes/default/img/mimetypes/'.$items[$i]['icon'].'.png')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
+			$result .= "\"><td>".img('admin/themes/default/img/medium/mimetypes/'.$items[$i]['icon'].'.png')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
 		}
 		$result .= "</table>\n";
 		return $result;

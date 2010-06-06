@@ -360,21 +360,21 @@ class TAdminUI extends WebPage
 		switch($type) {
 			case 'add':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/item-add.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/item-add.png',
 					'title' => strAdd,
 					'alt' => '+',
 				);
 			break;
 			case 'edit':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/item-edit.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/item-edit.png',
 					'title' => strEdit,
 					'alt' => '&plusmn;',
 				);
 			break;
 			case 'delete':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/item-delete.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/item-delete.png',
 					'title' => strDelete,
 					'alt' => 'X',
 					'onclick' => 'return askdel(this)',
@@ -382,21 +382,21 @@ class TAdminUI extends WebPage
 			break;
 			case 'setup':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/configure.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/item-config.png',
 					'title' => strProperties,
 					'alt' => '*',
 				);
 			break;
 			case 'move':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/item-move.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/item-move.png',
 					'title' => strMove,
 					'alt' => '-&gt;',
 				);
 			break;
 			case 'position':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/move-up.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/move-up.png',
 					'title' => admUp,
 					'alt' => '&uarr;',
 				);
@@ -405,7 +405,7 @@ class TAdminUI extends WebPage
 			break;
 			case 'position_down':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/move-down.png',
+					'image' => $Eresus->root.'admin/themes/default/img/medium/move-down.png',
 					'title' => admDown,
 					'alt' => '&darr;',
 				);
@@ -534,13 +534,58 @@ class TAdminUI extends WebPage
 		$columnCount = count($table['columns'])+1;
 		if (count($items)) foreach($items as $item) {
 			$result .= '<tr><td class="ctrl">';
-			if (isset($table['controls']['delete']) && (empty($table['controls']['delete']) || $this->module->$table['controls']['delete']($item))) $result .= ' <a href="'.sprintf($url_delete, $item[$table['key']]).'" title="'.admDelete.'" onclick="return askdel(this)">'.img('admin/themes/default/img/item-delete.png', admDelete, admDelete, 16, 16).'</a>';
-			if (isset($table['controls']['edit']) && (empty($table['controls']['edit']) || $this->module->$table['controls']['edit']($item)))  $result .= ' <a href="'.sprintf($url_edit, $item[$table['key']]).'" title="'.admEdit.'">'.img('admin/themes/default/img/item-edit.png', admEdit, admEdit, 16, 16).'</a>';
-			if (isset($table['controls']['position']) && (empty($table['controls']['position']) || $this->module->$table['controls']['position']($item)) && $sortMode == 'position')  {
-				$result .= ' <a href="'.sprintf($url_position, 'up', $item[$table['key']]).'" title="'.admUp.'">'.img('admin/themes/default/img/move-up.png', admUp, admUp).'</a>';
-				$result .= ' <a href="'.sprintf($url_position, 'down', $item[$table['key']]).'" title="'.admDown.'">'.img('admin/themes/default/img/move-down.png', admDown, admDown).'</a>';
+
+			/* ”даление */
+			if (
+				isset($table['controls']['delete']) &&
+				(
+					empty($table['controls']['delete']) ||
+					$this->module->$table['controls']['delete']($item)
+				)
+			)
+				$result .= ' <a href="' . sprintf($url_delete, $item[$table['key']]) . '" title="' .
+					admDelete . '" onclick="return askdel(this)">' .
+					img('admin/themes/default/img/medium/item-delete.png', admDelete, admDelete, 16, 16).'</a>';
+
+			/* »зменение */
+			if (
+				isset($table['controls']['edit']) &&
+				(
+					empty($table['controls']['edit']) ||
+					$this->module->$table['controls']['edit']($item)
+				)
+			)
+				$result .= ' <a href="' . sprintf($url_edit, $item[$table['key']]) . '" title="' . admEdit .
+					'">' . img('admin/themes/default/img/medium/item-edit.png', admEdit, admEdit, 16, 16).'</a>';
+
+			/* ¬верх/вниз */
+			if (
+				isset($table['controls']['position']) &&
+				(
+					empty($table['controls']['position']) ||
+					$this->module->$table['controls']['position']($item)
+				) &&
+				$sortMode == 'position'
+			)
+			{
+				$result .= ' <a href="' . sprintf($url_position, 'up', $item[$table['key']]) .
+					'" title="' . admUp . '">' . img('admin/themes/default/img/medium/move-up.png', admUp, admUp).'</a>';
+				$result .= ' <a href="' . sprintf($url_position, 'down', $item[$table['key']]) .
+					'" title="' . admDown . '">' . img('admin/themes/default/img/medium/move-down.png', admDown, admDown).'</a>';
 			}
-			if (isset($table['controls']['toggle']) && (empty($table['controls']['toggle']) || $this->module->$table['controls']['toggle']($item))) $result .= ' <a href="'.sprintf($url_toggle, $item[$table['key']]).'" title="'.($item['active']?admDeactivate:admActivate).'">'.img('admin/themes/default/img/'.($item['active']?'on':'off').'.gif', $item['active']?admDeactivate:admActivate, $item['active']?admDeactivate:admActivate).'</a>';
+
+			/* јктивность */
+			if (
+				isset($table['controls']['toggle']) &&
+				(
+					empty($table['controls']['toggle']) ||
+					$this->module->$table['controls']['toggle']($item)
+				)
+			)
+				$result .= ' <a href="' . sprintf($url_toggle, $item[$table['key']]) . '" title="' .
+					($item['active'] ? admDeactivate : admActivate) . '">' .
+					img('admin/themes/default/img/medium/item-' . ($item['active'] ? 'active':'inactive'). '.png', $item['active']?admDeactivate:admActivate, $item['active']?admDeactivate:admActivate).'</a>';
+
 			$result .= '</td>';
 			# ќбрабатываем €чейки данных
 			if (count($table['columns'])) foreach($table['columns'] as $column) {
@@ -636,7 +681,9 @@ class TAdminUI extends WebPage
 			$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
 			if ($current) $opened = $level;
 			if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
-			$icon = empty($sub)?img('admin/themes/default/img/br_empty.gif'):img('admin/themes/default/img/br_'.($display=='none'?'closed':'opened').'.gif', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
+			$icon = empty($sub) ?
+				img('admin/themes/default/img/small/branch-empty.png') :
+				img('admin/themes/default/img/small/branch-'.($display=='none'?'closed':'opened').'.png', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
 			$result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
 			if (!empty($sub)) $result .= '<ul id="branch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
 		}
