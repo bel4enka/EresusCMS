@@ -358,7 +358,7 @@ class EresusCMS extends EresusApplication
 			$connector = new $className;
 			$connector->proxy();
 		}
-			else
+		else
 		{
 			header('404 Not Found', true, 404);
 			echo '404 Not Found';
