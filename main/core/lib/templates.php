@@ -35,8 +35,10 @@
  *
  * @package EresusCMS
  */
-class Templates {
-	var $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
+class Templates
+{
+	private $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
+
 	/**
 	 * Возвращает список шаблонов
 	 *
@@ -61,6 +63,7 @@ class Templates {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Возвращает шаблон
 	 *
@@ -96,6 +99,7 @@ class Templates {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Новый шаблон
 	 *
@@ -113,15 +117,10 @@ class Templates {
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
 		$result = filewrite($filename, $content);
-		if ($result) {
-			$message = admAdded.': '.$name;
-			InfoMessage($message);
-		} else {
-			ErrorMessage(sprintf(errFileWrite, $filename));
-		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Изменяет шаблон
 	 *
@@ -142,12 +141,6 @@ class Templates {
 		if (!is_null($desc)) $item['desc'] = $desc;
 		$content = "<!-- {$item['desc']} -->\n\n{$item['code']}";
 		$result = filewrite($filename, $content);
-		if ($result) {
-			$message = admUpdated.': '.$name;
-			#InfoMessage($message);
-		} else {
-			ErrorMessage(sprintf(errFileWrite, $filename));
-		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -165,12 +158,6 @@ class Templates {
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = filedelete($filename);
-		if ($result) {
-			$message = admDeleted.': '.$name;
-			InfoMessage($message);
-		} else {
-			ErrorMessage(sprintf(errFileDelete, $filename));
-		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
