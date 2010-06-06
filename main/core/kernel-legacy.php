@@ -223,8 +223,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	if (empty($replyTo)) $replyTo = option('mailReplyTo');
 	if (empty($replyTo)) $replyTo = $fromAddr;
 
-	$charset = option('mailCharset');
-	if (empty($charset)) $charset = CHARSET;
+	$charset = CHARSET;
 
 	$sender = strlen($fromName) ? "=?".$charset."?B?".base64_encode($fromName)."?= <$fromAddr>" : $fromAddr;
 	if (strlen($fromOrg)) $sender .= ' (=?'.$charset.'?B?'.base64_encode($fromOrg).'?=)';
