@@ -1075,15 +1075,16 @@ class Plugin
 	/**
 	 * Вставка в таблицу БД
 	 *
-	 * @param string $table  Имя таблицы
-	 * @param array  $item   Вставляемый элемент
+	 * @param string $table          Имя таблицы
+	 * @param array  $item           Вставляемый элемент
+	 * @param string $key[optional]  Имя ключевого поля. По умолчанию "id"
 	 */
-	public function dbInsert($table, $item)
+	public function dbInsert($table, $item, $key = 'id')
 	{
 		global $Eresus;
 
 		$result = $Eresus->db->insert($this->__table($table), $item);
-		$result = $this->dbItem($table, $Eresus->db->getInsertedId());
+		$result = $this->dbItem($table, $Eresus->db->getInsertedId(), $key);
 
 		return $result;
 	}
