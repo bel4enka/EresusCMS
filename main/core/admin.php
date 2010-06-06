@@ -657,6 +657,14 @@ class TAdminUI extends WebPage
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	/**
+	 * Отрисовывает ветку меню
+	 *
+	 * @param $opened
+	 * @param $owner
+	 * @param $level
+	 */
 	function renderPagesMenu(&$opened, $owner = 0, $level = 0)
 	{
 		global $Eresus;
@@ -664,22 +672,44 @@ class TAdminUI extends WebPage
 		$result = '';
 		$ie = preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']);
 		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
-		if (count($items)) foreach($items as $item) {
-			if (empty($item['caption'])) $item['caption'] = admNA;
-			if (isset($Eresus->request['arg']['section']) && ($item['id'] == arg('section'))) $this->title = $item['caption']; # title - массив?
-			$sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
-			$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
-			if ($current) $opened = $level;
-			if ($opened==$level+1) {$display = 'block'; $opened--;} else $display = 'none';
-			$icon = empty($sub) ?
-				img('admin/themes/default/img/small/branch-empty.png') :
-				img('admin/themes/default/img/small/branch-'.($display=='none'?'closed':'opened').'.png', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
-			$result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
-			if (!empty($sub)) $result .= '<ul id="branch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
-		}
+		if (count($items))
+			foreach($items as $item)
+			{
+				if (empty($item['caption']))
+					$item['caption'] = admNA;
+
+				if (
+					isset($Eresus->request['arg']['section']) &&
+					$item['id'] == arg('section')
+				)
+					$this->title = $item['caption']; # title - массив?
+
+				$sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
+				$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
+				if ($current)
+					$opened = $level;
+
+				if ($opened==$level+1)
+				{
+						$display = 'block';
+						$opened--;
+				}
+				else
+					$display = 'none';
+
+				$icon = empty($sub) ?
+					img('admin/themes/default/img/small/branch-empty.png') :
+					img('admin/themes/default/img/small/branch-'.($display=='none'?'closed':'opened').'.png', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
+				$result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
+
+				if (!empty($sub))
+					$result .= '<ul id="branch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
+			}
+
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function renderMenu()
 	{
 		global $Eresus;
