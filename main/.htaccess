@@ -49,8 +49,8 @@ AddDefaultCharset Off
 	RewriteRule ^ext-3rd/.* index.php [L]
 
 	# Включаем gzip-сжатие CSS и JavaScript
-	#RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
-	#RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
+	RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
+	RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
 
 	# Отдаём статические файлы без обработки
 	RewriteRule (.*\.(css|js))$ - [L]
