@@ -210,6 +210,7 @@ table.ui-grid.ui-hlines
 {
 	display: inline-block;
 }
+
 /* required comment for clearfix to work in Opera \*/
 * html .ui-helper-clearfix
 {
@@ -745,7 +746,15 @@ table.ui-grid.ui-hlines
 		padding: .2em .2em 0;
 		border-bottom-color: #ccc;
 	}
-.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0 !important; margin: 0 .2em -1px 0; padding: 0; }
+
+	.ui-tabs .ui-tabs-nav li
+	{
+		position: relative;
+		float: left;
+		border-bottom-width: 0 !important;
+		margin: 0 .2em -1px 0;
+		padding: 0;
+	}
 	/* Ссылка на кнопке вкладки */
 	.ui-tabs .ui-tabs-nav li a
 	{
@@ -779,13 +788,15 @@ table.ui-grid.ui-hlines
 .ui-tabs .ui-tabs-hide { display: none !important; }
 
 /**************************************************************************************
- ** ИМЕНОВАННЫЕ ЭЛЕМЕНТЫ
+ ** МАКЕТ СТРАНИЦЫ
  **
- ** Стили элементов, имеющих идентификатор
+ ** Элементы макета страницы
  **
  **************************************************************************************/
 
-/* Заголовок */
+/**
+ * Заголовок страницы
+ */
 #header
 {
 	height: 32px;
@@ -803,6 +814,49 @@ table.ui-grid.ui-hlines
 		padding: 0;
 	}
 
+/**
+ * Боковая панель
+ */
+#sidebar
+{
+	width: 200px;
+	vertical-align: top;
+}
+
+	#sidebar table
+	{
+		width: 100%;
+		margin: 0;
+	}
+
+		#sidebar th
+		{
+			background-color: #007acc;
+			border: solid 1px;
+			border-color: #08d #05a #05a #06b;
+			color: #ffd700;
+			line-height: 1.3em;
+		}
+
+		#sidebar td
+		{
+			padding: 2px;
+			border: solid 1px #ccc;
+		}
+
+/* Область контента */
+#content
+{
+	vertical-align: top;
+}
+
+/**************************************************************************************
+ ** ИМЕНОВАННЫЕ ЭЛЕМЕНТЫ
+ **
+ ** Стили элементов, имеющих идентификатор
+ **
+ **************************************************************************************/
+
 #cmsLogo
 {
 	float: right;
@@ -816,106 +870,84 @@ table.ui-grid.ui-hlines
 	border-collapse: collapse;
 }
 
-/* Главное меню */
-#menu-main
+/**
+ * Главное меню
+ */
+#menu-content ul
 {
-	width: 200px;
-	vertical-align: top;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
-	#menu-main table
+	/**
+	 * Для подразделов
+	 */
+	#menu-content ul ul
 	{
-		width: 100%;
-		margin: 0;
+		margin-left: .5em;
 	}
 
-		#menu-main th
+	/**
+	 * Пункт меню
+	 */
+	#menu-content li
+	{
+		margin: 0;
+		padding: 0;
+		white-space: nowrap;
+	}
+
+	/**
+	 * Значок "нет подпунктов"
+	 */
+	#menu-content img
+	{
+		width: 9px;
+		height: 9px;
+		background: url(img/menu-tree.png) no-repeat scroll 0 0;
+	}
+
+		/**
+		 * Значок "Развернуть"
+		 */
+		#menu-content .parrent > img
 		{
-			background-color: #007acc;
-			border: solid 1px;
-			border-color: #08d #05a #05a #06b;
-			color: #ffd700;
-			line-height: 1.3em;
+			background-position: -9px 0;
+			cursor: pointer;
 		}
 
-		#menu-main td
+		/**
+		 * Значок "Свернуть"
+		 */
+		#menu-content .parrent.opened > img
 		{
-			padding: 2px;
-			border: solid 1px #ccc;
+			background-position: -18px 0;
 		}
 
-			#menu-main ul
-			{
-				list-style: none;
-				margin: 0;
-				padding: 0;
-				overflow: hidden;
-			}
+	#menu-content a,
+	#menu-content a:visited
+	{
+		text-decoration: none;
+	}
 
-				#menu-main li
-				{
-					margin: 0;
-					padding: 0;
-					white-space: nowrap;
-				}
+	#menu-content .current > a,
+	#menu-content .current > a:visited
+	{
+		color: red;
+	}
 
-				#menu-main img
-				{
-					margin: 2px 2px 0 1px;
-				}
+	#menu-content .hidden a,
+	#menu-content .hidden a.visited
+	{
+		color: #888;
+	}
 
-					#menu-main img.link
-					{
-						cursor: pointer;
-					}
-
-				#menu-main a
-				{
-					text-decoration: none;
-				}
-
-					#menu-main a:visited
-					{
-						text-decoration: none;
-					}
-
-				#menu-main li.selected > a
-				{
-					color: red;
-				}
-
-					#menu-main li.selected > a:visited
-					{
-						color: red;
-					}
-
-					#menu-main li.selected > a:hover
-					{
-						color: red;
-					}
-
-				#menu-main .hidden a
-				{
-					color: #888;
-				}
-
-					#menu-main .hidden a.visited
-					{
-						color: #888;
-					}
-
-					#menu-main .hidden a:hover
-					{
-						color: red;
-					}
-
-/* Область контента */
-#content
-{
-	vertical-align: top;
-}
-
-
+		#menu-content .hidden a:hover
+		{
+			color: red;
+		}
 
 /* * * * * * * * * * * * * *
  * Конфигурация сайта

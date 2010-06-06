@@ -669,9 +669,12 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
+		$theme = $this->getUITheme();
+
 		$result = '';
 		$ie = preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']);
 		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
+
 		if (count($items))
 			foreach($items as $item)
 			{
@@ -686,24 +689,54 @@ class TAdminUI extends WebPage
 
 				$sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
 				$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
+
 				if ($current)
 					$opened = $level;
 
-				if ($opened==$level+1)
+				// Альтернативный текст
+				$alt = '[&nbsp;]';
+				// Подсказка
+				$title = '';
+				// Классы пункта меню
+				$classes = array();
+
+				if ($opened == $level + 1)
 				{
-						$display = 'block';
-						$opened--;
+					$display = 'block';
+					$classes []= 'opened';
+					$opened--;
 				}
 				else
+				{
 					$display = 'none';
+				}
 
-				$icon = empty($sub) ?
-					img('admin/themes/default/img/small/branch-empty.png') :
-					img('admin/themes/default/img/small/branch-'.($display=='none'?'closed':'opened').'.png', array('ext'=>'id="root'.$item['id'].'" class="link" onclick="toggleMenuBranch(\''.$item['id'].'\');"'));
-				$result .= '<li'.($current?' class="selected"':(!$item['visible']?' class="hidden"':'')).'>'.$icon.'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
+				if ($sub)
+				{
+					$classes []= 'parrent';
+					$alt = '[+]';
+					$title = 'Развернуть';
+				}
+
+				if ($current)
+				{
+					$classes []= 'current';
+				}
+
+				if (!$item['visible'])
+				{
+					$classes []= 'hidden';
+				}
+
+				$classes = implode(' ', $classes);
+
+				$result .=
+					'<li' . ($classes ? ' class="' . $classes . '"' : '') . '>' .
+						'<img src="' . httpRoot . $theme->getImage('dot.gif') . '" alt="' . $alt . '" title="' . $title . '" /> ' .
+						'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
 
 				if (!empty($sub))
-					$result .= '<ul id="branch'.$item['id'].'" style="margin-left: 10px; display: '.$display.';">'.$sub.'</ul>';
+					$result .= '<ul style="display: '.$display.';">'.$sub.'</ul>';
 			}
 
 		return $result;

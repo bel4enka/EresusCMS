@@ -60,20 +60,6 @@ function pageTop()
 	return isIE ? (document.body.scrollTop?document.body.scrollTop:document.documentElement.scrollTop) : window.pageYOffset;
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function toggleMenuBranch(Id)
-{
-	var branch = document.getElementById('branch'+Id);
-	var root = document.getElementById('root'+Id);
-	if (branch.style.display == 'none') {
-		branch.style.display = 'block';
-		root.src = "$(httpRoot)admin/themes/default/img/small/branch-opened.png";
-	} else {
-		branch.style.display = 'none';
-		root.src = "$(httpRoot)admin/themes/default/img/small/branch-closed.png";
-	}
-	return false;
-}
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function askdel(objCaller)
 {
 	return confirm('Подверждаете удаление?');
@@ -109,3 +95,20 @@ function SendRequest(url, handler)
 	}
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+/*
+ * Инициализация
+ */
+jQuery(document).ready(function ()
+{
+	jQuery("#menu-content").click(function (e)
+	{
+		if (e.target.nodeName.toLowerCase() != "img")
+			return;
+
+		jQuery(e.target).parent().
+			toggleClass("opened").
+			children("ul").toggle();
+	});
+});
