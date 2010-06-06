@@ -66,6 +66,7 @@ class EresusCMS extends EresusApplication
 		$this->createFileStructure();
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+
 		/* Подключение старого ядра */
 		include_once 'kernel-legacy.php';
 		$GLOBALS['Eresus'] = new Eresus;
@@ -76,15 +77,14 @@ class EresusCMS extends EresusApplication
 		//$this->initSession();
 		$GLOBALS['Eresus']->init();
 
-		if (PHP::isCLI()) {
-
+		if (PHP::isCLI())
+		{
 			return $this->runCLI();
-
-		} else {
-
+		}
+		else
+		{
 			$this->runWeb();
 			return 0;
-
 		}
 
 	}
