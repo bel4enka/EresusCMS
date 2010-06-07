@@ -3,8 +3,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -95,20 +95,3 @@ function SendRequest(url, handler)
 	}
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-
-/*
- * Инициализация
- */
-jQuery(document).ready(function ()
-{
-	jQuery("#menu-content").click(function (e)
-	{
-		if (e.target.nodeName.toLowerCase() != "img")
-			return;
-
-		jQuery(e.target).parent().
-			toggleClass("opened").
-			children("ul").toggle();
-	});
-});
