@@ -73,7 +73,7 @@ function toggle($id)
 
 	$Eresus->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function delete($id)
@@ -82,7 +82,7 @@ function delete($id)
 
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$Eresus->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
@@ -100,7 +100,7 @@ function up($id)
 		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
@@ -119,7 +119,7 @@ function down($id)
 		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function adminRenderContent()
