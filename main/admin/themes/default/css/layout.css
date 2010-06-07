@@ -1,0 +1,227 @@
+@CHARSET "UTF-8";
+/**
+ * ${product.title} ${product.version}
+ *
+ * ${product.description}
+ *
+ * Макет страницы
+ *
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @license ${license.uri} ${license.name}
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
+ */
+
+html,
+body
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin:0;
+	padding:0;
+}
+
+/**
+ * Ограничитель по ширине для широких мониторов
+ */
+.width-limit
+{
+	max-width: 1200px;
+}
+
+/**
+ * Заголовок страницы
+ */
+#header
+{
+	height: 32px;
+	padding: 0 10px;
+	font-size: 12px;
+	line-height: 16px;
+}
+
+	#header h1
+	{
+		font-family : Sans, Arial, Helvetica, sans-serif;
+		font-size : 16px;
+		color: #ffd700;
+		margin: 0;
+		padding: 0;
+	}
+
+/**
+ * Боковая панель
+ */
+#sidebar
+{
+	width: 200px;
+	vertical-align: top;
+}
+
+	#sidebar table
+	{
+		width: 100%;
+		margin: 0;
+	}
+
+		#sidebar th
+		{
+			background-color: #007acc;
+			border: solid 1px;
+			border-color: #08d #05a #05a #06b;
+			color: #ffd700;
+			line-height: 1.3em;
+		}
+
+		#sidebar td
+		{
+			padding: 2px;
+			border: solid 1px #ccc;
+		}
+
+
+#cmsLogo
+{
+	float: right;
+	width: 150px;
+	height: 30px;
+}
+
+#body
+{
+	width: 100%;
+	border-collapse: collapse;
+}
+
+
+/**
+ * Панель управления
+ */
+#cp-console
+{
+	display: none;
+	position: absolute;
+	background-color: #eee;
+	border: solid 1px #bbb;
+	padding: .5em 1em;
+}
+
+	#cp-console .item
+	{
+		width: 20em;
+		height: 32px;
+	}
+
+		#cp-console img
+		{
+			width: 32px;
+			height: 32px;
+			display: block;
+			float: left;
+		}
+
+		#cp-console .item .content
+		{
+			margin-left: 40px;
+		}
+
+#menu-content ul
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+	/**
+	 * Для подразделов
+	 */
+	#menu-content ul ul
+	{
+		margin-left: .5em;
+	}
+
+	/**
+	 * Пункт меню
+	 */
+	#menu-content li
+	{
+		margin: 0;
+		padding: 0;
+		white-space: nowrap;
+	}
+
+	/**
+	 * Значок "нет подпунктов"
+	 */
+	#menu-content img
+	{
+		width: 9px;
+		height: 9px;
+		background: url(img/menu-tree.png) no-repeat scroll 0 0;
+	}
+
+		/**
+		 * Значок "Развернуть"
+		 */
+		#menu-content .parrent > img
+		{
+			background-position: -9px 0;
+			cursor: pointer;
+		}
+
+		/**
+		 * Значок "Свернуть"
+		 */
+		#menu-content .parrent.opened > img
+		{
+			background-position: -18px 0;
+		}
+
+	#menu-content a,
+	#menu-content a:visited
+	{
+		text-decoration: none;
+	}
+
+	#menu-content .current > a,
+	#menu-content .current > a:visited
+	{
+		color: red;
+	}
+
+	#menu-content .hidden a,
+	#menu-content .hidden a.visited
+	{
+		color: #888;
+	}
+
+		#menu-content .hidden a:hover
+		{
+			color: red;
+		}
+
+/* Область контента */
+#content
+{
+	vertical-align: top;
+}

@@ -7,7 +7,7 @@
 
  $Id$
  -->
-<project name="eresus2" default="build" basedir="./">
+<project name="eresus-cms" default="build" basedir="./">
 
 	<property file="build.properties" />
 	<php function="date" returnProperty="builddate">
@@ -22,22 +22,22 @@
 
 	<target name="prepare" description="Prepare for build">
 
+		<echo msg="Build directory: ${build.dir}" level="info" />
+
 		<echo msg="Clean up: ${build.dir}..." level="info" />
 
 		<if>
 			<available file="${build.dir}" />
-
 			<then>
 				<delete includeemptydirs="true" failonerror="true">
 					<fileset dir="${build.dir}">
 						<include name="**/*" />
+						<exclude name=".svn" />
+						<exclude name=".svn/*" />
 					</fileset>
 				</delete>
 			</then>
-
 		</if>
-
-		<echo msg="Build directory: ${build.dir}" level="info" />
 
 		<echo msg="Create build directory..." level="info" />
 		<mkdir dir="${build.dir}" />
@@ -53,29 +53,20 @@
 	-->
 	<target name="build" depends="prepare" description="Build basic set of modules">
 
-		<if>
-			<available file="${build.dir}" />
-
-			<then>
-				<delete includeemptydirs="true" failonerror="true">
-					<fileset dir="${build.dir}">
-						<include name="**/*" />
-						<exclude name=".svn" />
-						<exclude name=".svn/*" />
-					</fileset>
-				</delete>
-			</then>
-
-		</if>
-
-		<mkdir dir="${build.dir}" />
-
+		<!-- Копирование основных файлов -->
 		<copy todir="${build.dir}">
-			<fileset refid="main_files" />
+			<fileset refid="files.main" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
 		</copy>
+
+			<!-- Обработка файлов CSS темы default -->
+			<append destFile="${build.dir}/admin/themes/default/theme.css">
+				<fileset dir="${build.dir}/admin/themes/default/css/">
+					<include name="*.css" />
+				</fileset>
+			</append>
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
@@ -165,7 +156,7 @@
 	<!-- - - - - - - - - - - - - - - - - - - - - -->
 
 	<!-- Main project files -->
-	<fileset dir="main" id="main_files">
+	<fileset dir="main" id="files.main">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
