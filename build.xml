@@ -62,11 +62,12 @@
 		</copy>
 
 			<!-- Обработка файлов CSS темы default -->
-			<append destFile="${build.dir}/admin/themes/default/theme.css">
-				<fileset dir="${build.dir}/admin/themes/default/css/">
-					<include name="*.css" />
-				</fileset>
-			</append>
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css/layout.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css/widget.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css/typography.css" />
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
