@@ -56,7 +56,7 @@ AddDefaultCharset Off
 	RewriteRule (.*\.(css|js))$ - [L]
 
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(core|admin/themes|ext|data|style)/ - [L]
+	RewriteRule ^(core|admin/themes|admin/logos|ext|data|style)/ - [L]
 	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [L]
 
