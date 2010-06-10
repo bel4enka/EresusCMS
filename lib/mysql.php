@@ -54,7 +54,7 @@ class MySQL
 	 * @var string
 	 * @deprecated
 	 */
-	protected $prefix;
+	public $prefix;
 
 	/**
 	 * Вести лог запросов
