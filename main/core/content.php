@@ -59,7 +59,7 @@ class TContent
 				switch ($item['type'])
 				{
 					case 'default':
-						$editor = new ContentPlugin;
+						$editor = new ContentPlugin();
 						if (arg('update')) $editor->update();
 						else $result = $editor->adminRenderContent();
 					break;

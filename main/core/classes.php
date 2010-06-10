@@ -1294,7 +1294,7 @@ class ContentPlugin extends Plugin
 		if (arg('action') == 'update') $this->adminUpdate();
 		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
 		$form = array(
-			'name' => 'content',
+			'name' => 'editForm',
 			'caption' => $page->title,
 			'width' => '100%',
 			'fields' => array (
