@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -31,34 +31,46 @@
  */
 
 /**
- * ???
+ * Управление контентом
  *
  * @package EresusCMS
  */
 class TContent
 {
 
-	function adminRender()
+	/**
+	 * Возвращает разметку интерфейса управления контентом текущего раздела
+	 *
+	 * @return string  HTML
+	 */
+	public function adminRender()
 	{
 		global $Eresus, $page;
 
-		if (UserRights(EDITOR)) {
+		if (UserRights(EDITOR))
+		{
 			$item = $Eresus->db->selectItem('pages', "`id`='".arg('section', 'int')."'");
 			$page->id = $item['id'];
-			if (!array_key_exists($item['type'], $Eresus->plugins->list)) {
-				switch ($item['type']) {
+			if (!array_key_exists($item['type'], $Eresus->plugins->list))
+			{
+				switch ($item['type'])
+				{
 					case 'default':
 						$editor = new ContentPlugin;
 						if (arg('update')) $editor->update();
 						else $result = $editor->adminRenderContent();
 					break;
+
 					case 'list':
-						if (arg('update')) {
+						if (arg('update'))
+						{
 							$original = $item['content'];
 							$item['content'] = arg('content', 'dbsafe');
 							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
 							HTTP::redirect(arg('submitURL'));
-						} else {
+						}
+						else
+						{
 							$form = array(
 								'name' => 'editURL',
 								'caption' => admEdit,
@@ -72,13 +84,17 @@ class TContent
 							$result = $page->renderForm($form);
 						}
 					break;
+
 					case 'url':
-						if (arg('update')) {
+						if (arg('update'))
+						{
 							$original = $item['content'];
 							$item['content'] = arg('url', 'dbsafe');
 							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
 							HTTP::redirect(arg('submitURL'));
-						} else {
+						}
+						else
+						{
 							$form = array(
 								'name' => 'editURL',
 								'caption' => admEdit,
@@ -92,10 +108,14 @@ class TContent
 							$result = $page->renderForm($form);
 						}
 					break;
+
 					default:
-					$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
+						$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
+					break;
 				}
-			} else {
+			}
+			else
+			{
 				$Eresus->plugins->load($item['type']);
 				$page->module = $Eresus->plugins->items[$item['type']];
 				$result = $Eresus->plugins->items[$item['type']]->adminRenderContent();
@@ -103,5 +123,5 @@ class TContent
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }
