@@ -31,7 +31,7 @@
  */
 jQuery(document).ready(function ()
 {
-	jQuery("#menu-content").click(function (e)
+	jQuery("div.menu-content").click(function (e)
 	{
 		if (e.target.nodeName.toLowerCase() != "img")
 			return;

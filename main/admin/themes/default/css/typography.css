@@ -30,38 +30,52 @@
  */
 
 /**
- * Базовые стили
+ * Базовые стили документа
+ */
+html
+{
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 0.8125em; /* 13px для большинства браузеров */
+	line-height:1.54em;
+}
+
+/**
+ * Стили тела документа
  */
 body
 {
-	font-family: Verdana, sans-serif;
-	font-size: 0.9015em;
-	line-height:1.54em;
 	color: #000;
-	background: #ddd;
+	background: #dfdfdf;
 }
+
 
 img
 {
 	border-width: 0;
 }
 
-a
+/**
+ * Ссылки
+ */
+a,
+a:link
 {
-	color: blue;
+	color: #08c;
 	text-decoration: underline;
 }
-
+	/**
+	 * Посещённые ссылки
+	 */
 	a:visited
 	{
-		color: blue;
+		color: #037;
 		text-decoration: underline;
 	}
 
 	a:hover
 	{
-		color: red;
-		text-decoration: none;
+		color: #f00;
+		text-decoration: underline;
 	}
 
 h1,

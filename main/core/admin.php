@@ -665,7 +665,7 @@ class TAdminUI extends WebPage
 	 * @param $owner
 	 * @param $level
 	 */
-	function renderPagesMenu(&$opened, $owner = 0, $level = 0)
+	private function renderPagesMenu(&$opened, $owner = 0, $level = 0)
 	{
 		global $Eresus;
 
@@ -743,41 +743,38 @@ class TAdminUI extends WebPage
 	}
 	//-----------------------------------------------------------------------------
 
-	function renderMenu()
+	/**
+	 * Отрисовывает меню плагинов и управления
+	 *
+	 * @return string  HTML
+	 */
+	private function renderControlMenu()
 	{
 		global $Eresus;
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)
-			if (UserRights($this->extmenu[$section]['access'])) {
-				$menu .= "<tr><th>".$this->extmenu[$section]['caption']."</th></tr>\n<tr><td>";
+			if (UserRights($this->extmenu[$section]['access']))
+			{
+				$menu .= '<div class="header">'.$this->extmenu[$section]['caption'].'</div><div class="content">';
 				foreach ($this->extmenu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->extmenu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
 					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
 					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
 				}
-				$menu .= "</td></tr>\n";
+				$menu .= "</div>\n";
 			}
 
 		for ($section = 0; $section < count($this->menu); $section++)
 			if (UserRights($this->menu[$section]['access'])) {
-				$menu .= "<tr><th>".$this->menu[$section]['caption']."</th></tr>\n<tr><td>";
+				$menu .= '<div class="header">'.$this->menu[$section]['caption'].'</div><div class="content">';
 				foreach ($this->menu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->menu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
 					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
 					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
 				}
-				$menu .= "</td></tr>\n";
+				$menu .= "</div>\n";
 			}
 
-		$opened = -1;
-
-		$tmpl = new Template('admin/themes/default/menu.main.html');
-		$data = array();
-		$data['menu'] = $menu;
-		$data['sectionMenu'] = $this->renderPagesMenu($opened);
-		$data['userId'] = $Eresus->user['id'];
-
-		$html = $tmpl->compile($data);
-		return $html;
+		return $menu;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -842,12 +839,11 @@ class TAdminUI extends WebPage
 	 */
 	private function renderUI()
 	{
-		global $locale;
+		global $locale, $Eresus;
 
 		$data = array();
 
 		$data['page'] = $this;
-		$data['menu'] = $this->renderMenu();
 		$data['content'] = $this->renderContent();
 		$data['siteName'] = option('siteName');
 		$data['head'] = $this->renderHeadSection();
@@ -856,6 +852,10 @@ class TAdminUI extends WebPage
 			'version' => CMSVERSION,
 			'link' => CMSLINK,
 		);
+		$opened = -1;
+		$data['sectionMenu'] = $this->renderPagesMenu($opened);
+		$data['controlMenu'] = $this->renderControlMenu();
+		$data['user'] = $Eresus->user;
 
 		$tmpl = new Template('admin/themes/default/page.default.html');
 		$html = $tmpl->compile($data);

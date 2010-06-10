@@ -3,7 +3,7 @@
  *
  * ${product.description}
  *
- * Стили страницы аутентификации
+ * Стили форм ввода
  *
  * @copyright 2004, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/
@@ -26,73 +26,21 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
- *
  * $Id$
  */
 
-html, body
+/**
+ * Кнопка
+ */
+button
 {
-	background-color: #000;
-	color: #fff;
+	padding: .2em .5em;
 }
 
-#body
-{
-	width: 100%;
-	height: 100%;
-}
-
-	td, th
+	/**
+	 *
+	 */
+	button[type=submit]
 	{
-		vertical-align: middle;
+		font-weight: bold;
 	}
-
-		#auth-dialog
-		{
-			background-color: #eee;
-			color: #000;
-			width: 20em;
-			margin: 0 auto;
-			border-style: solid;
-			border-width: 1px;
-			border-color: #eee #555 #555 #eee;
-		}
-
-			#auth-dialog .title
-			{
-				background-color: #25b;
-				color: gold;
-				padding: 0.1em;
-				text-align: center;
-				font-weight: bold;
-			}
-
-			#auth-dialog .content
-			{
-				padding: .2em .5em;
-			}
-
-			input[type=text],
-			input[type=password]
-			{
-				border: solid 1px #aaa;
-				width: 99%;
-			}
-
-			input[type=checkbox]
-			{
-				border-width: 0;
-				margin: 0;
-			}
-
-			#auth-dialog .checkbox
-			{
-				padding-top: .5em;
-			}
-
-			.buttons
-			{
-				text-align: center;
-				padding: .5em;
-			}

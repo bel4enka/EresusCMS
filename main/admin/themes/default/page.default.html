@@ -21,30 +21,54 @@
 </head>
 <body>
 
-	<div id="header" class="ui-widget-header">
-		<div id="cmsLogo">
-			<a href="{$cms.link}">
-				<img src="{$siteRoot}/admin/themes/default/img/logo.png" alt="{$cms.name} {$cms.version}"
-					width="150" height="30" />
-			</a>
+	<div id="header" class="header ui-widget-header">
+		<div class="width-limit">
+			<div id="cmsLogo">
+				<a href="{$cms.link}">
+					<img src="{$siteRoot}/admin/themes/default/img/logo.png" alt="{$cms.name} {$cms.version}"
+						width="150" height="30" />
+				</a>
+			</div>
+			<h1>{$siteName} &ndash; {$page->title}</h1>
+			CMS {$cms.name} {$cms.version}
 		</div>
-		<h1>{$siteName} - {$page->title}</h1>
-		CMS {$cms.name} {$cms.version}
 	</div>
 
-	<table id="body">
-		<tr>
+	<div class="nav sidebar">
 
-			<td id="sidebar">
-				{$menu}
-			</td>
+		<div class="box ui-widget ui-widget-content">
+			<div class="header">{$i18n->getText('admContent')}</div>
+			<div class="content menu menu-content">
+				<ul>
+					{$sectionMenu}
+				</ul>
+			</div>
+		</div>
 
-			<td id="content">
-				{$content}
-			</td>
+		<div class="box ui-widget ui-widget-content menu">
+			{$controlMenu}
+		</div>
 
-		</tr>
-	</table>
+		<div class="box ui-widget ui-widget-content">
+			<div class="header">{$user.name}</div>
+			<div class="content user-box">
+				<a href="{$siteRoot}/admin.php?mod=users&amp;id={$user.id}">
+					{$i18n->getText('admUsersChangePassword')}
+				</a>
+				<form action="{$siteRoot}/admin.php" method="post">
+					<div>
+						<input type="hidden" name="action" value="logout">
+						<button type="submit">{$i18n->getText('strExit')}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="content">
+		{$content}
+	</div>
 
 	<script src="{$siteRoot}/admin/themes/default/theme.js" type="text/javascript"></script>
 	<script src="{$siteRoot}/core/functions.js" type="text/javascript"></script>
