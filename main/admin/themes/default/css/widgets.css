@@ -759,6 +759,38 @@ table.ui-grid.ui-hlines
 }
 .ui-tabs .ui-tabs-hide { display: none !important; }
 
+/**
+ * Старые вкладки
+ *
+ * @deprecated since 2.14
+ */
+.legacy-tabs
+{
+	font-weight: bold;
+	line-height: 1.3em;
+	margin: 2px 0px;
+}
+
+	.legacy-tabs a,
+	.legacy-tabs a:visited
+	{
+		background: #007acc url('img/hbg.gif') repeat-x;
+		border: solid 1px;
+		border-color: #47d #028 #028 #47d;
+		color: white;
+		display: block;
+		float: left;
+		margin: 0 1px;
+		padding: 1px 0.3em;
+		text-align: center;
+		text-decoration: none;
+	}
+
+	.legacy-tabs a:hover
+	{
+		color: #ffd700;
+	}
+
 
 /**
  * Меню

@@ -414,32 +414,56 @@ class TAdminUI extends WebPage
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
+	/**
+	 * Отрисовывает кнопки-"вкладки"
+	 *
+	 * @param array $tabs
+	 *
+	 * @return string  HTML
+	 */
 	function renderTabs($tabs)
 	{
 		global $Eresus, $page;
 
-		if (count($tabs)) {
-			$result = "<table class=\"admTabs\"><tr>\n";
-			$width = empty($tabs['width'])?'':' style="width: '.$tabs['width'].'"';
-			if (isset($tabs['items']) && count($tabs['items'])) foreach($tabs['items'] as $item) {
-				if (isset($item['url'])) {
-					$url = $item['url'];
-				} else {
-					$url = $Eresus->request['url'];
-					if (isset($item['name'])) {
-						if (($p = strpos($url, $item['name'].'=')) !== false) $url = substr($url, 0, $p-1);
-						$url .= (strpos($url, '?') !== false?'&':'?').$item['name'].'='.$item['value'];
-					} else $url = $page->url();
+		if (count($tabs))
+		{
+			$result = '<div class="legacy-tabs ui-helper-clearfix">';
+			$width = empty($tabs['width']) ?
+				'' :
+				' style="width: ' . $tabs['width'] . '"';
+			if (
+				isset($tabs['items']) &&
+				count($tabs['items'])
+			)
+				foreach($tabs['items'] as $item)
+				{
+					if (isset($item['url']))
+					{
+						$url = $item['url'];
+					}
+					else
+					{
+						$url = $Eresus->request['url'];
+						if (isset($item['name']))
+						{
+							if (($p = strpos($url, $item['name'].'=')) !== false)
+								$url = substr($url, 0, $p-1);
+							$url .= (strpos($url, '?') !== false ? '&' : '?') . $item['name'].'='.$item['value'];
+						}
+						else
+							$url = $page->url();
+					}
+					$url = preg_replace('/&(?!amp;)/', '&amp;', $url);
+					$result .= '<a'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').' href="'.$url.'">'.$item['caption'].'</a>';
 				}
-				$url = preg_replace('/&(?!amp;)/', '&amp;', $url);
-				$result .= '<td'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').'><a href="'.$url.'">'.$item['caption'].'</a></td>';
-			}
 
-			$result .= "</tr></table>\n";
+			$result .= "</div>\n";
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
 	{
 		global $Eresus;

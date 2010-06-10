@@ -124,29 +124,6 @@ div.admListPages {text-align: left; margin: 2px 0px}
 
 div.admListHint {border: solid 1px #007acc; background-color: white; padding: 2px 5px; margin: 1px 5px 2px 0px; font-size: 8pt;}
 
-/* Вкладки */
-table.admTabs
-{
-	margin: 2px 0px;
-	line-height: 1.3em;
-}
-.admTabs td {
-	font-size: 8pt;
-	padding: 1px 0.3em;
-	background: #007acc url('img/hbg.gif') repeat-x;
-	text-align: center;
-	border: solid 1px;
-	border-color: #47d #028 #028 #47d;
-}
-.admTabs a {
-	color: white;
-	font-weight: bold;
-	display: block;
-	height: 100%;
-}
-.admTabs a:visited  {color: white; font-weight: bold;}
-.admTabs a:hover  {color: white; font-weight: bold;}
-
 /* File manager */
 
 #fileManager {
