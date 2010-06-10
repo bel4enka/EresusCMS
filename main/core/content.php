@@ -49,7 +49,10 @@ class TContent
 
 		if (UserRights(EDITOR))
 		{
-			$item = $Eresus->db->selectItem('pages', "`id`='".arg('section', 'int')."'");
+			useLib('sections');
+			$sections = new Sections();
+			$item = $sections->get(arg('section', 'int'));
+
 			$page->id = $item['id'];
 			if (!array_key_exists($item['type'], $Eresus->plugins->list))
 			{
