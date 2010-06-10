@@ -76,6 +76,7 @@ class EresusCMS extends EresusApplication
 		//$this->initDB();
 		//$this->initSession();
 		$GLOBALS['Eresus']->init();
+		TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 		if (PHP::isCLI())
 		{
