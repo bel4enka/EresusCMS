@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -38,8 +38,8 @@
 class TPages
 {
 	/**
-	 * ???
-	 * @var unknown_type
+	 * ”ровень доступа к этому модулу
+	 * @var int
 	 */
 	public $access = ADMIN;
 
@@ -311,21 +311,47 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @return unknown_type
+	 * ¬озвращает список типов контента в виде, пригодном дл€ построени€ выпадающего списка
+	 *
+	 * @return array
 	 */
-	function loadContentTypes()
+	private function loadContentTypes()
 	{
 		global $Eresus;
 
-		$result[0] = array(); $result[1] = array();
-		$result[0][] = admPagesContentDefault; $result[1][] = 'default';
-		$result[0][] = admPagesContentList; $result[1][] = 'list';
-		$result[0][] = admPagesContentURL; $result[1][] = 'url';
-		if(count($Eresus->plugins->list)) foreach($Eresus->plugins->list as $name => $plugin) if (strpos($plugin['type'], 'content') !== false) {
-			$result[0][] = $plugin['title'];
-			$result[1][] = $name;
+		$result[0] = array();
+		$result[1] = array();
+
+		/*
+		 * —тандартные типы контента
+		 */
+		$result[0] []= admPagesContentDefault;
+		$result[1] []= 'default';
+
+		$result[0] []= admPagesContentList;
+		$result[1] []= 'list';
+
+		$result[0] []= admPagesContentURL;
+		$result[1] []= 'url';
+
+		/*
+		 * “ипы контентов из плагинов
+		 */
+		if (count($Eresus->plugins->items))
+		{
+			foreach ($Eresus->plugins->items as $plugin)
+			{
+				if (
+					$plugin instanceof ContentPlugin ||
+					$plugin instanceof TContentPlugin
+				)
+				{
+					$result[0][] = $plugin->title;
+					$result[1][] = $plugin->name;
+				}
+			}
 		}
+
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -389,11 +415,12 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @param $id
-	 * @return unknown_type
+	 * ¬озвращает диалог изменени€ свойств раздела
+	 *
+	 * @param int $id
+	 * @return string  HTML
 	 */
-	function edit($id)
+	private function edit($id)
 	{
 		global $Eresus, $page;
 
