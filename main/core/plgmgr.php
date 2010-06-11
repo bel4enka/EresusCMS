@@ -42,14 +42,27 @@ class TPlgMgr
 	 */
 	private $access = ADMIN;
 
+	/**
+	 * Включает или отключает плагин
+	 *
+	 * @return void
+	 */
 	private function toggle()
 	{
 		global $page, $Eresus;
 
-		$Eresus->db->update('plugins', "`active` = NOT `active`", "`name`='".$Eresus->request['arg']['toggle']."'");
-		$item = $Eresus->db->selectItem('plugins', "`name`='".$Eresus->request['arg']['toggle']."'");
-		HTTP::redirect($page->url());
+		$q = DB::getHandler()->createUpdateQuery();
+		$e = $q->expr;
+		$q->update('plugins')
+			->set('active', $e->not('active'))
+			->where(
+				$e->eq('name', $q->bindValue(arg('toggle')))
+			);
+		DB::execute($q);
+
+		HttpResponse::redirect($page->url());
 	}
+	//-----------------------------------------------------------------------------
 
 	private function delete()
 	{
@@ -232,32 +245,6 @@ class TPlgMgr
 	}
 	//-----------------------------------------------------------------------------
 
-	private function up()
-	{
-		global $page, $Eresus;
-
-		dbReorderItems('plugins','','name');
-		$item = $Eresus->db->selectItem('plugins', "`name`='".arg('up', 'dbsafe')."'");
-		if ($item['position'] > 0) {
-			$Eresus->db->update('plugins', "`position` = `position`+1", "`position` = '".($item['position']-1)."'");
-			$Eresus->db->update('plugins', "`position` = `position`-1", "`name` = '".$item['name']."'");
-		}
-		HTTP::redirect($page->url());
-	}
-
-	private function down()
-	{
-		global $page, $Eresus;
-
-		dbReorderItems('plugins','','name');
-		$item = $Eresus->db->selectItem('plugins', "`name`='".arg('down', 'dbsafe')."'");
-		if ($item['position'] < $Eresus->db->count('plugins')-1) {
-			$Eresus->db->update('plugins', "`position` = `position`-1", "`position` = '".($item['position']+1)."'");
-			$Eresus->db->update('plugins', "`position` = `position`+1", "`name` = '".$item['name']."'");
-		}
-		HTTP::redirect($page->url());
-	}
-
 	/**
 	 * Отрисовка контента модуля
 	 *
@@ -291,14 +278,6 @@ class TPlgMgr
 				$result = $this->edit();
 			break;
 
-			case arg('up') !== null:
-				$this->up();
-			break;
-
-			case arg('down') !== null:
-				$this->down();
-			break;
-
 			case arg('action') == 'add':
 				$result = $this->add();
 			break;
@@ -311,7 +290,7 @@ class TPlgMgr
 				$table = array (
 					'name' => 'plugins',
 					'key' => 'name',
-					'sortMode' => 'position',
+					'sortMode' => 'title',
 					'columns' => array(
 						array('name' => 'title', 'caption' => admPlugin, 'width' => '90px', 'wrap'=>false),
 						array('name' => 'description', 'caption' => admDescription),
@@ -321,7 +300,6 @@ class TPlgMgr
 						'delete' => '',
 						'edit' => '',
 						'toggle' => '',
-						'position' => ''
 					),
 					'tabs' => array(
 						'width'=>'180px',

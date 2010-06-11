@@ -43,15 +43,13 @@ CREATE TABLE `plugins` (
   `name` varchar(32) NOT NULL,
   `active` bool  NOT NULL default 1,
   `content` bool  NOT NULL default 0,
-  `position` int(10) unsigned default 0,
   `settings` text,
   `title` varchar(64) default '',
   `version` varchar(16) default '',
   `description` varchar(255) default '',
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
-  KEY `content` (`content`),
-  KEY `position` (`position`)
+  KEY `content` (`content`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- --------------------------------------------------------

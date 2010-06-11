@@ -419,15 +419,24 @@ class Plugins
 	var $list = array(); # Список всех плагинов
 	var $items = array(); # Массив плагинов
 	var $events = array(); # Таблица обработчиков событий
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	/**
+	 * Конструктор
+	 */
 	function __construct()
 	{
 		global $Eresus;
 
-		$items = $Eresus->db->select('`plugins`', '', '`position`');
-		if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
+		$items = $Eresus->db->select('`plugins`');
+		if (count($items))
+		{
+			foreach($items as $item)
+			{
+				$this->list[$item['name']] = $item;
+			}
+		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает плагин
@@ -474,17 +483,27 @@ class Plugins
 	}
 	//-----------------------------------------------------------------------------
 
-	function uninstall($name)
-	# Удаление плагина
+	/**
+	 * Деинсталлирует плагин
+	 *
+	 * @param string $name  Имя плагина
+	 */
+	public function uninstall($name)
 	{
 		global $Eresus;
 
-		if (!isset($this->items[$name])) $this->load($name);
-		if (isset($this->items[$name])) $this->items[$name]->uninstall();
+		if (!isset($this->items[$name]))
+		{
+			$this->load($name);
+		}
+		if (isset($this->items[$name]))
+		{
+			$this->items[$name]->uninstall();
+		}
 		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
-		if (!is_null($item)) {
+		if (!is_null($item))
+		{
 			$Eresus->db->delete('plugins', "`name`='".$name."'");
-			$Eresus->db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
 		}
 		$filename = filesRoot.'ext/'.$name.'.php';
 		#if (file_exists($filename)) unlink($filename);
@@ -847,7 +866,6 @@ class Plugin
 		$result['name'] = $this->name;
 		$result['content'] = false;
 		$result['active'] = is_null($item)? true : $item['active'];
-		$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
 		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
 		$result['title'] = $this->title;
 		$result['version'] = $this->version;

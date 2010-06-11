@@ -43,15 +43,13 @@ CREATE TABLE `plugins` (
   `name` varchar(32) NOT NULL default '',
   `active` tinyint(1) unsigned NOT NULL default '1',
   `content` tinyint(1) unsigned NOT NULL default '0',
-  `position` int(10) unsigned default NULL,
   `settings` text,
   `title` varchar(64) default NULL,
   `version` varchar(16) default NULL,
   `description` varchar(255) default NULL,
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
-  KEY `content` (`content`),
-  KEY `position` (`position`),
+  KEY `content` (`content`)
 ) TYPE=MyISAM;
 
 -- --------------------------------------------------------

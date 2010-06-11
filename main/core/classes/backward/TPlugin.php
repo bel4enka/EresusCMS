@@ -112,7 +112,6 @@ class TPlugin
 		$result['name'] = $this->name;
 		$result['content'] = false;
 		$result['active'] = is_null($item) ? true : $item['active'];
-		$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
 		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
 		$result['title'] = $this->title;
 		$result['version'] = $this->version;
