@@ -1,4 +1,4 @@
-#Thu Jun 10 22:18:21 MSD 2010
+#Thu Jun 10 23:24:45 MSD 2010
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
@@ -38,6 +38,7 @@ encoding//main/core/plgmgr.php=windows-1251
 encoding//main/core/settings.php=windows-1251
 encoding//main/core/themes.php=windows-1251
 encoding//main/core/users.php=windows-1251
+encoding//main/style/default.css=windows-1251
 encoding//main/templates/default.html=windows-1251
 encoding//tools/thumb.php=windows-1251
 encoding/build.properties=windows-1251
