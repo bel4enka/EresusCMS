@@ -416,7 +416,7 @@ class Form
 			"\n\t<table width=\"100%\">\n".
 			"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
 			$result.
-			"\t\t<tr><td colspan=\"2\" align=\"center\"><br />".
+			"\t\t<tr><td colspan=\"2\" class=\"ui-button-box\"><br />".
 			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<button name="form_ok" type="submit">'.$this->form['buttons']['ok'].'</button> ':'').
 			(!isset($this->form['buttons']) || in_array('ok', $this->form['buttons'])?"<button name=\"form_ok\" type=\"submit\">".strOk."</button> ":'').
 
