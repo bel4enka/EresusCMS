@@ -39,6 +39,7 @@
  */
 .block
 {
+	display: block;
 	padding: .2em .5em;
 }
 
@@ -76,7 +77,7 @@
 		background: #007acc url(img/box-header.png) repeat-x;
 		border: solid 1px;
 		border-color: #08d #05a #05a #06b;
-		color: #ffd700;
+		color: #fff;
 		font-weight: bold;
 	 	padding: 0 .5em;
 	 	text-align: center;
@@ -99,16 +100,17 @@
  * а вызывает функцию JavaScript.
  */
 a.pseudo,
-a:link.pseudo,
-a:visited.pseudo
+a.pseudo:visited
 {
 	border-bottom: dashed 1px #07b;
+	color: #07b;
 	text-decoration: none !important;
 }
 
-	a:hover.pseudo
+	a.pseudo:hover
 	{
 		border-bottom: dashed 1px #f00;
+		color: #f00;
 		text-decoration: none !important;
 	}
 
@@ -142,8 +144,18 @@ table.ui-grid.ui-hlines
 	.ui-button-box button
 	{
 		font-size: 110%;
+		min-width: 7em;
 		padding: .2em;
 	}
+
+	/**
+	 *
+	 */
+	.ui-button-box button[type=submit]
+	{
+		font-weight: bold;
+	}
+
 
 /*** Layout helpers ***/
 .ui-helper-hidden
@@ -793,6 +805,14 @@ table.ui-grid.ui-hlines
 
 
 /**
+ * Заголовки боксов в области навигации
+ */
+.nav .box .header
+{
+	color: #ffd700;
+}
+
+/**
  * Меню
  */
 .menu a,
@@ -890,3 +910,37 @@ table.ui-grid.ui-hlines
 {
 	text-align: center;
 }
+
+
+/**
+ * Менеджер плагинов
+ */
+
+	/**
+	 * Диалог добавления плагинов
+	 */
+
+	 	/**
+	 	 * Блок плагина
+	 	 */
+		#plugin-manager-add-dlg .plugin-list label
+		{
+			background-color: #fff;
+			cursor: pointer;
+		}
+			#plugin-manager-add-dlg .plugin-list label:hover
+			{
+				background-color: #cfc;
+			}
+
+		#plugin-manager-add-dlg .plugin-list input[type=checkbox]
+		{
+			float: left;
+			margin-top: 1.2em
+		}
+
+		#plugin-manager-add-dlg .plugin-list .info
+		{
+			margin-left: 2em;
+		}
+

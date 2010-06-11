@@ -68,8 +68,6 @@
 				file="${build.dir}/admin/themes/default/css/layout.css" />
 			<append destFile="${build.dir}/admin/themes/default/theme.css"
 				file="${build.dir}/admin/themes/default/css/widgets.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css/forms.css" />
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
