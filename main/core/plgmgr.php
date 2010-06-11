@@ -107,7 +107,16 @@ class TPlgMgr
 			foreach ($files as $plugin => $install)
 			{
 				if ($install)
-					$Eresus->plugins->install($plugin);
+				{
+					try
+					{
+						$Eresus->plugins->install($plugin);
+					}
+					catch (EresusSourceParseException $e)
+					{
+						ErrorMessage("Plugin file \"$plugin.php\" is broken (parse error)!");
+					}
+				}
 			}
 
 		}

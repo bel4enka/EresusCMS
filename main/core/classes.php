@@ -30,6 +30,17 @@
  * $Id$
  */
 
+
+/**
+ * Плагин повреждён
+ *
+ * Обычно это означает синтаксическую ошибку в файле плагина.
+ *
+ * @package EresusCMS
+ */
+class EresusSourceParseException extends EresusRuntimeException {};
+
+
 /**
  * Родительский класс веб-интерфейсов
  *
@@ -420,23 +431,41 @@ class Plugins
 
 	/**
 	 * Устанавливает плагин
+	 *
 	 * @param string $name  Имя плагина
+	 *
 	 * @return void
+	 *
+	 * @throws EresusSourceParseException
 	 */
-	function install($name)
+	public function install($name)
 	{
 		global $Eresus;
 
 		$filename = filesRoot.'ext/'.$name.'.php';
 		if (FS::exists($filename))
 		{
-			Core::safeInclude($filename);
+			/*
+			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
+			 * ошибок
+			 */
+			$code = file_get_contents($filename);
+			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
+			@$valid = eval($code) !== false;
+			if (!$valid)
+			{
+				throw new EresusSourceParseException(
+					sprintf('Parsing error in file "%s"', $filename),
+					sprintf('Plugin "%s" is broken (parse error)', $name)
+				);
+			}
+
 			$ClassName = $name;
 			if (!class_exists($ClassName, false) && class_exists('T'.$ClassName, false))
 				$ClassName = 'T'.$ClassName; # FIXME: Обратная совместимость с версиями до 2.10b2
 			if (class_exists($ClassName, false))
 			{
-				$this->items[$name] = new $ClassName;
+				$this->items[$name] = new $ClassName();
 				$this->items[$name]->install();
 				$Eresus->db->insert('plugins', $this->items[$name]->__item());
 			}
