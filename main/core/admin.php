@@ -188,15 +188,19 @@ class TAdminUI extends WebPage
 		TemplateSettings::getGlobalValue('theme', $theme);
 
 		$this->title = admControls;
-		# Определяем уровень вложенности
-		do {
+		/* Определяем уровень вложенности */
+		do
+		{
 			$this->sub++;
 			$i = strpos($Eresus->request['url'], str_repeat('sub_', $this->sub).'id');
 		} while ($i !== false);
+
 		$this->sub--;
-		# Загружаем плагины
-		$Eresus->plugins->preload(array('admin'),array('ondemand'));
-		# Создаем меню
+
+		// Загружаем плагины
+		$Eresus->plugins->preload(array('admin'));
+
+		/* Создаем меню */
 		$this->menu = array(
 			array(
 				"access"  => EDITOR,
@@ -211,7 +215,6 @@ class TAdminUI extends WebPage
 				)
 			),
 		);
-		$Eresus->plugins->adminOnMenuRender();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -775,6 +778,8 @@ class TAdminUI extends WebPage
 	private function renderControlMenu()
 	{
 		global $Eresus;
+
+		$Eresus->plugins->adminOnMenuRender();
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)
