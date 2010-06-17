@@ -831,7 +831,7 @@ class TAdminUI extends WebPage
 		global $Eresus;
 
 		$req = HTTP::request();
-		$user = $req->arg('user');
+		$user = $req->arg('user', '/\W/');
 		$password = $req->arg('password');
 		$autologin = $req->arg('autologin');
 
@@ -841,17 +841,18 @@ class TAdminUI extends WebPage
 
 		if ($req->getMethod() == 'POST')
 		{
-			// FIXME Нужна фильтрация аргументов!
-
 			if ($Eresus->login($user, $Eresus->password_hash($password), $autologin))
+			{
 				HTTP::redirect('./admin.php');
-
+			}
 		}
 
 		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
 		{
 			foreach ($Eresus->session['msg']['errors'] as $message)
+			{
 				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
+			}
 
 			$Eresus->session['msg']['errors'] = array();
 		}
