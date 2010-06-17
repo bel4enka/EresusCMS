@@ -57,25 +57,36 @@ class TSettings
 
 		$result = "  define('$name', ";
 		$quot = "'";
-		$value = is_null($req->arg($name)) ? option($name) : $req->arg($name);
+		$value = is_null($req->arg($name)) ?
+			option($name) :
+			$req->arg($name);
+
 		if (isset($options['nobr']) && $options['nobr'])
+		{
 			$value = str_replace(array("\n", "\r"), ' ', $value);
+		}
+
 		if (isset($options['savebr']) && $options['savebr'])
 		{
 			$value = addcslashes($value, "\n\r\"");
 			$quot = '"';
 		}
+
 		switch ($type)
 		{
 			case 'string':
+				$value = str_replace(
+					array('\\', $quot),
+					array('\\\\', '\\' . $quot),
+					$value
+				);
 				$value = $quot . $value . $quot;
 			break;
 			case 'bool':
 				$value = $value ? 'true' : 'false';
 			break;
 			case 'int':
-				if (empty($value))
-					$value = 0;
+					$value = intval($value);
 			break;
 		}
 		$result .= $value . ");\n";
