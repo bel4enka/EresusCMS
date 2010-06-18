@@ -185,7 +185,7 @@ class TAdminUI extends WebPage
 
 		$theme = new AdminUITheme();
 		$this->setUITheme($theme);
-		TemplateSettings::getGlobalValue('theme', $theme);
+		TemplateSettings::setGlobalValue('theme', $theme);
 
 		$this->title = admControls;
 		/* Определяем уровень вложенности */
@@ -652,6 +652,14 @@ class TAdminUI extends WebPage
 	function renderContent()
 	{
 	global $Eresus;
+
+
+		$req = HTTP::request();
+		if (strpos($req->getLocal(), '/admin/fm/') === 0)
+		{
+			$fm = new AdminFileManager();
+			return $fm->renderUI();
+		}
 
 		$result = '';
 		if (arg('mod')) {

@@ -367,3 +367,15 @@ class EresusCMS extends EresusApplication
 	}
 	//-----------------------------------------------------------------------------
 }
+
+
+
+/**
+ * Компонент АИ
+ *
+ * @package EresusCMS
+ */
+class EresusAdminComponent
+{
+
+}
