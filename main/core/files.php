@@ -177,7 +177,7 @@ class TFiles
 						$result[$i]['action'] = 'cd';
 					break;
 					case 'file':
-						$result[$i]['link'] = httpRoot . $dir . $name;
+						$result[$i]['link'] = httpRoot . $this->root . $dir . $name;
 						$result[$i]['size'] = number_format(filesize(filesRoot . $this->root . $dir . $name));
 						$result[$i]['action'] = 'new';
 						$result[$i]['icon'] = 'application-octet-stream';
