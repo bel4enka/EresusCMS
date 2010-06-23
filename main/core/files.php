@@ -313,7 +313,7 @@ class TFiles
 	function copyFile()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
-		$dest = filesRoot.$this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
+		$dest = filesRoot . $this->root . $this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
 		if (is_file($filename)) copy($filename, $dest);
 		elseif (is_dir($filename)) {
 		}
