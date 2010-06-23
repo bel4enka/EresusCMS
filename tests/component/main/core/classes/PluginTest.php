@@ -58,7 +58,6 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('plugin', $test['name'], 'name');
 		$this->assertFalse($test['content'], 'content');
 		$this->assertTrue($test['active'], 'active');
-		$this->assertEquals(1, $test['position'], 'position');
 		$this->assertEquals('a:0:{}', $test['settings'], 'settings');
 		$this->assertEquals('no title', $test['title'], 'title');
 		$this->assertEquals('0.00', $test['version'], 'version');
@@ -82,7 +81,6 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('plugintest_plugin', $test['name'], 'name');
 		$this->assertFalse($test['content'], 'content');
 		$this->assertTrue($test['active'], 'active');
-		$this->assertEquals(1, $test['position'], 'position');
 		$this->assertEquals('a:1:{s:1:"a";s:1:"b";}', $test['settings'], 'settings');
 		$this->assertEquals('Test plugin', $test['title'], 'title');
 		$this->assertEquals('9.99', $test['version'], 'version');
