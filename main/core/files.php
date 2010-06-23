@@ -144,7 +144,7 @@ class TFiles
 	{
 		global $Eresus;
 
-		$result = '';
+		$result = array();
 		@$hnd=opendir(filesRoot.$this->root.$dir);
 		if ($hnd) {
 			$i = 0;
