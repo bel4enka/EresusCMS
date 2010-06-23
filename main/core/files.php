@@ -361,7 +361,11 @@ class TFiles
 		$this->pannels['r'] = preg_replace('~(/..|^../)~', '', $this->pannels['r']);
 		$this->pannels['r'] = preg_replace('!^/!', '', $this->pannels['r']);
 		while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
-		if ($this->sp) $this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
+		$this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
+		if (!$this->sp)
+		{
+			$this->sp = 'l';
+		}
 		if (count($_FILES)) $this->upload();
 		elseif (arg('mkdir')) $this->mkDir();
 		elseif (arg('rename')) $this->renameEntry();
