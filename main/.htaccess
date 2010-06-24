@@ -45,20 +45,24 @@ AddDefaultCharset Off
 <IfModule rewrite_module>
 	RewriteEngine on
 
+	### БЕЗОПАСНОСТЬ ###
+
+	# Запрещаем запуск потенциально опасных файлов из недоверенных директорий
+	RewriteRule ^(data|style)/.*\.(ph(p[2-6]?|tml)|pl)$ - [forbidden]
+
 	# Проксируем все запросы к сторонним расширениям через их коннекторы
-	RewriteRule ^ext-3rd/.* index.php [L]
+	RewriteRule ^ext-3rd/.* index.php [last]
+
+	### ДРУГИЕ ПЕРЕАДРЕСАЦИИ ###
 
 	# Включаем gzip-сжатие CSS и JavaScript
-	RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
-	RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
-
-	# Отдаём статические файлы без обработки
-	RewriteRule (.*\.(css|js))$ - [L]
+	RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [last]
+	RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [last]
 
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(core|admin/themes|admin/logos|ext|data|style)/ - [L]
+	RewriteRule ^(core|admin/themes|admin/logos|ext|data|style)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
-	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [L]
+	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [last]
 
 	# Все остальные запросы должны перехватываться запускающим скриптом
 	RewriteRule .* index.php
