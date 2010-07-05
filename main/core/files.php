@@ -351,7 +351,7 @@ class TFiles
 	{
 		global $Eresus, $page;
 
-		$this->root = UserRights(ADMIN)?'':'data/';
+		$this->root = 'data/';
 
 		$this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
 		$this->pannels['l'] = preg_replace('~(/..|^../)~', '', $this->pannels['l']);
