@@ -840,7 +840,7 @@ class TAdminUI extends WebPage
 		global $Eresus;
 
 		$req = HTTP::request();
-		$user = $req->arg('user', '/[a-z0-9_\-\.\@]/');
+		$user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
 		$password = $req->arg('password');
 		$autologin = $req->arg('autologin');
 
