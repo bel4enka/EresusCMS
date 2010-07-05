@@ -354,11 +354,11 @@ class TFiles
 		$this->root = 'data/';
 
 		$this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
-		$this->pannels['l'] = preg_replace('~(/..|^../)~', '', $this->pannels['l']);
+		$this->pannels['l'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['l']);
 		$this->pannels['l'] = preg_replace('!^/!', '', $this->pannels['l']);
 		while (!empty($this->pannels['l']) && !is_dir(filesRoot.$this->root.$this->pannels['l'])) $this->pannels['l'] = preg_replace('![^/]+/$!', '', $this->pannels['l']);
 		$this->pannels['r'] = (arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
-		$this->pannels['r'] = preg_replace('~(/..|^../)~', '', $this->pannels['r']);
+		$this->pannels['r'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['r']);
 		$this->pannels['r'] = preg_replace('!^/!', '', $this->pannels['r']);
 		while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
 		$this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
