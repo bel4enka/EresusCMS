@@ -127,9 +127,9 @@ define('errUploadSizeFORM', 'Размер файла "%s" превышает максимально допустимый 
 define('errUploadPartial', 'Файл "%s" получен только частично.');
 define('errUploadNoFile', 'Файл "%s" не был загружен.');
 
-define('errInvalidPassword', 'Неверный пароль');
-define('errAccountNotActive', 'Учетная запись "%s" отключена администратором сайта');
-define('errAccountNotExists', 'Учетная запись "%s" отсутствует. Проверьте правильность ввода');
+define('errInvalidPassword', 'Неверное имя пользователя или пароль');
+define('errAccountNotActive', errInvalidPassword);
+define('errAccountNotExists', errInvalidPassword);
 define('errTooEarlyRelogin',"Перед попыткой повторного логина должно пройти не менее %s секунд!");
 # Формы
 define('errFormUnknownType', 'Неизвестный тип поля "%s" в форме "%s"');

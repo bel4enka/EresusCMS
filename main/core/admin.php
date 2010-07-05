@@ -832,6 +832,7 @@ class TAdminUI extends WebPage
 
 	/**
 	 * Авторизация
+	 *
 	 * @return void
 	 */
 	private function auth()
