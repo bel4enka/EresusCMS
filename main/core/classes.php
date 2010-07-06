@@ -766,7 +766,7 @@ class Plugin
 	 *
 	 * @var array
 	 */
-	protected $settings = array();
+	public $settings = array();
 
 	/**
 	 * Директория данных
