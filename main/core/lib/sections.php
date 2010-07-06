@@ -4,86 +4,114 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 3 Р»РёР±Рѕ (РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ) СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹Р»Рё РїРѕР»СѓС‡РёС‚СЊ РєРѕРїРёСЋ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё
+ * GNU СЃ СЌС‚РѕР№ РїСЂРѕРіСЂР°РјРјРѕР№. Р•СЃР»Рё Р’С‹ РµРµ РЅРµ РїРѕР»СѓС‡РёР»Рё, СЃРјРѕС‚СЂРёС‚Рµ РґРѕРєСѓРјРµРЅС‚ РЅР°
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
  *
  * $Id$
  *
- * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
+ * TODO: РџРµСЂРµРЅРµСЃС‚Рё СЃРѕС…СЂР°РЅРµРЅРёРµ СЃРєРІРѕР·РЅРѕР№ РЅСѓРјРµСЂР°С†РёРё РїРѕР·РёС†РёСЋ СЃСЋРґР° РёР· pages
  *
  */
 
 /**
- * Активные разделы
+ * РђРєС‚РёРІРЅС‹Рµ СЂР°Р·РґРµР»С‹
  * @var int
  */
 define('SECTIONS_ACTIVE',  0x0001);
+
+/**
+ * Р’РёРґРёРјС‹Рµ СЂР°Р·РґРµР»С‹
+ * @var int
+ */
 define('SECTIONS_VISIBLE', 0x0002);
 
 /**
- * Работа с разделами сайта
+ * Р Р°Р±РѕС‚Р° СЃ СЂР°Р·РґРµР»Р°РјРё СЃР°Р№С‚Р°
  *
  * @package EresusCMS
  */
-class Sections {
-	var $table = 'pages';
-	var $index = array();
-	var $cache = array();
+class Sections
+{
 	/**
-	* Создаёт индекс разделов
-	*
-	* @access  private
-	*
-	* @param  bool  $force  Игнорировать закешированные данные
-	*/
-	function index($force = false)
+	 * РРјСЏ С‚Р°Р±Р»РёС†С‹ СЂР°Р·РґРµР»РѕРІ
+	 *
+	 * @var string
+	 */
+	private $table = 'pages';
+
+	/**
+	 * РРЅРґРµРєСЃ СЂР°Р·РґРµР»РѕРІ
+	 *
+	 * @var array
+	 */
+	private $index = array();
+
+	/**
+	 * РљСЌС€
+	 *
+	 * @var array
+	 */
+	private $cache = array();
+
+	/**
+	 * РЎРѕР·РґР°С‘С‚ РёРЅРґРµРєСЃ СЂР°Р·РґРµР»РѕРІ
+	 *
+	 * @param bool $force  РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ Р·Р°РєСЌС€РёСЂРѕРІР°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
+	 * @return void
+	 */
+	private function index($force = false)
 	{
 		global $Eresus;
 
-		if ($force || !$this->index) {
+		if ($force || !$this->index)
+		{
 			$items = $Eresus->db->select($this->table, '', '`position`', '`id`,`owner`');
-			if ($items) {
+			if ($items)
+			{
 				$this->index = array();
-				foreach($items as $item) $this->index[$item['owner']][] = $item['id'];
+				foreach($items as $item)
+				{
+					$this->index[$item['owner']] []= $item['id'];
+				}
 			}
 		}
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Создаёт список ID разделов определённой ветки
-	*
-	* @access  private
-	*
-	* @param  int  $owner  ID корневого раздела ветки
-	*
-	* @return  array  Список ID разделов
-	*/
-	function branch_ids($owner)
+	 * РЎРѕР·РґР°С‘С‚ СЃРїРёСЃРѕРє ID СЂР°Р·РґРµР»РѕРІ РѕРїСЂРµРґРµР»С‘РЅРЅРѕР№ РІРµС‚РєРё
+	 *
+	 * @param int $owner  ID РєРѕСЂРЅРµРІРѕРіРѕ СЂР°Р·РґРµР»Р° РІРµС‚РєРё
+	 * @return array  РЎРїРёСЃРѕРє ID СЂР°Р·РґРµР»РѕРІ
+	 */
+	private function branch_ids($owner)
 	{
 		$result = array();
-		if (isset($this->index[$owner])) {
+		if (isset($this->index[$owner]))
+		{
 			$result = $this->index[$owner];
-			foreach($result as $section) {
+			foreach($result as $section)
+			{
 				if (!$section) continue;
 				$result = array_merge($result, $this->branch_ids($section));
 			}
@@ -91,45 +119,53 @@ class Sections {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Выбирает разделы определённой ветки
-	*
-	* @access  public
-	*
-	* @param  int  $owner   Идентификатор корневого раздела ветки
-	* @param  int  $access  Минимальный уровень доступа
-	* @param  int  $flags   Флаги (см. SECTIONS_XXX)
-	*
-	* @return  array  Описания разделов
-	*/
-	function branch($owner, $access = GUEST, $flags = 0)
+	 * Р’С‹Р±РёСЂР°РµС‚ СЂР°Р·РґРµР»С‹ РѕРїСЂРµРґРµР»С‘РЅРЅРѕР№ РІРµС‚РєРё
+	 *
+	 * @param int $owner   РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕСЂРЅРµРІРѕРіРѕ СЂР°Р·РґРµР»Р° РІРµС‚РєРё
+	 * @param int $access  РњРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ РґРѕСЃС‚СѓРїР°
+	 * @param int $flags   Р¤Р»Р°РіРё (СЃРј. SECTIONS_XXX)
+	 *
+	 * @return array  РћРїРёСЃР°РЅРёСЏ СЂР°Р·РґРµР»РѕРІ
+	 */
+	public function branch($owner, $access = GUEST, $flags = 0)
 	{
 		global $Eresus;
 
 		$result = array();
-		# Создаём индекс
+		// РЎРѕР·РґР°С‘Рј РёРЅРґРµРєСЃ
 		if (!$this->index) $this->index();
-		# Находим ID разделов ветки.
+		// РќР°С…РѕРґРёРј ID СЂР°Р·РґРµР»РѕРІ РІРµС‚РєРё.
 		$set = $this->branch_ids($owner);
-		if (count($set)) {
+		if (count($set))
+		{
 			$list = array();
-			# Читаем из кэша
-			for($i=0; $i < count($set); $i++) if (isset($this->cache[$set[$i]])) {
-				$list[] = $this->cache[$set[$i]];
-				array_splice($set, $i, 1);
-				$i--;
+			/* Р§РёС‚Р°РµРј РёР· РєСЌС€Р° */
+			for ($i=0; $i < count($set); $i++)
+			{
+				if (isset($this->cache[$set[$i]]))
+				{
+					$list[] = $this->cache[$set[$i]];
+					array_splice($set, $i, 1);
+					$i--;
+				}
 			}
-			if (count($set)) {
+			if (count($set))
+			{
 				$fieldset = '';//implode(',', array_diff($this->fields(), array('content')));
-				# Читаем из БД
+				# Р§РёС‚Р°РµРј РёР· Р‘Р”
 				$set = implode(',', $set);
 				$items = $Eresus->db->select($this->table, "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
-				for($i=0; $i<count($items); $i++) {
+				for($i=0; $i<count($items); $i++)
+				{
 					$this->cache[$items[$i]['id']] = $items[$i];
 					$list[] = $items[$i];
 				}
 			}
-			if ($flags) {
+
+			if ($flags)
+			{
 				for($i=0; $i<count($list); $i++) if
 					(
 						(!($flags & SECTIONS_ACTIVE) || $list[$i]['active']) &&
@@ -139,47 +175,60 @@ class Sections {
 		}
 		return $result;
 	}
+
+	/**
+	 * @deprecated since 2.14
+	 */
 	function brunch($owner, $access = GUEST, $flags = 0)
 	{
 		return $this->branch($owner, $access, $flags);
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Возвращает идентификаторы дочерних разделов указанного
-	*
-	* @access public
-	*
-	* @param  int  $owner   Идентификатор корневого раздела ветки
-	* @param  int  $access  Минимальный уровень доступа
-	* @param  int  $flags   Флаги (см. SECTIONS_XXX)
-	*
-	* @return  array  Идентификаторы разделов
-	*/
-	function children($owner, $access = GUEST, $flags = 0)
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РґРѕС‡РµСЂРЅРёС… СЂР°Р·РґРµР»РѕРІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ
+	 *
+	 * @param int $owner   РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕСЂРЅРµРІРѕРіРѕ СЂР°Р·РґРµР»Р° РІРµС‚РєРё
+	 * @param int $access  РњРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ РґРѕСЃС‚СѓРїР°
+	 * @param int $flags   Р¤Р»Р°РіРё (СЃРј. SECTIONS_XXX)
+	 *
+	 * @return array  РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ СЂР°Р·РґРµР»РѕРІ
+	 */
+	public function children($owner, $access = GUEST, $flags = 0)
 	{
 		$items = $this->branch($owner, $access, $flags);
 		$result = array();
-		for($i=0; $i<count($items); $i++) if ($items[$i]['owner'] == $owner) $result[] = $items[$i];
+		for ($i=0; $i<count($items); $i++)
+		{
+			if ($items[$i]['owner'] == $owner)
+			{
+				$result[] = $items[$i];
+			}
+		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Возвращает идентификаторы всех родительских разделов указанного
-	*
-	* @access public
-	*
-	* @param  int  $id   Идентификатор раздела
-	*
-	* @return  array  Идентификаторы разделов или NULL если раздела $id не существует
-	*/
-	function parents($id)
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РІСЃРµС… СЂРѕРґРёС‚РµР»СЊСЃРєРёС… СЂР°Р·РґРµР»РѕРІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ
+	 *
+	 * @param int $id   РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°Р·РґРµР»Р°
+	 *
+	 * @return array  РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ СЂР°Р·РґРµР»РѕРІ РёР»Рё NULL РµСЃР»Рё СЂР°Р·РґРµР»Р° $id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
+	 */
+	public function parents($id)
 	{
 		$this->index();
 		$result = array();
-		while ($id) {
-			foreach($this->index as $key => $value) if (in_array($id, $value)) {
-				$result[] = $id = $key;
-				break;
+		while ($id)
+		{
+			foreach ($this->index as $key => $value)
+			{
+				if (in_array($id, $value))
+				{
+					$result[] = $id = $key;
+					break;
+				}
 			}
 			if (!$result) return null;
 		}
@@ -187,59 +236,72 @@ class Sections {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Возвращает список полей
-	*
-	* @access public
-	*
-	* @return  array  Список полей
-	*/
-	function fields()
+
+	/**
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»РµР№
+	 *
+	 * @return  array  РЎРїРёСЃРѕРє РїРѕР»РµР№
+	 */
+	public function fields()
 	{
 		global $Eresus;
 
-		if (isset($this->cache['fields'])) $result = $this->cache['fields']; else {
+		if (isset($this->cache['fields']))
+		{
+			$result = $this->cache['fields'];
+		}
+		else
+		{
 			$result = $Eresus->db->fields($this->table);
 			$this->cache['fields'] = $result;
 		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Возвращает раздел
-	*
-	* @access public
-	*
-	* @param  int     $id  ID раздела
-	* или
-	* @param  array   $id  Список идентификаторов
-	* или
-	* @param  string  $id  SQL-условие
-	*
-	* @return  array  Описание раздела
-	*/
-	function get($id)
+
+	/**
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°Р·РґРµР»
+	 *
+	 * @param int|array|string $id  ID СЂР°Р·РґРµР»Р° / РЎРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ / SQL-СѓСЃР»РѕРІРёРµ
+	 *
+	 * @return  array  РћРїРёСЃР°РЅРёРµ СЂР°Р·РґРµР»Р°
+	 */
+	public function get($id)
 	{
 		global $Eresus;
 
-		if (is_array($id)) $what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
-		elseif (is_numeric($id)) $what = "`id`=$id";
-		else $what = $id;
+		if (is_array($id))
+		{
+			$what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
+		}
+		elseif (is_numeric($id))
+		{
+			$what = "`id`=$id";
+		}
+		else
+		{
+			$what = $id;
+		}
 		$result = $Eresus->db->select($this->table, $what);
-		if ($result) for($i=0; $i<count($result); $i++) $result[$i]['options'] = decodeOptions($result[$i]['options']);
+		if ($result)
+		{
+			for ($i=0; $i<count($result); $i++)
+			{
+				$result[$i]['options'] = decodeOptions($result[$i]['options']);
+			}
+		}
 		if (is_numeric($id) && $result && count($result)) $result = $result[0];
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	 * Добавляет раздел
+	 * Р”РѕР±Р°РІР»СЏРµС‚ СЂР°Р·РґРµР»
 	 *
-	 * @access public
-	 *
-	 * @param  array  $item  Раздел
-	 * @return  mixed  Описание нового раздела или false в случае неудачи
+	 * @param  array  $item  Р Р°Р·РґРµР»
+	 * @return  mixed  РћРїРёСЃР°РЅРёРµ РЅРѕРІРѕРіРѕ СЂР°Р·РґРµР»Р° РёР»Рё false РІ СЃР»СѓС‡Р°Рµ РЅРµСѓРґР°С‡Рё
 	 */
-	function add($item)
+	public function add($item)
 	{
 		global $Eresus;
 
@@ -256,16 +318,15 @@ class Sections {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Изменяет раздел
-	*
-	* @access public
-	*
-	* @param  array  $item  Раздел
-	*
-	* @return  mixed  Описание нового раздела или false в случае неудачи
-	*/
-	function update($item)
+	 * РР·РјРµРЅСЏРµС‚ СЂР°Р·РґРµР»
+	 *
+	 * @param  array  $item  Р Р°Р·РґРµР»
+	 *
+	 * @return  mixed  РћРїРёСЃР°РЅРёРµ РЅРѕРІРѕРіРѕ СЂР°Р·РґРµР»Р° РёР»Рё false РІ СЃР»СѓС‡Р°Рµ РЅРµСѓРґР°С‡Рё
+	 */
+	public function update($item)
 	{
 		global $Eresus;
 
@@ -283,16 +344,15 @@ class Sections {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Удаляет раздел и подразделы
-	*
-	* @access public
-	*
-	* @param  int  $id  Идентификатор раздела
-	*
-	* @return  bool  Результат операции
-	*/
-	function delete($id)
+	 * РЈРґР°Р»СЏРµС‚ СЂР°Р·РґРµР» Рё РїРѕРґСЂР°Р·РґРµР»С‹
+	 *
+	 * @param  int  $id  РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂР°Р·РґРµР»Р°
+	 *
+	 * @return  bool  Р РµР·СѓР»СЊС‚Р°С‚ РѕРїРµСЂР°С†РёРё
+	 */
+	public function delete($id)
 	{
 		global $Eresus;
 
@@ -300,7 +360,7 @@ class Sections {
 		$children = $this->children($id);
 		for($i=0; $i<count($children); $i++) if  (!$result = $this->delete($children[$i]['id'])) break;
 		if ($result) {
-			# Удаляем контент раздела
+			# РЈРґР°Р»СЏРµРј РєРѕРЅС‚РµРЅС‚ СЂР°Р·РґРµР»Р°
 			$section = $this->get($id);
 			if ($plugin = $Eresus->plugins->load($section['type'])) {
 				if (method_exists($plugin, 'onSectionDelete')) $plugin->onSectionDelete($id);
