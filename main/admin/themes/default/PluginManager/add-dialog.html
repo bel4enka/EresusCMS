@@ -18,10 +18,15 @@
 			<div class="plugin-list">
 				{foreach $plugins plugin}
 				<label class="block box">
-					<input type="checkbox" name="files[{$plugin.name}]" value="1" checked="checked" />
+					{if !$plugin.errors}<input type="checkbox" name="files[{$plugin.name}]" value="1" checked="checked" />{/if}
 					<span class="block info">
 						<strong>{$plugin.title} {$plugin.version}</strong><br />
 						{$plugin.description}
+						{if $plugin.errors}
+						<div class="error-text">
+						{foreach $plugin.errors error}{$error}<br />{/foreach}
+						</div>
+						{/if}
 					</span>
 				</label>
 				{/foreach}

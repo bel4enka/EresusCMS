@@ -99,3 +99,11 @@ sup
 	font-size: 90%;
 	vertical-align: baseline;
 }
+
+/**
+ * Текст, сообщающий об ошибке
+ */
+.error-text
+{
+	color: red;
+}

@@ -221,8 +221,8 @@ class TPlgMgr
 
 					$kernelVersion = str_replace('rc','RC', CMSVERSION);
 					if (
-						count($kernel) &&
-						version_compare($v_plugin, $v_kernel, '>')
+						isset($plugin['kernel']) &&
+						version_compare($plugin['kernel'], $kernelVersion, '>')
 					)
 					{
 						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
