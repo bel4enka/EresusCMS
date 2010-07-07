@@ -664,17 +664,51 @@ class TAdminUI extends WebPage
 		$result = '';
 		if (arg('mod')) {
 			$module = arg('mod', '/[^\w-]/');
-			if(file_exists(filesRoot."core/$module.php")) {
-				include_once(filesRoot."core/$module.php");
+			if(file_exists(filesRoot."core/$module.php"))
+			{
+				include_once $Eresus->froot . "core/$module.php";
 				$class = "T$module";
 				$this->module = new $class;
-			} elseif (substr($module, 0, 4) == 'ext-') {
+			}
+			elseif (substr($module, 0, 4) == 'ext-')
+			{
 				$name = substr($module, 4);
 				$this->module = $Eresus->plugins->load($name);
-			} else ErrorMessage(errFileNotFound.': "'.filesRoot."core/$module.php'");
-			if (is_object($this->module)) {
-				if (method_exists($this->module, 'adminRender')) $result .= $this->module->adminRender();
-				else ErrorMessage(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
+			}
+			else
+			{
+				ErrorMessage(errFileNotFound.': "'.filesRoot."core/$module.php'");
+			}
+
+			/*
+			 * Отрисовка контента плагином
+			 */
+			if (is_object($this->module))
+			{
+				if (method_exists($this->module, 'adminRender'))
+				{
+					try
+					{
+						$result .= $this->module->adminRender();
+					}
+					catch (Exception $e)
+					{
+						Core::logException($e, 'Error in plugin "' . $name . '"');
+
+						$msg = I18n::getInstance()->getText('An error occured in plugin.', __CLASS__);
+
+						$msg .= '<br />' . $e->getMessage();
+						if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)
+						{
+							$msg .= '<br />' . $e->getDescription();
+						}
+						$result .= ErrorBox($msg);
+					}
+				}
+				else
+				{
+					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
+				}
 			}
 		}
 		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
