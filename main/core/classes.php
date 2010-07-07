@@ -875,6 +875,20 @@ class Plugin
 	//------------------------------------------------------------------------------
 
 	/**
+	 * Перехватчик обращений к несуществующим методам плагинов
+	 *
+	 * @param string $method  Имя вызванного метода
+	 * @param array  $args    Переданные аргументы
+	 *
+	 * @throws EresusMethodNotExistsException
+	 */
+	public function __call($method, $args)
+	{
+		throw new EresusMethodNotExistsException($method, get_class($this));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Чтение настроек плагина из БД
 	 *
 	 * @return bool  Результат выполнения
