@@ -1450,9 +1450,22 @@ class EresusExtensionConnector
 		if (!UserRights(EDITOR))
 			die;
 
-		$ext = strtolower(substr($Eresus->request['file'], strrpos($Eresus->request['file'], '.') + 1));
 		$filename = $Eresus->request['path'] . $Eresus->request['file'];
 		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
+
+		if (FS::isDir($filename))
+		{
+			$filename = FS::normalize($filename . '/index.php');
+		}
+
+		if (!FS::isFile($filename))
+		{
+			header('Not found', true, 404);
+			die('<h1>Not found.</h1>');
+		}
+
+		$ext = strtolower(substr($filename, strrpos($filename, '.') + 1));
+
 		switch (true)
 		{
 			case in_array($ext, array('png', 'jpg', 'jpeg', 'gif')):
