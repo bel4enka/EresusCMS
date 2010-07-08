@@ -58,17 +58,20 @@ tinyMCE.init(
 	/*
 	 * Подключаемые плагины
 	 *
-	 * - safari       - Исправляет разные проблемы совместимости в Safari
+	 * - advimage     - Расширенный диалог вставки картинок
+	 * - advlist      - Дополнительные опции для списков
+	 * - fullscreen   - Позволяет разворачивать редактор на всю страницу.
+	 *                  Кнопки: fullscreen
+	 * - images       - Менеджер изображений
 	 * - inlinepopups - Открывает диалоги во всплывающих слоях, а не в новых окнах
+	 * - paste        - Расширенные возможности вставки
+	 * - safari       - Исправляет разные проблемы совместимости в Safari
 	 * - table        - Работа с таблицами.
 	 *                  Кнопки: tablecontrols, table, row_props, cell_props, delete_col, delete_row,
 	 *                  delete_table, col_after, col_before, row_after, row_before, split_cells,
 	 *                  merge_cells.
-	 * - fullscreen   - Позволяет разворачивать редактор на всю страницу.
-	 *                  Кнопки: fullscreen
-	 * - advimage     - Расширенный диалог вставки картинок
 	 */
-	plugins : "safari,inlinepopups,fullscreen,paste,table,advlist,advimage",
+	plugins : "advimage,advlist,fullscreen,images,inlinepopups,paste,safari,table",
 
 	/*
 	 * Тема оформления
@@ -110,7 +113,7 @@ tinyMCE.init(
 		"blockquote,sub,sup,|,"+
 		"justifyleft,justifycenter,justifyright,justifyfull",
 	theme_advanced_buttons2 :
-		"link,unlink,anchor,image,hr,charmap,|,"+
+		"link,unlink,anchor,images,image,hr,charmap,|,"+
 		"tablecontrols,|,"+
 		"cut,copy,paste,pastetext,pasteword,|,"+
 		"cleanup,code",
