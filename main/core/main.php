@@ -148,7 +148,7 @@ class EresusCMS extends EresusApplication
 			if (!FS::exists($this->getFsRoot() . $dir))
 			{
 				$umask = umask(0000);
-				mkdir($this->getFsRoot() . $dir, 0777);
+				mkdir(FS::nativeForm($this->getFsRoot() . $dir), 0777);
 				umask($umask);
 			}
 			// TODO Сделать проверку на запись в созданные директории

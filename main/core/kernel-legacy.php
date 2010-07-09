@@ -948,35 +948,87 @@ class Eresus
 	// Информация о системе
 	//------------------------------------------------------------------------------
 	/**
-	* Взято из Limb3 - http://limb-project.com/
-	*/
-	function isWin32()  { return DIRECTORY_SEPARATOR == '\\'; }
-	function isUnix()   { return DIRECTORY_SEPARATOR == '/'; }
-	function isMac()    { return !strncasecmp(PHP_OS, 'MAC', 3); }
-	function isModule() { return !$this->isCgi() && isset($_SERVER['GATEWAY_INTERFACE']); }
-	function isCgi()    { return !strncasecmp(PHP_SAPI, 'CGI', 3); }
-	function isCli()    { return PHP_SAPI == 'cli'; }
-	#-------------------------------------------------------------------------------
-	/**
-	* Читает и применяет конфигурационный файл
-	*
-	* @access  private
-	*/
-	function init_config()
+	 * @deprecated since 2.14
+	 */
+	function isWin32()
 	{
+		return System::isWindows();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isUnix()
+	{
+		return System::isUnixLike();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isMac()
+	{
+		return System::isMac();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isModule()
+	{
+		return PHP::isModule();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isCgi()
+	{
+		return PHP::isCGI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isCli()
+	{
+		return PHP::isCLI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Читает и применяет конфигурационный файл
+	 */
+	private function init_config()
+	{
+		/*
+		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
+		 * мог записывать в неё свои значения.
+		 */
 		global $Eresus;
 
-		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.php';
-		if (is_file($filename)) include_once($filename);
-		else FatalError("Main config file '$filename' not found!");
+		$filename = Core::app()->getFsRoot() . '/cfg/main.php';
+		$nativeFilename = FS::nativeForm($filename);
+		if (FS::isFile($filename))
+		{
+			include_once $nativeFilename;
+		}
+		else
+		{
+			FatalError("Main config file '$nativeFilename' not found!");
+		}
 	}
-	#-------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
+
 	/**
-	* Инициирует сессии
-	*
-	* @access  private
-	*/
-	function init_session()
+	 * Инициирует сессии
+	 */
+	private function init_session()
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
@@ -989,33 +1041,55 @@ class Eresus
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];
 	}
-	#-------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
+
 	/**
-	* Определяет пути
-	*
-	* @access  private
-	*/
-	function init_resolve()
+	 * Определяет файловые пути
+	 *
+	 * @return void
+	 */
+	protected function init_resolve()
 	{
-		if (is_null($this->froot)) $this->froot = realpath(dirname(__FILE__).'/..').'/';
-		if ($this->isWin32()) {
-			$this->froot = str_replace('\\', '/', substr($this->froot, 2));
+		if (is_null($this->froot))
+		{
+			$this->froot = FS::nativeForm(Core::app()->getFsRoot() . '/');
 		}
-		$this->fdata = $this->froot.'data/';
-		$this->fstyle = $this->froot.'style/';
 
-		if (is_null($this->path)) {
+		$this->fdata = $this->froot . 'data' . DIRECTOR_SEPARATOR;
+		$this->fstyle = $this->froot . 'style' . DIRECTOR_SEPARATOR;
+
+		if (is_null($this->path))
+		{
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
-			if (!strlen($s) || $s{strlen($s)-1} != '/') $s .= '/';
-			$this->path = ($s{0} != '/' ? '/' : '').$s;
+			$s = substr(dirname($_SERVER['SCRIPT_FILENAME']), strlen($_SERVER['DOCUMENT_ROOT']));
+			$s = FS::canonicalForm($s);
+			if (strlen($s) == 0 || substr($s, -1) != '/')
+			{
+				$s .= '/';
+			}
+			if (substr($s, 0, 1) != '/')
+			{
+				$s = '/' . $s;
+			}
+			$this->path = $s;
 		}
 
-		# Обратная совместимость
+		/**
+		 * Обратная совместимость
+		 * @var string
+		 * @deprecated since 2.14
+		 */
 		define('filesRoot', $this->froot);
+
+		/**
+		 * Обратная совместимость
+		 * @var string
+		 * @deprecated since 2.14
+		 */
 		define('dataFiles', $this->fdata);
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	* Читает настройки
 	*

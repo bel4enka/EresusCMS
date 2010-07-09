@@ -32,6 +32,7 @@
 
 require_once dirname(__FILE__) . '/../../helpers.php';
 
+require_once 'EresusTest.php';
 require_once 'classes/AllTests.php';
 
 class Main_Core_AllTests
@@ -40,6 +41,7 @@ class Main_Core_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core Tests');
 
+		$suite->addTestSuite('EresusTest');
 		$suite->addTest(Main_Core_Classes_AllTests::suite());
 
 		return $suite;
