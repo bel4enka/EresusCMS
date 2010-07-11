@@ -43,10 +43,35 @@ class TAbout
 	 */
 	public function adminRender()
 	{
-		global $Eresus, $page;
+		global $Eresus, $page, $locale;
+
+		$xml = new DOMDocument('1.0', 'UTF-8');
+		$xml->load($Eresus->froot . 'core/about.xml');
+
+		$data = array();
+
+		$product = $xml->getElementsByTagName('product')->item(0);
+		$data['product'] = array();
+		$data['product']['title'] = $product->getAttribute('title');
+		$data['product']['version'] = $product->getAttribute('version');
+
+		$data['product']['copyrights'] = array();
+		$copyrights = $product->getElementsByTagName('copyright');
+		for ($i = 0; $i < $copyrights->length; $i++)
+		{
+			$data['product']['copyrights'] []= array(
+				'year' => $copyrights->item($i)->getAttribute('year'),
+				'owner' => $copyrights->item($i)->getAttribute('owner'),
+				'url' => $copyrights->item($i)->getAttribute('url'),
+			);
+		}
+
+		$license = $xml->getElementsByTagName('license')->item(0);
+		$data['license'] = array();
+		$data['license']['text'] = $license->getElementsByTagName($locale['lang'])->item(0)->textContent;
 
 		$tmpl = $page->getUITheme()->getTemplate('misc/about.html');
-		$html = $tmpl->compile();
+		$html = $tmpl->compile($data);
 
 		return $html;
 	}
