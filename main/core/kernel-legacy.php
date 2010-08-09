@@ -1055,8 +1055,8 @@ class Eresus
 			$this->froot = FS::nativeForm(Core::app()->getFsRoot() . '/');
 		}
 
-		$this->fdata = $this->froot . 'data' . DIRECTOR_SEPARATOR;
-		$this->fstyle = $this->froot . 'style' . DIRECTOR_SEPARATOR;
+		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
+		$this->fstyle = $this->froot . 'style' . DIRECTORY_SEPARATOR;
 
 		if (is_null($this->path))
 		{
