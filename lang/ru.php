@@ -359,4 +359,4 @@ define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <stron
 define('admTemplPageSelector', 'Шаблон переключателя страниц');
 define('admTemplPageSelectorLabel', 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol><li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li><li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон перехода к первой странице, $(href) - ссылка</li><li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>');
 
-define('templPosted', ' <img src="'.httpRoot.'core/img/time.gif" alt="" title="$(posted)">');
+define('templPosted', '$(posted)');
