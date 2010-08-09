@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -1271,7 +1271,7 @@ class Eresus
 	{
 		switch (arg('action')) {
 			case 'login':
-				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
+				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				HTTP::redirect($this->request['url']);
 			break;
 			case 'logout':
@@ -1404,22 +1404,44 @@ class Eresus
  /**
 	* Авторизация пользователя
 	*
-	* @param string $login   Имя пользователя
-	* @param string $key		 Ключ учётной записи
-	* @param bool   $auto		 Сохранить авторизационные данные на комптютере посетителя
-	* @param bool   $cookie  Авторизация при помощи cookie
+	* @param string $unsafeLogin   Имя пользователя
+	* @param string $key		       Ключ учётной записи
+	* @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
+	* @param bool   $cookie        Авторизация при помощи cookie
 	* @return bool Результат
 	*/
-	function login($login, $key, $auto = false, $cookie = false)
+	function login($unsafeLogin, $key, $auto = false, $cookie = false)
 	{
 		$result = false;
+
+		$login = preg_replace('/[^a-z0-9_\-\.\@]/', '', $unsafeLogin);
+
+		if ($login != $unsafeLogin)
+		{
+			ErrorMessage(errInvalidPassword);
+			return false;
+		}
+
 		$item = $this->db->selectItem('users', "`login`='$login'");
-		if (!is_null($item)) { # Если такой пользователь есть...
-			if ($item['active']) { # Если учетная запись активна...
-				if (time() - $item['lastLoginTime'] > $item['loginErrors']) {
-					if ($key == $item['hash']) { # Если пароль верен...
-						if ($auto) $this->set_login_cookies($login, $key);
-						else $this->clear_login_cookies();
+		if (!is_null($item))
+		{
+			// Если такой пользователь есть...
+			if ($item['active'])
+			{
+				// Если учетная запись активна...
+				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
+				{
+					if ($key == $item['hash'])
+					{
+						// Если пароль верен...
+						if ($auto)
+						{
+							$this->set_login_cookies($login, $key);
+						}
+						else
+						{
+							$this->clear_login_cookies();
+						}
 						$setVisitTime = !isset($this->user['id']);
 						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
 						$this->user = $item;
@@ -1432,21 +1454,36 @@ class Eresus
 						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
-					} else { # Если пароль не верен...
-						if (!$cookie) {
+					}
+					else
+					{
+						// Если пароль не верен...
+						if (!$cookie)
+						{
 							ErrorMessage(errInvalidPassword);
 							$item['lastLoginTime'] = time();
 							$item['loginErrors']++;
 							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 						}
 					}
-				} else { # Если авторизация проведена слишком рано
+				}
+				else
+				{
+					// Если авторизация проведена слишком рано
 					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
 					$item['lastLoginTime'] = time();
 					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 				}
-			} else ErrorMessage(sprintf(errAccountNotActive, $login));
-		} else ErrorMessage(errInvalidPassword);
+			}
+			else
+			{
+				ErrorMessage(sprintf(errAccountNotActive, $login));
+			}
+		}
+		else
+		{
+			ErrorMessage(errInvalidPassword);
+		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------

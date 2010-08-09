@@ -91,6 +91,20 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Проверем фильтрацию опасных символов в методе Eresus::login()
+	 *
+	 */
+	public function test_login_bad_symbols()
+	{
+		$stub = new EresusTest_Eresus();
+
+		$this->assertFalse($stub->login('"root"', ''));
+		$this->assertFalse($stub->login('\root\\', ''));
+		$this->assertFalse($stub->login('/\'root/\"', ''));
+	}
+	//-----------------------------------------------------------------------------
+
 	/**/
 }
 

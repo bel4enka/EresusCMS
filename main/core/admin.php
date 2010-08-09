@@ -865,7 +865,9 @@ class TAdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Авторизация
+	 * Отрисовка и вывод страницы аутентификации
+	 *
+	 * Авторизация проводится методом {@see Eresus::login()}.
 	 *
 	 * @return void
 	 */
@@ -884,7 +886,7 @@ class TAdminUI extends WebPage
 
 		if ($req->getMethod() == 'POST')
 		{
-			if ($Eresus->login($user, $Eresus->password_hash($password), $autologin))
+			if ($Eresus->login($req->arg('user'), $Eresus->password_hash($password), $autologin))
 			{
 				HTTP::redirect('./admin.php');
 			}
