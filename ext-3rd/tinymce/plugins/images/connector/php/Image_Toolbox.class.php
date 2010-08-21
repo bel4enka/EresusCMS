@@ -177,16 +177,20 @@ class Image_Toolbox {
 
 		$this->_gd_ttf = $gd_info['FreeType Support'];
 		$this->_gd_ps = $gd_info['T1Lib Support'];
-		if ($gd_info['GIF Read Support']) {
+
+		if (isset($gd_info['GIF Read Support']))
+		{
 			$this->_types[1]['supported'] = 1;
 			if ($gd_info['GIF Create Support']) {
 				$this->_types[1]['supported'] = 2;
 			}
 		}
-		if ($gd_info['JPEG Support']) {
+		if (isset($gd_info['JPEG Support']) || isset($gd_info['JPG Support']))
+		{
 			$this->_types[2]['supported'] = 2;
 		}
-		if ($gd_info['PNG Support']) {
+		if (isset($gd_info['PNG Support']))
+		{
 			$this->_types[3]['supported'] = 2;
 		}
 
