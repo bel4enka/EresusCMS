@@ -306,7 +306,10 @@ class TFiles
 	function chmodEntry()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
-		if (file_exists($filename)) chmod($filename, octdec(arg('perms', '/\D/')));
+		if (file_exists($filename))
+		{
+			@chmod($filename, octdec(arg('perms', '/\D/')));
+		}
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#

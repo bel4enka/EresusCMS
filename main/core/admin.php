@@ -298,15 +298,37 @@ class TAdminUI extends WebPage
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function addMenuItem($section, $item)
+
+	/**
+	 * Добавляет пункт в меню "Расширения"
+	 *
+	 * @param string $section  Заголовок меню
+	 * @param array  $item     Описание добавляемого пункта. Ассоциативный массив:
+	 *                         - 'access'   - Минимальный уровень доступа, необходимый чтобы видеть
+	 *                                        этот пункт
+	 *                         - 'link'     - "адрес", соответствующий этому пункту. В URL будет
+	 *                                        подставлен в виде "mod=ext-{link}" (без фигурных скобок)
+	 *                         - 'caption'  - Название пункта меню
+	 *                         - 'hint'     - Всплывающая подсказка к пункту меню
+	 *                         - 'disabled' - Если true - пункт будет видимым, но недоступным
+	 *
+	 * @return void
+	 */
+	public function addMenuItem($section, $item)
 	{
 		$item['link'] = 'ext-'.$item['link'];
 		$ptr = null;
-		for($i=0; $i<count($this->extmenu); $i++) if ($this->extmenu[$i]['caption'] == $section) {
-			$ptr = &$this->extmenu[$i];
-			break;
+		for ($i=0; $i<count($this->extmenu); $i++)
+		{
+			if ($this->extmenu[$i]['caption'] == $section)
+			{
+				$ptr = &$this->extmenu[$i];
+				break;
+			}
 		}
-		if (is_null($ptr)) {
+
+		if (is_null($ptr))
+		{
 			$this->extmenu[] = array(
 				'access' => $item['access'],
 				'caption' => $section,
@@ -315,8 +337,14 @@ class TAdminUI extends WebPage
 			$ptr = &$this->extmenu[count($this->extmenu)-1];
 		}
 		$ptr['items'][] = encodeHTML($item);
-		if ($ptr['access'] < $item['access']) $ptr['access'] = $item['access'];
+		if ($ptr['access'] < $item['access'])
+		{
+			$ptr['access'] = $item['access'];
+		}
 	}
+	//-----------------------------------------------------------------------------
+
+
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	# Построение интерфейса
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
