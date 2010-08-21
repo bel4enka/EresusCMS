@@ -99,7 +99,8 @@ class MySQL
 		}
 			catch (DBRuntimeException $e)
 		{
-			return false;
+			Core::logException($e);
+			FatalError("Can not connect to MySQL server. See log for more info.");
 		}
 
 		$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
