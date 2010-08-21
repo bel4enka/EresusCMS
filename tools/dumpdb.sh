@@ -1,11 +1,38 @@
-#!/bin/bash
+#!/bin/sh
 #
-# This script dumps MySQL database
+# Script dumps MySQL database
 #
 # @author Mikhail Krasilnikov <mk@procreat.ru>
 #
+# $Id$
+#
 
-CONFIG="../cfg/main.inc"
+CONFIG="../../cfg/main.php"
+
+#
+# Check dependencies
+#
+`which expr &>/dev/null`
+if [ $? -ne 0 ]
+then
+	echo "Can't find 'expr' binary.\n"
+	exit 1
+fi
+
+`which grep &>/dev/null`
+if [ $? -ne 0 ]
+then
+	echo "Can't find 'grep' binary.\n"
+	exit 1
+fi
+
+`which mysqldump &>/dev/null`
+if [ $? -ne 0 ]
+then
+	echo "Can't find 'mysqldump' binary.\n"
+	exit 1
+fi
+
 
 STRING=`cat $CONFIG | grep conf.*\'user\'`
 USER=`expr match "$STRING" ".*'\(.*\)';"`
@@ -30,5 +57,3 @@ OPTIONS="$OPTIONS --skip-set-charset"
 OPTIONS="$OPTIONS --skip-tz-utc"
 
 mysqldump $OPTIONS $DATABASE --result-file=$DATABASE.sql
-
-

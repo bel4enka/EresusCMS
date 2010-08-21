@@ -10,8 +10,15 @@
 * @param  string   file    Имя исходного файла относительно /data
 * @param  integer  width   Ширина миниатюры в пикселях
 * @param  integer  height  Высота миниатюры в пикселях
+*
+* @package EresusCMS
 */
 
+/**
+ * Корневая директория
+ *
+ * @var string
+ */
 define('root', realpath(dirname(__FILE__).'/../../data').DIRECTORY_SEPARATOR);
 $file = $_REQUEST['file'];
 $file = realpath(root.$file);
