@@ -25,13 +25,26 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
+
+
+/**
+ * Плагин повреждён
+ *
+ * Обычно это означает синтаксическую ошибку в файле плагина.
+ *
+ * @package EresusCMS
+ */
+class EresusSourceParseException extends EresusRuntimeException {};
+
 
 /**
  * Родительский класс веб-интерфейсов
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class WebPage
 {
@@ -40,27 +53,28 @@ class WebPage
 	 *
 	 * @var int
 	 */
-	var $id = 0;
+	public $id = 0;
 
 	/**
 	 * HTTP-заголовки ответа
 	 *
 	 * @var array
 	 */
-	var $headers = array();
+	public $headers = array();
 
 	/**
 	 * Описание секции HEAD
-	 * 	meta-http - мета-теги HTTP-заголовков
-	 * 	meta-tags - мета-теги
-	 * 	link - подключение внешних ресурсов
-	 * 	style - CSS
-	 * 	script - Скрипты
-	 * 	content - прочее
+	 *
+	 * -	meta-http - мета-теги HTTP-заголовков
+	 * -	meta-tags - мета-теги
+	 * -	link - подключение внешних ресурсов
+	 * -	style - CSS
+	 * -	script - Скрипты
+	 * -	content - прочее
 	 *
 	 * @var array
 	 */
-	var $head = array (
+	protected $head = array (
 		'meta-http' => array(),
 		'meta-tags' => array(),
 		'link' => array(),
@@ -73,7 +87,7 @@ class WebPage
 	 * Значения по умолчанию
 	 * @var array
 	 */
-	var $defaults = array(
+	protected $defaults = array(
 		'pageselector' => array(
 			'<div class="pages">$(pages)</div>',
 			'&nbsp;<a href="$(href)">$(number)</a>&nbsp;',
@@ -85,162 +99,231 @@ class WebPage
 
 	/**
 	 * Конструктор
+	 *
 	 * @return WebPage
 	 */
-	function WebPage()
+	public function __construct()
 	{
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Установка мета-тега HTTP-заголовка
-	*
-	* @param string $httpEquiv  Имя тега
-	* @param string $content  	Значение тега
-	*/
-	function setMetaHeader($httpEquiv, $content)
+
+	/**
+	 * Установить мета-тег HTTP-заголовка
+	 *
+	 * Добавляет или изменяет мета-тег <meta http-equiv="$httpEquiv" content="$content" />
+	 *
+	 * @param string $httpEquiv  Имя заголовка HTTP
+	 * @param string $content  	  Значение заголовка
+	 */
+	public function setMetaHeader($httpEquiv, $content)
 	{
 		$this->head['meta-http'][$httpEquiv] = $content;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Установка мета-тега
-	*
-	* @param string $name  		Имя тега
-	* @param string $content  Значение тега
-	*/
-	function setMetaTag($name, $content)
+
+	/**
+	 * Установка мета-тега
+	 *
+	 * @param string $name  		 Имя тега
+	 * @param string $content  Значение тега
+	 */
+	public function setMetaTag($name, $content)
 	{
 		$this->head['meta-tags'][$name] = $content;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Подключение CSS-файла
-	*
-	* @param string $url    URL файла
-	* @param string $media  Тип носителя
-	*/
-	function linkStyles($url, $media = '')
+
+	/**
+	 * Подключение CSS-файла
+	 *
+	 * @param string $url    URL файла
+	 * @param string $media  Тип носителя
+	 */
+	public function linkStyles($url, $media = '')
 	{
-		for($i=0; $i<count($this->head['link']); $i++) if ($this->head['link'][$i]['href'] == $url) return;
+		/* Проверяем, не добавлен ли уже этот URL  */
+		for ($i = 0; $i < count($this->head['link']); $i++)
+			if ($this->head['link'][$i]['href'] == $url)
+				return;
+
 		$item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
-		if (!empty($media)) $item['media'] = $media;
+
+		if (!empty($media))
+			$item['media'] = $media;
+
 		$this->head['link'][] = $item;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Встраивание CSS
-	*
-	* @param string $content  Стили CSS
-	* @param string $media 	  Тип носителя
-	*/
-	function addStyles($content, $media = '')
+
+	/**
+	 * Встраивание CSS
+	 *
+	 * @param string $content  Стили CSS
+	 * @param string $media 	  Тип носителя
+	 */
+	public function addStyles($content, $media = '')
 	{
 		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
 		$content = rtrim($content);
 		$item = array('content' => $content);
-		if (!empty($media)) $item['media'] = $media;
+		if (!empty($media))
+			$item['media'] = $media;
 		$this->head['style'][] = $item;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Подключение клиентского скрипта
-	*
-	* @param string $url   URL скрипта
-	* @param string $type  Тип скрипта
-	*/
-	function linkScripts($url, $type = 'javascript')
+
+	/**
+	 * Подключение клиентского скрипта
+	 *
+	 * @param string $url   URL скрипта
+	 * @param string $type  Тип скрипта
+	 */
+	public function linkScripts($url, $type = 'javascript')
 	{
-		for($i=0; $i<count($this->head['script']); $i++) if (isset($this->head['script'][$i]['src']) && $this->head['script'][$i]['src'] == $url) return;
-		if (strpos($type, '/') === false) switch (strtolower($type)) {
-			case 'emca': $type = 'text/emcascript'; break;
-			case 'javascript': $type = 'text/javascript'; break;
-			case 'jscript': $type = 'text/jscript'; break;
-			case 'vbscript': $type = 'text/vbscript'; break;
-			default: return;
-		}
+		for ($i = 0; $i < count($this->head['script']); $i++)
+		if (
+			isset($this->head['script'][$i]['src']) &&
+			$this->head['script'][$i]['src'] == $url
+		)
+			return;
+
+		if (strpos($type, '/') === false)
+			switch (strtolower($type))
+			{
+				case 'emca': $type = 'text/emcascript'; break;
+				case 'javascript': $type = 'text/javascript'; break;
+				case 'jscript': $type = 'text/jscript'; break;
+				case 'vbscript': $type = 'text/vbscript'; break;
+				default: return;
+			}
+
 		$this->head['script'][] = array('type' => $type, 'src' => $url);
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Добавление клиентских скриптов
-	*
-	* @param string $content  Код скрипта
-	* @param string $type     Тип скрипта
-	*/
-	function addScripts($content, $type = 'javascript')
+
+	/**
+	 * Добавление клиентских скриптов
+	 *
+	 * @param string $content  Код скрипта
+	 * @param string $type     Тип скрипта
+	 */
+	public function addScripts($content, $type = 'javascript')
 	{
-		if (strpos($type, '/') === false) switch (strtolower($type)) {
-			case 'emca': $type = 'text/emcascript'; break;
-			case 'javascript': $type = 'text/javascript'; break;
-			case 'jscript': $type = 'text/jscript'; break;
-			case 'vbscript': $type = 'text/vbscript'; break;
-			default: return;
-		}
+		if (strpos($type, '/') === false)
+			switch (strtolower($type))
+			{
+				case 'emca': $type = 'text/emcascript'; break;
+				case 'javascript': $type = 'text/javascript'; break;
+				case 'jscript': $type = 'text/jscript'; break;
+				case 'vbscript': $type = 'text/vbscript'; break;
+				default: return;
+			}
+
 		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
 		$this->head['script'][] = array('type' => $type, 'content' => $content);
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Отрисовка секции <head>
-	*
-	* @return string  Отрисованная секция <head>
-	*/
-	function renderHeadSection()
+
+	/**
+	 * Отрисовка секции <head>
+	 *
+	 * @return string  Отрисованная секция <head>
+	 */
+	protected function renderHeadSection()
 	{
 		$result = array();
-		# <meta> теги
-		if (count($this->head['meta-http'])) foreach($this->head['meta-http'] as $key => $value)
-			$result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
-		if (count($this->head['meta-tags'])) foreach($this->head['meta-tags'] as $key => $value)
-			$result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
-		# <link>
-		if (count($this->head['link'])) foreach($this->head['link'] as $value)
-			$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
-		# <script>
-		if (count($this->head['script'])) foreach($this->head['script'] as $value) {
-			if (isset($value['content'])) {
-				$value['content'] = trim($value['content']);
-				$result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".$value['content']."\n	//]] -->\n	</script>";
-			} elseif (isset($value['src'])) $result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
-		}
-		# <style>
-		if (count($this->head['style'])) foreach($this->head['style'] as $value)
-			$result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
+		/* <meta> теги */
+		if (count($this->head['meta-http']))
+			foreach($this->head['meta-http'] as $key => $value)
+				$result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
+
+		if (count($this->head['meta-tags']))
+			foreach($this->head['meta-tags'] as $key => $value)
+				$result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
+
+		/* <link> */
+		if (count($this->head['link']))
+			foreach($this->head['link'] as $value)
+				$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.
+					$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
+
+		/* <script> */
+		if (count($this->head['script']))
+			foreach($this->head['script'] as $value)
+			{
+				if (isset($value['content']))
+				{
+					$value['content'] = trim($value['content']);
+					$result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".
+						$value['content']."\n	//]] -->\n	</script>";
+				}
+				elseif (isset($value['src']))
+				{
+					$result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
+				}
+			}
+
+		/* <style> */
+		if (count($this->head['style']))
+			foreach($this->head['style'] as $value)
+				$result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.
+					$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
 
 		$this->head['content'] = trim($this->head['content']);
-		if (!empty($this->head['content'])) $result[] = $this->head['content'];
+		if (!empty($this->head['content']))
+			$result[] = $this->head['content'];
 
 		$result = implode("\n" , $result);
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Построение GET-запроса
-	*
-	* @param array $args      Установить аргументы
-	* @return string
-	*/
-	function url($args = array())
+
+	/**
+	 * Строит URL GET-запроса на основе переданных аргументов
+	 *
+	 * URL будет состоять из двух частей:
+	 * 1. Адрес текущего раздела ($Eresus->request['path'])
+	 * 2. key=value аргументы
+	 *
+	 * Список аргументов составляется объединением списка аргументов текущего запроса
+	 * и элементов массива $args. Элементы $args имеют приоритет над аргументами текущего
+	 * запроса.
+	 *
+	 * Если значение аргумента - пустая строка, он будет удалён из запроса.
+	 *
+	 * @param array $args  Установить аргументы
+	 * @return string
+	 */
+	public function url($args = array())
 	{
 		global $Eresus;
 
+		/* Объединяем аргументы метода и аргументы текущего запроса */
 		$args = array_merge($Eresus->request['arg'], $args);
-		foreach($args as $key => $value) if (is_array($value)) $args[$key] = implode(',', $value);
+
+		/* Превращаем значения-массивы в строки, соединяя элементы запятой */
+		foreach ($args as $key => $value)
+			if (is_array($value))
+				$args[$key] = implode(',', $value);
 
 		$result = array();
-		foreach($args as $key => $value) if ($value !== '') $result []= "$key=$value";
+		foreach ($args as $key => $value)
+			if ($value !== '')
+				$result []= "$key=$value";
+
 		$result = implode('&amp;', $result);
 		$result = $Eresus->request['path'].'?'.$result;
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Клиентский URL страницы с идентификатором $id
-	*
-	* @param int $id  Идентификатор страницы
-	* @return string URL страницы или NULL если раздела $id не существует
-	*/
-	function clientURL($id)
+
+	/**
+	 * Возвращает клиентский URL страницы с идентификатором $id
+	 *
+	 * @param int $id  Идентификатор страницы
+	 * @return string URL страницы или NULL если раздела $id не существует
+	 */
+	public function clientURL($id)
 	{
 		global $Eresus;
 
@@ -260,52 +343,64 @@ class WebPage
 	}
 	//-----------------------------------------------------------------------------
 
- /**
-	* Отрисовка переключателя страниц
-	*
-	* @param int     $total      Общее количество страниц
-	* @param int     $current    Номер текущей страницы
-	* @param string  $url        Шаблон адреса для перехода к подстранице.
-	* @param array   $templates  Шаблоны оформления
-	* @return string
-	*/
-	function pageSelector($total, $current, $url = null, $templates = null)
+	/**
+	 * Отрисовка переключателя страниц
+	 *
+	 * @param int     $total      Общее количество страниц
+	 * @param int     $current    Номер текущей страницы
+	 * @param string  $url        Шаблон адреса для перехода к подстранице.
+	 * @param array   $templates  Шаблоны оформления
+	 * @return string
+	 */
+	public function pageSelector($total, $current, $url = null, $templates = null)
 	{
 		global $Eresus;
 
 		$result = '';
 		# Загрузка шаблонов
-		if (!is_array($templates)) $templates = array();
-		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $this->defaults['pageselector'][$i];
+		if (!is_array($templates))
+			$templates = array();
+		for ($i=0; $i < 5; $i++)
+			if (!isset($templates[$i]))
+				$templates[$i] = $this->defaults['pageselector'][$i];
 
-		if (is_null($url)) $url = $Eresus->request['path'].'p%d/';
+		if (is_null($url))
+			$url = $Eresus->request['path'].'p%d/';
 
 		$pages = array(); # Отображаемые страницы
 		# Определяем номера первой и последней отображаемых страниц
 		$visible = option('clientPagesAtOnce'); # TODO: Изменить переменную или сделать учёт client/admin
-		if ($total > $visible) {
+		if ($total > $visible)
+		{
 			# Будут показаны НЕ все страницы
 			$from = floor($current - $visible / 2); # Начинаем показ с текущей минус половину видимых
-			if ($from < 1) $from = 1; # Страниц меньше 1-й не существует
+			if ($from < 1)
+				$from = 1; # Страниц меньше 1-й не существует
 			$to = $from + $visible - 1; # мы должны показать $visible страниц
-			if ($to > $total) { # Но если это больше чем страниц всего, вносим исправления
+			if ($to > $total)
+			{ # Но если это больше чем страниц всего, вносим исправления
 				$to = $total;
 				$from = $to - $visible + 1;
 			}
-		} else {
+		}
+			else
+		{
 			# Будут показаны все страницы
 			$from = 1;
 			$to = $total;
 		}
-		for($i = $from; $i <= $to; $i++) {
+		for($i = $from; $i <= $to; $i++)
+		{
 			$src['href'] = sprintf($url, $i);
 			$src['number'] = $i;
 			$pages[] = replaceMacros($templates[$i != $current ? 1 : 2], $src);
 		}
 
 		$pages = implode('', $pages);
-		if ($from != 1) $pages = replaceMacros($templates[3], array('href' => sprintf($url, 1))).$pages;
-		if ($to != $total) $pages .= replaceMacros($templates[4], array('href' => sprintf($url, $total)));
+		if ($from != 1)
+			$pages = replaceMacros($templates[3], array('href' => sprintf($url, 1))).$pages;
+		if ($to != $total)
+			$pages .= replaceMacros($templates[4], array('href' => sprintf($url, $total)));
 		$result = replaceMacros($templates[0], array('pages' => $pages));
 
 		return $result;
@@ -316,80 +411,167 @@ class WebPage
 
 /**
  * Работа с плагинами
+ *
+ * @package EresusCMS
  */
-class Plugins {
+class Plugins
+{
 	var $list = array(); # Список всех плагинов
 	var $items = array(); # Массив плагинов
 	var $events = array(); # Таблица обработчиков событий
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function Plugins()
+
+	/**
+	 * Конструктор
+	 */
+	function __construct()
 	{
 		global $Eresus;
 
-		$items = $Eresus->db->select('`plugins`', '', '`position`');
-		if (count($items)) foreach($items as $item) $this->list[$item['name']] = $item;
+		$items = $Eresus->db->select('`plugins`');
+		if (count($items))
+		{
+			foreach($items as $item)
+			{
+				$this->list[$item['name']] = $item;
+			}
+		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function install($name)
-	# Установка нового плагина
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает плагин
+	 *
+	 * @param string $name  Имя плагина
+	 *
+	 * @return void
+	 *
+	 * @throws EresusSourceParseException
+	 */
+	public function install($name)
 	{
 		global $Eresus;
 
 		$filename = filesRoot.'ext/'.$name.'.php';
-		if (file_exists($filename)) {
-			include_once($filename);
+		if (FS::exists($filename))
+		{
+			/*
+			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
+			 * ошибок
+			 */
+			$code = file_get_contents($filename);
+			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
+			@$valid = eval($code) !== false;
+			if (!$valid)
+			{
+				throw new EresusSourceParseException(
+					sprintf('Parsing error in file "%s"', $filename),
+					sprintf('Plugin "%s" is broken (parse error)', $name)
+				);
+			}
+
 			$ClassName = $name;
-			if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
-			if (class_exists($ClassName)) {
-				$this->items[$name] = new $ClassName;
+			if (!class_exists($ClassName, false) && class_exists('T'.$ClassName, false))
+				$ClassName = 'T'.$ClassName; # FIXME: Обратная совместимость с версиями до 2.10b2
+			if (class_exists($ClassName, false))
+			{
+				$this->items[$name] = new $ClassName();
 				$this->items[$name]->install();
 				$Eresus->db->insert('plugins', $this->items[$name]->__item());
-			} else FatalError(sprintf(errClassNotFound, $ClassName));
+			}
+				else FatalError(sprintf(errClassNotFound, $ClassName));
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function uninstall($name)
-	# Удаление плагина
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Деинсталлирует плагин
+	 *
+	 * @param string $name  Имя плагина
+	 */
+	public function uninstall($name)
 	{
 		global $Eresus;
 
-		if (!isset($this->items[$name])) $this->load($name);
-		if (isset($this->items[$name])) $this->items[$name]->uninstall();
+		if (!isset($this->items[$name]))
+		{
+			$this->load($name);
+		}
+		if (isset($this->items[$name]))
+		{
+			$this->items[$name]->uninstall();
+		}
 		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
-		if (!is_null($item)) {
+		if (!is_null($item))
+		{
 			$Eresus->db->delete('plugins', "`name`='".$name."'");
-			$Eresus->db->update('plugins', "`position` = `position`-1", "`position` > '".$item['position']."'");
 		}
 		$filename = filesRoot.'ext/'.$name.'.php';
 		#if (file_exists($filename)) unlink($filename);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function preload($include, $exclude)
+
+	/**
+	 * Производит предварительную загрузку плагинов
+	 *
+	 * @param array $include [deprecated]
+	 * @param array $exclude [deprecated]
+	 * @return void
+	 */
+	function preload($include = null, $exclude = null)
 	{
-		if (count($this->list)) foreach($this->list as $item) if ($item['active']) {
-			$type = explode(',', $item['type']);
-			if (count(array_intersect($include, $type)) && count(array_diff($exclude, $type))) $this->load($item['name']);
-		}
+		if (!is_null($exclude))
+			eresus_log(__METHOD__, LOG_NOTICE, '$exclude argument is deprecated');
+
+		if (!is_null($include))
+			eresus_log(__METHOD__, LOG_NOTICE, '$include argument is deprecated');
+
+		if (count($this->list))
+			foreach($this->list as $item)
+				if ($item['active'])
+					$this->load($item['name']);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function load($name)
+
+	/**
+	 * Загружает плагин и возвращает его экземпляр
+	 *
+	 * @param string $name  Имя плагина
+	 * @return Plugin|TPlugin|false  Экземпляр плагина или FASLE если не удалось загрузить плагин
+	 */
+	public function load($name)
 	{
-		$result = isset($this->items[$name]) ? $this->items[$name] : false;
-		if (isset($this->list[$name]) && !$result) {
-			$filename = filesRoot.'ext/'.$name.'.php';
-			if (file_exists($filename)) {
-				include_once($filename);
-				$ClassName = $name;
-				if (!class_exists($ClassName) && class_exists('T'.$ClassName)) $ClassName = 'T'.$ClassName; # FIX: Обратная совместимость с версиями до 2.10b2
-				if (class_exists($ClassName)) {
-					$this->items[$name] = new $ClassName;
-					$result = $this->items[$name];
-				} else FatalError(sprintf(errClassNotFound, $name));
-			} else $result = false;
-		}
-		return $result;
+		/* Если плагин уже был загружен возвращаем экземпляр из реестра */
+		if (isset($this->items[$name]))
+			return $this->items[$name];
+
+		/* Если такой плагин не зарегистрирован, возвращаем FASLE */
+		if (!isset($this->list[$name]))
+			return false;
+
+		// Путь к файлу плагина
+		$filename = filesRoot . 'ext/' . $name . '.php';
+
+		/* Если такого файла нет, возвращаем FASLE */
+		if (!file_exists($filename))
+			return false;
+
+		include_once $filename ;
+		$className = $name;
+
+		/* TODO: Обратная совместимость с версиями до 2.10b2. Отказаться в новых версиях */
+		if (!class_exists($className, false) && class_exists('T' . $className))
+			$className = 'T' . $className;
+
+		if (!class_exists($className, false))
+			FatalError(sprintf(errClassNotFound, $name));
+
+		// Заносим экземпляр в реестр
+		$this->items[$name] = new $className();
+
+		return $this->items[$name];
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * Отрисовка контента раздела
 	 *
@@ -530,535 +712,692 @@ class Plugins {
 /**
  * Родительский класс для всех плагинов
  *
- * @var  string  $name        Имя плагина
- * @var  string  $version	   	Версия плагина
- * @var  string  $kernel      Необходимая версия Eresus
- * @var  string  $title       Название плагина
- * @var  string  $description	Описание плагина
- * @var  string  $type        Тип плагина, перечисленые через запятую ключевые слова:
- *                            	client   - Загружать плагин в КИ
- *                              admin    - Загружать плагин в АИ
- *                              content  - Плагин предоставляет тип контента
- *                              ondemand - Не загружать плагин автоматически
- * @var  array   $settings    Настройки плагина
+ * @package EresusCMS
  */
-class Plugin {
-	var $name;
-	var $version = '0.00';
-	var $kernel = '2.10b2';
-	var $title = 'no title';
-	var $description = '';
-	var $type;
-	var $settings = array();
-	var $dirData; # Директория данных (/data/имя_плагина)
-	var $urlData; # URL данных
-	var $dirCode; # Директория скриптов (/ext/имя_плагина)
-	var $urlCode; # URL скриптов
-	var $dirStyle; # Директория оформления (style/имя_плагина)
-	var $urlStyle; # URL оформления
-/**
- * Конструктор
- *
- * Производит чтение настроек плагина и подключение языковых файлов
- */
-function Plugin()
+class Plugin
 {
-	global $Eresus, $locale;
-	$this->name = strtolower(get_class($this));
-	if (!empty($this->name) && isset($Eresus->plugins->list[$this->name])) {
-		$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
-		# Если установлена версия плагина отличная от установленной ранее
-		# то необходимо произвести обновление информации о плагине в БД
-		if ($this->version != $Eresus->plugins->list[$this->name]['version']) $this->resetPlugin();
+	/**
+	 * Имя плагина
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Версия плагина
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $version = '0.00';
+
+	/**
+	 * Необходимая версия Eresus
+	 *
+	 * Потомки могут перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $kernel = '2.10b2';
+
+	/**
+	 * Название плагина
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $title = 'no title';
+
+	/**
+	 * Описание плагина
+	 *
+	 * Потомки должны перекрывать это своим значением
+	 *
+	 * @var string
+	 */
+	public $description = '';
+
+	/**
+	 * Настройки плагина
+	 *
+	 * Потомки могут перекрывать это своим значением
+	 *
+	 * @var array
+	 */
+	public $settings = array();
+
+	/**
+	 * Директория данных
+	 *
+	 * /data/имя_плагина
+	 *
+	 * @var string
+	 */
+	protected $dirData;
+
+	/**
+	 * URL данных
+	 *
+	 * @var string
+	 */
+	protected $urlData;
+
+	/**
+	 * Директория скриптов
+	 *
+	 * /ext/имя_плагина
+	 *
+	 * @var string
+	 */
+	protected $dirCode;
+
+	/**
+	 * URL скриптов
+	 *
+	 * @var string
+	 */
+	protected $urlCode;
+
+	/**
+	 * Директория оформления
+	 *
+	 * style/имя_плагина
+	 *
+	 * @var string
+	 */
+	protected $dirStyle;
+
+	/**
+	 * URL оформления
+	 *
+	 * @var string
+	 */
+	protected $urlStyle;
+
+	/**
+	 * Конструктор
+	 *
+	 * Производит чтение настроек плагина и подключение языковых файлов
+	 *
+	 * @uses $Eresus
+	 * @uses $locale
+	 * @uses FS::isFile
+	 * @uses Core::safeInclude
+	 * @uses Plugin::resetPlugin
+	 */
+	public function __construct()
+	{
+		global $Eresus, $locale;
+
+		$this->name = strtolower(get_class($this));
+		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
+		{
+			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+			# Если установлена версия плагина отличная от установленной ранее
+			# то необходимо произвести обновление информации о плагине в БД
+			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
+				$this->resetPlugin();
+		}
+		$this->dirData = $Eresus->fdata.$this->name.'/';
+		$this->urlData = $Eresus->data.$this->name.'/';
+		$this->dirCode = $Eresus->froot.'ext/'.$this->name.'/';
+		$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
+		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
+		$this->urlStyle = $Eresus->style.$this->name.'/';
+		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
+		if (FS::isFile($filename))
+			Core::safeInclude($filename);
 	}
-	$this->dirData = $Eresus->fdata.$this->name.'/';
-	$this->urlData = $Eresus->data.$this->name.'/';
-	$this->dirCode = $Eresus->froot.'ext/'.$this->name.'/';
-	$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
-	$this->dirStyle = $Eresus->fstyle.$this->name.'/';
-	$this->urlStyle = $Eresus->style.$this->name.'/';
-	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
-	if (is_file($filename)) include_once($filename);
-}
-//------------------------------------------------------------------------------
-/**
- * Возвращает информацию о плагине
- *
- * @param  array  $item  Предыдущая версия информации (по умолчанию null)
- *
- * @return  array  Массив информации, пригодный для записи в БД
- */
-function __item($item = null)
-{
-	global $Eresus;
+	//------------------------------------------------------------------------------
 
-	$result['name'] = $this->name;
-	$result['type'] = $this->type;
-	$result['active'] = is_null($item)? true : $item['active'];
-	$result['position'] = is_null($item) ? $Eresus->db->count('plugins') : $item['position'];
-	$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
-	$result['title'] = $this->title;
-	$result['version'] = $this->version;
-	$result['description'] = $this->description;
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Чтение настроек плагина из БД
- *
- * @return  bool  Результат выполнения
- */
-function loadSettings()
-{
-	global $Eresus;
-	$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
-	if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
-	return (bool)$result;
-}
-//------------------------------------------------------------------------------
-/**
- * Сохранение настроек плагина в БД
- *
- * @return  bool  Результат выполнения
- */
-function saveSettings()
-{
-	global $Eresus;
+	/**
+	 * Возвращает информацию о плагине
+	 *
+	 * @param  array  $item  Предыдущая версия информации (по умолчанию null)
+	 *
+	 * @return  array  Массив информации, пригодный для записи в БД
+	 */
+	public function __item($item = null)
+	{
+		global $Eresus;
 
-	$result = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
-	$result = $this->__item($result);
-	$result['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
-	$result = $Eresus->db->updateItem('plugins', $result, "`name`='".$this->name."'");
+		$result['name'] = $this->name;
+		$result['content'] = false;
+		$result['active'] = is_null($item)? true : $item['active'];
+		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+		$result['title'] = $this->title;
+		$result['version'] = $this->version;
+		$result['description'] = $this->description;
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Обновление данных о плагине в БД
- */
-function resetPlugin()
-{
-	$this->loadSettings();
-	$this->saveSettings();
-}
-//------------------------------------------------------------------------------
-/**
- * Действия, выполняемые при инсталляции плагина
- */
-function install() {}
-//------------------------------------------------------------------------------
-/**
- * Действия, выполняемые при деинсталляции плагина
- */
-function uninstall()
-{
-	global $Eresus;
+	/**
+	 * Перехватчик обращений к несуществующим методам плагинов
+	 *
+	 * @param string $method  Имя вызванного метода
+	 * @param array  $args    Переданные аргументы
+	 *
+	 * @throws EresusMethodNotExistsException
+	 */
+	public function __call($method, $args)
+	{
+		throw new EresusMethodNotExistsException($method, get_class($this));
+	}
+	//-----------------------------------------------------------------------------
 
-	# TODO: Перенести в IDataSource
-	$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
-	$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
-	for ($i=0; $i < count($tables); $i++)
-		$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
-}
-//------------------------------------------------------------------------------
-/**
- * Действия при изменении настроек
- */
-function onSettingsUpdate() {}
-//------------------------------------------------------------------------------
-/**
- * Сохраняет в БД изменения настроек плагина
- */
-function updateSettings()
-{
-	global $Eresus;
+	/**
+	 * Чтение настроек плагина из БД
+	 *
+	 * @return bool  Результат выполнения
+	 */
+	protected function loadSettings()
+	{
+		global $Eresus;
 
-	foreach ($this->settings as $key => $value)
-		if (!is_null(arg($key)))
-			$this->settings[$key] = arg($key);
-	$this->onSettingsUpdate();
-	$this->saveSettings();
-}
-//------------------------------------------------------------------------------
-/**
- * Замена макросов
- *
- * @param  string  $template  Строка в которой требуется провести замену макросов
- * @param  mixed   $item      Ассоциативный массив со значениями для подстановки вместо макросов
- *
- * @return  string  Обработанная строка
- */
-function replaceMacros($template, $item)
-{
-	$result = replaceMacros($template, $item);
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Создание новой директории
- *
- * @param string $name Имя директории
- * @return bool Результат
- */
-function mkdir($name = '')
-{
-	$result = true;
-	$umask = umask(0000);
-	# Проверка и создание корневой директории данных
-	if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
-	if ($result) {
-		# Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
-		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-		if ($name) {
-			$name = explode('/', $name);
-			$root = substr($this->dirData, 0, -1);
-			for($i=0; $i<count($name); $i++) if ($name[$i]) {
-				$root .= '/'.$name[$i];
-				if (!is_dir($root)) $result = mkdir($root);
-				if (!$result) break;
+		$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
+		if ($result)
+			$this->settings = decodeOptions($result['settings'], $this->settings);
+		return (bool)$result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Сохранение настроек плагина в БД
+	 *
+	 * @return bool  Результат выполнения
+	 */
+	protected function saveSettings()
+	{
+		global $Eresus;
+
+		$result = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
+		$result = $this->__item($result);
+		$result['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
+		$result = $Eresus->db->updateItem('plugins', $result, "`name`='".$this->name."'");
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Обновление данных о плагине в БД
+	 */
+	protected function resetPlugin()
+	{
+		$this->loadSettings();
+		$this->saveSettings();
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Действия, выполняемые при инсталляции плагина
+	 */
+	public function install() {}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Действия, выполняемые при деинсталляции плагина
+	 */
+	public function uninstall()
+	{
+		global $Eresus;
+
+		# TODO: Перенести в IDataSource
+		$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
+		$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
+		for ($i=0; $i < count($tables); $i++)
+			$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Действия при изменении настроек
+	 */
+	public function onSettingsUpdate() {}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Сохраняет в БД изменения настроек плагина
+	 */
+	public function updateSettings()
+	{
+		global $Eresus;
+
+		foreach ($this->settings as $key => $value)
+			if (!is_null(arg($key)))
+				$this->settings[$key] = arg($key);
+		$this->onSettingsUpdate();
+		$this->saveSettings();
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Замена макросов
+	 *
+	 * @param  string  $template  Строка в которой требуется провести замену макросов
+	 * @param  mixed   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+	 *
+	 * @return  string  Обработанная строка
+	 */
+	protected function replaceMacros($template, $item)
+	{
+		$result = replaceMacros($template, $item);
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Создание новой директории
+	 *
+	 * @param string $name Имя директории
+	 * @return bool Результат
+	 */
+	protected function mkdir($name = '')
+	{
+		$result = true;
+		$umask = umask(0000);
+		# Проверка и создание корневой директории данных
+		if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
+		if ($result) {
+			# Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
+			$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
+			if ($name) {
+				$name = explode('/', $name);
+				$root = substr($this->dirData, 0, -1);
+				for($i=0; $i<count($name); $i++) if ($name[$i]) {
+					$root .= '/'.$name[$i];
+					if (!is_dir($root)) $result = mkdir($root);
+					if (!$result) break;
+				}
 			}
 		}
+		umask($umask);
+		return $result;
 	}
-	umask($umask);
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Удаление директории и файлов
- *
- * @param string $name Имя директории
- * @return bool Результат
- */
-function rmdir($name = '')
-{
-	$result = true;
-	$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-	$name = $this->dirData.$name;
-	if (is_dir($name)) {
-		$files = glob($name.'/{.*,*}', GLOB_BRACE);
-		for ($i = 0; $i < count($files); $i++) {
-			if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
-			if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
-			elseif (is_file($files[$i])) $result = filedelete($files[$i]);
-			if (!$result) break;
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Удаление директории и файлов
+	 *
+	 * @param string $name Имя директории
+	 * @return bool Результат
+	 */
+	protected function rmdir($name = '')
+	{
+		$result = true;
+		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
+		$name = $this->dirData.$name;
+		if (is_dir($name)) {
+			$files = glob($name.'/{.*,*}', GLOB_BRACE);
+			for ($i = 0; $i < count($files); $i++) {
+				if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
+				if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
+				elseif (is_file($files[$i])) $result = filedelete($files[$i]);
+				if (!$result) break;
+			}
+			if ($result) $result = rmdir($name);
 		}
-		if ($result) $result = rmdir($name);
+		return $result;
 	}
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Возвращает реальное имя таблицы
- *
- * @param string $table  Локальное имя таблицы
- * @return string Реальное имя таблицы
- */
-function __table($table)
-{
-	return $this->name.(empty($table)?'':'_'.$table);
-}
-//------------------------------------------------------------------------------
-/**
- * Создание таблицы в БД
- *
- * @param string $SQL Описание таблицы
- * @param string $name Имя таблицы
- *
- * @return bool Результат выполенения
- */
-function dbCreateTable($SQL, $name = '')
-{
-	global $Eresus;
+	//------------------------------------------------------------------------------
 
-	$result = $Eresus->db->create($this->__table($name), $SQL);
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Удаление таблицы БД
- *
- * @param string $name Имя таблицы
- *
- * @return bool Результат выполенения
- */
-function dbDropTable($name = '')
-{
-	global $Eresus;
-
-	$result = $Eresus->db->drop($this->__table($name));
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Производит выборку из таблицы БД
- *
- * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
- * @param string	$condition		Условие выборки
- * @param string	$order				Порядок выборки
- * @param string	$fields				Список полей
- * @param int			$limit				Вернуть не больше полей чем limit
- * @param int			$offset				Смещение выборки
- * @param bool		$distinct			Только уникальные результаты
- *
- * @return array	Список записей
- */
-function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
-{
-	global $Eresus;
-
-	if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($limit)) {
-		# Обратная совместимость
-		$desc = $fields;
- 		$fields = $limit;
- 		$limit = $offset;
- 		$offset = $group;
- 		$group = $distinct;
- 		$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-		$result = $Eresus->db->select($this->__table($table), $condition, $order, $desc, $fields, $limit, $offset, $group, $distinct);
-	} else $result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit, $offset, $group, $distinct);
-
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Получение записи из БД
- *
- * @param string $table  Имя таблицы
- * @param mixed  $id   	 Идентификатор элемента
- * @param string $key    Имя ключевого поля
- *
- * @return array Элемент
- */
-function dbItem($table, $id, $key = 'id')
-{
-	global $Eresus;
-
-	$result = $Eresus->db->selectItem($this->__table($table), "`$key` = '$id'");
-
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Вставка в таблицу БД
- *
- * @param string $table  Имя таблицы
- * @param array  $item   Вставляемый элемент
- */
-function dbInsert($table, $item)
-{
-	global $Eresus;
-
-	$result = $Eresus->db->insert($this->__table($table), $item);
-	$result = $this->dbItem($table, $Eresus->db->getInsertedId());
-
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Изменение данных в БД
- *
- * @param string $table      Имя таблицы
- * @param mixed  $data       Изменяемый эелемент / Изменения
- * @param string $condition  Ключевое поле / Условие для замены
- *
- * @return bool Результат
- */
-function dbUpdate($table, $data, $condition = '')
-{
-	global $Eresus;
-
-	if (is_array($data)) {
-		if (empty($condition)) $condition = 'id';
-		$result = $Eresus->db->updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
-	} elseif (is_string($data)) {
-		$result = $Eresus->db->update($this->__table($table), $data, $condition);
+	/**
+	 * Возвращает реальное имя таблицы
+	 *
+	 * @param string $table  Локальное имя таблицы
+	 * @return string Реальное имя таблицы
+	 */
+	protected function __table($table)
+	{
+		return $this->name.(empty($table)?'':'_'.$table);
 	}
+	//------------------------------------------------------------------------------
 
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Удаление элемента из БД
- *
- * @param string $table  Имя таблицы
- * @param mixed  $item   Удаляемый элемент / Идентификатор
- * @param string $key    Ключевое поле
- *
- * @return bool Результат
- */
-function dbDelete($table, $item, $key = 'id')
-{
-	global $Eresus;
+	/**
+	 * Создание таблицы в БД
+	 *
+	 * @param string $SQL Описание таблицы
+	 * @param string $name Имя таблицы
+	 *
+	 * @return bool Результат выполенения
+	 */
+	protected function dbCreateTable($SQL, $name = '')
+	{
+		global $Eresus;
 
-	$result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
+		$result = $Eresus->db->create($this->__table($name), $SQL);
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Подсчёт количества записей в БД
- *
- * @param string $table      Имя таблицы
- * @param string $condition  Условие для включения в подсчёт
- *
- * @return int Количество записей, удовлетворяющих условию
- */
-function dbCount($table, $condition = '')
-{
-	global $Eresus;
+	/**
+	 * Удаление таблицы БД
+	 *
+	 * @param string $name Имя таблицы
+	 *
+	 * @return bool Результат выполенения
+	 */
+	protected function dbDropTable($name = '')
+	{
+		global $Eresus;
 
-	$result = $Eresus->db->count($this->__table($table), $condition);
+		$result = $Eresus->db->drop($this->__table($name));
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Получение информации о таблицах
- *
- * @param string $table  Маска имени таблицы
- * @param string $param  Вернуть только указанный парамер
- *
- * @return mixed
- */
-function dbTable($table, $param = '')
-{
-	global $Eresus;
+	/**
+	 * Производит выборку из таблицы БД
+	 *
+	 * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
+	 * @param string	$condition		Условие выборки
+	 * @param string	$order				Порядок выборки
+	 * @param string	$fields				Список полей
+	 * @param int			$limit				Вернуть не больше полей чем limit
+	 * @param int			$offset				Смещение выборки
+	 * @param bool		$distinct			Только уникальные результаты
+	 *
+	 * @return array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
+	 */
+	public function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0,
+		$offset = 0, $group = '', $distinct = false)
+	{
+		global $Eresus;
 
-	$result = $Eresus->db->tableStatus($this->__table($table), $param);
+		$result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit,
+			$offset, $group, $distinct);
 
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
- * Регистрация обработчиков событий
- *
- * @param string $event1  Имя события1
- * ...
- * @param string $eventN  Имя событияN
- */
-function listenEvents()
-{
-	global $Eresus;
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 
-	for($i=0; $i < func_num_args(); $i++)
-		$Eresus->plugins->events[func_get_arg($i)][] = $this->name;
-}
-//------------------------------------------------------------------------------
+	/**
+	 * Получение записи из БД
+	 *
+	 * @param string $table  Имя таблицы
+	 * @param mixed  $id   	 Идентификатор элемента
+	 * @param string $key    Имя ключевого поля
+	 *
+	 * @return array Элемент
+	 */
+	public function dbItem($table, $id, $key = 'id')
+	{
+		global $Eresus;
+
+		$result = $Eresus->db->selectItem($this->__table($table), "`$key` = '$id'");
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Вставка в таблицу БД
+	 *
+	 * @param string $table          Имя таблицы
+	 * @param array  $item           Вставляемый элемент
+	 * @param string $key[optional]  Имя ключевого поля. По умолчанию "id"
+	 */
+	public function dbInsert($table, $item, $key = 'id')
+	{
+		global $Eresus;
+
+		$result = $Eresus->db->insert($this->__table($table), $item);
+		$result = $this->dbItem($table, $Eresus->db->getInsertedId(), $key);
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Изменение данных в БД
+	 *
+	 * @param string $table      Имя таблицы
+	 * @param mixed  $data       Изменяемый эелемент / Изменения
+	 * @param string $condition  Ключевое поле / Условие для замены
+	 *
+	 * @return bool Результат
+	 */
+	public function dbUpdate($table, $data, $condition = '')
+	{
+		global $Eresus;
+
+		if (is_array($data)) {
+			if (empty($condition)) $condition = 'id';
+			$result = $Eresus->db->updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
+		} elseif (is_string($data)) {
+			$result = $Eresus->db->update($this->__table($table), $data, $condition);
+		}
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Удаление элемента из БД
+	 *
+	 * @param string $table  Имя таблицы
+	 * @param mixed  $item   Удаляемый элемент / Идентификатор
+	 * @param string $key    Ключевое поле
+	 *
+	 * @return bool Результат
+	 */
+	public function dbDelete($table, $item, $key = 'id')
+	{
+		global $Eresus;
+
+		$result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Подсчёт количества записей в БД
+	 *
+	 * @param string $table      Имя таблицы
+	 * @param string $condition  Условие для включения в подсчёт
+	 *
+	 * @return int Количество записей, удовлетворяющих условию
+	 */
+	public function dbCount($table, $condition = '')
+	{
+		global $Eresus;
+
+		$result = $Eresus->db->count($this->__table($table), $condition);
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Получение информации о таблицах
+	 *
+	 * @param string $table  Маска имени таблицы
+	 * @param string $param  Вернуть только указанный парамер
+	 *
+	 * @return mixed
+	 */
+	public function dbTable($table, $param = '')
+	{
+		global $Eresus;
+
+		$result = $Eresus->db->tableStatus($this->__table($table), $param);
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Регистрация обработчиков событий
+	 *
+	 * @param string $event1  Имя события1
+	 * ...
+	 * @param string $eventN  Имя событияN
+	 */
+	protected function listenEvents()
+	{
+		global $Eresus;
+
+		for($i=0; $i < func_num_args(); $i++)
+			$Eresus->plugins->events[func_get_arg($i)][] = $this->name;
+	}
+	//------------------------------------------------------------------------------
 }
 
 /**
 * Базовый класс для плагинов, предоставляющих тип контента
 *
-*
+* @package EresusCMS
 */
-class ContentPlugin extends Plugin {
-/**
-* Конструктор
-*
-* Устанавливает плагин в качестве плагина контента и читает локальные настройки
-*/
-function ContentPlugin()
+class ContentPlugin extends Plugin
 {
-	global $page;
+	/**
+	 * Конструктор
+	 *
+	 * Устанавливает плагин в качестве плагина контента и читает локальные настройки
+	 */
+	public function __construct()
+	{
+		global $page;
 
-	parent::Plugin();
-	if (isset($page)) {
-		$page->plugin = $this->name;
-		if (isset($page->options) && count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
+		parent::__construct();
+		if (isset($page))
+		{
+			$page->plugin = $this->name;
+			if (isset($page->options) && count($page->options))
+				foreach ($page->options as $key=>$value)
+					$this->settings[$key] = $value;
+		}
 	}
-}
-//------------------------------------------------------------------------------
-/**
- * Действия при удалении раздела данного типа
- * @param int     $id     Идентификатор удаляемого раздела
- * @param string  $table  Имя таблицы
- */
-function onSectionDelete($id, $table = '')
-{
-	if (count($this->dbTable($table)))
-		$this->dbDelete($table, $id, 'section');
-}
-//-----------------------------------------------------------------------------
-/**
-* Обновляет контент страницы в БД
-*
-* @param  string  $content  Контент
-*/
-function updateContent($content)
-{
-	global $Eresus, $page;
+	//------------------------------------------------------------------------------
 
-	$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
-	$item['content'] = $content;
-	$Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
-}
-//------------------------------------------------------------------------------
-/**
-* Обновляет контент страницы
-*/
-function adminUpdate()
-{
-	$this->updateContent(arg('content', 'dbsafe'));
-	HTTP::redirect(arg('submitURL'));
-}
-//------------------------------------------------------------------------------
-/**
-* Отрисовка клиентской части
-*
-* @return  string  Контент
-*/
-function clientRenderContent()
-{
-	global $Eresus, $page;
+	/**
+	 * Возвращает информацию о плагине
+	 *
+	 * @param  array  $item  Предыдущая версия информации (по умолчанию null)
+	 *
+	 * @return  array  Массив информации, пригодный для записи в БД
+	 */
+	public function __item($item = null)
+	{
+		$result = parent::__item($item);
+		$result['content'] = true;
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 
-	/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-	if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
-		$page->httpError(404);
+	/**
+	 * Действия при удалении раздела данного типа
+	 * @param int     $id     Идентификатор удаляемого раздела
+	 * @param string  $table  Имя таблицы
+	 */
+	public function onSectionDelete($id, $table = '')
+	{
+		if (count($this->dbTable($table)))
+			$this->dbDelete($table, $id, 'section');
+	}
+	//-----------------------------------------------------------------------------
 
-	return $page->content;
-}
-//------------------------------------------------------------------------------
-/**
- * Отрисовка административной части
- *
- * @return  string  Контент
- */
-function adminRenderContent()
-{
-	global $page, $Eresus;
+	/**
+	 * Обновляет контент страницы в БД
+	 *
+	 * @param  string  $content  Контент
+	 */
+	public function updateContent($content)
+	{
+		global $Eresus, $page;
 
-	if (arg('action') == 'update') $this->adminUpdate();
-	$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
-	$form = array(
-		'name' => 'content',
-		'caption' => $page->title,
-		'width' => '100%',
-		'fields' => array (
-			array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
-			array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
-		),
-		'buttons' => array('apply', 'reset'),
-	);
+		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+		$item['content'] = $content;
+		$Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+	}
+	//------------------------------------------------------------------------------
 
-	$result = $page->renderForm($form, $item);
-	return $result;
-}
-//------------------------------------------------------------------------------
+	/**
+	* Обновляет контент страницы
+	*/
+	function adminUpdate()
+	{
+		$this->updateContent(arg('content', 'dbsafe'));
+		HTTP::redirect(arg('submitURL'));
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Отрисовка клиентской части
+	 *
+	 * @return  string  Контент
+	 */
+	public function clientRenderContent()
+	{
+		global $Eresus, $page;
+
+		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
+		if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+			$page->httpError(404);
+
+		return $page->content;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Отрисовка административной части
+	 *
+	 * @return  string  Контент
+	 */
+	public function adminRenderContent()
+	{
+		global $page, $Eresus;
+
+		if (arg('action') == 'update') $this->adminUpdate();
+		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+		$form = array(
+			'name' => 'editForm',
+			'caption' => $page->title,
+			'width' => '100%',
+			'fields' => array (
+				array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
+				array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
+			),
+			'buttons' => array('apply', 'reset'),
+		);
+
+		$result = $page->renderForm($form, $item);
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 }
 
 /**
  * Базовый класс коннектора сторонних расширений
  *
+ * @package EresusCMS
  */
-class EresusExtensionConnector {
-	var $root;
-	var $froot;
- /**
-	* Конструктор
-	*
-	* @return EresusExtensionConnector
-	*/
-	function EresusExtensionConnector()
+class EresusExtensionConnector
+{
+	/**
+	 * Корневой URL расширения
+	 *
+	 * @var string
+	 */
+	protected $root;
+
+	/**
+	 * Корневой путь расширения
+	 *
+	 * @var string
+	 */
+	protected $froot;
+
+	/**
+	 * Конструктор
+	 *
+	 * @return EresusExtensionConnector
+	 */
+	function __construct()
 	{
 		global $Eresus;
 
@@ -1098,7 +1437,7 @@ class EresusExtensionConnector {
 
 		return $text;
 	}
-	//--------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Метод вызывается при проксировании прямых запросов к расширению
@@ -1108,35 +1447,55 @@ class EresusExtensionConnector {
 	{
 		global $Eresus;
 
-		if(!UserRights(EDITOR))	die;
+		if (!UserRights(EDITOR))
+			die;
 
-		$ext = strtolower(substr($Eresus->request['file'], strrpos($Eresus->request['file'], '.')+1));
 		$filename = $Eresus->request['path'] . $Eresus->request['file'];
-		$filename = $Eresus->froot.substr($filename, strlen($Eresus->root));
-		switch (true) {
+		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
+
+		if (FS::isDir($filename))
+		{
+			$filename = FS::normalize($filename . '/index.php');
+		}
+
+		if (!FS::isFile($filename))
+		{
+			header('Not found', true, 404);
+			die('<h1>Not found.</h1>');
+		}
+
+		$ext = strtolower(substr($filename, strrpos($filename, '.') + 1));
+
+		switch (true)
+		{
 			case in_array($ext, array('png', 'jpg', 'jpeg', 'gif')):
 				$info = getimagesize($filename);
 				header('Content-type: '.$info['mime']);
 				echo file_get_contents($filename);
 			break;
+
 			case $ext == 'js':
 				header('Content-type: text/javascript');
 				$s = file_get_contents($filename);
 				$s = $this->replaceMacros($s);
 				echo $s;
 			break;
+
 			case $ext == 'css':
 				header('Content-type: text/css');
 				$s = file_get_contents($filename);
 				$s = $this->replaceMacros($s);
 				echo $s;
 			break;
+
 			case $ext == 'html':
+			case $ext == 'htm':
 				header('Content-type: text/html');
 				$s = file_get_contents($filename);
 				$s = $this->replaceMacros($s);
 				echo $s;
 			break;
+
 			case $ext == 'php':
 				$Eresus->conf['debug']['enable'] = false;
 				restore_error_handler();
@@ -1148,10 +1507,15 @@ class EresusExtensionConnector {
 	//-----------------------------------------------------------------------------
 }
 
+
+
 /**
  * Класс для работы с расширениями системы
+ *
+ * @package EresusCMS
  */
-class EresusExtensions {
+class EresusExtensions
+{
  /**
 	* Загруженные расширения
 	*
@@ -1201,16 +1565,19 @@ class EresusExtensions {
 		$result = false;
 		$name = $this->get_name($class, $function, $name);
 
-		if (isset($this->items[$name])) {
-			if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
-		} else {
+		if (isset($this->items[$name]))
+		{
+			$result = $this->items[$name];
+		}
+			else
+		{
 			$filename = $Eresus->froot.'ext-3rd/'.$name.'/eresus-connector.php';
 			if (is_file($filename)) {
 				include_once $filename;
 				$class = $name.'Connector';
 				if (class_exists($class)) {
 					$this->items[$name] = new $class();
-					if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
+					$result = $this->items[$name];
 				}
 			}
 		}

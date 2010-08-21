@@ -25,11 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
 useClass('backward/TContentPlugin');
 
+/**
+ * Базовый класс для плагинов с контентом в виде списков
+ *
+ * @package EresusCMS
+ */
 class TListContentPlugin extends TContentPlugin {
 	var $table;
 	var $pagesCount = 0;
@@ -66,9 +73,7 @@ function toggle($id)
 
 	$Eresus->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-	sendNotify(($item['active']?admActivated:admDeactivated).': '.'<a href="'.str_replace('toggle',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function delete($id)
@@ -77,9 +82,7 @@ function delete($id)
 
 	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	$Eresus->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$caption = $item[isset($this->table['useCaption'])?$this->table['useCaption']:(isset($item['caption'])?'caption':$this->table['columns'][0]['name'])];
-	sendNotify(admDeleted.': '.'<a href="'.str_replace('delete',$this->table['key'],$Eresus->request['url']).'">'.$caption.'</a>', array('title'=>$this->title));
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
@@ -97,7 +100,7 @@ function up($id)
 		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
@@ -116,7 +119,7 @@ function down($id)
 		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	HTTP::redirect($page->url());
+	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function adminRenderContent()
@@ -197,8 +200,7 @@ function clientRenderList($options = null)
 	$items = $Eresus->db->select(
 		$this->table['name'],
 		"(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
-		$this->table['sortMode'],
-		$this->table['sortDesc'],
+		($this->table['sortDesc'] ? '-' : '+').$this->table['sortMode'],
 		'',
 		$this->settings['itemsPerPage'],
 		$this->table['sortDesc'] && $options['oldordering']

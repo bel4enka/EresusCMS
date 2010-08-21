@@ -23,9 +23,10 @@
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
-
 
 $GLOBALS['Eresus']->conf['extensions'] = array(
 	// Расширение возможностей форм ввода
@@ -36,8 +37,8 @@ $GLOBALS['Eresus']->conf['extensions'] = array(
 		),
 		// Расширение полей типа html
 		'html' => array(
-			'xinha' => null,
 			'tinymce' => null,
+			'xinha' => null,
 		),
 	),
 );

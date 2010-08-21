@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,10 +25,14 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-# Кодировка документов
+/**
+ * Кодировка документов
+ */
 define('LOCALE_CHARSET', 'CP1251');
 setlocale(LC_ALL, 'ru_RU.'.LOCALE_CHARSET);
 define('CHARSET','windows-1251');
@@ -123,9 +127,9 @@ define('errUploadSizeFORM', 'Размер файла "%s" превышает максимально допустимый 
 define('errUploadPartial', 'Файл "%s" получен только частично.');
 define('errUploadNoFile', 'Файл "%s" не был загружен.');
 
-define('errInvalidPassword', 'Неверный пароль');
-define('errAccountNotActive', 'Учетная запись "%s" отключена администратором сайта');
-define('errAccountNotExists', 'Учетная запись "%s" отсутствует. Проверьте правильность ввода');
+define('errInvalidPassword', 'Неверное имя пользователя или пароль');
+define('errAccountNotActive', errInvalidPassword);
+define('errAccountNotExists', errInvalidPassword);
 define('errTooEarlyRelogin',"Перед попыткой повторного логина должно пройти не менее %s секунд!");
 # Формы
 define('errFormUnknownType', 'Неизвестный тип поля "%s" в форме "%s"');
@@ -296,7 +300,7 @@ define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эн
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
 define('admPluginsInvalidVersion', 'Требуется ядро %s или выше.');
-define('admPluginsNotRequiredFields', 'Отсутствует олно или более из свойств: version, title, description');
+define('admPluginsNotRequiredFields', 'Отсутствует одно или более из свойств: version, title, description');
 define('admPluginsAdded', 'Подключен новый плагин');
 define('admPluginTopicTable', 'Таблица топиков');
 
@@ -355,4 +359,4 @@ define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <stron
 define('admTemplPageSelector', 'Шаблон переключателя страниц');
 define('admTemplPageSelectorLabel', 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol><li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li><li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон перехода к первой странице, $(href) - ссылка</li><li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>');
 
-define('templPosted', ' <img src="'.httpRoot.'core/img/time.gif" alt="" title="$(posted)">');
+define('templPosted', '$(posted)');

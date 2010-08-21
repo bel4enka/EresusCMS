@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,6 +25,8 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
@@ -32,25 +34,33 @@ useClass('backward/TPlugin');
 /**
 * Базовый класс для плагинов, предоставляющих тип контента
 *
-*
+* @package EresusCMS
 */
-class TContentPlugin extends TPlugin {
-/**
-* Конструктор
-*
-* Устанавливает плагин в качестве плагина контента и читает локальные настройки
-*/
-function TContentPlugin()
+class TContentPlugin extends TPlugin
 {
-	global $page;
+	/**
+	 * Конструктор
+	 *
+	 * Устанавливает плагин в качестве плагина контента и читает локальные настройки
+	 */
+	function __construct()
+	{
+		global $page;
 
-  parent::TPlugin();
-  if (isset($page)) {
-    $page->plugin = $this->name;
-    if (count($page->options)) foreach ($page->options as $key=>$value) $this->settings[$key] = $value;
-  }
-}
-//------------------------------------------------------------------------------
+	  parent::__construct();
+	  if (isset($page))
+	  {
+	    $page->plugin = $this->name;
+	    if (count($page->options))
+	    {
+	    	foreach ($page->options as $key=>$value)
+	    	{
+	    		$this->settings[$key] = $value;
+	    	}
+	    }
+	  }
+	}
+	//------------------------------------------------------------------------------
 /**
 * Обновляет контент страницы в БД
 *

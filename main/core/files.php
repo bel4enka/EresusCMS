@@ -25,10 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+/**
+ * Сравнение двух файлов
+ *
+ * @param array $a
+ * @param array $b
+ * @return int
+ */
 function files_compare($a, $b)
 {
 	if ($a['filename'] == $b['filename']) return 0;
@@ -38,25 +46,31 @@ function files_compare($a, $b)
 
 define('FILES_FILTER', '!\.\./!');
 
-class TFiles {
+
+/**
+ * Файловый менеджер
+ *
+ * @package EresusCMS
+ */
+class TFiles
+{
 	var
 		$access = EDITOR,
 		$icons = array(
-			array('ext'=>'php|inc|js','icon'=>'script'),
-			array('ext'=>'jpg|jpeg','icon'=>'jpeg'),
-			array('ext'=>'gif','icon'=>'gif'),
-			array('ext'=>'bmp','icon'=>'bmp'),
-			array('ext'=>'swf','icon'=>'flash'),
-			array('ext'=>'htm|html|shtml','icon'=>'html'),
-			array('ext'=>'wav|mid|mp3','icon'=>'audio'),
-			array('ext'=>'avi|mov|mpg|mpeg','icon'=>'video'),
-			array('ext'=>'txt','icon'=>'text'),
-			array('ext'=>'exe','icon'=>'app'),
-			array('ext'=>'rar','icon'=>'rar'),
-			array('ext'=>'zip','icon'=>'zip'),
-			array('ext'=>'doc','icon'=>'word'),
-			array('ext'=>'xls','icon'=>'excel'),
-			array('ext'=>'pdf','icon'=>'pdf'),
+			array('ext'=>'js','icon'=>'application-javascript'),
+			array('ext'=>'php','icon'=>'application-x-php'),
+			array('ext'=>'png|jpg|jpeg|gif','icon'=>'image-x-generic'),
+			array('ext'=>'swf','icon'=>'application-x-shockwave-flash'),
+			array('ext'=>'htm|html|shtml','icon'=>'text-html'),
+			array('ext'=>'wav|mid|mp3','icon'=>'audio-x-generic'),
+			array('ext'=>'avi|mov|mpg|mpeg','icon'=>'video-x-generic'),
+			array('ext'=>'txt','icon'=>'text-plain'),
+			array('ext'=>'exe','icon'=>'application-x-ms-dos-executable'),
+			array('ext'=>'rar','icon'=>'application-x-rar'),
+			array('ext'=>'zip','icon'=>'application-zip'),
+			array('ext'=>'doc','icon'=>'application-msword'),
+			array('ext'=>'xls','icon'=>'application-vnd.ms-excel'),
+			array('ext'=>'pdf','icon'=>'application-pdf'),
 		);
 	var $root;
 	var $panels = array('l'=>'', 'r'=>'');
@@ -130,7 +144,7 @@ class TFiles {
 	{
 		global $Eresus;
 
-		$result = '';
+		$result = array();
 		@$hnd=opendir(filesRoot.$this->root.$dir);
 		if ($hnd) {
 			$i = 0;
@@ -163,10 +177,10 @@ class TFiles {
 						$result[$i]['action'] = 'cd';
 					break;
 					case 'file':
-						$result[$i]['link'] = httpRoot . $dir . $name;
+						$result[$i]['link'] = httpRoot . $this->root . $dir . $name;
 						$result[$i]['size'] = number_format(filesize(filesRoot . $this->root . $dir . $name));
 						$result[$i]['action'] = 'new';
-						$result[$i]['icon'] = 'file';
+						$result[$i]['icon'] = 'application-octet-stream';
 						if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
 							$result[$i]['icon'] = $item['icon'];
 							break;
@@ -211,7 +225,7 @@ class TFiles {
 				case 'cd': $result .= "javascript:filesCD('".$this->url(array($side.'f'=>$items[$i]['link']))."')"; break;
 				case 'new': $result .= "window.open('".$items[$i]['link']."');"; break;
 			}
-			$result .= "\"><td>".img('core/img/icon_'.$items[$i]['icon'].'.gif')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
+			$result .= "\"><td>".img('admin/themes/default/img/medium/mimetypes/'.$items[$i]['icon'].'.png')."</td><td>".$items[$i]['filename']."</td><td align=\"right\">".$items[$i]['size']."</td><td>".$items[$i]['date']."</td><td>".$items[$i]['perm']."</td><td>".$items[$i]['owner']."</td><td>&nbsp;</td></tr>\n";
 		}
 		$result .= "</table>\n";
 		return $result;
@@ -232,7 +246,7 @@ class TFiles {
 	{
 		$result =
 			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-			"<tr><td>Доступное место: ".FormatSize(disk_free_space(filesRoot.$this->root))."</td></tr>".
+			"<tr><td>&nbsp;</td></tr>".
 			"</table>";
 		return $result;
 	}
@@ -245,13 +259,23 @@ class TFiles {
 		HTTP::goback();
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	/**
+	 * Создаёт директорию
+	 *
+	 * @return void
+	 *
+	 * @uses FS::mkDir()
+	 * @uses HTTP::redirect()
+	 */
 	function mkDir()
 	{
-		umask(0000);
-		mkdir(filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER), 0777);
-		HTTP::redirect($this->url());
+		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
+		FS::mkDir($pathname, 0777, true);
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function rmDir($path)
 	{
 		#if (UserRights(ADMIN)) {
@@ -276,24 +300,24 @@ class TFiles {
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
 		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
 			if (file_exists($filename)) rename($filename, $newname);
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function chmodEntry()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
 		if (file_exists($filename)) chmod($filename, octdec(arg('perms', '/\D/')));
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function copyFile()
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
-		$dest = filesRoot.$this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
+		$dest = filesRoot . $this->root . $this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
 		if (is_file($filename)) copy($filename, $dest);
 		elseif (is_dir($filename)) {
 		}
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function moveFile()
@@ -305,7 +329,7 @@ class TFiles {
 			elseif (is_dir($filename)) {
 			}
 		#}
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function deleteFile()
@@ -318,7 +342,7 @@ class TFiles {
 				rmdir($filename);
 			}
 		#}
-		HTTP::redirect($this->url());
+		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	# Административные функции
@@ -327,17 +351,21 @@ class TFiles {
 	{
 		global $Eresus, $page;
 
-		$this->root = UserRights(ADMIN)?'':'data/';
+		$this->root = 'data/';
 
 		$this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
-		$this->pannels['l'] = str_replace('/..', '', $this->pannels['l']);
+		$this->pannels['l'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['l']);
 		$this->pannels['l'] = preg_replace('!^/!', '', $this->pannels['l']);
 		while (!empty($this->pannels['l']) && !is_dir(filesRoot.$this->root.$this->pannels['l'])) $this->pannels['l'] = preg_replace('![^/]+/$!', '', $this->pannels['l']);
 		$this->pannels['r'] = (arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
-		$this->pannels['r'] = str_replace('/..', '', $this->pannels['r']);
+		$this->pannels['r'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['r']);
 		$this->pannels['r'] = preg_replace('!^/!', '', $this->pannels['r']);
 		while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
-		if ($this->sp) $this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
+		$this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
+		if (!$this->sp)
+		{
+			$this->sp = 'l';
+		}
 		if (count($_FILES)) $this->upload();
 		elseif (arg('mkdir')) $this->mkDir();
 		elseif (arg('rename')) $this->renameEntry();

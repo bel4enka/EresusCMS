@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,26 +25,16 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', dirname(__FILE__) . '/../data/eresus.log');
-
 /**
- * Уровень детализации журнала
+ * Название системы
+ * @var string
  */
-define('ERESUS_LOG_LEVEL' , ${log.level});
-
-/**
- * Подключение Eresus Core
- */
-include_once 'framework/core/eresus-core.php';
-
-define('CMSNAME', 'Eresus'); # Название системы
+define('CMSNAME', 'Eresus');
 define('CMSVERSION', '${product.version}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
@@ -58,6 +48,17 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function __macroConst($matches) {
+	return constant($matches[1]);
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+function __macroVar($matches) {
+	$result = $GLOBALS[$matches[2]];
+	if (!empty($matches[3])) @eval('$result = $result'.$matches[3].';');
+	return $result;
+}
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
@@ -92,7 +93,7 @@ function FatalError($msg)
 	die($result);
 }
 //------------------------------------------------------------------------------
-###cut:end (testing purpose)
+
 /**
  * Вывод сообщения о пользовательской ошибке
  *
@@ -120,24 +121,7 @@ function InfoBox($text, $caption=strInformation)
 	return $result;
 }
 //------------------------------------------------------------------------------
-function ErrorHandler($errno, $errstr, $errfile, $errline)
-{
-	global $Eresus;
 
-	if (error_reporting()) switch ($errno) {
-		case E_NOTICE:
-			if ($Eresus->conf['debug']['enable']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
-		break;
-		case E_WARNING:
-			if ($Eresus->conf['debug']['enable'])
-				FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.(function_exists('callStack')?callStack():''));
-		break;
-		default:
-			FatalError('Error <b>'.$errno.'</b>: <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b>');
-		break;
-	}
-}
-//------------------------------------------------------------------------------
 function ErrorMessage($message)
 {
 	global $Eresus;
@@ -178,8 +162,6 @@ function resetLastVisitTime($time='', $expand=false)
 	}
 }
 //------------------------------------------------------------------------------
-
-### Подключаемые модули (библиотеки, классы) ###
 
 /**
  * Подключение библиотеки
@@ -241,8 +223,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	if (empty($replyTo)) $replyTo = option('mailReplyTo');
 	if (empty($replyTo)) $replyTo = $fromAddr;
 
-	$charset = option('mailCharset');
-	if (empty($charset)) $charset = CHARSET;
+	$charset = CHARSET;
 
 	$sender = strlen($fromName) ? "=?".$charset."?B?".base64_encode($fromName)."?= <$fromAddr>" : $fromAddr;
 	if (strlen($fromOrg)) $sender .= ' (=?'.$charset.'?B?'.base64_encode($fromOrg).'?=)';
@@ -287,35 +268,6 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	} else return (mail($address, $subject, $text, $headers)===0);
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-function sendNotify($notify, $params=null)
-# Посылает административное или редакторское уведомление по почте
-# Возможные параметры
-#   subject (string) - заголовок письма, по умолчанию название сайта
-#   title (string) - название раздела
-#   url (string) - адрес раздела
-#   user (string) - имя пользователя
-{
-	global $Eresus, $page;
-
-	$subject = isset($params['subject'])?$params['subject']:option('siteName');
-	$username = isset($params['user'])?$params['user']:(is_null($Eresus->user)?'Guest':$Eresus->user['name']);
-	$usermail = !is_null($Eresus->user) && $Eresus->user['auth'] ? $Eresus->user['mail'] : option('mailFormAddr');
-	if (defined('ADMINUI')) {
-		$editors = isset($params['editors'])?$params['editors']:false;
-		$title = isset($params['title'])?$params['title']:$page->title;
-		$url = isset($params['url'])?$params['url']:(arg('submitURL')?arg('submitURL'):$Eresus->request['referer']);
-	} else {
-		$editors = isset($params['editors'])?$params['editors']:true;
-		$title = isset($params['title'])?$params['title']:$page->title;
-		$url = isset($params['url'])?$params['url']:arg('submitURL');
-	}
-	$target = sendNotifyTo;
-	$host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-	if ($host != $_SERVER['REMOTE_ADDR']) $host = "$host ({$_SERVER['REMOTE_ADDR']})";
-	$notify = sprintf(strNotifyTemplate, $username, $host, $url, $title, $notify);
-	sendMail($target, $subject, nl2br($notify), true, $username, $usermail, '', '');
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 //------------------------------------------------------------------------------
 # ДАТА/ВРЕМЯ
@@ -686,11 +638,6 @@ function upload($name, $filename, $overwrite = true)
 			if (is_uploaded_file($_FILES[$name]['tmp_name'])) {
 				$moved = @move_uploaded_file($_FILES[$name]['tmp_name'], $filename);
 				if ($moved) {
-					if (option('filesOwnerSetOnUpload')) {
-						$owner = option('filesOwnerDefault');
-						if (empty($owner)) $owner = fileowner(__FILE__);
-						@chown($filename, $owner);
-					}
 					if (option('filesModeSetOnUpload')) {
 						$mode = option('filesModeDefault');
 						$mode = empty($mode) ? 0666 : octdec($mode);
@@ -738,8 +685,6 @@ function saveTemplate($name, $template)
 	fclose($fp);
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-### ОБЩИЕ ФУНКЦИИ ###
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function HttpAnswer($answer)
@@ -915,16 +860,17 @@ function __property($object, $property)
 //-----------------------------------------------------------------------------
 
 /**
-* Основной класс приложения
-*
-* @var  function  $oldErrorHandler  Предыдущий обработчик ошибок
-* @var  array     $conf             Конфигурация
-* @var  array     $session          Данные сессии
-* @var  object    $db               Интерфейс к СУБД
-* @var  array     $user             Учётная запись пользователя
-*/
-class Eresus {
-	var $oldErrorHandler;
+ * Основной класс приложения
+ *
+ * @package EresusCMS
+ */
+class Eresus
+{
+	/**
+	 * Конфигурация
+	 *
+	 * @var array
+	 */
 	var $conf = array(
 		'lang' => 'ru',
 		'timezone' => '',
@@ -941,7 +887,6 @@ class Eresus {
 		),
 		'extensions' => array(),
 		'backward' => array(
-			'TPlugins' => false,
 			'TPlugin' => false,
 			'TContentPlugin' => false,
 			'TListContentPlugin' => false,
@@ -951,6 +896,12 @@ class Eresus {
 			'mail' => true,
 		),
 	);
+
+	/**
+	 * Данные сессии
+	 *
+	 * @var array
+	 */
 	var $session;
  /**
 	* Интерфейс к расширениям системы
@@ -958,8 +909,18 @@ class Eresus {
 	* @var unknown_type
 	*/
 	var $extensions;
-	var $db;
-	var $plugins;
+
+	/**
+	 * Интерфейс к БД
+	 * @var MySQL
+	 */
+	public $db;
+
+	/**
+	 * Плагины
+	 * @var Plugins
+	 */
+	public $plugins;
  /**
 	* Учётная запись пользователя
 	*
@@ -983,57 +944,95 @@ class Eresus {
 	var $request;
 	var $sections;
 
-	var $PHP5 = false;
-
-	/**
-	* Конструктор
-	*/
-	function Eresus()
-	{
-		# Инициализация перехватчика ошибок
-		$this->oldErrorHandler = set_error_handler('ErrorHandler');
-		# Флаг использования PHP5
-		$this->PHP5 = version_compare(PHP_VERSION, '5.0.0', '>=');
-	}
 	//------------------------------------------------------------------------------
 	// Информация о системе
 	//------------------------------------------------------------------------------
 	/**
-	* Взято из Limb3 - http://limb-project.com/
-	*/
-	function isWin32()  { return DIRECTORY_SEPARATOR == '\\'; }
-	function isUnix()   { return DIRECTORY_SEPARATOR == '/'; }
-	function isMac()    { return !strncasecmp(PHP_OS, 'MAC', 3); }
-	function isModule() { return !$this->isCgi() && isset($_SERVER['GATEWAY_INTERFACE']); }
-	function isCgi()    { return !strncasecmp(PHP_SAPI, 'CGI', 3); }
-	function isCli()    { return PHP_SAPI == 'cli'; }
-	#-------------------------------------------------------------------------------
-	/**
-	* Читает и применяет конфигурационный файл
-	*
-	* @access  private
-	*/
-	function init_config()
+	 * @deprecated since 2.14
+	 */
+	function isWin32()
 	{
+		return System::isWindows();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isUnix()
+	{
+		return System::isUnixLike();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isMac()
+	{
+		return System::isMac();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isModule()
+	{
+		return PHP::isModule();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isCgi()
+	{
+		return PHP::isCGI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isCli()
+	{
+		return PHP::isCLI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Читает и применяет конфигурационный файл
+	 */
+	private function init_config()
+	{
+		/*
+		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
+		 * мог записывать в неё свои значения.
+		 */
 		global $Eresus;
 
-		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.php';
-		if (is_file($filename)) include_once($filename);
-		else FatalError("Main config file '$filename' not found!");
+		$filename = Core::app()->getFsRoot() . '/cfg/main.php';
+		$nativeFilename = FS::nativeForm($filename);
+		if (FS::isFile($filename))
+		{
+			include_once $nativeFilename;
+		}
+		else
+		{
+			FatalError("Main config file '$nativeFilename' not found!");
+		}
 	}
-	#-------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
+
 	/**
-	* Инициирует сессии
-	*
-	* @access  private
-	*/
-	function init_session()
+	 * Инициирует сессии
+	 */
+	private function init_session()
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
-		###cut:start (testing purpose)
 		session_start();
-		###cut:end (testing purpose)
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
 		$this->user = &$_SESSION['user'];
@@ -1042,33 +1041,55 @@ class Eresus {
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];
 	}
-	#-------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
+
 	/**
-	* Определяет пути
-	*
-	* @access  private
-	*/
-	function init_resolve()
+	 * Определяет файловые пути
+	 *
+	 * @return void
+	 */
+	protected function init_resolve()
 	{
-		if (is_null($this->froot)) $this->froot = realpath(dirname(__FILE__).'/..').'/';
-		if ($this->isWin32()) {
-			$this->froot = str_replace('\\', '/', substr($this->froot, 2));
+		if (is_null($this->froot))
+		{
+			$this->froot = FS::nativeForm(Core::app()->getFsRoot() . '/');
 		}
-		$this->fdata = $this->froot.'data/';
-		$this->fstyle = $this->froot.'style/';
 
-		if (is_null($this->path)) {
+		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
+		$this->fstyle = $this->froot . 'style' . DIRECTORY_SEPARATOR;
+
+		if (is_null($this->path))
+		{
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
-			if (!strlen($s) || $s{strlen($s)-1} != '/') $s .= '/';
-			$this->path = ($s{0} != '/' ? '/' : '').$s;
+			$s = substr(dirname($_SERVER['SCRIPT_FILENAME']), strlen($_SERVER['DOCUMENT_ROOT']));
+			$s = FS::canonicalForm($s);
+			if (strlen($s) == 0 || substr($s, -1) != '/')
+			{
+				$s .= '/';
+			}
+			if (substr($s, 0, 1) != '/')
+			{
+				$s = '/' . $s;
+			}
+			$this->path = $s;
 		}
 
-		# Обратная совместимость
+		/**
+		 * Обратная совместимость
+		 * @var string
+		 * @deprecated since 2.14
+		 */
 		define('filesRoot', $this->froot);
+
+		/**
+		 * Обратная совместимость
+		 * @var string
+		 * @deprecated since 2.14
+		 */
 		define('dataFiles', $this->fdata);
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	* Читает настройки
 	*
@@ -1123,6 +1144,8 @@ class Eresus {
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
 
+		# Сбор аргументов вызова
+		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
 		# Разбивка параметров вызова скрипта
 		$s = substr($request['path'], strlen($this->path));
 		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
@@ -1135,9 +1158,6 @@ class Eresus {
 		$this->root = $root.$this->path;
 		$this->data = $this->root.'data/';
 		$this->style = $this->root.'style/';
-
-		# Сбор аргументов вызова
-		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
 
 		# Обратная совместимость
 		# <= 2.9
@@ -1182,7 +1202,6 @@ class Eresus {
 		$filename = $this->froot.'core/classes.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Classes file '$filename' not found!");
-		if ($this->conf['backward']['TPlugins']) useClass('backward/TPlugins');
 		if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
 		elseif ($this->conf['backward']['TContentPlugin']) useClass('backward/TContentPlugin');
 		elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
@@ -1206,11 +1225,12 @@ class Eresus {
 	*/
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine'])) {
+		if (useLib($this->conf['db']['engine']))
+		{
 			$this->db = new $this->conf['db']['engine'];
 			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-			if ($this->PHP5) $GLOBALS['db'] = $this->db; else $GLOBALS['db'] =& $this->db;
-		} else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		}
+			else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1219,8 +1239,6 @@ class Eresus {
 	function init_plugins()
 	{
 		$this->plugins = new Plugins;
-		#FIX Обратная совместимость
-		if ($this->PHP5) $GLOBALS['plugins'] = $this->plugins; else $GLOBALS['plugins'] =& $this->plugins;;
 	}
 	//------------------------------------------------------------------------------
 	/**
@@ -1253,7 +1271,7 @@ class Eresus {
 	{
 		switch (arg('action')) {
 			case 'login':
-				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
+				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				HTTP::redirect($this->request['url']);
 			break;
 			case 'logout':
@@ -1308,8 +1326,8 @@ class Eresus {
 			set_magic_quotes_runtime(0);
 		# Читаем конфигурацию
 		$this->init_config();
-		# В PHP 5.1.0 должна быть установлена временная зона по умолчанию
-		if (PHP_VERSION >= '5.1.0') date_default_timezone_set($this->conf['timezone']);
+		if ($this->conf['timezone'])
+			date_default_timezone_set($this->conf['timezone']);
 		# Определение путей
 		$this->init_resolve();
 		# Инициализация сессии
@@ -1386,22 +1404,44 @@ class Eresus {
  /**
 	* Авторизация пользователя
 	*
-	* @param string $login   Имя пользователя
-	* @param string $key		 Ключ учётной записи
-	* @param bool   $auto		 Сохранить авторизационные данные на комптютере посетителя
-	* @param bool   $cookie  Авторизация при помощи cookie
+	* @param string $unsafeLogin   Имя пользователя
+	* @param string $key		       Ключ учётной записи
+	* @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
+	* @param bool   $cookie        Авторизация при помощи cookie
 	* @return bool Результат
 	*/
-	function login($login, $key, $auto = false, $cookie = false)
+	function login($unsafeLogin, $key, $auto = false, $cookie = false)
 	{
 		$result = false;
+
+		$login = preg_replace('/[^a-z0-9_\-\.\@]/', '', $unsafeLogin);
+
+		if ($login != $unsafeLogin)
+		{
+			ErrorMessage(errInvalidPassword);
+			return false;
+		}
+
 		$item = $this->db->selectItem('users', "`login`='$login'");
-		if (!is_null($item)) { # Если такой пользователь есть...
-			if ($item['active']) { # Если учетная запись активна...
-				if (time() - $item['lastLoginTime'] > $item['loginErrors']) {
-					if ($key == $item['hash']) { # Если пароль верен...
-						if ($auto) $this->set_login_cookies($login, $key);
-						else $this->clear_login_cookies();
+		if (!is_null($item))
+		{
+			// Если такой пользователь есть...
+			if ($item['active'])
+			{
+				// Если учетная запись активна...
+				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
+				{
+					if ($key == $item['hash'])
+					{
+						// Если пароль верен...
+						if ($auto)
+						{
+							$this->set_login_cookies($login, $key);
+						}
+						else
+						{
+							$this->clear_login_cookies();
+						}
 						$setVisitTime = !isset($this->user['id']);
 						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
 						$this->user = $item;
@@ -1414,21 +1454,36 @@ class Eresus {
 						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
-					} else { # Если пароль не верен...
-						if (!$cookie) {
+					}
+					else
+					{
+						// Если пароль не верен...
+						if (!$cookie)
+						{
 							ErrorMessage(errInvalidPassword);
 							$item['lastLoginTime'] = time();
 							$item['loginErrors']++;
 							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 						}
 					}
-				} else { # Если авторизация проведена слишком рано
+				}
+				else
+				{
+					// Если авторизация проведена слишком рано
 					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
 					$item['lastLoginTime'] = time();
 					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 				}
-			} else ErrorMessage(sprintf(errAccountNotActive, $login));
-		} else ErrorMessage(errInvalidPassword);
+			}
+			else
+			{
+				ErrorMessage(sprintf(errAccountNotActive, $login));
+			}
+		}
+		else
+		{
+			ErrorMessage(errInvalidPassword);
+		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -1444,22 +1499,5 @@ class Eresus {
 		if ($clearCookies) $this->clear_login_cookies();
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Исполнение
-	*
-	* @access public
-	*/
-	function execute()
-	{
-	}
-	//------------------------------------------------------------------------------
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-###cut:start (testing purpose)
-
-$GLOBALS['Eresus'] = new Eresus;
-$GLOBALS['Eresus']->init();
-$GLOBALS['Eresus']->execute();
-
-###cut:end (testing purpose)

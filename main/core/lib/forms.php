@@ -25,13 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
 /**
-* HTML-форма
-*/
-class Form {
+ * HTML-форма
+ *
+ * @package EresusCMS
+ */
+class Form
+{
 	var $form;
 	var $values;
 	var $hidden = '';
@@ -46,7 +51,7 @@ class Form {
 	* @param  array  $form    Описание формы
 	* @param  array  $values  Значения полей по умолчанию (необязательно)
 	*/
-	function Form($form, $values=array())
+	function __construct($form, $values=array())
 	{
 		$this->form = $form;
 		$this->values = $values;
@@ -411,19 +416,19 @@ class Form {
 			"\n\t<table width=\"100%\">\n".
 			"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
 			$result.
-			"\t\t<tr><td colspan=\"2\" align=\"center\"><br />".
-			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<input name="form_ok" type="submit" class="button" value="'.$this->form['buttons']['ok'].'" /> ':'').
-			(!isset($this->form['buttons']) || in_array('ok', $this->form['buttons'])?"<input name=\"form_ok\" type=\"submit\" class=\"button\" value=\"".strOk."\" /> ":''). # onClick=\"formOKClick('".$form['name']."')\"> ":'').
+			"\t\t<tr><td colspan=\"2\" class=\"ui-button-box\"><br />".
+			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<button name="form_ok" type="submit">'.$this->form['buttons']['ok'].'</button> ':'').
+			(!isset($this->form['buttons']) || in_array('ok', $this->form['buttons'])?"<button name=\"form_ok\" type=\"submit\">".strOk."</button> ":'').
 
-			((isset($this->form['buttons']) && isset($this->form['buttons']['apply']))?'<input name="form_apply" type="submit" class="button" value="'.$this->form['buttons']['apply']."\" onclick=\"formApplyClick('".$this->form['name']."')\" /> ":'').
-			(!isset($this->form['buttons']) || in_array('apply', $this->form['buttons'])?"<input name=\"form_apply\" type=\"submit\" class=\"button\" value=\"".strApply."\" onclick=\"formApplyClick('".$this->form['name']."')\" /> ":'').
+			((isset($this->form['buttons']) && isset($this->form['buttons']['apply']))?'<button name="form_apply" type="submit" onclick="formApplyClick(\''.$this->form['name'].'\')">'.$this->form['buttons']['apply']."</button> ":'').
+			(!isset($this->form['buttons']) || in_array('apply', $this->form['buttons'])?"<button name=\"form_apply\" type=\"submit\" onclick=\"formApplyClick('".$this->form['name']."')\">" . strApply . '</button> ':'').
 
-			((isset($this->form['buttons']) && isset($this->form['buttons']['reset']))?'<input name="form_reset" type="reset" class="button" value="'.$this->form['buttons']['reset'].'" /> ':'').
-			(isset($this->form['buttons']) && in_array('reset', $this->form['buttons'])?"<input name=\"form_reset\" type=\"reset\" class=\"button\" value=\"".strReset."\" /> ":'').
+			((isset($this->form['buttons']) && isset($this->form['buttons']['reset']))?'<button name="form_reset" type="reset">'.$this->form['buttons']['reset'].'</button> ':'').
+			(isset($this->form['buttons']) && in_array('reset', $this->form['buttons'])?"<button name=\"form_reset\" type=\"reset\">".strReset."</button> ":'').
 
-			((isset($this->form['buttons']) && isset($this->form['buttons']['cancel']) && (!is_array($this->form['buttons']['cancel'])))?'<input name="form_cancel" type="button" class="button" value="'.$this->form['buttons']['cancel']."\" onclick=\"javascript:history.back();\" /> ":'').
-			((!isset($this->form['buttons']) || (in_array('cancel', $this->form['buttons'])))?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".strCancel."\" onclick=\"javascript:history.back();\" />":'').
-			((isset($this->form['buttons']['cancel']) && (is_array($this->form['buttons']['cancel'])))?"<input name=\"form_cancel\" type=\"button\" class=\"button\" value=\"".$this->form['buttons']['cancel']['label']."\" onclick=\"window.location.href='".$this->form['buttons']['cancel']['url']."'\" />":'').
+			((isset($this->form['buttons']) && isset($this->form['buttons']['cancel']) && (!is_array($this->form['buttons']['cancel'])))?'<input name="form_cancel" type="button" onclick="javascript:history.back();">' . $this->form['buttons']['cancel'] . '</button>' : '').
+			((!isset($this->form['buttons']) || (in_array('cancel', $this->form['buttons'])))?"<button name=\"form_cancel\" type=\"button\" onclick=\"javascript:history.back();\">".strCancel . '</button>' :'').
+			((isset($this->form['buttons']['cancel']) && (is_array($this->form['buttons']['cancel'])))?"<button name=\"form_cancel\" type=\"button\" onclick=\"window.location.href='".$this->form['buttons']['cancel']['url']."'\">" . $this->form['buttons']['cancel']['label'] . '</button>':'').
 
 			"</td>\n\t\t</tr>\n".
 			"\t</table>\n</form>\n";

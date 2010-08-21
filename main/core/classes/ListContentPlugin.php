@@ -64,7 +64,7 @@ class ListContentItem {
 	 * @param array $source
 	 * @return ListContentItem
 	 */
-	function ListContentItem($owner, $source = null)
+	function __construct($owner, $source = null)
 	{
 		global $Eresus;
 
@@ -455,7 +455,7 @@ class ListContentPlugin extends ContentPlugin {
 	*
 	* @return ListContentPlugin
 	*/
-	function ListContentPlugin()
+	function __construct()
 	{
 		parent::ContentPlugin();
 

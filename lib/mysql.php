@@ -2,273 +2,386 @@
 /**
  * ${product.title} ${product.version}
  *
- * Библиотека для работы с СУБД MySQL
+ * Р‘РёР±Р»РёРѕС‚РµРєР° РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЎРЈР‘Р” MySQL
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 3 Р»РёР±Рѕ (РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ) СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹Р»Рё РїРѕР»СѓС‡РёС‚СЊ РєРѕРїРёСЋ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё
+ * GNU СЃ СЌС‚РѕР№ РїСЂРѕРіСЂР°РјРјРѕР№. Р•СЃР»Рё Р’С‹ РµРµ РЅРµ РїРѕР»СѓС‡РёР»Рё, СЃРјРѕС‚СЂРёС‚Рµ РґРѕРєСѓРјРµРЅС‚ РЅР°
  * <http://www.gnu.org/licenses/>
+ *
+ * @package EresusCMS
  *
  * $Id$
  */
 
-class MySQL {
-	var $Connection;
-	var $name;
-	var $prefix;
-	var $logQueries = false;
- /**
-	* Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
-	*
-	* @var  bool  $display_errors
-	*/
-	var $error_reporting = true;
- /**
-	* Открывает соединение сервером данных и выбирает источник
-	*
-	* @param  string  $server    Сервер данных
-	* @param  string  $username  Имя пользователя для доступа к серверу
-	* @param  string  $password  Пароль пользователя
-	* @param  string  $source    Имя источника данных
-	* @param  string  $prefix    Префикс для имён таблиц. По умолчанию ''
-	*
-	* @return  bool  Результат соединения
-	*/
-	function init($server, $username, $password, $source, $prefix='')
-	{
-		$result = false;
-		$this->name = $source;
-		$this->prefix = $prefix;
-		@$this->Connection = mysql_connect($server, $username, $password, true);
-		if ($this->Connection) {
-			if (defined('LOCALE_CHARSET')) {
-				$version = preg_replace('/[^\d\.]/', '', mysql_get_server_info());
-				if (version_compare($version, '4.1') >= 0) $this->query("SET NAMES '".LOCALE_CHARSET."'");
-			}
-			if (mysql_select_db($this->name, $this->Connection)) $result = true;
-			elseif ($this->error_reporting) FatalError(mysql_error($this->Connection));
-		} elseif ($this->error_reporting) FatalError("Can not connect to MySQL server. Check login and password");
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
- /**
-	* Выполняет запрос к источнику
-	*
-	* @param  string  $query    Запрос в формате источника
-	*
-	* @return  mixed  Результат запроса. Тип зависит от источника, запроса и результата
-	*/
-	function query($query)
-	{
-		global $Eresus;
+/**
+ * Р Р°Р±РѕС‚Р° СЃ РЎРЈР‘Р” MySQL
+ *
+ * @package EresusCMS
+ */
+class MySQL
+{
+	/**
+	 * Р”РµСЃРєСЂРёРїС‚РѕСЂ СЃРѕРµРґРёРЅРµРЅРёСЏ
+	 * @var resource
+	 */
+	protected $Connection;
 
-		$result = mysql_query($query, $this->Connection);
-		if ($this->error_reporting && !$result) FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
-		return $result;
+	/**
+	 * РРјСЏ Р‘Р”
+	 * @var string
+	 */
+	protected $name;
+
+	/**
+	 * РџСЂРµС„РёРєСЃ С‚Р°Р±Р»РёС†
+	 * @var string
+	 * @deprecated
+	 */
+	public $prefix;
+
+	/**
+	 * Р’РµСЃС‚Рё Р»РѕРі Р·Р°РїСЂРѕСЃРѕРІ
+	 * @var bool
+	 */
+	public $logQueries = false;
+
+	/**
+	 * Р•СЃР»Рё TRUE (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ) РІ СЃР»СѓС‡Р°Рµ РѕС€РёР±РєРё СЃРєСЂРёРїС‚ Р±СѓРґРµС‚ РїСЂРµСЂРІР°РЅ Рё РїРѕРєР°Р·Р°РЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ
+	 *
+	 * @var bool
+	 */
+	public $error_reporting = true;
+
+	/**
+	 * ???
+	 * @var ezcDbSchema
+	 */
+	private $dbSchema = null;
+
+	/**
+	 * РћС‚РєСЂС‹РІР°РµС‚ СЃРѕРµРґРёРЅРµРЅРёРµ СЃРµСЂРІРµСЂРѕРј РґР°РЅРЅС‹С… Рё РІС‹Р±РёСЂР°РµС‚ РёСЃС‚РѕС‡РЅРёРє
+	 *
+	 * @param string $server    РЎРµСЂРІРµСЂ РґР°РЅРЅС‹С…
+	 * @param string $username  РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РґР»СЏ РґРѕСЃС‚СѓРїР° Рє СЃРµСЂРІРµСЂСѓ
+	 * @param string $password  РџР°СЂРѕР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+	 * @param string $source    РРјСЏ РёСЃС‚РѕС‡РЅРёРєР° РґР°РЅРЅС‹С…
+	 *
+	 * @return bool  Р РµР·СѓР»СЊС‚Р°С‚ СЃРѕРµРґРёРЅРµРЅРёСЏ
+	 * @deprecated
+	 */
+	public function init($server, $username, $password, $source, $prefix = '')
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$dsn = "mysql://$username:$password@$server/$source";
+		if (defined('LOCALE_CHARSET'))
+			$dsn .= '?charset=' . LOCALE_CHARSET;
+
+		try
+		{
+			$db = DB::connect($dsn);
+		}
+			catch (DBRuntimeException $e)
+		{
+			return false;
+		}
+
+		$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+		$db->setOptions($options);
+
+		return true;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Выполняет запрос к источнику и возвращает ассоциативный массив значений
-	*
-	* @param  string  $query    Запрос в формате источника
-	*
-	* @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
-	*/
-	function query_array($query)
+
+	/**
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕР±СЉРµРєС‚-РѕРґРёРЅРѕС‡РєСѓ СЃС…РµРјС‹ Р‘Р”
+	 * @return ezcDbSchema
+	 */
+	public function getSchema()
 	{
-		$result = $this->query($query);
-		$values = Array();
-		while($row = mysql_fetch_assoc($result)) {
-			if (count($row)) foreach($row as $key => $value) $row[$key] = $value;
-			$values[] = $row;
+		if (!$this->dbSchema)
+		{
+			$db = DB::getHandler();
+			$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
+			ezcDbSchema::setOptions($options);
+
+			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}
+
+		return $this->dbSchema;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Р’С‹РїРѕР»РЅСЏРµС‚ Р·Р°РїСЂРѕСЃ Рє РёСЃС‚РѕС‡РЅРёРєСѓ
+	 *
+	 * @param string $query  Р—Р°РїСЂРѕСЃ РІ С„РѕСЂРјР°С‚Рµ РёСЃС‚РѕС‡РЅРёРєР°
+	 * @return mixed  Р РµР·СѓР»СЊС‚Р°С‚ Р·Р°РїСЂРѕСЃР°. РўРёРї Р·Р°РІРёСЃРёС‚ РѕС‚ РёСЃС‚РѕС‡РЅРёРєР°, Р·Р°РїСЂРѕСЃР° Рё СЂРµР·СѓР»СЊС‚Р°С‚Р°
+	 * @deprecated
+	 */
+	public function query($query)
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$db = DB::getHandler();
+		eresus_log(__METHOD__, LOG_DEBUG, $query);
+		$db->exec($query);
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Р’С‹РїРѕР»РЅСЏРµС‚ Р·Р°РїСЂРѕСЃ Рє РёСЃС‚РѕС‡РЅРёРєСѓ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ Р°СЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№ РјР°СЃСЃРёРІ Р·РЅР°С‡РµРЅРёР№
+	 *
+	 * @param  string  $query    Р—Р°РїСЂРѕСЃ РІ С„РѕСЂРјР°С‚Рµ РёСЃС‚РѕС‡РЅРёРєР°
+	 * @return  array|bool  РћС‚РІРµС‚ РІ РІРёРґРµ РјР°СЃСЃРёРІР° РёР»Рё FALSE РІ СЃР»СѓС‡Р°Рµ РѕС€РёР±РєРё
+	 * @deprecated
+	 */
+	public function query_array($query)
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$db = DB::getHandler();
+		$stmt = $db->prepare($query);
+		if (!$stmt->execute())
+			return false;
+
+		$values = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $values;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	 * Создание новой таблицы
+	 * РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ С‚Р°Р±Р»РёС†С‹
 	 *
-	 * @param string $name       Имя таблицы
-	 * @param string $structure  Описание структуры
-	 * @param string $options    Опции
+	 * @param string $name       РРјСЏ С‚Р°Р±Р»РёС†С‹
+	 * @param string $structure  РћРїРёСЃР°РЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹
+	 * @param string $options    РћРїС†РёРё
 	 *
-	 * @return bool Результат
+	 * @return bool Р РµР·СѓР»СЊС‚Р°С‚
+	 * @deprecated
 	 */
-	function create($name, $structure, $options = '')
+	public function create($name, $structure, $options = '')
 	{
-		$result = false;
-		$query = "CREATE TABLE `{$this->prefix}$name` ($structure) $options";
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$db = DB::getHandler();
+		$name = $db->options->tableNamePrefix . $name;
+		$query = "CREATE TABLE `$name` ($structure) $options";
 		$result = $this->query($query);
-		return $result;
-	}
-	//------------------------------------------------------------------------------
-	/**
-	 * Удаление таблицы
-	 *
-	 * @param string $name       Имя таблицы
-	 *
-	 * @return bool Результат
-	 */
-	function drop($name)
-	{
-		$result = false;
-		$query = "DROP TABLE `{$this->prefix}$name`";
-		$result = $this->query($query);
-		return $result;
-	}
-	//------------------------------------------------------------------------------
- /**
-	* Производит выборку данных из источника
-	*
-	* @param  string   $tables     Список таблиц из которых проводится выборка
-	* @param  string   $condition  Условие для выборки (WHERE)
-	* @param  string   $order      Поля для сортировки (ORDER BY)
-	* @param  string   $fields     Список полей для получения
-	* @param  int      $rows       Максимльное количество получаемых записей
-	* @param  int      $offset     Начальное смещение для выборки
-	* @param  string   $group      Поле для группировки
-	* @param  bool     $distinct   Вернуть только уникальные записи
-	*
-	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
-	*/
-	function select($tables, $condition = '', $order = '', $fields = '', $rows = 0, $offset = 0, $group = '', $distinct = false)
-	{
-		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($rows)) {
-			# Обратная совместимость c 1.2.x
-			$desc = $fields;
-			$fields = $rows ? $rows : '*';
-			$rows = $offset;
-			$offset = $group;
-			$group = $distinct;
-			$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
-			$query = 'SELECT ';
-			if ($distinct) $query .= 'DISTINCT ';
-			if (!strlen($fields)) $fields = '*';
-			$tables = str_replace('`' ,'', $tables);
-			$tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
-			$query .= $fields." FROM ".$tables;
-			if (strlen($condition)) $query .= " WHERE $condition";
-			if (strlen($group)) $query .= " GROUP BY $group";
-			if (strlen($order)) {
-				$query .= " ORDER BY $order";
-				if ($desc) $query .= ' DESC';
-			}
-			if ($rows) {
-				$query .= ' LIMIT ';
-				if ($offset) $query .= "$offset, ";
-				$query .= $rows;
-			}
-		} else {
-			$query = 'SELECT ';
-			if ($distinct) $query .= 'DISTINCT ';
-			if (!strlen($fields)) $fields = '*';
-			$tables = str_replace('`','',$tables);
-			$tables = preg_replace('/([\w.]+)/i', '`'.$this->prefix.'$1`', $tables);
-			$query .= $fields." FROM ".$tables;
-			if (strlen($condition)) $query .= " WHERE ".$condition;
-			if (strlen($group)) $query .= " GROUP BY ".$group."";
-			if (strlen($order)) {
-				$order = explode(',', $order);
-				for($i = 0; $i < count($order); $i++) switch ($order[$i]{0}) {
-					case '+': $order[$i] = '`'.substr($order[$i], 1).'`'; break;
-					case '-': $order[$i] = '`'.substr($order[$i], 1).'` DESC'; break;
-				}
-				$query .= " ORDER BY ".implode(', ',$order);
-			}
-			if ($rows) {
-				$query .= ' LIMIT ';
-				if ($offset) $query .= "$offset, ";
-				$query .= $rows;
-			}
+
+		if ($result)
+		{
+			$db = DB::getHandler();
+			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}
-		$result = $this->query_array($query);
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * РЈРґР°Р»РµРЅРёРµ С‚Р°Р±Р»РёС†С‹
+	 *
+	 * @param string $name       РРјСЏ С‚Р°Р±Р»РёС†С‹
+	 *
+	 * @return bool Р РµР·СѓР»СЊС‚Р°С‚
+	 * @deprecated
+	 */
+	public function drop($name)
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$db = DB::getHandler();
+		$name = $db->options->tableNamePrefix . $name;
+		$query = "DROP TABLE `$name`";
+		$result = $this->query($query);
+
+		if ($result)
+		{
+			$db = DB::getHandler();
+			$this->dbSchema = ezcDbSchema::createFromDb($db);
+		}
+
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+ /**
+	* РџСЂРѕРёР·РІРѕРґРёС‚ РІС‹Р±РѕСЂРєСѓ РґР°РЅРЅС‹С… РёР· РёСЃС‚РѕС‡РЅРёРєР°
+	*
+	* @param  string   $tables     РЎРїРёСЃРѕРє С‚Р°Р±Р»РёС† РёР· РєРѕС‚РѕСЂС‹С… РїСЂРѕРІРѕРґРёС‚СЃСЏ РІС‹Р±РѕСЂРєР°
+	* @param  string   $condition  РЈСЃР»РѕРІРёРµ РґР»СЏ РІС‹Р±РѕСЂРєРё (WHERE)
+	* @param  string   $order      РџРѕР»СЏ РґР»СЏ СЃРѕСЂС‚РёСЂРѕРІРєРё (ORDER BY)
+	* @param  string   $fields     РЎРїРёСЃРѕРє РїРѕР»РµР№ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ
+	* @param  int      $limit      РњР°РєСЃРёРјР»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»СѓС‡Р°РµРјС‹С… Р·Р°РїРёСЃРµР№
+	* @param  int      $offset     РќР°С‡Р°Р»СЊРЅРѕРµ СЃРјРµС‰РµРЅРёРµ РґР»СЏ РІС‹Р±РѕСЂРєРё
+	* @param  string   $group      РџРѕР»Рµ РґР»СЏ РіСЂСѓРїРїРёСЂРѕРІРєРё
+	* @param  bool     $distinct   Р’РµСЂРЅСѓС‚СЊ С‚РѕР»СЊРєРѕ СѓРЅРёРєР°Р»СЊРЅС‹Рµ Р·Р°РїРёСЃРё
+	*
+	* @return  array|bool  Р’С‹Р±СЂР°РЅРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ РІ РІРёРґРµ РјР°СЃСЃРёРІР° РёР»Рё FALSE РІ СЃР»СѓС‡Р°Рµ РѕС€РёР±РєРё
+	* @deprecated
+	*/
+	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$db = DB::getHandler();
+		$q = $db->createSelectQuery();
+		$e = $q->expr;
+
+		if (empty($fields))
+			$fields = '*';
+
+		if ($distinct)
+			$q->selectDistinct($fields);
+		else
+			$q->select($fields);
+
+		$tables = explode(',', $tables);
+		$q->from($tables);
+
+		if ($condition)
+			$q->where($condition);
+
+		if (strlen($order))
+		{
+			$order = explode(',', $order);
+			for($i = 0; $i < count($order); $i++)
+				switch ($order[$i]{0})
+				{
+					case '+':
+						$q->orderBy(substr($order[$i], 1));
+					break;
+
+					case '-':
+						$q->orderBy(substr($order[$i], 1), ezcQuerySelect::DESC);
+					break;
+
+					default:
+						$q->orderBy($order[$i]);
+					break;
+				}
+		}
+
+		if ($limit && $offset)
+			$q->limit($limit, $offset);
+		elseif ($limit)
+			$q->limit($limit);
+
+		if ($group)
+			$q->groupBy($group);
+
+		$result = DB::fetchAll($q);
 
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Вставка элементов в источник
-	*
-	* @param  string  $table  Таблица, в которую надо вставтиь элемент
-	* @param  array   $item   Ассоциативный массив значений
-	*
-	* @return  mixed  Результат выполнения операции
-	*/
-	function insert($table, $item)
-	{
-		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
-		$cols = '';
-		$values = '';
-		while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) {
-			$cols .= ", `$field`";
-			$values .= " , '{$item[$field]}'";
-		}
-		$cols = substr($cols, 2);
-		$values = substr($values, 2);
-		$result = $this->query("INSERT INTO ".$this->prefix.$table." (".$cols.") VALUES (".$values.")");
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
- /**
-	* Выполняет обновление информации в источнике
-	*
-	* @param string $table      Таблица
-	* @param mixed  $set        Изменения
-	* @param string $condition  Условие
-	* @return unknown
-	*/
-	function update($table, $set, $condition)
-	{
-		if (is_array($set)) {
-			$pairs = array();
-			$fields = $this->fields($table, true);
-			foreach($set as $field => $value) {
-				if (isset($fields[$field])) {
-					switch ($fields[$field]) {
 
-					}
-					#$pairs[]
-				}
-			}
-		}
-		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
-		return $result;
+	/**
+	 * Р’СЃС‚Р°РІРєР° СЌР»РµРјРµРЅС‚Р° РІ Р‘Р”
+	 *
+	 * @param string $table  РўР°Р±Р»РёС†Р°, РІ РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ РІСЃС‚Р°РІС‚РёСЊ СЌР»РµРјРµРЅС‚
+	 * @param array  $item   РђСЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№ РјР°СЃСЃРёРІ Р·РЅР°С‡РµРЅРёР№
+	 *
+	 * @return mixed  Р РµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ РѕРїРµСЂР°С†РёРё
+	 * @deprecated
+	 */
+	public function insert($table, $item)
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$fields = $this->fields($table);
+		if (!$table)
+			return false;
+
+		$q = DB::getHandler()->createInsertQuery();
+		$q->insertInto($table);
+
+		foreach ($fields as $field)
+			if (isset($item[$field]))
+				$q->set($field, $q->bindValue($item[$field]));
+
+		DB::execute($q);
+		return true;
 	}
 	//-----------------------------------------------------------------------------
-	function delete($table, $condition)
-	# Выполняет запрос DELETE к базе данных используя метод query().
-	#  $table - таблица, из которой требуется удалить записи
-	#  $condition - признаки удаляемых записей
+
+	/**
+	 * Р’С‹РїРѕР»РЅСЏРµС‚ РѕР±РЅРѕРІР»РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё РІ РёСЃС‚РѕС‡РЅРёРєРµ
+	 *
+	 * @param string $table      РўР°Р±Р»РёС†Р°
+	 * @param mixed  $set        РР·РјРµРЅРµРЅРёСЏ
+	 * @param string $condition  РЈСЃР»РѕРІРёРµ
+	 * @return unknown
+	 * @deprecated
+	 */
+	public function update($table, $set, $condition)
 	{
-		$result = $this->query("DELETE FROM `".$this->prefix.$table."` WHERE ".$condition);
-		return $result;
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$q = DB::getHandler()->createUpdateQuery();
+		$q->update($table)
+			->where($condition);
+
+		$set = explode(',', $set);
+		foreach ($set as $each)
+		{
+			list($key, $value) = explode('=', $each);
+			$key = str_replace('`', '', trim($key));
+			$value = preg_replace('/(^\'|\'$)/', '', trim($value));
+			$q->set($key, $q->bindValue($value));
+		}
+
+		DB::execute($q);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Р’С‹РїРѕР»РЅСЏРµС‚ Р·Р°РїСЂРѕСЃ DELETE Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…
+	 *
+	 * @param string $table      С‚Р°Р±Р»РёС†Р°, РёР· РєРѕС‚РѕСЂРѕР№ С‚СЂРµР±СѓРµС‚СЃСЏ СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃРё
+	 * @param string $condition  РїСЂРёР·РЅР°РєРё СѓРґР°Р»СЏРµРјС‹С… Р·Р°РїРёСЃРµР№
+	 * @return mixed
+	 * @deprecated
+	 */
+	public function delete($table, $condition)
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$q = DB::getHandler()->createDeleteQuery();
+		$q->deleteFrom($table)
+			->where($condition);
+		DB::execute($q);
+		return null;
 	}
 	//-----------------------------------------------------------------------------
  /**
-	* Получение списка полей таблицы
+	* РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РїРѕР»РµР№ С‚Р°Р±Р»РёС†С‹
 	*
-	* @param string $table  Имя таблицы
-	* @return array  Описание полей
+	* @param string $table            РРјСЏ С‚Р°Р±Р»РёС†С‹
+	* @param bool   $info [optional]
+	* @return array|false  РЎРїРёСЃРѕРє РїРѕР»РµР№, СЃ РѕРїРёСЃР°РЅРёРµРј, РµСЃР»Рё $info = true
+	*
+	* @deprecated СЃ 2.14
 	*/
-	function fields($table, $info = false)
+	public function fields($table, $info = false)
 	{
-		global $Eresus;
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$schm = $this->getSchema()->getSchema();
+		if ($schm[$table]->fields)
+			return array_keys($schm[$table]->fields);
+		else
+			return false;
+/*		global $Eresus;
 
 		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
 		if ($fields) {
@@ -316,60 +429,124 @@ class MySQL {
 				} else $result[] = $item['Field'];
 			}
 		} else FatalError(mysql_error($this->Connection));
-		return $result;
+		return $result;*/
 	}
 	//-----------------------------------------------------------------------------
-	function selectItem($table, $condition, $fields = '')
-	{
-		if ($table{0} != "`") $table = "`".$table."`";
-		$tmp = $this->select($table, $condition, '', false, $fields);
-		$tmp = isset($tmp[0])?$tmp[0]:null;
-		return $tmp;
-	}
-	//-----------------------------------------------------------------------------
-	function updateItem($table, $item, $condition)
-	{
-		$fields = $this->fields($table, true);
 
-		$values = array();
-		foreach($fields as $field => $info) if (isset($item[$field])) {
-			switch ($info['type']) {
-				case 'int':
-					$value = $item[$field];
-					if (!$value) $value = 0;
-				break;
-				default: $value = "'".$item[$field]."'";
-			}
-			$values[] = "`$field` = $value";
-		}
-		$values = implode(', ', $values);
-		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition);
-		return $result;
+	/**
+	 * Р’С‹Р±СЂР°С‚СЊ РѕРґРЅСѓ Р·Р°РїРёСЃСЊ РёР· Р‘Р”
+	 *
+	 * @param string $table      РРјСЏ С‚Р°Р±Р»РёС†С‹
+	 * @param string $condition  SQL-СѓСЃР»РѕРІРёРµ
+	 * @param string $fields     Р’С‹Р±РёСЂР°РµРјС‹Рµ РїРѕР»СЏ
+	 * @return array|false
+	 * @deprecated
+	 */
+	public function selectItem($table, $condition, $fields = '')
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$q = DB::getHandler()->createSelectQuery();
+
+		if ($fields == '')
+			$fields = '*';
+
+		$q->select($fields)
+			->from($table)
+			->where($condition)
+			->limit(1);
+
+		$item = DB::fetch($q);
+
+		return $item;
 	}
 	//-----------------------------------------------------------------------------
-	function count($table, $condition='', $group='', $rows=false)
-	# Возвращает количество записей в таблице используя метод query().
-	#  $table - таблица, для которой требуется посчитать кол-во записей
+
+	/**
+	 * РћР±РЅРѕРІР»СЏРµС‚ РѕРґРЅСѓ Р·Р°РїРёСЃСЊ
+	 *
+	 * @param string $table
+	 * @param array  $item
+	 * @param string $condition
+	 * @return void
+	 * @deprecated
+	 */
+	public function updateItem($table, $item, $condition)
 	{
-		$result = $this->query("SELECT count(*) FROM `".$this->prefix.$table."`".(empty($condition)?'':'WHERE '.$condition).(empty($group)?'':' GROUP BY `'.$group.'`'));
-		if ($rows) {
-			$count = 0;
-			while (mysql_fetch_row($result)) $count++;
-			$result = $count;
-		} else {
-			$result = mysql_fetch_row($result);
-			$result = $result[0];
-		}
-		return $result;
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$fields = $this->fields($table);
+		if (!$table)
+			return false;
+
+		$q = DB::getHandler()->createUpdateQuery();
+		$q->update($table)
+			->where($condition);
+
+		foreach ($fields as $field)
+			if (isset($item[$field]))
+				$q->set($field, $q->bindValue($item[$field]));
+
+		DB::execute($q);
+		return true;
 	}
 	//-----------------------------------------------------------------------------
-	function getInsertedID()
+
+	/**
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ РІ С‚Р°Р±Р»РёС†Рµ
+	 *
+	 * @param string $table      С‚Р°Р±Р»РёС†Р°, РґР»СЏ РєРѕС‚РѕСЂРѕР№ С‚СЂРµР±СѓРµС‚СЃСЏ РїРѕСЃС‡РёС‚Р°С‚СЊ РєРѕР»-РІРѕ Р·Р°РїРёСЃРµР№
+	 * @param string $condition
+	 * @param string $group
+	 * @param bool   $rows
+	 * @return int
+	 * @deprecated
+	 */
+	public function count($table, $condition = false, $group = false, $rows = false)
 	{
-		return mysql_insert_id($this->Connection);
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$q = DB::getHandler()->createSelectQuery();
+		$e = $q->expr;
+
+		$q->select($q->alias($e->count('*'), 'count'))
+			->from($table);
+
+		if ($condition)
+			$q->where($condition);
+
+		if ($group)
+			$q->groupBy($group);
+
+		$result = DB::fetchAll($q);
+		if ($rows)
+			return count($result);
+		else
+			return intval($result[0]['count']);
 	}
 	//-----------------------------------------------------------------------------
-	function tableStatus($table, $param='')
+
+	/**
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµР№ РІСЃС‚Р°РІР»РµРЅРЅРѕР№ Р·Р°РїРёСЃРё
+	 *
+	 * @return mixed
+	 * @deprecated
+	 */
+	public function getInsertedID()
 	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		$db = DB::getHandler();
+		return $db->lastInsertId();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @param unknown_type $table
+	 * @param unknown_type $param
+	 * @return unknown_type
+	 * @deprecated
+	 */
+	public function tableStatus($table, $param='')
+	{
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
 		if ($result) {
 			$result = $result[0];
@@ -378,19 +555,19 @@ class MySQL {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Экранирует потенциально опасные символы
-	*
-	* @param mixed $src  Входные данные
-	*
-	* @return mixed
-	*/
-	function escape($src)
+
+	/**
+	 * Р­РєСЂР°РЅРёСЂСѓРµС‚ РїРѕС‚РµРЅС†РёР°Р»СЊРЅРѕ РѕРїР°СЃРЅС‹Рµ СЃРёРјРІРѕР»С‹
+	 *
+	 * РќР°С‡РёРЅР°СЏ СЃ 2.13 РјРµС‚РѕРґ РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµС‚.
+	 *
+	 * @param mixed $src  Р’С…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ
+	 * @return mixed
+	 * @deprecated
+	 */
+	public function escape($src)
 	{
-		switch (true) {
-			case is_string($src): $src = mysql_real_escape_string($src); break;
-			case is_array($src): foreach($src as $key => $value) $src[$key] = mysql_real_escape_string($value); break;
-		}
+		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		return $src;
 	}
 	//-----------------------------------------------------------------------------

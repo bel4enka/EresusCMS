@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,23 +25,34 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
 useLib('accounts');
 
-class TUsers extends Accounts {
-	var $accounts;
-	var
-		$access = ADMIN,
-		$itemsPerPage = 30,
-		$pagesDesc = false;
+/**
+ * Управление пользователями
+ *
+ * @package EresusCMS
+ */
+class TUsers extends Accounts
+{
+	private $accounts;
+
+	public $access = ADMIN;
+
+	private $itemsPerPage = 30;
+
+	private $pagesDesc = false;
+
  /**
 	* Конструктор
 	*
 	* @return TUsers
 	*/
-	function TUsers()
+	function __construct()
 	{
 		$this->accounts = new Accounts();
 	}
@@ -96,7 +107,6 @@ class TUsers extends Accounts {
 		$item = $this->accounts->get(arg('toggle', 'int'));
 		$item['active'] = !$item['active'];
 		$this->accounts->update($item);
-		SendNotify(($item['active']?admActivated:admDeactivated).': '.$item['name']);
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -115,7 +125,6 @@ class TUsers extends Accounts {
 		$item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user['id'] == $item['id']);
 		if ($this->checkMail($item['mail'])) {
 			$this->accounts->update($item);
-			SendNotify($this->notifyMessage($item, $old));
 		};
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -148,9 +157,8 @@ class TUsers extends Accounts {
 			saveRequest();
 			HTTP::redirect($Eresus->request['referer']);
 		}
-		if ($this->accounts->add($item))
-			SendNotify(admUsersAdded.': '.$this->notifyMessage($item), '', false, '', $page->url(array('action'=>'')));
-		else ErrorMessage('Error creating user account');
+		if (!$this->accounts->add($item))
+			ErrorMessage('Error creating user account');
 		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -165,7 +173,6 @@ class TUsers extends Accounts {
 
 		$item = $this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
-		SendNotify(admDeleted.': '.$this->notifyMessage($item));
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -177,7 +184,6 @@ class TUsers extends Accounts {
 		if (arg('pswd1') == arg('pswd2')) {
 			$item['hash'] = $Eresus->password_hash(arg('pswd1'));
 			$this->accounts->update($item);
-			SendNotify(admUsersPasswordChanged.': '.$item['name']);
 		}
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -246,19 +252,28 @@ class TUsers extends Accounts {
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function adminRender()
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function adminRender()
 	{
 		global $Eresus, $page;
 
 		$result = '';
 		$granted = false;
-		if (UserRights($this->access)) $granted = true; else {
+		if (UserRights($this->access))
+			$granted = true;
+			else
+		{
 			if (arg('id') == $Eresus->user['id']) {
 				if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
 				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
 			}
 		}
-		if ($granted) {
+		if ($granted)
+		{
 			if (arg('update')) $this->update(null);
 			elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
 			elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
@@ -305,5 +320,5 @@ class TUsers extends Accounts {
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }

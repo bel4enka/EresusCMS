@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,6 +25,8 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
@@ -36,8 +38,8 @@
 class TPages
 {
 	/**
-	 * ???
-	 * @var unknown_type
+	 * Уровень доступа к этому модулу
+	 * @var int
 	 */
 	public $access = ADMIN;
 
@@ -105,7 +107,6 @@ class TPages
 		$temp = $Eresus->sections->get("(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
 		if (count($temp) == 0) {
 			$item = $Eresus->sections->add($item);
-			SendNotify($this->notifyMessage($item));
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
 			HTTP::redirect($page->url(array('id'=>'')));
 		} else {
@@ -149,8 +150,6 @@ class TPages
 			$item['updated'] = gettime('Y-m-d H:i:s');
 
 		$Eresus->sections->update($item);
-
-		SendNotify($this->notifyMessage($item, $old));
 
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -289,7 +288,7 @@ class TPages
 				if (in_array('section', $fields)) $Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'], "`section`='".$item['id']."'");
 			}
 		}
-		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', false, '`id`');
+		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
 		if (count($items)) foreach($items as $item) $this->deleteBranch($item['id']);
 		$Eresus->db->delete('pages', "`id`='".$id."'");
 	}
@@ -307,27 +306,52 @@ class TPages
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		$Eresus->sections->delete(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		SendNotify(admDeleted.":\n".$this->notifyMessage($item));
 		HTTP::redirect($page->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @return unknown_type
+	 * Возвращает список типов контента в виде, пригодном для построения выпадающего списка
+	 *
+	 * @return array
 	 */
-	function loadContentTypes()
+	private function loadContentTypes()
 	{
 		global $Eresus;
 
-		$result[0] = array(); $result[1] = array();
-		$result[0][] = admPagesContentDefault; $result[1][] = 'default';
-		$result[0][] = admPagesContentList; $result[1][] = 'list';
-		$result[0][] = admPagesContentURL; $result[1][] = 'url';
-		if(count($Eresus->plugins->list)) foreach($Eresus->plugins->list as $name => $plugin) if (strpos($plugin['type'], 'content') !== false) {
-			$result[0][] = $plugin['title'];
-			$result[1][] = $name;
+		$result[0] = array();
+		$result[1] = array();
+
+		/*
+		 * Стандартные типы контента
+		 */
+		$result[0] []= admPagesContentDefault;
+		$result[1] []= 'default';
+
+		$result[0] []= admPagesContentList;
+		$result[1] []= 'list';
+
+		$result[0] []= admPagesContentURL;
+		$result[1] []= 'url';
+
+		/*
+		 * Типы контентов из плагинов
+		 */
+		if (count($Eresus->plugins->items))
+		{
+			foreach ($Eresus->plugins->items as $plugin)
+			{
+				if (
+					$plugin instanceof ContentPlugin ||
+					$plugin instanceof TContentPlugin
+				)
+				{
+					$result[0][] = $plugin->title;
+					$result[1][] = $plugin->name;
+				}
+			}
 		}
+
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -391,11 +415,12 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @param $id
-	 * @return unknown_type
+	 * Возвращает диалог изменения свойств раздела
+	 *
+	 * @param int $id
+	 * @return string  HTML
 	 */
-	function edit($id)
+	private function edit($id)
 	{
 		global $Eresus, $page;
 

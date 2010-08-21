@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,37 +25,22 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
+/**
+ * Признак клиентского интерфейса
+ *
+ * @var bool
+ */
 define('CLIENTUI', true);
-
-###cut:start (testing purpose)
-# Подключаем ядро системы #
-$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'kernel-legacy.php';
-if (is_file($filename)) include_once($filename); else {
-	echo "<h1>Fatal error</h1>\n<strong>Kernel not available!</strong><br />\nThis error can take place during site update.<br />\nPlease try again later.";
-	exit;
-}
-
-###cut:end (testing purpose)
-
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function __macroConst($matches) {
-	return constant($matches[1]);
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function __macroVar($matches) {
-	$result = $GLOBALS[$matches[2]];
-	if (!empty($matches[3])) @eval('$result = $result'.$matches[3].';');
-	return $result;
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 /**
  * Страница клиентского интерфейса
  *
- * @package Eresus2
+ * @package EresusCMS
  */
 class TClientUI extends WebPage
 {
@@ -92,7 +77,7 @@ class TClientUI extends WebPage
 	 *
 	 * @access  public
 	 */
-	function TClientUI()
+	function __construct()
 	{
 	}
 	//------------------------------------------------------------------------------
@@ -526,7 +511,7 @@ class TClientUI extends WebPage
 		#if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
 		$result .=
 			"<div style=\"width: ".$form['width']."\" class=\"form\">\n".
-			"<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$Eresus->request['path'].execScript:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onsubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
+			"<form ".(empty($form['name'])?'':'id="'.$form['name'].'" ')."action=\"".(empty($form['action'])?$Eresus->request['path']:$form['action'])."\" method=\"post\"".(empty($validator)?'':' onsubmit="return '.$form['name'].'Submit();"').($file?' enctype="multipart/form-data"':'').">\n".
 			"<div class=\"hidden\"><input type=\"hidden\" name=\"submitURL\" value=\"".$this->url()."\" />".
 			$hidden."</div>\n".
 			"<table>\n".
@@ -548,7 +533,7 @@ class TClientUI extends WebPage
 	function buttonAddItem($caption = '', $value = '')
 	{
 		global $Eresus;
-		return '<form class="contentButton" action="'.$Eresus->request['url'].execScript.'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
+		return '<form class="contentButton" action="'.$Eresus->request['url'].'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function buttonBack($caption = '', $url='')
@@ -565,12 +550,3 @@ class TClientUI extends WebPage
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-###cut:start (testing purpose)
-
-$page = new TClientUI;
-$page->init();
-$page->render();
-
-###cut:end (testing purpose)

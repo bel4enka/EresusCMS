@@ -35,23 +35,21 @@ CREATE TABLE `pages` (
   KEY `updated` (`updated`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
-INSERT INTO `pages` VALUES(1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `pages` VALUES(1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '<h1>Добро пожаловать!</h1>', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
 CREATE TABLE `plugins` (
-  `name` varchar(32) NOT NULL default '',
-  `type` set('client','admin','content','ondemand') default NULL,
-  `active` tinyint(1) unsigned default '1',
-  `position` int(10) unsigned default 0,
+  `name` varchar(32) NOT NULL,
+  `active` bool  NOT NULL default 1,
+  `content` bool  NOT NULL default 0,
   `settings` text,
   `title` varchar(64) default '',
   `version` varchar(16) default '',
   `description` varchar(255) default '',
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
-  KEY `position` (`position`),
-  KEY `type` (`type`)
+  KEY `content` (`content`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- --------------------------------------------------------

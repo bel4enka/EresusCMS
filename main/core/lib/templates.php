@@ -4,8 +4,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -25,11 +25,20 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
-class Templates {
-	var $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
+/**
+ * Работа с шаблонами
+ *
+ * @package EresusCMS
+ */
+class Templates
+{
+	private $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
+
 	/**
 	 * Возвращает список шаблонов
 	 *
@@ -54,6 +63,7 @@ class Templates {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Возвращает шаблон
 	 *
@@ -89,6 +99,7 @@ class Templates {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Новый шаблон
 	 *
@@ -106,16 +117,10 @@ class Templates {
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
 		$result = filewrite($filename, $content);
-		if ($result) {
-			$message = admAdded.': '.$name;
-			InfoMessage($message);
-			SendNotify($message);
-		} else {
-			ErrorMessage(sprintf(errFileWrite, $filename));
-		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Изменяет шаблон
 	 *
@@ -136,13 +141,6 @@ class Templates {
 		if (!is_null($desc)) $item['desc'] = $desc;
 		$content = "<!-- {$item['desc']} -->\n\n{$item['code']}";
 		$result = filewrite($filename, $content);
-		if ($result) {
-			$message = admUpdated.': '.$name;
-			#InfoMessage($message);
-			SendNotify($message);
-		} else {
-			ErrorMessage(sprintf(errFileWrite, $filename));
-		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -160,13 +158,6 @@ class Templates {
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = filedelete($filename);
-		if ($result) {
-			$message = admDeleted.': '.$name;
-			InfoMessage($message);
-			SendNotify($message);
-		} else {
-			ErrorMessage(sprintf(errFileDelete, $filename));
-		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------

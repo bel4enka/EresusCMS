@@ -3,8 +3,8 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -58,20 +58,6 @@ function pageLeft()
 function pageTop()
 {
 	return isIE ? (document.body.scrollTop?document.body.scrollTop:document.documentElement.scrollTop) : window.pageYOffset;
-}
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function toggleMenuBranch(Id)
-{
-	var branch = document.getElementById('branch'+Id);
-	var root = document.getElementById('root'+Id);
-	if (branch.style.display == 'none') {
-		branch.style.display = 'block';
-		root.src = "$(httpRoot)core/img/br_opened.gif";
-	} else {
-		branch.style.display = 'none';
-		root.src = "$(httpRoot)core/img/br_closed.gif";
-	}
-	return false;
 }
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function askdel(objCaller)
