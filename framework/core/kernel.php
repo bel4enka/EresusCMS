@@ -2,11 +2,11 @@
 /**
  * Eresus Core
  *
- * @version 0.1.2
+ * @version 0.1.3
  *
  * Kernel module
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 /**
  * Eresus Core version
  */
-define('ERESUS_CORE_VERSION', '0.1.2');
+define('ERESUS_CORE_VERSION', '0.1.3');
 
 /**
  * Emergency memory buffer size in KiB
@@ -1091,6 +1091,25 @@ class FS {
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public static function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		return self::$driver->mkDir($pathname, $mode, $recursive, $context);
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 
@@ -1099,7 +1118,13 @@ class FS {
  *
  * @package Core
  */
-class GenericFS {
+class GenericFS
+{
+	/**
+	 * Directory create umask
+	 * @var int
+	 */
+	public $dirUmask = 0000;
 
 	/**
 	 * Normalize file name
@@ -1308,6 +1333,31 @@ class GenericFS {
 	public function isWritable($filename)
 	{
 		return is_writable($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		$umask = umask($this->dirUmask);
+		if (is_null($context))
+			$result = mkdir($pathname, $mode, $recursive);
+		else
+			$result = mkdir($pathname, $mode, $recursive, $context);
+		umask($umask);
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1749,14 +1799,8 @@ class Core {
 		/*
 		 * If Eresus Core was NOT built with a "compile" option
 		 */
-		if ( ! ERESUS_CORE_USE_COMPILED )
+		if ( ! ERESUS_CORE_COMPILED )
 			EresusClassAutoloader::add('core.autoload');
-
-		/*
-		 * If Eresus Core was built with a "compile" option
-		 */
-		if (ERESUS_CORE_USE_COMPILED)
-			include_once 'eresus-core.compiled.php';
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'done');
 
@@ -1901,15 +1945,20 @@ class Core {
 		eresus_log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
 
 		/*
-		 * PHP has no standart methods to intersept some error types (e.g. E_PARSE or E_ERROR),
+		 * PHP has no standart methods to intercept some error types (e.g. E_PARSE or E_ERROR),
 		 * but there is a way to do this - register callback function via ob_start.
+		 * But not in CLI mode.
 		 */
-		if (ob_start('EresusFatalErrorHandler', 4096))
-			eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-		else
-			eresus_log(
-				LOG_NOTICE, __METHOD__, 'Fatal error handler not instaled! Fatal error will be not handled!'
-			);
+		if (! PHP::isCLI())
+		{
+			if (ob_start('EresusFatalErrorHandler', 4096))
+				eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+			else
+				eresus_log(
+					LOG_NOTICE, __METHOD__,
+					'Fatal error handler not instaled! Fatal error will be not handled!'
+				);
+		}
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'done');
 	}

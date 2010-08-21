@@ -3,8 +3,8 @@
  * File containing the ezcMailTools class
  *
  * @package Mail
- * @version 1.7
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.7.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -13,7 +13,7 @@
  * and ensuring correct line-breaks in the mail.
  *
  * @package Mail
- * @version 1.7
+ * @version 1.7.1
  * @mainclass
  */
 class ezcMailTools
@@ -751,7 +751,7 @@ class ezcMailTools
      * $contentIdArray = array( 'consoletools-table.png@1421450' => 'http://localhost/consoletools-table.jpg' );
      * $text = "<html> Embedded image: <img src='cid:consoletools-table.png@1421450'/> </html>";
      * $htmlBody = ezcMailTools::replaceContentIdRefs( $text, $contentIdArray );
-     * // $htmlBody is now:
+     * // $htmlBody is now: 
      * // <html> Embedded image: <img src='http://localhost/consoletools-table.jpg'/> </html>
      * ?>
      * </code>

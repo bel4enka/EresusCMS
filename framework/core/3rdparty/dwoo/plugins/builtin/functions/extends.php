@@ -12,8 +12,8 @@
  * @copyright  Copyright (c) 2008, Jordi Boggiano
  * @license    http://dwoo.org/LICENSE   Modified BSD License
  * @link       http://dwoo.org/
- * @version    1.0.0
- * @date       2008-10-23
+ * @version    1.1.0
+ * @date       2009-07-18
  * @package    Dwoo
  */
 class Dwoo_Plugin_extends extends Dwoo_Plugin implements Dwoo_ICompilable
@@ -72,12 +72,17 @@ class Dwoo_Plugin_extends extends Dwoo_Plugin implements Dwoo_ICompilable
 			if (array_search($newParent, $inheritanceTree, true) !== false) {
 				throw new Dwoo_Compilation_Exception($compiler, 'Extends : Recursive template inheritance detected');
 			}
-
 			$inheritanceTree[] = $newParent;
 
-			if (preg_match('/^'.self::$l.'extends\s+(?:file=)?\s*(\S+?|(["\']).+?\2)'.self::$r.'/i', $parent->getSource(), $match)) {
+			if (preg_match('/^'.self::$l.'extends\s+(?:file=)?\s*((["\']).+?\2|\S+?)'.self::$r.'/i', $parent->getSource(), $match)) {
 				$curPath = dirname($identifier) . DIRECTORY_SEPARATOR;
-				$file = (substr($match[1], 0, 1) !== '"' && substr($match[1], 0, 1) !== '"') ? '"'.str_replace('"', '\\"', $match[1]).'"' : $match[1];
+				if (isset($match[2]) && $match[2] == '"') {
+					$file = '"'.str_replace('"', '\\"', substr($match[1], 1, -1)).'"';
+				} elseif (isset($match[2]) && $match[2] == "'") {
+					$file = '"'.substr($match[1], 1, -1).'"';
+				} else {
+					$file = '"'.$match[1].'"';
+				}
 			} else {
 				$file = false;
 			}
@@ -96,7 +101,7 @@ class Dwoo_Plugin_extends extends Dwoo_Plugin implements Dwoo_ICompilable
 			// TODO replace blocks that are found in the child and in the parent recursively
 			$newSource = preg_replace_callback('/'.self::$l.'block (["\']?)(.+?)\1'.self::$r.'(?:\r?\n?)(.*?)(?:\r?\n?)'.self::$l.'\/block'.self::$r.'/is', array('Dwoo_Plugin_extends', 'replaceBlock'), $newSource);
 
-			$newSource = $l.'do extendsCheck("'.$parent['resource'].':'.$parent['identifier'].'" "'.str_replace('"', '\\"', $parent['uid']).'")'.$r.$newSource;
+			$newSource = $l.'do extendsCheck("'.$parent['resource'].':'.$parent['identifier'].'")'.$r.$newSource;
 
 			if (self::$lastReplacement) {
 				break;

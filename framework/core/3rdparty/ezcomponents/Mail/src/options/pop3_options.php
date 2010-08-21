@@ -3,8 +3,8 @@
  * File containing the ezcMailPop3TransportOptions class
  *
  * @package Mail
- * @version 1.7
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.7.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -29,7 +29,7 @@
  *           {@link ezcMailPop3Transport::AUTH_APOP}.
  *
  * @package Mail
- * @version 1.7
+ * @version 1.7.1
  */
 class ezcMailPop3TransportOptions extends ezcMailTransportOptions
 {

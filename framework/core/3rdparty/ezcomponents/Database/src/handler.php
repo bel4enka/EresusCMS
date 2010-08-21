@@ -3,8 +3,8 @@
  * File containing the ezcDbHandler class.
  *
  * @package Database
- * @version 1.4.6
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.7
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -15,13 +15,20 @@
  * - handling of offset/limit in a datbase independent way
  * - correct recursive handling of transactions
  *
- * @version 1.4.6
+ * @version 1.4.7
  * @package Database
  * @mainclass
  */
 abstract class ezcDbHandler extends PDO
 {
     /**
+     * Contains the options that are used to set up handler.
+     *
+     * @var ezcDbOptions
+     */
+    public $options;
+
+		/**
      * Stores the transaction nesting level.
      *
      * @var int
@@ -89,6 +96,25 @@ abstract class ezcDbHandler extends PDO
 
         $this->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
         $this->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
+    }
+
+    /**
+     * Associates an option object with this handler and changes settings for
+     * opened connections.
+     *
+     * @param ezcDbOptions $options
+     */
+    public function setOptions( ezcDbOptions $options )
+    {
+        $this->options = $options;
+        $this->setupConnection();
+    }
+
+    /**
+     * Sets up opened connection according to options.
+     */
+    private function setupConnection()
+    {
     }
 
     /**

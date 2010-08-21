@@ -2,11 +2,11 @@
 /**
  * Eresus Core
  *
- * @version 0.1.2
+ * @version 0.1.3
  *
  * Init module
  *
- * @copyright 2007-2009, Eresus Project, http://eresus.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,8 +46,7 @@ if (PHP_VERSION < ERESUS_CORE_PHP_VERSION)
 		'. Needed '.ERESUS_CORE_PHP_VERSION." or later.\n"
 	);
 
-if (!defined('ERESUS_CORE_USE_COMPILED'))
-	define('ERESUS_CORE_USE_COMPILED', 'yes' == 'true' || 'yes' == 'yes');
+define('ERESUS_CORE_COMPILED', false);
 
 /**
  * Including kernel

@@ -3,8 +3,8 @@
  * File containing the ezcQuerySelectSqlite class.
  *
  * @package Database
- * @version 1.4.6
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.7
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -16,7 +16,7 @@
  *
  * @see ezcQuery
  * @package Database
- * @version 1.4.6
+ * @version 1.4.7
  */
 class ezcQuerySelectSqlite extends ezcQuerySelect
 {
@@ -97,6 +97,7 @@ class ezcQuerySelectSqlite extends ezcQuerySelect
         }
         $this->lastInvokedMethod = 'from';
         $tables = $this->getIdentifiers( $tables );
+        $tables = $this->getPrefixedTableNames($tables);
 
         $this->fromTables = array_merge( $this->fromTables, $tables );
 

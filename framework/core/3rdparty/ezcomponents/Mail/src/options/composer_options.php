@@ -3,8 +3,8 @@
  * File containing the ezcMailComposerOptions class
  *
  * @package Mail
- * @version 1.7
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.7.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -31,9 +31,9 @@
  *           is true (the contents are included).
  *
  * @package Mail
- * @version 1.7
+ * @version 1.7.1
  */
-class ezcMailComposerOptions extends ezcBaseOptions
+class ezcMailComposerOptions extends ezcMailOptions
 {
     /**
      * Constructs an object with the specified values.
@@ -76,7 +76,7 @@ class ezcMailComposerOptions extends ezcBaseOptions
                 break;
 
             default:
-                throw new ezcBasePropertyNotFoundException( $propertyName );
+                parent::__set( $propertyName, $propertyValue );
         }
     }
 }

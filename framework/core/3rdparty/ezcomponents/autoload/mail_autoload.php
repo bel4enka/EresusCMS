@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the Mail component.
  *
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.7
+ * @version 1.7.1
  * @filesource
  * @package Mail
  */
@@ -55,6 +55,7 @@ return array(
     'ezcMailMultipartRelatedParser'     => 'Mail/parser/parts/multipart_related_parser.php',
     'ezcMailMultipartReport'            => 'Mail/parts/multiparts/multipart_report.php',
     'ezcMailMultipartReportParser'      => 'Mail/parser/parts/multipart_report_parser.php',
+    'ezcMailOptions'                    => 'Mail/options/mail_options.php',
     'ezcMailParser'                     => 'Mail/parser/parser.php',
     'ezcMailParserOptions'              => 'Mail/options/parser_options.php',
     'ezcMailParserShutdownHandler'      => 'Mail/parser/shutdown_handler.php',

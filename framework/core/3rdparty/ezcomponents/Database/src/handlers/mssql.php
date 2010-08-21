@@ -3,8 +3,8 @@
  * File containing the ezcDbHandlerMssql class.
  *
  * @package Database
- * @version 1.4.6
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.7
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -13,17 +13,10 @@
  *
  * @see ezcDbHandler
  * @package Database
- * @version 1.4.6
+ * @version 1.4.7
  */
 class ezcDbHandlerMssql extends ezcDbHandler
 {
-    /**
-     * Contains the options that are used to set up handler.
-     *
-     * @var ezcDbMssqlOptions
-     */
-    public $options;
-
     /**
      * Constructs a handler object from the parameters $dbParams.
      *
@@ -91,18 +84,6 @@ class ezcDbHandlerMssql extends ezcDbHandler
 
         // setup options
         $this->setOptions( new ezcDbMssqlOptions() );
-    }
-
-    /**
-     * Associates an option object with this handler and changes settings for
-     * opened connections.
-     *
-     * @param ezcDbMssqlOptions $options
-     */
-    public function setOptions( ezcDbMssqlOptions $options )
-    {
-        $this->options = $options;
-        $this->setupConnection();
     }
 
     /**

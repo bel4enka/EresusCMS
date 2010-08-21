@@ -13,8 +13,8 @@
  * @copyright  Copyright (c) 2008, Jordi Boggiano
  * @license    http://dwoo.org/LICENSE   Modified BSD License
  * @link       http://dwoo.org/
- * @version    1.0.1
- * @date       2008-12-24
+ * @version    1.1.0
+ * @date       2009-07-18
  * @package    Dwoo
  */
 class Dwoo_Plugin_template extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Block
@@ -27,6 +27,8 @@ class Dwoo_Plugin_template extends Dwoo_Block_Plugin implements Dwoo_ICompilable
 	{
 		$params = $compiler->getCompiledParams($params);
 		$parsedParams = array();
+		if (!isset($params['*']))
+			$params['*'] = array();
 		foreach ($params['*'] as $param=>$defValue) {
 			if (is_numeric($param)) {
 				$param = $defValue;
@@ -63,9 +65,24 @@ class Dwoo_Plugin_template extends Dwoo_Block_Plugin implements Dwoo_ICompilable
 			$init .= '$dwoo->scope[\''.$param.'\'] = $'.$param.";\n";
 		}
 		$init .= '/* -- template start output */';
-		$body = Dwoo_Compiler::PHP_OPEN.'function Dwoo_Plugin_'.$params['name'].'_'.$params['uuid'].'('.$paramstr.') {'."\n$init".Dwoo_Compiler::PHP_CLOSE.
-			$prepend.str_replace(array('$this->','$this,'), array('$dwoo->', '$dwoo,'), $content).$append.
-			Dwoo_Compiler::PHP_OPEN.$cleanup."\n}".Dwoo_Compiler::PHP_CLOSE;
+
+		$funcName = 'Dwoo_Plugin_'.$params['name'].'_'.$params['uuid'];
+
+		$search = array(
+			'$this->charset',
+			'$this->',
+			'$this,',
+		);
+		$replacement = array(
+			'$dwoo->getCharset()',
+			'$dwoo->',
+			'$dwoo,',
+		);
+		$content = str_replace($search, $replacement, $content);
+
+		$body = 'if (!function_exists(\''.$funcName."')) {\nfunction ".$funcName.'('.$paramstr.') {'."\n$init".Dwoo_Compiler::PHP_CLOSE.
+			$prepend.$content.$append.
+			Dwoo_Compiler::PHP_OPEN.$cleanup."\n}\n}";
 		$compiler->addTemplatePlugin($params['name'], $params['*'], $params['uuid'], $body);
 	}
 }

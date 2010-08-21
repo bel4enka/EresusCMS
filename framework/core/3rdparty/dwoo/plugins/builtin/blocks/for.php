@@ -15,8 +15,8 @@
  * @copyright  Copyright (c) 2008, Jordi Boggiano
  * @license    http://dwoo.org/LICENSE   Modified BSD License
  * @link       http://dwoo.org/
- * @version    1.0.0
- * @date       2008-10-23
+ * @version    1.1.0
+ * @date       2009-07-18
  * @package    Dwoo
  */
 class Dwoo_Plugin_for extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Block, Dwoo_IElseable
@@ -58,6 +58,10 @@ class Dwoo_Plugin_for extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Bloc
 		$usesShow = strpos($tpl, $varName.'show') !== false || strpos($tpl, $shortVarName.'show') !== false;
 		$usesTotal = $usesLast || strpos($tpl, $varName.'total') !== false || strpos($tpl, $shortVarName.'total') !== false;
 
+		if (strpos($name, '$this->scope[') !== false) {
+			$usesAny = $usesFirst = $usesLast = $usesIndex = $usesIteration = $usesShow = $usesTotal = true;
+		}
+
 		// gets foreach id
 		$cnt = self::$cnt++;
 
@@ -85,16 +89,36 @@ class Dwoo_Plugin_for extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Bloc
 		$_for'.$cnt.'_to = is_numeric($_for'.$cnt.'_to) ? $_for'.$cnt.'_to - $_for'.$cnt.'_step : count($_for'.$cnt.'_from) - 1;
 		$_for'.$cnt.'_from = 0;
 	}';
-	// reverse from and to if needed
-	$out .= "\n\t".'if ($_for'.$cnt.'_from > $_for'.$cnt.'_to) {
-		$tmp = $_for'.$cnt.'_from;
-		$_for'.$cnt.'_from = $_for'.$cnt.'_to;
-		$_for'.$cnt.'_to = $tmp;
-	}
-	for ($this->scope['.$name.'] = $_for'.$cnt.'_from; $this->scope['.$name.'] <= $_for'.$cnt.'_to; $this->scope['.$name.'] += $_for'.$cnt.'_step)'."\n\t{";
+
+		// if input are pure numbers it shouldn't reorder them, if it's variables it gets too messy though so in that case a counter should be used
+		$reverse = false;
+		$condition = '<=';
+		$incrementer = '+';
+
+		if (preg_match('{^(["\']?)([0-9]+)\1$}', $from, $mN1) && preg_match('{^(["\']?)([0-9]+)\1$}', $to, $mN2)) {
+			$from = (int) $mN1[2];
+			$to = (int) $mN2[2];
+			if ($from > $to) {
+				$reverse = true;
+				$condition = '>=';
+				$incrementer = '-';
+			}
+		}
+
+		// reverse from and to if needed
+		if (!$reverse) {
+			$out .= "\n\t".'if ($_for'.$cnt.'_from > $_for'.$cnt.'_to) {
+				$tmp = $_for'.$cnt.'_from;
+				$_for'.$cnt.'_from = $_for'.$cnt.'_to;
+				$_for'.$cnt.'_to = $tmp;
+			}';
+		}
+
+		$out .= '
+	for ($this->scope['.$name.'] = $_for'.$cnt.'_from; $this->scope['.$name.'] '.$condition.' $_for'.$cnt.'_to; $this->scope['.$name.'] '.$incrementer.'= $_for'.$cnt.'_step)'."\n\t{";
 		// updates properties
 		if ($usesIndex) {
-			$out.="\n\t\t".'$_for'.$cnt.'_glob["index"] = $this->scope['.$name.'];';
+			$out .="\n\t\t".'$_for'.$cnt.'_glob["index"] = $this->scope['.$name.'];';
 		}
 		if ($usesFirst) {
 			$out .= "\n\t\t".'$_for'.$cnt.'_glob["first"] = (string) ($_for'.$cnt.'_glob["iteration"] === 1);';
@@ -109,7 +133,7 @@ class Dwoo_Plugin_for extends Dwoo_Block_Plugin implements Dwoo_ICompilable_Bloc
 		$postOut = Dwoo_Compiler::PHP_OPEN . '/* -- for end output */';
 		// update properties
 		if ($usesIteration) {
-			$postOut.="\n\t\t".'$_for'.$cnt.'_glob["iteration"]+=1;';
+			$postOut .= "\n\t\t".'$_for'.$cnt.'_glob["iteration"]+=1;';
 		}
 		// end loop
 		$postOut .= "\n\t}\n}\n".Dwoo_Compiler::PHP_CLOSE;

@@ -3,8 +3,8 @@
  * File containing the ezcMailPop3Transport class.
  *
  * @package Mail
- * @version 1.7
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.7.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -74,7 +74,7 @@
  *           Holds the options you can set to the POP3 transport.
  *
  * @package Mail
- * @version 1.7
+ * @version 1.7.1
  * @mainclass
  */
 class ezcMailPop3Transport
@@ -221,9 +221,16 @@ class ezcMailPop3Transport
     {
         if ( $this->state != self::STATE_NOT_CONNECTED )
         {
-            $this->connection->sendData( 'QUIT' );
-            $this->connection->getLine(); // discard
-            $this->connection->close();
+            try 
+            {
+                $this->connection->sendData( 'QUIT' );
+                $this->connection->getLine(); // discard
+                $this->connection->close();
+            }
+            catch ( ezcMailTransportException $e )
+            {
+                // Ignore occuring transport exceptions.
+            }
         }
     }
 
