@@ -1442,7 +1442,7 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = !isset($this->user['id']);
+						$setVisitTime = ! (bool) $this->user['id'];
 						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
 						$this->user = $item;
 						$this->user['profile'] = decodeOptions($this->user['profile']);
@@ -1494,6 +1494,7 @@ class Eresus
 	*/
 	function logout($clearCookies=true)
 	{
+		$this->user['id'] = null;
 		$this->user['auth'] = false;
 		$this->user['access'] = GUEST;
 		if ($clearCookies) $this->clear_login_cookies();
