@@ -63,12 +63,6 @@ class MyPlugin extends Plugin
 	public $description = 'Описание';
 
 	/**
-	 * Тип плагина
-	 * @var string
-	 */
-	public $type = 'client,admin';
-
-	/**
 	 * Настройки плагина
 	 *
 	 * @var array

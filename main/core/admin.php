@@ -721,9 +721,20 @@ class TAdminUI extends WebPage
 					}
 					catch (Exception $e)
 					{
-						Core::logException($e, 'Error in plugin "' . $name . '"');
+						if (isset($name))
+						{
+							$logMsg = 'Error in plugin "' . $name . '"';
+							$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+							$msg = sprintf($msg, $name);
+						}
+						else
+						{
+							$logMsg = 'Error in module "' . $module . '"';
+							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
+							$msg = sprintf($msg, $module);
+						}
 
-						$msg = I18n::getInstance()->getText('An error occured in plugin.', __CLASS__);
+						Core::logException($e, $logMsg);
 
 						$msg .= '<br />' . $e->getMessage();
 						if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)

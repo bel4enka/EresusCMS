@@ -195,6 +195,8 @@ class EresusCMS extends EresusApplication
 
 		Core::setValue('core.template.templateDir', $this->getFsRoot());
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
+		// FIXME Следующая строка нужна только до перехода на UTF-8
+		Core::setValue('core.template.charset', 'CP1251');
 
 		$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
