@@ -451,15 +451,18 @@ class Plugins
 	{
 		global $Eresus;
 
+		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
+
 		$filename = filesRoot.'ext/'.$name.'.php';
 		if (FS::exists($filename))
 		{
 			/*
 			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
-			 * ошибок
+			 * ошибок. Хотя и не факт, что это не сработает.
 			 */
 			$code = file_get_contents($filename);
 			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
+			$code = str_replace('__FILE__', "'$filename'", $code);
 			@$valid = eval($code) !== false;
 			if (!$valid)
 			{
@@ -479,6 +482,14 @@ class Plugins
 				$Eresus->db->insert('plugins', $this->items[$name]->__item());
 			}
 				else FatalError(sprintf(errClassNotFound, $ClassName));
+		}
+		else
+		{
+			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
+				$name);
+			$msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
+			$msg = sprintf($msg, $filename, $name);
+			ErrorMessage($msg);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -519,16 +530,33 @@ class Plugins
 	 */
 	function preload($include = null, $exclude = null)
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		if (!is_null($exclude))
+		{
 			eresus_log(__METHOD__, LOG_NOTICE, '$exclude argument is deprecated');
+		}
 
 		if (!is_null($include))
+		{
 			eresus_log(__METHOD__, LOG_NOTICE, '$include argument is deprecated');
+		}
 
 		if (count($this->list))
+		{
+			eresus_log(__METHOD__, LOG_DEBUG, 'Preloading plugins...');
 			foreach($this->list as $item)
+			{
 				if ($item['active'])
+				{
 					$this->load($item['name']);
+				}
+			}
+		}
+		else
+		{
+			eresus_log(__METHOD__, LOG_DEBUG, 'Nothing to preload');
+		}
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -540,33 +568,51 @@ class Plugins
 	 */
 	public function load($name)
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 		/* Если плагин уже был загружен возвращаем экземпляр из реестра */
 		if (isset($this->items[$name]))
+		{
+			eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
 			return $this->items[$name];
+		}
 
 		/* Если такой плагин не зарегистрирован, возвращаем FASLE */
 		if (!isset($this->list[$name]))
+		{
+			eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
 			return false;
+		}
 
 		// Путь к файлу плагина
 		$filename = filesRoot . 'ext/' . $name . '.php';
 
 		/* Если такого файла нет, возвращаем FASLE */
 		if (!file_exists($filename))
+		{
+			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
+				$name);
 			return false;
+		}
 
-		include_once $filename ;
+		Core::safeInclude($filename);
 		$className = $name;
 
 		/* TODO: Обратная совместимость с версиями до 2.10b2. Отказаться в новых версиях */
 		if (!class_exists($className, false) && class_exists('T' . $className))
+		{
 			$className = 'T' . $className;
+		}
 
 		if (!class_exists($className, false))
+		{
+			eresus_log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
+				$className, $name, $filename);
 			FatalError(sprintf(errClassNotFound, $name));
+		}
 
 		// Заносим экземпляр в реестр
 		$this->items[$name] = new $className();
+		eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
 
 		return $this->items[$name];
 	}
