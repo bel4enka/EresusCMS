@@ -21,8 +21,8 @@
 		<exclude name=".svn" />
 	</fileset>
 	
-		<!-- Source files to check with Code Sniffer -->
-		<fileset dir="src" id="files.sources.cs">
+		<!-- PHP source files -->
+		<fileset dir="src" id="files.sources.php">
 			<include name="**/.php" />
 		</fileset>
 
@@ -45,7 +45,7 @@
 		<mkdir dir="${build.dir}" />
 
 		<phplint>
-			<fileset refid="files.sources" />
+			<fileset refid="files.sources.php" />
 		</phplint>
 				
 		<!--
@@ -80,7 +80,7 @@
 						type="${phpmd.format}"
 						outfile="${phpmd.output}"
 					/>
-					<fileset refid="files.sources" />
+					<fileset refid="files.sources.php" />
 				</phpmd>
 			</then>
 		</if>
@@ -99,7 +99,7 @@
 						type="${phpcs.format}"
 						outfile="${phpcs.output}"
 					/>
-					<fileset refid="files.sources.cs" />
+					<fileset refid="files.sources.php" />
 				</phpcodesniffer>
 			</then>
 		</if>

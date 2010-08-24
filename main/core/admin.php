@@ -181,6 +181,8 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
 		parent::__construct();
 
 		$theme = new AdminUITheme();
@@ -679,8 +681,9 @@ class TAdminUI extends WebPage
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function renderContent()
 	{
-	global $Eresus;
+		global $Eresus;
 
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$req = HTTP::request();
 		if (strpos($req->getLocal(), '/admin/fm/') === 0)
@@ -690,11 +693,12 @@ class TAdminUI extends WebPage
 		}
 
 		$result = '';
-		if (arg('mod')) {
+		if (arg('mod'))
+		{
 			$module = arg('mod', '/[^\w-]/');
-			if(file_exists(filesRoot."core/$module.php"))
+			if (file_exists(filesRoot."core/$module.php"))
 			{
-				include_once $Eresus->froot . "core/$module.php";
+				Core::safeInclude($Eresus->froot . "core/$module.php");
 				$class = "T$module";
 				$this->module = new $class;
 			}
@@ -748,6 +752,12 @@ class TAdminUI extends WebPage
 				{
 					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
 				}
+			}
+			else
+			{
+				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
+				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
+				$result .= ErrorBox($msg);
 			}
 		}
 		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
@@ -895,11 +905,16 @@ class TAdminUI extends WebPage
 	 */
 	function render()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверям права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
+		{
 			$this->auth();
+		}
 		else
+		{
 			$this->renderUI();
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -955,6 +970,7 @@ class TAdminUI extends WebPage
 	{
 		global $locale, $Eresus;
 
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		$data = array();
 
 		$data['page'] = $this;

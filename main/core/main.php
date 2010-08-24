@@ -214,6 +214,8 @@ class EresusCMS extends EresusApplication
 	{
 		global $page;
 
+		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+
 		include_once 'client.php';
 
 		$page = new TClientUI();
@@ -230,6 +232,8 @@ class EresusCMS extends EresusApplication
 	protected function runWebAdminUI()
 	{
 		global $page;
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'admin.php';
 
