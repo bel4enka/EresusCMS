@@ -957,8 +957,8 @@ class TAdminUI extends WebPage
 		}
 
 		$tmpl = $this->getUITheme()->getTemplate('auth.html');
-    $html = $tmpl->compile($data);
-    echo $html;
+		$html = $tmpl->compile($data);
+		echo $html;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -991,8 +991,12 @@ class TAdminUI extends WebPage
 		$html = $tmpl->compile($data);
 
 		if (count($this->headers))
+		{
 			foreach ($this->headers as $header)
+			{
 				header($header);
+			}
+		}
 
 		echo $html;
 	}
