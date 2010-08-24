@@ -120,7 +120,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase
 	{
 		$fixture = new MySQL();
 
-		$this->assertFalse($fixture->init('-unexistent-', 'user', 'password', 'test'));
+		//$this->assertFalse($fixture->init('-unexistent-', 'user', 'password', 'test'));
 		preg_match('/mysql:\/\/(.*):(.*)@(.*)\/(.*)(\?charset=(.*))/', $GLOBALS['TESTCONF']['DB']['dsn'], $m);
 		if (!defined('LOCALE_CHARSET'))
 			define('LOCALE_CHARSET', $m[6]);
