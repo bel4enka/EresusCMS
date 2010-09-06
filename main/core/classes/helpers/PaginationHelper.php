@@ -58,12 +58,20 @@ implements Iterator
 	private $current;
 
 	/**
+	 * Шаблон URL для ссылок
+	 *
+	 * @var string
+	 * @since 2.14
+	 */
+	private $urlTemplate;
+
+	/**
 	 * Путь к шаблону
 	 *
 	 * @var string
 	 * @since 2.14
 	 */
-	private $templatePath = null;
+	private $templatePath = 'templates/std/pagination.html';
 
 	/**
 	 * Размер переключателя в количестве выводимых страниц
@@ -109,17 +117,22 @@ implements Iterator
 	 *
 	 * Принимаемые параметры можно указать и позднее, при помощи соответствующих методов setXXX.
 	 *
-	 * @param int $total[optional]    Общее количество страниц.
-	 * @param int $current[optional]  Номер текущей страницы. По умолчанию 1.
+	 * @param int     $total[optional]        Общее количество страниц.
+	 * @param int     $current[optional]      Номер текущей страницы. По умолчанию 1.
+	 * @para, sttring $urlTemplate[optional]  Шаблон URL. Используйте "%d" для подстановки страницы
 	 *
 	 * @return PaginationHelper
 	 *
 	 * @since 2.14
 	 */
-	public function __construct($total = null, $current = 1)
+	public function __construct($total = null, $current = 1, $urlTemplate = null)
 	{
 		$this->setTotal($total);
 		$this->setCurrent($current);
+		if ($urlTemplate)
+		{
+			$this->urlTemplate = $urlTemplate;
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -178,6 +191,33 @@ implements Iterator
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Устанавливает шаблон URL
+	 *
+	 * @param string $value
+	 * @return void
+	 *
+	 * @since 2.14
+	 */
+	public function setUrlTemplate($value)
+	{
+		$this->urlTemplate = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает шаблон URL
+	 *
+	 * @return string
+	 *
+	 * @since 2.14
+	 */
+	public function getUrlTemplate()
+	{
+		return $this->urlTemplate;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Устанавливает путь к шаблону
 	 *
 	 * @param string $value
@@ -214,19 +254,32 @@ implements Iterator
 	 */
 	public function current()
 	{
+		$pageNumber = $this->first + $this->iteration - 1;
 		$item = array(
-			'title' => $this->first + $this->iteration - 1,
-			'url' => null
+			'title' => $pageNumber,
+			'url' => sprintf($this->urlTemplate, $pageNumber)
 		);
 
 		switch (true)
 		{
 			case $this->iteration == 1 && $this->first != 1:
 				$item['title'] = '&larr;';
+				$jump = $this->current - $this->size;
+				if ($jump < 1)
+				{
+					$jump = 1;
+				}
+				$item['url'] = sprintf($this->urlTemplate, $jump);
 			break;
 
 			case $this->iteration == $this->totalIterations && $this->last != $this->total:
 				$item['title'] = '&rarr;';
+				$jump = $this->current + $this->size;
+				if ($jump > $this->total)
+				{
+					$jump = $this->total;
+				}
+				$item['url'] = sprintf($this->urlTemplate, $jump);
 			break;
 		}
 
@@ -304,6 +357,11 @@ implements Iterator
 			$this->first = 1;
 			$this->last = $this->total;
 			$this->totalIterations = $this->total;
+		}
+
+		if (!$this->urlTemplate)
+		{
+			$this->urlTemplate = $GLOBALS['Eresus']->request['path'] . 'p%d/';
 		}
 
 		$this->iteration = 1;
