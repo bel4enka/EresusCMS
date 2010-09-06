@@ -37,6 +37,26 @@ require_once dirname(__FILE__) . '/../../../../../main/core/classes/helpers/Pagi
  */
 class PaginationHelperTest extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * (non-PHPdoc)
+	 * @see Framework/PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		$GLOBALS['Eresus'] = new stdClass();
+		$GLOBALS['Eresus']->request = array('path' => '/root/');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see Framework/PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		unset($GLOBALS['Eresus']);
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем установку и чтение свойства $total
@@ -102,8 +122,23 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверяем установку и чтение свойства $urlTemplate
+	 *
+	 * @covers PaginationHelper::setUrlTemplate
+	 * @covers PaginationHelper::getUrlTemplate
+	 */
+	public function test_setgetUrlTemplate()
+	{
+		$test = new PaginationHelper();
+		$test->setUrlTemplate('/%d/');
+		$this->assertEquals('/%d/', $test->getUrlTemplate());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверяем метод rewind()
 	 *
+	 * @covers PaginationHelper::rewind
 	 */
 	public function test_rewind()
 	{
@@ -163,6 +198,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 
 			$this->assertEquals($i, $helper->key());
 			$this->assertEquals($i, $page['title'], 'Ivalid page number');
+			$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid page url');
 			$i++;
 		}
 	}
@@ -194,6 +230,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 
 				case $i >= 1 && $i < 11:
 					$this->assertEquals($i, $page['title'], 'Ivalid page number');
+					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid page url');
 				break;
 
 				case $i == 11:
@@ -232,10 +269,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 
 				case $i == 1:
 					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
+					$this->assertEquals('/root/p90/', $page['url'], 'Ivalid first page url');
 				break;
 
 				case $i > 1 && $i < 11:
 					$this->assertEquals($i + 90, $page['title'], 'Ivalid page number');
+					$this->assertEquals('/root/p' . ($i + 90) . '/', $page['url'], 'Ivalid page url');
 				break;
 			}
 
@@ -270,6 +309,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 
 				case $i == 1:
 					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
+					$this->assertEquals('/root/p40/', $page['url'], 'Ivalid first page url');
 				break;
 
 				case $i > 1 && $i < 12:
@@ -278,6 +318,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 
 				case $i == 12:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
+					$this->assertEquals('/root/p60/', $page['url'], 'Ivalid last page url');
 				break;
 			}
 
