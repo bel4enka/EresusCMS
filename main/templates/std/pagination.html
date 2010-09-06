@@ -1,0 +1,11 @@
+<!-- Experimental -->
+
+<div class="pages">
+	{foreach $pagination page}
+		{if $page.url}
+			<a href="{$page.url}">&nbsp;{$page.title}&nbsp;</a>
+		{else}
+			<span>&nbsp;{$page.title}</span>
+		{/if}
+	{/foreach}
+</div>

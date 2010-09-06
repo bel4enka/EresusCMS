@@ -6,8 +6,7 @@
  *
  * Таблица автозагрузки классов
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2009, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -36,4 +35,5 @@ return array(
 	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
+	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 );
