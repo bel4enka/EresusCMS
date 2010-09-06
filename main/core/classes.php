@@ -369,7 +369,7 @@ class WebPage
 
 		$pages = array(); # Отображаемые страницы
 		# Определяем номера первой и последней отображаемых страниц
-		$visible = option('clientPagesAtOnce'); # TODO: Изменить переменную или сделать учёт client/admin
+		$visible = 10;
 		if ($total > $visible)
 		{
 			# Будут показаны НЕ все страницы
