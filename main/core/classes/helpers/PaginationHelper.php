@@ -77,6 +77,7 @@ implements Iterator, Countable
 	 * Размер переключателя в количестве выводимых страниц
 	 *
 	 * @var int
+	 * @since 2.14
 	 */
 	private $size = 10;
 
@@ -86,6 +87,7 @@ implements Iterator, Countable
 	 * Часть реализации интерфейса Iterator
 	 *
 	 * @var int
+	 * @since 2.14
 	 */
 	private $iteration = 0;
 
@@ -261,6 +263,7 @@ implements Iterator, Countable
 	 *
 	 * @return array
 	 *
+	 * @since 2.14
 	 * @see Iterator::current()
 	 * @internal
 	 */
@@ -274,6 +277,8 @@ implements Iterator, Countable
 	 * Возвращает номер итерации
 	 *
 	 * @return int
+	 *
+	 * @since 2.14
 	 * @see Iterator::key()
 	 * @internal
 	 */
@@ -285,6 +290,10 @@ implements Iterator, Countable
 
 	/**
 	 * (non-PHPdoc)
+	 *
+	 * @return void
+	 *
+	 * @since 2.14
 	 * @see Iterator::next()
 	 * @internal
 	 */
@@ -298,6 +307,8 @@ implements Iterator, Countable
 	 * Подготовливает объект к первой итерации
 	 *
 	 * @return void
+	 *
+	 * @since 2.14
 	 * @see Iterator::rewind()
 	 * @internal
 	 */
@@ -369,6 +380,10 @@ implements Iterator, Countable
 
 	/**
 	 * (non-PHPdoc)
+	 *
+	 * @return bool
+	 *
+	 * @since 2.14
 	 * @see Iterator::valid()
 	 * @internal
 	 */
@@ -380,6 +395,10 @@ implements Iterator, Countable
 
 	/**
 	 * (non-PHPdoc)
+	 *
+	 * @return int
+	 *
+	 * @since 2.14
 	 * @see Countable::count()
 	 * @internal
 	 */
@@ -410,6 +429,7 @@ implements Iterator, Countable
 	 * Подготавливает свойство $urlTemplate для использования
 	 *
 	 * @return void
+	 *
 	 * @since 2.14
 	 */
 	private function prepareUrlTemplate()
@@ -426,6 +446,10 @@ implements Iterator, Countable
 	 *
 	 * @param int    $pageNumber       Номер страницы
 	 * @param string $title[optional]  Название страницы
+	 *
+	 * @return array
+	 *
+	 * @since 2.14
 	 */
 	private function itemFactory($pageNumber, $title = null)
 	{
