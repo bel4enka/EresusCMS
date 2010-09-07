@@ -136,42 +136,42 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверяем установку и чтение свойства $size
+	 *
+	 * @covers PaginationHelper::setSize
+	 * @covers PaginationHelper::getSize
+	 */
+	public function test_setgetSize()
+	{
+		$test = new PaginationHelper();
+		$test->setSize(5);
+		$this->assertEquals(5, $test->getSize());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверяем метод rewind()
 	 *
 	 * @covers PaginationHelper::rewind
+	 * @covers PaginationHelper::count
 	 */
 	public function test_rewind()
 	{
 		$test = new PaginationHelper(10, 1);
 		$test->rewind();
-		$this->assertAttributeEquals(1, 'first', $test, 'Case 1');
-		$this->assertAttributeEquals(10, 'last', $test, 'Case 1');
-		$this->assertAttributeEquals(10, 'totalIterations', $test, 'Case 1');
-
-		$test->setCurrent(10);
-		$test->rewind();
-		$this->assertAttributeEquals(1, 'first', $test, 'Case 2');
-		$this->assertAttributeEquals(10, 'last', $test, 'Case 2');
-		$this->assertAttributeEquals(10, 'totalIterations', $test, 'Case 2');
+		$this->assertEquals(10, count($test), 'Case 1');
 
 		$test->setTotal(100);
-		$test->setCurrent(1);
 		$test->rewind();
-		$this->assertAttributeEquals(1, 'first', $test, 'Case 3');
-		$this->assertAttributeEquals(10, 'last', $test, 'Case 3');
-		$this->assertAttributeEquals(11, 'totalIterations', $test, 'Case 3');
+		$this->assertEquals(11, count($test), 'Case 2');
 
 		$test->setCurrent(50);
 		$test->rewind();
-		$this->assertAttributeEquals(45, 'first', $test, 'Case 4');
-		$this->assertAttributeEquals(54, 'last', $test, 'Case 4');
-		$this->assertAttributeEquals(12, 'totalIterations', $test, 'Case 4');
+		$this->assertEquals(12, count($test), 'Case 3');
 
 		$test->setCurrent(100);
 		$test->rewind();
-		$this->assertAttributeEquals(91, 'first', $test, 'Case 5');
-		$this->assertAttributeEquals(100, 'last', $test, 'Case 5');
-		$this->assertAttributeEquals(11, 'totalIterations', $test, 'Case 5');
+		$this->assertEquals(11, count($test), 'Case 4');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -194,6 +194,11 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 			if ($i > 10)
 			{
 				$this->fail('Too many iterations');
+			}
+
+			if ($i == 5)
+			{
+				$this->assertTrue($page['current']);
 			}
 
 			$this->assertEquals($i, $helper->key());
@@ -235,6 +240,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 
 				case $i == 11:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
+					$this->assertEquals('/root/p11/', $page['url'], 'Ivalid last page url');
 				break;
 			}
 
@@ -273,8 +279,8 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 				break;
 
 				case $i > 1 && $i < 11:
-					$this->assertEquals($i + 90, $page['title'], 'Ivalid page number');
-					$this->assertEquals('/root/p' . ($i + 90) . '/', $page['url'], 'Ivalid page url');
+					$this->assertEquals($i + 89, $page['title'], 'Ivalid page number');
+					$this->assertEquals('/root/p' . ($i + 89) . '/', $page['url'], 'Ivalid page url');
 				break;
 			}
 
@@ -313,13 +319,129 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 				break;
 
 				case $i > 1 && $i < 12:
-					$this->assertEquals($i + 44, $page['title'], 'Ivalid page number');
+					$this->assertEquals($i + 43, $page['title'], 'Ivalid page number');
 				break;
 
 				case $i == 12:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
 					$this->assertEquals('/root/p60/', $page['url'], 'Ivalid last page url');
 				break;
+			}
+
+			$i++;
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function test_size2()
+	{
+		$test = new PaginationHelper(4, 4);
+		$test->setSize(2);
+
+		$data = $test->render();
+		$helper = $data['pagination'];
+
+		$i = 1;
+		foreach ($helper as $page)
+		{
+			switch (true)
+			{
+				case $i > 3:
+					$this->fail('Too many iterations');
+				break;
+
+				case $i == 1:
+					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
+					$this->assertEquals('/root/p2/', $page['url'], 'Ivalid first page url');
+				break;
+
+				case $i > 1 && $i < 3:
+					$this->assertEquals($i + 1, $page['title'], 'Ivalid page number');
+					$this->assertEquals('/root/p' . ($i + 1) . '/', $page['url'], 'Ivalid page url');
+				break;
+
+			}
+
+			$i++;
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function test_size2_beginning()
+	{
+		$test = new PaginationHelper(4, 1);
+		$test->setSize(2);
+
+		$data = $test->render();
+		$helper = $data['pagination'];
+
+		$i = 1;
+		foreach ($helper as $page)
+		{
+			switch (true)
+			{
+				case $i > 4:
+					$this->fail('Too many iterations');
+				break;
+
+				case $i >= 1 && $i < 3:
+					$this->assertEquals($i, $page['title'], 'Ivalid page number');
+					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid last page url');
+				break;
+
+				case $i == 3:
+					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
+					$this->assertEquals('/root/p3/', $page['url'], 'Ivalid last page url');
+				break;
+
+			}
+
+			$i++;
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function test_size2_current3()
+	{
+		$test = new PaginationHelper(4, 3);
+		$test->setSize(2);
+
+		$data = $test->render();
+		$helper = $data['pagination'];
+
+		$i = 1;
+		foreach ($helper as $page)
+		{
+			switch (true)
+			{
+				case $i > 4:
+					$this->fail('Too many iterations');
+				break;
+
+				case $i == 1:
+					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
+					$this->assertEquals('/root/p1/', $page['url'], 'Ivalid first page url');
+				break;
+
+				case $i > 1 && $i < 4:
+					$this->assertEquals($i, $page['title'], 'Ivalid page number');
+					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid last page url');
+				break;
+
+				case $i == 4:
+					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
+					$this->assertEquals('/root/p4/', $page['url'], 'Ivalid last page url');
+				break;
+
 			}
 
 			$i++;
