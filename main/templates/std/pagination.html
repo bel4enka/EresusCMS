@@ -2,7 +2,7 @@
 
 <div class="pages">
 	{foreach $pagination page}
-		{if $page.url}
+		{if $page.current}
 			<a href="{$page.url}">{$page.title}</a>
 		{else}
 			<span>{$page.title}</span>

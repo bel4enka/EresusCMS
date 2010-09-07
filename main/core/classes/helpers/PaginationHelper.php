@@ -39,7 +39,7 @@
  * @since 2.14
  */
 class PaginationHelper
-implements Iterator
+implements Iterator, Countable
 {
 	/**
 	 * Общее количество страниц
@@ -77,6 +77,7 @@ implements Iterator
 	 * Размер переключателя в количестве выводимых страниц
 	 *
 	 * @var int
+	 * @since 2.14
 	 */
 	private $size = 10;
 
@@ -86,31 +87,17 @@ implements Iterator
 	 * Часть реализации интерфейса Iterator
 	 *
 	 * @var int
+	 * @since 2.14
 	 */
 	private $iteration = 0;
 
 	/**
-	 * Требуемое количество итераций
+	 * Элементы нумерации
 	 *
-	 * Часть реализации интерфейса Iterator
-	 *
-	 * @var int
+	 * @var array
+	 * @since 2.14
 	 */
-	private $totalIterations = 0;
-
-	/**
-	 * Номер первый отображаемой страницы
-	 *
-	 * @var int
-	 */
-	private $first;
-
-	/**
-	 * Номер последней отображаемой страницы
-	 *
-	 * @var int
-	 */
-	private $last;
+	private $items = array();
 
 	/**
 	 * Создаёт нового помощника
@@ -245,45 +232,44 @@ implements Iterator
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Устанавливает максимальное количество отображаемых страниц
+	 *
+	 * @param int $value
+	 * @return void
+	 *
+	 * @since 2.14
+	 */
+	public function setSize($value)
+	{
+		$this->size = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает максимальное количество отображаемых страниц
+	 *
+	 * @return int
+	 *
+	 * @since 2.14
+	 */
+	public function getSize()
+	{
+		return $this->size;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает текущий элемент списка страниц
 	 *
 	 * @return array
 	 *
+	 * @since 2.14
 	 * @see Iterator::current()
 	 * @internal
 	 */
 	public function current()
 	{
-		$pageNumber = $this->first + $this->iteration - 1;
-		$item = array(
-			'title' => $pageNumber,
-			'url' => sprintf($this->urlTemplate, $pageNumber)
-		);
-
-		switch (true)
-		{
-			case $this->iteration == 1 && $this->first != 1:
-				$item['title'] = '&larr;';
-				$jump = $this->current - $this->size;
-				if ($jump < 1)
-				{
-					$jump = 1;
-				}
-				$item['url'] = sprintf($this->urlTemplate, $jump);
-			break;
-
-			case $this->iteration == $this->totalIterations && $this->last != $this->total:
-				$item['title'] = '&rarr;';
-				$jump = $this->current + $this->size;
-				if ($jump > $this->total)
-				{
-					$jump = $this->total;
-				}
-				$item['url'] = sprintf($this->urlTemplate, $jump);
-			break;
-		}
-
-		return $item;
+		return $this->items[$this->iteration - 1];
 	}
 	//-----------------------------------------------------------------------------
 
@@ -291,6 +277,8 @@ implements Iterator
 	 * Возвращает номер итерации
 	 *
 	 * @return int
+	 *
+	 * @since 2.14
 	 * @see Iterator::key()
 	 * @internal
 	 */
@@ -302,6 +290,10 @@ implements Iterator
 
 	/**
 	 * (non-PHPdoc)
+	 *
+	 * @return void
+	 *
+	 * @since 2.14
 	 * @see Iterator::next()
 	 * @internal
 	 */
@@ -315,11 +307,17 @@ implements Iterator
 	 * Подготовливает объект к первой итерации
 	 *
 	 * @return void
+	 *
+	 * @since 2.14
 	 * @see Iterator::rewind()
 	 * @internal
 	 */
 	public function rewind()
 	{
+		$this->items = array();
+
+		$this->prepareUrlTemplate();
+
 		/*
 		 * Если страниц больше чем задано показывать за один раз, то будем показывать только часть
 		 * страниц, наиболее близких к текущей.
@@ -327,41 +325,53 @@ implements Iterator
 		if ($this->total > $this->size)
 		{
 			// Начинаем показ с текущей, минус половину видимых
-			$this->first = (int) floor($this->current - $this->size / 2);
-			if ($this->first < 1)
+			$first = (int) floor($this->current - $this->size / 2);
+			if ($first < 1)
 			{
 				// Страниц меньше 1-й не существует
-				$this->first = 1;
+				$first = 1;
 			}
-			$this->last = $this->first + $this->size - 1;
-			if ($this->last > $this->total)
+
+			$last = $first + $this->size - 1;
+			if ($last > $this->total)
 			{
 				// Но если это больше чем страниц всего, вносим исправления
-				$this->last = $this->total;
-				$this->first = $this->last - $this->size + 1;
+				$last = $this->total;
+				$first = $last - $this->size + 1;
 			}
-
-			$this->totalIterations = $this->size;
-			if ($this->first > 1)
-			{
-				$this->totalIterations++;
-			}
-			if ($this->last < $this->total)
-			{
-				$this->totalIterations++;
-			}
-
 		}
 		else
 		{
-			$this->first = 1;
-			$this->last = $this->total;
-			$this->totalIterations = $this->total;
+			$first = 1;
+			$last = $this->total;
 		}
 
-		if (!$this->urlTemplate)
+
+		if ($first > 1)
 		{
-			$this->urlTemplate = $GLOBALS['Eresus']->request['path'] . 'p%d/';
+			$pageNumber = $this->current - $this->size;
+			if ($pageNumber < 1)
+			{
+				$pageNumber = 1;
+			}
+			$this->items []= $this->itemFactory($pageNumber, '&larr;');
+		}
+
+		for ($pageNumber = $first; $pageNumber <= $last; $pageNumber++)
+		{
+			$item = $this->itemFactory($pageNumber);
+			$item['current'] = $pageNumber == $this->current;
+			$this->items []= $item;
+		}
+
+		if ($last < $this->total)
+		{
+			$pageNumber = $this->current + $this->size;
+			if ($pageNumber > $this->total)
+			{
+				$pageNumber = $this->total;
+			}
+			$this->items []= $this->itemFactory($pageNumber, '&rarr;');
 		}
 
 		$this->iteration = 1;
@@ -370,12 +380,31 @@ implements Iterator
 
 	/**
 	 * (non-PHPdoc)
+	 *
+	 * @return bool
+	 *
+	 * @since 2.14
 	 * @see Iterator::valid()
 	 * @internal
 	 */
 	public function valid()
 	{
-		return $this->iteration <= $this->totalIterations;
+		return $this->iteration - 1 < count($this->items);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 *
+	 * @return int
+	 *
+	 * @since 2.14
+	 * @see Countable::count()
+	 * @internal
+	 */
+	public function count()
+	{
+		return count($this->items);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -393,6 +422,42 @@ implements Iterator
 		$data = array('pagination' => $this);
 
 		return $tmpl->compile($data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Подготавливает свойство $urlTemplate для использования
+	 *
+	 * @return void
+	 *
+	 * @since 2.14
+	 */
+	private function prepareUrlTemplate()
+	{
+		if (!$this->urlTemplate)
+		{
+			$this->urlTemplate = $GLOBALS['Eresus']->request['path'] . 'p%d/';
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Создаёт элемент нумерации
+	 *
+	 * @param int    $pageNumber       Номер страницы
+	 * @param string $title[optional]  Название страницы
+	 *
+	 * @return array
+	 *
+	 * @since 2.14
+	 */
+	private function itemFactory($pageNumber, $title = null)
+	{
+		return array(
+			'url' => sprintf($this->urlTemplate, $pageNumber),
+			'title' => $title ? $title : $pageNumber,
+			'current' => false
+		);
 	}
 	//-----------------------------------------------------------------------------
 }
