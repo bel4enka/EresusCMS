@@ -305,10 +305,7 @@ implements Iterator, Countable
 	{
 		$this->items = array();
 
-		if (!$this->urlTemplate)
-		{
-			$this->urlTemplate = $GLOBALS['Eresus']->request['path'] . 'p%d/';
-		}
+		$this->prepareUrlTemplate();
 
 		/*
 		 * Если страниц больше чем задано показывать за один раз, то будем показывать только часть
@@ -406,6 +403,21 @@ implements Iterator, Countable
 		$data = array('pagination' => $this);
 
 		return $tmpl->compile($data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Подготавливает свойство $urlTemplate для использования
+	 *
+	 * @return void
+	 * @since 2.14
+	 */
+	private function prepareUrlTemplate()
+	{
+		if (!$this->urlTemplate)
+		{
+			$this->urlTemplate = $GLOBALS['Eresus']->request['path'] . 'p%d/';
+		}
 	}
 	//-----------------------------------------------------------------------------
 
