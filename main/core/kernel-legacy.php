@@ -471,8 +471,9 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
 	return $item;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 /**
- * Получение аргумента запроса
+ * Возвращает значение аргумента запроса
  *
  * @param string $arg     Имя аргумента
  * @param mixed  $filter  Фильтр на значение
@@ -483,28 +484,40 @@ function arg($arg, $filter = null)
 {
 	global $Eresus;
 
-	$arg = isset($Eresus->request['arg'][$arg])?$Eresus->request['arg'][$arg]:null;
-	if ($arg !== false && !is_null($filter)) {
-		switch($filter) {
+	$arg = isset($Eresus->request['arg'][$arg]) ?
+		$Eresus->request['arg'][$arg] :
+		null;
+
+	if ($arg !== false && !is_null($filter))
+	{
+		switch($filter)
+		{
 			case 'dbsafe':
 				$arg = $Eresus->db->escape($arg);
 			break;
+
 			case 'int':
 			case 'integer':
 					$arg = intval($arg);
 			break;
+
 			case 'float':
 					$arg = floatval($arg);
 			break;
+
 			case 'word':
 					$arg = preg_replace('/\W/', '', $arg);
 			break;
-			default: $arg = preg_replace($filter, '', $arg);
+
+			default:
+				$arg = preg_replace($filter, '', $arg);
+			break;
 		}
 	}
 	return $arg;
 }
 //-----------------------------------------------------------------------------
+
 function saveRequest()
 # Функция сохраняет в сессии текущие аргументы
 {

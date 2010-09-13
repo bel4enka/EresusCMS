@@ -1293,7 +1293,10 @@ class EresusForm
 		$dtd = $imp->createDocumentType('html', '-//W3C//DTD XHTML 1.0 Strict//EN', null);
 		$this->xml = $imp->createDocument(null, 'html', $dtd);
 
-		$html = "<!DOCTYPE root [\n" . file_get_contents(dirname(__FILE__) . '/xhtml-lat1.ent') . "\n]>" . $html;
+		$html = "<!DOCTYPE root [\n" .
+			file_get_contents(dirname(__FILE__) . '/xhtml-lat1.ent') .
+			file_get_contents(dirname(__FILE__) . '/xhtml-special.ent') .
+			"\n]>\n" . $html;
 
 		$html = $this->toUTF($html);
 		$this->xml->loadXML($html);
