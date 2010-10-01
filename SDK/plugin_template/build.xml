@@ -23,11 +23,11 @@
 	
 		<!-- PHP source files -->
 		<fileset dir="src" id="files.sources.php">
-			<include name="**/.php" />
+			<include name="**/*.php" />
 		</fileset>
 
 	<!-- Unit tests -->
-	<fileset dir="tests/unit" id="files.tests.unit">
+	<fileset dir="tests/phpunit" id="files.tests.unit">
 		<include name="**/*Test.php" />
 	</fileset>
 	
