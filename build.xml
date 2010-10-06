@@ -9,6 +9,18 @@
  -->
 <project name="eresus-cms" default="build" basedir="./">
 
+	<!-- Основные файлы проекта -->
+	<fileset dir="main" id="files.main">
+		<include name="**" />
+		<exclude name="**/.svn" />
+		<exclude name="**/*.src" />
+	</fileset>
+
+		<!-- Основные файлы проекта. Только PHP -->
+		<fileset dir="main" id="files.main.php">
+			<include name="**/*.php" />
+		</fileset>
+
 	<property file="build.properties" />
 	<php function="date" returnProperty="builddate">
 	  <param value="Y-m-d"/>
@@ -22,27 +34,29 @@
 
 	<target name="prepare" description="Prepare for build">
 
-		<echo msg="Build directory: ${build.dir}" level="info" />
-
-		<echo msg="Clean up: ${build.dir}..." level="info" />
-
-		<if>
-			<available file="${build.dir}" />
-			<then>
-				<delete includeemptydirs="true" failonerror="true">
-					<fileset dir="${build.dir}">
-						<include name="**/*" />
-						<exclude name=".svn" />
-						<exclude name=".svn/*" />
-					</fileset>
-				</delete>
-			</then>
-		</if>
-
-		<echo msg="Create build directory..." level="info" />
+		<delete dir="${build.dir}" includeemptydirs="true" />
 		<mkdir dir="${build.dir}" />
 
-		<echo msg="Ready to build" level="info" />
+		<mkdir dir="${logs.dir}" />
+
+		<!--
+			PHP_CodeSniffer
+		-->
+		<if>
+			<istrue value="${phpcs}" />
+			<then>
+				<phpcodesniffer
+					standard="Eresus"
+					haltonerror="false"
+				>
+					<formatter
+						type="${phpcs.format}"
+						outfile="${logs.dir}/phpcs.${phpcs.format}"
+					/>
+					<fileset refid="files.main.php" />
+				</phpcodesniffer>
+			</then>
+		</if>
 
 	</target>
 
@@ -157,13 +171,6 @@
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - -->
-
-	<!-- Main project files -->
-	<fileset dir="main" id="files.main">
-		<include name="**" />
-		<exclude name=".svn" />
-		<exclude name="*.src" />
-	</fileset>
 
 	<!-- Framework files -->
 	<fileset dir="framework" id="files.framework">
