@@ -45,13 +45,25 @@
 		<if>
 			<istrue value="${phpcs}" />
 			<then>
+
+				<if>
+					<equals arg1="${phpcs.format}" arg2="checkstyle" />
+					<then>
+						<property name="phpcs.file.extension" value="xml" />
+					</then>
+					<else>
+						<property name="phpcs.file.extension" value="${phpcs.format}" />
+					</else>
+				</if>
+
+
 				<phpcodesniffer
 					standard="Eresus"
 					haltonerror="false"
 				>
 					<formatter
 						type="${phpcs.format}"
-						outfile="${logs.dir}/phpcs.${phpcs.format}"
+						outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
 					/>
 					<fileset refid="files.main.php" />
 				</phpcodesniffer>
