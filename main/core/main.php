@@ -73,7 +73,7 @@ class EresusCMS extends EresusApplication
 		$this->initConf();
 		$i18n = I18n::getInstance();
 		TemplateSettings::setGlobalValue('i18n', $i18n);
-		//$this->initDB();
+		$this->initDB();
 		//$this->initSession();
 		$GLOBALS['Eresus']->init();
 		TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
@@ -309,6 +309,20 @@ class EresusCMS extends EresusApplication
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		try
+		{
+			$dbh = DB::connect(Core::getValue('eresus.cms.dsn'));
+		}
+			catch (DBRuntimeException $e)
+		{
+			Core::logException($e);
+			FatalError("Can not connect to database server. See log for more info.");
+		}
+
+		Doctrine_Manager::connection($dbh);
+		Doctrine_Core::loadModels(dirname(__FILE__) . '/models');
+
 /*
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

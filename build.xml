@@ -26,6 +26,13 @@
 	  <param value="Y-m-d"/>
 	</php>
 
+	<!-- 3rd party: Doctrine -->
+	<fileset dir="3rdparty/doctrine/lib" id="files.3rd.doctrine">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+
 	<!--
 	=====================================================================
 		Подготовка к сборке
@@ -101,6 +108,15 @@
 		<echo msg="Copying Eresus Core..." level="info" />
 		<copy todir="${build.dir}/core/framework">
 			<fileset refid="files.framework" />
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+
+		<!-- Doctrine -->
+		<echo msg="Copying Doctrine..." level="info" />
+		<copy todir="${build.dir}/core">
+			<fileset refid="files.3rd.doctrine" />
 			<filterchain>
 				<expandproperties />
 			</filterchain>

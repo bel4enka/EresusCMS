@@ -4,9 +4,10 @@
  *
  * ${product.description}
  *
- * Таблица автозагрузки классов
+ * Главный модуль
  *
- * @copyright 2009, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -26,15 +27,28 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
- * $Id$
+ * $Id: main.php 1030 2010-08-23 20:18:15Z mk $
  */
 
-return array(
-	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
-	'EresusForm' => 'core/EresusForm.php',
-	'I18n' => 'core/i18n.php',
-	'LegacyDB' => 'core/lib/legacydb.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-);
+/**
+ * Класс информации о плагине
+ *
+ * @package EresusCMS
+ */
+class PluginInfo extends Doctrine_Record
+{
+	public function setTableDefinition()
+	{
+		$this->setTableName('plugins');
+		$this->hasColumn('name', 'string', 32, array('primary' => true));
+		$this->hasColumn('active', 'boolean');
+		$this->hasColumn('content', 'boolean');
+		$this->hasColumn('settings', 'clob');
+		$this->hasColumn('title', 'string', 64);
+		$this->hasColumn('version', 'string', 16);
+		$this->hasColumn('description', 'string', 255);
+	}
+	//-----------------------------------------------------------------------------
+}

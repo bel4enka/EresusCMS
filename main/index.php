@@ -49,6 +49,13 @@ define('ERESUS_LOG_LEVEL' , ${log.level});
 include_once 'core/framework/core/eresus-core.compiled.php';
 
 /**
+ * Подключение Doctrine
+ */
+include_once 'core/Doctrine.php';
+spl_autoload_register(array('Doctrine', 'autoload'));
+spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
+
+/**
  * Подключение главного приложения
  */
 include_once 'core/main.php';

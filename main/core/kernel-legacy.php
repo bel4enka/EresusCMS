@@ -1236,14 +1236,9 @@ class Eresus
 	*
 	* @access private
 	*/
-	function init_datasource()
+	private function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine']))
-		{
-			$this->db = new $this->conf['db']['engine'];
-			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-		}
-			else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		$this->db = new LegacyDB();
 	}
 	//------------------------------------------------------------------------------
  /**
