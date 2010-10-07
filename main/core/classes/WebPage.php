@@ -468,7 +468,7 @@ class WebPage
 		array_shift($args);
 
 		// По умолчанию помещаем скрипты в <head>
-		$target = 'head';
+		$defer = false;
 
 		foreach ($args as $arg)
 		{
@@ -494,17 +494,13 @@ class WebPage
 					$script->setAttribute('type', 'text/vbscript');
 				break;
 
-				case 'head':
-					$target = 'head';
-				break;
-
-				case 'body':
-					$target = 'body';
+				case 'defer':
+					$defer = true;
 				break;
 			}
 		}
 
-		if ($target == 'body')
+		if ($defer)
 		{
 			$this->body['scripts'][] = $script;
 		}

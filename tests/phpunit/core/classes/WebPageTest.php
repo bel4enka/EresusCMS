@@ -81,7 +81,7 @@ class WebPageTest extends PHPUnit_Framework_TestCase
 
 		$page = new WebPage();
 		$page->addScripts('var head;');
-		$page->addScripts('var body;', 'body');
+		$page->addScripts('var body;', 'defer');
 
 		$renderHeadSection = new ReflectionMethod('WebPage', 'renderHeadSection');
 		$renderHeadSection->setAccessible(true);
