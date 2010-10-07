@@ -895,13 +895,13 @@ table.ui-grid.ui-hlines
 		color: red;
 	}
 
-	.menu-content .hidden a,
-	.menu-content .hidden a.visited
+	.menu-content .invisible a,
+	.menu-content .invisible a.visited
 	{
 		color: #888;
 	}
 
-		.menu-content .hidden a:hover
+		.menu-content .invisible a:hover
 		{
 			color: red;
 		}
