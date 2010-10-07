@@ -15,9 +15,6 @@
 	<script src="{$siteRoot}/core/jquery/jquery.cookie.js" type="text/javascript"></script>
 	<script src="{$siteRoot}/core/jquery/jquery-ui.min.js" type="text/javascript"></script>
 	{$head}
-	{if $page->styles}<style type="text/css">
-		{$page->styles}
-	</style>{/if}
 </head>
 <body>
 
@@ -74,8 +71,6 @@
 
 	<script src="{$siteRoot}/admin/themes/default/theme.js" type="text/javascript"></script>
 	<script src="{$siteRoot}/core/functions.js" type="text/javascript"></script>
-	{if $page->scripts}<script type="text/javascript">
-		{$page->scripts}
-	</script>{/if}
+	{$body}
 </body>
 </html>
