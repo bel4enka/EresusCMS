@@ -30,6 +30,200 @@
  * $Id$
  */
 
+
+
+/**
+ * Абстрактный элемент документа HTML
+ *
+ * @package EresusCMS
+ * @since 2.15
+ */
+class HtmlElement
+{
+	/**
+	 * Имя тега
+	 *
+	 * @var string
+	 */
+	private $tagName;
+
+	/**
+	 * Атрибуты
+	 *
+	 * @var array
+	 */
+	private $attrs = array();
+
+	/**
+	 * Содержимое
+	 *
+	 * @var string
+	 */
+	private $contents = null;
+
+	/**
+	 * Конструктор
+	 *
+	 * @param string $tagName
+	 *
+	 * @since 2.15
+	 */
+	public function __construct($tagName)
+	{
+		$this->tagName = $tagName;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает значение атрибута
+	 *
+	 * @param string $name              имя атрибута
+	 * @param string $value [optional]  значение атрибута
+	 *
+	 * @return void
+	 *
+	 * @since 2.15
+	 */
+	public function setAttribute($name, $value = true)
+	{
+		$this->attrs[$name] = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает значение атрибута
+	 *
+	 * @param string $name  имя атрибута
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.15
+	 */
+	public function getAttribute($name)
+	{
+		if (!isset($this->attrs[$name]))
+		{
+			return null;
+		}
+
+		return $this->attrs[$name];
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает содержимое
+	 *
+	 * @param string $contents  содержимое
+	 *
+	 * @return void
+	 *
+	 * @since 2.15
+	 */
+	public function setContents($contents)
+	{
+		$this->contents = $contents;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает разметку элемента
+	 *
+	 * @return string  разметка HTML
+	 *
+	 * @since 2.15
+	 */
+	public function getHTML()
+	{
+		// Открывающий тег
+		$html = '<' . $this->tagName;
+
+		/* Добавляем атрибуты */
+		foreach ($this->attrs as $name => $value)
+		{
+			$html .= ' ' . $name;
+
+			if ($value !== true)
+			{
+				$html .= '="' . $value . '"';
+			}
+		}
+
+		$html .= '>';
+
+		/* Если есть содержимое, то добавляем его и закрывающий тег */
+		if ($this->contents !== null)
+		{
+			$html .= $this->contents . '</' . $this->tagName . '>';
+		}
+
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/**
+ * Элемент <script>
+ *
+ * @package EresusCMS
+ * @since 2.15
+ */
+class HtmlScriptElement extends HtmlElement
+{
+	/**
+	 * Создаёт новый элемент <script>
+	 *
+	 * @param string $script [optional]  URL или код скрипта.
+	 *
+	 * @since 2.15
+	 */
+	public function __construct($script = '')
+	{
+		parent::__construct('script');
+
+		$this->setAttribute('type', 'text/javascript');
+
+		/*
+		 * Считаем URL-ом всё, что:
+		 * - либо содержит xxx:// в начале
+		 * - либо состоит из минимум двух групп непробельных символов, разделённых точкой или слэшем
+		 */
+		if ($script !== '' && preg_match('=(^\w{3,8}://|^\S*(\.|/)\S*$)=', $script))
+		{
+			$this->setAttribute('src', $script);
+			$this->setContents('');
+		}
+		else
+		{
+			$this->setContents($script);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает содержимое
+	 *
+	 * @param string $contents  содержимое
+	 *
+	 * @return void
+	 *
+	 * @since 2.15
+	 */
+	public function setContents($contents)
+	{
+		if ($contents)
+		{
+			$contents = "//<!-- <![CDATA[\n". $contents . "\n//]] -->";
+		}
+		parent::setContents($contents);
+	}
+	//-----------------------------------------------------------------------------
+
+}
+
+
+
 /**
  * Родительский класс веб-интерфейсов
  *
@@ -68,8 +262,17 @@ class WebPage
 		'meta-tags' => array(),
 		'link' => array(),
 		'style' => array(),
-		'script' => array(),
+		'scripts' => array(),
 		'content' => '',
+	);
+
+	/**
+	 * Наполнение секции <body>
+	 *
+	 * @var array
+	 */
+	protected $body = array(
+		'scripts' => array(),
 	);
 
 	/**
@@ -164,52 +367,151 @@ class WebPage
 	/**
 	 * Подключение клиентского скрипта
 	 *
-	 * @param string $url   URL скрипта
-	 * @param string $type  Тип скрипта
+	 * В качестве дополнительных параметров метод может принимать:
+	 *
+	 * <b>Типы скриптов</b>
+	 * - ecma, text/ecmascript
+	 * - javascript, text/javascript
+	 * - jscript, text/jscript
+	 * - vbscript, text/vbscript
+	 *
+	 * <b>Параметры загрузки скриптов</b>
+	 * - async
+	 * - defer
+	 *
+	 * Если скрипту передан параметр defer, то скрипт будет подключён в конце документа, перед
+	 * </body>, в противном случае он будет подключён в <head>.
+	 *
+	 * @param string $url                     URL скрипта
+	 * @param string $ar1...$argN [optional]  Дополнительные параметры
 	 */
-	public function linkScripts($url, $type = 'javascript')
+	public function linkScripts($url)
 	{
-		for ($i = 0; $i < count($this->head['script']); $i++)
-		if (
-			isset($this->head['script'][$i]['src']) &&
-			$this->head['script'][$i]['src'] == $url
-		)
-			return;
-
-		if (strpos($type, '/') === false)
-			switch (strtolower($type))
+		foreach ($this->head['scripts'] as $script)
+		{
+			if ($script->getAttribute('src') == $url)
 			{
-				case 'emca': $type = 'text/emcascript'; break;
-				case 'javascript': $type = 'text/javascript'; break;
-				case 'jscript': $type = 'text/jscript'; break;
-				case 'vbscript': $type = 'text/vbscript'; break;
-				default: return;
+				return;
 			}
+		}
 
-		$this->head['script'][] = array('type' => $type, 'src' => $url);
+		$script = new HtmlScriptElement($url);
+
+		$args = func_get_args();
+		// Отбрасываем $url
+		array_shift($args);
+
+		foreach ($args as $arg)
+		{
+			switch (strtolower($arg))
+			{
+				case 'emca':
+				case 'text/emcascript':
+					$script->setAttribute('type', 'text/ecmascript');
+				break;
+
+				case 'javascript':
+				case 'text/javascript':
+					$script->setAttribute('type', 'text/javascript');
+				break;
+
+				case 'jscript':
+				case 'text/jscript':
+					$script->setAttribute('type', 'text/jscript');
+				break;
+
+				case 'vbscript':
+				case 'text/vbscript':
+					$script->setAttribute('type', 'text/vbscript');
+				break;
+
+				case 'async':
+				case 'defer':
+					$script->setAttribute($arg);
+				break;
+			}
+		}
+
+		if ($script->getAttribute('defer'))
+		{
+			$this->body['scripts'][] = $script;
+		}
+		else
+		{
+			$this->head['scripts'][] = $script;
+		}
 	}
 	//------------------------------------------------------------------------------
 
 	/**
 	 * Добавление клиентских скриптов
 	 *
-	 * @param string $content  Код скрипта
-	 * @param string $type     Тип скрипта
+	 * <b>Типы скриптов</b>
+	 * - ecma, text/ecmascript
+	 * - javascript, text/javascript
+	 * - jscript, text/jscript
+	 * - vbscript, text/vbscript
+	 *
+	 * <b>Параметры загрузки скриптов</b>
+	 * - head - вставить в секцию <head> (политика по умолчанию)
+	 * - body - вставить в секцию <body>
+	 *
+	 * @param string $code                    Код скрипта
+	 * @param string $ar1...$argN [optional]  Дополнительные параметры
 	 */
-	public function addScripts($content, $type = 'javascript')
+	public function addScripts($code)
 	{
-		if (strpos($type, '/') === false)
-			switch (strtolower($type))
-			{
-				case 'emca': $type = 'text/emcascript'; break;
-				case 'javascript': $type = 'text/javascript'; break;
-				case 'jscript': $type = 'text/jscript'; break;
-				case 'vbscript': $type = 'text/vbscript'; break;
-				default: return;
-			}
+		$script = new HtmlScriptElement($code);
 
-		$content = preg_replace(array('/^(\s)+/m', '/^(\S)/m'), array('		', '	\1'), $content);
-		$this->head['script'][] = array('type' => $type, 'content' => $content);
+		$args = func_get_args();
+		// Отбрасываем $code
+		array_shift($args);
+
+		// По умолчанию помещаем скрипты в <head>
+		$target = 'head';
+
+		foreach ($args as $arg)
+		{
+			switch (strtolower($arg))
+			{
+				case 'emca':
+				case 'text/emcascript':
+					$script->setAttribute('type', 'text/ecmascript');
+				break;
+
+				case 'javascript':
+				case 'text/javascript':
+					$script->setAttribute('type', 'text/javascript');
+				break;
+
+				case 'jscript':
+				case 'text/jscript':
+					$script->setAttribute('type', 'text/jscript');
+				break;
+
+				case 'vbscript':
+				case 'text/vbscript':
+					$script->setAttribute('type', 'text/vbscript');
+				break;
+
+				case 'head':
+					$target = 'head';
+				break;
+
+				case 'body':
+					$target = 'body';
+				break;
+			}
+		}
+
+		if ($target == 'body')
+		{
+			$this->body['scripts'][] = $script;
+		}
+		else
+		{
+			$this->head['scripts'][] = $script;
+		}
 	}
 	//------------------------------------------------------------------------------
 
@@ -236,21 +538,13 @@ class WebPage
 				$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.
 					$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
 
-		/* <script> */
-		if (count($this->head['script']))
-			foreach($this->head['script'] as $value)
-			{
-				if (isset($value['content']))
-				{
-					$value['content'] = trim($value['content']);
-					$result[] = "	<script type=\"".$value['type']."\">\n	//<!-- <![CDATA[\n		".
-						$value['content']."\n	//]] -->\n	</script>";
-				}
-				elseif (isset($value['src']))
-				{
-					$result[] = '	<script src="'.$value['src'].'" type="'.$value['type'].'"></script>';
-				}
-			}
+		/*
+		 * <script>
+		 */
+		foreach ($this->head['scripts'] as $script)
+		{
+			$result[] = $script->getHTML();
+		}
 
 		/* <style> */
 		if (count($this->head['style']))
@@ -261,6 +555,27 @@ class WebPage
 		$this->head['content'] = trim($this->head['content']);
 		if (!empty($this->head['content']))
 			$result[] = $this->head['content'];
+
+		$result = implode("\n" , $result);
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Отрисовка секции <body>
+	 *
+	 * @return string  HTML
+	 */
+	protected function renderBodySection()
+	{
+		$result = array();
+		/*
+		 * <script>
+		 */
+		foreach ($this->body['scripts'] as $script)
+		{
+			$result[] = $script->getHTML();
+		}
 
 		$result = implode("\n" , $result);
 		return $result;
