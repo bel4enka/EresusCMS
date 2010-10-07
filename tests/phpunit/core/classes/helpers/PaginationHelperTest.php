@@ -32,7 +32,7 @@
 require_once dirname(__FILE__) . '/../../../../../main/core/classes/helpers/PaginationHelper.php';
 
 /**
- * @package Kernel
+ * @package EresusCMS
  * @subpackage Tests
  */
 class PaginationHelperTest extends PHPUnit_Framework_TestCase
