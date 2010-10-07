@@ -102,14 +102,31 @@ class TPages
 	{
 		global $Eresus, $page;
 
-		$item = GetArgs($Eresus->sections->fields());
-		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
+		$item = array();
+		$item['name'] = arg('name', '/[^a-z0-9_]/i');
+		$item['title'] = arg('title', 'dbsafe');
+		$item['caption'] = arg('caption', 'dbsafe');
+		$item['description'] = arg('description', 'dbsafe');
+		$item['hint'] = arg('hint', 'dbsafe');
+		$item['keywords'] = arg('keywords', 'dbsafe');
+		$item['template'] = arg('template', 'dbsafe');
+		$item['type'] = arg('type', 'dbsafe');
+		$item['active'] = arg('active', 'int');
+		$item['visible'] = arg('visible', 'int');
+		$item['access'] = arg('access', 'int');
+		$item['position'] = arg('position', 'int');
+		$item['options'] = arg('options');
+		$item['created'] = $item['updated'] = gettime('Y-m-d H:i:s');
+
 		$temp = $Eresus->sections->get("(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
-		if (count($temp) == 0) {
+		if (count($temp) == 0)
+		{
 			$item = $Eresus->sections->add($item);
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
 			HTTP::redirect($page->url(array('id'=>'')));
-		} else {
+		}
+		else
+		{
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
 			HTTP::redirect($Eresus->request['referer']);
@@ -129,8 +146,11 @@ class TPages
 		$item = $old;
 
 		if (arg('id'))
+		{
 			$item['id'] = arg('id', 'int');
-		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', arg('name', 'dbsafe'));
+		}
+
+		$item['name'] = arg('name', '/[^a-z0-9_]/i');
 		$item['title'] = arg('title', 'dbsafe');
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['description'] = arg('description', 'dbsafe');
