@@ -36,4 +36,5 @@ return array(
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
+	'WebPage' => 'core/classes/WebPage.php',
 );
