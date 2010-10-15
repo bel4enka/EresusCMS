@@ -27,6 +27,12 @@
 	</fileset>
 
 
+	<!-- 3rd party: EditArea -->
+	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<property file="build.properties" />
 	<php function="date" returnProperty="builddate">
 	  <param value="Y-m-d"/>
@@ -166,6 +172,11 @@
 		<!-- Tiny MCE -->
 		<copy todir="${build.dir}/ext-3rd/tinymce">
 			<fileset refid="files.3rd.tiny_mce" />
+		</copy>
+
+		<!-- EditArea -->
+		<copy todir="${build.dir}/ext-3rd/editarea">
+			<fileset refid="files.3rd.editarea" />
 		</copy>
 
 		<copy todir="${build.dir}/distrib">
