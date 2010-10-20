@@ -21,6 +21,18 @@
 			<include name="**/*.php" />
 		</fileset>
 
+	<!-- Модульные тесты -->
+	<fileset dir="tests/phpunit" id="files.tests.phpunit">
+		<include name="**/*Test.php" />
+	</fileset>
+
+
+	<!-- 3rd party: EditArea -->
+	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<property file="build.properties" />
 	<php function="date" returnProperty="builddate">
 	  <param value="Y-m-d"/>
@@ -47,6 +59,24 @@
 		<mkdir dir="${logs.dir}" />
 
 		<!--
+			PHPUnit
+		-->
+		<if>
+			<istrue value="${phpunit}" />
+			<then>
+			
+				<mkdir dir="${phpunit.coverage.temp}" />
+
+				<exec
+					command="phpunit --log-junit ${logs.dir}/phpunit.xml --coverage-clover ${logs.dir}/phpunit.coverage.xml --coverage-html ${phpunit.coverage.html} ${project.basedir}/tests/phpunit/AllTests.php"
+					checkreturn="true"
+					logoutput="true"
+				/> 
+
+			</then>
+		</if>
+		
+		<!--
 			PHP_CodeSniffer
 		-->
 		<if>
@@ -62,7 +92,6 @@
 						<property name="phpcs.file.extension" value="${phpcs.format}" />
 					</else>
 				</if>
-
 
 				<phpcodesniffer
 					standard="Eresus"
@@ -161,6 +190,11 @@
 			<fileset refid="files.3rd.tiny_mce" />
 		</copy>
 
+		<!-- EditArea -->
+		<copy todir="${build.dir}/ext-3rd/editarea">
+			<fileset refid="files.3rd.editarea" />
+		</copy>
+
 		<copy todir="${build.dir}/distrib">
 			<fileset refid="tools_files" />
 			<filterchain>
@@ -168,19 +202,6 @@
 		  </filterchain>
 		</copy>
 
-		<!-- Auto tests -->
-		<if>
-			<istrue value="${tests}" />
-			<then>
-				<copy todir="${build.dir}/tests">
-					<fileset refid="files.tests" />
-					<filterchain>
-					    <expandproperties />
-				  </filterchain>
-				</copy>
-			</then>
-
-		</if>
   </target>
 
 	<!--
@@ -255,10 +276,5 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- Auto tests -->
-	<fileset dir="tests" id="files.tests">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
 
 </project>
