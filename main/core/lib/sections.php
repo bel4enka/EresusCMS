@@ -305,6 +305,11 @@ class Sections
 	{
 		global $Eresus;
 
+		if (!$this->index)
+		{
+			$this->index();
+		}
+
 		$result = false;
 		if (isset($item['id'])) unset($item['id']);
 		if (!isset($item['owner'])) $item['owner'] = 0;
