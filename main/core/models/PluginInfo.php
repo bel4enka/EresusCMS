@@ -4,10 +4,9 @@
  *
  * ${product.description}
  *
- * Главный модуль
+ * Модель плагина
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -32,23 +31,107 @@
  * $Id: main.php 1030 2010-08-23 20:18:15Z mk $
  */
 
+// Connection Component Binding
+Doctrine_Manager::getInstance()->bindComponent('PluginInfo', 'doctrine');
+
 /**
  * Класс информации о плагине
+ *
+ * @property string $name
+ * @property int    $active
+ * @property int    $content
+ * @property string $settings
+ * @property string $title
+ * @property string $version
+ * @property string $description
  *
  * @package EresusCMS
  */
 class PluginInfo extends Doctrine_Record
 {
+	/**
+	 * (non-PHPdoc)
+	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 */
 	public function setTableDefinition()
 	{
 		$this->setTableName('plugins');
-		$this->hasColumn('name', 'string', 32, array('primary' => true));
-		$this->hasColumn('active', 'boolean');
-		$this->hasColumn('content', 'boolean');
-		$this->hasColumn('settings', 'clob');
-		$this->hasColumn('title', 'string', 64);
-		$this->hasColumn('version', 'string', 16);
-		$this->hasColumn('description', 'string', 255);
+		$this->hasColumn('name', 'string', 32, array(
+			'type' => 'string',
+			'length' => 32,
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => true,
+			'autoincrement' => false,
+			));
+		$this->hasColumn('active', 'integer', 1, array(
+			'type' => 'integer',
+			'length' => 1,
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => false,
+			'default' => '1',
+			'notnull' => true,
+			'autoincrement' => false,
+			));
+		$this->hasColumn('content', 'integer', 1, array(
+			'type' => 'integer',
+			'length' => 1,
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => false,
+			'default' => '0',
+			'notnull' => true,
+			'autoincrement' => false,
+			));
+		$this->hasColumn('settings', 'string', null, array(
+			'type' => 'string',
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => false,
+			'notnull' => false,
+			'autoincrement' => false,
+			));
+		$this->hasColumn('title', 'string', 64, array(
+			'type' => 'string',
+			'length' => 64,
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => false,
+			'default' => '',
+			'notnull' => false,
+			'autoincrement' => false,
+			));
+		$this->hasColumn('version', 'string', 16, array(
+			'type' => 'string',
+			'length' => 16,
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => false,
+			'default' => '',
+			'notnull' => false,
+			'autoincrement' => false,
+			));
+		$this->hasColumn('description', 'string', 255, array(
+			'type' => 'string',
+			'length' => 255,
+			'fixed' => false,
+			'unsigned' => false,
+			'primary' => false,
+			'default' => '',
+			'notnull' => false,
+			'autoincrement' => false,
+			));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see Doctrine_Record::setUp()
+	 */
+	public function setUp()
+	{
+		parent::setUp();
 	}
 	//-----------------------------------------------------------------------------
 }
