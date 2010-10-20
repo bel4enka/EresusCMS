@@ -118,7 +118,8 @@ class TPages
 		$item['options'] = arg('options');
 		$item['created'] = $item['updated'] = gettime('Y-m-d H:i:s');
 
-		$temp = $Eresus->sections->get("(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
+		$temp = $Eresus->sections->get("(`name`='" . $item['name'] . "') AND (`owner`='" .
+			$item['owner'] . "')");
 		if (count($temp) == 0)
 		{
 			$item = $Eresus->sections->add($item);
