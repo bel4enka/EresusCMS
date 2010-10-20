@@ -89,7 +89,7 @@ class Sections
 			if ($items)
 			{
 				$this->index = array();
-				foreach($items as $item)
+				foreach ($items as $item)
 				{
 					$this->index[$item['owner']] []= $item['id'];
 				}
@@ -110,9 +110,12 @@ class Sections
 		if (isset($this->index[$owner]))
 		{
 			$result = $this->index[$owner];
-			foreach($result as $section)
+			foreach ($result as $section)
 			{
-				if (!$section) continue;
+				if (!$section)
+				{
+					continue;
+				}
 				$result = array_merge($result, $this->branch_ids($section));
 			}
 		}
@@ -135,7 +138,10 @@ class Sections
 
 		$result = array();
 		// Создаём индекс
-		if (!$this->index) $this->index();
+		if (!$this->index)
+		{
+			$this->index();
+		}
 		// Находим ID разделов ветки.
 		$set = $this->branch_ids($owner);
 		if (count($set))
@@ -154,10 +160,11 @@ class Sections
 			if (count($set))
 			{
 				$fieldset = '';//implode(',', array_diff($this->fields(), array('content')));
-				# Читаем из БД
+				/* Читаем из БД */
 				$set = implode(',', $set);
-				$items = $Eresus->db->select($this->table, "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
-				for($i=0; $i<count($items); $i++)
+				$items = $Eresus->db->select($this->table,
+					"FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
+				for ($i=0; $i<count($items); $i++)
 				{
 					$this->cache[$items[$i]['id']] = $items[$i];
 					$list[] = $items[$i];
@@ -166,12 +173,22 @@ class Sections
 
 			if ($flags)
 			{
-				for($i=0; $i<count($list); $i++) if
-					(
-						(!($flags & SECTIONS_ACTIVE) || $list[$i]['active']) &&
-						(!($flags & SECTIONS_VISIBLE) || $list[$i]['visible'])
-					) $result[] = $list[$i];
-			} else $result = $list;
+				for ($i=0; $i<count($list); $i++)
+				{
+					/* Фильтруем с учётом переданных флагов */
+					$filterByActivePassed = !($flags & SECTIONS_ACTIVE) || $list[$i]['active'];
+					$filterByVisiblePassed = !($flags & SECTIONS_VISIBLE) || $list[$i]['visible'];
+
+					if ($filterByActivePassed && $filterByVisiblePassed)
+					{
+						$result[] = $list[$i];
+					}
+				}
+			}
+			else
+			{
+				$result = $list;
+			}
 		}
 		return $result;
 	}
@@ -230,7 +247,10 @@ class Sections
 					break;
 				}
 			}
-			if (!$result) return null;
+			if (!$result)
+			{
+				return null;
+			}
 		}
 		$result = array_reverse($result);
 		return $result;
@@ -290,7 +310,11 @@ class Sections
 				$result[$i]['options'] = decodeOptions($result[$i]['options']);
 			}
 		}
-		if (is_numeric($id) && $result && count($result)) $result = $result[0];
+		if (is_numeric($id) && $result && count($result))
+		{
+			$result = $result[0];
+		}
+
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -298,8 +322,8 @@ class Sections
 	/**
 	 * Добавляет раздел
 	 *
-	 * @param  array  $item  Раздел
-	 * @return  mixed  Описание нового раздела или false в случае неудачи
+	 * @param array $item  Массив свойств раздела
+	 * @return mixed  Описание нового раздела или FALSE в случае неудачи
 	 */
 	public function add($item)
 	{
@@ -311,15 +335,31 @@ class Sections
 		}
 
 		$result = false;
-		if (isset($item['id'])) unset($item['id']);
-		if (!isset($item['owner'])) $item['owner'] = 0;
+		/* При добавлении свойство id должно устанавливаться БД */
+		if (isset($item['id']))
+		{
+			unset($item['id']);
+		}
+		/* Если не указан родитель - добавляем в корень */
+		if (!isset($item['owner']))
+		{
+			$item['owner'] = 0;
+		}
 		$item['created'] = gettime('Y-m-d H:i:s');
 		$item['updated'] = $item['created'];
 		$item['options'] = isset($item['options']) ? trim($item['options']) : '';
-		$item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
-		if (!isset($item['position']) || $item['position'] === '') $item['position'] = isset($this->index[$item['owner']]) ? count($this->index[$item['owner']]) : 0;
+		$item['options'] = empty($item['options']) ?
+			'' : encodeOptions(text2array($item['options'], true));
+
+		if (!isset($item['position']) || $item['position'] === '')
+		{
+			$item['position'] = isset($this->index[$item['owner']]) ?
+				count($this->index[$item['owner']]) : 0;
+		}
 		if ($Eresus->db->insert($this->table, $item))
+		{
 			$result = $this->get($Eresus->db->getInsertedId());
+		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -363,12 +403,26 @@ class Sections
 
 		$result = true;
 		$children = $this->children($id);
-		for($i=0; $i<count($children); $i++) if  (!$result = $this->delete($children[$i]['id'])) break;
-		if ($result) {
-			# Удаляем контент раздела
+		/* Удаляем подразделы */
+		for ($i = 0; $i < count($children); $i++)
+		{
+			$result = $this->delete($children[$i]['id']);
+			if (!$result)
+			{
+				break;
+			}
+		}
+
+		/* Если подразделы успешно удалены, удаляем контент раздела */
+		if ($result)
+		{
 			$section = $this->get($id);
-			if ($plugin = $Eresus->plugins->load($section['type'])) {
-				if (method_exists($plugin, 'onSectionDelete')) $plugin->onSectionDelete($id);
+			if ($plugin = $Eresus->plugins->load($section['type']))
+			{
+				if (method_exists($plugin, 'onSectionDelete'))
+				{
+					$plugin->onSectionDelete($id);
+				}
 			}
 			$result = $Eresus->db->delete($this->table, "`id`=$id");
 		}
