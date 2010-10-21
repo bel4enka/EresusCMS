@@ -320,7 +320,10 @@ class EresusCMS extends EresusApplication
 			FatalError("Can not connect to database server. See log for more info.");
 		}
 
-		Doctrine_Manager::connection($dbh);
+		Doctrine_Manager::connection($dbh, 'doctrine');
+		$manager = Doctrine_Manager::getInstance();
+		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 		Doctrine_Core::loadModels(dirname(__FILE__) . '/models');
 
 /*
