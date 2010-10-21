@@ -102,11 +102,6 @@ class TPages
 		$old = $Eresus->sections->get(arg('update', 'int'));
 		$item = $old;
 
-		if (arg('id'))
-		{
-			$item['id'] = arg('id', 'int');
-		}
-
 		$item['name'] = arg('name', '/[^a-z0-9_]/i');
 		$item['title'] = arg('title', 'dbsafe');
 		$item['caption'] = arg('caption', 'dbsafe');
@@ -452,8 +447,6 @@ class TPages
 			'width' => '700px',
 			'fields' => array (
 				array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
-				array ('type' => 'edit','name' => 'id','label' => admPagesID,'width' => '50px',
-					'maxlength' => '5', 'access'=>ROOT),
 				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
 					'maxlength' => '32', 'pattern'=>'/[a-z0-9_]+/i', 'errormsg'=>admPagesNameInvalid),
 				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
