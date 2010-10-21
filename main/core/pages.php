@@ -222,7 +222,8 @@ class TPages
 
 	/**
 	 * Перемещает страницу из одной ветки в другую
-	 * @return unknown_type
+	 *
+	 * @return string
 	 */
 	function move()
 	{
@@ -231,7 +232,6 @@ class TPages
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		if (!is_null(arg('to')))
 		{
-			dbReorderItems('pages', "`owner`='".$item['owner']."'");
 			$item['owner'] = arg('to', 'int');
 			$item['position'] = count($Eresus->sections->children($item['owner']));
 			$Eresus->sections->update($item);
