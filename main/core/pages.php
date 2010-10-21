@@ -234,6 +234,23 @@ class TPages
 		{
 			$item['owner'] = arg('to', 'int');
 			$item['position'] = count($Eresus->sections->children($item['owner']));
+
+			/* Проверяем, нет ли в разделе назанчения раздела с таким же именем */
+			$q = DB::createSelectQuery();
+			$e = $q->expr;
+			$q->select($q->alias($e->count('id'), 'count'))
+				->from('pages')
+				->where($e->lAnd(
+					$e->eq('owner', $q->bindValue($item['owner'], null, PDO::PARAM_INT)),
+					$e->eq('name', $q->bindValue($item['name']))
+				));
+			$count = DB::fetch($q);
+			if ($count['count'])
+			{
+				ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
+				HTTP::goback();
+			}
+
 			$Eresus->sections->update($item);
 			HTTP::redirect($page->url(array('id'=>'')));
 		}
