@@ -50,50 +50,6 @@ class TPages
 	public $cache;
 
 	/**
-	 * ???
-	 * @param unknown_type $new
-	 * @param unknown_type $old
-	 * @return unknown_type
-	 */
-	function notifyMessage($new, $old=null)
-	{
-		$result = '';
-		if (is_null($old)) {
-			$result .= admPagesName.": ".$new['name']."\n";
-			$result .= admPagesTitle.": ".$new['title']."\n";
-			$result .= admPagesCaption.": ".$new['caption']."\n";
-			$result .= admPagesHint.": ".$new['hint']."\n";
-			$result .= admPagesDescription.": ".$new['description']."\n";
-			$result .= admPagesKeywords.": ".$new['keywords']."\n";
-			$result .= admPagesActive.": ".(isset($new['active'])&&$new['active']?strYes:strNo)."\n";
-			$result .= admPagesVisible.": ".(isset($new['visible'])&&$new['visible']?strYes:strNo)."\n";
-			$result .= admAccessLevel.": ".option('ACCESSLEVEL'.$new['access'])."\n";
-			$result .= admPagesTemplate.": ".$new['template']."\n";
-			$result .= admPagesContentType.": ".$new['type']."\n";
-			$result .= admPagesOptions.": ".$new['options']."\n";
-		} else {
-			$result = "ID ".$new['id']." - <strong>".$old['caption']."</strong>\n".admChanges.":\n";
-			if ($new['name'] != $old['name']) $result .= admPagesName.": ".$old['name']." &rarr; ".$new['name']."\n";
-			if ($new['title'] != $old['title']) $result .= admPagesTitle.": ".$old['title']." &rarr; ".$new['title']."\n";
-			if ($new['caption'] != $old['caption']) $result .= admPagesCaption.": ".$old['caption']." &rarr; ".$new['caption']."\n";
-			if ($new['hint'] != $old['hint']) $result .= admPagesHint.": ".$old['hint']." &rarr; ".$new['hint']."\n";
-			if ($new['description'] != $old['description']) $result .= admPagesDescription.": ".$old['description']." &rarr; ".$new['description']."\n";
-			if ($new['keywords'] != $old['keywords']) $result .= admPagesKeywords.": ".$old['keywords']." &rarr; ".$new['keywords']."\n";
-			if ($new['active'] != $old['active']) $result .= admPagesActive.": ".($old['active']?strYes:strNo)." &rarr; ".($new['active']?strYes:strNo)."\n";
-			if ($new['visible'] != $old['visible']) $result .= admPagesVisible.": ".($old['visible']?strYes:strNo)." &rarr; ".($new['visible']?strYes:strNo)."\n";
-			if ($new['access'] != $old['access']) $result .= admAccessLevel.": ".option('ACCESSLEVEL'.$old['access'])." &rarr; ".option('ACCESSLEVEL'.$new['access'])."\n";
-			if ($new['template'] != $old['template']) $result .= admPagesTemplate.": ".$old['template']." &rarr; ".$new['template']."\n";
-			if ($new['type'] != $old['type']) $result .= admPagesContentType.": ".$old['type']." &rarr; ".$new['type']."\n";
-			if ($new['content'] != $old['content']) $result .= admPagesContent.": ".$old['content']." &rarr; ".$new['content']."\n";
-			if ($new['created'] != $old['created']) $result .= admPagesCreated.": ".$old['created']." &rarr; ".$new['created']."\n";
-			if ($new['updated'] != $old['updated']) $result .= admPagesUpdated.": ".$old['updated']." &rarr; ".$new['updated']."\n";
-			if ($new['options'] != $old['options']) $result .= admPagesOptions.": ".$old['options']." &rarr; ".$new['options']."\n";
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Запись новой страницы в БД
 	 * @return unknown_type
 	 */
