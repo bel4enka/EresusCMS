@@ -422,15 +422,19 @@ class Plugins
 
 	/**
 	 * Конструктор
+	 *
+	 * Загружает список активных плагинов
+	 *
+	 * @return Plugins
 	 */
-	function __construct()
+	public function __construct()
 	{
 		global $Eresus;
 
-		$items = $Eresus->db->select('`plugins`');
+		$items = Doctrine::getTable('PluginInfo')->findByActive(true);
 		if (count($items))
 		{
-			foreach($items as $item)
+			foreach ($items as $item)
 			{
 				$this->list[$item['name']] = $item;
 			}
