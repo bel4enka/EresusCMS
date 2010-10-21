@@ -465,7 +465,7 @@ class TPages
 			'fields' => array (
 				array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
 				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
-					'maxlength' => '32', 'pattern'=>'/[a-z0-9_]+/i', 'errormsg'=>admPagesNameInvalid),
+					'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
 				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
 					'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
 				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,
