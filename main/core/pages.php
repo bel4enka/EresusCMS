@@ -103,6 +103,7 @@ class TPages
 		global $Eresus, $page;
 
 		$item = array();
+		$item['owner'] = arg('owner', 'int');
 		$item['name'] = arg('name', '/[^a-z0-9_]/i');
 		$item['title'] = arg('title', 'dbsafe');
 		$item['caption'] = arg('caption', 'dbsafe');

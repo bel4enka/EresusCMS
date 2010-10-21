@@ -351,7 +351,7 @@ class Sections
 		$item['options'] = empty($item['options']) ?
 			'' : encodeOptions(text2array($item['options'], true));
 
-		if (!isset($item['position']) || $item['position'] === '')
+		if (!isset($item['position']) || !$item['position'])
 		{
 			$item['position'] = isset($this->index[$item['owner']]) ?
 				count($this->index[$item['owner']]) : 0;
