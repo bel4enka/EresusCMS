@@ -94,11 +94,10 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Запись новой страницы в БД
 	 * @return unknown_type
 	 */
 	function insert()
-	# Запись новой страницы в БД
 	{
 		global $Eresus, $page;
 
@@ -166,10 +165,14 @@ class TPages
 		$item['position'] = arg('position', 'int');
 		$item['options'] = text2array(arg('options'), true);
 		if (arg('created'))
+		{
 			$item['created'] = arg('created', 'dbsafe');
+		}
 		$item['updated'] = arg('updated', 'dbsafe');
 		if (arg('updatedAuto'))
+		{
 			$item['updated'] = gettime('Y-m-d H:i:s');
+		}
 
 		$Eresus->sections->update($item);
 
@@ -190,10 +193,15 @@ class TPages
 
 		$items = $Eresus->sections->children($owner, $Eresus->user['access']);
 		$result = array(array(), array());
-		if (count($items)) foreach($items as $item) {
-			if ($item['id'] != $skip) {
+		foreach ($items as $item)
+		{
+			if ($item['id'] != $skip)
+			{
 				$item['caption'] = trim($item['caption']);
-				if (empty($item['caption'])) $item['caption'] = admNA;
+				if (empty($item['caption']))
+				{
+					$item['caption'] = admNA;
+				}
 				$result[0][] = $item['id'];
 				$result[1][] = str_repeat('&nbsp;', $level*2).$item['caption'];
 				$children = $this->selectList($skip, $item['id'], $level+1);
@@ -206,20 +214,22 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Функция перемещает страницу вверх в списке
 	 * @return unknown_type
 	 */
 	function moveUp()
-	# Функция перемещает страницу вверх в списке
 	{
 		global $Eresus, $page;
 
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		$item = $Eresus->sections->get(arg('id', 'int'));
-		if ($item['position'] > 0) {
-			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".($item['position']-1)."')");
-			if (count($temp)) {
+		if ($item['position'] > 0)
+		{
+			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".
+				($item['position']-1)."')");
+			if (count($temp))
+			{
 				$temp = $temp[0];
 				$item['position']--;
 				$temp['position']++;
@@ -232,20 +242,22 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Функция перемещает страницу вниз в списке
 	 * @return unknown_type
 	 */
 	function moveDown()
-	# Функция перемещает страницу вниз в списке
 	{
 		global $Eresus, $page;
 
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		$item = $Eresus->sections->get(arg('id', 'int'));
-		if ($item['position'] < count($Eresus->sections->children($item['owner']))) {
-			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".($item['position']+1)."')");
-			if ($temp) {
+		if ($item['position'] < count($Eresus->sections->children($item['owner'])))
+		{
+			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".
+				($item['position']+1)."')");
+			if ($temp)
+			{
 				$temp = $temp[0];
 				$item['position']++;
 				$temp['position']--;
@@ -258,22 +270,24 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Перемещает страницу из одной ветки в другую
 	 * @return unknown_type
 	 */
 	function move()
-	# Перемещает страницу из одной ветки в другую
 	{
 		global $Eresus, $page;
 
 		$item = $Eresus->sections->get(arg('id', 'int'));
-		if (!is_null(arg('to'))) {
+		if (!is_null(arg('to')))
+		{
 			dbReorderItems('pages', "`owner`='".$item['owner']."'");
 			$item['owner'] = arg('to', 'int');
 			$item['position'] = count($Eresus->sections->children($item['owner']));
 			$Eresus->sections->update($item);
 			HTTP::redirect($page->url(array('id'=>'')));
-		} else {
+		}
+		else
+		{
 			$select = $this->selectList($item['id']);
 			array_unshift($select[0], 0);
 			array_unshift($select[1], admPagesRoot);
@@ -284,7 +298,8 @@ class TPages
 					array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
 					array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
 					array('type'=>'hidden', 'name'=>'id', 'value' => $item['id']),
-					array('type'=>'select', 'label'=>strMove.' "<b>'.$item['caption'].'</b>" в', 'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
+					array('type'=>'select', 'label'=>strMove.' "<b>'.$item['caption'].'</b>" в',
+						'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
 				),
 				'buttons' => array('ok', 'cancel'),
 			);
@@ -304,26 +319,37 @@ class TPages
 		global $Eresus;
 
 		$item = $Eresus->db->selectItem('pages', "`id`='".$id."'");
-		if ($Eresus->plugins->load($item['type'])) {
-			if (isset($Eresus->plugins->items[$item['type']]->table)) {
+		if ($Eresus->plugins->load($item['type']))
+		{
+			if (isset($Eresus->plugins->items[$item['type']]->table))
+			{
 				$fields = $Eresus->db->fields($Eresus->plugins->items[$item['type']]->table['name']);
-				if (in_array('section', $fields)) $Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'], "`section`='".$item['id']."'");
+				if (in_array('section', $fields))
+				{
+					$Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'],
+						"`section`='".$item['id']."'");
+				}
 			}
 		}
 		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
-		if (count($items)) foreach($items as $item) $this->deleteBranch($item['id']);
+		if (count($items))
+		{
+			foreach ($items as $item)
+			{
+				$this->deleteBranch($item['id']);
+			}
+		}
 		$Eresus->db->delete('pages', "`id`='".$id."'");
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Удаляет страницу
 	 * @return unknown_type
 	 */
 	function delete()
-	# Удаляет страницу
 	{
-	global $Eresus, $page;
+		global $Eresus, $page;
 
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		$Eresus->sections->delete(arg('id', 'int'));
@@ -396,13 +422,12 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Функция выводит форму для добавления новой страницы
 	 * @return unknown_type
 	 */
 	function create()
-	# Функция выводит форму для добавления новой страницы
 	{
-	global $Eresus, $page;
+		global $Eresus, $page;
 
 		$content = $this->loadContentTypes();
 		$templates = $this->loadTemplates();
@@ -414,18 +439,29 @@ class TPages
 			'fields' => array (
 				array ('type' => 'hidden','name'=>'owner','value'=>arg('owner', 'int')),
 				array ('type' => 'hidden','name'=>'action', 'value'=>'insert'),
-				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
-				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
-				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
+				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
+					'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
+				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
+					'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
+				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%',
+					'maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
 				array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
-				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%'),
+				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,
+					'width' => '100%'),
 				array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
-				array ('type' => 'select','name' => 'template','label' => admPagesTemplate, 'items' => $templates[0], 'values' => $templates[1], 'default'=>pageTemplateDefault),
-				array ('type' => 'select','name' => 'type','label' => admPagesContentType, 'items' => $content[0], 'values' => $content[1], 'default'=>contentTypeDefault),
+				array ('type' => 'select','name' => 'template','label' => admPagesTemplate,
+					'items' => $templates[0], 'values' => $templates[1], 'default'=>pageTemplateDefault),
+				array ('type' => 'select','name' => 'type','label' => admPagesContentType,
+					'items' => $content[0], 'values' => $content[1], 'default'=>contentTypeDefault),
 				array ('type' => 'checkbox','name' => 'active','label' => admPagesActive, 'default'=>true),
-				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible, 'default'=>true),
-				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,'values'=>array(ADMIN,EDITOR,USER,GUEST),'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5), 'default' => GUEST),
-				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,'width' => '4em','maxlength' => '5'),
+				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible,
+					'default'=>true),
+				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
+					'values'=>array(ADMIN,EDITOR,USER,GUEST),
+					'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5),
+					'default' => GUEST),
+				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
+					'width' => '4em','maxlength' => '5'),
 				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5')
 			),
 			'buttons' => array('ok', 'cancel'),
@@ -460,24 +496,39 @@ class TPages
 			'width' => '700px',
 			'fields' => array (
 				array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
-				array ('type' => 'edit','name' => 'id','label' => admPagesID,'width' => '50px','maxlength' => '5', 'access'=>ROOT),
-				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px','maxlength' => '32', 'pattern'=>'/[a-z0-9_]+/i', 'errormsg'=>admPagesNameInvalid),
-				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%', 'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
-				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
+				array ('type' => 'edit','name' => 'id','label' => admPagesID,'width' => '50px',
+					'maxlength' => '5', 'access'=>ROOT),
+				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
+					'maxlength' => '32', 'pattern'=>'/[a-z0-9_]+/i', 'errormsg'=>admPagesNameInvalid),
+				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
+					'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
+				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,
+					'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/',
+					'errormsg'=>admPagesCaptionInvalid),
 				array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
-				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%'),
+				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,
+					'width' => '100%'),
 				array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
-				array ('type' => 'select','name' => 'template','label' => admPagesTemplate, 'items' => $templates[0], 'values' => $templates[1]),
-				array ('type' => 'select','name' => 'type','label' => admPagesContentType, 'items' => $content[0], 'values' => $content[1]),
+				array ('type' => 'select','name' => 'template','label' => admPagesTemplate,
+					'items' => $templates[0], 'values' => $templates[1]),
+				array ('type' => 'select','name' => 'type','label' => admPagesContentType,
+					'items' => $content[0], 'values' => $content[1]),
 				array ('type' => 'checkbox','name' => 'active','label' => admPagesActive),
 				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible),
-				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,'values'=>array(ADMIN,EDITOR,USER,GUEST),'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5)),
-				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,'width' => '4em','maxlength' => '5'),
+				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
+					'values'=>array(ADMIN,EDITOR,USER,GUEST),
+					'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5)),
+				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
+					'width' => '4em','maxlength' => '5'),
 				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5'),
-				array ('type' => 'edit','name' => 'created','label' => admPagesCreated,'access' => ADMIN,'width' => '10em','maxlength' => '19'),
-				array ('type' => 'edit','name' => 'updated','label' => admPagesUpdated,'access' => ADMIN,'width' => '10em','maxlength' => '19'),
-				array ('type' => 'checkbox','name' => 'updatedAuto','label' => admPagesUpdatedAuto, 'default' => true),
-				array ('type' => 'text', 'value'=>admPagesThisURL.': <a href="'.$urlAbs.'">'.$urlAbs.'</a>'),
+				array ('type' => 'edit','name' => 'created','label' => admPagesCreated,'access' => ADMIN,
+					'width' => '10em','maxlength' => '19'),
+				array ('type' => 'edit','name' => 'updated','label' => admPagesUpdated,'access' => ADMIN,
+					'width' => '10em','maxlength' => '19'),
+				array ('type' => 'checkbox','name' => 'updatedAuto','label' => admPagesUpdatedAuto,
+					'default' => true),
+				array ('type' => 'text',
+					'value'=>admPagesThisURL.': <a href="'.$urlAbs.'">'.$urlAbs.'</a>'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
@@ -499,18 +550,27 @@ class TPages
 		global $Eresus;
 
 		$result = array();
-		$items = $Eresus->sections->children($owner, $Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
-		for($i=0; $i<count($items); $i++) {
-			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ? $this->cache['content_types'][$items[$i]['type']] : '<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
+		$items = $Eresus->sections->children($owner,
+			$Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
+		for ($i=0; $i<count($items); $i++)
+		{
+			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?
+				$this->cache['content_types'][$items[$i]['type']] :
+				'<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
 			$row = array();
-			$row[] = array('text' => $items[$i]['caption'], 'style'=>"padding-left: {$level}em;", 'href'=>$Eresus->root.'admin.php?mod=content&amp;section='.$items[$i]['id']);
+			$row[] = array('text' => $items[$i]['caption'], 'style'=>"padding-left: {$level}em;",
+				'href'=>$Eresus->root.'admin.php?mod=content&amp;section='.$items[$i]['id']);
 			$row[] = $items[$i]['name'];
 			$row[] = array('text' => $content_type, 'align' => 'center');
 			$row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
-			$row[] = sprintf($this->cache['index_controls'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
+			$row[] = sprintf($this->cache['index_controls'], $items[$i]['id'], $items[$i]['id'],
+				$items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
 			$result[] = $row;
 			$children = $this->sectionIndexBranch($items[$i]['id'], $level+1);
-			if (count($children)) $result = array_merge($result, $children);
+			if (count($children))
+			{
+				$result = array_merge($result, $children);
+			}
 		}
 		return $result;
 	}
@@ -527,16 +587,21 @@ class TPages
 		$root = $Eresus->root.'admin.php?mod=pages&amp;';
 		$this->cache['index_controls'] =
 			$page->control('setup', $root.'id=%d').' '.
-			$page->control('position', array($root.'action=up&amp;id=%d',$root.'action=down&amp;id=%d')).' '.
+			$page->control('position', array($root.'action=up&amp;id=%d',$root.'action=down&amp;id=%d')).
+			' '.
 			$page->control('add', $root.'action=create&amp;owner=%d').' '.
 			$page->control('move', $root.'action=move&amp;id=%d').' '.
 			$page->control('delete', $root.'action=delete&amp;id=%d');
 		$types = $this->loadContentTypes();
-		for($i=0; $i<count($types[0]); $i++) $this->cache['content_types'][$types[1][$i]] = $types[0][$i];
+		for ($i=0; $i<count($types[0]); $i++)
+		{
+			$this->cache['content_types'][$types[1][$i]] = $types[0][$i];
+		}
 		useLib('admin/lists');
 		$table = new AdminList;
 		$table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
-		$table->addRow(array(admPagesRoot, '', '', '',array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
+		$table->addRow(array(admPagesRoot, '', '', '',
+			array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
 		$table->addRows($this->sectionIndexBranch(0, 1));
 		$result = $table->render();
 		return $result;
@@ -551,18 +616,44 @@ class TPages
 	{
 		global $Eresus, $page;
 
-		if (UserRights($this->access)) {
+		if (UserRights($this->access))
+		{
 			$result = '';
-			if (arg('update')) $this->update();
-			elseif (arg('action')) switch(arg('action')) {
-				case 'up': $this->moveUp(); break;
-				case 'down': $this->moveDown(); break;
-				case 'create': $result = $this->create(); break;
-				case 'insert': $this->insert();
-				case 'move': $result = $this->move(); break;
-				case 'delete': $this->delete(); break;
-			} elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit(arg('id', 'int'));
-			else $result = $this->sectionIndex();
+			if (arg('update'))
+			{
+				$this->update();
+			}
+			elseif (arg('action'))
+			{
+				switch(arg('action')) {
+					case 'up':
+						$this->moveUp();
+					break;
+					case 'down':
+						$this->moveDown();
+					break;
+					case 'create':
+						$result = $this->create();
+					break;
+					case 'insert':
+						$this->insert();
+					break;
+					case 'move':
+						$result = $this->move();
+					break;
+					case 'delete':
+						$this->delete();
+					break;
+				}
+			}
+			elseif (isset($Eresus->request['arg']['id']))
+			{
+				$result = $this->edit(arg('id', 'int'));
+			}
+			else
+			{
+				$result = $this->sectionIndex();
+			}
 			return $result;
 		}
 	}
