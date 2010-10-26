@@ -446,33 +446,6 @@ function replaceMacros($template, $source)
 # Работа с HTTP-запросом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
- * Заполняет массив значениями из запроса
- *
- * @param array $item        Заполняемый массив или массив ключей
- * @param array $checkboxes  Список аргументов рассматриваемых как чек-боксы
- * @param array $prevent     Список полей массива изменять которые не следует
- *
- * @return array  Заполненный массив
- *
- * @deprecated since 2.10
- */
-function GetArgs($item, $checkboxes = array(), $prevent = array())
-{
-	global $Eresus;
-
-	if ($clear = (key($item) == '0')) $item = array_flip($item);
-	foreach ($item as $key => $value) {
-		if ($clear) unset($item[$key]);
-		if (!in_array($key, $prevent)) {
-			if (!is_null(arg($key))) $item[$key] = arg($key, 'dbsafe');
-			if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
-		}
-	}
-	return $item;
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-/**
  * Возвращает значение аргумента запроса
  *
  * @param string $arg     Имя аргумента
@@ -1455,7 +1428,7 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = ! (bool) $this->user['id'];
+						$setVisitTime = (! isset($this->uset['id'])) || (! (bool)$this->user['id']);
 						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
 						$this->user = $item;
 						$this->user['profile'] = decodeOptions($this->user['profile']);

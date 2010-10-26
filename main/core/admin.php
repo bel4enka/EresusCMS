@@ -841,7 +841,7 @@ class TAdminUI extends WebPage
 
 				if (!$item['visible'])
 				{
-					$classes []= 'hidden';
+					$classes []= 'invisible';
 				}
 
 				$classes = implode(' ', $classes);
