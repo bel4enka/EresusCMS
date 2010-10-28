@@ -784,8 +784,8 @@ class EresusForm
 		{
 			if (isset($this->values[$name]))
 			{
-				switch ($node->nodeName) {
-
+				switch ($node->nodeName)
+				{
 					case 'input':
 
 						switch ($node->getAttribute('type'))
@@ -1439,12 +1439,12 @@ class EresusForm
 	 */
 	protected function valueOf(DOMNode $node)
 	{
-		switch ($node->nodeName) {
-
+		switch ($node->nodeName)
+		{
 			case 'input':
 
-				switch ($node->getAttribute('type')) {
-
+				switch ($node->getAttribute('type'))
+				{
 					case 'checkbox':
 						return $node->getAttribute('checked') ? $node->getAttribute('value') : false;
 					break;
@@ -1473,7 +1473,8 @@ class EresusForm
 		{
 			$value = $this->xml->firstChild->nextSibling->getAttributeNS(self::NS, 'validate');
 
-			switch ($value) {
+			switch ($value)
+			{
 				case '':
 				case '0':
 				case 'false':
