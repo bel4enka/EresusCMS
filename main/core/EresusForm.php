@@ -545,7 +545,7 @@ class EresusForm
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$page->linkScripts($Eresus->root . 'core/EresusForm.js');
+		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'defer', 'async');
 
 		$html = $this->parseExtended();
 		$html = $this->fromUTF($html);

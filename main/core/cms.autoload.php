@@ -37,4 +37,5 @@ return array(
 	'I18n' => 'core/i18n.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
+	'WebPage' => 'core/classes/WebPage.php',
 );

@@ -377,7 +377,7 @@ class TFiles
 		elseif (arg('movefile')) $this->moveFile();
 		elseif (arg('delete')) $this->deleteFile();
 		else {
-			$page->linkScripts(httpRoot.'core/files.js');
+			$page->linkScripts($Eresus->root . 'core/files.js');
 			$result =
 				"<table id=\"fileManager\">\n".
 				'<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".
