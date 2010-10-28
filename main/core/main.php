@@ -250,13 +250,12 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function detectWebRoot()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
-		$SUFFIX = dirname(__FILE__);
+		$webServer = WebServer::getInstance();
+		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
+		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		$SUFFIX = substr($SUFFIX, 0, -strlen('/core'));
 		$this->request->setLocalRoot($SUFFIX);
+		eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
 		TemplateSettings::setGlobalValue('siteRoot',
 			$this->request->getScheme() . '://' .

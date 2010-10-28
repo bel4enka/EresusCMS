@@ -38,6 +38,7 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
+require_once dirname(__FILE__) . '/EresusCollectionTest.php';
 require_once dirname(__FILE__) . '/PaginationHelperTest.php';
 
 class Core_Classes_Helpers_AllTests
@@ -46,6 +47,7 @@ class Core_Classes_Helpers_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core/classes/helpers');
 
+		$suite->addTestSuite('EresusCollectionTest');
 		$suite->addTestSuite('PaginationHelperTest');
 		return $suite;
 	}

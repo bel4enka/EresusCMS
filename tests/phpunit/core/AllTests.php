@@ -38,6 +38,8 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
+require_once dirname(__FILE__) . '/EresusCMSTest.php';
+
 require_once dirname(__FILE__) . '/classes/AllTests.php';
 
 class Core_AllTests
@@ -45,6 +47,8 @@ class Core_AllTests
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core');
+
+		$suite->addTestSuite('EresusCMSTest');
 
 		$suite->addTest(Core_Classes_AllTests::suite());
 
