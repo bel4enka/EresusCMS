@@ -1130,20 +1130,24 @@ class Eresus
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
 
+		/*
+		 * Установка свойств объекта $Eresus
+		 * Должна выполняться ДО вызова __clearargs
+		 */
+		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
+		$this->host = $request['host'];
+		$this->root = $root.$this->path;
+		$this->data = $this->root.'data/';
+		$this->style = $this->root.'style/';
+
+
 		# Сбор аргументов вызова
 		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
 		# Разбивка параметров вызова скрипта
 		$s = substr($request['path'], strlen($this->path));
 		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
 
-		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
 		$request['path'] = $root.$request['path'];
-
-		# Установка свойств объекта $Eresus
-		$this->host = $request['host'];
-		$this->root = $root.$this->path;
-		$this->data = $this->root.'data/';
-		$this->style = $this->root.'style/';
 
 		# Обратная совместимость
 		# <= 2.9
