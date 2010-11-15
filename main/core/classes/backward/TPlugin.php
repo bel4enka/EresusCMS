@@ -86,15 +86,20 @@ class TPlugin
 
 		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
 		{
-			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'],
+				$this->settings);
 			# Если установлена версия плагина отличная от установленной ранее
 			# то необходимо произвести обновление информации о плагине в БД
 			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
+			{
 				$this->resetPlugin();
+			}
 		}
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (FS::isFile($filename))
+		{
 			Core::safeInclude($filename);
+		}
 	}
 	//------------------------------------------------------------------------------
 
@@ -112,7 +117,8 @@ class TPlugin
 		$result['name'] = $this->name;
 		$result['content'] = false;
 		$result['active'] = is_null($item) ? true : $item['active'];
-		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) :
+			$item['settings']);
 		$result['title'] = $this->title;
 		$result['version'] = $this->version;
 		$result['description'] = $this->description;
@@ -120,84 +126,109 @@ class TPlugin
 	}
 	//------------------------------------------------------------------------------
 
-/**
-* Чтение настроек плагина из БД
-*
-* @return  bool  Результат выполнения
-*/
-function loadSettings()
-{
-	global $Eresus;
-	$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
-	if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
-	return (bool)$result;
-}
-//------------------------------------------------------------------------------
-/**
-* Сохранение настроек плагина в БД
-*
-* @return  bool  Результат выполнения
-*/
-function saveSettings()
-{
-	global $Eresus;
-	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
-	$item = $this->__item($item);
-	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
-	$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
-* Обновление данных о плагине в БД
-*/
-function resetPlugin()
-{
-	$this->loadSettings();
-	$this->saveSettings();
-}
-//------------------------------------------------------------------------------
-/**
-* Действия, выполняемые при инсталляции плагина
-*/
-function install() {}
-//------------------------------------------------------------------------------
-/**
-* Действия, выполняемые при деинсталляции плагина
-*/
-function uninstall() {}
-//------------------------------------------------------------------------------
-/**
-* Действия при изменении настроек
-*/
-function onSettingsUpdate() {}
-//------------------------------------------------------------------------------
-/**
-* Сохраняет в БД изменения настроек плагина
-*/
-function updateSettings()
-{
-	global $Eresus;
+	/**
+	* Чтение настроек плагина из БД
+	*
+	* @return  bool  Результат выполнения
+	*/
+	function loadSettings()
+	{
+		global $Eresus;
+		$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
+		if ($result)
+		{
+			$this->settings = decodeOptions($result['settings'], $this->settings);
+		}
+		return (bool) $result;
+	}
+	//------------------------------------------------------------------------------
 
-	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
-	$this->onSettingsUpdate();
-	$this->saveSettings();
-}
-//------------------------------------------------------------------------------
-/**
-* Замена макросов
-*
-* @param  string  $template  Строка в которой требуется провести замену макросов
-* @param  arrya   $item      Ассоциативный массив со значениями для подстановки вместо макросов
-*
-* @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
-*/
-function replaceMacros($template, $item)
-{
-	preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-	if (count($matches[1])) foreach($matches[1] as $macros)
-		if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template);
-	return $template;
-}
-//------------------------------------------------------------------------------
+	/**
+	 * Сохранение настроек плагина в БД
+	 *
+	 * @return  bool  Результат выполнения
+	 */
+	function saveSettings()
+	{
+		global $Eresus;
+		$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
+		$item = $this->__item($item);
+		$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
+		$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Обновление данных о плагине в БД
+	*/
+	function resetPlugin()
+	{
+		$this->loadSettings();
+		$this->saveSettings();
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Действия, выполняемые при инсталляции плагина
+	*/
+	function install()
+	{
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Действия, выполняемые при деинсталляции плагина
+	*/
+	function uninstall()
+	{
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Действия при изменении настроек
+	*/
+	function onSettingsUpdate()
+	{
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Сохраняет в БД изменения настроек плагина
+	*/
+	function updateSettings()
+	{
+		global $Eresus;
+
+		foreach ($this->settings as $key => $value)
+		{
+			if (!is_null(arg($key)))
+			{
+				$this->settings[$key] = arg($key);
+			}
+		}
+		$this->onSettingsUpdate();
+		$this->saveSettings();
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Замена макросов
+	*
+	* @param  string  $template  Строка в которой требуется провести замену макросов
+	* @param  arrya   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+	*
+	* @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями
+	*                  массива item
+	*/
+	function replaceMacros($template, $item)
+	{
+		preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
+		if (count($matches[1]))
+		{
+			foreach ($matches[1] as $macros)
+			{
+				if (isset($item[$macros]))
+				{
+					$template = str_replace('$('.$macros.')', $item[$macros], $template);
+				}
+			}
+		}
+		return $template;
+	}
+	//------------------------------------------------------------------------------
 }

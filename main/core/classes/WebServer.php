@@ -1,9 +1,10 @@
+<?php
 /**
  * ${product.title} ${product.version}
  *
  * ${product.description}
  *
- * Стили файлового менеджера
+ * Интерфейс к веб-серверу
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -25,121 +26,93 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
  * $Id$
  */
 
 /**
- * Окно ФМ
+ * Интерфейс к веб-серверу
+ *
+ * Этот класс - кандидат на перенос в Eresus Core
+ *
+ * @package EresusCMS
+ * @since 2.15
  */
-.fm-main-pane
+class WebServer
 {
-	height: 600px;
-	padding-bottom: 6px !important;
-}
-
-.fm-folders-pane
-{
-	background-color: #fff;
-	box-sizing: border-box;
-	float: left;
-	height: 100%;
-	width: 200px;
-}
-
-	.fm-folders-pane ul
-	{
-		list-style: none;
-		margin: 0;
-		overflow: hidden;
-		padding: 0;
-	}
+	/**
+	 * Экземпляр-одиночка
+	 *
+	 * @var WebServer
+	 * @since 2.15
+	 */
+	private static $instance;
 
 	/**
-	 * Для подпапок
+	 * Корневая директория веб-сервера (виртуального хоста)
+	 *
+	 * @var string
+	 * @since 2.15
 	 */
-	.fm-folders-pane ul ul
-	{
-		margin-left: .5em;
-	}
+	private $documentRoot;
 
 	/**
-	 * Папка
+	 * Возвращает экземпляр класса
+	 *
+	 * @return WebServer
+	 *
+	 * @since 2.15
 	 */
-	.fm-folders-pane li
+	public static function getInstance()
 	{
-		height: 16px;
-		line-height: 16px;
-		margin: 0;
-		padding: 5px;
-		white-space: nowrap;
+		if (!self::$instance)
+		{
+			self::$instance = new self();
+		}
+		return self::$instance;
 	}
+	//-----------------------------------------------------------------------------
 
-		/**
-		 * Картинки в пунктах
-		 */
-		.fm-folders-pane li img
-		{
-			display: block;
-			float: left;
-		}
+	/**
+	 * Возвращает корневую директорию веб-сервера
+	 *
+	 * @return string
+	 *
+	 * @since 2.15
+	 */
+	public function getDocumentRoot()
+	{
+		return $this->documentRoot;
+	}
+	//-----------------------------------------------------------------------------
 
-		/**
-		 * Значок "Развернуть"
-		 */
-		.fm-folders-pane img:first-child
-		{
-			background: url(img/menu-tree.png) no-repeat scroll -9px 0;
-			cursor: pointer;
-			height: 9px;
-			margin-top: 4px;
-			width: 9px;
-		}
+	/**
+	 * Конструктор
+	 *
+	 * @return WebServer
+	 *
+	 * @uses FS::canonicalForm()
+	 * @since 2.15
+	 */
+	private function __construct()
+	{
+		$path = realpath($_SERVER['DOCUMENT_ROOT']);
+		$this->documentRoot = FS::canonicalForm($path);
+	}
+	//-----------------------------------------------------------------------------
 
-			/**
-			 * Значок "Свернуть"
-			 */
-			.fm-folders-pane .opened > img:first-child
-			{
-				background-position: -18px 0;
-			}
-
-		/**
-		 * Значок папки
-		 */
-		.fm-folders-pane img + img
-		{
-			margin: 0 5px;
-		}
-
-.fm-files-pane
-{
-	box-sizing: border-box;
-	height: 100%;
-	margin-left: 210px;
+	/**
+	 * Запрещаем клонирование
+	 *
+	 * @return void
+	 *
+	 * @since 2.15
+	 */
+	private function __clone()
+	{
+		// @codeCoverageIgnoreStart
+	}
+	// @codeCoverageIgnoreEnd
+	//-----------------------------------------------------------------------------
 }
-
-	.fm-files-pane > .content
-	{
-		background-color: #fff;
-		box-sizing: border-box;
-		height: 100%;
-		overflow-y: scroll;
-		width: 99%;
-	}
-
-	.fm-files-pane .fm-object
-	{
-		cursor: default;
-		display: inline-block;
-		padding: 5px;
-		text-align: center;
-		vertical-align: top;
-		width: 8em;
-	}
-
-	.fm-files-pane .placeholder
-	{
-		background: #bbb url(img/large/loading.gif) no-repeat 50% 50%;
-		opacity: .8;
-		position: absolute;
-	}

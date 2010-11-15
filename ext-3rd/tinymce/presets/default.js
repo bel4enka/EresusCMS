@@ -200,6 +200,13 @@ function mceInit(data, textStatus, xhr)
 		element_format: "html",
 
 		/*
+		 * Элементы (теги и атрибуты) разрешённые к использованию в дополнение к стандартным.
+		 * См. http://wiki.moxiecode.com/index.php/TinyMCE:Configuration/valid_elements
+		 */
+		extended_valid_elements :
+			"iframe[class|height|id|longdesc|name|src|style|title|width]",
+
+		/*
 		 * Файл(ы) стилей, применяемые для оформления контента
 		 */
 		content_css: window.Eresus.siteRoot + "/style/default.css",

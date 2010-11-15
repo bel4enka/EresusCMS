@@ -360,7 +360,7 @@ class TClientUI extends WebPage
 
 		$result = $Eresus->plugins->clientOnPageRender($result);
 
-		# FIX: Обратная совместимость
+		// FIXME: Обратная совместимость
 		if (!empty($this->scripts))	$this->addScripts($this->scripts);
 
 		$result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
@@ -504,7 +504,7 @@ class TClientUI extends WebPage
 				}
 			}
 		}
-		$this->scripts .= "
+		$this->addScripts("
 			function ".$form['name']."Submit()
 			{
 				var result = true;
@@ -524,7 +524,7 @@ class TClientUI extends WebPage
 				}
 				return result;
 			}
-		";
+		", 'defer');
 		#if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
 		$result .=
 			"<div style=\"width: ".$form['width']."\" class=\"form\">\n".
