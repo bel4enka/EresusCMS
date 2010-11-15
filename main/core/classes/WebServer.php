@@ -111,7 +111,7 @@ class WebServer
 	 */
 	private function __clone()
 	{
-	// @codeCoverageIgnoreStart
+		// @codeCoverageIgnoreStart
 	}
 	// @codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
