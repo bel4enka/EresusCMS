@@ -39,6 +39,7 @@ else
 }
 
 require_once dirname(__FILE__) . '/EresusCMSTest.php';
+require_once dirname(__FILE__) . '/EresusTest.php';
 
 require_once dirname(__FILE__) . '/classes/AllTests.php';
 
@@ -49,6 +50,7 @@ class Core_AllTests
 		$suite = new PHPUnit_Framework_TestSuite('core');
 
 		$suite->addTestSuite('EresusCMSTest');
+		$suite->addTestSuite('EresusTest');
 
 		$suite->addTest(Core_Classes_AllTests::suite());
 
