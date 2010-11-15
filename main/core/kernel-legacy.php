@@ -1190,11 +1190,26 @@ class Eresus
 	{
 		# Подключение строковых данных
 		$filename = $this->froot.'core/classes.php';
-		if (is_file($filename)) include_once($filename);
-		else FatalError("Classes file '$filename' not found!");
-		if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
-		elseif ($this->conf['backward']['TContentPlugin']) useClass('backward/TContentPlugin');
-		elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
+		if (is_file($filename))
+		{
+			include_once($filename);
+		}
+		else
+		{
+			FatalError("Classes file '$filename' not found!");
+		}
+		if ($this->conf['backward']['TListContentPlugin'])
+		{
+			useClass('backward/TListContentPlugin');
+		}
+		elseif ($this->conf['backward']['TContentPlugin'])
+		{
+			useClass('backward/TContentPlugin');
+		}
+		elseif ($this->conf['backward']['TPlugin'])
+		{
+			useClass('backward/TPlugin');
+		}
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1218,9 +1233,13 @@ class Eresus
 		if (useLib($this->conf['db']['engine']))
 		{
 			$this->db = new $this->conf['db']['engine'];
-			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
+			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
+				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
 		}
-			else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		else
+		{
+			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		}
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1247,9 +1266,19 @@ class Eresus
 	*/
 	function check_session()
 	{
-		if (isset($this->session['time'])) {
-			if ((time() - $this->session['time'] > $this->conf['session']['timeout']*3600)&&($this->user['auth'])) $this->logout(false);
-			else $this->session['time'] = time();
+		if (isset($this->session['time']))
+		{
+			if (
+				(time() - $this->session['time'] > $this->conf['session']['timeout'] * 3600) &&
+				($this->user['auth'])
+			)
+			{
+				$this->logout(false);
+			}
+			else
+			{
+				$this->session['time'] = time();
+			}
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1259,7 +1288,8 @@ class Eresus
 	*/
 	function check_loginout()
 	{
-		switch (arg('action')) {
+		switch (arg('action'))
+		{
 			case 'login':
 				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				HTTP::redirect($this->request['url']);
@@ -1288,20 +1318,33 @@ class Eresus
 	function reset_login()
 	{
 		$this->user['auth'] = isset($this->user['auth'])?$this->user['auth']:false;
-		if ($this->user['auth']) {
+		if ($this->user['auth'])
+		{
 			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
-			if (!is_null($item)) { # Если такой пользователь есть...
-				if ($item['active']) { # Если учетная запись активна...
+			if (!is_null($item))
+			{ # Если такой пользователь есть...
+				if ($item['active'])
+				{ # Если учетная запись активна...
 					$this->user['name'] = $item['name'];
 					$this->user['mail'] = $item['mail'];
 					$this->user['access'] = $item['access'];
 					$this->user['profile'] = decodeOptions($item['profile']);
-				} else {
+				}
+				else
+				{
 					ErrorMessage(sprintf(errAccountNotActive, $item['login']));
 					$this->logout();
 				}
-			} else $this->logout();
-		} else $this->user['access'] = GUEST;
+			}
+			else
+			{
+				$this->logout();
+			}
+		}
+		else
+		{
+			$this->user['access'] = GUEST;
+		}
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1313,11 +1356,15 @@ class Eresus
 	{
 		// Отключение закавычивания передаваемых данных
 		if (!PHP::checkVersion('5.3'))
+		{
 			set_magic_quotes_runtime(0);
+		}
 		# Читаем конфигурацию
 		$this->init_config();
 		if ($this->conf['timezone'])
+		{
 			date_default_timezone_set($this->conf['timezone']);
+		}
 		# Определение путей
 		$this->init_resolve();
 		# Инициализация сессии
@@ -1356,16 +1403,19 @@ class Eresus
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Хеширует пароль
-	*
-	* @param string $password  Пароль
-	* @return string  Хеш
-	*/
+	/**
+	 * Хеширует пароль
+	 *
+	 * @param string $password  Пароль
+	 * @return string  Хеш
+	 */
 	function password_hash($password)
 	{
 		$result = md5($password);
-		if (!$this->conf['backward']['weak_password']) $result = md5($result);
+		if (!$this->conf['backward']['weak_password'])
+		{
+			$result = md5($result);
+		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -1391,15 +1441,16 @@ class Eresus
 		setcookie('eresus_key', '', time()-3600, $this->path);
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Авторизация пользователя
-	*
-	* @param string $unsafeLogin   Имя пользователя
-	* @param string $key		       Ключ учётной записи
-	* @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
-	* @param bool   $cookie        Авторизация при помощи cookie
-	* @return bool Результат
-	*/
+
+	/**
+	 * Авторизация пользователя
+	 *
+	 * @param string $unsafeLogin   Имя пользователя
+	 * @param string $key		       Ключ учётной записи
+	 * @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
+	 * @param bool   $cookie        Авторизация при помощи cookie
+	 * @return bool Результат
+	 */
 	function login($unsafeLogin, $key, $auto = false, $cookie = false)
 	{
 		$result = false;
@@ -1413,17 +1464,17 @@ class Eresus
 		}
 
 		$item = $this->db->selectItem('users', "`login`='$login'");
+		// Если такой пользователь есть...
 		if (!is_null($item))
 		{
-			// Если такой пользователь есть...
+			// Если учетная запись активна...
 			if ($item['active'])
 			{
-				// Если учетная запись активна...
 				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
 				{
+					// Если пароль верен...
 					if ($key == $item['hash'])
 					{
-						// Если пароль верен...
 						if ($auto)
 						{
 							$this->set_login_cookies($login, $key);
@@ -1445,9 +1496,9 @@ class Eresus
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
+					// Если пароль не верен...
 					else
 					{
-						// Если пароль не верен...
 						if (!$cookie)
 						{
 							ErrorMessage(errInvalidPassword);
@@ -1477,18 +1528,22 @@ class Eresus
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Завершение сеанса работы с системой
-	*
-	* @param bool $clearCookies
-	*/
-	function logout($clearCookies=true)
+
+	/**
+	 * Завершение сеанса работы с системой
+	 *
+	 * @param bool $clearCookies
+	 */
+	function logout($clearCookies = true)
 	{
 		$this->user['id'] = null;
 		$this->user['auth'] = false;
 		$this->user['access'] = GUEST;
-		if ($clearCookies) $this->clear_login_cookies();
+		if ($clearCookies)
+		{
+			$this->clear_login_cookies();
+		}
 	}
 	//-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
