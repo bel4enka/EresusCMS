@@ -40,6 +40,7 @@ else
 
 require_once dirname(__FILE__) . '/EresusCMSTest.php';
 require_once dirname(__FILE__) . '/EresusTest.php';
+require_once dirname(__FILE__) . '/EresusFormTest.php';
 
 require_once dirname(__FILE__) . '/classes/AllTests.php';
 
@@ -51,6 +52,7 @@ class Core_AllTests
 
 		$suite->addTestSuite('EresusCMSTest');
 		$suite->addTestSuite('EresusTest');
+		$suite->addTestSuite('EresusFormTest');
 
 		$suite->addTest(Core_Classes_AllTests::suite());
 
