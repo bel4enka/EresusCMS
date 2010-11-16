@@ -43,6 +43,11 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_construct()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
 		$template = new ReflectionProperty('EresusForm', 'template');
 		$template->setAccessible(true);
 
@@ -64,6 +69,11 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_setValue()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
 		$values = new ReflectionProperty('EresusForm', 'values');
 		$values->setAccessible(true);
 
@@ -164,6 +174,11 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_isValid()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
 		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
 
 		$invalidData = new ReflectionProperty('EresusForm', 'invalidData');
@@ -180,6 +195,11 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getValue()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
 		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
 
 		$values = new ReflectionProperty('EresusForm', 'values');
@@ -204,6 +224,11 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getValue_from_request()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
 		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
 
 		$values = new ReflectionProperty('EresusForm', 'values');
