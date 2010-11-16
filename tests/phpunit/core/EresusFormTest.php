@@ -249,6 +249,135 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers EresusForm::invalidValue
+	 */
+	public function test_invalidValue()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$invalidData = new ReflectionProperty('EresusForm', 'invalidData');
+		$invalidData->setAccessible(true);
+
+		$messages = new ReflectionProperty('EresusForm', 'messages');
+		$messages->setAccessible(true);
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+		$form->invalidValue('a', 'b');
+
+		$this->assertEquals(array('a' => true), $invalidData->getValue($form));
+		$this->assertEquals(array('a' => 'b'), $messages->getValue($form));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::invalidData
+	 */
+	public function test_invalidData()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$invalidData = new ReflectionProperty('EresusForm', 'invalidData');
+		$invalidData->setAccessible(true);
+
+		$isInvalid = new ReflectionProperty('EresusForm', 'isInvalid');
+		$isInvalid->setAccessible(true);
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$invalidData->setValue($form, array());
+		$isInvalid->setValue($form, false);
+		$this->assertFalse($form->invalidData());
+
+		$invalidData->setValue($form, array('message'));
+		$isInvalid->setValue($form, false);
+		$this->assertTrue($form->invalidData());
+
+		$invalidData->setValue($form, array());
+		$isInvalid->setValue($form, true);
+		$this->assertTrue($form->invalidData());
+
+		$invalidData->setValue($form, array('message'));
+		$isInvalid->setValue($form, true);
+		$this->assertTrue($form->invalidData());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::packData
+	 */
+	public function test_packData()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$values = new ReflectionProperty('EresusForm', 'values');
+		$values->setAccessible(true);
+
+		$isInvalid = new ReflectionProperty('EresusForm', 'isInvalid');
+		$isInvalid->setAccessible(true);
+
+		$messages = new ReflectionProperty('EresusForm', 'messages');
+		$messages->setAccessible(true);
+
+		$packData = new ReflectionMethod('EresusForm', 'packData');
+		$packData->setAccessible(true);
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$values->setValue($form, array('a' => 'b'));
+		$isInvalid->setValue($form, true);
+		$messages->setValue($form, array('message1'));
+
+		$this->assertEquals(array(
+			'values' => array('a' => 'b'),
+			'isInvalid' => true,
+			'messages' => array('message1')
+		), $packData->invoke($form));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::sessionStore
+	 */
+	public function test_sessionStore()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$id = new ReflectionProperty('EresusForm', 'id');
+		$id->setAccessible(true);
+		$id->setValue($form, 'formID');
+
+		$sessionStore = new ReflectionMethod('EresusForm', 'sessionStore');
+		$sessionStore->setAccessible(true);
+
+		$sessionStore->invoke($form);
+
+		$this->assertEquals(array(
+			'EresusForm' => array(
+				'formID' => array(
+					'values' => array(),
+					'isInvalid' => false,
+					'messages' => array()
+				)
+			)
+		), $_SESSION);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers EresusForm::addMessage
 	 */
 	public function test_addMessage()
@@ -270,6 +399,149 @@ class EresusFormTest extends PHPUnit_Framework_TestCase
 		$addMessage->invoke($form, 'a', 'messageA');
 
 		$this->assertEquals(array('a' => 'messageA'), $messages->getValue($form));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::childrenAsArray
+	 */
+	public function test_childrenAsArray()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$doc = new DOMDocument('1.0', 'UTF-8');
+		$rootNode = $doc->createElement('form');
+		$doc->appendChild($rootNode);
+
+		$node1 = $doc->createElement('div', '1');
+		$rootNode->appendChild($node1);
+		$node2 = $doc->createElement('div', '2');
+		$rootNode->appendChild($node2);
+
+		$childrenAsArray = new ReflectionMethod('EresusForm', 'childrenAsArray');
+		$childrenAsArray->setAccessible(true);
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$this->assertEmpty($childrenAsArray->invoke($form, 'some string'));
+		$this->assertEmpty($childrenAsArray->invoke($form, new stdClass()));
+		$this->assertEquals(array($node1, $node2),
+			$childrenAsArray->invoke($form, $rootNode->childNodes));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::copyElement
+	 */
+	public function test_copyElement()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$doc = new DOMDocument('1.0', 'UTF-8');
+		$sourceNode = $doc->createElement('div');
+		$doc->appendChild($sourceNode);
+		$sourceNode->setAttribute('class', 'my-class');
+		$sourceNode->appendChild($doc->createElement('span', 'test'));
+
+		$targetNode = $doc->createElement('div');
+		$doc->appendChild($targetNode);
+
+		$copyElement = new ReflectionMethod('EresusForm', 'copyElement');
+		$copyElement->setAccessible(true);
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$copyElement->invoke($form, $sourceNode, $targetNode);
+
+		$this->assertEquals('<div class="my-class"><span>test</span></div>',
+			$doc->saveXML($targetNode));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::valueOf
+	 */
+	public function test_valueOf()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$valueOf = new ReflectionMethod('EresusForm', 'valueOf');
+		$valueOf->setAccessible(true);
+
+		$doc = new DOMDocument('1.0', 'UTF-8');
+
+		$node = $doc->createElement('div');
+		$this->assertNull($valueOf->invoke($form, $node));
+
+		$node = $doc->createElement('input');
+		$node->setAttribute('value', 'val1');
+		$this->assertEquals('val1', $valueOf->invoke($form, $node));
+
+		$node = $doc->createElement('input');
+		$node->setAttribute('type', 'checkbox');
+		$node->setAttribute('value', 'val2');
+		$this->assertFalse($valueOf->invoke($form, $node));
+
+		$node->setAttribute('checked', 'checked');
+		$this->assertEquals('val2', $valueOf->invoke($form, $node));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusForm::detectAutoValidate
+	 */
+	public function test_detectAutoValidate()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$doc = new DOMDocument('1.0', 'UTF-8');
+		$unknownNode = $doc->createElement('unknown');
+		$doc->appendChild($unknownNode);
+		$formNode = $doc->createElement('form');
+		$formNode->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:fe', EresusForm::NS);
+		$doc->appendChild($formNode);
+
+		$form = new EresusForm('my_template'); // TODO заменить на объект Template!
+
+		$xml = new ReflectionProperty('EresusForm', 'xml');
+		$xml->setAccessible(true);
+		$xml->setValue($form, $doc);
+
+		$detectAutoValidate = new ReflectionMethod('EresusForm', 'detectAutoValidate');
+		$detectAutoValidate->setAccessible(true);
+
+		$detectAutoValidate->invoke($form);
+
+		$autoValidate = new ReflectionProperty('EresusForm', 'autoValidate');
+		$autoValidate->setAccessible(true);
+
+		$this->assertTrue($autoValidate->getValue($form));
+
+		$formNode->setAttributeNS(EresusForm::NS, 'validate', '');
+		$detectAutoValidate->invoke($form);
+		$this->assertFalse($autoValidate->getValue($form));
+
+		$formNode->setAttributeNS(EresusForm::NS, 'validate', '0');
+		$detectAutoValidate->invoke($form);
+		$this->assertFalse($autoValidate->getValue($form));
+
+		$formNode->setAttributeNS(EresusForm::NS, 'validate', 'false');
+		$detectAutoValidate->invoke($form);
+		$this->assertFalse($autoValidate->getValue($form));
 	}
 	//-----------------------------------------------------------------------------
 
