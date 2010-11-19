@@ -58,13 +58,6 @@ ini_set('track_errors', false);
 try
 {
 	/**
-	 * Подключение Doctrine
-	 */
-	include_once 'core/Doctrine.php';
-	spl_autoload_register(array('Doctrine', 'autoload'));
-	spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
-
-	/**
 	 * Подключение главного приложения
 	 */
 	include_once 'core/main.php';

@@ -309,6 +309,13 @@ class EresusCMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
+		/**
+		 * Подключение Doctrine
+		 */
+		include_once 'core/Doctrine.php';
+		spl_autoload_register(array('Doctrine', 'autoload'));
+		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
+
 		try
 		{
 			$dbh = DB::connect(Core::getValue('eresus.cms.dsn'));
