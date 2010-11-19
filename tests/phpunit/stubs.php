@@ -38,6 +38,9 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
+define('errInvalidPassword', 'errInvalidPassword');
+define('errAccountNotActive', 'errAccountNotActive');
+define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 
 function eresus_log() {}
 
@@ -62,6 +65,15 @@ class FS
 	//-----------------------------------------------------------------------------
 }
 
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.15
+ */
+class EresusRuntimeException extends Exception
+{
+}
 
 /**
  * @package EresusCMS
