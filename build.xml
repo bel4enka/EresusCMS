@@ -141,13 +141,6 @@
 			</filterchain>
 		</copy>
 
-		<copy todir="${build.dir}/core/lib">
-			<fileset refid="libs_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
 		<!-- jQuery -->
 		<copy todir="${build.dir}/core/jquery">
 			<fileset refid="files.3rd.jquery" />
@@ -213,12 +206,6 @@
 
 	<!-- Framework files -->
 	<fileset dir="framework" id="files.framework">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- libs files -->
-	<fileset dir="lib" id="libs_files">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
