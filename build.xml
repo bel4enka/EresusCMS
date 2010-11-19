@@ -155,7 +155,7 @@
 
 		<mkdir dir="${build.dir}/distrib" />
 		<copy todir="${build.dir}/distrib">
-			<fileset refid="db_files" />
+			<fileset refid="files.db" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
@@ -211,7 +211,7 @@
 	</fileset>
 
 	<!-- DB templates -->
-	<fileset dir="db" id="db_files">
+	<fileset dir="db" id="files.db">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>

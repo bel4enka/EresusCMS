@@ -1,10 +1,8 @@
-#Fri Nov 19 20:45:47 MSK 2010
+#Sat Nov 20 01:51:59 MSK 2010
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
 encoding//SDK/plugin_template/src/myplugin.php=windows-1251
-encoding//db/mysql-4.sql=windows-1251
-encoding//db/mysql-5.sql=windows-1251
 encoding//ext-3rd/xinha/eresus-connector.php=windows-1251
 encoding//lang/ru.php=windows-1251
 encoding//main/admin/themes/default/PluginManager/add-dialog.html=windows-1251
@@ -38,7 +36,6 @@ encoding//main/core/plgmgr.php=windows-1251
 encoding//main/core/settings.php=windows-1251
 encoding//main/core/themes.php=windows-1251
 encoding//main/core/users.php=windows-1251
-encoding//main/ext/articles.php=windows-1251
 encoding//main/style/default.css=windows-1251
 encoding//main/templates/default.html=windows-1251
 encoding//main/templates/std/PageSelector.html=windows-1251
