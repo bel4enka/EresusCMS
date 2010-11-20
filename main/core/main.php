@@ -316,7 +316,8 @@ class EresusCMS extends EresusApplication
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 
-		Doctrine_Manager::connection(Core::getValue('eresus.cms.dsn'), 'doctrine');
+		Doctrine_Manager::connection(Core::getValue('eresus.cms.dsn'), 'doctrine')->
+			setCharset('cp1251');
 		$manager = Doctrine_Manager::getInstance();
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
