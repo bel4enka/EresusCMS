@@ -35,7 +35,6 @@ return array(
 	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
-	'LegacyDB' => 'core/lib/legacydb.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',

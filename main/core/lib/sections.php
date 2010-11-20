@@ -279,7 +279,7 @@ class Sections
 	 *
 	 * @param int|array|string $id  ID раздела / Список идентификаторов / SQL-условие
 	 *
-	 * @return  array  Описание раздела
+	 * @return Section  модель раздела
 	 */
 	public function get($id)
 	{
@@ -291,7 +291,7 @@ class Sections
 		}
 		elseif (is_numeric($id))
 		{
-			$what = "`id`=$id";
+			return Doctrine_Core::getTable('Section')->find($id);
 		}
 		else
 		{
@@ -304,10 +304,6 @@ class Sections
 			{
 				$result[$i]['options'] = decodeOptions($result[$i]['options']);
 			}
-		}
-		if (is_numeric($id) && $result && count($result))
-		{
-			$result = $result[0];
 		}
 
 		return $result;

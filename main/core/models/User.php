@@ -37,14 +37,14 @@ Doctrine_Manager::getInstance()->bindComponent('Users', 'doctrine');
 /**
  * Модель пользователя
  *
- * @property int	$id
+ * @property int	  $id
  * @property string $login
  * @property string $hash
- * @property int	$active
+ * @property int	  $active
  * @property string $lastVisit
- * @property int	$lastLoginTime
- * @property int	$loginErrors
- * @property int	$access
+ * @property int	  $lastLoginTime  время последней попытки входа в систему
+ * @property int	  $loginErrors
+ * @property int	  $access
  * @property string $name
  * @property string $mail
  * @property string $profile

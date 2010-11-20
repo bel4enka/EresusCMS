@@ -316,17 +316,7 @@ class EresusCMS extends EresusApplication
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 
-		try
-		{
-			$dbh = DB::connect(Core::getValue('eresus.cms.dsn'));
-		}
-			catch (DBRuntimeException $e)
-		{
-			Core::logException($e);
-			FatalError("Can not connect to database server. See log for more info.");
-		}
-
-		Doctrine_Manager::connection($dbh, 'doctrine');
+		Doctrine_Manager::connection(Core::getValue('eresus.cms.dsn'), 'doctrine');
 		$manager = Doctrine_Manager::getInstance();
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);

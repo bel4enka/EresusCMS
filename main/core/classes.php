@@ -949,9 +949,10 @@ class ContentPlugin extends Plugin
 		if (isset($page))
 		{
 			$page->plugin = $this->name;
-			if (isset($page->options) && count($page->options))
+			/* FIXME временно отключено
+			 * if (isset($page->options) && count($page->options))
 				foreach ($page->options as $key=>$value)
-					$this->settings[$key] = $value;
+					$this->settings[$key] = $value;*/
 		}
 	}
 	//------------------------------------------------------------------------------
