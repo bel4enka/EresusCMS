@@ -209,15 +209,20 @@ class Sections
 	 * @param int $access  Минимальный уровень доступа
 	 * @param int $flags   Флаги (см. SECTIONS_XXX)
 	 *
-	 * @return array  описания разделов
-	 *
-	 * @uses SectionTable::findByOwner()
+	 * @return array  Идентификаторы разделов
 	 */
 	public function children($owner, $access = GUEST, $flags = 0)
 	{
-		$sections = Doctrine::getTable('Section')->findByOwner($owner, $flags & SECTIONS_VISIBLE,
-			$flags & SECTIONS_ACTIVE, $access);
-		return $sections;
+		$items = $this->branch($owner, $access, $flags);
+		$result = array();
+		for ($i=0; $i<count($items); $i++)
+		{
+			if ($items[$i]['owner'] == $owner)
+			{
+				$result[] = $items[$i];
+			}
+		}
+		return $result;
 	}
 	//------------------------------------------------------------------------------
 
@@ -279,7 +284,7 @@ class Sections
 	 *
 	 * @param int|array|string $id  ID раздела / Список идентификаторов / SQL-условие
 	 *
-	 * @return Section  модель раздела
+	 * @return  array  Описание раздела
 	 */
 	public function get($id)
 	{
@@ -291,7 +296,7 @@ class Sections
 		}
 		elseif (is_numeric($id))
 		{
-			return Doctrine_Core::getTable('Section')->find($id);
+			$what = "`id`=$id";
 		}
 		else
 		{
@@ -304,6 +309,10 @@ class Sections
 			{
 				$result[$i]['options'] = decodeOptions($result[$i]['options']);
 			}
+		}
+		if (is_numeric($id) && $result && count($result))
+		{
+			$result = $result[0];
 		}
 
 		return $result;

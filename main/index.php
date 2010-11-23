@@ -64,8 +64,9 @@ try
 }
 catch (Exception $e)
 {
-	die($e->getMessage());
+	die('Can not include file "core/main.php". Is it present and accessible?');
 }
+
 /*
  * Запуск CMS
  */

@@ -73,7 +73,7 @@ class EresusCMS extends EresusApplication
 		$this->initConf();
 		$i18n = I18n::getInstance();
 		TemplateSettings::setGlobalValue('i18n', $i18n);
-		$this->initDB();
+		//$this->initDB();
 		//$this->initSession();
 		$GLOBALS['Eresus']->init();
 		TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
@@ -308,21 +308,6 @@ class EresusCMS extends EresusApplication
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		/**
-		 * Подключение Doctrine
-		 */
-		include_once 'core/Doctrine.php';
-		spl_autoload_register(array('Doctrine', 'autoload'));
-		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
-
-		Doctrine_Manager::connection(Core::getValue('eresus.cms.dsn'), 'doctrine')->
-			setCharset('cp1251');
-		$manager = Doctrine_Manager::getInstance();
-		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
-		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
-		Doctrine_Core::loadModels(dirname(__FILE__) . '/models');
-
 /*
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

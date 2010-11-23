@@ -54,19 +54,15 @@ class Plugins
 
 	/**
 	 * Конструктор
-	 *
-	 * Загружает список активных плагинов
-	 *
-	 * @return Plugins
 	 */
-	public function __construct()
+	function __construct()
 	{
 		global $Eresus;
 
-		$items = Doctrine::getTable('PluginInfo')->findByActive(true);
+		$items = $Eresus->db->select('`plugins`');
 		if (count($items))
 		{
-			foreach ($items as $item)
+			foreach($items as $item)
 			{
 				$this->list[$item['name']] = $item;
 			}
@@ -949,10 +945,9 @@ class ContentPlugin extends Plugin
 		if (isset($page))
 		{
 			$page->plugin = $this->name;
-			/* FIXME временно отключено
-			 * if (isset($page->options) && count($page->options))
+			if (isset($page->options) && count($page->options))
 				foreach ($page->options as $key=>$value)
-					$this->settings[$key] = $value;*/
+					$this->settings[$key] = $value;
 		}
 	}
 	//------------------------------------------------------------------------------

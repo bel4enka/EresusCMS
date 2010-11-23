@@ -1223,6 +1223,25 @@ class Eresus
 		$this->extensions = new EresusExtensions();
 	}
 	//-----------------------------------------------------------------------------
+	/**
+	* Подключение к источнику данных
+	*
+	* @access private
+	*/
+	function init_datasource()
+	{
+		if (useLib($this->conf['db']['engine']))
+		{
+			$this->db = new $this->conf['db']['engine'];
+			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
+				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
+		}
+		else
+		{
+			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		}
+	}
+	//------------------------------------------------------------------------------
  /**
 	* Инициализация механизма плагинов
 	*/
@@ -1301,9 +1320,11 @@ class Eresus
 		$this->user['auth'] = isset($this->user['auth'])?$this->user['auth']:false;
 		if ($this->user['auth'])
 		{
-			$item = Doctrine::getTable('User')->find($this->user['id']);
-			if ($item !== false) { # Если такой пользователь есть...
-				if ($item['active']) { # Если учетная запись активна...
+			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
+			if (!is_null($item))
+			{ # Если такой пользователь есть...
+				if ($item['active'])
+				{ # Если учетная запись активна...
 					$this->user['name'] = $item['name'];
 					$this->user['mail'] = $item['mail'];
 					$this->user['access'] = $item['access'];
@@ -1362,6 +1383,8 @@ class Eresus
 		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
+		# Подключение к источнику данных
+		$this->init_datasource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
 		# Инициализация учётной записи пользователя

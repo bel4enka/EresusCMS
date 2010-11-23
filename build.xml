@@ -38,13 +38,6 @@
 	  <param value="Y-m-d"/>
 	</php>
 
-	<!-- 3rd party: Doctrine -->
-	<fileset dir="3rdparty/doctrine/lib" id="files.3rd.doctrine">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-
 	<!--
 	=====================================================================
 		Подготовка к сборке
@@ -124,19 +117,19 @@
 		</copy>
 
 		<!-- Eresus Core -->
-		<phing phingfile="build.xml" dir="3rdparty/eresus-core" inheritAll="false">
-			<property name="type" value="builtin" override="yes" />
-			<property name="build.dir" value="${build.dir}/core/framework/core" override="yes" />
-			<property name="php.lint" value="no" override="yes" />
-		</phing>
-
-		<!-- Doctrine -->
-		<echo msg="Copying Doctrine..." level="info" />
-		<copy todir="${build.dir}/core">
-			<fileset refid="files.3rd.doctrine" />
+		<echo msg="Copying Eresus Core..." level="info" />
+		<copy todir="${build.dir}/core/framework">
+			<fileset refid="files.framework" />
 			<filterchain>
 				<expandproperties />
 			</filterchain>
+		</copy>
+
+		<copy todir="${build.dir}/core/lib">
+			<fileset refid="libs_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
 		<!-- jQuery -->
@@ -153,7 +146,7 @@
 
 		<mkdir dir="${build.dir}/distrib" />
 		<copy todir="${build.dir}/distrib">
-			<fileset refid="files.db" />
+			<fileset refid="db_files" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
@@ -208,8 +201,14 @@
 		<exclude name=".svn" />
 	</fileset>
 
+	<!-- libs files -->
+	<fileset dir="lib" id="libs_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<!-- DB templates -->
-	<fileset dir="db" id="files.db">
+	<fileset dir="db" id="db_files">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>

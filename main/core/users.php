@@ -272,7 +272,6 @@ class TUsers extends Accounts
 				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
 			}
 		}
-
 		if ($granted)
 		{
 			if (arg('update')) $this->update(null);
@@ -284,21 +283,10 @@ class TUsers extends Accounts
 				case 'create': $result = $this->create(); break;
 				case 'insert': $this->insert(); break;
 			} else {
-
-				$list = new ListWidget('User');
-				$list->setPageSize(20);
-				$list->addColumn('id', 'ID');
-				$list->addColumn('name', 'Имя');
-				$list->addColumn('access', 'Доступ');
-				$list->addColumn('login', 'Логин');
-				$list->addColumn('mail', 'E-mail');
-				$list->addColumn('lastVisit', 'Последний визит');
-				$list->addColumn('loginErrors', 'Ошиб.');
-				$list->addControls('delete', 'edit', 'toggle');
-
-				return $list->getHTML();
-
 				$table = array (
+					'name' => 'users',
+					'key'=>'id',
+					'itemsPerPage' => 20,
 					'columns' => array(
 						array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
 						array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
