@@ -117,13 +117,11 @@
 		</copy>
 
 		<!-- Eresus Core -->
-		<echo msg="Copying Eresus Core..." level="info" />
-		<copy todir="${build.dir}/core/framework">
-			<fileset refid="files.framework" />
-			<filterchain>
-				<expandproperties />
-			</filterchain>
-		</copy>
+		<phing phingfile="build.xml" dir="3rdparty/eresus-core" inheritAll="false">
+			<property name="type" value="builtin" override="yes" />
+			<property name="build.dir" value="${build.dir}/core/framework/core" override="yes" />
+			<property name="php.lint" value="no" override="yes" />
+		</phing>
 
 		<copy todir="${build.dir}/core/lib">
 			<fileset refid="libs_files" />
