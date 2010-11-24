@@ -1315,7 +1315,7 @@ class Eresus
 	*/
 	function reset_login()
 	{
-		$this->user['auth'] = isset($this->user['auth'])?$this->user['auth']:false;
+		$this->user['auth'] = isset($this->user['auth']) ? $this->user['auth'] : false;
 		if ($this->user['auth'])
 		{
 			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
