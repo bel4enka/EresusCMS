@@ -1230,11 +1230,9 @@ class Eresus
 	*/
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine']))
+		if (useLib('legacydb'))
 		{
-			$this->db = new $this->conf['db']['engine'];
-			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
-				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
+			$this->db = new LegacyDB();
 		}
 		else
 		{
