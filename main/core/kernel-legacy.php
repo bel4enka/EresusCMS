@@ -1318,19 +1318,20 @@ class Eresus
 		$this->user['auth'] = isset($this->user['auth']) ? $this->user['auth'] : false;
 		if ($this->user['auth'])
 		{
-			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
-			if (!is_null($item))
+			$item = Doctrine_Core::getTable('User')->find($this->user['id']);
+			//$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
+			if ($item)
 			{ # Если такой пользователь есть...
-				if ($item['active'])
+				if ($item->active)
 				{ # Если учетная запись активна...
-					$this->user['name'] = $item['name'];
-					$this->user['mail'] = $item['mail'];
-					$this->user['access'] = $item['access'];
-					$this->user['profile'] = decodeOptions($item['profile']);
+					$this->user['name'] = $item->name;
+					$this->user['mail'] = $item->mail;
+					$this->user['access'] = $item->access;
+					$this->user['profile'] = decodeOptions($item->profile);
 				}
 				else
 				{
-					ErrorMessage(sprintf(errAccountNotActive, $item['login']));
+					ErrorMessage(sprintf(errAccountNotActive, $item->login));
 					$this->logout();
 				}
 			}
