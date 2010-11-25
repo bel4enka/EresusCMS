@@ -45,7 +45,7 @@ class EresusActiveRecord extends Doctrine_Record
 	 *
 	 * @param string $value
 	 *
-	 * @return array
+	 * @return mixed
 	 *
 	 * @since #548
 	 */
@@ -62,7 +62,7 @@ class EresusActiveRecord extends Doctrine_Record
 	/**
 	 * Сериализатор
 	 *
-	 * @param array $value
+	 * @param mixed $value
 	 *
 	 * @return string
 	 *

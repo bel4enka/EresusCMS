@@ -42,6 +42,22 @@ define('errInvalidPassword', 'errInvalidPassword');
 define('errAccountNotActive', 'errAccountNotActive');
 define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 
+
+class Doctrine_Core
+{
+	public static $_getTable;
+
+	public static function getTable()
+	{
+		self::$_getTable = func_get_args();
+		return new Doctrine_Table();
+	}
+	//-----------------------------------------------------------------------------
+}
+
+class Doctrine_Table {}
+
+
 function eresus_log() {}
 
 /**
@@ -138,3 +154,6 @@ class TemplateSettings
 	}
 	//-----------------------------------------------------------------------------
 }
+
+class Doctrine_Record {}
+class Doctrine_Query {}
