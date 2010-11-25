@@ -1,6 +1,0 @@
-#
-# $Id$
-#
-<IfModule php5_module>
-	php_value error_reporting 0
-</IfModule>

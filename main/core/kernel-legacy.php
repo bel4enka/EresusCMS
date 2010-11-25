@@ -146,22 +146,6 @@ function UserRights($level)
 	return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
 }
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-function resetLastVisitTime($time='', $expand=false)
-{
-	global $Eresus;
-
-	if ($Eresus->user['auth']) {
-		$item = $Eresus->db->selectItem('users', "`id`='".$Eresus->user['id']."'");
-		if (empty($time)) $item['lastVisit'] = gettime(); else {
-			if ($expand) $time = substr($time,0,4).'-'.substr($time,4,2).'-'.substr($time,6,2).' '.substr($time,8,2).':'.substr($time,10,2);
-			$item['lastVisit'] = $time;
-		}
-		$Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
-		$Eresus->user['lastVisit'] = $item['lastVisit'];
-	}
-}
-//------------------------------------------------------------------------------
 
 /**
  * Подключение библиотеки
@@ -930,63 +914,6 @@ class Eresus
 	var $request;
 	var $sections;
 
-	//------------------------------------------------------------------------------
-	// Информация о системе
-	//------------------------------------------------------------------------------
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isWin32()
-	{
-		return System::isWindows();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isUnix()
-	{
-		return System::isUnixLike();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isMac()
-	{
-		return System::isMac();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isModule()
-	{
-		return PHP::isModule();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isCgi()
-	{
-		return PHP::isCGI();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isCli()
-	{
-		return PHP::isCLI();
-	}
-	//-----------------------------------------------------------------------------
-
 	/**
 	 * Читает и применяет конфигурационный файл
 	 */
@@ -1125,7 +1052,7 @@ class Eresus
 
 		if (is_null($this->path)) {
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
+			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-(System::isWindows()?2:0));
 			if (!strlen($s) || sbstr($s, -1) != '/') $s .= '/';
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
