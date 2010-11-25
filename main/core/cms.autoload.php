@@ -35,6 +35,7 @@ return array(
 	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
 	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
 	'EresusForm' => 'core/EresusForm.php',
+	'EresusQuery' => 'core/classes/EresusQuery.php',
 	'I18n' => 'core/i18n.php',
 	'ORM' => 'core/classes/ORM.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',

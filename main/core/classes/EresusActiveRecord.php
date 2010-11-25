@@ -35,8 +35,42 @@
  * Активная запись
  *
  * @package EresusCMS
- * @since 2.16
+ * @since #548
  */
 class EresusActiveRecord extends Doctrine_Record
 {
+
+	/**
+	 * Десериализатор
+	 *
+	 * @param string $value
+	 *
+	 * @return array
+	 *
+	 * @since #548
+	 */
+	public function unserializeAccessor($value)
+	{
+		if (strlen($value) == 0)
+		{
+			return array();
+		}
+		return unserialize($value);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Сериализатор
+	 *
+	 * @param array $value
+	 *
+	 * @return string
+	 *
+	 * @since #548
+	 */
+	public function serializeMutator($value)
+	{
+		return serialize($value);
+	}
+	//-----------------------------------------------------------------------------
 }

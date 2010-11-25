@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Набор статических методов для работы с ORM
+ * Таблица разделов
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -32,25 +32,52 @@
  */
 
 /**
- * Набор статических методов для работы с ORM
+ * Таблица разделов
  *
  * @package EresusCMS
- * @since #548
  */
-class ORM
+class SectionTable extends Doctrine_Table
 {
 	/**
-	 * Возвращает объект таблицы заданного компонента
+	 * Returns an instance of this class.
 	 *
-	 * @param string $componentName  имя компонента
-	 *
-	 * @return Doctrine_Table
-	 *
-	 * @since #548s
+	 * @return object SectionTable
 	 */
-	public static function getTable($componentName)
+	public static function getInstance()
 	{
-		return Doctrine_Core::getTable($componentName);
+		return Doctrine_Core::getTable('Section');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Ищет разделы по родителю
+	 *
+	 * @param int  $owner                   идентификатор родительского раздела
+	 * @param bool $visibleOnly [optional]  вернуть только видимые разделы
+	 * @param bool $activeOnly [optional]   вернуть только активные разделы
+	 * @param int  $access [optional]       минимальный уровень доступа
+	 *
+	 * @return Doctrine_Collection
+	 *
+	 * @since #548
+	 */
+	public function findByOwner($owner, $visibleOnly = true, $activeOnly = true, $access = USER)
+	{
+		$where = array('s.owner = ?', 's.access >= ?');
+		if ($visibleOnly)
+		{
+			$where []= 's.visible = 1';
+		}
+		if ($activeOnly)
+		{
+			$where []= 's.active = 1';
+		}
+
+		return EresusQuery::create()->
+			from('Section s')->
+			where(implode(' AND ', $where), array($owner, $access))->
+			orderBy('position')->
+			execute();
 	}
 	//-----------------------------------------------------------------------------
 }

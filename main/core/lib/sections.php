@@ -81,11 +81,11 @@ class Sections
 	 */
 	private function index($force = false)
 	{
-		global $Eresus;
-
 		if ($force || !$this->index)
 		{
-			$items = $Eresus->db->select($this->table, '', '`position`', '`id`,`owner`');
+			$query = ORM::getTable('Section')->createQuery('s')->select('s.id, s.owner')->
+				orderBy('s.position');
+			$items = $query->fetchArray();
 			if ($items)
 			{
 				$this->index = array();
@@ -161,9 +161,12 @@ class Sections
 			{
 				$fieldset = '';//implode(',', array_diff($this->fields(), array('content')));
 				/* Читаем из БД */
-				$set = implode(',', $set);
+				$q = ORM::getTable('Section')->createQuery('s')->whereIn('s.id', $set)->
+					andWhere('s.access >= ?', $access)->orderBy('position');
+				$items = $q->fetchArray();
+				/*$set = implode(',', $set);
 				$items = $Eresus->db->select($this->table,
-					"FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
+					"FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);*/
 				for ($i=0; $i<count($items); $i++)
 				{
 					$this->cache[$items[$i]['id']] = $items[$i];

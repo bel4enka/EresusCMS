@@ -124,37 +124,7 @@ class PluginInfo extends EresusActiveRecord
 				'autoincrement' => false,
 			)
 		));
-		$this->hasAccessorMutator('settings', 'settingsAccessor', 'settingsMutator');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Распаковщик настроек
-	 *
-	 * @param string $value
-	 *
-	 * @return array
-	 *
-	 * @since 2.16
-	 */
-	public function settingsAccessor($value)
-	{
-		return unserialize($value);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Упаковщик настроек
-	 *
-	 * @param array $value
-	 *
-	 * @return string
-	 *
-	 * @since 2.16
-	 */
-	public function settingsMutator($value)
-	{
-		return serialize($value);
+		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 }

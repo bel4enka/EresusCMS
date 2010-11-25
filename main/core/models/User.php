@@ -51,7 +51,7 @@ Doctrine_Manager::getInstance()->bindComponent('Users', 'doctrine');
  *
  * @package	EresusCMS
  *
- * @since 2.16
+ * @since #548
  */
 class User extends EresusActiveRecord
 {
@@ -163,37 +163,8 @@ class User extends EresusActiveRecord
 			'autoincrement' => false,
 		)));
 
-		$this->hasAccessorMutator('profile', 'profileAccessor', 'profileMutator');
+		$this->hasAccessorMutator('profile', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * Распаковщик профиля
-	 *
-	 * @param string $value
-	 *
-	 * @return array
-	 *
-	 * @since 2.16
-	 */
-	public function profileAccessor($value)
-	{
-		return unserialize($value);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Упаковщик профиля
-	 *
-	 * @param array $value
-	 *
-	 * @return string
-	 *
-	 * @since 2.16
-	 */
-	public function profileMutator($value)
-	{
-		return serialize($value);
-	}
-	//-----------------------------------------------------------------------------
 }

@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Набор статических методов для работы с ORM
+ * Запрос к БД
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -32,25 +32,11 @@
  */
 
 /**
- * Набор статических методов для работы с ORM
+ * Запрос к БД
  *
  * @package EresusCMS
  * @since #548
  */
-class ORM
+class EresusQuery extends Doctrine_Query
 {
-	/**
-	 * Возвращает объект таблицы заданного компонента
-	 *
-	 * @param string $componentName  имя компонента
-	 *
-	 * @return Doctrine_Table
-	 *
-	 * @since #548s
-	 */
-	public static function getTable($componentName)
-	{
-		return Doctrine_Core::getTable($componentName);
-	}
-	//-----------------------------------------------------------------------------
 }
