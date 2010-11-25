@@ -4,9 +4,9 @@
  *
  * ${product.description}
  *
- * Таблица автозагрузки классов
+ * Таблица плагинов
  *
- * @copyright 2009, Eresus Project, http://eresus.ru/
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -26,18 +26,26 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
  * $Id$
  */
 
-return array(
-	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
-	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
-	'EresusForm' => 'core/EresusForm.php',
-	'I18n' => 'core/i18n.php',
-	'ORM' => 'core/classes/ORM.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-	'WebServer' => 'core/classes/WebServer.php',
-	'WebPage' => 'core/classes/WebPage.php',
-);
+/**
+ * Таблица плагинов
+ *
+ * @package EresusCMS
+ */
+class PluginInfoTable extends Doctrine_Table
+{
+	/**
+	 * Returns an instance of this class.
+	 *
+	 * @return object PluginInfoTable
+	 */
+	public static function getInstance()
+	{
+		return Doctrine_Core::getTable('PluginInfo');
+	}
+	//-----------------------------------------------------------------------------
+}

@@ -57,14 +57,15 @@ class Plugins
 	 */
 	function __construct()
 	{
-		global $Eresus;
+		//global $Eresus;
 
-		$items = $Eresus->db->select('`plugins`');
+		$items = ORM::getTable('PluginInfo')->findAll();
+		//$items = $Eresus->db->select('`plugins`');
 		if (count($items))
 		{
 			foreach($items as $item)
 			{
-				$this->list[$item['name']] = $item;
+				$this->list[$item->name] = $item;
 			}
 		}
 	}

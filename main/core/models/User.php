@@ -53,7 +53,7 @@ Doctrine_Manager::getInstance()->bindComponent('Users', 'doctrine');
  *
  * @since 2.16
  */
-class User extends Doctrine_Record
+class User extends EresusActiveRecord
 {
 	/**
 	 * (non-PHPdoc)
