@@ -192,7 +192,7 @@ class TUsers extends Accounts
 	{
 		global $Eresus, $page;
 
-		$item = $Eresus->db->selectItem('users', "`id`='".arg('id')."'");
+		$item = ORM::getTable('User')->find(arg('id', 'int'));
 		$form = array(
 			'name' => 'UserForm',
 			'caption' => admUsersChangeUser.' ¹'.$item['id'],

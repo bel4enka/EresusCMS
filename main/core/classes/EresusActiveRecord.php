@@ -51,7 +51,7 @@ class EresusActiveRecord extends Doctrine_Record
 	 */
 	public function unserializeAccessor($value)
 	{
-		if (strlen($value) == 0)
+		if (!is_string($value) || strlen($value) == 0)
 		{
 			return array();
 		}
