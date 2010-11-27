@@ -575,10 +575,12 @@ class Plugin
 	{
 		global $Eresus;
 
-		$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
-		if ($result)
-			$this->settings = decodeOptions($result['settings'], $this->settings);
-		return (bool)$result;
+		$pluginInfo = ORM::getTable('PluginInfo')->find($this->name);
+		if ($pluginInfo)
+		{
+			$this->settings = $pluginInfo->settings;
+		}
+		return (bool)$pluginInfo;
 	}
 	//------------------------------------------------------------------------------
 
