@@ -38,4 +38,9 @@ return array(
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
+
+	/* Обратная совместимость */
+	'TPlugin' => 'core/classes/backward/TPlugin.php',
+	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
+	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
 );
