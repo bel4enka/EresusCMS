@@ -518,7 +518,7 @@ class TPages
 
 		$result = array();
 		$items = $Eresus->sections->children($owner,
-			$Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
+			$_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST);
 		for ($i=0; $i<count($items); $i++)
 		{
 			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?

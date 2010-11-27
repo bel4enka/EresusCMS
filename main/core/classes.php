@@ -273,7 +273,8 @@ class Plugins
 				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
 					$page->httpError(404);
 
-				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
+				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') " .
+					"AND (`access` >= '".($_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
 				$template = loadTemplate('std/SectionListItem');
 				if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
