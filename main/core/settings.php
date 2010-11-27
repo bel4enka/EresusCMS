@@ -57,9 +57,7 @@ class TSettings
 
 		$result = "  define('$name', ";
 		$quot = "'";
-		$value = is_null($req->arg($name)) ?
-			option($name) :
-			$req->arg($name);
+		$value = isset($_POST[$name]) ? $_POST[$name] : null;
 
 		if (isset($options['nobr']) && $options['nobr'])
 		{
