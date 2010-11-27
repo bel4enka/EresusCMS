@@ -144,13 +144,12 @@ class Plugins
 		{
 			$this->items[$name]->uninstall();
 		}
-		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
-		if (!is_null($item))
+		$pluginInfo = ORM::getTable('PluginInfo')->find($name);
+		if ($pluginInfo)
 		{
-			$Eresus->db->delete('plugins', "`name`='".$name."'");
+			$pluginInfo->delete();
 		}
 		$filename = filesRoot.'ext/'.$name.'.php';
-		#if (file_exists($filename)) unlink($filename);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 

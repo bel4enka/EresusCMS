@@ -1412,7 +1412,6 @@ class Eresus
 			return false;
 		}
 
-		//$item = $this->db->selectItem('users', "`login`='$login'");
 		$matches = ORM::getTable('User')->findByLogin($login);
 		// Если такой пользователь есть...
 		if (count($matches))
