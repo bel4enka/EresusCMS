@@ -38,25 +38,73 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
+
+
+/**
+ * Фасад к моку для эмуляции статичных методов
+ *
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since #548
+ */
+class MockFacade
+{
+	/**
+	 * Мок
+	 *
+	 * @var object
+	 */
+	private static $mock;
+
+	/**
+	 * Устанавливает мок
+	 *
+	 * @param object $mock
+	 *
+	 * @return void
+	 *
+	 * @since #548
+	 */
+	public static function setMock($mock)
+	{
+		self::$mock = $mock;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Вызывает метод мока
+	 *
+	 * @param string $method
+	 * @param array  $args
+	 *
+	 * @return void
+	 *
+	 * @since #548
+	 */
+	public static function __callstatic($method, $args)
+	{
+		if (self::$mock)
+		{
+			return call_user_func_array(array(self::$mock, $method), $args);
+		}
+
+		return null;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
 define('errInvalidPassword', 'errInvalidPassword');
 define('errAccountNotActive', 'errAccountNotActive');
 define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 
 
-class Doctrine_Core
-{
-	public static $_getTable;
 
-	public static function getTable()
-	{
-		self::$_getTable = func_get_args();
-		return new Doctrine_Table();
-	}
-	//-----------------------------------------------------------------------------
-}
-
+class Doctrine_Core extends MockFacade {}
+class Doctrine_Query {}
+class Doctrine_Record {}
 class Doctrine_Table {}
-
 
 function eresus_log() {}
 
@@ -155,5 +203,3 @@ class TemplateSettings
 	//-----------------------------------------------------------------------------
 }
 
-class Doctrine_Record {}
-class Doctrine_Query {}

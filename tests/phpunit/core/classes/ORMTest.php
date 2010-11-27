@@ -29,6 +29,7 @@
  * $Id$
  */
 
+require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/ORM.php';
 
 /**
@@ -42,8 +43,10 @@ class ORMTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getTable()
 	{
-		$this->assertTrue(ORM::getTable('Component') instanceof Doctrine_Table);
-		$this->assertEquals(array('Component'), Doctrine_Core::$_getTable);
+		$mock = $this->getMock('stdClass', array('getTable'));
+		$mock->expects($this->once())->method('getTable')->with('Component');
+		Doctrine_Core::setMock($mock);
+		ORM::getTable('Component');
 	}
 	//-----------------------------------------------------------------------------
 

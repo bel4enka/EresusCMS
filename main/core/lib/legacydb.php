@@ -57,6 +57,11 @@ class LegacyDB
 	public $error_reporting = true;
 
 	/**
+	 * @var ezcDbSchema
+	 */
+	private $dbSchema = null;
+
+	/**
 	 * Открывает соединение сервером данных и выбирает источник
 	 *
 	 * @param string $server    Сервер данных
@@ -90,8 +95,11 @@ class LegacyDB
 		{
 			$db = DB::getHandler();
 			// FIXME Doctrine
-			$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
-			ezcDbSchema::setOptions($options);
+			if ($db->options && $db->options->tableNamePrefix)
+			{
+				$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
+				ezcDbSchema::setOptions($options);
+			}
 
 			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}

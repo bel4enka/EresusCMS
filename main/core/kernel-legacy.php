@@ -135,15 +135,39 @@ function InfoMessage($message)
 }
 //------------------------------------------------------------------------------
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# БЕЗОПАСНОСТЬ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Првоеряет уровень доступа пользователя на соответствие заданному
+ *
+ * @param int $level  минимальный требуемый уровень доступа
+ *
+ * @return bool
+ *
+ * @since 2.00
+ * @deprecated
+ */
 function UserRights($level)
-# Функция проверяет права пользователя на соответствие заданной маске
 {
 	global $Eresus;
 
-	return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
+	if ($level == GUEST)
+	{
+		// Гость - самый низкий уровень.
+		return true;
+	}
+
+	if (@!$_SESSION['user_auth'])
+	{
+		// Если не аутентифицирован - запрещаем доступ
+		return false;
+	}
+
+	if ($Eresus->user->access == 0)
+	{
+		// Неправильный уровень доступа - запрещаем доступ
+		return false;
+	}
+
+	return $Eresus->user->access <= $level;
 }
 //------------------------------------------------------------------------------
 
@@ -1195,7 +1219,7 @@ class Eresus
 		{
 			if (
 				(time() - $this->session['time'] > $this->conf['session']['timeout'] * 3600) &&
-				($this->user['auth'])
+				(@$_SESSION['user_auth'])
 			)
 			{
 				$this->logout(false);
@@ -1231,7 +1255,7 @@ class Eresus
 	*/
 	function check_cookies()
 	{
-		if (!$this->user['auth'] && isset($_COOKIE['eresus_login'])) {
+		if (!@$_SESSION['user_auth'] && isset($_COOKIE['eresus_login'])) {
 			if (!$this->login($_COOKIE['eresus_login'], $_COOKIE['eresus_key'], true, true))
 				$this->clear_login_cookies();
 		}
@@ -1242,11 +1266,10 @@ class Eresus
 	*/
 	function reset_login()
 	{
-		$this->user['auth'] = isset($this->user['auth']) ? $this->user['auth'] : false;
-		if ($this->user['auth'])
+		$_SESSION['user_auth'] = isset($_SESSION['user_auth']) ? $_SESSION['user_auth'] : false;
+		if ($_SESSION['user_auth'])
 		{
 			$item = ORM::getTable('User')->find($this->user['id']);
-			//$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
 			if ($item)
 			{ # Если такой пользователь есть...
 				if ($item->active)
@@ -1389,17 +1412,19 @@ class Eresus
 			return false;
 		}
 
-		$item = $this->db->selectItem('users', "`login`='$login'");
+		//$item = $this->db->selectItem('users', "`login`='$login'");
+		$matches = ORM::getTable('User')->findByLogin($login);
 		// Если такой пользователь есть...
-		if (!is_null($item))
+		if (count($matches))
 		{
+			$user = $matches[0];
 			// Если учетная запись активна...
-			if ($item['active'])
+			if ($user->active)
 			{
-				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
+				if (time() - $user->lastLoginTime > $user->loginErrors)
 				{
 					// Если пароль верен...
-					if ($key == $item['hash'])
+					if ($key == $user->hash)
 					{
 						if ($auto)
 						{
@@ -1409,16 +1434,18 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = (! isset($this->uset['id'])) || (! (bool)$this->user['id']);
-						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
-						$this->user = $item;
-						$this->user['profile'] = decodeOptions($this->user['profile']);
-						$this->user['auth'] = true; # Устанавливаем флаг авторизации
-						$this->user['hash'] = $item['hash']; # Хэш пароля используется для подтверждения аутентификации
-						if ($setVisitTime) $item['lastVisit'] = gettime(); # Записываем время последнего входа
-						$item['lastLoginTime'] = time();
-						$item['loginErrors'] = 0;
-						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+						$setVisitTime = ! (bool)$this->user;
+						$lastVisit = $this->user ? $this->user->lastVisit : '';
+						$this->user = $user;
+						$_SESSION['user_auth'] = true; // Устанавливаем флаг авторизации
+						//$this->user['hash'] = $item['hash']; # Хэш пароля используется для подтверждения аутентификации
+						if ($setVisitTime)
+						{
+							$user->lastVisit = gettime(); // Записываем время последнего входа
+						}
+						$user->lastLoginTime = time();
+						$user->loginErrors = 0;
+						$user->save();
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
@@ -1428,18 +1455,18 @@ class Eresus
 						if (!$cookie)
 						{
 							ErrorMessage(errInvalidPassword);
-							$item['lastLoginTime'] = time();
-							$item['loginErrors']++;
-							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+							$user->lastLoginTime = time();
+							$user->loginErrors++;
+							$user->save();
 						}
 					}
 				}
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
-					$item['lastLoginTime'] = time();
-					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+					ErrorMessage(sprintf(errTooEarlyRelogin, $user->loginErrors));
+					$user->lastLoginTime = time();
+					$user->save();
 				}
 			}
 			else
@@ -1463,7 +1490,7 @@ class Eresus
 	function logout($clearCookies = true)
 	{
 		$this->user['id'] = null;
-		$this->user['auth'] = false;
+		$_SESSION['user_auth'] = false;
 		$this->user['access'] = GUEST;
 		if ($clearCookies)
 		{
