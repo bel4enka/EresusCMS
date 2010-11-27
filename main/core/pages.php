@@ -291,6 +291,7 @@ class TPages
 		{
 			if (isset($Eresus->plugins->items[$item['type']]->table))
 			{
+				// TODO этот код не работает с новыми плагинами
 				$fields = $Eresus->db->fields($Eresus->plugins->items[$item['type']]->table['name']);
 				if (in_array('section', $fields))
 				{

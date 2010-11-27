@@ -39,29 +39,7 @@ class EresusAccounts
 {
 	var $table = 'users';
 	var $cache = array();
-	/**
-	 * Возвращает список полей
-	 *
-	 * @access public
-	 *
-	 * @return array Список полей
-	 */
-	function fields()
-	{
-		global $Eresus;
 
-		if (isset($this->cache['fields']))
-		{
-			$result = $this->cache['fields'];
-		}
-		else
-		{
-			$result = $Eresus->db->fields($this->table);
-			$this->cache['fields'] = $result;
-		}
-		return $result;
-	}
-	//------------------------------------------------------------------------------
 	/**
 	 * Возвращает учётную запись или список записей
 	 *
