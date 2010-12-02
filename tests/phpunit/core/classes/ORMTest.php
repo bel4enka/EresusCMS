@@ -43,6 +43,10 @@ class ORMTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getTable()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$mock = $this->getMock('stdClass', array('getTable'));
 		$mock->expects($this->once())->method('getTable')->with('Component');
 		Doctrine_Core::setMock($mock);
