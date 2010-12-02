@@ -59,7 +59,7 @@ class SectionTable extends Doctrine_Table
 	 *
 	 * @return Doctrine_Collection
 	 *
-	 * @since #548
+	 * @since 2.16
 	 */
 	public function findByOwner($owner, $visibleOnly = true, $activeOnly = true, $access = USER)
 	{

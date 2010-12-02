@@ -35,7 +35,7 @@
  * Активная запись
  *
  * @package EresusCMS
- * @since #548
+ * @since 2.16
  */
 class EresusActiveRecord extends Doctrine_Record
 {
@@ -47,7 +47,7 @@ class EresusActiveRecord extends Doctrine_Record
 	 *
 	 * @return mixed
 	 *
-	 * @since #548
+	 * @since 2.16
 	 */
 	public function unserializeAccessor($value)
 	{
@@ -66,7 +66,7 @@ class EresusActiveRecord extends Doctrine_Record
 	 *
 	 * @return string
 	 *
-	 * @since #548
+	 * @since 2.16
 	 */
 	public function serializeMutator($value)
 	{

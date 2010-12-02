@@ -35,7 +35,7 @@
  * Запрос к БД
  *
  * @package EresusCMS
- * @since #548
+ * @since 2.16
  */
 class EresusQuery extends Doctrine_Query
 {

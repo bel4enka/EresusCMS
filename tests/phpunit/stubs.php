@@ -45,7 +45,7 @@ else
  *
  * @package EresusCMS
  * @subpackage Tests
- * @since #548
+ * @since 2.16
  */
 class MockFacade
 {
@@ -63,7 +63,7 @@ class MockFacade
 	 *
 	 * @return void
 	 *
-	 * @since #548
+	 * @since 2.16
 	 */
 	public static function setMock($mock)
 	{
@@ -79,7 +79,7 @@ class MockFacade
 	 *
 	 * @return void
 	 *
-	 * @since #548
+	 * @since 2.16
 	 */
 	public static function __callstatic($method, $args)
 	{

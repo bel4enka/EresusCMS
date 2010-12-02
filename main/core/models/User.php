@@ -51,7 +51,7 @@ Doctrine_Manager::getInstance()->bindComponent('Users', 'doctrine');
  *
  * @package	EresusCMS
  *
- * @since #548
+ * @since 2.16
  */
 class User extends EresusActiveRecord
 {

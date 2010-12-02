@@ -35,7 +35,7 @@
  * Набор статических методов для работы с ORM
  *
  * @package EresusCMS
- * @since #548
+ * @since 2.16
  */
 class ORM
 {
@@ -46,7 +46,7 @@ class ORM
 	 *
 	 * @return Doctrine_Table
 	 *
-	 * @since #548s
+	 * @since 2.16s
 	 */
 	public static function getTable($componentName)
 	{
