@@ -98,6 +98,7 @@ class MockFacade
 define('errInvalidPassword', 'errInvalidPassword');
 define('errAccountNotActive', 'errAccountNotActive');
 define('errTooEarlyRelogin', 'errTooEarlyRelogin');
+define('filesRoot', '/home/exmaple.org/');
 
 
 
@@ -113,7 +114,7 @@ function eresus_log() {}
  * @subpackage Tests
  * @since 2.15
  */
-class FS
+class FS extends MockFacade
 {
 	public static function canonicalForm($filename)
 	{
@@ -125,6 +126,12 @@ class FS
       $filename = '/' . $filename;
 
     return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	public static function isFile($filename)
+	{
+    return is_file($filename);
 	}
 	//-----------------------------------------------------------------------------
 }

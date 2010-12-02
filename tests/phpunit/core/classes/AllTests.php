@@ -45,6 +45,7 @@ require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
 require_once dirname(__FILE__) . '/ORMTest.php';
 require_once dirname(__FILE__) . '/WebPageTest.php';
+require_once dirname(__FILE__) . '/PluginTest.php';
 
 class Core_Classes_AllTests
 {
@@ -59,6 +60,7 @@ class Core_Classes_AllTests
 		$suite->addTestSuite('HtmlScriptElementTest');
 		$suite->addTestSuite('ORMTest');
 		$suite->addTestSuite('WebPageTest');
+		$suite->addTestSuite('PluginTest');
 
 		return $suite;
 	}
