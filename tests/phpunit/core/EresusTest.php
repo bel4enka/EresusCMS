@@ -78,6 +78,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_no_such_user()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
 		$Doctrine_Table->expects($this->once())->method('findByLogin')->
 			will($this->returnValue(array()));
@@ -99,6 +103,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_inactive_user()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$User = $this->getMock('User', array('save'));
 		$User->active = false;
 		$User->expects($this->never())->method('save');
@@ -124,6 +132,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_too_early_login()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$User = $this->getMock('User', array('save'));
 		$User->id = 1;
 		$User->active = true;
@@ -152,6 +164,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_bad_password()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$User = $this->getMock('User', array('save'));
 		$User->id = 1;
 		$User->active = true;
@@ -181,6 +197,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_bad_password_w_cookies()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$User = $this->getMock('User', array('save'));
 		$User->id = 1;
 		$User->active = true;
@@ -210,6 +230,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_auto()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$User = $this->getMock('User', array('save'));
 		$User->id = 1;
 		$User->active = true;
@@ -242,6 +266,10 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_no_auto()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$User = $this->getMock('User', array('save'));
 		$User->id = 1;
 		$User->active = true;
