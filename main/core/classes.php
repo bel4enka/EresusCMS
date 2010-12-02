@@ -57,14 +57,15 @@ class Plugins
 	 */
 	function __construct()
 	{
-		global $Eresus;
+		//global $Eresus;
 
-		$items = $Eresus->db->select('`plugins`');
+		$items = ORM::getTable('PluginInfo')->findAll();
+		//$items = $Eresus->db->select('`plugins`');
 		if (count($items))
 		{
 			foreach($items as $item)
 			{
-				$this->list[$item['name']] = $item;
+				$this->list[$item->name] = $item;
 			}
 		}
 	}
@@ -143,13 +144,12 @@ class Plugins
 		{
 			$this->items[$name]->uninstall();
 		}
-		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
-		if (!is_null($item))
+		$pluginInfo = ORM::getTable('PluginInfo')->find($name);
+		if ($pluginInfo)
 		{
-			$Eresus->db->delete('plugins', "`name`='".$name."'");
+			$pluginInfo->delete();
 		}
 		$filename = filesRoot.'ext/'.$name.'.php';
-		#if (file_exists($filename)) unlink($filename);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -273,7 +273,8 @@ class Plugins
 				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
 					$page->httpError(404);
 
-				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
+				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') " .
+					"AND (`access` >= '".($_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
 				$template = loadTemplate('std/SectionListItem');
 				if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
@@ -575,10 +576,12 @@ class Plugin
 	{
 		global $Eresus;
 
-		$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
-		if ($result)
-			$this->settings = decodeOptions($result['settings'], $this->settings);
-		return (bool)$result;
+		$pluginInfo = ORM::getTable('PluginInfo')->find($this->name);
+		if ($pluginInfo)
+		{
+			$this->settings = $pluginInfo->settings;
+		}
+		return (bool)$pluginInfo;
 	}
 	//------------------------------------------------------------------------------
 

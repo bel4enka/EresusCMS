@@ -73,7 +73,7 @@ class EresusCMS extends EresusApplication
 		$this->initConf();
 		$i18n = I18n::getInstance();
 		TemplateSettings::setGlobalValue('i18n', $i18n);
-		//$this->initDB();
+		$this->initDB();
 		//$this->initSession();
 		$GLOBALS['Eresus']->init();
 		TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
@@ -308,6 +308,32 @@ class EresusCMS extends EresusApplication
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		/**
+		 * Подключение Doctrine
+		 */
+		include_once 'core/Doctrine.php';
+		spl_autoload_register(array('Doctrine', 'autoload'));
+		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
+
+		$pdo = DB::connect(Core::getValue('eresus.cms.dsn'));
+
+		Doctrine_Manager::connection($pdo, 'doctrine')->
+			setCharset('cp1251'); // TODO Убрать после перехода на UTF
+
+		$manager = Doctrine_Manager::getInstance();
+		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
+
+		$prefix = Core::getValue('eresus.cms.dsn.prefix');
+		if ($prefix)
+		{
+			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
+			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+			$pdo->setOptions($options);
+		}
+
+		Doctrine_Core::loadModels(dirname(__FILE__) . '/models');
 /*
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

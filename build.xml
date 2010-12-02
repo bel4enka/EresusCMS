@@ -33,6 +33,12 @@
 		<exclude name=".svn" />
 	</fileset>
 
+	<!-- 3rd party: Doctrine -->
+	<fileset dir="3rdparty/doctrine/lib" id="files.3rd.doctrine">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<property file="build.properties" />
 	<php function="date" returnProperty="builddate">
 	  <param value="Y-m-d"/>
@@ -123,11 +129,13 @@
 			<property name="php.lint" value="no" override="yes" />
 		</phing>
 
-		<copy todir="${build.dir}/core/lib">
-			<fileset refid="libs_files" />
+		<!-- Doctrine -->
+		<echo msg="Copying Doctrine..." level="info" />
+		<copy todir="${build.dir}/core">
+			<fileset refid="files.3rd.doctrine" />
 			<filterchain>
-			    <expandproperties />
-		  </filterchain>
+				<expandproperties />
+			</filterchain>
 		</copy>
 
 		<!-- jQuery -->
@@ -188,12 +196,6 @@
 
 	<!-- Framework files -->
 	<fileset dir="framework" id="files.framework">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- libs files -->
-	<fileset dir="lib" id="libs_files">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>

@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
+require_once dirname(__FILE__) . '/../../../main/core/classes/ORM.php';
 require_once dirname(__FILE__) . '/../../../main/core/kernel-legacy.php';
 
 /**
@@ -61,6 +62,9 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_bad_symbols()
 	{
+		$mock = $this->getMock('stdClass', array('findByLogin'));
+		Doctrine_Core::setMock($mock);
+
 		$test = new Eresus();
 
 		$this->assertFalse($test->login('"root"', ''));
@@ -74,11 +78,17 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_no_such_user()
 	{
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array()));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = new Eresus();
-		$test->db = $this->getMock('stdClass', array('selectItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(null));
 
 		$this->assertFalse($test->login('unexistent_user', ''));
 	}
@@ -89,11 +99,21 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_inactive_user()
 	{
+		$User = $this->getMock('User', array('save'));
+		$User->active = false;
+		$User->expects($this->never())->method('save');
+
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array($User)));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = new Eresus();
-		$test->db = $this->getMock('stdClass', array('selectItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(array('active' => false)));
 
 		$this->assertFalse($test->login('inactive_user', ''));
 	}
@@ -104,17 +124,24 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_too_early_login()
 	{
+		$User = $this->getMock('User', array('save'));
+		$User->id = 1;
+		$User->active = true;
+		$User->lastLoginTime = time();
+		$User->loginErrors = 100;
+		$User->expects($this->once())->method('save');
+
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array($User)));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = new Eresus();
-		$test->db = $this->getMock('stdClass', array('selectItem', 'updateItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(array(
-				'id' => 1,
-				'active' => true,
-				'lastLoginTime' => time(),
-				'loginErrors' => 100
-			)));
-		$test->db->expects($this->once())->method('updateItem');
 
 		$this->assertFalse($test->login('some_user', ''));
 	}
@@ -125,18 +152,25 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_bad_password()
 	{
+		$User = $this->getMock('User', array('save'));
+		$User->id = 1;
+		$User->active = true;
+		$User->hash = 'some_hash';
+		$User->lastLoginTime = time() - 100;
+		$User->loginErrors = 0;
+		$User->expects($this->once())->method('save');
+
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array($User)));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = new Eresus();
-		$test->db = $this->getMock('stdClass', array('selectItem', 'updateItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(array(
-				'id' => 1,
-				'active' => true,
-				'hash' => 'some_hash',
-				'lastLoginTime' => time() - 100,
-				'loginErrors' => 0
-			)));
-		$test->db->expects($this->once())->method('updateItem');
 
 		$this->assertFalse($test->login('some_user', 'invalid_hash'));
 	}
@@ -147,18 +181,25 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_bad_password_w_cookies()
 	{
+		$User = $this->getMock('User', array('save'));
+		$User->id = 1;
+		$User->active = true;
+		$User->hash = 'some_hash';
+		$User->lastLoginTime = time() - 100;
+		$User->loginErrors = 0;
+		$User->expects($this->never())->method('save');
+
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array($User)));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = new Eresus();
-		$test->db = $this->getMock('stdClass', array('selectItem', 'updateItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(array(
-				'id' => 1,
-				'active' => true,
-				'hash' => 'some_hash',
-				'lastLoginTime' => time() - 100,
-				'loginErrors' => 0
-			)));
-		$test->db->expects($this->never())->method('updateItem');
 
 		$this->assertFalse($test->login('some_user', 'invalid_hash', false, true));
 	}
@@ -169,22 +210,28 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_auto()
 	{
+		$User = $this->getMock('User', array('save'));
+		$User->id = 1;
+		$User->active = true;
+		$User->hash = 'some_hash';
+		$User->lastLoginTime = time() - 100;
+		$User->loginErrors = 0;
+		$User->profile = array();
+		$User->expects($this->once())->method('save');
+
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array($User)));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = $this->getMock('Eresus', array('set_login_cookies', 'clear_login_cookies'));
 		$test->expects($this->once())->method('set_login_cookies');
 		$test->expects($this->never())->method('clear_login_cookies');
-
-		$test->db = $this->getMock('stdClass', array('selectItem', 'updateItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(array(
-				'id' => 1,
-				'active' => true,
-				'hash' => 'some_hash',
-				'lastLoginTime' => time() - 100,
-				'loginErrors' => 0,
-				'profile' => ''
-			)));
-		$test->db->expects($this->once())->method('updateItem');
 
 		$this->assertTrue($test->login('some_user', 'some_hash', true));
 	}
@@ -195,22 +242,28 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_login_no_auto()
 	{
+		$User = $this->getMock('User', array('save'));
+		$User->id = 1;
+		$User->active = true;
+		$User->hash = 'some_hash';
+		$User->lastLoginTime = time() - 100;
+		$User->loginErrors = 0;
+		$User->profile = array();
+		$User->expects($this->once())->method('save');
+
+		$Doctrine_Table = $this->getMock('Doctrine_Table', array('findByLogin'));
+		$Doctrine_Table->expects($this->once())->method('findByLogin')->
+			will($this->returnValue(array($User)));
+
+		$Doctrine_Core = $this->getMock('Doctrine_Core', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('User')->
+			will($this->returnValue($Doctrine_Table));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$test = $this->getMock('Eresus', array('set_login_cookies', 'clear_login_cookies'));
 		$test->expects($this->never())->method('set_login_cookies');
 		$test->expects($this->once())->method('clear_login_cookies');
-
-		$test->db = $this->getMock('stdClass', array('selectItem', 'updateItem'));
-		$test->db->expects($this->once())->
-			method('selectItem')->
-			will($this->returnValue(array(
-				'id' => 1,
-				'active' => true,
-				'hash' => 'some_hash',
-				'lastLoginTime' => time() - 100,
-				'loginErrors' => 0,
-				'profile' => ''
-			)));
-		$test->db->expects($this->once())->method('updateItem');
 
 		$this->assertTrue($test->login('some_user', 'some_hash'));
 	}
@@ -228,7 +281,6 @@ class EresusTest extends PHPUnit_Framework_TestCase
 
 		$user = array(
 			'id' => null,
-			'auth' => false,
 			'access' => GUEST
 		);
 
@@ -250,7 +302,6 @@ class EresusTest extends PHPUnit_Framework_TestCase
 
 		$user = array(
 			'id' => null,
-			'auth' => false,
 			'access' => GUEST
 		);
 

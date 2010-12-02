@@ -190,7 +190,8 @@ class TClientUI extends WebPage
 		$item['id'] = 0;
 		$url = '';
 		do {
-			$items = $Eresus->sections->children($item['id'], $Eresus->user['auth']?$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
+			$items = $Eresus->sections->children($item['id'],
+				$_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST, SECTIONS_ACTIVE);
 			$item = false;
 			for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
 				$result = $item = $items[$i];

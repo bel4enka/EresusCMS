@@ -4,9 +4,9 @@
  *
  * ${product.description}
  *
- * Таблица автозагрузки классов
+ * Запрос к БД
  *
- * @copyright 2009, Eresus Project, http://eresus.ru/
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -26,24 +26,17 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
  * $Id$
  */
 
-return array(
-	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
-	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
-	'EresusForm' => 'core/EresusForm.php',
-	'EresusQuery' => 'core/classes/EresusQuery.php',
-	'I18n' => 'core/i18n.php',
-	'ORM' => 'core/classes/ORM.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-	'WebServer' => 'core/classes/WebServer.php',
-	'WebPage' => 'core/classes/WebPage.php',
-
-	/* Обратная совместимость */
-	'TPlugin' => 'core/classes/backward/TPlugin.php',
-	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
-	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
-);
+/**
+ * Запрос к БД
+ *
+ * @package EresusCMS
+ * @since #548
+ */
+class EresusQuery extends Doctrine_Query
+{
+}

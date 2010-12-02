@@ -16,23 +16,9 @@ $Eresus->conf['debug']['enable'] = false;
 //  Настройки источника данных (СУБД)
 //-------------------------------------------------------------------------------
 
-// Используемая СУБД. По умолчанию: 'mysql'
-//$Eresus->conf['db']['engine'] = 'mysql';
-
-// Хост сервера СУБД. По умолчанию: 'localhost'
-//$Eresus->conf['db']['host'] = 'localhost';
-
-// Имя пользователя СУБД
-$Eresus->conf['db']['user'] = '';
-
-// Пароль для доступа к СУБД
-$Eresus->conf['db']['password'] = '';
-
-// Имя базы данных
-$Eresus->conf['db']['name'] = '';
-
-// Префикс таблиц. По умолчанию: '' (без префикса)
-//$Eresus->conf['db']['prefix']   = '';
+// FIXME Задокументировать!
+Core::setValue('eresus.cms.dsn', 'mysql://user:password@localhost/database');
+//Core::setValue('eresus.cms.dsn.prefix', 'prefix_');
 
 //-------------------------------------------------------------------------------
 //  Региональные настройки
