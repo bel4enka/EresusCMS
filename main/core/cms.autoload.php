@@ -32,7 +32,6 @@
  */
 
 return array(
-	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
 	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'EresusQuery' => 'core/classes/EresusQuery.php',

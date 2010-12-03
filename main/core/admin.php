@@ -683,13 +683,6 @@ class TAdminUI extends WebPage
 
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		$req = HTTP::request();
-		if (strpos($req->getLocal(), '/admin/fm/') === 0)
-		{
-			$fm = new AdminFileManager();
-			return $fm->renderUI();
-		}
-
 		$result = '';
 		if (arg('mod'))
 		{
