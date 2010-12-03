@@ -58,34 +58,43 @@ class EresusCMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		/* Подключение таблицы автозагрузки классов */
-		EresusClassAutoloader::add('core/cms.autoload.php');
-
-		/* Общая инициализация */
-		$this->checkEnviroment();
-		$this->createFileStructure();
-
-		eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-
-		/* Подключение старого ядра */
-		include_once 'kernel-legacy.php';
-		$GLOBALS['Eresus'] = new Eresus;
-		$this->initConf();
-		$i18n = I18n::getInstance();
-		TemplateSettings::setGlobalValue('i18n', $i18n);
-		$this->initDB();
-		//$this->initSession();
-		$GLOBALS['Eresus']->init();
-		TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
-
-		if (PHP::isCLI())
+		try
 		{
-			return $this->runCLI();
+
+			/* Подключение таблицы автозагрузки классов */
+			EresusClassAutoloader::add('core/cms.autoload.php');
+
+			/* Общая инициализация */
+			$this->checkEnviroment();
+			$this->createFileStructure();
+
+			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+
+			/* Подключение старого ядра */
+			include_once 'kernel-legacy.php';
+			$GLOBALS['Eresus'] = new Eresus;
+			$this->initConf();
+			$i18n = I18n::getInstance();
+			TemplateSettings::setGlobalValue('i18n', $i18n);
+			$this->initDB();
+			//$this->initSession();
+			$GLOBALS['Eresus']->init();
+			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+
+			if (PHP::isCLI())
+			{
+				return $this->runCLI();
+			}
+			else
+			{
+				$this->runWeb();
+				return 0;
+			}
 		}
-		else
+		catch (Exception $e)
 		{
-			$this->runWeb();
-			return 0;
+			Core::logException($e);
+			echo '<h1>' . get_class($e) . '</h1>';
 		}
 
 	}
