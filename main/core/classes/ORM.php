@@ -44,7 +44,7 @@ class ORM
 	 *
 	 * @param string $componentName  имя компонента
 	 *
-	 * @return Doctrine_Table
+	 * @return Doctrine_Table  объект таблицы
 	 *
 	 * @since 2.16s
 	 */

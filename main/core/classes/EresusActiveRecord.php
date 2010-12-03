@@ -43,9 +43,9 @@ class EresusActiveRecord extends Doctrine_Record
 	/**
 	 * Десериализатор
 	 *
-	 * @param string $value
+	 * @param string $value  сериализованные данные
 	 *
-	 * @return mixed
+	 * @return mixed  десериализованные данные
 	 *
 	 * @since 2.16
 	 */
@@ -62,9 +62,9 @@ class EresusActiveRecord extends Doctrine_Record
 	/**
 	 * Сериализатор
 	 *
-	 * @param mixed $value
+	 * @param mixed $value  исходные данные
 	 *
-	 * @return string
+	 * @return string  сериализованные данные
 	 *
 	 * @since 2.16
 	 */
