@@ -40,6 +40,16 @@ require_once dirname(__FILE__) . '/../../../main/core/kernel-legacy.php';
 class EresusTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * (non-PHPdoc)
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		MockFacade::setMock(null);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers Eresus::password_hash
 	 */
 	public function test_password_hash()

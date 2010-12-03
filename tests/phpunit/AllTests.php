@@ -35,28 +35,15 @@ if (class_exists('PHP_CodeCoverage_Filter', false))
 {
 	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/kernel-legacy.php');
-	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist('../../main/core/lib');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/about.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/admin.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/classes.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/client.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/content.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/EresusForm.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/files.php');
-	//PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/gziph.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/i18n.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/languages.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/main.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/pages.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/plgmgr.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/settings.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/themes.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../main/core/users.php');
-	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist('../../main/core/classes');
-	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist('../../lib');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../ext-3rd/editarea/eresus-connector.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist('../../ext-3rd/tinymce/eresus-connector.php');
+	$root = realpath(dirname(__FILE__) . '/../..');
+
+	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
+	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/ext-3rd/editarea/eresus-connector.php');
+	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/ext-3rd/tinymce/eresus-connector.php');
+
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/models/User.php');
 }
 else
 {

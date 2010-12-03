@@ -39,6 +39,16 @@ require_once dirname(__FILE__) . '/../../../../main/core/classes/ORM.php';
 class ORMTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * (non-PHPdoc)
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		MockFacade::setMock(null);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers ORM::getTable
 	 */
 	public function test_getTable()

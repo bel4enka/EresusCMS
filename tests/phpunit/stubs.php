@@ -41,6 +41,30 @@ else
 
 
 /**
+ * Универсальная заглушка
+ *
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.16
+ */
+class UniversalStub
+{
+	public function __get($a)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function __call($a, $b)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/**
  * Фасад к моку для эмуляции статичных методов
  *
  * @package EresusCMS
@@ -88,7 +112,7 @@ class MockFacade
 			return call_user_func_array(array(self::$mock, $method), $args);
 		}
 
-		return null;
+		return new UniversalStub();
 	}
 	//-----------------------------------------------------------------------------
 }
@@ -103,6 +127,7 @@ define('filesRoot', '/home/exmaple.org/');
 
 
 class Doctrine_Core extends MockFacade {}
+class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
