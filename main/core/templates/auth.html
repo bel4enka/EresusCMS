@@ -4,12 +4,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Вход - ${product.title}</title>
-	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/theme.css" />
-	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/auth.css" />
+	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/auth.css" />
 </head>
 <body onload="document.getElementById('user').focus();">
 
-	<table id="body">
+	<table>
 		<tr>
 			<td>
 
@@ -20,7 +19,7 @@
 						<div class="content">
 							{if $errors}
 							{foreach $errors message}
-							<div class="box error">{$message}</div>
+							<div class="error">{$message}</div>
 							{/foreach}
 							{/if}
 							<div class="label"><label for="user">Пользователь:</label></div>

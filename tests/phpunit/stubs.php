@@ -131,8 +131,7 @@ class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
-
-function eresus_log() {}
+class EresusLogger extends MockFacade {}
 
 /**
  * @package EresusCMS

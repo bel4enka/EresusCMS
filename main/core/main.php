@@ -56,7 +56,7 @@ class EresusCMS extends EresusApplication
 	 */
 	public function main()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		try
 		{
@@ -68,7 +68,7 @@ class EresusCMS extends EresusApplication
 			$this->checkEnviroment();
 			$this->createFileStructure();
 
-			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+			EresusLogger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 
 			/* Подключение старого ядра */
 			include_once 'kernel-legacy.php';
@@ -91,9 +91,13 @@ class EresusCMS extends EresusApplication
 				return 0;
 			}
 		}
+		catch (SuccessException $e)
+		{
+			// Нормальное завершение
+		}
 		catch (Exception $e)
 		{
-			Core::logException($e);
+			EresusLogger::exception($e);
 			echo '<h1>' . get_class($e) . '</h1>';
 		}
 
@@ -112,8 +116,12 @@ class EresusCMS extends EresusApplication
 		/* Проверяем наличие нужных файлов */
 		$required = array('cfg/main.php');
 		foreach ($required as $filename)
-			if (!FS::exists($filename))
+		{
+			if (!file_exists($filename))
+			{
 				$errors []= array('file' => $filename, 'problem' => 'missing');
+			}
+		}
 
 		/* Проверяем доступность для записи */
 		$writable = array(
@@ -124,7 +132,7 @@ class EresusCMS extends EresusApplication
 			'style'
 		);
 		foreach ($writable as $filename)
-			if (!FS::isWritable($filename))
+			if (!is_writable($filename))
 				$errors []= array('file' => $filename, 'problem' => 'non-writable');
 
 		if ($errors)
@@ -154,10 +162,10 @@ class EresusCMS extends EresusApplication
 
 		foreach ($dirs as $dir)
 		{
-			if (!FS::exists($this->getFsRoot() . $dir))
+			if (!file_exists($this->getFsRoot() . $dir))
 			{
 				$umask = umask(0000);
-				mkdir(FS::nativeForm($this->getFsRoot() . $dir), 0777);
+				mkdir(FS::driver()->nativeForm($this->getFsRoot() . $dir), 0777);
 				umask($umask);
 			}
 			// TODO Сделать проверку на запись в созданные директории
@@ -170,7 +178,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function runWeb()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$this->initWeb();
 
@@ -200,7 +208,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function initWeb()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		Core::setValue('core.template.templateDir', $this->getFsRoot());
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
@@ -223,7 +231,7 @@ class EresusCMS extends EresusApplication
 	{
 		global $page;
 
-		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'client.php';
 
@@ -242,7 +250,7 @@ class EresusCMS extends EresusApplication
 	{
 		global $page;
 
-		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'admin.php';
 
@@ -264,7 +272,7 @@ class EresusCMS extends EresusApplication
 		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
 		$this->request->setLocalRoot($SUFFIX);
-		eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
+		EresusLogger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
 		TemplateSettings::setGlobalValue('siteRoot',
 			$this->request->getScheme() . '://' .
@@ -280,7 +288,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function runCLI()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$this->initCLI();
 		return 0;
@@ -292,7 +300,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function initCLI()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -301,7 +309,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function initConf()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
@@ -316,7 +324,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function initDB()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		/**
 		 * Подключение Doctrine
@@ -362,7 +370,7 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function initSession()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 /*		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

@@ -265,13 +265,13 @@ class TFiles
 	 *
 	 * @return void
 	 *
-	 * @uses FS::mkDir()
+	 * @uses FS::driver()
 	 * @uses HTTP::redirect()
 	 */
 	function mkDir()
 	{
 		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
-		FS::mkDir($pathname, 0777, true);
+		FS::driver()->mkDir($pathname, 0777, true);
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	//-----------------------------------------------------------------------------

@@ -38,7 +38,7 @@
  *
  * @package EresusCMS
  */
-class EresusSourceParseException extends EresusRuntimeException {};
+class EresusSourceParseException extends RuntimeException {};
 
 
 /**
@@ -84,10 +84,10 @@ class Plugins
 	{
 		global $Eresus;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
 		$filename = filesRoot.'ext/'.$name.'.php';
-		if (FS::exists($filename))
+		if (is_file($filename))
 		{
 			/*
 			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
@@ -118,7 +118,7 @@ class Plugins
 		}
 		else
 		{
-			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
+			EresusLogger::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
 				$name);
 			$msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
 			$msg = sprintf($msg, $filename, $name);
@@ -162,21 +162,21 @@ class Plugins
 	 */
 	function preload($include = null, $exclude = null)
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		if (!is_null($exclude))
 		{
-			eresus_log(__METHOD__, LOG_NOTICE, '$exclude argument is deprecated');
+			EresusLogger::log(__METHOD__, LOG_NOTICE, '$exclude argument is deprecated');
 		}
 
 		if (!is_null($include))
 		{
-			eresus_log(__METHOD__, LOG_NOTICE, '$include argument is deprecated');
+			EresusLogger::log(__METHOD__, LOG_NOTICE, '$include argument is deprecated');
 		}
 
 		if (count($this->list))
 		{
-			eresus_log(__METHOD__, LOG_DEBUG, 'Preloading plugins...');
+			EresusLogger::log(__METHOD__, LOG_DEBUG, 'Preloading plugins...');
 			foreach($this->list as $item)
 			{
 				if ($item['active'])
@@ -187,7 +187,7 @@ class Plugins
 		}
 		else
 		{
-			eresus_log(__METHOD__, LOG_DEBUG, 'Nothing to preload');
+			EresusLogger::log(__METHOD__, LOG_DEBUG, 'Nothing to preload');
 		}
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -200,18 +200,18 @@ class Plugins
 	 */
 	public function load($name)
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 		/* Если плагин уже был загружен возвращаем экземпляр из реестра */
 		if (isset($this->items[$name]))
 		{
-			eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
+			EresusLogger::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
 			return $this->items[$name];
 		}
 
 		/* Если такой плагин не зарегистрирован, возвращаем FASLE */
 		if (!isset($this->list[$name]))
 		{
-			eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
+			EresusLogger::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
 			return false;
 		}
 
@@ -221,7 +221,7 @@ class Plugins
 		/* Если такого файла нет, возвращаем FASLE */
 		if (!file_exists($filename))
 		{
-			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
+			EresusLogger::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
 				$name);
 			return false;
 		}
@@ -237,14 +237,14 @@ class Plugins
 
 		if (!class_exists($className, false))
 		{
-			eresus_log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
+			EresusLogger::log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
 				$className, $name, $filename);
 			FatalError(sprintf(errClassNotFound, $name));
 		}
 
 		// Заносим экземпляр в реестр
 		$this->items[$name] = new $className();
-		eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
+		EresusLogger::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
 
 		return $this->items[$name];
 	}
@@ -502,7 +502,6 @@ class Plugin
 	 *
 	 * @uses $Eresus
 	 * @uses $locale
-	 * @uses FS::isFile
 	 * @uses Core::safeInclude
 	 * @uses Plugin::resetPlugin
 	 */
@@ -526,8 +525,10 @@ class Plugin
 		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 		$this->urlStyle = $Eresus->style.$this->name.'/';
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
-		if (FS::isFile($filename))
+		if (is_file($filename))
+		{
 			Core::safeInclude($filename);
+		}
 	}
 	//------------------------------------------------------------------------------
 
@@ -1173,12 +1174,12 @@ class EresusExtensionConnector
 		$filename = $Eresus->request['path'] . $Eresus->request['file'];
 		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
 
-		if (FS::isDir($filename))
+		if (is_dir($filename))
 		{
-			$filename = FS::normalize($filename . '/index.php');
+			$filename = FS::driver()->normalize($filename . '/index.php');
 		}
 
-		if (!FS::isFile($filename))
+		if (!is_file($filename))
 		{
 			header('Not found', true, 404);
 			die('<h1>Not found.</h1>');

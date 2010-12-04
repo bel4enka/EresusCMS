@@ -31,13 +31,29 @@
  * $Id$
  */
 
-html, body
+html,
+body
+{
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+html
+{
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 0.8125em;
+	line-height: 1.54em;
+}
+
+body
 {
 	background-color: #000;
 	color: #fff;
 }
 
-#body
+table
 {
 	width: 100%;
 	height: 100%;
@@ -47,6 +63,27 @@ html, body
 	{
 		vertical-align: middle;
 	}
+
+input[type=text],
+input[type=password]
+{
+	border: solid 1px #aaa;
+	width: 99%;
+}
+
+input[type=checkbox]
+{
+	border-width: 0;
+	margin: 0;
+}
+
+button
+{
+	font-size: 110%;
+	font-weight: bold;
+	padding: .3em 1em;
+}
+
 
 		#auth-dialog
 		{
@@ -73,19 +110,6 @@ html, body
 				padding: .2em .5em;
 			}
 
-			input[type=text],
-			input[type=password]
-			{
-				border: solid 1px #aaa;
-				width: 99%;
-			}
-
-			input[type=checkbox]
-			{
-				border-width: 0;
-				margin: 0;
-			}
-
 			#auth-dialog .checkbox
 			{
 				padding-top: .5em;
@@ -96,3 +120,15 @@ html, body
 				text-align: center;
 				padding: .5em;
 			}
+			
+
+/**
+ * Сообщение об ошибке
+ */
+.error
+{
+	background: #fdd url(themes/default/img/medium/dialog-error.png) no-repeat 5px 50%;
+	border: solid 1px #a00;
+	margin-bottom: .2em;
+	padding: 2px 2px 2px 30px;
+}

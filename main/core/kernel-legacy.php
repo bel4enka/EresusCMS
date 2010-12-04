@@ -931,8 +931,8 @@ class Eresus
 		global $Eresus;
 
 		$filename = Core::app()->getFsRoot() . '/cfg/main.php';
-		$nativeFilename = FS::nativeForm($filename);
-		if (FS::isFile($filename))
+		$nativeFilename = FS::driver()->nativeForm($filename);
+		if (is_file($filename))
 		{
 			include_once $nativeFilename;
 		}
@@ -970,7 +970,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = FS::nativeForm(Core::app()->getFsRoot() . '/');
+			$this->froot = FS::driver()->nativeForm(Core::app()->getFsRoot() . '/');
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
@@ -980,7 +980,7 @@ class Eresus
 		{
 			$s = $this->froot;
 			$s = substr(dirname($_SERVER['SCRIPT_FILENAME']), strlen($_SERVER['DOCUMENT_ROOT']));
-			$s = FS::canonicalForm($s);
+			$s = FS::driver()->canonicalForm($s);
 			if (strlen($s) == 0 || substr($s, -1) != '/')
 			{
 				$s .= '/';
@@ -1224,8 +1224,8 @@ class Eresus
 	*/
 	function check_cookies()
 	{
-		if (!@$_SESSION['user_auth'] && isset($_COOKIE['eresus_login'])) {
-			if (!$this->login($_COOKIE['eresus_login'], $_COOKIE['eresus_key'], true, true))
+		if (!@$_SESSION['user_auth'] && isset($_COOKIE['EresusLogger::login'])) {
+			if (!$this->login($_COOKIE['EresusLogger::login'], $_COOKIE['eresus_key'], true, true))
 				$this->clear_login_cookies();
 		}
 	}
@@ -1343,7 +1343,7 @@ class Eresus
 	*/
 	function set_login_cookies($login, $key)
 	{
-		setcookie('eresus_login', $login, time()+2592000, $this->path);
+		setcookie('EresusLogger::login', $login, time()+2592000, $this->path);
 		setcookie('eresus_key', $key, time()+2592000, $this->path);
 	}
 	//-----------------------------------------------------------------------------
@@ -1353,7 +1353,7 @@ class Eresus
 	*/
 	function clear_login_cookies()
 	{
-		setcookie('eresus_login', '', time()-3600, $this->path);
+		setcookie('EresusLogger::login', '', time()-3600, $this->path);
 		setcookie('eresus_key', '', time()-3600, $this->path);
 	}
 	//-----------------------------------------------------------------------------

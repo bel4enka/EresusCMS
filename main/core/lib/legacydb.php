@@ -74,9 +74,9 @@ class LegacyDB
 	 */
 	public function init($server, $username, $password, $source, $prefix = '')
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		return true;
 	}
@@ -89,7 +89,7 @@ class LegacyDB
 	public function getSchema()
 	{
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		if (!$this->dbSchema)
 		{
@@ -117,9 +117,9 @@ class LegacyDB
 	 */
 	public function query($query)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$db = DB::getHandler();
 		$db->exec($query);
@@ -136,9 +136,9 @@ class LegacyDB
 	 */
 	public function query_array($query)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$db = DB::getHandler();
 		$stmt = $db->prepare($query);
@@ -162,9 +162,9 @@ class LegacyDB
 	 */
 	public function create($name, $structure, $options = '')
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$db = DB::getHandler();
 		$name = $db->options->tableNamePrefix . $name;
@@ -191,9 +191,9 @@ class LegacyDB
 	 */
 	public function drop($name)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$db = DB::getHandler();
 		$name = $db->options->tableNamePrefix . $name;
@@ -227,9 +227,9 @@ class LegacyDB
 	*/
 	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$db = DB::getHandler();
 		$q = $db->createSelectQuery();
@@ -294,9 +294,9 @@ class LegacyDB
 	 */
 	public function insert($table, $item)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$fields = $this->fields($table);
 		if (!$table)
@@ -325,9 +325,9 @@ class LegacyDB
 	 */
 	public function update($table, $set, $condition)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$q = DB::getHandler()->createUpdateQuery();
 		$q->update($table)
@@ -356,9 +356,9 @@ class LegacyDB
 	 */
 	public function delete($table, $condition)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$q = DB::getHandler()->createDeleteQuery();
 		$q->deleteFrom($table)
@@ -378,9 +378,9 @@ class LegacyDB
 	*/
 	public function fields($table, $info = false)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$schm = $this->getSchema()->getSchema();
 		if ($schm[$table]->fields)
@@ -450,9 +450,9 @@ class LegacyDB
 	 */
 	public function selectItem($table, $condition, $fields = '')
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$q = DB::getHandler()->createSelectQuery();
 
@@ -481,9 +481,9 @@ class LegacyDB
 	 */
 	public function updateItem($table, $item, $condition)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$fields = $this->fields($table);
 		if (!$table)
@@ -514,9 +514,9 @@ class LegacyDB
 	 */
 	public function count($table, $condition = false, $group = false, $rows = false)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$q = DB::getHandler()->createSelectQuery();
 		$e = $q->expr;
@@ -546,9 +546,9 @@ class LegacyDB
 	 */
 	public function getInsertedID()
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$db = DB::getHandler();
 		return $db->lastInsertId();
@@ -564,9 +564,9 @@ class LegacyDB
 	 */
 	public function tableStatus($table, $param='')
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
 		if ($result) {
@@ -588,9 +588,9 @@ class LegacyDB
 	 */
 	public function escape($src)
 	{
-		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+		EresusLogger::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$e = new Exception();
-		eresus_log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
+		EresusLogger::log(__METHOD__, LOG_NOTICE, $e->getTraceAsString());
 
 		return $src;
 	}

@@ -179,7 +179,7 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		parent::__construct();
 
@@ -681,7 +681,7 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
 		if (arg('mod'))
@@ -724,18 +724,13 @@ class TAdminUI extends WebPage
 						}
 						else
 						{
-							$logMsg = 'Error in module "' . $module . '"';
 							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
 							$msg = sprintf($msg, $module);
 						}
 
-						Core::logException($e, $logMsg);
+						EresusLogger::exception($e);
 
 						$msg .= '<br />' . $e->getMessage();
-						if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)
-						{
-							$msg .= '<br />' . $e->getDescription();
-						}
 						$result .= ErrorBox($msg);
 					}
 				}
@@ -746,7 +741,7 @@ class TAdminUI extends WebPage
 			}
 			else
 			{
-				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
+				EresusLogger::log(__METHOD__, LOG_ERR, '$module property is not an object');
 				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
 				$result .= ErrorBox($msg);
 			}
@@ -896,7 +891,7 @@ class TAdminUI extends WebPage
 	 */
 	function render()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверям права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
@@ -947,7 +942,7 @@ class TAdminUI extends WebPage
 			$Eresus->session['msg']['errors'] = array();
 		}
 
-		$tmpl = $this->getUITheme()->getTemplate('auth.html');
+		$tmpl = new Template('core/templates/auth.html');
 		$html = $tmpl->compile($data);
 		echo $html;
 	}
@@ -961,7 +956,7 @@ class TAdminUI extends WebPage
 	{
 		global $locale, $Eresus;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 		$data = array();
 
 		$data['page'] = $this;

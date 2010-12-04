@@ -114,7 +114,7 @@ class TPlgMgr
 	{
 		global $page, $Eresus;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$files = arg('files');
 		if ($files && is_array($files))
@@ -258,11 +258,11 @@ class TPlgMgr
 
 		if (!UserRights($this->access))
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
+			EresusLogger::log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
 			return '';
 		}
 
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
 		$page->title = admPlugins;
