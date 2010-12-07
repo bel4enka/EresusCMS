@@ -32,6 +32,28 @@
  * $Id$
  */
 
+
+
+/**
+ * Интерфейс служб
+ *
+ * @package EresusCMS
+ * @since 2.16
+ */
+interface ServiceInterface
+{
+	/**
+	 * Метод должен возвращать объект-одиночку
+	 *
+	 * @return object
+	 *
+	 * @since 2.16
+	 */
+	public static function getInstance();
+}
+
+
+
 /**
  * Класс приложения Eresus CMS
  *
