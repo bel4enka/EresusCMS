@@ -29,9 +29,21 @@
  * $Id$
  */
 
+require_once dirname(__FILE__) . '/stubs.php';
+
 if (class_exists('PHP_CodeCoverage_Filter', false))
 {
 	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+
+	$root = realpath(dirname(__FILE__) . '/../..');
+
+	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
+	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/ext-3rd/editarea/eresus-connector.php');
+	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/ext-3rd/tinymce/eresus-connector.php');
+
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/models/User.php');
 }
 else
 {

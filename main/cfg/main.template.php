@@ -16,23 +16,9 @@ $Eresus->conf['debug']['enable'] = false;
 //  Настройки источника данных (СУБД)
 //-------------------------------------------------------------------------------
 
-// Используемая СУБД. По умолчанию: 'mysql'
-//$Eresus->conf['db']['engine'] = 'mysql';
-
-// Хост сервера СУБД. По умолчанию: 'localhost'
-//$Eresus->conf['db']['host'] = 'localhost';
-
-// Имя пользователя СУБД
-$Eresus->conf['db']['user'] = '';
-
-// Пароль для доступа к СУБД
-$Eresus->conf['db']['password'] = '';
-
-// Имя базы данных
-$Eresus->conf['db']['name'] = '';
-
-// Префикс таблиц. По умолчанию: '' (без префикса)
-//$Eresus->conf['db']['prefix']   = '';
+// FIXME Задокументировать!
+Core::setValue('eresus.cms.dsn', 'mysql://user:password@localhost/database');
+//Core::setValue('eresus.cms.dsn.prefix', 'prefix_');
 
 //-------------------------------------------------------------------------------
 //  Региональные настройки
@@ -70,12 +56,6 @@ $Eresus->conf['db']['name'] = '';
 
 // Этот параметр управляет параметрами обратной совместимости
 $Eresus->conf['backward'] = array(
-	// Делает доступным класс TPlugin в версиях старше 2.10b
-  'TPlugin' => true,
-  // Делает доступным класс TContentPlugin в версиях старше 2.10b
-	'TContentPlugin' => true,
-	// Делает доступным класс TListContentPlugin в версиях старше 2.10b
-	'TListContentPlugin' => true,
 	// Отключает усиленное хеширование пароля, для совместимости со старыми базами пользователей
 	'weak_password' => false,
 );
@@ -91,12 +71,12 @@ $Eresus->conf['backward'] = array(
 
 if ($Eresus->conf['debug']['enable'])
 {
-  ini_set('display_errors', true);
-  error_reporting(E_ALL);
-  $Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
+	ini_set('display_errors', true);
+	error_reporting(E_ALL);
+	$Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
 }
 else
 {
-  ini_set('display_errors', false);
-  error_reporting(0);
+	ini_set('display_errors', false);
+	error_reporting(0);
 }

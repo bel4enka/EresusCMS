@@ -164,7 +164,7 @@ class TFiles
 					$x = ($x - ($x % 2)) / 2;
 					$result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
 				}
-				if (function_exists('posix_getpwuid') && !$Eresus->isWin32()) {
+				if (function_exists('posix_getpwuid') && !System::isWindows()) {
 					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
 				} else $result[$i]['owner'] = 'unknown';
@@ -377,7 +377,7 @@ class TFiles
 		elseif (arg('movefile')) $this->moveFile();
 		elseif (arg('delete')) $this->deleteFile();
 		else {
-			$page->linkScripts(httpRoot.'core/files.js');
+			$page->linkScripts($Eresus->root . 'core/files.js');
 			$result =
 				"<table id=\"fileManager\">\n".
 				'<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".

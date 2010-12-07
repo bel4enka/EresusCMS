@@ -1,21 +1,15 @@
-#Thu Oct 07 11:09:43 MSD 2010
+#Tue Dec 07 18:14:29 MSK 2010
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
 encoding//SDK/plugin_template/src/myplugin.php=windows-1251
 encoding//db/mysql-4.sql=windows-1251
 encoding//db/mysql-5.sql=windows-1251
-encoding//ext-3rd/xinha/eresus-connector.php=windows-1251
 encoding//lang/ru.php=windows-1251
-encoding//main/admin/themes/default/PluginManager/add-dialog.html=windows-1251
-encoding//main/admin/themes/default/SiteSettings/form.html=windows-1251
-encoding//main/admin/themes/default/misc/about.html=windows-1251
-encoding//main/admin/themes/default/page.default.html=UTF-8
 encoding//main/cfg/main.template.php=windows-1251
 encoding//main/cfg/settings.php=windows-1251
 encoding//main/core/admin.php=windows-1251
 encoding//main/core/classes.php=windows-1251
-encoding//main/core/classes/ListContentPlugin.php=windows-1251
 encoding//main/core/classes/backward/TContentPlugin.php=windows-1251
 encoding//main/core/classes/backward/TListContentPlugin.php=windows-1251
 encoding//main/core/classes/backward/TPlugin.php=windows-1251
@@ -29,7 +23,6 @@ encoding//main/core/kernel-legacy.php=windows-1251
 encoding//main/core/languages.php=windows-1251
 encoding//main/core/lib/accounts.php=windows-1251
 encoding//main/core/lib/admin/lists.php=windows-1251
-encoding//main/core/lib/debug.php=windows-1251
 encoding//main/core/lib/forms.php=windows-1251
 encoding//main/core/lib/glib.php=windows-1251
 encoding//main/core/lib/templates.php=windows-1251
@@ -41,5 +34,6 @@ encoding//main/core/users.php=windows-1251
 encoding//main/style/default.css=windows-1251
 encoding//main/templates/default.html=windows-1251
 encoding//main/templates/std/PageSelector.html=windows-1251
+encoding//tools/setup-db.php=windows-1251
 encoding//tools/thumb.php=windows-1251
 encoding/build.properties=UTF-8

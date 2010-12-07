@@ -48,17 +48,19 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function __macroConst($matches) {
+function __macroConst($matches)
+{
 	return constant($matches[1]);
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function __macroVar($matches) {
+//-----------------------------------------------------------------------------
+
+function __macroVar($matches)
+{
 	$result = $GLOBALS[$matches[2]];
 	if (!empty($matches[3])) @eval('$result = $result'.$matches[3].';');
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
@@ -110,6 +112,7 @@ function ErrorBox($text, $caption=errError)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 function InfoBox($text, $caption=strInformation)
 # Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
 {
@@ -128,6 +131,7 @@ function ErrorMessage($message)
 	$Eresus->session['msg']['errors'][] = $message;
 }
 //------------------------------------------------------------------------------
+
 function InfoMessage($message)
 {
 	global $Eresus;
@@ -135,31 +139,39 @@ function InfoMessage($message)
 }
 //------------------------------------------------------------------------------
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# БЕЗОПАСНОСТЬ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+/**
+ * Првоеряет уровень доступа пользователя на соответствие заданному
+ *
+ * @param int $level  минимальный требуемый уровень доступа
+ *
+ * @return bool
+ *
+ * @since 2.00
+ * @deprecated
+ */
 function UserRights($level)
-# Функция проверяет права пользователя на соответствие заданной маске
 {
 	global $Eresus;
 
-	return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
-}
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-function resetLastVisitTime($time='', $expand=false)
-{
-	global $Eresus;
-
-	if ($Eresus->user['auth']) {
-		$item = $Eresus->db->selectItem('users', "`id`='".$Eresus->user['id']."'");
-		if (empty($time)) $item['lastVisit'] = gettime(); else {
-			if ($expand) $time = substr($time,0,4).'-'.substr($time,4,2).'-'.substr($time,6,2).' '.substr($time,8,2).':'.substr($time,10,2);
-			$item['lastVisit'] = $time;
-		}
-		$Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
-		$Eresus->user['lastVisit'] = $item['lastVisit'];
+	if ($level == GUEST)
+	{
+		// Гость - самый низкий уровень.
+		return true;
 	}
+
+	if (@!$_SESSION['user_auth'])
+	{
+		// Если не аутентифицирован - запрещаем доступ
+		return false;
+	}
+
+	if ($Eresus->user->access == 0)
+	{
+		// Неправильный уровень доступа - запрещаем доступ
+		return false;
+	}
+
+	return $Eresus->user->access <= $level;
 }
 //------------------------------------------------------------------------------
 
@@ -184,34 +196,9 @@ function useLib($library)
 	return $result;
 }
 //------------------------------------------------------------------------------
-/**
- * Подключает описание класса
- *
- * @access  public
- *
- * @param  string  $className   Имя класса
- *
- * @return  bool  Результат выполнения
- */
-function useClass($className)
-{
-	$result = false;
-	if (DIRECTORY_SEPARATOR != '/') $className = str_replace('/', DIRECTORY_SEPARATOR, $className);
-	$filename = realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.$className.'.php';
-	if (is_file($filename)) {
-		include_once($filename);
-		$result = true;
-	}
-	return $result;
-}
-//------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# ПОЧТОВЫЕ ФУНКЦИИ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='', $fromSign='', $replyTo='')
+function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='',
+	$fromSign='', $replyTo='')
 # Функция отсылает письмо по указанному адресу
 {
 	global $Eresus;
@@ -267,11 +254,8 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		}
 	} else return (mail($address, $subject, $text, $headers)===0);
 }
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+//-----------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-# ДАТА/ВРЕМЯ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function gettime($format = 'Y-m-d H:i:s')
 # Возвращает время с учетом смещения
 {
@@ -279,7 +263,7 @@ function gettime($format = 'Y-m-d H:i:s')
 	$delta = 0;
 	return date($format , time() + $delta); // Время, со смещением на наш часовой пояс
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 
 /**
  * Форматирование даты
@@ -316,9 +300,6 @@ function FormatDate($date, $format=DATETIME_NORMAL)
 }
 //-----------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-# РАБОТА С ДАННЫМИ
-
 /**
  * Кодирует спецсимволы HTML
  *
@@ -340,6 +321,7 @@ function encodeHTML($source)
 	return $source;
 }
 //-----------------------------------------------------------------------------
+
 function decodeHTML($text)
 # Декодирует спецсимволы HTML
 {
@@ -351,7 +333,8 @@ function decodeHTML($text)
 	$text = preg_replace('/ilo-[^\s>]*/i', '', $text);
 	return $text;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 /**
  * Разбивает текст на строки и возвращает массив из них
  *
@@ -380,6 +363,7 @@ function text2array($value, $assoc = false)
 	return $result;
 }
 //-----------------------------------------------------------------------------
+
 /**
  * Собирает текст из массива
  * @param string $value
@@ -398,14 +382,16 @@ function array2text($items, $assoc = false)
 	}
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function encodeOptions($options)
 # Собирает настройки из массива в строку
 {
 	$result = serialize($options);
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function decodeOptions($options, $defaults = array())
 # Функция разбивает записанные в строковом виде опции на массив
 {
@@ -417,7 +403,8 @@ function decodeOptions($options, $defaults = array())
 	}
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 /**
  * Замена макросов
  *
@@ -442,9 +429,6 @@ function replaceMacros($template, $source)
 }
 //------------------------------------------------------------------------------
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Работа с HTTP-запросом
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
  * Возвращает значение аргумента запроса
  *
@@ -497,7 +481,8 @@ function saveRequest()
 	global $Eresus;
 	$Eresus->session['request'] = $Eresus->request;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function restoreRequest()
 # Функция сохраняет в сессии текущие аргументы
 {
@@ -507,7 +492,7 @@ function restoreRequest()
 		unset($Eresus->session['request']);
 	}
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 
 
  /*
@@ -531,6 +516,7 @@ function dbReorderItems($table, $condition='', $id='id')
 	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 	}
 //------------------------------------------------------------------------------
+
 /**
  * Сдвиг позиций элементов
  *
@@ -549,9 +535,6 @@ global $Eresus;
 	}
 //------------------------------------------------------------------------------
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# РАБОТА С ФАЙЛАМИ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
  * Чтение файла
  *
@@ -569,6 +552,7 @@ function fileread($filename)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 /**
  * Запись в файл
  *
@@ -588,6 +572,7 @@ function filewrite($filename, $content, $flags = 0)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 /**
  * Удаляет файл
  *
@@ -605,6 +590,7 @@ function filedelete($filename)
 	return $result;
 }
 //------------------------------------------------------------------------------
+
 function upload($name, $filename, $overwrite = true)
 {
 	$result = false;
@@ -640,8 +626,8 @@ function upload($name, $filename, $overwrite = true)
 	}
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# TODO: Удалить как устаревшую
+//-----------------------------------------------------------------------------
+
 /**
  * @deprecated
  */
@@ -657,8 +643,8 @@ function loadTemplate($name)
 	} else $result = false;
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# TODO: Удалить как устаревшую
+//-----------------------------------------------------------------------------
+
 /**
  * @deprecated
  */
@@ -670,16 +656,16 @@ function saveTemplate($name, $template)
 	fwrite($fp, $file);
 	fclose($fp);
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function HttpAnswer($answer)
 {
 	Header('Content-type: text/html; charset='.CHARSET);
 	echo $answer;
 	exit;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function SendXML($data)
 # Отправляет браузеру XML
 {
@@ -687,13 +673,15 @@ function SendXML($data)
 	echo '<?xml version="1.0" encoding="'.CHARSET.'"?>'."\n<root>".$data."</root>";
 	exit;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function option($name)
 {
 	$result = defined($name)?constant($name):'';
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function img($imagename)
 # function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
 # function img($imagename, $params=array())
@@ -742,7 +730,8 @@ function img($imagename)
 	' />';
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function FormatSize($size)
 {
 	if ($size > 1073741824) {$size = $size / 1073741824; $units = 'Гб'; $z = 2;}
@@ -751,7 +740,8 @@ function FormatSize($size)
 	else {$units = 'Байт'; $z = 0;}
 	return number_format($size, $z, '.', ' ').' '.$units;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 function Translit($s) #: String
 {
 	$s = strtr($s, $GLOBALS['translit_table']);
@@ -763,11 +753,8 @@ function Translit($s) #: String
 	$s = preg_replace('/(\s|_)+/', '$1', $s);
 	return $s;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# ВНУТРЕННИЕ ФУНКЦИИ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __clearargs($args)
 {
 	global $Eresus;
@@ -807,7 +794,8 @@ function __clearargs($args)
 			}
 	return $args;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
+
 /**
  * Определяет установлено ли свойство у элемента
  *
@@ -826,6 +814,7 @@ function __isset($object, $property)
 		);
 }
 //-----------------------------------------------------------------------------
+
 /**
  * Возвращает свойство элемента
  *
@@ -929,63 +918,6 @@ class Eresus
 
 	var $request;
 	var $sections;
-
-	//------------------------------------------------------------------------------
-	// Информация о системе
-	//------------------------------------------------------------------------------
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isWin32()
-	{
-		return System::isWindows();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isUnix()
-	{
-		return System::isUnixLike();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isMac()
-	{
-		return System::isMac();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isModule()
-	{
-		return PHP::isModule();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isCgi()
-	{
-		return PHP::isCGI();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isCli()
-	{
-		return PHP::isCLI();
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Читает и применяет конфигурационный файл
@@ -1125,10 +1057,21 @@ class Eresus
 
 		if (is_null($this->path)) {
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
+			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-(System::isWindows()?2:0));
 			if (!strlen($s) || sbstr($s, -1) != '/') $s .= '/';
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
+
+		/*
+		 * Установка свойств объекта $Eresus
+		 * Должна выполняться ДО вызова __clearargs
+		 */
+		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
+		$this->host = $request['host'];
+		$this->root = $root.$this->path;
+		$this->data = $this->root.'data/';
+		$this->style = $this->root.'style/';
+
 
 		# Сбор аргументов вызова
 		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
@@ -1136,14 +1079,7 @@ class Eresus
 		$s = substr($request['path'], strlen($this->path));
 		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
 
-		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
 		$request['path'] = $root.$request['path'];
-
-		# Установка свойств объекта $Eresus
-		$this->host = $request['host'];
-		$this->root = $root.$this->path;
-		$this->data = $this->root.'data/';
-		$this->style = $this->root.'style/';
 
 		# Обратная совместимость
 		# <= 2.9
@@ -1186,11 +1122,14 @@ class Eresus
 	{
 		# Подключение строковых данных
 		$filename = $this->froot.'core/classes.php';
-		if (is_file($filename)) include_once($filename);
-		else FatalError("Classes file '$filename' not found!");
-		if ($this->conf['backward']['TListContentPlugin']) useClass('backward/TListContentPlugin');
-		elseif ($this->conf['backward']['TContentPlugin']) useClass('backward/TContentPlugin');
-		elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
+		if (is_file($filename))
+		{
+			include_once($filename);
+		}
+		else
+		{
+			FatalError("Classes file '$filename' not found!");
+		}
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1211,12 +1150,14 @@ class Eresus
 	*/
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine']))
+		if (useLib('legacydb'))
 		{
-			$this->db = new $this->conf['db']['engine'];
-			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'], $this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
+			$this->db = new LegacyDB();
 		}
-			else FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		else
+		{
+			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		}
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1243,9 +1184,19 @@ class Eresus
 	*/
 	function check_session()
 	{
-		if (isset($this->session['time'])) {
-			if ((time() - $this->session['time'] > $this->conf['session']['timeout']*3600)&&($this->user['auth'])) $this->logout(false);
-			else $this->session['time'] = time();
+		if (isset($this->session['time']))
+		{
+			if (
+				(time() - $this->session['time'] > $this->conf['session']['timeout'] * 3600) &&
+				(@$_SESSION['user_auth'])
+			)
+			{
+				$this->logout(false);
+			}
+			else
+			{
+				$this->session['time'] = time();
+			}
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1255,7 +1206,8 @@ class Eresus
 	*/
 	function check_loginout()
 	{
-		switch (arg('action')) {
+		switch (arg('action'))
+		{
 			case 'login':
 				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				HTTP::redirect($this->request['url']);
@@ -1272,7 +1224,7 @@ class Eresus
 	*/
 	function check_cookies()
 	{
-		if (!$this->user['auth'] && isset($_COOKIE['eresus_login'])) {
+		if (!@$_SESSION['user_auth'] && isset($_COOKIE['eresus_login'])) {
 			if (!$this->login($_COOKIE['eresus_login'], $_COOKIE['eresus_key'], true, true))
 				$this->clear_login_cookies();
 		}
@@ -1283,21 +1235,34 @@ class Eresus
 	*/
 	function reset_login()
 	{
-		$this->user['auth'] = isset($this->user['auth'])?$this->user['auth']:false;
-		if ($this->user['auth']) {
-			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
-			if (!is_null($item)) { # Если такой пользователь есть...
-				if ($item['active']) { # Если учетная запись активна...
-					$this->user['name'] = $item['name'];
-					$this->user['mail'] = $item['mail'];
-					$this->user['access'] = $item['access'];
-					$this->user['profile'] = decodeOptions($item['profile']);
-				} else {
-					ErrorMessage(sprintf(errAccountNotActive, $item['login']));
+		$_SESSION['user_auth'] = isset($_SESSION['user_auth']) ? $_SESSION['user_auth'] : false;
+		if ($_SESSION['user_auth'])
+		{
+			$item = ORM::getTable('User')->find($this->user['id']);
+			if ($item)
+			{ # Если такой пользователь есть...
+				if ($item->active)
+				{ # Если учетная запись активна...
+					$this->user['name'] = $item->name;
+					$this->user['mail'] = $item->mail;
+					$this->user['access'] = $item->access;
+					$this->user['profile'] = decodeOptions($item->profile);
+				}
+				else
+				{
+					ErrorMessage(sprintf(errAccountNotActive, $item->login));
 					$this->logout();
 				}
-			} else $this->logout();
-		} else $this->user['access'] = GUEST;
+			}
+			else
+			{
+				$this->logout();
+			}
+		}
+		else
+		{
+			$this->user['access'] = GUEST;
+		}
 	}
 	//------------------------------------------------------------------------------
  /**
@@ -1309,19 +1274,21 @@ class Eresus
 	{
 		// Отключение закавычивания передаваемых данных
 		if (!PHP::checkVersion('5.3'))
+		{
 			set_magic_quotes_runtime(0);
+		}
 		# Читаем конфигурацию
 		$this->init_config();
 		if ($this->conf['timezone'])
+		{
 			date_default_timezone_set($this->conf['timezone']);
+		}
 		# Определение путей
 		$this->init_resolve();
 		# Инициализация сессии
 		$this->init_session();
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__).DIRECTORY_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
-		# Если установлен флаг отладки, подключаем отладочную библиотеку
-		if ($this->conf['debug']) useLib('debug');
 		# Читаем настройки
 		$this->init_settings();
 		# Первичный разбор запроса
@@ -1352,16 +1319,19 @@ class Eresus
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Хеширует пароль
-	*
-	* @param string $password  Пароль
-	* @return string  Хеш
-	*/
+	/**
+	 * Хеширует пароль
+	 *
+	 * @param string $password  Пароль
+	 * @return string  Хеш
+	 */
 	function password_hash($password)
 	{
 		$result = md5($password);
-		if (!$this->conf['backward']['weak_password']) $result = md5($result);
+		if (!$this->conf['backward']['weak_password'])
+		{
+			$result = md5($result);
+		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -1387,15 +1357,16 @@ class Eresus
 		setcookie('eresus_key', '', time()-3600, $this->path);
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Авторизация пользователя
-	*
-	* @param string $unsafeLogin   Имя пользователя
-	* @param string $key		       Ключ учётной записи
-	* @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
-	* @param bool   $cookie        Авторизация при помощи cookie
-	* @return bool Результат
-	*/
+
+	/**
+	 * Авторизация пользователя
+	 *
+	 * @param string $unsafeLogin   Имя пользователя
+	 * @param string $key		       Ключ учётной записи
+	 * @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
+	 * @param bool   $cookie        Авторизация при помощи cookie
+	 * @return bool Результат
+	 */
 	function login($unsafeLogin, $key, $auto = false, $cookie = false)
 	{
 		$result = false;
@@ -1408,18 +1379,19 @@ class Eresus
 			return false;
 		}
 
-		$item = $this->db->selectItem('users', "`login`='$login'");
-		if (!is_null($item))
+		$matches = ORM::getTable('User')->findByLogin($login);
+		// Если такой пользователь есть...
+		if (count($matches))
 		{
-			// Если такой пользователь есть...
-			if ($item['active'])
+			$user = $matches[0];
+			// Если учетная запись активна...
+			if ($user->active)
 			{
-				// Если учетная запись активна...
-				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
+				if (time() - $user->lastLoginTime > $user->loginErrors)
 				{
-					if ($key == $item['hash'])
+					// Если пароль верен...
+					if ($key == $user->hash)
 					{
-						// Если пароль верен...
 						if ($auto)
 						{
 							$this->set_login_cookies($login, $key);
@@ -1428,37 +1400,39 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = (! isset($this->uset['id'])) || (! (bool)$this->user['id']);
-						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
-						$this->user = $item;
-						$this->user['profile'] = decodeOptions($this->user['profile']);
-						$this->user['auth'] = true; # Устанавливаем флаг авторизации
-						$this->user['hash'] = $item['hash']; # Хэш пароля используется для подтверждения аутентификации
-						if ($setVisitTime) $item['lastVisit'] = gettime(); # Записываем время последнего входа
-						$item['lastLoginTime'] = time();
-						$item['loginErrors'] = 0;
-						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+						$setVisitTime = ! (bool)$this->user;
+						$lastVisit = $this->user ? $this->user->lastVisit : '';
+						$this->user = $user;
+						$_SESSION['user_auth'] = true; // Устанавливаем флаг авторизации
+						//$this->user['hash'] = $item['hash']; # Хэш пароля используется для подтверждения аутентификации
+						if ($setVisitTime)
+						{
+							$user->lastVisit = gettime(); // Записываем время последнего входа
+						}
+						$user->lastLoginTime = time();
+						$user->loginErrors = 0;
+						$user->save();
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
+					// Если пароль не верен...
 					else
 					{
-						// Если пароль не верен...
 						if (!$cookie)
 						{
 							ErrorMessage(errInvalidPassword);
-							$item['lastLoginTime'] = time();
-							$item['loginErrors']++;
-							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+							$user->lastLoginTime = time();
+							$user->loginErrors++;
+							$user->save();
 						}
 					}
 				}
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
-					$item['lastLoginTime'] = time();
-					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+					ErrorMessage(sprintf(errTooEarlyRelogin, $user->loginErrors));
+					$user->lastLoginTime = time();
+					$user->save();
 				}
 			}
 			else
@@ -1473,18 +1447,22 @@ class Eresus
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Завершение сеанса работы с системой
-	*
-	* @param bool $clearCookies
-	*/
-	function logout($clearCookies=true)
+
+	/**
+	 * Завершение сеанса работы с системой
+	 *
+	 * @param bool $clearCookies
+	 */
+	function logout($clearCookies = true)
 	{
 		$this->user['id'] = null;
-		$this->user['auth'] = false;
+		$_SESSION['user_auth'] = false;
 		$this->user['access'] = GUEST;
-		if ($clearCookies) $this->clear_login_cookies();
+		if ($clearCookies)
+		{
+			$this->clear_login_cookies();
+		}
 	}
 	//-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+

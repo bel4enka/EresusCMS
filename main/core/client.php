@@ -190,7 +190,8 @@ class TClientUI extends WebPage
 		$item['id'] = 0;
 		$url = '';
 		do {
-			$items = $Eresus->sections->children($item['id'], $Eresus->user['auth']?$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
+			$items = $Eresus->sections->children($item['id'],
+				$_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST, SECTIONS_ACTIVE);
 			$item = false;
 			for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
 				$result = $item = $items[$i];
@@ -343,7 +344,7 @@ class TClientUI extends WebPage
 
 		$result = $Eresus->plugins->clientOnPageRender($result);
 
-		# FIX: Обратная совместимость
+		// FIXME: Обратная совместимость
 		if (!empty($this->scripts))	$this->addScripts($this->scripts);
 
 		$result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
@@ -487,7 +488,7 @@ class TClientUI extends WebPage
 				}
 			}
 		}
-		$this->scripts .= "
+		$this->addScripts("
 			function ".$form['name']."Submit()
 			{
 				var result = true;
@@ -507,7 +508,7 @@ class TClientUI extends WebPage
 				}
 				return result;
 			}
-		";
+		", 'defer');
 		#if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
 		$result .=
 			"<div style=\"width: ".$form['width']."\" class=\"form\">\n".

@@ -40,6 +40,13 @@ else
 
 require_once dirname(__FILE__) . '/helpers/AllTests.php';
 
+require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
+require_once dirname(__FILE__) . '/HtmlElementTest.php';
+require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
+require_once dirname(__FILE__) . '/ORMTest.php';
+require_once dirname(__FILE__) . '/WebPageTest.php';
+require_once dirname(__FILE__) . '/PluginTest.php';
+
 class Core_Classes_AllTests
 {
 	public static function suite()
@@ -47,6 +54,13 @@ class Core_Classes_AllTests
 		$suite = new PHPUnit_Framework_TestSuite('core/classes');
 
 		$suite->addTest(Core_Classes_Helpers_AllTests::suite());
+
+		$suite->addTestSuite('EresusActiveRecordTest');
+		$suite->addTestSuite('HtmlElementTest');
+		$suite->addTestSuite('HtmlScriptElementTest');
+		$suite->addTestSuite('ORMTest');
+		$suite->addTestSuite('WebPageTest');
+		$suite->addTestSuite('PluginTest');
 
 		return $suite;
 	}

@@ -58,34 +58,43 @@ class EresusCMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		/* Подключение таблицы автозагрузки классов */
-		EresusClassAutoloader::add('core/cms.autoload.php');
-
-		/* Общая инициализация */
-		$this->checkEnviroment();
-		$this->createFileStructure();
-
-		eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-
-		/* Подключение старого ядра */
-		include_once 'kernel-legacy.php';
-		$GLOBALS['Eresus'] = new Eresus;
-		$this->initConf();
-		$i18n = I18n::getInstance();
-		TemplateSettings::setGlobalValue('i18n', $i18n);
-		//$this->initDB();
-		//$this->initSession();
-		$GLOBALS['Eresus']->init();
-		TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
-
-		if (PHP::isCLI())
+		try
 		{
-			return $this->runCLI();
+
+			/* Подключение таблицы автозагрузки классов */
+			EresusClassAutoloader::add('core/cms.autoload.php');
+
+			/* Общая инициализация */
+			$this->checkEnviroment();
+			$this->createFileStructure();
+
+			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+
+			/* Подключение старого ядра */
+			include_once 'kernel-legacy.php';
+			$GLOBALS['Eresus'] = new Eresus;
+			$this->initConf();
+			$i18n = I18n::getInstance();
+			TemplateSettings::setGlobalValue('i18n', $i18n);
+			$this->initDB();
+			//$this->initSession();
+			$GLOBALS['Eresus']->init();
+			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+
+			if (PHP::isCLI())
+			{
+				return $this->runCLI();
+			}
+			else
+			{
+				$this->runWeb();
+				return 0;
+			}
 		}
-		else
+		catch (Exception $e)
 		{
-			$this->runWeb();
-			return 0;
+			Core::logException($e);
+			echo '<h1>' . get_class($e) . '</h1>';
 		}
 
 	}
@@ -250,13 +259,12 @@ class EresusCMS extends EresusApplication
 	 */
 	protected function detectWebRoot()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		$DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT']);
-		$SUFFIX = dirname(__FILE__);
+		$webServer = WebServer::getInstance();
+		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
+		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		$SUFFIX = substr($SUFFIX, 0, -strlen('/core'));
 		$this->request->setLocalRoot($SUFFIX);
+		eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
 		TemplateSettings::setGlobalValue('siteRoot',
 			$this->request->getScheme() . '://' .
@@ -309,6 +317,32 @@ class EresusCMS extends EresusApplication
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		/**
+		 * Подключение Doctrine
+		 */
+		include_once 'core/Doctrine.php';
+		spl_autoload_register(array('Doctrine', 'autoload'));
+		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
+
+		$pdo = DB::connect(Core::getValue('eresus.cms.dsn'));
+
+		Doctrine_Manager::connection($pdo, 'doctrine')->
+			setCharset('cp1251'); // TODO Убрать после перехода на UTF
+
+		$manager = Doctrine_Manager::getInstance();
+		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
+
+		$prefix = Core::getValue('eresus.cms.dsn.prefix');
+		if ($prefix)
+		{
+			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
+			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+			$pdo->setOptions($options);
+		}
+
+		Doctrine_Core::loadModels(dirname(__FILE__) . '/models');
 /*
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

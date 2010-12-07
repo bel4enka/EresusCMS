@@ -37,10 +37,20 @@ useLib('accounts');
  *
  * @package EresusCMS
  */
-class TUsers extends Accounts
+class TUsers
 {
+	/**
+	 * Интерфейс управления аккаунтами
+	 *
+	 * @var EresusAccounts
+	 */
 	private $accounts;
 
+	/**
+	 * Требуемый уровень доступа к этому модулю
+	 *
+	 * @var int
+	 */
 	public $access = ADMIN;
 
 	private $itemsPerPage = 30;
@@ -54,29 +64,35 @@ class TUsers extends Accounts
 	*/
 	function __construct()
 	{
-		$this->accounts = new Accounts();
+		$this->accounts = new EresusAccounts();
 	}
 	//-----------------------------------------------------------------------------
+
 	function checkMail($mail)
 	{
 		$host = substr($mail, strpos($mail, '@')+1);
 		$ip = gethostbyname($host);
-		if ($ip == $host) {
+		if ($ip == $host)
+		{
 			ErrorMessage(sprintf(errNonexistedDomain, $host));
 			return false;
 		}
 		return true;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+	//-----------------------------------------------------------------------------
 	function notifyMessage($new, $old=null)
 	{
 		$result = '';
-		if (is_null($old)) {
+		if (is_null($old))
+		{
 			$result .= admUsersName.": ".$new['name']."\n";
 			$result .= admUsersLogin.": ".$new['login']."\n";
 			$result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$new['access'])."\n";
 			$result .= admUsersMail.": ".$new['mail']."\n";
-		} else {
+		}
+		else
+		{
 			$result = "ID ".$new['id']." - <strong>".$old['name']."</strong>\n".admChanges.":\n";
 			if ($new['name'] != $old['name']) $result .= admUsersName.": ".$old['name']." &rarr; ".$new['name']."\n";
 			if ($new['login'] != $old['login']) $result .= admUsersLogin.": ".$old['login']." &rarr; ".$new['login']."\n";
@@ -87,19 +103,22 @@ class TUsers extends Accounts
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function check_for_root($item)
 	{
 		return ($item['access'] != ROOT);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function check_for_edit($item)
 	{
 		global $Eresus;
 
 		return (($item['access'] != ROOT)||($Eresus->user['id'] == $item['id'])) && UserRights(ADMIN);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function toggle()
 	{
 		global $Eresus, $page;
@@ -109,7 +128,7 @@ class TUsers extends Accounts
 		$this->accounts->update($item);
 		HTTP::redirect($page->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * @param void $dummy  Используется для совместимости с родительтским методом
@@ -128,8 +147,9 @@ class TUsers extends Accounts
 		};
 		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
- /**
+	//-----------------------------------------------------------------------------
+
+	/**
 	* Создание учётной записи
 	*/
 	function insert()
@@ -161,7 +181,7 @@ class TUsers extends Accounts
 			ErrorMessage('Error creating user account');
 		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * @param void $dummy  Используется для совместимости с родительтским методом
@@ -175,7 +195,8 @@ class TUsers extends Accounts
 		$this->accounts->delete(arg('delete', 'int'));
 		HTTP::redirect($page->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function password()
 	{
 		global $Eresus, $page;
@@ -187,12 +208,13 @@ class TUsers extends Accounts
 		}
 		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function edit()
 	{
 		global $Eresus, $page;
 
-		$item = $Eresus->db->selectItem('users', "`id`='".arg('id')."'");
+		$item = ORM::getTable('User')->find(arg('id', 'int'));
 		$form = array(
 			'name' => 'UserForm',
 			'caption' => admUsersChangeUser.' №'.$item['id'],
@@ -224,7 +246,8 @@ class TUsers extends Accounts
 		$result = $page->renderForm($form)."<br />\n".$page->renderForm($pswd);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function create()
 	{
 		global $Eresus, $page;
@@ -251,7 +274,7 @@ class TUsers extends Accounts
 		$result = $page->renderForm($form, $Eresus->request['arg']);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 *
