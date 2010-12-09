@@ -44,6 +44,7 @@ require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
 require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
 require_once dirname(__FILE__) . '/ORMTest.php';
+require_once dirname(__FILE__) . '/AuthServiceTest.php';
 require_once dirname(__FILE__) . '/WebPageTest.php';
 require_once dirname(__FILE__) . '/PluginTest.php';
 
@@ -59,6 +60,7 @@ class Core_Classes_AllTests
 		$suite->addTestSuite('HtmlElementTest');
 		$suite->addTestSuite('HtmlScriptElementTest');
 		$suite->addTestSuite('ORMTest');
+		$suite->addTestSuite('AuthServiceTest');
 		$suite->addTestSuite('WebPageTest');
 		$suite->addTestSuite('PluginTest');
 

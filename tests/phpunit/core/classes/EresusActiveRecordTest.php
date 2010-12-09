@@ -38,24 +38,32 @@ require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusActiveRec
 class EresusActiveRecordTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusActiveRecord::unserializeAccessor
+	 * @covers EresusActiveRecord::unserialize
 	 */
-	public function test_unserializeAccessor()
+	public function test_unserialize()
 	{
-		$test = new EresusActiveRecord();
-		$this->assertEquals(array(), $test->unserializeAccessor(null));
-		$this->assertEquals(array(), $test->unserializeAccessor(''));
-		$this->assertEquals(array('a' => 'b'), $test->unserializeAccessor('a:1:{s:1:"a";s:1:"b";}'));
+		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test->expects($this->once())->method('_set')->with('a', array());
+		$test->unserialize(null, true, 'a');
+
+		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test->expects($this->once())->method('_set')->with('a', array());
+		$test->unserialize('', true, 'a');
+
+		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test->expects($this->once())->method('_set')->with('a', array('a' => 'b'));
+		$test->unserialize('a:1:{s:1:"a";s:1:"b";}', true, 'a');
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusActiveRecord::serializeMutator
+	 * @covers EresusActiveRecord::serialize
 	 */
-	public function test_serializeMutator()
+	public function test_serialize()
 	{
-		$test = new EresusActiveRecord();
-		$this->assertEquals('a:1:{s:1:"a";s:1:"b";}', $test->serializeMutator(array('a' => 'b')));
+		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test->expects($this->once())->method('_set')->with('a', 'a:1:{s:1:"a";s:1:"b";}');
+		$test->serialize(array('a' => 'b'), true, 'a');
 	}
 	//-----------------------------------------------------------------------------
 

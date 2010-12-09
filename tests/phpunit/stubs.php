@@ -47,7 +47,7 @@ else
  * @subpackage Tests
  * @since 2.16
  */
-class UniversalStub
+class UniversalStub implements ArrayAccess
 {
 	public function __get($a)
 	{
@@ -58,6 +58,30 @@ class UniversalStub
 	public function __call($a, $b)
 	{
 		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetExists($offset)
+	{
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetGet($offset)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetSet($offset, $value)
+	{
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetUnset($offset)
+	{
+		;
 	}
 	//-----------------------------------------------------------------------------
 }
@@ -107,7 +131,7 @@ class MockFacade
 	 */
 	public static function __callstatic($method, $args)
 	{
-		if (self::$mock)
+		if (self::$mock && method_exists(self::$mock, $method))
 		{
 			return call_user_func_array(array(self::$mock, $method), $args);
 		}
