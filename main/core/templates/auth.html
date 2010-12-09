@@ -17,13 +17,11 @@
 
 						<div class="title">Вход в панель управления</div>
 						<div class="content">
-							{if $errors}
-							{foreach $errors message}
-							<div class="error">{$message}</div>
-							{/foreach}
+							{if $error}
+							<div class="error">{$error}</div>
 							{/if}
-							<div class="label"><label for="user">Пользователь:</label></div>
-							<div><input type="text" name="user" id="user"{if $user} value="{$user}"{/if} /></div>
+							<div class="label"><label for="username">Пользователь:</label></div>
+							<div><input type="text" name="username" id="username"{if $username} value="{$username}"{/if} /></div>
 							<div class="label"><label for="password">Пароль:</label></div>
 							<div><input type="password" name="password" id="password" /></div>
 							<div class="checkbox">
