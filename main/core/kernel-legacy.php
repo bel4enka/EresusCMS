@@ -1150,89 +1150,12 @@ class Eresus
 		$this->plugins = new Plugins;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Инициализация учётной записи пользователя
-	*
-	*/
-	function init_user()
-	{
-		useLib('accounts');
-	}
-	//-----------------------------------------------------------------------------
-	/**
-	* Проверка сессии
-	*
-	* @access private
-	*/
-	function check_session()
-	{
-		if (isset($this->session['time']))
-		{
-			if (
-				(time() - $this->session['time'] > $this->conf['session']['timeout'] * 3600) &&
-				(@$_SESSION['user_auth'])
-			)
-			{
-				$this->logout(false);
-			}
-			else
-			{
-				$this->session['time'] = time();
-			}
-		}
-	}
-	//------------------------------------------------------------------------------
- /**
-	* Попытка cookie-логина
-	*/
-	function check_cookies()
-	{
-		if (!@$_SESSION['user_auth'] && isset($_COOKIE['EresusLogger::login'])) {
-			if (!$this->login($_COOKIE['EresusLogger::login'], $_COOKIE['eresus_key'], true, true))
-				$this->clear_login_cookies();
-		}
-	}
-	//------------------------------------------------------------------------------
- /**
-	* Обновление данных о пользователе
-	*/
-	function reset_login()
-	{
-		$_SESSION['user_auth'] = isset($_SESSION['user_auth']) ? $_SESSION['user_auth'] : false;
-		if ($_SESSION['user_auth'])
-		{
-			$item = ORM::getTable('User')->find($this->user['id']);
-			if ($item)
-			{ # Если такой пользователь есть...
-				if ($item->active)
-				{ # Если учетная запись активна...
-					$this->user['name'] = $item->name;
-					$this->user['mail'] = $item->mail;
-					$this->user['access'] = $item->access;
-					$this->user['profile'] = decodeOptions($item->profile);
-				}
-				else
-				{
-					ErrorMessage(sprintf(errAccountNotActive, $item->login));
-					$this->logout();
-				}
-			}
-			else
-			{
-				$this->logout();
-			}
-		}
-		else
-		{
-			$this->user['access'] = GUEST;
-		}
-	}
-	//------------------------------------------------------------------------------
- /**
-	* Инициализация системы
-	*
-	* @access public
-	*/
+	 * Инициализация системы
+	 *
+	 * @access public
+	 */
 	function init()
 	{
 		// Отключение закавычивания передаваемых данных
@@ -1264,16 +1187,6 @@ class Eresus
 		$this->init_datasource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
-		# Инициализация учётной записи пользователя
-		$this->init_user();
-		# Проверка сессии
-		$this->check_session();
-		# Проверка логина/логаута
-		$this->check_loginout();
-		# Попытка cookie-логина
-		$this->check_cookies();
-		# Обновление данных о пользователе
-		$this->reset_login();
 		# Подключение работы с разделами сайта
 		useLib('sections');
 		$this->sections = new Sections;
