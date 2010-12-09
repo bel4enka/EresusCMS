@@ -1201,25 +1201,6 @@ class Eresus
 	}
 	//------------------------------------------------------------------------------
  /**
-	* Проверка на логин/логаут
-	*
-	*/
-	function check_loginout()
-	{
-		switch (arg('action'))
-		{
-			/*case 'login':
-				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
-				HTTP::redirect($this->request['url']);
-			break;*/
-			case 'logout':
-				$this->logout(true);
-				HTTP::redirect($this->root.'admin/');
-			break;
-		}
-	}
-	//------------------------------------------------------------------------------
- /**
 	* Попытка cookie-логина
 	*/
 	function check_cookies()
