@@ -124,7 +124,7 @@ class PluginInfo extends EresusActiveRecord
 				'autoincrement' => false,
 			)
 		));
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
+		$this->hasAccessorMutator('settings', 'unserialize', 'serialize');
 	}
 	//-----------------------------------------------------------------------------
 }

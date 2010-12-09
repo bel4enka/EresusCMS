@@ -238,7 +238,7 @@ class Section extends EresusActiveRecord
 				'autoincrement' => false,
 			)
 		));
-		$this->hasAccessorMutator('options', 'unserializeAccessor', 'serializeMutator');
+		$this->hasAccessorMutator('options', 'unserialize', 'serialize');
 	}
 	//-----------------------------------------------------------------------------
 }
