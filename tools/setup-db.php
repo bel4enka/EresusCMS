@@ -109,11 +109,11 @@ try
 	Doctrine_Core::createTablesFromModels($root . '/core/models');
 
 	$user = new User();
-	$user->login = 'root';
-	$user->hash = md5(md5(''));
+	$user->username = 'root';
+	$user->password = '';
 	$user->active = true;
 	$user->access = 1;
-	$user->name = 'Ãëàâíûé àäìèíèñòğàòîğ';
+	$user->fullname = 'Ãëàâíûé àäìèíèñòğàòîğ';
 	$user->mail = 'root@example.org';
 	$user->save();
 
