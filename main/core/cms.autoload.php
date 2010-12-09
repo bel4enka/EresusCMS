@@ -32,6 +32,7 @@
  */
 
 return array(
+	'AuthService' => 'core/classes/AuthService.php',
 	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'EresusQuery' => 'core/classes/EresusQuery.php',

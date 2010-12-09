@@ -916,30 +916,22 @@ class TAdminUI extends WebPage
 		global $Eresus;
 
 		$req = HTTP::request();
-		$user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
+		$username = $req->arg('username', User::USERNAME_FILTER);
 		$password = $req->arg('password');
 		$autologin = $req->arg('autologin');
 
-		$data = array('errors' => array());
-		$data['user'] = $user;
-		$data['autologin'] = $autologin;
+		$data = array();
 
 		if ($req->getMethod() == 'POST')
 		{
-			if ($Eresus->login($req->arg('user'), $Eresus->password_hash($password), $autologin))
+			$state = AuthService::getInstance()->login($username, $password);
+			if ($state == AuthService::SUCCESS)
 			{
-				HTTP::redirect('./admin.php');
+				HttpResponse::redirect('./admin.php');
 			}
-		}
-
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
-		{
-			foreach ($Eresus->session['msg']['errors'] as $message)
-			{
-				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
-			}
-
-			$Eresus->session['msg']['errors'] = array();
+			$data['username'] = $username;
+			$data['autologin'] = $autologin;
+			$data['error'] = iconv(CHARSET, 'utf-8', 'Ќеправильное им€ пользовател€ или пароль');
 		}
 
 		$tmpl = new Template('core/templates/auth.html');
@@ -974,7 +966,7 @@ class TAdminUI extends WebPage
 		$data['controlMenu'] = $this->renderControlMenu();
 		$data['user'] = $Eresus->user;
 
-		$tmpl = new Template('admin/themes/default/page.default.html');
+		$tmpl = new Template('core/templates/page.default.html');
 		$html = $tmpl->compile($data);
 
 		if (count($this->headers))

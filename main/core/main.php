@@ -115,6 +115,11 @@ class EresusCMS extends EresusApplication
 		{
 			// Нормальное завершение
 		}
+		catch (DomainException $e)
+		{
+			EresusLogger::exception($e);
+			echo '<h1>Ошибка</h1><pre>' . $e->getMessage() . '</pre>';
+		}
 		catch (Exception $e)
 		{
 			EresusLogger::exception($e);

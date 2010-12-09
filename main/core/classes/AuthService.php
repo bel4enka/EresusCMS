@@ -171,10 +171,18 @@ class AuthService implements ServiceInterface
 
 		$this->user = $user;
 		// Записываем время последнего входа
-		$user->lastVisit = time();
+		$user->lastVisit = date('Y-m-d H:i:s');
 		$user->lastLoginTime = time();
 		$user->loginErrors = 0;
-		$user->save();
+		try
+		{
+			$user->save();
+		}
+		catch (Exception $e)
+		{
+			EresusLogger::exception($e);
+			throw new DomainException('Ошибка при обновлении состояния учётной записи');
+		}
 		// Наличие в сессии идентификатора пользователя - признак успешной аутентификации
 		$_SESSION['user'] = $user->id;
 

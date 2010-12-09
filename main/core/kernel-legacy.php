@@ -151,27 +151,27 @@ function InfoMessage($message)
  */
 function UserRights($level)
 {
-	global $Eresus;
-
 	if ($level == GUEST)
 	{
 		// Гость - самый низкий уровень.
 		return true;
 	}
 
-	if (@!$_SESSION['user_auth'])
+	$user = AuthService::getInstance()->getUser();
+
+	if (!$user)
 	{
 		// Если не аутентифицирован - запрещаем доступ
 		return false;
 	}
 
-	if ($Eresus->user->access == 0)
+	if ($user->access == 0)
 	{
 		// Неправильный уровень доступа - запрещаем доступ
 		return false;
 	}
 
-	return $Eresus->user->access <= $level;
+	return $user->access <= $level;
 }
 //------------------------------------------------------------------------------
 
