@@ -38,14 +38,14 @@ Doctrine_Manager::getInstance()->bindComponent('Users', 'doctrine');
  * Модель пользователя
  *
  * @property int	  $id
- * @property string $login
- * @property string $hash
+ * @property string $username
+ * @property string $password       при чтении возвразает хеш, при записи хеширует значение
  * @property int	  $active
  * @property string $lastVisit
  * @property int	  $lastLoginTime  время последней попытки входа в систему
  * @property int	  $loginErrors
  * @property int	  $access
- * @property string $name
+ * @property string $fullname
  * @property string $mail
  * @property string $profile
  *
@@ -55,6 +55,13 @@ Doctrine_Manager::getInstance()->bindComponent('Users', 'doctrine');
  */
 class User extends EresusActiveRecord
 {
+	/**
+	 * PRCE-фильтр для свойства "username"
+	 *
+	 * @var string
+	 */
+	const USERNAME_FILTER = '/[^a-z0-9_\-\.\@]/';
+
 	/**
 	 * (non-PHPdoc)
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
@@ -71,9 +78,9 @@ class User extends EresusActiveRecord
 			'primary' => true,
 			'autoincrement' => true,
 		),
-		'login' => array(
+		'username' => array(
 			'type' => 'string',
-			'length' => 16,
+			'length' => 255,
 			'fixed' => false,
 			'unsigned' => false,
 			'primary' => false,
@@ -81,7 +88,7 @@ class User extends EresusActiveRecord
 			'notnull' => true,
 			'autoincrement' => false,
 		),
-		'hash' => array(
+		'password' => array(
 			'type' => 'string',
 			'length' => 32,
 			'fixed' => false,
@@ -136,9 +143,9 @@ class User extends EresusActiveRecord
 			'notnull' => false,
 			'autoincrement' => false,
 		),
-		'name' => array(
+		'fullname' => array(
 			'type' => 'string',
-			'length' => 64,
+			'length' => 255,
 			'fixed' => false,
 			'unsigned' => false,
 			'primary' => false,
@@ -147,7 +154,7 @@ class User extends EresusActiveRecord
 		),
 		'mail' => array(
 			'type' => 'string',
-			'length' => 64,
+			'length' => 255,
 			'fixed' => false,
 			'unsigned' => false,
 			'primary' => false,
@@ -163,8 +170,70 @@ class User extends EresusActiveRecord
 			'autoincrement' => false,
 		)));
 
-		$this->hasAccessorMutator('profile', 'unserializeAccessor', 'serializeMutator');
+		$this->hasMutator('username', 'usernameMutator');
+		$this->hasMutator('password', 'passwordMutator');
+		$this->hasAccessorMutator('profile', 'unserialize', 'serialize');
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Мутатор имени пользователя
+	 *
+	 * @param string $value
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function usernameMutator($value)
+	{
+		$value = preg_replace(self::USERNAME_FILTER, '', $value);
+		$this->_set('username', $value);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает хеш пароля
+	 *
+	 * @param string $password
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public static function passwordHash($password)
+	{
+		return md5(md5($password));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Мутатор пароля
+	 *
+	 * @param string $value
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function passwordMutator($value)
+	{
+		$this->_set('password', self::passwordHash($value));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверяет правильность пароля
+	 *
+	 * @param string $password
+	 *
+	 * @return bool  TRUE если пароль верен и FALSE в противном случае
+	 *
+	 * @since 2.16
+	 */
+	public function isPasswordValid($password)
+	{
+		return $this->password == self::passwordHash($password);
+	}
+	//-----------------------------------------------------------------------------
 }
