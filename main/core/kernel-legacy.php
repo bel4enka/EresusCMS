@@ -944,24 +944,6 @@ class Eresus
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Инициирует сессии
-	 */
-	private function init_session()
-	{
-		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
-		session_name('sid');
-		session_start();
-		$this->session = &$_SESSION['session'];
-		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
-		$this->user = &$_SESSION['user'];
-
-		# Обратная совместимость
-		$GLOBALS['session'] = &$_SESSION['session'];
-		$GLOBALS['user'] = &$_SESSION['user'];
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Определяет файловые пути
 	 *
 	 * @return void
@@ -1266,8 +1248,6 @@ class Eresus
 		}
 		# Определение путей
 		$this->init_resolve();
-		# Инициализация сессии
-		$this->init_session();
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__).DIRECTORY_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
 		# Читаем настройки
