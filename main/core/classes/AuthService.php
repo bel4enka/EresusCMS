@@ -197,6 +197,23 @@ class AuthService implements ServiceInterface
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Инициализуирет службу
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function init()
+	{
+		if (isset($_SESSION['user']) && $_SESSION['user'])
+		{
+			$id = intval($_SESSION['user']);
+			$this->user = ORM::getTable('User')->find($id);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Скрываем конструктор
 	 *
 	 * @return void

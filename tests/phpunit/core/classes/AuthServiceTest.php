@@ -350,5 +350,27 @@ class AuthServiceTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * @covers AuthService::init
+	 */
+	public function test_init()
+	{
+		$test = AuthService::getInstance();
+
+		$table = $this->getMock('stdClass', array('find'));
+		$table->expects($this->once())->method('find')->will($this->returnArgument(0));
+
+		$core = $this->getMock('stdClass', array('getTable'));
+		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
+		Doctrine_Core::setMock($core);
+
+		$_SESSION['user'] = 123;
+
+		$test->init();
+
+		$this->assertEquals(123, $test->getUser());
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }
