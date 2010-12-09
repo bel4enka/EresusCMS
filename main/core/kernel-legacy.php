@@ -1208,10 +1208,10 @@ class Eresus
 	{
 		switch (arg('action'))
 		{
-			case 'login':
+			/*case 'login':
 				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				HTTP::redirect($this->request['url']);
-			break;
+			break;*/
 			case 'logout':
 				$this->logout(true);
 				HTTP::redirect($this->root.'admin/');
@@ -1355,113 +1355,6 @@ class Eresus
 	{
 		setcookie('EresusLogger::login', '', time()-3600, $this->path);
 		setcookie('eresus_key', '', time()-3600, $this->path);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Авторизация пользователя
-	 *
-	 * @param string $unsafeLogin   Имя пользователя
-	 * @param string $key		       Ключ учётной записи
-	 * @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
-	 * @param bool   $cookie        Авторизация при помощи cookie
-	 * @return bool Результат
-	 */
-	function login($unsafeLogin, $key, $auto = false, $cookie = false)
-	{
-		$result = false;
-
-		$login = preg_replace('/[^a-z0-9_\-\.\@]/', '', $unsafeLogin);
-
-		if ($login != $unsafeLogin)
-		{
-			ErrorMessage(errInvalidPassword);
-			return false;
-		}
-
-		$matches = ORM::getTable('User')->findByLogin($login);
-		// Если такой пользователь есть...
-		if (count($matches))
-		{
-			$user = $matches[0];
-			// Если учетная запись активна...
-			if ($user->active)
-			{
-				if (time() - $user->lastLoginTime > $user->loginErrors)
-				{
-					// Если пароль верен...
-					if ($key == $user->hash)
-					{
-						if ($auto)
-						{
-							$this->set_login_cookies($login, $key);
-						}
-						else
-						{
-							$this->clear_login_cookies();
-						}
-						$setVisitTime = ! (bool)$this->user;
-						$lastVisit = $this->user ? $this->user->lastVisit : '';
-						$this->user = $user;
-						$_SESSION['user_auth'] = true; // Устанавливаем флаг авторизации
-						//$this->user['hash'] = $item['hash']; # Хэш пароля используется для подтверждения аутентификации
-						if ($setVisitTime)
-						{
-							$user->lastVisit = gettime(); // Записываем время последнего входа
-						}
-						$user->lastLoginTime = time();
-						$user->loginErrors = 0;
-						$user->save();
-						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
-						$result = true;
-					}
-					// Если пароль не верен...
-					else
-					{
-						if (!$cookie)
-						{
-							ErrorMessage(errInvalidPassword);
-							$user->lastLoginTime = time();
-							$user->loginErrors++;
-							$user->save();
-						}
-					}
-				}
-				else
-				{
-					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(errTooEarlyRelogin, $user->loginErrors));
-					$user->lastLoginTime = time();
-					$user->save();
-				}
-			}
-			else
-			{
-				ErrorMessage(sprintf(errAccountNotActive, $login));
-			}
-		}
-		else
-		{
-			ErrorMessage(errInvalidPassword);
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Завершение сеанса работы с системой
-	 *
-	 * @param bool $clearCookies
-	 */
-	function logout($clearCookies = true)
-	{
-		$this->user['id'] = null;
-		$_SESSION['user_auth'] = false;
-		$this->user['access'] = GUEST;
-		if ($clearCookies)
-		{
-			$this->clear_login_cookies();
-		}
 	}
 	//-----------------------------------------------------------------------------
 }
