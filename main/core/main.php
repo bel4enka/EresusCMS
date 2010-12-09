@@ -32,6 +32,28 @@
  * $Id$
  */
 
+
+
+/**
+ * Интерфейс служб
+ *
+ * @package EresusCMS
+ * @since 2.16
+ */
+interface ServiceInterface
+{
+	/**
+	 * Метод должен возвращать объект-одиночку
+	 *
+	 * @return object
+	 *
+	 * @since 2.16
+	 */
+	public static function getInstance();
+}
+
+
+
 /**
  * Класс приложения Eresus CMS
  *
@@ -39,13 +61,12 @@
  */
 class EresusCMS extends EresusApplication
 {
-
 	/**
 	 * HTTP-запрос
 	 *
 	 * @var HttpRequest
 	 */
-	protected $request;
+	private $request;
 
 	/**
 	 * Основной метод приложения
@@ -60,9 +81,8 @@ class EresusCMS extends EresusApplication
 
 		try
 		{
-
 			/* Подключение таблицы автозагрузки классов */
-			EresusClassAutoloader::add('core/cms.autoload.php');
+			EresusClassAutoloader::register('core/cms.autoload.php', $this->getFsRoot());
 
 			/* Общая инициализация */
 			$this->checkEnviroment();
@@ -77,7 +97,7 @@ class EresusCMS extends EresusApplication
 			$i18n = I18n::getInstance();
 			TemplateSettings::setGlobalValue('i18n', $i18n);
 			$this->initDB();
-			//$this->initSession();
+			$this->initSession();
 			$GLOBALS['Eresus']->init();
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
@@ -109,7 +129,7 @@ class EresusCMS extends EresusApplication
 	 *
 	 * @return void
 	 */
-	protected function checkEnviroment()
+	private function checkEnviroment()
 	{
 		$errors = array();
 
@@ -150,7 +170,7 @@ class EresusCMS extends EresusApplication
 	 *
 	 * @return void
 	 */
-	protected function createFileStructure()
+	private function createFileStructure()
 	{
 		$dirs = array(
 			'/var/log',
@@ -176,7 +196,7 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Выполнение в режиме Web
 	 */
-	protected function runWeb()
+	private function runWeb()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
@@ -206,7 +226,7 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Инициализация Web
 	 */
-	protected function initWeb()
+	private function initWeb()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
@@ -227,7 +247,7 @@ class EresusCMS extends EresusApplication
 	 * @return string
 	 * @deprecated Это временная функция
 	 */
-	protected function runWebClientUI()
+	private function runWebClientUI()
 	{
 		global $page;
 
@@ -246,7 +266,7 @@ class EresusCMS extends EresusApplication
 	 * @return string
 	 * @deprecated Это временная функция
 	 */
-	protected function runWebAdminUI()
+	private function runWebAdminUI()
 	{
 		global $page;
 
@@ -265,7 +285,7 @@ class EresusCMS extends EresusApplication
 	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
 	 * образом localRoot объекта EresusCMS::request
 	 */
-	protected function detectWebRoot()
+	private function detectWebRoot()
 	{
 		$webServer = WebServer::getInstance();
 		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
@@ -286,7 +306,7 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Выполнение в режиме CLI
 	 */
-	protected function runCLI()
+	private function runCLI()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
@@ -298,7 +318,7 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Инициализация CLI
 	 */
-	protected function initCLI()
+	private function initCLI()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 	}
@@ -307,7 +327,7 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Инициализация конфигурации
 	 */
-	protected function initConf()
+	private function initConf()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
@@ -322,7 +342,7 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Инициализация БД
 	 */
-	protected function initDB()
+	private function initDB()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
@@ -368,22 +388,15 @@ class EresusCMS extends EresusApplication
 	/**
 	 * Инициализация сессии
 	 */
-	protected function initSession()
+	private function initSession()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
-/*		global $Eresus; // FIXME: Устаревшая переменная $Eresus
-
-		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
+		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
 		session_start();
 
-		# Обратная совместимость
-		$Eresus->session = &$_SESSION['session'];
-		#if (!isset($Eresus->session['msg'])) $Eresus->session['msg'] = array('error' => array(), 'information' => array());
-		#$Eresus->user = &$_SESSION['user'];
-		$GLOBALS['session'] = &$_SESSION['session'];
-		$GLOBALS['user'] = &$_SESSION['user'];*/
+		AuthService::getInstance()->init();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -394,7 +407,7 @@ class EresusCMS extends EresusApplication
 	 *
 	 * @return void
 	 */
-	protected function call3rdPartyExtension()
+	private function call3rdPartyExtension()
 	{
 		$extension = substr($this->request->getLocal(), 9);
 		$extension = substr($extension, 0, strpos($extension, '/'));
