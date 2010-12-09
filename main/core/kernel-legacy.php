@@ -1319,22 +1319,6 @@ class Eresus
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 	//------------------------------------------------------------------------------
-	/**
-	 * Хеширует пароль
-	 *
-	 * @param string $password  Пароль
-	 * @return string  Хеш
-	 */
-	function password_hash($password)
-	{
-		$result = md5($password);
-		if (!$this->conf['backward']['weak_password'])
-		{
-			$result = md5($result);
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
  /**
 	* Устанавливает авторизационные кукисы
 	*

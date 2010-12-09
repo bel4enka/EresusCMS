@@ -50,20 +50,9 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus::password_hash
 	 */
-	public function test_password_hash()
+	public function test_dummy()
 	{
-		$test = new Eresus();
-
-		$password = 'mypass';
-		$weak = md5($password);
-		$strong = md5($weak);
-
-		$test->conf['backward']['weak_password'] = false;
-		$this->assertEquals($strong, $test->password_hash($password), 'Strong hash does not match');
-		$test->conf['backward']['weak_password'] = true;
-		$this->assertEquals($weak, $test->password_hash($password), 'Weak hash does not match');
 	}
 	//-----------------------------------------------------------------------------
 
