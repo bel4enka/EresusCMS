@@ -115,15 +115,11 @@ class EresusCMS extends EresusApplication
 		{
 			// Нормальное завершение
 		}
-		catch (DomainException $e)
-		{
-			EresusLogger::exception($e);
-			echo '<h1>Ошибка</h1><pre>' . $e->getMessage() . '</pre>';
-		}
 		catch (Exception $e)
 		{
 			EresusLogger::exception($e);
-			echo '<h1>' . get_class($e) . '</h1>';
+			ob_end_clean();
+			include dirname(__FILE__) . '/fatal.html.php';
 		}
 
 	}
@@ -407,6 +403,8 @@ class EresusCMS extends EresusApplication
 		session_start();
 
 		AuthService::getInstance()->init();
+		// TODO Убрать. Оставлено для обратной совместимости
+		$GLOBALS['Eresus']->user = AuthService::getInstance()->getUser();
 		$_SESSION['activity'] = time();
 	}
 	//-----------------------------------------------------------------------------
