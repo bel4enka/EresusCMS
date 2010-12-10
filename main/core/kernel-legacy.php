@@ -1199,27 +1199,5 @@ class Eresus
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Устанавливает авторизационные кукисы
-	*
-	* @param string $login
-	* @param string $key
-	*/
-	function set_login_cookies($login, $key)
-	{
-		setcookie('EresusLogger::login', $login, time()+2592000, $this->path);
-		setcookie('eresus_key', $key, time()+2592000, $this->path);
-	}
-	//-----------------------------------------------------------------------------
- /**
-	* Удалаяет авторизационные кукисы
-	*
-	*/
-	function clear_login_cookies()
-	{
-		setcookie('EresusLogger::login', '', time()-3600, $this->path);
-		setcookie('eresus_key', '', time()-3600, $this->path);
-	}
-	//-----------------------------------------------------------------------------
 }
 
