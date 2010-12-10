@@ -127,21 +127,6 @@ class AdminUITheme
 		return $this->getResource('img/' . $size . '/' . $icon);
 	}
 	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает шаблон
-	 *
-	 * @param string $name
-	 *
-	 * @return Template
-	 */
-	public function getTemplate($name)
-	{
-		$filename = $this->getResource($name);
-		$template = new Template($filename);
-		return $template;
-	}
-	//-----------------------------------------------------------------------------
 }
 
 

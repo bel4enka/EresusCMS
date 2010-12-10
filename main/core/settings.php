@@ -135,8 +135,7 @@ class TSettings
 	{
 		global $Eresus, $page;
 
-		$template = $page->getUITheme()->getResource('SiteSettings/form.html');
-		$form = new EresusForm($template, LOCALE_CHARSET);
+		$form = new EresusForm('core/templates/SiteSettings/form.html', LOCALE_CHARSET);
 		/* Основные */
 		$form->setValue('siteName', option('siteName'));
 		$form->setValue('siteTitle', option('siteTitle'));

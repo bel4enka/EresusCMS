@@ -240,7 +240,7 @@ class TPlgMgr
 			}
 		}
 
-		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
+		$tmpl = new Template('core/templates/PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
 
 		return $html;

@@ -70,7 +70,7 @@ class TAbout
 		$data['license'] = array();
 		$data['license']['text'] = $license->getElementsByTagName($locale['lang'])->item(0)->textContent;
 
-		$tmpl = $page->getUITheme()->getTemplate('misc/about.html');
+		$tmpl = new Template('core/templates/misc/about.html');
 		$html = $tmpl->compile($data);
 
 		return $html;
