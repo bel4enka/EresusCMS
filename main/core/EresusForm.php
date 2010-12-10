@@ -549,7 +549,7 @@ class EresusForm
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'defer', 'async');
+		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'async');
 
 		$html = $this->parseExtended();
 		$html = $this->fromUTF($html);
@@ -688,7 +688,7 @@ class EresusForm
 
 		$id = $this->xml->firstChild->nextSibling->getAttribute('id');
 		// инициализация объекта формы
-		$scriptContents = "\n\$(document).ready(function () {window.$id = new EresusForm('$id');\n";
+		$scriptContents = "\n\$(document).ready(function ()\n{\nwindow.$id = new EresusForm('$id');\n";
 
 		/*
 		 * Если в сессии установлен флаг isInvalid, вызываем перепроверку формы
@@ -708,9 +708,7 @@ class EresusForm
 			}
 		}
 		$scriptContents .= "});";
-		$script = $this->xml->createElement('script', $scriptContents);
-		$script->setAttribute('type', 'text/javascript');
-		$this->xml->firstChild->nextSibling->appendChild($script);
+		$GLOBALS['page']->addScripts($scriptContents, 'defer');
 
 		$this->xml->formatOutput = true;
 		$html = $this->xml->saveXML($this->xml->firstChild->nextSibling); # This exclude xml declaration
