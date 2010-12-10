@@ -150,6 +150,7 @@ define('filesRoot', '/home/exmaple.org/');
 
 
 
+class Core extends MockFacade {}
 class Doctrine_Core extends MockFacade {}
 class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
@@ -164,6 +165,8 @@ class EresusLogger extends MockFacade {}
  */
 class FS extends MockFacade
 {
+	public static $driver = null;
+
 	public static function canonicalForm($filename)
 	{
 		/* Convert slashes */
@@ -180,6 +183,12 @@ class FS extends MockFacade
 	public static function isFile($filename)
 	{
     return is_file($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	public static function driver()
+	{
+		return self::$driver;
 	}
 	//-----------------------------------------------------------------------------
 }

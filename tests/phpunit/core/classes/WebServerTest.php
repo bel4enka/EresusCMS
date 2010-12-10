@@ -29,6 +29,7 @@
  * $Id$
  */
 
+require_once dirname(__FILE__) . '/../../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/WebServer.php';
 
 /**
@@ -46,6 +47,11 @@ class WebServerTest extends PHPUnit_Framework_TestCase
 	{
 		$dir = dirname(__FILE__);
 		$_SERVER['DOCUMENT_ROOT'] = $dir;
+
+		$driver = $this->getMock('stdClass', array('canonicalForm'));
+		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
+		FS::$driver = $driver;
+
 		$server = WebServer::getInstance();
 		$this->assertEquals($dir, $server->getDocumentRoot());
 	}

@@ -44,10 +44,14 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_detectWebRoot()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
 		{
-			$this->markTestSkipped('PHP 5.3 required');
+			$this->markTestSkipped('PHP 5.3.2 required');
 		}
+
+		$driver = $this->getMock('stdClass', array('canonicalForm'));
+		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
+		FS::$driver = $driver;
 
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = WebServer::getInstance();

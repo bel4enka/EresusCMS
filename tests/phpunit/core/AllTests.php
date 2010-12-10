@@ -48,7 +48,7 @@ class Core_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core');
+		$suite = new PHPUnit_Framework_TestSuite('Core tests');
 
 		$suite->addTestSuite('EresusCMSTest');
 		$suite->addTestSuite('EresusTest');

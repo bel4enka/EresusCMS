@@ -30,7 +30,6 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../main/core/classes/ORM.php';
 require_once dirname(__FILE__) . '/../../../main/core/kernel-legacy.php';
 
 /**
@@ -50,9 +49,80 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверка определения путей сайта
+	 *
+	 * @covers Eresus::init_resolve
 	 */
-	public function test_dummy()
+	public function test_froot_and_path()
 	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$_SERVER['SCRIPT_FILENAME'] = '/home/user/public_html/site/index.php';
+		$_SERVER['DOCUMENT_ROOT'] = '/home/user/public_html';
+
+		$app = $this->getMock('stdClass', array('getFsRoot'));
+		$app->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/home/user/public_html/site'));
+
+		$core = $this->getMock('stdClass', array('app'));
+		$core->expects($this->once())->method('app')->will($this->returnValue($app));
+		Core::setMock($core);
+
+		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
+		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));
+		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
+		FS::$driver = $driver;
+
+		$init_resolve = new ReflectionMethod('Eresus', 'init_resolve');
+		$init_resolve->setAccessible(true);
+
+		$mock = $this->getMockBuilder('Eresus')->disableOriginalConstructor()->getMock();
+		$init_resolve->invoke($mock);
+
+		$this->assertEquals('/home/user/public_html/site/', $mock->froot, 'Invalid Eresus::$froot');
+		$this->assertEquals('/site/', $mock->path, 'Invalid Eresus::$path');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка определения путей сайта в Windows
+	 *
+	 * @covers Eresus::init_resolve
+	 */
+	public function test_froot_and_path_Windows()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$_SERVER['SCRIPT_FILENAME'] =  'c:\\index.php';
+		$_SERVER['DOCUMENT_ROOT'] = 'c:/';
+
+		$app = $this->getMock('stdClass', array('getFsRoot'));
+		$app->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/c:'));
+
+		$core = $this->getMock('stdClass', array('app'));
+		$core->expects($this->once())->method('app')->will($this->returnValue($app));
+		Core::setMock($core);
+
+		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
+		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));
+		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
+		FS::$driver = $driver;
+
+		$init_resolve = new ReflectionMethod('Eresus', 'init_resolve');
+		$init_resolve->setAccessible(true);
+
+		$mock = $this->getMockBuilder('Eresus')->disableOriginalConstructor()->getMock();
+		$init_resolve->invoke($mock);
+
+		$this->assertEquals('/c:/', $mock->froot, 'Invalid Eresus::$froot');
+		$this->assertEquals('/', $mock->path, 'Invalid Eresus::$path');
 	}
 	//-----------------------------------------------------------------------------
 
