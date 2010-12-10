@@ -974,19 +974,25 @@ class Eresus
 			$this->path = $s;
 		}
 
-		/**
-		 * Îáğàòíàÿ ñîâìåñòèìîñòü
-		 * @var string
-		 * @deprecated since 2.14
-		 */
-		define('filesRoot', $this->froot);
+		if (!defined('filesRoot'))
+		{
+			/**
+			 * Îáğàòíàÿ ñîâìåñòèìîñòü
+			 * @var string
+			 * @deprecated since 2.14
+			 */
+			define('filesRoot', $this->froot);
+		}
 
-		/**
-		 * Îáğàòíàÿ ñîâìåñòèìîñòü
-		 * @var string
-		 * @deprecated since 2.14
-		 */
-		define('dataFiles', $this->fdata);
+		if (!defined('dataFiles'))
+		{
+			/**
+			 * Îáğàòíàÿ ñîâìåñòèìîñòü
+			 * @var string
+			 * @deprecated since 2.14
+			 */
+			define('dataFiles', $this->fdata);
+		}
 	}
 	//------------------------------------------------------------------------------
 

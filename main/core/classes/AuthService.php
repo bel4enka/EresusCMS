@@ -43,7 +43,7 @@ class AuthService implements ServiceInterface
 	 * Операция выполнена успешно
 	 * @var boolean
 	 */
-	const SUCCESS = true;
+	const SUCCESS = 0;
 
 	/**
 	 * Неизвестный пользователь
@@ -119,7 +119,7 @@ class AuthService implements ServiceInterface
 	 * @param string $username
 	 * @param string $password
 	 *
-	 * @return bool|int  TRUE on success or error code
+	 * @return int  код результата (см. константы класса)
 	 *
 	 * @uses User::passwordHash()
 	 * @uses loginByHash()
@@ -138,7 +138,7 @@ class AuthService implements ServiceInterface
 	 * @param string $username  имя пользователя
 	 * @param string $hash      хэш пароля
 	 *
-	 * @return bool|int  TRUE on success or error code
+	 * @return int  код результата (см. константы класса)
 	 *
 	 * @uses ORM::getTable()
 	 * @since 2.16
@@ -201,6 +201,7 @@ class AuthService implements ServiceInterface
 	{
 		$this->user = null;
 		unset($_SESSION['user']);
+		$this->clearCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -217,6 +218,48 @@ class AuthService implements ServiceInterface
 		{
 			$id = intval($_SESSION['user']);
 			$this->user = ORM::getTable('User')->find($id);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает куки для автоматического входа
+	 *
+	 * Метод устанавливает куки, содержащее информацию для автоматической аутентификации посетителя.
+	 * Эта информация проверяется методом {@see AuthService::init}.
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setCookies()
+	{
+		if (!$this->user)
+		{
+			return;
+		}
+
+		$value = array(
+			'u' => $this->user->username,
+			'h' => $this->user->password
+		);
+		$value = serialize($value);
+		setcookie('eresus_auth', $value, time() + 2592000, '/');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Удаляет куки, установленные {@see setCookies}
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function clearCookies()
+	{
+		if (isset($_COOKIE['eresus_auth']))
+		{
+			setcookie('eresus_auth', $_COOKIE['eresus_auth'], time() - 3600, '/');
 		}
 	}
 	//-----------------------------------------------------------------------------

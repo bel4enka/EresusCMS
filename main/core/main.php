@@ -163,9 +163,13 @@ class EresusCMS extends EresusApplication
 		if ($errors)
 		{
 			if (!PHP::isCLI())
+			{
 				require_once 'errors.html.php';
+			}
 			else
+			{
 				die("Errors...\n"); // TODO Доделать
+			}
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -398,10 +402,12 @@ class EresusCMS extends EresusApplication
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
+		ini_set('session.use_only_cookies', true);
 		session_name('sid');
 		session_start();
 
 		AuthService::getInstance()->init();
+		$_SESSION['activity'] = time();
 	}
 	//-----------------------------------------------------------------------------
 

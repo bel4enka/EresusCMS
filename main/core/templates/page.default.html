@@ -53,9 +53,8 @@
 					<a href="{$siteRoot}/admin.php?mod=users&amp;id={$user.id}">
 						{$i18n->getText('admUsersChangePassword')}
 					</a>
-					<form action="{$siteRoot}/admin.php" method="post">
+					<form action="{$siteRoot}/admin/logout/" method="post">
 						<div class="ui-button-box">
-							<input type="hidden" name="action" value="logout">
 							<button type="submit">{$i18n->getText('strExit')}</button>
 						</div>
 					</form>

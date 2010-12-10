@@ -899,6 +899,12 @@ class TAdminUI extends WebPage
 		}
 		else
 		{
+			if (HTTP::request()->getLocal() == '/admin/logout/')
+			{
+				AuthService::getInstance()->logout();
+				HttpResponse::redirect($GLOBALS['Eresus']->root . 'admin/');
+			}
+
 			$this->renderUI();
 		}
 	}
@@ -927,6 +933,10 @@ class TAdminUI extends WebPage
 			$state = AuthService::getInstance()->login($username, $password);
 			if ($state == AuthService::SUCCESS)
 			{
+				if ($autologin)
+				{
+					AuthService::getInstance()->setCookies();
+				}
 				HttpResponse::redirect('./admin.php');
 			}
 			$data['username'] = $username;
