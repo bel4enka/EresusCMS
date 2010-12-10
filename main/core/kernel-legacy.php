@@ -652,7 +652,7 @@ function saveTemplate($name, $template)
 # Сохраняет указанный шаблон
 {
 	$file = "<!-- ".$template['description']." -->\r\n\r\n".$template['html'];
-	$fp = fopen(filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.html':''), 'w');
+	$fp = fopen(Core::app()->getFsRoot() . '/templates/'.$name.(strpos($name, '.tmpl')===false?'.html':''), 'w');
 	fwrite($fp, $file);
 	fclose($fp);
 }
@@ -708,12 +708,15 @@ function img($imagename)
 
 
 	if (strpos($imagename, httpRoot) !== false) $imagename = str_replace(httpRoot, '', $imagename);
-	if (strpos($imagename, filesRoot) !== false) $imagename = str_replace(filesRoot, '', $imagename);
+	if (strpos($imagename, Core::app()->getFsRoot()) !== false)
+	{
+		$imagename = str_replace(Core::app()->getFsRoot(), '', $imagename);
+	}
 	if (strpos($imagename, '://') === false) $imagename = httpRoot.$imagename;
 	$local = (strpos($imagename, httpRoot) === 0);
 
 	if ($p['autosize'] && $local && empty($p['width']) && empty($p['height'])) {
-		$filename = str_replace(httpRoot, filesRoot, $imagename);
+		$filename = str_replace(httpRoot, Core::app()->getFsRoot(), $imagename);
 		if (is_file($filename)) $info = getimagesize($filename);
 	}
 	if (isset($info)) {
@@ -972,16 +975,6 @@ class Eresus
 				$s = '/' . $s;
 			}
 			$this->path = $s;
-		}
-
-		if (!defined('filesRoot'))
-		{
-			/**
-			 * Обратная совместимость
-			 * @var string
-			 * @deprecated since 2.14
-			 */
-			define('filesRoot', $this->froot);
 		}
 
 		if (!defined('dataFiles'))
