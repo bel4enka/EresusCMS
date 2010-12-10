@@ -305,7 +305,7 @@ class Plugins
 				}
 			break;
 			case 'url':
-				HTTP::redirect($page->replaceMacros($page->content));
+				HttpResponse::redirect($page->replaceMacros($page->content));
 			break;
 			default:
 			if ($this->load($page->type)) {
@@ -1042,7 +1042,7 @@ class ContentPlugin extends Plugin
 	function adminUpdate()
 	{
 		$this->updateContent(arg('content', 'dbsafe'));
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//------------------------------------------------------------------------------
 

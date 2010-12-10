@@ -80,7 +80,7 @@ class TContentPlugin extends TPlugin
 	function update()
 	{
 		$this->updateContent(arg('content', 'dbsafe'));
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//------------------------------------------------------------------------------
 	/**

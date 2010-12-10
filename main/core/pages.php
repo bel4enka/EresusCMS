@@ -80,13 +80,13 @@ class TPages
 		{
 			$item = $Eresus->sections->add($item);
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
-			HTTP::redirect($page->url(array('id'=>'')));
+			HttpResponse::redirect($page->url(array('id'=>'')));
 		}
 		else
 		{
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			HTTP::redirect($Eresus->request['referer']);
+			HttpResponse::redirect($Eresus->request['referer']);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ class TPages
 
 		$Eresus->sections->update($item);
 
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -188,7 +188,7 @@ class TPages
 				$Eresus->sections->update($temp);
 			}
 		}
-		HTTP::redirect($page->url(array('id'=>'')));
+		HttpResponse::redirect($page->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -216,7 +216,7 @@ class TPages
 				$Eresus->sections->update($temp);
 			}
 		}
-		HTTP::redirect($page->url(array('id'=>'')));
+		HttpResponse::redirect($page->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -252,7 +252,7 @@ class TPages
 			}
 
 			$Eresus->sections->update($item);
-			HTTP::redirect($page->url(array('id'=>'')));
+			HttpResponse::redirect($page->url(array('id'=>'')));
 		}
 		else
 		{
@@ -323,7 +323,7 @@ class TPages
 		$item = $Eresus->sections->get(arg('id', 'int'));
 		$Eresus->sections->delete(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		HTTP::redirect($page->url(array('id'=>'')));
+		HttpResponse::redirect($page->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 

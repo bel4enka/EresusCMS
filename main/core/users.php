@@ -126,7 +126,7 @@ class TUsers
 		$item = $this->accounts->get(arg('toggle', 'int'));
 		$item['active'] = !$item['active'];
 		$this->accounts->update($item);
-		HTTP::redirect($page->url());
+		HttpResponse::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ class TUsers
 		if ($this->checkMail($item['mail'])) {
 			$this->accounts->update($item);
 		};
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -156,30 +156,62 @@ class TUsers
 	{
 		global $Eresus, $page;
 
-		# Получение данных
-		$item = array(
-			'name' => arg('name', 'dbsafe'),
-			'login' => arg('login', '/[^a-z0-9_]/'),
-			'access' => arg('access', 'int'),
-			'hash' => $Eresus->password_hash(arg('pswd1')),
-			'mail' => arg('mail', 'dbsafe'),
-		);
-		# Проверка входных данных
+		/* Получение данных */
+		$fullname = arg('name', 'dbsafe');
+		$username = arg('login', 'dbsafe');
+		$access = arg('access', 'int');
+		$password = arg('pswd1');
+		$mail = arg('mail', 'dbsafe');
+
+		/* Проверка входных данных */
 		$error = false;
-		if (empty($item['name'])) { ErrorMessage(admUsersNameInvalid); $error = true;}
-		if (empty($item['login'])) { ErrorMessage(admUsersLoginInvalid); $error = true;}
-		if ($item['access'] <= ROOT) { ErrorMessage('Invalid access level!'); $error = true;}
-		if ($item['hash'] != $Eresus->password_hash(arg('pswd2'))) { ErrorMessage(admUsersConfirmInvalid); $error = true;}
-		# Проверка данных на уникальность
-		$check = $this->accounts->get("`login` = '{$item['login']}'");
-		if ($check) { ErrorMessage(admUsersLoginExists); $error = true;}
-		if ($error) {
-			saveRequest();
-			HTTP::redirect($Eresus->request['referer']);
+		if (empty($fullname))
+		{
+			ErrorMessage(admUsersNameInvalid);
+			$error = true;
 		}
-		if (!$this->accounts->add($item))
+		if (empty($username))
+		{
+			ErrorMessage(admUsersLoginInvalid);
+			$error = true;
+		}
+		if ($access <= ROOT)
+		{
+			ErrorMessage('Invalid access level!');
+			$error = true;
+		}
+		if ($password != arg('pswd2'))
+		{
+			ErrorMessage(admUsersConfirmInvalid);
+			$error = true;
+		}
+		/* Проверка данных на уникальность */
+		$users = ORM::getTable('User')->findByUsername($username);
+		if (count($users))
+		{
+			ErrorMessage(admUsersLoginExists);
+			$error = true;
+		}
+		if ($error)
+		{
+			saveRequest();
+			HttpResponse::redirect($Eresus->request['referer']);
+		}
+		$user = new User;
+		$user->username = $username;
+		$user->password = $password;
+		$user->fullname = $fullname;
+		$user->access = $access;
+		$user->mail = $mail;
+		try
+		{
+			$user->save();
+		}
+		catch (Doctrine_Exception $e)
+		{
 			ErrorMessage('Error creating user account');
-		HTTP::redirect(arg('submitURL'));
+		}
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -193,7 +225,7 @@ class TUsers
 
 		$item = $this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
-		HTTP::redirect($page->url());
+		HttpResponse::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -206,7 +238,7 @@ class TUsers
 			$item['hash'] = $Eresus->password_hash(arg('pswd1'));
 			$this->accounts->update($item);
 		}
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -221,8 +253,8 @@ class TUsers
 			'width' => '400px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%','value'=>$item['name'], 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
-				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%','value'=>$item['login'], 'pattern'=>'/^[a-z\d_]+$/', 'errormsg'=>admUsersLoginInvalid, 'access'=>ADMIN),
+				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%','value'=>$item['fullname'], 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
+				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%','value'=>$item['username'], 'pattern'=>'/^[a-z\d_]+$/', 'errormsg'=>admUsersLoginInvalid, 'access'=>ADMIN),
 				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2, ACCESSLEVEL3, ACCESSLEVEL4), 'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
 				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState,'value'=>$item['active'], 'access'=>ADMIN),
 				array('type'=>'edit','name'=>'loginErrors','label'=>admUsersLoginErrors,'maxlength'=>2,'width'=>'30px','value'=>$item['loginErrors'], 'access'=>ADMIN),
@@ -312,14 +344,14 @@ class TUsers
 					'itemsPerPage' => 20,
 					'columns' => array(
 						array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
-						array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
+						array('name' => 'fullname', 'caption' => admUsersName, 'align' => 'left'),
 						array('name' => 'access', 'caption' => admUsersAccessLevelShort, 'align' => 'center', 'width' => '70px', 'replace' => array (
 							'1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
 							'2' => '<span style="font-weight: bold; color: red;">admin</span>',
 							'3' => '<span style="font-weight: bold; color: blue;">editor</span>',
 							'4' => 'user'
 						)),
-						array('name' => 'login', 'caption' => admUsersLogin, 'align' => 'left'),
+						array('name' => 'username', 'caption' => admUsersLogin, 'align' => 'left'),
 						array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center', 'macros'=>true, 'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
 						array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort, 'align' => 'center', 'width' => '140px'),
 						array('name' => 'loginErrors', 'caption' => admUsersLoginErrorsShort, 'align' => 'center', 'replace' => array (

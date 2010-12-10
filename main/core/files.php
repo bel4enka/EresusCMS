@@ -266,13 +266,13 @@ class TFiles
 	 * @return void
 	 *
 	 * @uses FS::driver()
-	 * @uses HTTP::redirect()
+	 * @uses HttpResponse::redirect()
 	 */
 	function mkDir()
 	{
 		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
 		FS::driver()->mkDir($pathname, 0777, true);
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -300,7 +300,7 @@ class TFiles
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
 		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
 			if (file_exists($filename)) rename($filename, $newname);
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function chmodEntry()
@@ -310,7 +310,7 @@ class TFiles
 		{
 			@chmod($filename, octdec(arg('perms', '/\D/')));
 		}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function copyFile()
@@ -320,7 +320,7 @@ class TFiles
 		if (is_file($filename)) copy($filename, $dest);
 		elseif (is_dir($filename)) {
 		}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function moveFile()
@@ -332,7 +332,7 @@ class TFiles
 			elseif (is_dir($filename)) {
 			}
 		#}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function deleteFile()
@@ -345,7 +345,7 @@ class TFiles
 				rmdir($filename);
 			}
 		#}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	# Административные функции

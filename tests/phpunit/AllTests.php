@@ -42,6 +42,7 @@ if (class_exists('PHP_CodeCoverage_Filter', false))
 	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/ext-3rd/tinymce/eresus-connector.php');
 
 	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
+	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/fatal.html.php');
 	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
 	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/models/User.php');
 }

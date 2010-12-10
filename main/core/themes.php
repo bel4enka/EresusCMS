@@ -95,7 +95,7 @@ class TThemes
 		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), '', arg('code'), arg('desc'));
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ class TThemes
 		useLib('templates');
 		$templates = new Templates();
 		$templates->update(arg('name'), '', arg('code'), arg('desc'));
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ class TThemes
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'));
-		HTTP::redirect($page->url());
+		HttpResponse::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -253,7 +253,7 @@ class TThemes
 		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -278,7 +278,7 @@ class TThemes
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'), 'std');
-		HTTP::redirect($page->url());
+		HttpResponse::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -425,7 +425,7 @@ class TThemes
 		$fp = fopen(filesRoot.'style/'.arg('filename').'.css', 'w');
 		fwrite($fp, $file);
 		fclose($fp);
-		HTTP::redirect(arg('submitURL'));
+		HttpResponse::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -450,7 +450,7 @@ class TThemes
 
 		$filename = filesRoot.'style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
-		HTTP::redirect($page->url());
+		HttpResponse::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
 

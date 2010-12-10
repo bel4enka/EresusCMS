@@ -70,7 +70,7 @@ class TPlgMgr
 
 		$Eresus->plugins->load($Eresus->request['arg']['delete']);
 		$Eresus->plugins->uninstall($Eresus->request['arg']['delete']);
-		HTTP::redirect($page->url());
+		HttpResponse::redirect($page->url());
 	}
 
 	private function edit()
@@ -101,7 +101,7 @@ class TPlgMgr
 
 		$Eresus->plugins->load($Eresus->request['arg']['update']);
 		$Eresus->plugins->items[$Eresus->request['arg']['update']]->updateSettings();
-		HTTP::redirect($Eresus->request['arg']['submitURL']);
+		HttpResponse::redirect($Eresus->request['arg']['submitURL']);
 	}
 
 	/**
@@ -258,7 +258,8 @@ class TPlgMgr
 
 		if (!UserRights($this->access))
 		{
-			EresusLogger::log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
+			EresusLogger::log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
+				$Eresus->user['username']);
 			return '';
 		}
 
