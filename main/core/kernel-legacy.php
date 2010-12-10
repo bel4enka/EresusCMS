@@ -976,16 +976,6 @@ class Eresus
 			}
 			$this->path = $s;
 		}
-
-		if (!defined('dataFiles'))
-		{
-			/**
-			 * Îáğàòíàÿ ñîâìåñòèìîñòü
-			 * @var string
-			 * @deprecated since 2.14
-			 */
-			define('dataFiles', $this->fdata);
-		}
 	}
 	//------------------------------------------------------------------------------
 
