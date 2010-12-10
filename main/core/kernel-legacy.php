@@ -887,7 +887,7 @@ class Eresus
 
 	/**
 	 * Èםעונפויס ך ÁÄ
-	 * @var MySQL
+	 * @var LegacyDB
 	 */
 	public $db;
 
