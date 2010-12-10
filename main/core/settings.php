@@ -120,7 +120,7 @@ class TSettings
 		$settings .= $this->mkstr('contentTypeDefault', 'string');
 		$settings .= $this->mkstr('pageTemplateDefault', 'string');
 
-		file_put_contents(filesRoot.'cfg/settings.php', $settings);
+		file_put_contents(Core::app()->getFsRoot() . '/cfg/settings.php', $settings);
 		HTTP::goback();
 	}
 	//--------------------------------------------------------------------

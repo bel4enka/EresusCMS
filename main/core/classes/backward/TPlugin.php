@@ -95,7 +95,7 @@ class TPlugin
 				$this->resetPlugin();
 			}
 		}
-		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
+		$filename = Core::app()->getFsRoot() . '/lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
 			include $filename;

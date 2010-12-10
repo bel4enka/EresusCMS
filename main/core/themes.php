@@ -422,7 +422,7 @@ class TThemes
 	public function sectionStylesInsert()
 	{
 		$file = "/* ".arg('description')." */\r\n\r\n".arg('html');
-		$fp = fopen(filesRoot.'style/'.arg('filename').'.css', 'w');
+		$fp = fopen(Core::app()->getFsRoot() . '/style/'.arg('filename').'.css', 'w');
 		fwrite($fp, $file);
 		fclose($fp);
 		HttpResponse::redirect(arg('submitURL'));
@@ -448,7 +448,7 @@ class TThemes
 	{
 		global $page;
 
-		$filename = filesRoot.'style/'.arg('delete');
+		$filename = Core::app()->getFsRoot() . '/style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
 		HttpResponse::redirect($page->url());
 	}
@@ -489,7 +489,7 @@ class TThemes
 		global $page;
 
 		$item['filename'] = arg('id');
-		$item['html'] = trim(file_get_contents(filesRoot.'style/'.$item['filename']));
+		$item['html'] = trim(file_get_contents(Core::app()->getFsRoot() . '/style/'.$item['filename']));
 		preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
 		$item['description'] = trim($item['description'][1]);
 		$item['filename'] = substr($item['filename'], 0, strrpos($item['filename'], '.'));
@@ -542,7 +542,7 @@ class TThemes
 			),
 		);
 		# Загружаем список шаблонов
-		$dir = filesRoot.'style/';
+		$dir = Core::app()->getFsRoot() . '/style/';
 		$hnd = opendir($dir);
 		while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.css$/', $filename)) {
 			$description = file_get_contents($dir.$filename);

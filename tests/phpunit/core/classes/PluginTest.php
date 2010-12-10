@@ -39,10 +39,24 @@ require_once dirname(__FILE__) . '/../../../../main/core/classes.php';
 class PluginTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * (non-PHPdoc)
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		Core::$app = null;
+	}
+	//-----------------------------------------------------------------------------
+	/**
 	 * @covers Plugin::getDataURL
 	 */
 	public function test_getDataURL()
 	{
+		$app = $this->getMock('stdClass', array('getFsRoot'));
+		$app->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/home/exmaple.org'));
+		Core::$app = $app;
+
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
 		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
@@ -60,6 +74,11 @@ class PluginTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getCodeURL()
 	{
+		$app = $this->getMock('stdClass', array('getFsRoot'));
+		$app->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/home/exmaple.org'));
+		Core::$app = $app;
+
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
 		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
@@ -77,6 +96,11 @@ class PluginTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getStyleURL()
 	{
+		$app = $this->getMock('stdClass', array('getFsRoot'));
+		$app->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/home/exmaple.org'));
+		Core::$app = $app;
+
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
 		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';

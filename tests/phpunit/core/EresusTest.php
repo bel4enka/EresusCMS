@@ -45,6 +45,7 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		MockFacade::setMock(null);
+		Core::$app = null;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -67,9 +68,7 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/home/user/public_html/site'));
 
-		$core = $this->getMock('stdClass', array('app'));
-		$core->expects($this->once())->method('app')->will($this->returnValue($app));
-		Core::setMock($core);
+		Core::$app = $app;
 
 		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
 		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));
@@ -106,9 +105,7 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/c:'));
 
-		$core = $this->getMock('stdClass', array('app'));
-		$core->expects($this->once())->method('app')->will($this->returnValue($app));
-		Core::setMock($core);
+		Core::$app = $app;
 
 		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
 		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));

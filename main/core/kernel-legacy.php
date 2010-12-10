@@ -634,7 +634,7 @@ function upload($name, $filename, $overwrite = true)
 function loadTemplate($name)
 # —читывает указанный шаблон
 {
-	$filename = filesRoot.'templates/'.$name.(strpos($name, '.html')===false?'.html':'');
+	$filename = Core::app()->getFsRoot() . '/templates/'.$name.(strpos($name, '.html')===false?'.html':'');
 	if (file_exists($filename)) {
 		$result['html'] = file_get_contents($filename);
 		preg_match('/<!--(.*?)-->/', $result['html'], $result['description']);

@@ -86,7 +86,7 @@ class Plugins
 
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
-		$filename = filesRoot.'ext/'.$name.'.php';
+		$filename = Core::app()->getFsRoot() . '/ext/'.$name.'.php';
 		if (is_file($filename))
 		{
 			/*
@@ -149,7 +149,7 @@ class Plugins
 		{
 			$pluginInfo->delete();
 		}
-		$filename = filesRoot.'ext/'.$name.'.php';
+		$filename = Core::app()->getFsRoot() . '/ext/'.$name.'.php';
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -216,7 +216,7 @@ class Plugins
 		}
 
 		// Путь к файлу плагина
-		$filename = filesRoot . 'ext/' . $name . '.php';
+		$filename = Core::app()->getFsRoot() . '/ext/' . $name . '.php';
 
 		/* Если такого файла нет, возвращаем FASLE */
 		if (!file_exists($filename))
@@ -523,7 +523,7 @@ class Plugin
 		$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
 		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 		$this->urlStyle = $Eresus->style.$this->name.'/';
-		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
+		$filename = Core::app()->getFsRoot() . '/lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
 			include $filename;

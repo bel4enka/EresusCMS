@@ -150,7 +150,24 @@ define('filesRoot', '/home/exmaple.org/');
 
 
 
-class Core extends MockFacade {}
+class Core extends MockFacade
+{
+	public static $app = null;
+
+	public static function app()
+	{
+		if (self::$app == null)
+		{
+			return new UniversalStub();
+		}
+
+		return self::$app;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
 class Doctrine_Core extends MockFacade {}
 class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
