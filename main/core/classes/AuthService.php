@@ -219,6 +219,14 @@ class AuthService implements ServiceInterface
 			$id = intval($_SESSION['user']);
 			$this->user = ORM::getTable('User')->find($id);
 		}
+		elseif (isset($_COOKIE['eresus_auth']))
+		{
+			$cookie = unserialize($_COOKIE['eresus_auth']);
+			if (isset($cookie['u']) && isset($cookie['h']))
+			{
+				$this->loginByHash($cookie['u'], $cookie['h']);
+			}
+		}
 	}
 	//-----------------------------------------------------------------------------
 
