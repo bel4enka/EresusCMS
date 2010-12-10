@@ -142,5 +142,24 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * @covers EresusCMS::getDataDir
+	 */
+	public function test_getDataDir()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$mock = $this->getMockBuilder('EresusCMS')->setMethods(array('getFsRoot'))->
+			disableOriginalConstructor()->getMock();
+		$mock->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/home/example.org'));
+
+		$this->assertEquals('/home/example.org/data', $mock->getDataDir());
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }
