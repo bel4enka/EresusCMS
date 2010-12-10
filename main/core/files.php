@@ -145,13 +145,13 @@ class TFiles
 		global $Eresus;
 
 		$result = array();
-		@$hnd=opendir(filesRoot.$this->root.$dir);
+		@$hnd=opendir(Core::app()->getFsRoot() . $this->root.$dir);
 		if ($hnd) {
 			$i = 0;
 			while (($name = readdir($hnd))!==false) if ($name != '.') {
 				if (empty($dir) && $name == '..') continue;
 				$result[$i]['filename'] = $name;
-				$perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
+				$perm = fileperms(Core::app()->getFsRoot() . $this->root.$dir.'/'.$name);
 				$perm = $perm - 32768;
 				if ($perm < 0) $perm += 16384;
 				$result[$i]['perm'] = '';
@@ -165,10 +165,10 @@ class TFiles
 					$result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
 				}
 				if (function_exists('posix_getpwuid') && !System::isWindows()) {
-					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
+					$result[$i]['owner'] = posix_getpwuid(fileowner(Core::app()->getFsRoot() . $this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
 				} else $result[$i]['owner'] = 'unknown';
-				switch (filetype(filesRoot.$this->root.$dir . $name))
+				switch (filetype(Core::app()->getFsRoot() . $this->root.$dir . $name))
 				{
 					case 'dir':
 						$result[$i]['icon'] = 'folder';
@@ -178,7 +178,7 @@ class TFiles
 					break;
 					case 'file':
 						$result[$i]['link'] = httpRoot . $this->root . $dir . $name;
-						$result[$i]['size'] = number_format(filesize(filesRoot . $this->root . $dir . $name));
+						$result[$i]['size'] = number_format(filesize(Core::app()->getFsRoot() . $this->root . $dir . $name));
 						$result[$i]['action'] = 'new';
 						$result[$i]['icon'] = 'application-octet-stream';
 						if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
@@ -187,7 +187,7 @@ class TFiles
 						}
 					break;
 				}
-				$result[$i]['date'] = strftime("%y-%m-%d %H:%I:%S", filemtime(filesRoot.$this->root.$dir.'/'.$name));
+				$result[$i]['date'] = strftime("%y-%m-%d %H:%I:%S", filemtime(Core::app()->getFsRoot() . $this->root.$dir.'/'.$name));
 				$i++;
 			}
 			closedir($hnd);
@@ -255,7 +255,7 @@ class TFiles
 	{
 	global $Eresus;
 
-		foreach($_FILES as $name => $file) upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
+		foreach($_FILES as $name => $file) upload($name, Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp]);
 		HTTP::goback();
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -270,7 +270,7 @@ class TFiles
 	 */
 	function mkDir()
 	{
-		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
+		$pathname = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
 		FS::driver()->mkDir($pathname, 0777, true);
 		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
@@ -297,15 +297,15 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function renameEntry()
 	{
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
-		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
+		$filename = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
+		$newname = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
 			if (file_exists($filename)) rename($filename, $newname);
 		HttpResponse::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function chmodEntry()
 	{
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
+		$filename = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
 		if (file_exists($filename))
 		{
 			@chmod($filename, octdec(arg('perms', '/\D/')));
@@ -315,8 +315,8 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function copyFile()
 	{
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
-		$dest = filesRoot . $this->root . $this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
+		$filename = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
+		$dest = Core::app()->getFsRoot() . $this->root . $this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
 		if (is_file($filename)) copy($filename, $dest);
 		elseif (is_dir($filename)) {
 		}
@@ -326,8 +326,8 @@ class TFiles
 	function moveFile()
 	{
 		#if (UserRights(ADMIN)) {
-			$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('movefile', FILES_FILTER);
-			$dest = filesRoot.$this->root.$this->pannels[$this->sp=='l'?'r':'l'].arg('movefile', FILES_FILTER);
+			$filename = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('movefile', FILES_FILTER);
+			$dest = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp=='l'?'r':'l'].arg('movefile', FILES_FILTER);
 			if (is_file($filename)) rename($filename, $dest);
 			elseif (is_dir($filename)) {
 			}
@@ -338,7 +338,7 @@ class TFiles
 	function deleteFile()
 	{
 		#if (UserRights(ADMIN)) {
-			$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('delete', FILES_FILTER);
+			$filename = Core::app()->getFsRoot() . $this->root.$this->pannels[$this->sp].arg('delete', FILES_FILTER);
 			if (is_file($filename)) unlink($filename);
 			elseif (is_dir($filename)) {
 				$this->rmDir($filename);
@@ -359,11 +359,11 @@ class TFiles
 		$this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
 		$this->pannels['l'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['l']);
 		$this->pannels['l'] = preg_replace('!^/!', '', $this->pannels['l']);
-		while (!empty($this->pannels['l']) && !is_dir(filesRoot.$this->root.$this->pannels['l'])) $this->pannels['l'] = preg_replace('![^/]+/$!', '', $this->pannels['l']);
+		while (!empty($this->pannels['l']) && !is_dir(Core::app()->getFsRoot() . $this->root.$this->pannels['l'])) $this->pannels['l'] = preg_replace('![^/]+/$!', '', $this->pannels['l']);
 		$this->pannels['r'] = (arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
 		$this->pannels['r'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['r']);
 		$this->pannels['r'] = preg_replace('!^/!', '', $this->pannels['r']);
-		while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
+		while (!empty($this->pannels['r']) && !is_dir(Core::app()->getFsRoot() . $this->root.$this->pannels['r'])) $this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
 		$this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
 		if (!$this->sp)
 		{

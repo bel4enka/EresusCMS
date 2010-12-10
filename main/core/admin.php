@@ -672,7 +672,7 @@ class TAdminUI extends WebPage
 		if (arg('mod'))
 		{
 			$module = arg('mod', '/[^\w-]/');
-			if (file_exists(filesRoot."core/$module.php"))
+			if (file_exists(Core::app()->getFsRoot() . "/core/$module.php"))
 			{
 				include $Eresus->froot . "core/$module.php";
 				$class = "T$module";
@@ -685,7 +685,7 @@ class TAdminUI extends WebPage
 			}
 			else
 			{
-				ErrorMessage(errFileNotFound.': "'.filesRoot."core/$module.php'");
+				ErrorMessage(errFileNotFound.': "'.Core::app()->getFsRoot() . "/core/$module.php'");
 			}
 
 			/*
