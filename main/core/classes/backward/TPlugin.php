@@ -98,7 +98,7 @@ class TPlugin
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
-			Core::safeInclude($filename);
+			include $filename;
 		}
 	}
 	//------------------------------------------------------------------------------

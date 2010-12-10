@@ -226,7 +226,7 @@ class Plugins
 			return false;
 		}
 
-		Core::safeInclude($filename);
+		include $filename;
 		$className = $name;
 
 		/* TODO: Обратная совместимость с версиями до 2.10b2. Отказаться в новых версиях */
@@ -502,7 +502,6 @@ class Plugin
 	 *
 	 * @uses $Eresus
 	 * @uses $locale
-	 * @uses Core::safeInclude
 	 * @uses Plugin::resetPlugin
 	 */
 	public function __construct()
@@ -527,7 +526,7 @@ class Plugin
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
-			Core::safeInclude($filename);
+			include $filename;
 		}
 	}
 	//------------------------------------------------------------------------------

@@ -689,7 +689,7 @@ class TAdminUI extends WebPage
 			$module = arg('mod', '/[^\w-]/');
 			if (file_exists(filesRoot."core/$module.php"))
 			{
-				Core::safeInclude($Eresus->froot . "core/$module.php");
+				include $Eresus->froot . "core/$module.php";
 				$class = "T$module";
 				$this->module = new $class;
 			}
