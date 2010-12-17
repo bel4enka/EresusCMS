@@ -40,6 +40,8 @@ else
 
 require_once dirname(__FILE__) . '/helpers/AllTests.php';
 
+require_once dirname(__FILE__) . '/AdminModuleTest.php';
+require_once dirname(__FILE__) . '/AdminRouteServiceTest.php';
 require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
 require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
@@ -56,7 +58,9 @@ class Core_Classes_AllTests
 
 		$suite->addTest(Core_Classes_Helpers_AllTests::suite());
 
+		$suite->addTestSuite('AdminModuleTest');
 		$suite->addTestSuite('EresusActiveRecordTest');
+		$suite->addTestSuite('AdminRouteServiceTest');
 		$suite->addTestSuite('HtmlElementTest');
 		$suite->addTestSuite('HtmlScriptElementTest');
 		$suite->addTestSuite('ORMTest');

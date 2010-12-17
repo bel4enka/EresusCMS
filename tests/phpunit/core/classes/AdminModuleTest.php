@@ -30,25 +30,21 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/main.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/ORM.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/models/User.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/AuthService.php';
+require_once dirname(__FILE__) . '/../../../../main/core/classes/AdminModule.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class AuthServiceTest extends PHPUnit_Framework_TestCase
+class AdminModuleTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers AuthService::getInstance
+	 * @covers AdminModule::actionIndex
 	 */
-	public function test_interface()
+	public function test_actionIndex()
 	{
-		$test = AuthService::getInstance();
-		$this->assertInstanceOf('ServiceInterface', $test);
+		$test = new AdminModule();
+		$this->assertEmpty($test->actionIndex());
 	}
 	//-----------------------------------------------------------------------------
 

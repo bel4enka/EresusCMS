@@ -4,9 +4,9 @@
  *
  * ${product.description}
  *
- * Таблица автозагрузки классов
+ * Модуль АИ
  *
- * @copyright 2009, Eresus Project, http://eresus.ru/
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -26,30 +26,33 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
  * $Id$
  */
 
-return array(
-	'AdminModule' => 'core/classes/AdminModule.php',
-	'EresusForm' => 'core/EresusForm.php',
-	'I18n' => 'core/i18n.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-	'WebServer' => 'core/classes/WebServer.php',
-	'WebPage' => 'core/classes/WebPage.php',
-
-	/* Службы */
-	'AdminRouteService' => 'core/classes/AdminRouteService.php',
-	'AuthService' => 'core/classes/AuthService.php',
-
-	/* ORM */
-	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
-	'EresusQuery' => 'core/classes/EresusQuery.php',
-	'ORM' => 'core/classes/ORM.php',
-
-	/* Обратная совместимость */
-	'TPlugin' => 'core/classes/backward/TPlugin.php',
-	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
-	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
-);
+/**
+ * Модуль АИ
+ *
+ * @package EresusCMS
+ * @since 2.16
+ */
+class AdminModule
+{
+	/**
+	 * Метод должен возвращать разметку интерфейса модуля
+	 *
+	 * Потомки должны перекрывать этот метод
+	 *
+	 * @params array $params дополнительные параметры из запроса
+	 *
+	 * @return string HTML
+	 *
+	 * @since 2.16
+	 */
+	public function actionIndex($params = array())
+	{
+		return '';
+	}
+	//-----------------------------------------------------------------------------
+}

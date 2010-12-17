@@ -55,6 +55,16 @@ interface ServiceInterface
 
 
 /**
+ * Исключение "Страница не найдена"
+ *
+ * @package EresusCMS
+ * @since 2.16
+ */
+class PageNotFoundException extends DomainException {}
+
+
+
+/**
  * Класс приложения Eresus CMS
  *
  * @package EresusCMS
