@@ -168,13 +168,18 @@ class AdminRouteService implements ServiceInterface
 	/**
 	 * Вызывает запрошенный модуль и возвращает результат
 	 *
-	 * @return string  HTML
+	 * @return string|false  HTML
 	 *
 	 * @since 2.16
 	 */
 	public function call()
 	{
 		$action = $this->getAction();
+		if (is_null($action))
+		{
+			return false;
+		}
+
 		return call_user_func($action, $this->params);
 	}
 	//-----------------------------------------------------------------------------
@@ -187,7 +192,7 @@ class AdminRouteService implements ServiceInterface
 	 * @throws PageNotFoundException  если нет файла модуля
 	 * @throws LogicException  если нет класса модуля или этот класс не ялвяется потомком AdminModule
 	 *
-	 * @return AdminModule
+	 * @return AdminModule|null
 	 *
 	 * @since 2.16
 	 */
@@ -200,8 +205,7 @@ class AdminRouteService implements ServiceInterface
 
 		if (empty($this->moduleName))
 		{
-				EresusLogger::log(__METHOD__, LOG_WARNING, 'No module specified');
-				throw new PageNotFoundException;
+			return null;
 		}
 		else
 		{
@@ -244,6 +248,12 @@ class AdminRouteService implements ServiceInterface
 	 */
 	public function getAction()
 	{
+		$module = $this->getModule();
+		if (is_null($module))
+		{
+			return null;
+		}
+
 		if (empty($this->actionName))
 		{
 			$action = 'actionIndex';
@@ -252,8 +262,6 @@ class AdminRouteService implements ServiceInterface
 		{
 			$action = 'action' . $this->actionName;
 		}
-
-		$module = $this->getModule();
 
 		if (!method_exists($module, $action))
 		{

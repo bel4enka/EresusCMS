@@ -153,7 +153,6 @@ class AdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers AdminRouteService::getModule
-	 * @expectedException PageNotFoundException
 	 */
 	public function test_getModule_default()
 	{
@@ -168,7 +167,7 @@ class AdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$pModuleName->setAccessible(true);
 		$pModuleName->setValue($test, '');
 
-		$test->getModule();
+		$this->assertNull($test->getModule());
 	}
 	//-----------------------------------------------------------------------------
 
