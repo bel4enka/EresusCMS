@@ -37,7 +37,7 @@
  * @package EresusCMS
  * @since 2.16
  */
-class AdminModule
+abstract class AdminModule
 {
 	/**
 	 * Метод должен возвращать разметку интерфейса модуля
@@ -50,9 +50,6 @@ class AdminModule
 	 *
 	 * @since 2.16
 	 */
-	public function actionIndex($params = array())
-	{
-		return '';
-	}
+	abstract public function actionIndex($params = array());
 	//-----------------------------------------------------------------------------
 }

@@ -153,6 +153,7 @@ class AdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers AdminRouteService::getModule
+	 * @expectedException PageNotFoundException
 	 */
 	public function test_getModule_default()
 	{
@@ -167,9 +168,7 @@ class AdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$pModuleName->setAccessible(true);
 		$pModuleName->setValue($test, '');
 
-		$result = $test->getModule();
-		$this->assertEquals('AdminModule', get_class($result));
-		$this->assertSame($result, $test->getModule());
+		$test->getModule();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -357,7 +356,7 @@ class AdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('modules'));
 		$module = new vfsStreamFile('example2.php');
-		$module->setContent('<?php class Example2Module extends AdminModule {}');
+		$module->setContent('<?php class Example2Module extends AdminModule {function actionIndex($p = array()){return "";}}');
 		$htdocs->getChild('admin')->getChild('modules')->addChild($module);
 
 		$this->assertInstanceOf('AdminModule', $test->getModule());

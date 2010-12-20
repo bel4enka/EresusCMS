@@ -200,7 +200,8 @@ class AdminRouteService implements ServiceInterface
 
 		if (empty($this->moduleName))
 		{
-			$module = new AdminModule();
+				EresusLogger::log(__METHOD__, LOG_WARNING, 'No module specified');
+				throw new PageNotFoundException;
 		}
 		else
 		{
