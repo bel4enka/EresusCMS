@@ -280,8 +280,10 @@ class AuthService implements ServiceInterface
 	 * @since 2.16
 	 */
 	private function __construct()
+	// @codeCoverageIgnoreStart
 	{
 	}
+	// @codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
 
 	/**
