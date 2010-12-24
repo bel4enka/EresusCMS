@@ -39,8 +39,8 @@ if (class_exists('PHP_CodeCoverage_Filter', false))
 
 	if (version_compare(PHP_VERSION, '5.3', '<'))
 	{
-		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/classes/backward/TPlugin.php');
-		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/classes/backward/TContentPlugin.php');
+		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
+		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
 	}
 	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
 	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/editarea/eresus-connector.php');
