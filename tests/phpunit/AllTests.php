@@ -37,7 +37,7 @@ if (class_exists('PHP_CodeCoverage_Filter', false))
 
 	$root = realpath(dirname(__FILE__) . '/../..');
 
-	if (version_compare(PHP_VERSION, '5.3', '>='))
+	if (version_compare(PHP_VERSION, '5.3', '<'))
 	{
 		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/classes/backward/TPlugin.php');
 		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/classes/backward/TContentPlugin.php');
