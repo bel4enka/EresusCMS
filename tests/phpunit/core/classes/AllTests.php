@@ -49,6 +49,7 @@ require_once dirname(__FILE__) . '/ORMTest.php';
 require_once dirname(__FILE__) . '/AuthServiceTest.php';
 require_once dirname(__FILE__) . '/WebPageTest.php';
 require_once dirname(__FILE__) . '/PluginTest.php';
+require_once dirname(__FILE__) . '/EresusExtensionConnectorTest.php';
 
 class Core_Classes_AllTests
 {
@@ -67,6 +68,7 @@ class Core_Classes_AllTests
 		$suite->addTestSuite('AuthServiceTest');
 		$suite->addTestSuite('WebPageTest');
 		$suite->addTestSuite('PluginTest');
+		$suite->addTestSuite('EresusExtensionConnectorTest');
 
 		return $suite;
 	}

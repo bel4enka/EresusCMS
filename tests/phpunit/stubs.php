@@ -216,9 +216,14 @@ class FS extends MockFacade
  * @subpackage Tests
  * @since 2.15
  */
-class EresusRuntimeException extends Exception
-{
-}
+class EresusRuntimeException extends Exception {}
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.15
+ */
+class ExitException extends Exception {}
 
 /**
  * @package EresusCMS
