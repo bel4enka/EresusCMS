@@ -45,9 +45,9 @@ require_once dirname(__FILE__) . '/AdminRouteServiceTest.php';
 require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
 require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
-require_once dirname(__FILE__) . '/ORMTest.php';
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
+	require_once dirname(__FILE__) . '/ORMTest.php';
 	require_once dirname(__FILE__) . '/AuthServiceTest.php';
 }
 require_once dirname(__FILE__) . '/WebPageTest.php';
@@ -67,9 +67,9 @@ class Core_Classes_AllTests
 		$suite->addTestSuite('AdminRouteServiceTest');
 		$suite->addTestSuite('HtmlElementTest');
 		$suite->addTestSuite('HtmlScriptElementTest');
-		$suite->addTestSuite('ORMTest');
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
+			$suite->addTestSuite('ORMTest');
 			$suite->addTestSuite('AuthServiceTest');
 		}
 		$suite->addTestSuite('WebPageTest');
