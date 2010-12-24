@@ -171,8 +171,6 @@
 		  </filterchain>
 		</copy>
 		
-		<chmod file="${build.dir}/var/log/eresus.log" mode="0666" />
-		
 		<!-- Eresus Core -->
 		<phing phingfile="build.xml" dir="3rdparty/eresus-core" inheritAll="false">
 			<property name="type" value="builtin" override="yes" />
