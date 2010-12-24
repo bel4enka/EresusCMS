@@ -1,0 +1,29 @@
+--- ext-3rd/elfinder/connectors/php/elFinder.class.php
++++ ext-3rd/elfinder/connectors/php/elFinder.class.php
+@@ -260,7 +260,7 @@
+ 				
+ 		if ($this->_options['tmbDir']) {
+ 			$tmbDir = $this->_options['root'].DIRECTORY_SEPARATOR.$this->_options['tmbDir'];
+-			$this->_options['tmbDir'] = is_dir($tmbDir) || @mkdir($tmbDir, $this->_options['dirMode']) ? $tmbDir : '';
++			$this->_options['tmbDir'] = is_dir($tmbDir) || @elfinder_mkdir($tmbDir, $this->_options['dirMode']) ? $tmbDir : '';
+ 		}
+ 		if ($this->_options['tmbDir']) {
+ 			if (!in_array($this->_options['imgLib'], array('imagick', 'mogrify', 'gd'))) {
+@@ -485,7 +485,7 @@
+ 			$this->_result['error'] = 'Invalid name';
+ 		} elseif (file_exists($dir.DIRECTORY_SEPARATOR.$name)) {
+ 			$this->_result['error'] = 'File or folder with the same name already exists';
+-		} elseif (!@mkdir($dir.DIRECTORY_SEPARATOR.$name, $this->_options['dirMode'])) {
++		} elseif (!@elfinder_mkdir($dir.DIRECTORY_SEPARATOR.$name, $this->_options['dirMode'])) {
+ 			$this->_result['error'] = 'Unable to create folder';
+ 		} else {
+ 			$this->_logContext['dir'] = $dir.DIRECTORY_SEPARATOR.$name;
+@@ -1185,7 +1185,7 @@
+ 			@chmod($trg, $this->_options['fileMode']);
+ 		} else {
+ 			
+-			if (!@mkdir($trg, $this->_options['dirMode'])) {
++			if (!@elfinder_mkdir($trg, $this->_options['dirMode'])) {
+ 				return $this->_errorData($src, 'Unable to copy files');
+ 			}
+ 			

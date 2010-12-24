@@ -55,6 +55,27 @@ interface ServiceInterface
 
 
 /**
+ * Интерфейс коннектора файлового менеджера
+ *
+ * @package EesusCMS
+ * @since 2.16
+ */
+interface FileManagerConnectorInterface
+{
+	/**
+	 * Метод должен возвращать разметку для файлового менеджера директории data.
+	 *
+	 * @return string HTML
+	 *
+	 * @since 2.16
+	 */
+	public function getDataBrowser();
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/**
  * Исключение "Страница не найдена"
  *
  * @package EresusCMS

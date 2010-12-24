@@ -4,9 +4,9 @@
  *
  * ${product.description}
  *
- * Таблица автозагрузки классов
+ * Файлвовый менеджер
  *
- * @copyright 2009, Eresus Project, http://eresus.ru/
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -26,35 +26,28 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package EresusCMS
  *
- * $Id$
+ * $Id: AuthService.php 1277 2010-12-10 12:31:54Z mk $
  */
 
-return array(
-	'AdminModule' => 'core/classes/AdminModule.php',
-	'EresusExtensionConnector' => 'core/classes/EresusExtensionConnector.php',
-	'EresusForm' => 'core/EresusForm.php',
-	'I18n' => 'core/i18n.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-	'WebServer' => 'core/classes/WebServer.php',
-	'WebPage' => 'core/classes/WebPage.php',
-
-	/* Службы */
-	'AdminRouteService' => 'core/classes/AdminRouteService.php',
-	'AuthService' => 'core/classes/AuthService.php',
-
-	/* ORM */
-	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
-	'EresusQuery' => 'core/classes/EresusQuery.php',
-	'ORM' => 'core/classes/ORM.php',
-
-	/* Сторонние компоненты */
-	'elFinderConnector' => 'ext-3rd/elfinder/eresus-connector.php',
-	'elFinder' => 'ext-3rd/elfinder/connectors/php/elFinder.class.php',
-
-	/* Обратная совместимость */
-	'TPlugin' => 'core/classes/backward/TPlugin.php',
-	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
-	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
-);
+/**
+ * Файлвовый менеджер
+ *
+ * @package EresusCMS
+ * @since 2.16
+ */
+class FileManagerModule extends AdminModule
+{
+	/**
+	 * (non-PHPdoc)
+	 * @see AdminModule::actionIndex()
+	 */
+	public function actionIndex($params = array())
+	{
+		$connector = new elFinderConnector();
+		$html = $connector->getDataBrowser();
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+}

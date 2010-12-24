@@ -1,4 +1,4 @@
-#Fri Dec 10 19:33:49 MSK 2010
+#Wed Dec 22 00:11:03 MSK 2010
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
@@ -29,6 +29,7 @@ encoding//main/core/plgmgr.php=windows-1251
 encoding//main/core/settings.php=windows-1251
 encoding//main/core/themes.php=windows-1251
 encoding//main/core/users.php=windows-1251
+encoding//main/ext-3rd/elfinder/js/i18n/elfinder.ru.js=windows-1251
 encoding//main/style/default.css=windows-1251
 encoding//main/templates/default.html=windows-1251
 encoding//main/templates/std/PageSelector.html=windows-1251

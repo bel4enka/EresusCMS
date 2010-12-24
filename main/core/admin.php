@@ -669,6 +669,7 @@ class TAdminUI extends WebPage
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
+
 		if (arg('mod'))
 		{
 			$module = arg('mod', '/[^\w-]/');
@@ -731,6 +732,13 @@ class TAdminUI extends WebPage
 				$result .= ErrorBox($msg);
 			}
 		}
+		else
+		{
+			$router = AdminRouteService::getInstance();
+			$router->init(HTTP::request());
+			$result = $router->call();
+		}
+
 		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
 			$messages = '';
 			foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
