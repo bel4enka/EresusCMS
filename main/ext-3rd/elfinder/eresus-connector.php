@@ -64,6 +64,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 				{
 					url: "' . $GLOBALS['Eresus']->root . 'ext-3rd/elfinder/databrowser.php",
 					lang: "ru",
+					height: "500px",
 					places: "",
 					toolbar: [
 						["back", "realod"],
