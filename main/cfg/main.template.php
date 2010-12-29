@@ -71,8 +71,8 @@ $Eresus->conf['db']['name'] = '';
 // Этот параметр управляет параметрами обратной совместимости
 $Eresus->conf['backward'] = array(
 	// Делает доступным класс TPlugin в версиях старше 2.10b
-  'TPlugin' => true,
-  // Делает доступным класс TContentPlugin в версиях старше 2.10b
+	'TPlugin' => true,
+	// Делает доступным класс TContentPlugin в версиях старше 2.10b
 	'TContentPlugin' => true,
 	// Делает доступным класс TListContentPlugin в версиях старше 2.10b
 	'TListContentPlugin' => true,
@@ -91,12 +91,12 @@ $Eresus->conf['backward'] = array(
 
 if ($Eresus->conf['debug']['enable'])
 {
-  ini_set('display_errors', true);
-  error_reporting(E_ALL);
-  $Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
+	ini_set('display_errors', true);
+	error_reporting(E_ALL);
+	$Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
 }
 else
 {
-  ini_set('display_errors', false);
-  error_reporting(0);
+	ini_set('display_errors', false);
+	error_reporting(0);
 }

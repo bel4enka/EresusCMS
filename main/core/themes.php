@@ -300,12 +300,12 @@ class TThemes
 			$jsArray .= "aTemplates['".$key."'] = '".(isset($item['hint'])?$item['hint']:'')."'\n";
 		}
 
-		$page->scripts .= $jsArray."
+		$page->addScripts($jsArray."
 			function onTemplateNameChange()
 			{
 				document.getElementById('templateHint').innerHTML = aTemplates[document.addForm.elements.namedItem('name').value];
 			}
-		";
+		");
 		$form = array(
 			'name' => 'addForm',
 			'caption' => $page->title.admTDiv.admAdd,

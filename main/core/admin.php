@@ -158,8 +158,6 @@ class TAdminUI extends WebPage
 {
 	var $module; # Загружаемый модуль
 	var $title; # Заголовок страницы
-	var $styles; # Стили CSS
-	var $scripts; # Скрипты
 	var $menu; # Меню администратора
 	var $extmenu; # Меню раширений
 	var $sub; # Уровень вложенности
@@ -843,7 +841,7 @@ class TAdminUI extends WebPage
 
 				if (!$item['visible'])
 				{
-					$classes []= 'hidden';
+					$classes []= 'invisible';
 				}
 
 				$classes = implode(' ', $classes);
@@ -977,6 +975,7 @@ class TAdminUI extends WebPage
 		$data['content'] = $this->renderContent();
 		$data['siteName'] = option('siteName');
 		$data['head'] = $this->renderHeadSection();
+		$data['body'] = $this->renderBodySection();
 		$data['cms'] = array(
 			'name' => CMSNAME,
 			'version' => CMSVERSION,

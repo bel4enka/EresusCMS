@@ -2,6 +2,7 @@
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
+encoding//SDK/plugin_template/src/myplugin.php=windows-1251
 encoding//db/mysql-4.sql=windows-1251
 encoding//db/mysql-5.sql=windows-1251
 encoding//ext-3rd/xinha/eresus-connector.php=windows-1251
@@ -10,7 +11,6 @@ encoding//main/admin/themes/default/PluginManager/add-dialog.html=windows-1251
 encoding//main/admin/themes/default/SiteSettings/form.html=windows-1251
 encoding//main/admin/themes/default/misc/about.html=windows-1251
 encoding//main/admin/themes/default/page.default.html=UTF-8
-encoding//main/cfg/extensions.php=windows-1251
 encoding//main/cfg/main.template.php=windows-1251
 encoding//main/cfg/settings.php=windows-1251
 encoding//main/core/admin.php=windows-1251

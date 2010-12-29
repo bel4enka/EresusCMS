@@ -57,9 +57,7 @@ class TSettings
 
 		$result = "  define('$name', ";
 		$quot = "'";
-		$value = is_null($req->arg($name)) ?
-			option($name) :
-			$req->arg($name);
+		$value = isset($_POST[$name]) ? $_POST[$name] : null;
 
 		if (isset($options['nobr']) && $options['nobr'])
 		{
@@ -163,10 +161,14 @@ class TSettings
 			array('name' => 'list','caption' => admPagesContentList),
 			array('name' => 'url','caption' => admPagesContentURL)
 		);
-		if (count($Eresus->plugins->list))
-			foreach ($Eresus->plugins->list as $plugin)
-				if (strpos($plugin['type'], 'content') !== false)
-					$contentTypes []= array('name' => $plugin['name'], 'caption' => $plugin['title']);
+
+		foreach ($Eresus->plugins->items as $plugin)
+		{
+			if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
+			{
+				$contentTypes []= array('name' => $plugin->name, 'caption' => $plugin->title);
+			}
+		}
 
 		$form->setValue('contentTypes', $contentTypes);
 		$form->setValue('contentTypeDefault', option('contentTypeDefault'));

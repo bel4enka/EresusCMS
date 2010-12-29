@@ -442,31 +442,47 @@ class TinyImageManager
 
 
 
-	function UploadFile($dir, $type) {
+	/**
+	 * Выполняет загрузку файла на сервер
+	 *
+	 * @param string $dir
+	 * @param syring $type
+	 *
+	 * @return string
+	 *
+	 * @since 2.14
+	 */
+	function UploadFile($dir, $type)
+	{
 		$dir = $this->AccessDir($dir, $type);
-		if(!$dir) return false;
+		if (!$dir)
+		{
+			return false;
+		}
 
-		if(!is_dir($dir.'/.thumbs')) {
+		if (!is_dir($dir.'/.thumbs'))
+		{
 			mkdir($dir.'/.thumbs');
 		}
 
 		$dbfile = $dir.'/.thumbs/.db';
-		if(is_file($dbfile)) {
-			$dbfilehandle = fopen($dbfile, "r");
-			$dblength = filesize($dbfile);
-			if($dblength>0) $dbdata = fread($dbfilehandle, $dblength);
-			fclose($dbfilehandle);
-			//$dbfilehandle = fopen($dbfile, "w");
-		} else {
-			//$dbfilehandle = fopen($dbfile, "w");
+		if (is_file($dbfile))
+		{
+			$dbdata = file_get_contents($dbfile);
 		}
 
-		if(!empty($dbdata)) {
+		if (!empty($dbdata))
+		{
 			$files = unserialize($dbdata);
-		} else $files = array();
+		}
+		else
+		{
+			$files = array();
+		}
 
-		//Файл из flash-мультизагрузки
-		if(isset($_POST['Filename'])) {
+		/* Файл из flash-мультизагрузки */
+		if (isset($_POST['Filename']))
+		{
 			//Тип (изображение/файл)
 			$pathtype = $_POST['pathtype'];
 			if (strpos($_POST['Filename'], '.') !== false) {
@@ -536,32 +552,49 @@ class TinyImageManager
 				);
 			}
 		}
-		//Файлы из обычной загрузки
-		else {
+		else
+		{
+			/*
+			 * Файлы из обычной загрузки
+			 */
 			sort($_FILES);
 			$ufiles = $_FILES[0];
 
-			foreach ($ufiles['name'] as $k=>$v) {
-				if($ufiles['error'][$k] != 0) continue;
+			foreach ($ufiles['name'] as $k => $v)
+			{
+				if ($ufiles['error'][$k] != 0)
+				{
+					continue;
+				}
 
 				//Тип (изображение/файл)
 				$pathtype = $_POST['pathtype'];
-				if (strpos($ufiles['name'][$k], '.') !== false) {
+				if (strpos($ufiles['name'][$k], '.') !== false)
+				{
 					$extension = end(explode('.', $ufiles['name'][$k]));
 					$filename = substr($ufiles['name'][$k], 0, strlen($ufiles['name'][$k]) - strlen($extension) - 1);
-
-				} else {
+				}
+				else
+				{
 					continue;
 				}
-				if($pathtype == 'images') $allowed = $this->ALLOWED_IMAGES;
-				elseif($pathtype == 'files') $allowed = $this->ALLOWED_FILES;
+
+				if ($pathtype == 'images')
+				{
+					$allowed = $this->ALLOWED_IMAGES;
+				}
+				elseif ($pathtype == 'files')
+				{
+					$allowed = $this->ALLOWED_FILES;
+				}
 				//Если не подходит расширение файла
-				if(!in_array(strtolower($extension),$allowed)) {
+				if (!in_array(strtolower($extension),$allowed))
+				{
 					continue;
 				}
 
 				$md5 = md5_file($ufiles['tmp_name'][$k]);
-				$file = $md5.'.'.$extension;
+				$file = Translit(iconv('utf-8', 'cp1251', $ufiles['name'][$k]));
 
 				//Проверка на изображение
 				if($pathtype == 'images') {
@@ -577,6 +610,12 @@ class TinyImageManager
 					continue;
 				}
 				$link = str_replace(array('/\\','//','\\\\','\\'),'/', '/'.str_replace(realpath(DIR_ROOT),'',realpath($dir.'/'.$file)));
+				if (option('filesModeSetOnUpload'))
+				{
+					$mode = option('filesModeDefault');
+					$mode = empty($mode) ? 0666 : octdec($mode);
+					@chmod($dir . '/' . $file, $mode);
+				}
 				$path = pathinfo($link);
 				$path = $path['dirname'];
 				if($extension=='jpg' || $extension=='jpeg') {
@@ -585,7 +624,7 @@ class TinyImageManager
 
 					$files[$file]['general'] = array(
 						'filename' => $file,
-						'name'	=> $filename,
+						'name'	=> $file,
 						'ext'	=> $extension,
 						'path'	=> $path,
 						'link'	=> $link,
@@ -598,7 +637,7 @@ class TinyImageManager
 				} else {
 					$files[$file]['general'] = array(
 						'filename' => $file,
-						'name'	=> $filename,
+						'name'	=> $file,
 						'ext'	=> $extension,
 						'path'	=> $path,
 						'link'	=> $link,
@@ -618,6 +657,7 @@ class TinyImageManager
 
 		return '';
 	}
+	//-----------------------------------------------------------------------------
 
 
 

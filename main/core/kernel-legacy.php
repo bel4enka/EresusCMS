@@ -446,33 +446,6 @@ function replaceMacros($template, $source)
 # Работа с HTTP-запросом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 /**
- * Заполняет массив значениями из запроса
- *
- * @param array $item        Заполняемый массив или массив ключей
- * @param array $checkboxes  Список аргументов рассматриваемых как чек-боксы
- * @param array $prevent     Список полей массива изменять которые не следует
- *
- * @return array  Заполненный массив
- *
- * @deprecated since 2.10
- */
-function GetArgs($item, $checkboxes = array(), $prevent = array())
-{
-	global $Eresus;
-
-	if ($clear = (key($item) == '0')) $item = array_flip($item);
-	foreach ($item as $key => $value) {
-		if ($clear) unset($item[$key]);
-		if (!in_array($key, $prevent)) {
-			if (!is_null(arg($key))) $item[$key] = arg($key, 'dbsafe');
-			if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
-		}
-	}
-	return $item;
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-/**
  * Возвращает значение аргумента запроса
  *
  * @param string $arg     Имя аргумента
@@ -1157,20 +1130,24 @@ class Eresus
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
 
+		/*
+		 * Установка свойств объекта $Eresus
+		 * Должна выполняться ДО вызова __clearargs
+		 */
+		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
+		$this->host = $request['host'];
+		$this->root = $root.$this->path;
+		$this->data = $this->root.'data/';
+		$this->style = $this->root.'style/';
+
+
 		# Сбор аргументов вызова
 		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
 		# Разбивка параметров вызова скрипта
 		$s = substr($request['path'], strlen($this->path));
 		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
 
-		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
 		$request['path'] = $root.$request['path'];
-
-		# Установка свойств объекта $Eresus
-		$this->host = $request['host'];
-		$this->root = $root.$this->path;
-		$this->data = $this->root.'data/';
-		$this->style = $this->root.'style/';
 
 		# Обратная совместимость
 		# <= 2.9
@@ -1455,7 +1432,7 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = ! (bool) $this->user['id'];
+						$setVisitTime = (! isset($this->uset['id'])) || (! (bool)$this->user['id']);
 						$lastVisit = isset($this->user['lastVisit'])?$this->user['lastVisit']:'';
 						$this->user = $item;
 						$this->user['profile'] = decodeOptions($this->user['profile']);

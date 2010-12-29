@@ -42,11 +42,11 @@
  * стандартным шаблонизатором, а затем специальным парсером расширенных
  * значений, который обрабатывает дополнительные теги и атрибуты.
  *
- * Данные формы отправляются только методом POST
+ * Данные формы отправляются только методом POST.
  *
  * <b>КОДИРОВКИ</b>
  *
- * Внетренней кодировкой форм является UTF-8. Если надо передавать данные и
+ * Внутренней кодировкой форм является UTF-8. Если надо передавать данные и
  * получать HTML в другой кодировке, её следует указать вторым аргументом в
  * конструкторе.
  *
@@ -104,7 +104,7 @@
  * </code>
  *
  * Требования:
- * 1. У тега tabwidget должен быть атрбуит "id"
+ * 1. У тега tabwidget должен быть атрибут "id"
  *
  * Вложенные теги:
  * - tabcontrol
@@ -502,8 +502,10 @@ class EresusForm
 		$this->template = $template;
 
 		if ($charset)
+		{
 			$this->charset = strtoupper($charset);
-/*		if ($this->mode == self::PROCESS) {
+		}
+		/*		if ($this->mode == self::PROCESS) {
 
 			$this->request = HTTP::request();
 
@@ -521,7 +523,9 @@ class EresusForm
 	function __destruct()
 	{
 		if ($this->mode == self::PROCESS && $this->invalidData())
+		{
 			$this->sessionStore();
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -545,7 +549,7 @@ class EresusForm
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$page->linkScripts($Eresus->root . 'core/EresusForm.js');
+		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'defer', 'async');
 
 		$html = $this->parseExtended();
 		$html = $this->fromUTF($html);
@@ -577,8 +581,10 @@ class EresusForm
 	protected function toUTF($text)
 	{
 		if ($this->charset != 'UTF-8')
+		{
 			$text = iconv($this->charset, 'UTF-8', $text);
-			return $text;
+		}
+		return $text;
 	}
 	//--------------------------------------------------------------------
 
@@ -590,7 +596,9 @@ class EresusForm
 	protected function fromUTF($text)
 	{
 		if ($this->charset != 'UTF-8')
+		{
 			$text = iconv('UTF-8', $this->charset, $text);
+		}
 		return $text;
 	}
 	//--------------------------------------------------------------------
@@ -613,7 +621,8 @@ class EresusForm
 	 */
 	protected function sessionRestore()
 	{
-		if (isset($_SESSION[get_class($this)][$this->id])) {
+		if (isset($_SESSION[get_class($this)][$this->id]))
+		{
 			$this->unpackData($_SESSION[get_class($this)][$this->id]);
 			unset($_SESSION[get_class($this)][$this->id]);
 		}
@@ -642,37 +651,39 @@ class EresusForm
 		$tags = $this->xml->getElementsByTagName('*');
 		$collapsable = array('br', 'hr', 'input');
 
-		for($i = 0; $i < $tags->length; $i++) {
-
+		for ($i = 0; $i < $tags->length; $i++)
+		{
 			$node = $tags->item($i);
 
 			$isElement = $node->nodeType == XML_ELEMENT_NODE;
 
-			if ($isElement) {
-
+			if ($isElement)
+			{
 				$hasAttributes = $isElement && $node->hasAttributes();
-			 	if ($hasAttributes) {
-
+				if ($hasAttributes)
+				{
 					$attrs = $node->attributes;
-					for($j = 0; $j < $attrs->length; $j++) {
+					for ($j = 0; $j < $attrs->length; $j++)
+					{
 						$attr = $attrs->item($j);
-						if ($attr->namespaceURI == self::NS) {
+						if ($attr->namespaceURI == self::NS)
+						{
 							$this->extendedAttr($node, $attr);
-							$j--; // в extendedAttr текущий атрибут удаляется, поэому следующим шагом рассматривается элемент с тем же индексом
+							/*
+							 * в extendedAttr текущий атрибут удаляется, поэтому следующим шагом рассматривается
+							 * элемент с тем же индексом
+							 */
+							$j--;
 						}
 					}
-
 				}
 
-				if ($node->textContent === '' && !in_array($node->nodeName, $collapsable)) {
-
+				if ($node->textContent === '' && !in_array($node->nodeName, $collapsable))
+				{
 					$cdata = $this->xml->createCDATASection('');
 					$node->appendChild($cdata);
-
 				}
-
 			}
-
 		}
 
 		$id = $this->xml->firstChild->nextSibling->getAttribute('id');
@@ -683,11 +694,18 @@ class EresusForm
 		 * Если в сессии установлен флаг isInvalid, вызываем перепроверку формы
 		 */
 		if ($this->mode == self::INPUT && $this->isInvalid)
+		{
 			$this->js []= 'validate(true);';
+		}
 
-		$this->js []= 'showFormMessages();'; // необходимо для отображения сообщений об ошибках, найденных на сервере
-		if ($this->js) {
-			foreach ($this->js as $command) $scriptContents .= "$id.$command\n";
+		// необходимо для отображения сообщений об ошибках, найденных на сервере
+		$this->js []= 'showFormMessages();';
+		if ($this->js)
+		{
+			foreach ($this->js as $command)
+			{
+				$scriptContents .= "$id.$command\n";
+			}
 		}
 		$scriptContents .= "});";
 		$script = $this->xml->createElement('script', $scriptContents);
@@ -711,7 +729,8 @@ class EresusForm
 	{
 		$node = $this->xml->createElement('div');
 		$node->setAttribute('class', 'form-messages');
-		$this->xml->firstChild->nextSibling->insertBefore($node, $this->xml->firstChild->nextSibling->firstChild);
+		$this->xml->firstChild->nextSibling->
+			insertBefore($node, $this->xml->firstChild->nextSibling->firstChild);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -726,15 +745,23 @@ class EresusForm
 	{
 		$list = $this->childrenAsArray($branch->childNodes);
 
-		for($i = 0; $i < count($list); $i++) {
+		for ($i = 0; $i < count($list); $i++)
+		{
 			$node = $list[$i];
 			if ($node->namespaceURI == self::NS)
+			{
 				$node = $this->processExtendedNode($node);
+			}
 
 			if ($node && in_array($node->nodeName, $this->inputs))
+			{
 				$node = $this->processInput($node);
+			}
 
-			if ($node) $this->processBranch($node);
+			if ($node)
+			{
+				$this->processBranch($node);
+			}
 			//$this->processExtendedAttributes($node);
 		}
 
@@ -753,23 +780,31 @@ class EresusForm
 		/*
 		 * Подставляем предопределённые значения
 		 */
-		if ($name) {
-
-			if (isset($this->values[$name])) {
-
-				switch ($node->nodeName) {
-
+		if ($name)
+		{
+			if (isset($this->values[$name]))
+			{
+				switch ($node->nodeName)
+				{
 					case 'input':
 
-						switch ($node->getAttribute('type')) {
-							case 'password': break;
+						switch ($node->getAttribute('type'))
+						{
+							case 'password':
+							break;
 
 							case 'checkbox':
-								if ($this->values[$name]) $node->setAttribute('checked', 'checked');
+								if ($this->values[$name])
+								{
+									$node->setAttribute('checked', 'checked');
+								}
 							break;
 
 							case 'radio':
-								if ($node->getAttribute('value') == $this->values[$name]) $node->setAttribute('checked', 'checked');
+								if ($node->getAttribute('value') == $this->values[$name])
+								{
+									$node->setAttribute('checked', 'checked');
+								}
 							break;
 
 							default:
@@ -800,10 +835,13 @@ class EresusForm
 		$handler = 'extendedNode' . $node->localName;
 
 		if (method_exists($this, $handler))
+		{
 			return $this->$handler($node);
-
+		}
 		else
+		{
 			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -846,7 +884,8 @@ class EresusForm
 		$tabDiv = $this->xml->createElement('div');
 		/* Копируем в него содержимое tabwidget */
 		$childNodes = $this->childrenAsArray($node->childNodes);
-		for ($i = 0; $i < count($childNodes); $i++) {
+		for ($i = 0; $i < count($childNodes); $i++)
+		{
 			$child = $childNodes[$i];
 			$tabDiv->appendChild($child->cloneNode(true));
 		}
@@ -855,14 +894,19 @@ class EresusForm
 		$parent->replaceChild($tabDiv, $node);
 
 		$tabControls = $tabDiv->getElementsByTagNameNS(self::NS, 'tabcontrol');
-		for($i = 0; $i < 1; $i++)
+		for ($i = 0; $i < 1; $i++)
+		{
 			$this->extendedNodeTabControl($tabControls->item($i), $id);
+		}
 
 		$tabs = $tabDiv->getElementsByTagNameNS(self::NS, 'tabs');
-		for($i = 0; $i < 1; $i++)
+		for ($i = 0; $i < 1; $i++)
+		{
 			$this->extendedNodeTabs($tabs->item($i), $id);
+		}
 
-		array_unshift($this->js, 'initTabWidget("'.$node->getAttribute('id').'")'); // инициализация вкладок, проводится перед обработкой ошибок
+		// инициализация вкладок, проводится перед обработкой ошибок
+		array_unshift($this->js, 'initTabWidget("'.$node->getAttribute('id').'")');
 
 		return $tabDiv;
 	}
@@ -882,15 +926,18 @@ class EresusForm
 		$newNode = $this->xml->createElement('ul');
 		/* Копируем в него содержимое tabcontrol */
 		$childNodes = $this->childrenAsArray($node->childNodes);
-		for ($i = 0; $i < count($childNodes); $i++) {
+		for ($i = 0; $i < count($childNodes); $i++)
+		{
 			$child = $childNodes[$i];
 			$newNode->appendChild($child->cloneNode(true));
 		}
 		$parent->replaceChild($newNode, $node);
 
 		$tabs = $this->childrenAsArray($newNode->getElementsByTagNameNS(self::NS, 'tab'));
-		for($i = 0; $i < count($tabs); $i++)
+		for ($i = 0; $i < count($tabs); $i++)
+		{
 			$this->extendedNodeTab($tabs[$i], $id);
+		}
 
 		return $newNode;
 	}
@@ -911,14 +958,16 @@ class EresusForm
 		$newNode->setAttribute('class', 'tab-widget-tabs');
 		/* Копируем в него содержимое tabs */
 		$childNodes = $this->childrenAsArray($node->childNodes);
-		for ($i = 0; $i < count($childNodes); $i++) {
+		for ($i = 0; $i < count($childNodes); $i++)
+		{
 			$child = $childNodes[$i];
 			$newNode->appendChild($child->cloneNode(true));
 		}
 		$parent->replaceChild($newNode, $node);
 
 		$tabs = $this->childrenAsArray($newNode->getElementsByTagNameNS(self::NS, 'tab'));
-		for($i = 0; $i < count($tabs); $i++) {
+		for ($i = 0; $i < count($tabs); $i++)
+		{
 			$this->extendedNodeTabContent($tabs[$i], $id);
 		}
 
@@ -965,7 +1014,8 @@ class EresusForm
 		$newNode->appendChild($msgNode);
 		/* Копируем в него содержимое tab */
 		$childNodes = $this->childrenAsArray($node->childNodes);
-		for ($i = 0; $i < count($childNodes); $i++) {
+		for ($i = 0; $i < count($childNodes); $i++)
+		{
 			$child = $childNodes[$i];
 			$newNode->appendChild($child->cloneNode(true));
 		}
@@ -989,7 +1039,9 @@ class EresusForm
 		/* Атрибут required */
 		$required = $node->getAttribute('required');
 		if ($required)
+		{
 			$this->js []= "addValidator('required', '$to', '$required');";
+		}
 
 		/* Удаляём тег */
 		$parent->removeChild($node);
@@ -1009,10 +1061,13 @@ class EresusForm
 		$handler = 'extendedAttr' . $attr->name;
 
 		if (method_exists($this, $handler))
+		{
 			$this->$handler($node, $attr);
-
+		}
 		else
+		{
 			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm attribute "%s"', $attr->name);
+		}
 
 		$node->removeAttributeNode($attr);
 	}
@@ -1110,13 +1165,18 @@ class EresusForm
 	{
 		$list = $this->childrenAsArray($branch->childNodes);
 
-		for($i = 0; $i < count($list); $i++) {
+		for ($i = 0; $i < count($list); $i++)
+		{
 			$node = $list[$i];
 
 			if (in_array($node->nodeName, $this->inputs))
+			{
 				$this->validateInput($node);
-			else if ($node->nodeName == 'fc:attach')
+			}
+			elseif ($node->nodeName == 'fc:attach')
+			{
 				$this->validateAttach($node);
+			}
 
 			$this->validateInputs($node);
 		}
@@ -1133,40 +1193,54 @@ class EresusForm
 	{
 		$hasAttributes = $node->hasAttributes();
 
-	 	if ($hasAttributes) {
-
+		if ($hasAttributes)
+		{
 			$name = $node->getAttribute('name');
 
 			$attrs = $node->attributes;
 
-			for($i = 0; $i < $attrs->length; $i++) {
-
+			for ($i = 0; $i < $attrs->length; $i++)
+			{
 				$attr = $attrs->item($i);
-				if ($attr->namespaceURI == self::NS) switch ($attr->localName) {
-					case 'required':
-						$value = $this->getValue($name);
-						if ($value === '' || is_null($value)) {
-							if ($node->nodeName == 'input' && $node->getAttribute('type') == 'radio') { // для радиокнопок
-								$this->invalidValue('input[name='.$name.']', 'required'); // проверить (и пометить, если нужно) это поле
-							} else {
-								$id = $node->getAttribute('id');
-								$this->invalidValue('#'.$id, 'required'); // проверить (и пометить, если нужно) это поле
+				if ($attr->namespaceURI == self::NS)
+				{
+					switch ($attr->localName)
+					{
+						case 'required':
+							$value = $this->getValue($name);
+							if ($value === '' || is_null($value))
+							{
+								if ($node->nodeName == 'input' && $node->getAttribute('type') == 'radio')
+								{
+									// для радиокнопок
+									// проверить (и пометить, если нужно) это поле
+									$this->invalidValue('input[name='.$name.']', 'required');
+								}
+								else
+								{
+									$id = $node->getAttribute('id');
+									// проверить (и пометить, если нужно) это поле
+									$this->invalidValue('#'.$id, 'required');
+								}
 							}
-						}
-					break;
+						break;
+					}
 				}
-
 			}
-
 		}
-
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обработка тега fc:attach
+	 *
 	 * Дает клиенту комманду проверить элементы при загрузке страницы
-	 * Пример использования тега: <fc:attach to="input[name=catalogSections]" required="Вы должны выбрать раздел каталога" />
+	 *
+	 * Пример использования тега:
+	 * <code>
+	 * <fc:attach to="input[name=catalogSections]" required="Вы должны выбрать раздел каталога" />
+	 * </code>
+	 *
 	 * @param DOMNode $node
 	 */
 	protected function validateAttach($node)
@@ -1196,10 +1270,9 @@ class EresusForm
 	 */
 	public function getValue($name)
 	{
-		if (! isset($this->values[$name])) {
-
+		if (! isset($this->values[$name]))
+		{
 			$this->values[$name] = $this->request->arg($name);
-
 		}
 
 		return $this->values[$name];
@@ -1284,8 +1357,6 @@ class EresusForm
 	 */
 	protected function loadXML()
 	{
-		global $locale;
-
 		$tmpl = new Template($this->template);
 		$html = $tmpl->compile($this->values);
 
@@ -1313,11 +1384,20 @@ class EresusForm
 	protected function childrenAsArray($nodeList)
 	{
 		$result = array();
-		if (! is_object($nodeList)) return $result;
-		if (! ($nodeList instanceof DOMNodeList)) return $result;
+		if (! is_object($nodeList))
+		{
+			return $result;
+		}
 
-		for($i = 0; $i < $nodeList->length; $i++)
+		if (! ($nodeList instanceof DOMNodeList))
+		{
+			return $result;
+		}
+
+		for ($i = 0; $i < $nodeList->length; $i++)
+		{
 			$result []= $nodeList->item($i);
+		}
 
 		return $result;
 	}
@@ -1338,7 +1418,9 @@ class EresusForm
 			if (!is_null($attributes))
 			{
 				foreach ($attributes as $attr)
+				{
 					$target->setAttribute($attr->name, $attr->value);
+				}
 			}
 		}
 
@@ -1357,12 +1439,12 @@ class EresusForm
 	 */
 	protected function valueOf(DOMNode $node)
 	{
-		switch ($node->nodeName) {
-
+		switch ($node->nodeName)
+		{
 			case 'input':
 
-				switch ($node->getAttribute('type')) {
-
+				switch ($node->getAttribute('type'))
+				{
 					case 'checkbox':
 						return $node->getAttribute('checked') ? $node->getAttribute('value') : false;
 					break;
@@ -1379,9 +1461,9 @@ class EresusForm
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Определения режима проверки ошибок на JavaScript
+	 * Определение режима проверки ошибок на JavaScript
 	 *
-	 * TODO Переименовать в detectAutoValidate
+	 * @return void
 	 */
 	protected function detectAutoValidate()
 	{
@@ -1391,7 +1473,8 @@ class EresusForm
 		{
 			$value = $this->xml->firstChild->nextSibling->getAttributeNS(self::NS, 'validate');
 
-			switch ($value) {
+			switch ($value)
+			{
 				case '':
 				case '0':
 				case 'false':

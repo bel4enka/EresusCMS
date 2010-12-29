@@ -397,15 +397,18 @@ class Form
 			}
 		}
 		$this->onsubmit .= $this->validator;
-		if (!empty($this->onsubmit)) $page->scripts .= "
-			function ".$this->form['name']."Submit()
-			{
-				var result = true;
-				var form = document.forms.namedItem('".$this->form['name']."');
-				".$this->onsubmit.";
-				return result;
-			}
-		";
+		if (!empty($this->onsubmit))
+		{
+			$page->addScripts("
+				function ".$this->form['name']."Submit()
+				{
+					var result = true;
+					var form = document.forms.namedItem('".$this->form['name']."');
+					".$this->onsubmit.";
+					return result;
+				}
+			");
+		}
 		# FIXME: sub_id - устаревший элемент
 		$referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
 		$this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
