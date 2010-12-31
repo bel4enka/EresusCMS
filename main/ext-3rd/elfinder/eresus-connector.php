@@ -83,6 +83,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	/**
 	 * (non-PHPdoc)
 	 * @see EresusExtensionConnector::proxyUnexistent()
+	 *
 	 */
 	protected function proxyUnexistent($path)
 	{
@@ -95,7 +96,6 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 
 			default:
 				parent::proxyUnexistent($path);
-			break;
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -106,8 +106,9 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	 * @return void
 	 *
 	 * @since 2.16
+	 * @access private "protected" используется для PHPUnit
 	 */
-	private function prepare()
+	protected function prepare()
 	{
 		if ($this->prepared)
 		{
@@ -124,20 +125,16 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Коннектор для работы с директорией data
+	 * Возвращает заготовку для опций elFinder
 	 *
-	 * @return void
+	 * @return array
 	 *
 	 * @since 2.16
+	 * @access private "protected" используется для PHPUnit
 	 */
-	private function dataConnector()
+	protected function getOptions()
 	{
-		global $Eresus;
-
-		$opts = array(
-			'root'            => $Eresus->froot . 'data/',                       // path to root directory
-			'URL'             => $Eresus->root . 'data/', // root directory URL
-			'rootAlias'       => 'data',       // display this instead of root directory name
+		$options = array(
 			//'uploadAllow'   => array('images/*'),
 			//'uploadDeny'    => array('all'),
 			//'uploadOrder'   => 'deny,allow'
@@ -189,8 +186,28 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 			// 		)
 			// 	)
 		);
+		return $options;
+	}
+	//-----------------------------------------------------------------------------
 
-		$fm = new elFinder($opts);
+	/**
+	 * Коннектор для работы с директорией data
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @access private "protected" используется для PHPUnit
+	 */
+	protected function dataConnector()
+	{
+		global $Eresus;
+
+		$options = $this->getOptions();
+		$options['root'] = $Eresus->froot . 'data/';
+		$options['URL'] = $Eresus->root . 'data/';
+		$options['rootAlias'] = 'data';
+
+		$fm = new elFinder($options);
 		$fm->run();
 	}
 	//-----------------------------------------------------------------------------

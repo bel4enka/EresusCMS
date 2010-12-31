@@ -31,37 +31,31 @@
 
 require_once dirname(__FILE__) . '/stubs.php';
 
-if (class_exists('PHP_CodeCoverage_Filter', false))
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+
+$root = realpath(dirname(__FILE__) . '/../..');
+
+if (version_compare(PHP_VERSION, '5.3', '<'))
 {
-	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-
-	$root = realpath(dirname(__FILE__) . '/../..');
-
-	if (version_compare(PHP_VERSION, '5.3', '<'))
-	{
-		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
-		PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
-	}
-	PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
-	if (version_compare(PHP_VERSION, '5.3', '<'))
-	{
-		PHP_CodeCoverage_FIlter::getInstance()->removeDirectoryFromWhitelist($root . '/main/core/models');
-	}
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/editarea/eresus-connector.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/tinymce/eresus-connector.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/elfinder/eresus-connector.php');
-
-	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
-	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/fatal.html.php');
-	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
-	PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/models/User.php');
+	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
+	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
 }
-else
+PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
+if (version_compare(PHP_VERSION, '5.3', '<'))
 {
-	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
+	PHP_CodeCoverage_FIlter::getInstance()->removeDirectoryFromWhitelist($root . '/main/core/models');
 }
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/editarea/eresus-connector.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/tinymce/eresus-connector.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/elfinder/eresus-connector.php');
+
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/fatal.html.php');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/models/User.php');
 
 require_once dirname(__FILE__) . '/core/AllTests.php';
+require_once dirname(__FILE__) . '/ext-3rd/AllTests.php';
 
 class AllTests
 {
@@ -70,6 +64,7 @@ class AllTests
 		$suite = new PHPUnit_Framework_TestSuite('All Tests');
 
 		$suite->addTest(Core_AllTests::suite());
+		$suite->addTest(Ext3rd_AllTests::suite());
 
 		return $suite;
 	}

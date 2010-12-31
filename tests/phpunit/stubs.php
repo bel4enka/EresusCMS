@@ -173,6 +173,7 @@ class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
+class elFinder extends UniversalStub {}
 class EresusLogger extends MockFacade {}
 
 /**
