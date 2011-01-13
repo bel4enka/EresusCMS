@@ -133,7 +133,7 @@ body
 /**
  * Ограничитель по ширине для широких мониторов
  */
-.width-limit
+.l-width-limit
 {
 	max-width: 1200px;
 }
@@ -141,15 +141,14 @@ body
 /**
  * Заголовок страницы
  */
-#header
+.ui-page-header
 {
 	font-size: 12px;
-	height: 32px;
 	line-height: 16px;
 	padding: 0 10px;
 }
 
-	#header h1
+	.ui-page-header h1
 	{
 		color: #ffd700;
 		font-family : Sans, Arial, Helvetica, sans-serif;
@@ -158,15 +157,15 @@ body
 		padding: 0;
 	}
 
-/**
- * Логотип
- */
-#cmsLogo
-{
-	float: right;
-	width: 150px;
-	height: 30px;
-}
+	/**
+	 * Логотип
+	 */
+	.ui-page-header .cms-logo
+	{
+		float: right;
+		width: 150px;
+		height: 30px;
+	}
 
 #body
 {
@@ -1001,6 +1000,7 @@ table.ui-grid.ui-hlines
 	color: #f00;
 	text-decoration: none;
 }
+
 
 /**
  * Меню "Контент"

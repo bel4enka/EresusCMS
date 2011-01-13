@@ -18,20 +18,23 @@
 </head>
 <body>
 
-	<div id="header" class="header ui-widget-header">
-		<div class="width-limit">
-			<div id="cmsLogo">
+	<div class="header ui-widget-header ui-page-header">
+		<div class="l-width-limit">
+		
+			<div class="cms-logo">
 				<a href="admin.php?mod=about">
 					<img src="{$siteRoot}/admin/themes/default/img/logo.png" alt="{$cms.name} {$cms.version}"
 						width="150" height="30" />
 				</a>
 			</div>
-			<h1>{$siteName} &ndash; {$page->title}</h1>
+
+			<h1>{$siteName}</h1>
 			CMS {$cms.name} {$cms.version}
+			
 		</div>
 	</div>
 
-	<div class="width-limit">
+	<div class="l-width-limit">
 		<div class="nav sidebar">
 
 			<div class="box ui-widget ui-widget-content">
