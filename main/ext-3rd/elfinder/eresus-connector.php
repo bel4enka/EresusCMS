@@ -106,7 +106,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	 * @return void
 	 *
 	 * @since 2.16
-	 * @access private "protected" используется для PHPUnit
+	 * @access private
 	 */
 	protected function prepare()
 	{
@@ -130,7 +130,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	 * @return array
 	 *
 	 * @since 2.16
-	 * @access private "protected" используется для PHPUnit
+	 * @access private
 	 */
 	protected function getOptions()
 	{
@@ -196,7 +196,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	 * @return void
 	 *
 	 * @since 2.16
-	 * @access private "protected" используется для PHPUnit
+	 * @access private
 	 */
 	protected function dataConnector()
 	{
