@@ -864,14 +864,30 @@ class TAdminUI extends WebPage
 			}
 
 		for ($section = 0; $section < count($this->menu); $section++)
-			if (UserRights($this->menu[$section]['access'])) {
-				$menu .= '<div class="header">'.$this->menu[$section]['caption'].'</div><div class="content">';
-				foreach ($this->menu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->menu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
-					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
-					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+		{
+			if (UserRights($this->menu[$section]['access']))
+			{
+				$menu .= '<div class="header">' . $this->menu[$section]['caption'] .
+					'</div><div class="content">';
+				foreach ($this->menu[$section]['items'] as $item)
+				{
+					if (
+						UserRights(isset($item['access']) ? $item['access'] : $this->menu[$section]['access']) &&
+						(!(isset($item['disabled']) && $item['disabled']))
+					)
+					{
+						if ($item['link'] == arg('mod'))
+						{
+							$this->title = $item['caption'];
+						}
+						$menu .= '<div ' . ($item['link'] == arg('mod') ? 'class="selected"' : '') .
+							"><a href=\"" . httpRoot . "admin.php?mod=" . $item['link'] . "\" title=\"" .
+							$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
+					}
 				}
 				$menu .= "</div>\n";
 			}
+		}
 
 		return $menu;
 	}
