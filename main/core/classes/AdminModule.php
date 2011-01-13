@@ -44,7 +44,7 @@ abstract class AdminModule
 	 *
 	 * Потомки должны перекрывать этот метод
 	 *
-	 * @params array $params дополнительные параметры из запроса
+	 * @param array $params дополнительные параметры из запроса
 	 *
 	 * @return string HTML
 	 *
