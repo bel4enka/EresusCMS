@@ -57,7 +57,7 @@ interface ServiceInterface
 /**
  * Интерфейс коннектора файлового менеджера
  *
- * @package EesusCMS
+ * @package EresusCMS
  * @since 2.16
  */
 interface FileManagerConnectorInterface
