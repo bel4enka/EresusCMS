@@ -32,6 +32,10 @@
  */
 
 return array(
+
+	/* Domain */
+	'Plugins' => 'core/classes/Plugins.php',
+
 	'AdminModule' => 'core/classes/AdminModule.php',
 	'EresusExtensionConnector' => 'core/classes/EresusExtensionConnector.php',
 	'EresusForm' => 'core/EresusForm.php',
