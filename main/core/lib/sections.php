@@ -83,7 +83,7 @@ class Sections
 	{
 		if ($force || !$this->index)
 		{
-			$query = ORM::getTable('Section')->createQuery('s')->select('s.id, s.owner')->
+			$query = EresusORM::getTable('Section')->createQuery('s')->select('s.id, s.owner')->
 				orderBy('s.position');
 			$items = $query->fetchArray();
 			if ($items)
