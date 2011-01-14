@@ -27,6 +27,7 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
+ * @subpackage AccessControl
  *
  * $Id$
  */
@@ -35,6 +36,7 @@
  * Служба аутентификации
  *
  * @package EresusCMS
+ * @subpackage AccessControl
  * @since 2.16
  */
 class AuthService implements ServiceInterface

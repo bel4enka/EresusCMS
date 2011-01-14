@@ -27,6 +27,7 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
+ * @subpackage DBAL
  *
  * $Id$
  */
@@ -35,6 +36,7 @@
  * Активная запись
  *
  * @package EresusCMS
+ * @subpackage DBAL
  * @since 2.16
  */
 class EresusActiveRecord extends Doctrine_Record
