@@ -158,23 +158,11 @@ class Plugins
 	/**
 	 * Производит предварительную загрузку плагинов
 	 *
-	 * @param array $include [deprecated]
-	 * @param array $exclude [deprecated]
 	 * @return void
 	 */
-	function preload($include = null, $exclude = null)
+	function preload()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
-
-		if (!is_null($exclude))
-		{
-			EresusLogger::log(__METHOD__, LOG_NOTICE, '$exclude argument is deprecated');
-		}
-
-		if (!is_null($include))
-		{
-			EresusLogger::log(__METHOD__, LOG_NOTICE, '$include argument is deprecated');
-		}
 
 		if (count($this->list))
 		{
