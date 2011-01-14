@@ -38,32 +38,38 @@ require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusActiveRec
 class EresusActiveRecordTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusActiveRecord::unserialize
+	 * @covers EresusActiveRecord::unserializeAccessor
 	 */
-	public function test_unserialize()
+	public function test_unserializeAccessor()
 	{
-		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test = $this->getMock('EresusActiveRecord', array('_set', '_get'));
 		$test->expects($this->once())->method('_set')->with('a', array());
-		$test->unserialize(null, true, 'a');
+		$test->expects($this->once())->method('_get')->with('a', false)->
+			will($this->returnValue(null));
+		$test->unserializeAccessor(true, 'a');
 
-		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test = $this->getMock('EresusActiveRecord', array('_set', '_get'));
 		$test->expects($this->once())->method('_set')->with('a', array());
-		$test->unserialize('', true, 'a');
+		$test->expects($this->once())->method('_get')->with('a', false)->
+			will($this->returnValue(''));
+		$test->unserializeAccessor(true, 'a');
 
-		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test = $this->getMock('EresusActiveRecord', array('_set', '_get'));
 		$test->expects($this->once())->method('_set')->with('a', array('a' => 'b'));
-		$test->unserialize('a:1:{s:1:"a";s:1:"b";}', true, 'a');
+		$test->expects($this->once())->method('_get')->with('a', false)->
+			will($this->returnValue('a:1:{s:1:"a";s:1:"b";}'));
+		$test->unserializeAccessor(true, 'a');
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusActiveRecord::serialize
+	 * @covers EresusActiveRecord::serializeMutator
 	 */
-	public function test_serialize()
+	public function test_serializeMutator()
 	{
 		$test = $this->getMock('EresusActiveRecord', array('_set'));
 		$test->expects($this->once())->method('_set')->with('a', 'a:1:{s:1:"a";s:1:"b";}');
-		$test->serialize(array('a' => 'b'), true, 'a');
+		$test->serializeMutator(array('a' => 'b'), true, 'a');
 	}
 	//-----------------------------------------------------------------------------
 
