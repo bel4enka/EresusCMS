@@ -124,7 +124,16 @@ class PluginInfo extends EresusActiveRecord
 				'autoincrement' => false,
 			)
 		));
-		$this->hasAccessorMutator('settings', 'unserialize', 'serialize');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see Doctrine_Record::setUp()
+	 */
+	public function setUp()
+	{
+		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 }

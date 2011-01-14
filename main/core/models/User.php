@@ -136,9 +136,18 @@ class User extends EresusActiveRecord
 			'notnull' => true,
 		)));
 
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see Doctrine_Record::setUp()
+	 */
+	public function setUp()
+	{
 		$this->hasMutator('username', 'usernameMutator');
 		$this->hasMutator('password', 'passwordMutator');
-		$this->hasAccessorMutator('profile', 'unserialize', 'serialize');
+		$this->hasAccessorMutator('profile', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 

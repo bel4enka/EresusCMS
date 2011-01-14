@@ -41,9 +41,8 @@ class EresusActiveRecord extends Doctrine_Record
 {
 
 	/**
-	 * Десериализатор
+	 * Аксесор-десериализатор
 	 *
-	 * @param string $value  сериализованные данные
 	 * @param bool   $load
 	 * @param string $fieldName имя поля к которому применяется аксессор
 	 *
@@ -51,21 +50,22 @@ class EresusActiveRecord extends Doctrine_Record
 	 *
 	 * @since 2.16
 	 */
-	public function unserialize($value, $load = true, $fieldName = null)
+	public function unserializeAccessor($load = true, $fieldName = null)
 	{
+		$value = $this->_get($fieldName, false);
 		if (!is_string($value) || strlen($value) == 0)
 		{
-			$this->_set($fieldName, array(), $load);
+			$this->_set($fieldName, array(), false);
 		}
 		else
 		{
-			$this->_set($fieldName, unserialize($value), $load);
+			$this->_set($fieldName, unserialize($value), false);
 		}
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Сериализатор
+	 * Мутатор-сериализатор
 	 *
 	 * @param mixed $value  исходные данные
 	 * @param bool  $load
@@ -75,7 +75,7 @@ class EresusActiveRecord extends Doctrine_Record
 	 *
 	 * @since 2.16
 	 */
-	public function serialize($value, $load = true, $fieldName = null)
+	public function serializeMutator($value, $load = true, $fieldName = null)
 	{
 		$this->_set($fieldName, serialize($value), $load);
 	}

@@ -238,7 +238,16 @@ class Section extends EresusActiveRecord
 				'autoincrement' => false,
 			)
 		));
-		$this->hasAccessorMutator('options', 'unserialize', 'serialize');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see Doctrine_Record::setUp()
+	 */
+	public function setUp()
+	{
+		$this->hasAccessorMutator('options', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 }
