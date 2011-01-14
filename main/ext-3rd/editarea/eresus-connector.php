@@ -53,7 +53,7 @@ class EditAreaConnector extends EresusExtensionConnector
 		if (!isset($form->options['editarea']))
 		{
 	    // Подключаем EditArea
-	    $page->linkScripts($this->root . 'edit_area_full.js');
+	    $page->linkScripts($this->getRoot() . 'edit_area_full.js');
 
 	    $form->options['editarea'] = true;
 		}
