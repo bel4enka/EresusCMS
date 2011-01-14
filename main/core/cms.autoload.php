@@ -42,7 +42,9 @@ return array(
 
 	/* Службы */
 	'AdminRouteService' => 'core/classes/AdminRouteService.php',
-	'AuthService' => 'core/classes/AuthService.php',
+
+	/* AccessControl */
+	'AuthService' => 'core/AccessControl/AuthService.php',
 
 	/* DBAL */
 	'EresusActiveRecord' => 'core/DBAL/EresusActiveRecord.php',

@@ -29,36 +29,23 @@
  * $Id$
  */
 
-if (class_exists('PHP_CodeCoverage_Filter', false))
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+
+if (version_compare(PHP_VERSION, '5.3', '>='))
 {
-	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-}
-else
-{
-	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
+	require_once dirname(__FILE__) . '/AuthServiceTest.php';
 }
 
-require_once dirname(__FILE__) . '/EresusCMSTest.php';
-require_once dirname(__FILE__) . '/EresusTest.php';
-require_once dirname(__FILE__) . '/EresusFormTest.php';
-
-require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
-require_once dirname(__FILE__) . '/DBAL/AllTests.php';
-require_once dirname(__FILE__) . '/classes/AllTests.php';
-
-class Core_AllTests
+class Core_AccessControl_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Core tests');
+		$suite = new PHPUnit_Framework_TestSuite('core/AccessControl');
 
-		$suite->addTestSuite('EresusCMSTest');
-		$suite->addTestSuite('EresusTest');
-		$suite->addTestSuite('EresusFormTest');
-
-		$suite->addTest(Core_AccessControl_AllTests::suite());
-		$suite->addTest(Core_DBAL_AllTests::suite());
-		$suite->addTest(Core_Classes_AllTests::suite());
+		if (version_compare(PHP_VERSION, '5.3', '>='))
+		{
+			$suite->addTestSuite('AuthServiceTest');
+		}
 
 		return $suite;
 	}

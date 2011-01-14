@@ -37,10 +37,6 @@ require_once dirname(__FILE__) . '/AdminModuleTest.php';
 require_once dirname(__FILE__) . '/AdminRouteServiceTest.php';
 require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
-if (version_compare(PHP_VERSION, '5.3', '>='))
-{
-	require_once dirname(__FILE__) . '/AuthServiceTest.php';
-}
 require_once dirname(__FILE__) . '/WebPageTest.php';
 require_once dirname(__FILE__) . '/PluginTest.php';
 require_once dirname(__FILE__) . '/EresusExtensionConnectorTest.php';
@@ -57,10 +53,6 @@ class Core_Classes_AllTests
 		$suite->addTestSuite('AdminRouteServiceTest');
 		$suite->addTestSuite('HtmlElementTest');
 		$suite->addTestSuite('HtmlScriptElementTest');
-		if (version_compare(PHP_VERSION, '5.3', '>='))
-		{
-			$suite->addTestSuite('AuthServiceTest');
-		}
 		$suite->addTestSuite('WebPageTest');
 		$suite->addTestSuite('PluginTest');
 		$suite->addTestSuite('EresusExtensionConnectorTest');
