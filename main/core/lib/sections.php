@@ -160,7 +160,7 @@ class Sections
 			if (count($set))
 			{
 				/* Читаем из БД */
-				$q = ORM::getTable('Section')->createQuery('s')->whereIn('s.id', $set)->
+				$q = EresusORM::getTable('Section')->createQuery('s')->whereIn('s.id', $set)->
 					andWhere('s.access >= ?', $access)->orderBy('position');
 				$items = $q->fetchArray();
 				for ($i=0; $i<count($items); $i++)
@@ -190,14 +190,6 @@ class Sections
 			}
 		}
 		return $result;
-	}
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function brunch($owner, $access = GUEST, $flags = 0)
-	{
-		return $this->branch($owner, $access, $flags);
 	}
 	//------------------------------------------------------------------------------
 
