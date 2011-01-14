@@ -53,8 +53,8 @@ class TinyMCEConnector extends EresusExtensionConnector
 		$preset = isset($field['preset']) ? $field['preset'] : 'default';
 		$result = "\t\t".'<tr><td colspan="2">'.$field['label'].'<br /><textarea name="wyswyg_'.$field['name'].'" class="tinymce_'.$preset.'" cols="80" rows="25" style="width: 100%; height: '.$field['height'].';">'.str_replace('$(httpRoot)', $Eresus->root, EncodeHTML($value)).'</textarea></td></tr>'."\n";
 
-		$page->linkScripts($this->root.'tiny_mce.js');
-		$page->linkScripts($this->root.'presets/'.$preset.'.js');
+		$page->linkScripts($this->getRoot() . 'tiny_mce.js');
+		$page->linkScripts($this->getRoot() . 'presets/' . $preset . '.js');
 
 		return $result;
 	}
