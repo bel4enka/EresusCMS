@@ -112,6 +112,17 @@ function mceInit(data, textStatus, xhr)
 		mode : "specific_textareas",
 
 		/*
+		 * Встраивание файлового менеджера в диалог добавления изображений
+		 */
+		file_browser_callback : function (fieldName, url, type, win)
+		{
+			var w = window.open(window.Eresus.siteRoot + '/ext-3rd/elfinder/datapopup.php', null,
+				'width=600,height=500');
+			w.tinymceFileField = fieldName;
+			w.tinymceFileWin = win;
+		},
+
+		/*
 		 * Класс CSS, который должен быть у textarea для превращения её в WYSIWYG
 		 */
 		editor_selector : "tinymce_default",
@@ -128,7 +139,6 @@ function mceInit(data, textStatus, xhr)
 		 * - advlist      - Дополнительные опции для списков
 		 * - fullscreen   - Позволяет разворачивать редактор на всю страницу.
 		 *                  Кнопки: fullscreen
-		 * - images       - Менеджер изображений
 		 * - inlinepopups - Открывает диалоги во всплывающих слоях, а не в новых окнах
 		 * - paste        - Расширенные возможности вставки
 		 * - safari       - Исправляет разные проблемы совместимости в Safari
@@ -137,7 +147,7 @@ function mceInit(data, textStatus, xhr)
 		 *                  delete_table, col_after, col_before, row_after, row_before, split_cells,
 		 *                  merge_cells.
 		 */
-		plugins : "advimage,advlist,fullscreen,images,inlinepopups,paste,safari,table",
+		plugins : "advimage,advlist,fullscreen,inlinepopups,paste,safari,table",
 
 		/*
 		 * Тема оформления
@@ -179,7 +189,7 @@ function mceInit(data, textStatus, xhr)
 			"blockquote,sub,sup,|,"+
 			"justifyleft,justifycenter,justifyright,justifyfull",
 		theme_advanced_buttons2 :
-			"link,unlink,anchor,images,image,hr,charmap,|,"+
+			"link,unlink,anchor,image,hr,charmap,|,"+
 			"tablecontrols,|,"+
 			"cut,copy,paste,pastetext,pasteword,|,"+
 			"cleanup,code",
@@ -192,12 +202,12 @@ function mceInit(data, textStatus, xhr)
 		/*
 		 * DOCTYPE, применяемый к документу
 		 */
-		doctype: '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">',
+		doctype: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
 
 		/*
 		 * Формат тегов: html или xhtml
 		 */
-		element_format: "html",
+		element_format: "xhtml",
 
 		/*
 		 * Элементы (теги и атрибуты) разрешённые к использованию в дополнение к стандартным.

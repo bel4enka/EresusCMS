@@ -57,25 +57,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	{
 		$this->prepare();
 
-		$GLOBALS['page']->addScripts('
-			jQuery(document).ready(function()
-			{
-				jQuery("#filemanager").elfinder(
-				{
-					url: "' . $GLOBALS['Eresus']->root . 'ext-3rd/elfinder/databrowser.php",
-					lang: "ru",
-					height: "500px",
-					places: "",
-					toolbar: [
-						["back", "realod"],
-						["mkdir", "upload"],
-						["mkfile", "edit"],
-						["open", "info", "rename"],
-						["copy", "cut", "paste", "rm"],
-						["icons", "list"]
-					]
-				})
-			});', 'defer');
+		$GLOBALS['page']->addScripts($this->getInitScript('data'), 'defer');
 		return '<div id="filemanager"></div>';
 	}
 	//-----------------------------------------------------------------------------
@@ -87,11 +69,15 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 	 */
 	protected function proxyUnexistent($path)
 	{
-		$browser = basename($path, '.php');
-		switch ($browser)
+		$file = basename($path, '.php');
+		switch ($file)
 		{
 			case 'databrowser':
 				$this->dataConnector();
+			break;
+
+			case 'datapopup':
+				$this->dataPopup();
 			break;
 
 			default:
@@ -121,6 +107,39 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 		$GLOBALS['page']->linkStyles($rootURL . '/css/elfinder.css');
 
 		$this->prepared = true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает инициализируеющий JavaScript
+	 *
+	 * @param string $type  тип барузера (data, style)
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	protected function getInitScript($type)
+	{
+		return '
+			jQuery(document).ready(function()
+			{
+				jQuery("#filemanager").elfinder(
+				{
+					url: "' . $GLOBALS['Eresus']->root . 'ext-3rd/elfinder/' . $type . 'browser.php",
+					lang: "ru",
+					height: "500px",
+					places: "",
+					toolbar: [
+						["back", "realod"],
+						["mkdir", "upload"],
+						["mkfile", "edit"],
+						["open", "info", "rename"],
+						["copy", "cut", "paste", "rm"],
+						["icons", "list"]
+					]
+				})
+			});';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -209,6 +228,26 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 
 		$fm = new elFinder($options);
 		$fm->run();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Всплывающее окно для работы с директорией data
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @access private
+	 */
+	protected function dataPopup()
+	{
+		$data = array();
+		$data['root'] = preg_replace('~/$~', '', $GLOBALS['Eresus']->root);
+		$data['initScript'] = $this->getInitScript('data');
+
+		$tmpl = new Template('ext-3rd/elfinder/popup.html');
+		echo $tmpl->compile($data);
+		throw new ExitException;
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -115,7 +115,7 @@ class elFinderConnectorTest extends PHPUnit_Extensions_OutputTestCase
 	/**
 	 * @covers elFinderConnector::proxyUnexistent
 	 */
-	public function test_proxyUnexistent_data()
+	public function test_proxyUnexistent_databrowser()
 	{
 		if (version_compare(PHP_VERSION, '5.3.2', '<'))
 		{
@@ -132,6 +132,53 @@ class elFinderConnectorTest extends PHPUnit_Extensions_OutputTestCase
 		$test->expects($this->once())->method('dataConnector')->will($this->returnValue(null));
 
 		$proxyUnexistent->invoke($test, 'http://example.org/ext-3rd/elfinder/databrowser.php');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers elFinderConnector::proxyUnexistent
+	 */
+	public function test_proxyUnexistent_datapopup()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$proxyUnexistent = new ReflectionMethod('elFinderConnector', 'proxyUnexistent');
+		$proxyUnexistent->setAccessible(true);
+
+		$test = $this->getMockBuilder('elFinderConnector')->
+			setMethods(array('proxyUnexistent', 'dataPopup'))->disableOriginalConstructor()->
+			getMock();
+
+		$test->expects($this->once())->method('dataPopup')->will($this->returnValue(null));
+
+		$proxyUnexistent->invoke($test, 'http://example.org/ext-3rd/elfinder/datapopup.php');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers elFinderConnector::getInitScript
+	 */
+	public function test_getInitScript()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$getInitScript = new ReflectionMethod('elFinderConnector', 'getInitScript');
+		$getInitScript->setAccessible(true);
+
+		$test = $this->getMockBuilder('elFinderConnector')->setMethods(array())->
+			disableOriginalConstructor()->getMock();
+
+		$GLOBALS['Eresus'] = new stdClass;
+		$GLOBALS['Eresus']->root = 'http://example.org/';
+
+		$s = $getInitScript->invoke($test, 'data');
+		$this->assertNotEquals(false, strpos($s, 'http://example.org/ext-3rd/elfinder/databrowser.php'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -178,6 +225,34 @@ class elFinderConnectorTest extends PHPUnit_Extensions_OutputTestCase
 		$GLOBALS['Eresus']->froot = '/home/xample.org/htdocs/';
 
 		$dataConnector->invoke($test);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers elFinderConnector::dataPopup
+	 * @expectedException ExitException
+	 */
+	public function test_dataPopup()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$dataPopup = new ReflectionMethod('elFinderConnector', 'dataPopup');
+		$dataPopup->setAccessible(true);
+
+		$test = $this->getMockBuilder('elFinderConnector')->
+			setMethods(array('getInitScript'))->disableOriginalConstructor()->
+			getMock();
+
+		$test->expects($this->once())->method('getInitScript')->with('data')
+			->will($this->returnValue(array()));
+
+		$GLOBALS['Eresus'] = new stdClass;
+		$GLOBALS['Eresus']->root = 'http://example.org/';
+
+		$dataPopup->invoke($test);
 	}
 	//-----------------------------------------------------------------------------
 

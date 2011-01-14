@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+		<title>Выбор файла</title>
+		<link rel="stylesheet" href="js/ui-themes/base/ui.all.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="css/elfinder.css" type="text/css" media="screen">
+	
+		<script src="{$root}/core/jquery/jquery.min.js" type="text/javascript"></script>
+		<script src="{$root}/core/jquery/jquery-ui.min.js" type="text/javascript"></script>
+	
+		<script src="js/elfinder.min.js" type="text/javascript"></script>
+		<script src="js/i18n/elfinder.ru.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			{$initScript}
+			elFinder.prototype.options.editorCallback = function(url) 
+			{
+				window.tinymceFileWin.document.forms[0].elements[window.tinymceFileField].value = url;
+				window.tinymceFileWin.focus();
+				window.close();
+			};
+		</script>
+	
+	</head>
+	<body>
+		<div id="filemanager"></div>
+	</body>
+</html>
