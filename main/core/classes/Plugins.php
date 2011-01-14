@@ -39,19 +39,30 @@
  */
 class Plugins
 {
-	var $list = array(); # Список всех плагинов
-	var $items = array(); # Массив плагинов
-	var $events = array(); # Таблица обработчиков событий
+	/**
+	 * Список всех плагинов
+	 * @var array
+	 */
+	public $list = array();
+
+	/**
+	 * Массив плагинов
+	 * @var array
+	 */
+	public $items = array();
+
+	/**
+	 * Таблица обработчиков событий
+	 * @var array
+	 */
+	public $events = array();
 
 	/**
 	 * Конструктор
 	 */
-	function __construct()
+	public function __construct()
 	{
-		//global $Eresus;
-
-		$items = ORM::getTable('PluginInfo')->findAll();
-		//$items = $Eresus->db->select('`plugins`');
+		$items = EresusORM::getTable('PluginInfo')->findAll();
 		if (count($items))
 		{
 			foreach($items as $item)
