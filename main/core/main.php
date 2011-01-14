@@ -436,6 +436,10 @@ class EresusCMS extends EresusApplication
 
 	/**
 	 * Инициализация сессии
+	 *
+	 * @return void
+	 * @uses EresusLogger::log
+	 * @uses EresusAuthService::getInstance
 	 */
 	private function initSession()
 	{
@@ -446,9 +450,9 @@ class EresusCMS extends EresusApplication
 		session_name('sid');
 		session_start();
 
-		AuthService::getInstance()->init();
+		EresusAuthService::getInstance()->init();
 		// TODO Убрать. Оставлено для обратной совместимости
-		$GLOBALS['Eresus']->user = AuthService::getInstance()->getUser();
+		$GLOBALS['Eresus']->user = EresusAuthService::getInstance()->getUser();
 		$_SESSION['activity'] = time();
 	}
 	//-----------------------------------------------------------------------------

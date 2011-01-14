@@ -142,7 +142,7 @@ class EresusAuthService implements ServiceInterface
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
-	 * @uses ORM::getTable()
+	 * @uses EresusORM::getTable()
 	 * @since 2.16
 	 */
 	public function loginByHash($username, $hash)

@@ -161,5 +161,24 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * @covers EresusCMS::initSession
+	 */
+	public function test_initSession()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$initSession = new ReflectionMethod('EresusCMS', 'initSession');
+		$initSession->setAccessible(true);
+
+		ini_set('session.save_path', '/tmp');
+		$EresusCMS = new EresusCMS();
+		$initSession->invoke($EresusCMS);
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }
