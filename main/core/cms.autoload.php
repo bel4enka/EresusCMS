@@ -44,7 +44,7 @@ return array(
 	'AdminRouteService' => 'core/classes/AdminRouteService.php',
 
 	/* AccessControl */
-	'AuthService' => 'core/AccessControl/AuthService.php',
+	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
 
 	/* DBAL */
 	'EresusActiveRecord' => 'core/DBAL/EresusActiveRecord.php',

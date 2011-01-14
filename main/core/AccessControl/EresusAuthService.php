@@ -39,7 +39,7 @@
  * @subpackage AccessControl
  * @since 2.16
  */
-class AuthService implements ServiceInterface
+class EresusAuthService implements ServiceInterface
 {
 	/**
 	 * Операция выполнена успешно

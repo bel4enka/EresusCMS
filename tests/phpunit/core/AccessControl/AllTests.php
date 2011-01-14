@@ -33,7 +33,7 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
-	require_once dirname(__FILE__) . '/AuthServiceTest.php';
+	require_once dirname(__FILE__) . '/EresusAuthServiceTest.php';
 }
 
 class Core_AccessControl_AllTests
@@ -44,7 +44,7 @@ class Core_AccessControl_AllTests
 
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$suite->addTestSuite('AuthServiceTest');
+			$suite->addTestSuite('EresusAuthServiceTest');
 		}
 
 		return $suite;
