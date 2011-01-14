@@ -145,7 +145,7 @@ class AuthService implements ServiceInterface
 	 */
 	public function loginByHash($username, $hash)
 	{
-		$users = ORM::getTable('User')->findByUsername($username);
+		$users = EresusORM::getTable('User')->findByUsername($username);
 
 		if (!count($users))
 		{
@@ -217,7 +217,7 @@ class AuthService implements ServiceInterface
 		if (isset($_SESSION['user']) && $_SESSION['user'])
 		{
 			$id = intval($_SESSION['user']);
-			$this->user = ORM::getTable('User')->find($id);
+			$this->user = EresusORM::getTable('User')->find($id);
 		}
 		elseif (isset($_COOKIE['eresus_auth']))
 		{

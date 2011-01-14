@@ -37,7 +37,7 @@
  * @package EresusCMS
  * @since 2.16
  */
-class ORM
+class EresusORM
 {
 	/**
 	 * Возвращает объект таблицы заданного компонента

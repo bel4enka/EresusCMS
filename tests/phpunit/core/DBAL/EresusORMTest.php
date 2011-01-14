@@ -30,13 +30,13 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/DBAL/ORM.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusORM.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class ORMTest extends PHPUnit_Framework_TestCase
+class EresusORMTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * (non-PHPdoc)
@@ -49,7 +49,7 @@ class ORMTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers ORM::getTable
+	 * @covers EresusORM::getTable
 	 */
 	public function test_getTable()
 	{
@@ -60,7 +60,7 @@ class ORMTest extends PHPUnit_Framework_TestCase
 		$mock = $this->getMock('stdClass', array('getTable'));
 		$mock->expects($this->once())->method('getTable')->with('Component');
 		Doctrine_Core::setMock($mock);
-		ORM::getTable('Component');
+		EresusORM::getTable('Component');
 	}
 	//-----------------------------------------------------------------------------
 

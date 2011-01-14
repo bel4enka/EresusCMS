@@ -31,7 +31,7 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/main.php';
-require_once dirname(__FILE__) . '/../../../../main/core/DBAL/ORM.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusORM.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 require_once dirname(__FILE__) . '/../../../../main/core/models/User.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/AuthService.php';

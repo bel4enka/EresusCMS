@@ -34,7 +34,7 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
-	require_once dirname(__FILE__) . '/ORMTest.php';
+	require_once dirname(__FILE__) . '/EresusORMTest.php';
 }
 
 class Core_DBAL_AllTests
@@ -46,7 +46,7 @@ class Core_DBAL_AllTests
 		$suite->addTestSuite('EresusActiveRecordTest');
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$suite->addTestSuite('ORMTest');
+			$suite->addTestSuite('EresusORMTest');
 		}
 
 		return $suite;
