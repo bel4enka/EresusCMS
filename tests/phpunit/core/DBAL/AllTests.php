@@ -31,39 +31,23 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/helpers/AllTests.php';
-
-require_once dirname(__FILE__) . '/AdminModuleTest.php';
-require_once dirname(__FILE__) . '/AdminRouteServiceTest.php';
-require_once dirname(__FILE__) . '/HtmlElementTest.php';
-require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
+require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
-	require_once dirname(__FILE__) . '/AuthServiceTest.php';
+	require_once dirname(__FILE__) . '/ORMTest.php';
 }
-require_once dirname(__FILE__) . '/WebPageTest.php';
-require_once dirname(__FILE__) . '/PluginTest.php';
-require_once dirname(__FILE__) . '/EresusExtensionConnectorTest.php';
 
-class Core_Classes_AllTests
+class Core_DBAL_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/classes');
+		$suite = new PHPUnit_Framework_TestSuite('core/DBAL');
 
-		$suite->addTest(Core_Classes_Helpers_AllTests::suite());
-
-		$suite->addTestSuite('AdminModuleTest');
-		$suite->addTestSuite('AdminRouteServiceTest');
-		$suite->addTestSuite('HtmlElementTest');
-		$suite->addTestSuite('HtmlScriptElementTest');
+		$suite->addTestSuite('EresusActiveRecordTest');
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$suite->addTestSuite('AuthServiceTest');
+			$suite->addTestSuite('ORMTest');
 		}
-		$suite->addTestSuite('WebPageTest');
-		$suite->addTestSuite('PluginTest');
-		$suite->addTestSuite('EresusExtensionConnectorTest');
 
 		return $suite;
 	}

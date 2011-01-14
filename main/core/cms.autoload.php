@@ -44,10 +44,10 @@ return array(
 	'AdminRouteService' => 'core/classes/AdminRouteService.php',
 	'AuthService' => 'core/classes/AuthService.php',
 
-	/* ORM */
-	'EresusActiveRecord' => 'core/classes/EresusActiveRecord.php',
-	'EresusQuery' => 'core/classes/EresusQuery.php',
-	'ORM' => 'core/classes/ORM.php',
+	/* DBAL */
+	'EresusActiveRecord' => 'core/DBAL/EresusActiveRecord.php',
+	'EresusQuery' => 'core/DBAL/EresusQuery.php',
+	'ORM' => 'core/DBAL/ORM.php',
 
 	/* Сторонние компоненты */
 	'elFinderConnector' => 'ext-3rd/elfinder/eresus-connector.php',

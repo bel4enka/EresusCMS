@@ -37,6 +37,8 @@
  * @package EresusCMS
  * @since 2.16
  */
+// @codeCoverageIgnoreStart
 class EresusQuery extends Doctrine_Query
 {
 }
+// @codeCoverageIgnoreEnd

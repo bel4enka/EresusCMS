@@ -29,7 +29,7 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusActiveRecord.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 
 /**
  * @package EresusCMS
