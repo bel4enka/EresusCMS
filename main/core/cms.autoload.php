@@ -55,6 +55,9 @@ return array(
 	'EresusORM' => 'core/DBAL/EresusORM.php',
 	'EresusQuery' => 'core/DBAL/EresusQuery.php',
 
+	/* Helpers */
+	'EresusCollection' => 'core/Helpers/EresusCollection.php',
+
 	/* Сторонние компоненты */
 	'elFinderConnector' => 'ext-3rd/elfinder/eresus-connector.php',
 	'elFinder' => 'ext-3rd/elfinder/connectors/php/elFinder.class.php',

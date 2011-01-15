@@ -31,15 +31,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/PaginationHelperTest.php';
+require_once dirname(__FILE__) . '/EresusCollectionTest.php';
 
-class Core_Classes_Helpers_AllTests
+class Core_Helpers_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/classes/helpers');
+		$suite = new PHPUnit_Framework_TestSuite('core/Helpers');
 
-		$suite->addTestSuite('PaginationHelperTest');
+		$suite->addTestSuite('EresusCollectionTest');
 		return $suite;
 	}
 }
