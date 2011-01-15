@@ -46,6 +46,10 @@ class PluginsTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_construct()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
 		$Doctrine_Table = $this->getMock('stdClass', array('findAll'));
 		$Doctrine_Table->expects($this->once())->method('findAll')->will($this->returnValue(array()));
 
