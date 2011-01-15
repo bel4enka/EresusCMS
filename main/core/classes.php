@@ -274,7 +274,7 @@ class Plugin
 	{
 		global $Eresus;
 
-		$pluginInfo = ORM::getTable('PluginInfo')->find($this->name);
+		$pluginInfo = ORM::getTable('EresusPlugin')->find($this->name);
 		if ($pluginInfo)
 		{
 			$this->settings = $pluginInfo->settings;

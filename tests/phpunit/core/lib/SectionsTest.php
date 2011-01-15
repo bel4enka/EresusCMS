@@ -51,6 +51,12 @@ class SectionsTest extends PHPUnit_Framework_TestCase
 		$index = new ReflectionMethod('Sections', 'index');
 		$index->setAccessible(true);
 
+		$Doctrine_Core = $this->getMock('stdClass', array('getTable'));
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('EresusSiteSection')->
+			will($this->returnValue(new UniversalStub()));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
 		$sections = new Sections();
 		$index->invoke($sections);
 

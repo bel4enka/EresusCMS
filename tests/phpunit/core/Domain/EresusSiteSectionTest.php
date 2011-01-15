@@ -30,29 +30,38 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Domain/EresusPlugin.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/Plugins.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Domain/EresusSiteSection.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class PluginsTest extends PHPUnit_Framework_TestCase
+class EresusSiteSectionTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Plugins::__construct
+	 * @covers EresusSiteSection::setTableDefinition
 	 */
-	public function test_construct()
+	public function test_setTableDefinition()
 	{
-		$Doctrine_Table = $this->getMock('stdClass', array('findAll'));
-		$Doctrine_Table->expects($this->once())->method('findAll')->will($this->returnValue(array()));
+		$test = $this->getMockBuilder('EresusSiteSection')->
+			setMethods(array('setTableName', 'hasColumns'))->disableOriginalConstructor()->getMock();
+		$test->expects($this->once())->method('setTableName')->with('pages');
+		$test->expects($this->once())->method('hasColumns');
+		$test->setTableDefinition();
+	}
+	//-----------------------------------------------------------------------------
 
-		$Doctrine_Core = $this->getMock('stdClass', array('getTable'));
-		$Doctrine_Core->expects($this->once())->method('getTable')->with('EresusPlugin')->
-			will($this->returnValue($Doctrine_Table));
-		Doctrine_Core::setMock($Doctrine_Core);
-
-		$test = new Plugins();
+	/**
+	 * @covers EresusSiteSection::setUp
+	 */
+	public function test_setUp()
+	{
+		$test = $this->getMockBuilder('EresusSiteSection')->setMethods(array('hasAccessorMutator'))
+			->disableOriginalConstructor()->getMock();
+		$test->expects($this->once())->method('hasAccessorMutator')->
+			with('options', 'unserializeAccessor', 'serializeMutator');
+		$test->setUp();
 	}
 	//-----------------------------------------------------------------------------
 

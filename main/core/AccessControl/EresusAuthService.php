@@ -129,7 +129,7 @@ class EresusAuthService implements ServiceInterface
 	 */
 	public function login($username, $password)
 	{
-		$hash = User::passwordHash($password);
+		$hash = EresusUser::passwordHash($password);
 		return $this->loginByHash($username, $hash);
 	}
 	//-----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ class EresusAuthService implements ServiceInterface
 	 */
 	public function loginByHash($username, $hash)
 	{
-		$users = EresusORM::getTable('User')->findByUsername($username);
+		$users = EresusORM::getTable('EresusUser')->findByUsername($username);
 
 		if (!count($users))
 		{
@@ -219,7 +219,7 @@ class EresusAuthService implements ServiceInterface
 		if (isset($_SESSION['user']) && $_SESSION['user'])
 		{
 			$id = intval($_SESSION['user']);
-			$this->user = EresusORM::getTable('User')->find($id);
+			$this->user = EresusORM::getTable('EresusUser')->find($id);
 		}
 		elseif (isset($_COOKIE['eresus_auth']))
 		{

@@ -419,7 +419,7 @@ class EresusCMS extends EresusApplication
 			$pdo->setOptions($options);
 		}
 
-		Doctrine_Core::loadModels(dirname(__FILE__) . '/models');
+		Doctrine_Core::loadModels(dirname(__FILE__) . '/Domain');
 /*
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

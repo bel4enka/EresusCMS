@@ -33,7 +33,7 @@ require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/main.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusORM.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/models/User.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Domain/EresusUser.php';
 require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAuthService.php';
 
 /**
@@ -179,7 +179,7 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$user = $this->getMock('stdClass', array('save'));
 		$user->expects($this->once())->method('save');
 		$user->id = 123;
-		$user->password = User::passwordHash('pass');
+		$user->password = EresusUser::passwordHash('pass');
 		$user->active = true;
 		$user->lastLoginTime = time() - 1000;
 		$user->loginErrors = 0;

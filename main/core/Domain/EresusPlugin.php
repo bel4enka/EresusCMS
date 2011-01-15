@@ -32,7 +32,7 @@
  */
 
 // Connection Component Binding
-Doctrine_Manager::getInstance()->bindComponent('PluginInfo', 'doctrine');
+//Doctrine_Manager::getInstance()->bindComponent('EresusPlugin', 'doctrine');
 
 /**
  * Класс информации о плагине
@@ -47,7 +47,7 @@ Doctrine_Manager::getInstance()->bindComponent('PluginInfo', 'doctrine');
  *
  * @package EresusCMS
  */
-class PluginInfo extends EresusActiveRecord
+class EresusPlugin extends EresusActiveRecord
 {
 	/**
 	 * (non-PHPdoc)

@@ -43,8 +43,9 @@ require_once dirname(__FILE__) . '/EresusTest.php';
 require_once dirname(__FILE__) . '/EresusFormTest.php';
 require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
 
-require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
 require_once dirname(__FILE__) . '/DBAL/AllTests.php';
+require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
+require_once dirname(__FILE__) . '/Domain/AllTests.php';
 require_once dirname(__FILE__) . '/classes/AllTests.php';
 require_once dirname(__FILE__) . '/lib/AllTests.php';
 
@@ -59,8 +60,9 @@ class Core_AllTests
 		$suite->addTestSuite('EresusFormTest');
 		$suite->addTestSuite('LegacyFunctionsTest');
 
-		$suite->addTest(Core_AccessControl_AllTests::suite());
 		$suite->addTest(Core_DBAL_AllTests::suite());
+		$suite->addTest(Core_AccessControl_AllTests::suite());
+		$suite->addTest(Core_Domain_AllTests::suite());
 		$suite->addTest(Core_Classes_AllTests::suite());
 		$suite->addTest(Core_Lib_AllTests::suite());
 

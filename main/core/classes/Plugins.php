@@ -62,7 +62,7 @@ class Plugins
 	 */
 	public function __construct()
 	{
-		$items = EresusORM::getTable('PluginInfo')->findAll();
+		$items = EresusORM::getTable('EresusPlugin')->findAll();
 		if (count($items))
 		{
 			foreach($items as $item)
@@ -146,7 +146,7 @@ class Plugins
 		{
 			$this->items[$name]->uninstall();
 		}
-		$pluginInfo = ORM::getTable('PluginInfo')->find($name);
+		$pluginInfo = ORM::getTable('EresusPlugin')->find($name);
 		if ($pluginInfo)
 		{
 			$pluginInfo->delete();
