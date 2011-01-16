@@ -172,12 +172,6 @@ class TAdminUI extends WebPage
 	public $sub;
 
 	/**
-	 * Заголовки ответа сервера
-	 * @var array
-	 */
-	public $headers;
-
-	/**
 	 * Для совместимости с TClientUI
 	 * @var array
 	 */
