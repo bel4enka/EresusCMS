@@ -323,7 +323,7 @@ class EresusCMS extends EresusApplication
 
 		include_once 'admin.php';
 
-		$page = new TAdminUI();
+		$page = new AdminUI();
 		/*return */$page->render();
 	}
 	//-----------------------------------------------------------------------------

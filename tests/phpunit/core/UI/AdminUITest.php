@@ -29,25 +29,25 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../main/core/classes/WebPage.php';
-require_once dirname(__FILE__) . '/../../../main/core/admin.php';
+require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/classes/WebPage.php';
+require_once dirname(__FILE__) . '/../../../../main/core/UI/AdminUI.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class TAdminUITest extends PHPUnit_Framework_TestCase
+class AdminUITest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers TAdminUI::setModule
-	 * @covers TAdminUI::getModule
+	 * @covers AdminUI::setModule
+	 * @covers AdminUI::getModule
 	 */
 	public function test_setgetModule()
 	{
 		$module = new stdClass();
 
-		$mock = $this->getMockBuilder('TAdminUI')->setMethods(array('__constrcut'))->
+		$mock = $this->getMockBuilder('AdminUI')->setMethods(array('__constrcut'))->
 			disableOriginalConstructor()->getMock();
 		$mock->setModule($module);
 		$this->assertSame($module, $mock->getModule());

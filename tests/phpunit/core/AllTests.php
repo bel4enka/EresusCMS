@@ -41,11 +41,11 @@ else
 require_once dirname(__FILE__) . '/EresusCMSTest.php';
 require_once dirname(__FILE__) . '/EresusTest.php';
 require_once dirname(__FILE__) . '/EresusFormTest.php';
-require_once dirname(__FILE__) . '/TAdminUITest.php';
 require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
 
 require_once dirname(__FILE__) . '/DBAL/AllTests.php';
 require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
+require_once dirname(__FILE__) . '/UI/AllTests.php';
 require_once dirname(__FILE__) . '/Domain/AllTests.php';
 require_once dirname(__FILE__) . '/Helpers/AllTests.php';
 require_once dirname(__FILE__) . '/classes/AllTests.php';
@@ -60,12 +60,12 @@ class Core_AllTests
 		$suite->addTestSuite('EresusCMSTest');
 		$suite->addTestSuite('EresusTest');
 		$suite->addTestSuite('EresusFormTest');
-		$suite->addTestSuite('TAdminUITest');
 		$suite->addTestSuite('LegacyFunctionsTest');
 
 		$suite->addTest(Core_DBAL_AllTests::suite());
 		$suite->addTest(Core_AccessControl_AllTests::suite());
 		$suite->addTest(Core_Domain_AllTests::suite());
+		$suite->addTest(Core_UI_AllTests::suite());
 		$suite->addTest(Core_Helpers_AllTests::suite());
 		$suite->addTest(Core_Classes_AllTests::suite());
 		$suite->addTest(Core_Lib_AllTests::suite());
