@@ -73,9 +73,15 @@ class TPlgMgr
 		HttpResponse::redirect($page->url());
 	}
 
+	/**
+	 *
+	 * @return string
+	 *
+	 * @since ?.??
+	 */
 	private function edit()
 	{
-	global $page, $Eresus;
+		global $page, $Eresus;
 
 		$Eresus->plugins->load($Eresus->request['arg']['id']);
 		if (method_exists($Eresus->plugins->items[$Eresus->request['arg']['id']], 'settings')) {

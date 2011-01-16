@@ -120,7 +120,7 @@ class TContent
 			else
 			{
 				$Eresus->plugins->load($item['type']);
-				$page->module = $Eresus->plugins->items[$item['type']];
+				$page->setModule($Eresus->plugins->items[$item['type']]);
 				$result = $Eresus->plugins->items[$item['type']]->adminRenderContent();
 			}
 			return $result;

@@ -142,10 +142,10 @@ define('ADMINUI', true);
 class TAdminUI extends WebPage
 {
 	/**
-	 * Загружаемый модуль
+	 * Текущий модуль АИ
 	 * @var object
 	 */
-	public $module;
+	private $module = null;
 
 	/**
 	 * Заголовок страницы
@@ -234,6 +234,34 @@ class TAdminUI extends WebPage
 				)
 			),
 		);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает модуль АИ
+	 *
+	 * @param object $module
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setModule($module)
+	{
+		$this->module = $module;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект текущего модуля АИ
+	 *
+	 * @return object|null
+	 *
+	 * @since 2.16
+	 */
+	public function getModule()
+	{
+		return $this->module;
 	}
 	//-----------------------------------------------------------------------------
 

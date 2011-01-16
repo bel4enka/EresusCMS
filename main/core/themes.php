@@ -129,7 +129,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionTemplatesAdd()
 	{
@@ -155,7 +155,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionTemplatesEdit()
 	{
@@ -223,7 +223,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionTemplates()
 	{
@@ -284,7 +284,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionStdAdd()
 	{
@@ -326,7 +326,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionStdEdit()
 	{

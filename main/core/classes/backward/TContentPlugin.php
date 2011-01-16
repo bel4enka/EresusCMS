@@ -95,12 +95,13 @@ class TContentPlugin extends TPlugin
 		return $page->content;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Отрисовка административной части
-	*
-	* @return	string	Контент
-	*/
-	function adminRenderContent()
+	 * Отрисовка административной части
+	 *
+	 * @return	string	Контент
+	 */
+	public function adminRenderContent()
 	{
 		global $page, $Eresus;
 
