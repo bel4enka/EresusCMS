@@ -42,6 +42,7 @@ class TContent
 	 * ¬озвращает разметку интерфейса управлени€ контентом текущего раздела
 	 *
 	 * @return string  HTML
+	 * @uses EresusAdminFrontController::setModule()
 	 */
 	public function adminRender()
 	{
@@ -120,7 +121,7 @@ class TContent
 			else
 			{
 				$Eresus->plugins->load($item['type']);
-				$page->setModule($Eresus->plugins->items[$item['type']]);
+				EresusCMS::app()->getFrontController()->setModule($Eresus->plugins->items[$item['type']]);
 				$result = $Eresus->plugins->items[$item['type']]->adminRenderContent();
 			}
 			return $result;

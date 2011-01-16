@@ -41,4 +41,37 @@
  */
 class EresusAdminFrontController
 {
+	/**
+	 * Текущий модуль АИ
+	 * @var object
+	 */
+	private $module = null;
+
+	/**
+	 * Устанавливает модуль АИ
+	 *
+	 * @param object $module
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setModule($module)
+	{
+		$this->module = $module;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект текущего модуля АИ
+	 *
+	 * @return object|null
+	 *
+	 * @since 2.16
+	 */
+	public function getModule()
+	{
+		return $this->module;
+	}
+	//-----------------------------------------------------------------------------
 }

@@ -26,23 +26,30 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
- * $Id$
+ * $Id: AdminUITest.php 1369 2011-01-16 20:04:53Z mk $
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/WebPage.php';
-require_once dirname(__FILE__) . '/../../../../main/core/UI/AdminUI.php';
+require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminFrontController.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class AdminUITest extends PHPUnit_Framework_TestCase
+class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @covers EresusAdminFrontController::setModule
+	 * @covers EresusAdminFrontController::getModule
 	 */
-	public function test_dummy()
+	public function test_setgetModule()
 	{
+		$module = new stdClass();
+
+		$mock = $this->getMockBuilder('EresusAdminFrontController')->setMethods(array('__constrcut'))->
+			disableOriginalConstructor()->getMock();
+		$mock->setModule($module);
+		$this->assertSame($module, $mock->getModule());
 	}
 	//-----------------------------------------------------------------------------
 

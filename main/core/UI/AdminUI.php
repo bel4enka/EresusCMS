@@ -38,12 +38,6 @@
 class AdminUI extends WebPage
 {
 	/**
-	 * Текущий модуль АИ
-	 * @var object
-	 */
-	private $module = null;
-
-	/**
 	 * Заголовок страницы
 	 * @var string
 	 */
@@ -124,34 +118,6 @@ class AdminUI extends WebPage
 				)
 			),
 		);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Устанавливает модуль АИ
-	 *
-	 * @param object $module
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	public function setModule($module)
-	{
-		$this->module = $module;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает объект текущего модуля АИ
-	 *
-	 * @return object|null
-	 *
-	 * @since 2.16
-	 */
-	public function getModule()
-	{
-		return $this->module;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -494,14 +460,20 @@ class AdminUI extends WebPage
 	 * @param array  $values
 	 * @param string $sub_prefix
 	 * @return string
+	 *
+	 * @uses EresusAdminFrontController::getModule()
 	 */
 	public function renderTable($table, $values=null, $sub_prefix='')
 	{
 		global $Eresus;
 
 		$result = '';
+
+		$module = EresusCMS::app()->getFrontController()->getModule();
+
 		$prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
-		$itemsPerPage = isset($table['itemsPerPage'])?$table['itemsPerPage']:(isset($this->module->settings['itemsPerPage'])?$this->module->settings['itemsPerPage']:0);
+		$itemsPerPage = isset($table['itemsPerPage'])?$table['itemsPerPage']:
+			(isset($module->settings['itemsPerPage']) ? $module->settings['itemsPerPage']:0);
 		$pagesDesc = isset($table['sortDesc'])?$table['sortDesc']:false;
 		if (isset($table['tabs']) && count($table['tabs'])) $result .= $this->renderTabs($table['tabs']);
 		if (isset($table['hint'])) $result .= '<div class="admListHint">'.$table['hint']."</div>\n";
@@ -552,7 +524,7 @@ class AdminUI extends WebPage
 				isset($table['controls']['delete']) &&
 				(
 					empty($table['controls']['delete']) ||
-					$this->module->$table['controls']['delete']($item)
+					$module->$table['controls']['delete']($item)
 				)
 			)
 				$result .= ' <a href="' . sprintf($url_delete, $item[$table['key']]) . '" title="' .
@@ -564,7 +536,7 @@ class AdminUI extends WebPage
 				isset($table['controls']['edit']) &&
 				(
 					empty($table['controls']['edit']) ||
-					$this->module->$table['controls']['edit']($item)
+					$module->$table['controls']['edit']($item)
 				)
 			)
 				$result .= ' <a href="' . sprintf($url_edit, $item[$table['key']]) . '" title="' . admEdit .
@@ -575,7 +547,7 @@ class AdminUI extends WebPage
 				isset($table['controls']['position']) &&
 				(
 					empty($table['controls']['position']) ||
-					$this->module->$table['controls']['position']($item)
+					$module->$table['controls']['position']($item)
 				) &&
 				$sortMode == 'position'
 			)
@@ -591,7 +563,7 @@ class AdminUI extends WebPage
 				isset($table['controls']['toggle']) &&
 				(
 					empty($table['controls']['toggle']) ||
-					$this->module->$table['controls']['toggle']($item)
+					$module->$table['controls']['toggle']($item)
 				)
 			)
 				$result .= ' <a href="' . sprintf($url_toggle, $item[$table['key']]) . '" title="' .
@@ -660,6 +632,8 @@ class AdminUI extends WebPage
 	 * @return string
 	 *
 	 * @since ?.??
+	 * @uses EresusAdminFrontController::setModule()
+	 * @uses EresusAdminFrontController::getModule()
 	 */
 	public function renderContent()
 	{
@@ -676,12 +650,12 @@ class AdminUI extends WebPage
 			{
 				include $Eresus->froot . "core/$module.php";
 				$class = "T$module";
-				$this->module = new $class;
+				EresusCMS::app()->getFrontController()->setModule(new $class);
 			}
 			elseif (substr($module, 0, 4) == 'ext-')
 			{
 				$name = substr($module, 4);
-				$this->module = $Eresus->plugins->load($name);
+				EresusCMS::app()->getFrontController()->setModule($Eresus->plugins->load($name));
 			}
 			else
 			{
@@ -691,13 +665,14 @@ class AdminUI extends WebPage
 			/*
 			 * Отрисовка контента плагином
 			 */
-			if (is_object($this->module))
+			$module = EresusCMS::app()->getFrontController()->getModule();
+			if (is_object($module))
 			{
-				if (method_exists($this->module, 'adminRender'))
+				if (method_exists($module, 'adminRender'))
 				{
 					try
 					{
-						$result .= $this->module->adminRender();
+						$result .= $module->adminRender();
 					}
 					catch (Exception $e)
 					{
@@ -721,7 +696,7 @@ class AdminUI extends WebPage
 				}
 				else
 				{
-					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
+					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($module)));
 				}
 			}
 			else
