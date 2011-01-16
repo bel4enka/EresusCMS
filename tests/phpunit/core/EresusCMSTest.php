@@ -40,6 +40,31 @@ require_once dirname(__FILE__) . '/../../../main/core/classes/WebServer.php';
 class EresusCMSTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * (non-PHPdoc)
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		Core::$app = null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusCMS::app
+	 */
+	public function test_app()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		Core::$app = new stdClass();
+		$this->assertSame(Core::$app, EresusCMS::app());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers EresusCMS::detectWebRoot
 	 */
 	public function test_detectWebRoot()

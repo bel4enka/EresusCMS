@@ -100,6 +100,19 @@ class EresusCMS extends EresusApplication
 	private $request;
 
 	/**
+	 * Возвращает экземпляр-одиночку этого класса
+	 *
+	 * @return EresusCMS
+	 *
+	 * @since 2.16
+	 */
+	public static function app()
+	{
+		return Core::app();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
