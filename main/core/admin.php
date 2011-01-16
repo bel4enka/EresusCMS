@@ -141,13 +141,47 @@ define('ADMINUI', true);
  */
 class TAdminUI extends WebPage
 {
-	var $module; # Загружаемый модуль
-	var $title; # Заголовок страницы
-	var $menu; # Меню администратора
-	var $extmenu; # Меню раширений
-	var $sub; # Уровень вложенности
-	var $headers; # Заголовки ответа сервера
-	var $options; # Для совместимости с TClientUI
+	/**
+	 * Загружаемый модуль
+	 * @var object
+	 */
+	public $module;
+
+	/**
+	 * Заголовок страницы
+	 * @var string
+	 */
+	public $title;
+
+	/**
+	 * Меню администратора
+	 * @var array
+	 */
+	public $menu;
+
+	/**
+	 * Меню раширений
+	 * @var array
+	 */
+	public $extmenu;
+
+	/**
+	 * Уровень вложенности
+	 * @var int
+	 */
+	public $sub;
+
+	/**
+	 * Заголовки ответа сервера
+	 * @var array
+	 */
+	public $headers;
+
+	/**
+	 * Для совместимости с TClientUI
+	 * @var array
+	 */
+	public $options;
 
 	/**
 	 * Тема оформления
@@ -225,12 +259,11 @@ class TAdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
-	 * @param $text
-	 * @return unknown_type
+	 * Подставляет значения макросов
+	 * @param string $text
+	 * @return string
 	 */
-	function replaceMacros($text)
-	# Подставляет значения макросов
+	public function replaceMacros($text)
 	{
 		global $Eresus;
 
@@ -266,8 +299,13 @@ class TAdminUI extends WebPage
 		$result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function url($args = null, $clear = false)
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see WebPage::url()
+	 */
+	public function url($args = null, $clear = false)
 	{
 		global $Eresus, $locale;
 
@@ -282,7 +320,7 @@ class TAdminUI extends WebPage
 		$result = httpRoot.'admin.php'.$result;
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Добавляет пункт в меню "Расширения"
@@ -329,17 +367,32 @@ class TAdminUI extends WebPage
 	}
 	//-----------------------------------------------------------------------------
 
-
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# Построение интерфейса
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function box($text, $class, $caption='')
+	/**
+	 *
+	 * @param string $text
+	 * @param string $class
+	 * @param string $caption
+	 *
+	 * @return string
+	 *
+	 * @since ?.??
+	 */
+	public function box($text, $class, $caption='')
 	{
 		$result = "<div".(empty($class)?'':' class="'.$class.'"').">\n".(empty($caption)?'':'<span class="'.$class.'Caption">'.$caption.'</span><br />').$text."</div>\n";
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function window($wnd)
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @param array $wnd
+	 *
+	 * @return void
+	 *
+	 * @since ?.??
+	 */
+	public function window($wnd)
 	{
 		$result =
 		"<table border=\"0\" class=\"admWindow\"".(empty($wnd['width'])?'':' style="width: '.$wnd['width'].';"').">\n".
@@ -347,19 +400,18 @@ class TAdminUI extends WebPage
 		"<tr><td".(empty($wnd['style'])?'':' style="'.$wnd['style'].'"').">".$wnd['body']."</td></tr>\n</table>\n";
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	/**
-	* Отрисовывает элемент управления
-	*
-	* @access  public
-	*
-	* @param  string  $type    Тип ЭУ (delete,toggle,move,custom...)
-	* @param  string  $href    Ссылка
-	* @param  string  $custom  Индивидуальные настройки
-	*
-	* @return  string  Отрисованный ЭУ
-	*/
-	function control($type, $href, $custom = array())
+	 * Отрисовывает элемент управления
+	 *
+	 * @param  string  $type    Тип ЭУ (delete,toggle,move,custom...)
+	 * @param  string  $href    Ссылка
+	 * @param  array   $custom  Индивидуальные настройки
+	 *
+	 * @return  string  Отрисованный ЭУ
+	 */
+	public function control($type, $href, $custom = array())
 	{
 		global $Eresus;
 
@@ -438,7 +490,7 @@ class TAdminUI extends WebPage
 	 *
 	 * @return string  HTML
 	 */
-	function renderTabs($tabs)
+	public function renderTabs($tabs)
 	{
 		global $Eresus, $page;
 
@@ -480,7 +532,19 @@ class TAdminUI extends WebPage
 	}
 	//-----------------------------------------------------------------------------
 
-	function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
+	/**
+	 *
+	 * @param int     $itemsCount
+	 * @param int     $itemsPerPage
+	 * @param int     $pageCount
+	 * @param bool    $Descending
+	 * @param string  $sub_prefix
+	 *
+	 * @return string
+	 *
+	 * @since ?.??
+	 */
+	public function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
 	{
 		global $Eresus;
 
@@ -504,7 +568,7 @@ class TAdminUI extends WebPage
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 *
@@ -513,7 +577,7 @@ class TAdminUI extends WebPage
 	 * @param string $sub_prefix
 	 * @return string
 	 */
-	function renderTable($table, $values=null, $sub_prefix='')
+	public function renderTable($table, $values=null, $sub_prefix='')
 	{
 		global $Eresus;
 
@@ -648,8 +712,18 @@ class TAdminUI extends WebPage
 		if (isset($pages)) $result .= $pages;
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function renderForm($form, $values=array())
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @param array $form
+	 * @param array $values
+	 *
+	 * @return string
+	 *
+	 * @since ?.??
+	 */
+	public function renderForm($form, $values=array())
 	{
 		$result = '';
 		if (isset($form['tabs'])) $result .= $this->renderTabs($form['tabs']);
@@ -661,8 +735,15 @@ class TAdminUI extends WebPage
 		$result .= $this->window($wnd);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function renderContent()
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @return string
+	 *
+	 * @since ?.??
+	 */
+	public function renderContent()
 	{
 		global $Eresus;
 
@@ -753,7 +834,7 @@ class TAdminUI extends WebPage
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовывает ветку меню
@@ -898,7 +979,7 @@ class TAdminUI extends WebPage
 	 *
 	 * @return void
 	 */
-	function render()
+	public function render()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверям права доступа и, если надо, проводим авторизацию */
