@@ -93,6 +93,13 @@ class PageNotFoundException extends DomainException {}
 class EresusCMS extends EresusApplication
 {
 	/**
+	 * Фронт-контроллер (АИ или КИ)
+	 *
+	 * @var object
+	 */
+	private $frontController;
+
+	/**
 	 * HTTP-запрос
 	 *
 	 * @var HttpRequest
@@ -179,6 +186,19 @@ class EresusCMS extends EresusApplication
 	public function getDataDir()
 	{
 		return $this->getFsRoot() . '/data';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект текущего фронт-контроллера
+	 *
+	 * @return object
+	 *
+	 * @since 2.16
+	 */
+	public function getFrontController()
+	{
+		return $this->frontController;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -334,9 +354,12 @@ class EresusCMS extends EresusApplication
 
 		EresusLogger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		include_once 'admin.php';
+		$this->frontController = new EresusAdminFrontController();
+
+		include 'admin.php';
 
 		$page = new AdminUI();
+
 		/*return */$page->render();
 	}
 	//-----------------------------------------------------------------------------

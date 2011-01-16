@@ -4,9 +4,9 @@
  *
  * ${product.description}
  *
- * Таблица автозагрузки классов
+ * Контроллер административного интерфейса
  *
- * @copyright 2009, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
@@ -27,49 +27,18 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
+ * @subpackage BusinessLogic
  *
- * $Id$
+ * $Id: EresusORM.php 1338 2011-01-14 20:39:53Z mk $
  */
 
-return array(
-
-	'AdminModule' => 'core/classes/AdminModule.php',
-	'EresusExtensionConnector' => 'core/classes/EresusExtensionConnector.php',
-	'EresusForm' => 'core/EresusForm.php',
-	'I18n' => 'core/i18n.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-	'WebServer' => 'core/classes/WebServer.php',
-	'WebPage' => 'core/classes/WebPage.php',
-
-	/* Службы */
-	'AdminRouteService' => 'core/classes/AdminRouteService.php',
-
-	/* AccessControl */
-	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
-
-	/* BusinessLogic */
-	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',
-
-/* DBAL */
-	'EresusActiveRecord' => 'core/DBAL/EresusActiveRecord.php',
-	'EresusORM' => 'core/DBAL/EresusORM.php',
-	'EresusQuery' => 'core/DBAL/EresusQuery.php',
-
-	/* Domain */
-	'Plugins' => 'core/classes/Plugins.php',
-
-/* Helpers */
-	'EresusCollection' => 'core/Helpers/EresusCollection.php',
-
-	/* UI */
-	'AdminUI' => 'core/UI/AdminUI.php',
-
-/* Сторонние компоненты */
-	'elFinderConnector' => 'ext-3rd/elfinder/eresus-connector.php',
-	'elFinder' => 'ext-3rd/elfinder/connectors/php/elFinder.class.php',
-
-	/* Обратная совместимость */
-	'TPlugin' => 'core/classes/backward/TPlugin.php',
-	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
-	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
-);
+/**
+ * Контроллер административного интерфейса
+ *
+ * @package EresusCMS
+ * @subpackage BusinessLogic
+ * @since 2.16
+ */
+class EresusAdminFrontController
+{
+}
