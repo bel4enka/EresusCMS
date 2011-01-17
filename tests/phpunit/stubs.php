@@ -242,6 +242,23 @@ class EresusApplication
 	//-----------------------------------------------------------------------------
 }
 
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.16
+ */
+class HTTP extends MockFacade
+{
+	public static $request;
+
+	public static function request()
+	{
+		return self::$request;
+	}
+	//-----------------------------------------------------------------------------
+}
+
 /**
  * @package EresusCMS
  * @subpackage Tests
@@ -275,6 +292,13 @@ class HttpRequest
 	}
 	//-----------------------------------------------------------------------------
 }
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.16
+ */
+class HttpResponse extends MockFacade {}
 
 /**
  * @package EresusCMS

@@ -48,6 +48,28 @@ class EresusAdminFrontController
 	private $module = null;
 
 	/**
+	 * Объект UI
+	 *
+	 * @var AdminUI
+	 */
+	private $ui;
+
+	/**
+	 * Создаёт контроллер
+	 *
+	 * @param object $ui  Объект UI
+	 *
+	 * @return EresusAdminFrontController
+	 *
+	 * @since 2.16
+	 */
+	public function __construct($ui)
+	{
+		$this->ui = $ui;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Устанавливает модуль АИ
 	 *
 	 * @param object $module
@@ -74,4 +96,70 @@ class EresusAdminFrontController
 		return $this->module;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отправляет созданную страницу пользователю
+	 *
+	 * @return string  HTML
+	 *
+	 * @uses EresusLogger::log()
+	 * @uses UserRights()
+	 * @uses HTTP::request()
+	 * @uses HttpResponse::redirect()
+	 */
+	public function render()
+	{
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		/* Проверям права доступа и, если надо, проводим авторизацию */
+		if (!UserRights(EDITOR))
+		{
+			return $this->auth();
+		}
+		else
+		{
+			if (HTTP::request()->getLocal() == '/admin/logout/')
+			{
+				EresusAuthService::getInstance()->logout();
+				HttpResponse::redirect($GLOBALS['Eresus']->root . 'admin/');
+			}
+
+			return $this->ui->render();
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Аутентификация
+	 *
+	 * @return string  HTML
+	 *
+	 * @uses HTTP::request()
+	 * @uses EresusUser::USERNAME_FILTER
+	 * @uses EresusAuthService::getInstance()
+	 * @uses EresusAuthService::SUCCESS
+	 * @uses HttpResponse::redirect()
+	 */
+	private function auth()
+	{
+		$req = HTTP::request();
+
+		if ($req->getMethod() == 'POST')
+		{
+			$username = $req->arg('username', EresusUser::USERNAME_FILTER);
+			$password = $req->arg('password');
+			$state = EresusAuthService::getInstance()->login($username, $password);
+			if ($state == EresusAuthService::SUCCESS)
+			{
+				if ($req->arg('autologin'))
+				{
+					EresusAuthService::getInstance()->setCookies();
+				}
+				HttpResponse::redirect('./admin.php');
+			}
+			return $this->ui->getAuthScreen('Неправильное имя пользователя или пароль');
+		}
+		return $this->ui->getAuthScreen();
+	}
+	//-----------------------------------------------------------------------------
+
 }

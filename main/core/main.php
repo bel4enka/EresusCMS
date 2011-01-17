@@ -354,13 +354,12 @@ class EresusCMS extends EresusApplication
 
 		EresusLogger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		$this->frontController = new EresusAdminFrontController();
-
 		include 'admin.php';
 
 		$page = new AdminUI();
+		$this->frontController = new EresusAdminFrontController($page);
 
-		/*return */$page->render();
+		return $this->frontController->render();
 	}
 	//-----------------------------------------------------------------------------
 

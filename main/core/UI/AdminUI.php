@@ -868,76 +868,32 @@ class AdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отправляет созданную страницу пользователю
-	 *
-	 * @return void
-	 */
-	public function render()
-	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
-		/* Проверям права доступа и, если надо, проводим авторизацию */
-		if (!UserRights(EDITOR))
-		{
-			$this->auth();
-		}
-		else
-		{
-			if (HTTP::request()->getLocal() == '/admin/logout/')
-			{
-				AuthService::getInstance()->logout();
-				HttpResponse::redirect($GLOBALS['Eresus']->root . 'admin/');
-			}
-
-			$this->renderUI();
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Отрисовка и вывод страницы аутентификации
 	 *
-	 * Авторизация проводится методом {@see Eresus::login()}.
-	 *
-	 * @return void
+	 * @param string $errorMessage  текст сообщения об ошибке
+	 * @return string
 	 */
-	private function auth()
+	public function getAuthScreen($errorMessage = '')
 	{
-		global $Eresus;
-
 		$req = HTTP::request();
-		$username = $req->arg('username', User::USERNAME_FILTER);
-		$password = $req->arg('password');
-		$autologin = $req->arg('autologin');
 
-		$data = array();
-
-		if ($req->getMethod() == 'POST')
-		{
-			$state = AuthService::getInstance()->login($username, $password);
-			if ($state == AuthService::SUCCESS)
-			{
-				if ($autologin)
-				{
-					AuthService::getInstance()->setCookies();
-				}
-				HttpResponse::redirect('./admin.php');
-			}
-			$data['username'] = $username;
-			$data['autologin'] = $autologin;
-			$data['error'] = iconv(CHARSET, 'utf-8', 'Неправильное имя пользователя или пароль');
-		}
-
+		$data = array(
+			'username' => $req->arg('username', EresusUser::USERNAME_FILTER),
+			'password' => $req->arg('password'),
+			'autologin' => $req->arg('autologin'),
+			'error' => $errorMessage
+		);
 		$tmpl = new Template('core/templates/auth.html');
 		$html = $tmpl->compile($data);
-		echo $html;
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовка интерфейса
-	 * @return void
+	 * @return string HTML
 	 */
-	private function renderUI()
+	public function render()
 	{
 		global $locale, $Eresus;
 
@@ -970,7 +926,7 @@ class AdminUI extends WebPage
 			}
 		}
 
-		echo $html;
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 }
