@@ -24,7 +24,7 @@
  *
  * @package EresusCMS
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mk@eresus.ru>
+ * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
  * $Id$
  */

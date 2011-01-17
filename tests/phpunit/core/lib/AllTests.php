@@ -24,7 +24,7 @@
  *
  * @package EresusCMS
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mk@eresus.ru>
+ * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
  * $Id: AllTests.php 1344 2011-01-14 21:52:06Z mk $
  */
