@@ -63,6 +63,7 @@ return array(
 
 	/* UI */
 	'AdminUI' => 'core/UI/AdminUI.php',
+	'AdminUITheme' => 'core/UI/AdminUITheme.php',
 
 /* Сторонние компоненты */
 	'elFinderConnector' => 'ext-3rd/elfinder/eresus-connector.php',
