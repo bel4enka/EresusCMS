@@ -123,7 +123,8 @@ class EresusAdminFrontController
 				HttpResponse::redirect($GLOBALS['Eresus']->root . 'admin/');
 			}
 
-			return $this->ui->render();
+			$content = $this->getContentHTML();
+			return $this->ui->render($content);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -159,6 +160,126 @@ class EresusAdminFrontController
 			return $this->ui->getAuthScreen('Неправильное имя пользователя или пароль');
 		}
 		return $this->ui->getAuthScreen();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Создаёт разметку области контента, используя модуль АИ
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 *
+	 * @uses EresusLogger::log()
+	 * @uses arg()
+	 * @uses EresusCMS::app()
+	 * @uses I18n::getInstance()
+	 * @uses EresusLogger::exception()
+	 * @uses ErrorMessage()
+	 * @uses ErrorBox()
+	 */
+	private function getContentHTML()
+	{
+		global $Eresus;
+
+		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+
+		$html = '';
+
+		if (arg('mod')) // TODO устаревшая функция
+		{
+			$module = arg('mod', '/[^\w-]/');
+			$modulePath = EresusCMS::app()->getFsRoot() . "/core/$module.php";
+			if (file_exists($modulePath))
+			{
+				include $modulePath;
+				$class = "T$module";
+				$this->setModule(new $class);
+			}
+			elseif (substr($module, 0, 4) == 'ext-')
+			{
+				$name = substr($module, 4);
+				$this->setModule($Eresus->plugins->load($name));
+			}
+			else
+			{
+				ErrorMessage(errFileNotFound . ': "' . $modulePath);
+			}
+
+			/*
+			 * Отрисовка контента плагином
+			 */
+			$module = $this->getModule();
+			if (is_object($module))
+			{
+				if (method_exists($module, 'adminRender'))
+				{
+					try
+					{
+						$html .= $module->adminRender();
+					}
+					catch (Exception $e)
+					{
+						if (isset($name))
+						{
+							$logMsg = 'Error in plugin "' . $name . '"';
+							$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+							$msg = sprintf($msg, $name);
+						}
+						else
+						{
+							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
+							$msg = sprintf($msg, $module);
+						}
+
+						EresusLogger::exception($e);
+
+						$msg .= '<br />' . $e->getMessage();
+						$html .= ErrorBox($msg);
+					}
+				}
+				else
+				{
+					$html .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($module)));
+				}
+			}
+			else
+			{
+				EresusLogger::log(__METHOD__, LOG_ERR, '$module property is not an object');
+				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
+				$html .= ErrorBox($msg);
+			}
+		}
+		else
+		{
+			$router = AdminRouteService::getInstance();
+			$router->init(HTTP::request());
+			$html = $router->call();
+		}
+
+		if (isset($Eresus->session['msg']['information']) &&
+			count($Eresus->session['msg']['information']))
+		{
+			$messages = '';
+			foreach ($Eresus->session['msg']['information'] as $message)
+			{
+				$messages .= InfoBox($message);
+			}
+			$html = $messages . $html;
+			$Eresus->session['msg']['information'] = array();
+		}
+		if (isset($Eresus->session['msg']['errors']) &&
+			count($Eresus->session['msg']['errors']))
+		{
+			$messages = '';
+			foreach ($Eresus->session['msg']['errors'] as $message)
+			{
+				$messages .= ErrorBox($message);
+			}
+			$html = $messages . $html;
+			$Eresus->session['msg']['errors'] = array();
+		}
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 

@@ -84,6 +84,12 @@ class UniversalStub implements ArrayAccess
 		;
 	}
 	//-----------------------------------------------------------------------------
+
+	public function __toString()
+	{
+		return '';
+	}
+	//-----------------------------------------------------------------------------
 }
 
 
@@ -143,8 +149,10 @@ class MockFacade
 
 
 
-define('errInvalidPassword', 'errInvalidPassword');
 define('errAccountNotActive', 'errAccountNotActive');
+define('errError', 'errError');
+define('errFileNotFound', 'errFileNotFound');
+define('errInvalidPassword', 'errInvalidPassword');
 define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 define('filesRoot', '/home/exmaple.org/');
 

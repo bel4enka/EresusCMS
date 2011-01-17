@@ -35,6 +35,8 @@ require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAut
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Domain/EresusUser.php';
 require_once dirname(__FILE__) . '/../../../../main/core/kernel-legacy.php';
+require_once dirname(__FILE__) . '/../../../../main/core/classes/AdminRouteService.php';
+require_once dirname(__FILE__) . '/../../../../main/core/i18n.php';
 require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminFrontController.php';
 
 /**
@@ -50,6 +52,25 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		HTTP::$request = null;
+		if (version_compare(PHP_VERSION, '5.3', '>='))
+		{
+			$instance = new ReflectionProperty('AdminRouteService', 'instance');
+			$instance->setAccessible(true);
+			$instance->setValue('AdminRouteService', null);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusAdminFrontController::__construct
+	 */
+	public function test_render_construct()
+	{
+		$ui = new stdClass();
+
+		$test = new EresusAdminFrontController($ui);
+
+		$this->assertAttributeSame($ui, 'ui', $test);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -83,16 +104,23 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 
 		$EresusAuthService = $this->getMock('stdClass', array('getUser'));
 		$EresusAuthService->expects($this->once())->method('getUser')->will($this->returnValue($user));
+
 		$instance = new ReflectionProperty('EresusAuthService', 'instance');
 		$instance->setAccessible(true);
 		$instance->setValue('EresusAuthService', $EresusAuthService);
 
-		$HttpRequest = $this->getMock('stdClass', array('getLocal'));
-		$HttpRequest->expects($this->once())->method('getLocal')->will($this->returnValue(''));
+		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
+		$HttpRequest->expects($this->any())->method('getLocal')->will($this->returnValue(''));
 		HTTP::$request = $HttpRequest;
 
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
+
+		$AdminRouteService = $this->getMock('stdClass', array('call', 'init'));
+
+		$instance = new ReflectionProperty('AdminRouteService', 'instance');
+		$instance->setAccessible(true);
+		$instance->setValue('AdminRouteService', $AdminRouteService);
 
 		$EresusAdminFrontController = new EresusAdminFrontController($ui);
 		$EresusAdminFrontController->render();
@@ -120,8 +148,8 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$instance->setAccessible(true);
 		$instance->setValue('EresusAuthService', $EresusAuthService);
 
-		$HttpRequest = $this->getMock('stdClass', array('getLocal'));
-		$HttpRequest->expects($this->once())->method('getLocal')->
+		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
+		$HttpRequest->expects($this->any())->method('getLocal')->
 			will($this->returnValue('/admin/logout/'));
 		HTTP::$request = $HttpRequest;
 
@@ -130,6 +158,12 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
+
+		$AdminRouteService = $this->getMock('stdClass', array('call', 'init'));
+
+		$instance = new ReflectionProperty('AdminRouteService', 'instance');
+		$instance->setAccessible(true);
+		$instance->setValue('AdminRouteService', $AdminRouteService);
 
 		$EresusAdminFrontController = new EresusAdminFrontController($ui);
 		$EresusAdminFrontController->render();
@@ -223,6 +257,100 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$auth = new ReflectionMethod('EresusAdminFrontController', 'auth');
 		$auth->setAccessible(true);
 		$auth->invoke($EresusAdminFrontController);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusAdminFrontController::getContentHTML
+	 */
+	public function test_getContentHTML_using_AdminRouteService()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
+		$HttpRequest->expects($this->any())->method('getLocal')->will($this->returnValue(''));
+		HTTP::$request = $HttpRequest;
+
+		$ui = $this->getMock('stdClass', array('render'));
+
+		$getContentHTML = new ReflectionMethod('EresusAdminFrontController', 'getContentHTML');
+		$getContentHTML->setAccessible(true);
+
+		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+		$getContentHTML->invoke($EresusAdminFrontController);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusAdminFrontController::getContentHTML
+	 */
+	public function test_getContentHTML_using_arg_plugin()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
+		$HttpRequest->expects($this->any())->method('getLocal')->will($this->returnValue(''));
+		HTTP::$request = $HttpRequest;
+
+		$ui = $this->getMock('stdClass', array('render'));
+
+		$getContentHTML = new ReflectionMethod('EresusAdminFrontController', 'getContentHTML');
+		$getContentHTML->setAccessible(true);
+
+		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+
+		$GLOBALS['Eresus'] = new stdClass;
+		$GLOBALS['Eresus']->request = array('arg' => array('mod' => 'ext-dummy'));
+
+		$plugin = $this->getMock('stdClass', array('adminRender'));
+
+		$GLOBALS['Eresus']->plugins = $this->getMock('stdClass', array('load'));
+		$GLOBALS['Eresus']->plugins->expects($this->once())->method('load')->
+			will($this->returnValue($plugin));
+
+		$getContentHTML->invoke($EresusAdminFrontController);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusAdminFrontController::getContentHTML
+	 */
+	public function test_getContentHTML_using_arg_plugin_exception()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
+		$HttpRequest->expects($this->any())->method('getLocal')->will($this->returnValue(''));
+		HTTP::$request = $HttpRequest;
+
+		$ui = $this->getMock('stdClass', array('render'));
+
+		$getContentHTML = new ReflectionMethod('EresusAdminFrontController', 'getContentHTML');
+		$getContentHTML->setAccessible(true);
+
+		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+
+		$GLOBALS['Eresus'] = new stdClass;
+		$GLOBALS['Eresus']->request = array('arg' => array('mod' => 'ext-dummy'));
+
+		$plugin = $this->getMock('stdClass', array('adminRender'));
+		$plugin->expects($this->once())->method('adminRender')->
+			will($this->throwException(new Exception));
+
+		$GLOBALS['Eresus']->plugins = $this->getMock('stdClass', array('load'));
+		$GLOBALS['Eresus']->plugins->expects($this->once())->method('load')->
+			will($this->returnValue($plugin));
+
+		$getContentHTML->invoke($EresusAdminFrontController);
 	}
 	//-----------------------------------------------------------------------------
 

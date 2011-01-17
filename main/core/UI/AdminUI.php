@@ -628,108 +628,6 @@ class AdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
-	 * @return string
-	 *
-	 * @since ?.??
-	 * @uses EresusAdminFrontController::setModule()
-	 * @uses EresusAdminFrontController::getModule()
-	 */
-	public function renderContent()
-	{
-		global $Eresus;
-
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
-
-		$result = '';
-
-		if (arg('mod'))
-		{
-			$module = arg('mod', '/[^\w-]/');
-			if (file_exists(Core::app()->getFsRoot() . "/core/$module.php"))
-			{
-				include $Eresus->froot . "core/$module.php";
-				$class = "T$module";
-				EresusCMS::app()->getFrontController()->setModule(new $class);
-			}
-			elseif (substr($module, 0, 4) == 'ext-')
-			{
-				$name = substr($module, 4);
-				EresusCMS::app()->getFrontController()->setModule($Eresus->plugins->load($name));
-			}
-			else
-			{
-				ErrorMessage(errFileNotFound.': "'.Core::app()->getFsRoot() . "/core/$module.php'");
-			}
-
-			/*
-			 * Отрисовка контента плагином
-			 */
-			$module = EresusCMS::app()->getFrontController()->getModule();
-			if (is_object($module))
-			{
-				if (method_exists($module, 'adminRender'))
-				{
-					try
-					{
-						$result .= $module->adminRender();
-					}
-					catch (Exception $e)
-					{
-						if (isset($name))
-						{
-							$logMsg = 'Error in plugin "' . $name . '"';
-							$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
-							$msg = sprintf($msg, $name);
-						}
-						else
-						{
-							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
-							$msg = sprintf($msg, $module);
-						}
-
-						EresusLogger::exception($e);
-
-						$msg .= '<br />' . $e->getMessage();
-						$result .= ErrorBox($msg);
-					}
-				}
-				else
-				{
-					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($module)));
-				}
-			}
-			else
-			{
-				EresusLogger::log(__METHOD__, LOG_ERR, '$module property is not an object');
-				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
-				$result .= ErrorBox($msg);
-			}
-		}
-		else
-		{
-			$router = AdminRouteService::getInstance();
-			$router->init(HTTP::request());
-			$result = $router->call();
-		}
-
-		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
-			$messages = '';
-			foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
-			$result = $messages.$result;
-			$Eresus->session['msg']['information'] = array();
-		}
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
-			$messages = '';
-			foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message);
-			$result = $messages.$result;
-			$Eresus->session['msg']['errors'] = array();
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Отрисовывает ветку меню
 	 *
 	 * @param $opened
@@ -893,7 +791,7 @@ class AdminUI extends WebPage
 	 * Отрисовка интерфейса
 	 * @return string HTML
 	 */
-	public function render()
+	public function render($content)
 	{
 		global $locale, $Eresus;
 
@@ -901,7 +799,7 @@ class AdminUI extends WebPage
 		$data = array();
 
 		$data['page'] = $this;
-		$data['content'] = $this->renderContent();
+		$data['content'] = $content;
 		$data['siteName'] = option('siteName');
 		$data['head'] = $this->renderHeadSection();
 		$data['body'] = $this->renderBodySection();
