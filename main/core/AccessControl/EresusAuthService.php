@@ -281,8 +281,8 @@ class EresusAuthService implements ServiceInterface
 	 *
 	 * @since 2.16
 	 */
-	private function __construct()
 	// @codeCoverageIgnoreStart
+	private function __construct()
 	{
 	}
 	// @codeCoverageIgnoreEnd
@@ -295,8 +295,8 @@ class EresusAuthService implements ServiceInterface
 	 *
 	 * @since 2.16
 	 */
-	private function __clone()
 	// @codeCoverageIgnoreStart
+	private function __clone()
 	{
 	}
 	// @codeCoverageIgnoreEnd
