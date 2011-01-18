@@ -470,11 +470,8 @@ table.ui-grid.ui-hlines
 .ui-state-default,
 .ui-widget-content .ui-state-default
 {
-	border: 1px solid #ccc;
-	background-color: #ddd;
 	font-weight: bold;
 	color: #005;
-	outline: none;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -489,11 +486,8 @@ table.ui-grid.ui-hlines
 .ui-state-focus,
 .ui-widget-content .ui-state-focus
 {
-	border: 1px solid #d4d4d4;
-	background-color: #e2e7ee;
 	font-weight: bold;
 	color: #1d5987;
-	outline: none;
 }
 .ui-state-hover a, .ui-state-hover a:hover { color: #1d5987; text-decoration: none; outline: none; }
 /* Активный */
@@ -547,12 +541,12 @@ table.ui-grid.ui-hlines
 {
 	width: 16px;
 	height: 16px;
-	background-image: url(images/ui-icons_0055aa_256x240.png);
+	background-image: url(img/small/icons.png);
 }
-.ui-widget-content .ui-icon {background-image: url(images/ui-icons_0055aa_256x240.png); }
+.ui-widget-content .ui-icon {background-image: url(img/small/icons.png); }
 
 .ui-widget-header .ui-icon {background-image: url(images/ui-icons_e0eeff_256x240.png); }
-.ui-state-default .ui-icon { background-image: url(images/ui-icons_0066bb_256x240.png); }
+.ui-state-default .ui-icon { background-image: url(img/small/icons.png); }
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_217bc0_256x240.png); }
 .ui-state-active .ui-icon {background-image: url(images/ui-icons_000055_256x240.png); }
 .ui-state-highlight .ui-icon {background-image: url(images/ui-icons_2e83ff_256x240.png); }
