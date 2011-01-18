@@ -137,7 +137,12 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 						["open", "info", "rename"],
 						["copy", "cut", "paste", "rm"],
 						["icons", "list"]
-					]
+					],
+					contextmenu : {
+						cwd : ["reload", "delim", "mkdir", "mkfile", "upload", "delim", "paste", "delim", "info"],
+						file : ["select", "delim", "copy", "cut", "rm", "delim", "duplicate", "rename"],
+						group : ["copy", "cut", "rm", "delim", "delim", "info"]
+					}
 				})
 			});';
 	}
