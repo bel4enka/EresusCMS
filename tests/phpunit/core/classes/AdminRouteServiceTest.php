@@ -33,7 +33,7 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/main.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/AdminModule.php';
+require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminController.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/AdminRouteService.php';
 
 /**

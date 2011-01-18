@@ -2,9 +2,7 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
- * Модуль АИ
+ * Контроллер АИ
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -32,12 +30,12 @@
  */
 
 /**
- * Модуль АИ
+ * Контроллер АИ
  *
  * @package EresusCMS
  * @since 2.16
  */
-abstract class AdminModule
+abstract class EresusAdminController
 {
 	/**
 	 * Метод должен возвращать разметку интерфейса модуля

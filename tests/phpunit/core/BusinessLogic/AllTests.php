@@ -32,6 +32,7 @@
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/EresusAdminFrontControllerTest.php';
+require_once dirname(__FILE__) . '/EresusAdminControllerTest.php';
 
 class Core_BusinessLogic_AllTests
 {
@@ -40,6 +41,7 @@ class Core_BusinessLogic_AllTests
 		$suite = new PHPUnit_Framework_TestSuite('core/BusinessLogic');
 
 		$suite->addTestSuite('EresusAdminFrontControllerTest');
+		$suite->addTestSuite('EresusAdminControllerTest');
 		return $suite;
 	}
 }

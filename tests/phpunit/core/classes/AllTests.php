@@ -33,7 +33,6 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/helpers/AllTests.php';
 
-require_once dirname(__FILE__) . '/AdminModuleTest.php';
 require_once dirname(__FILE__) . '/AdminRouteServiceTest.php';
 require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
@@ -50,7 +49,6 @@ class Core_Classes_AllTests
 
 		$suite->addTest(Core_Classes_Helpers_AllTests::suite());
 
-		$suite->addTestSuite('AdminModuleTest');
 		$suite->addTestSuite('AdminRouteServiceTest');
 		$suite->addTestSuite('HtmlElementTest');
 		$suite->addTestSuite('HtmlScriptElementTest');

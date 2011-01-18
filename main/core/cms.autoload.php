@@ -33,7 +33,6 @@
 
 return array(
 
-	'AdminModule' => 'core/classes/AdminModule.php',
 	'EresusExtensionConnector' => 'core/classes/EresusExtensionConnector.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
@@ -48,6 +47,7 @@ return array(
 	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
 
 	/* BusinessLogic */
+	'EresusAdminController' => 'core/BusinessLogic/EresusAdminController.php',
 	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',
 
 /* DBAL */
