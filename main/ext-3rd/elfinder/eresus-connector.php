@@ -102,7 +102,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 		}
 
 		$rootURL = $GLOBALS['Eresus']->root . 'ext-3rd/elfinder';
-		$GLOBALS['page']->linkScripts($rootURL . '/js/elfinder.min.js', 'defer');
+		$GLOBALS['page']->linkScripts($rootURL . '/js/elfinder.full.js', 'defer');
 		$GLOBALS['page']->linkScripts($rootURL . '/js/i18n/elfinder.ru.js', 'defer');
 		$GLOBALS['page']->linkStyles($rootURL . '/css/elfinder.css');
 
