@@ -213,6 +213,11 @@
 			strip="0" 
 		/>
 		<patch 
+			patchfile="${project.basedir}/3rdparty/patches/elfinder/elfinder.full.js.patch" 
+			dir="${build.dir}" 
+			strip="0" 
+		/>
+		<patch 
 			patchfile="${project.basedir}/3rdparty/patches/elfinder/elfinder.css.patch" 
 			dir="${build.dir}" 
 			strip="0" 
