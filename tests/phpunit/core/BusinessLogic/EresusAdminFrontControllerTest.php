@@ -35,7 +35,7 @@ require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAut
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Domain/EresusUser.php';
 require_once dirname(__FILE__) . '/../../../../main/core/kernel-legacy.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/AdminRouteService.php';
+require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
 require_once dirname(__FILE__) . '/../../../../main/core/i18n.php';
 require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminFrontController.php';
 
@@ -54,9 +54,9 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		HTTP::$request = null;
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$instance = new ReflectionProperty('AdminRouteService', 'instance');
+			$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
 			$instance->setAccessible(true);
-			$instance->setValue('AdminRouteService', null);
+			$instance->setValue('EresusAdminRouteService', null);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -75,17 +75,17 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::setModule
-	 * @covers EresusAdminFrontController::getModule
+	 * @covers EresusAdminFrontController::setController
+	 * @covers EresusAdminFrontController::getController
 	 */
-	public function test_setgetModule()
+	public function test_setgetController()
 	{
-		$module = new stdClass();
+		$controller = new stdClass();
 
 		$mock = $this->getMockBuilder('EresusAdminFrontController')->setMethods(array('__constrcut'))->
 			disableOriginalConstructor()->getMock();
-		$mock->setModule($module);
-		$this->assertSame($module, $mock->getModule());
+		$mock->setController($controller);
+		$this->assertSame($controller, $mock->getController());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -116,11 +116,11 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
 
-		$AdminRouteService = $this->getMock('stdClass', array('call', 'init'));
+		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init'));
 
-		$instance = new ReflectionProperty('AdminRouteService', 'instance');
+		$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('AdminRouteService', $AdminRouteService);
+		$instance->setValue('EresusAdminRouteService', $EresusAdminRouteService);
 
 		$EresusAdminFrontController = new EresusAdminFrontController($ui);
 		$EresusAdminFrontController->render();
@@ -159,11 +159,11 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
 
-		$AdminRouteService = $this->getMock('stdClass', array('call', 'init'));
+		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init'));
 
-		$instance = new ReflectionProperty('AdminRouteService', 'instance');
+		$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('AdminRouteService', $AdminRouteService);
+		$instance->setValue('EresusAdminRouteService', $EresusAdminRouteService);
 
 		$EresusAdminFrontController = new EresusAdminFrontController($ui);
 		$EresusAdminFrontController->render();
@@ -263,7 +263,7 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers EresusAdminFrontController::getContentHTML
 	 */
-	public function test_getContentHTML_using_AdminRouteService()
+	public function test_getContentHTML_using_EresusAdminRouteService()
 	{
 		if (version_compare(PHP_VERSION, '5.3.2', '<'))
 		{

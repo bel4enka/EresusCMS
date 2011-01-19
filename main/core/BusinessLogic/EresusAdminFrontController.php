@@ -45,7 +45,7 @@ class EresusAdminFrontController
 	 * Текущий модуль АИ
 	 * @var object
 	 */
-	private $module = null;
+	private $controller = null;
 
 	/**
 	 * Объект UI
@@ -72,15 +72,15 @@ class EresusAdminFrontController
 	/**
 	 * Устанавливает модуль АИ
 	 *
-	 * @param object $module
+	 * @param object $controller
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	public function setModule($module)
+	public function setController($controller)
 	{
-		$this->module = $module;
+		$this->controller = $controller;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -91,9 +91,9 @@ class EresusAdminFrontController
 	 *
 	 * @since 2.16
 	 */
-	public function getModule()
+	public function getController()
 	{
-		return $this->module;
+		return $this->controller;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -188,35 +188,35 @@ class EresusAdminFrontController
 
 		if (arg('mod')) // TODO устаревшая функция
 		{
-			$module = arg('mod', '/[^\w-]/');
-			$modulePath = EresusCMS::app()->getFsRoot() . "/core/$module.php";
-			if (file_exists($modulePath))
+			$controller = arg('mod', '/[^\w-]/');
+			$controllerPath = EresusCMS::app()->getFsRoot() . "/core/$controller.php";
+			if (file_exists($controllerPath))
 			{
-				include $modulePath;
-				$class = "T$module";
-				$this->setModule(new $class);
+				include $controllerPath;
+				$class = "T$controller";
+				$this->setController(new $class);
 			}
-			elseif (substr($module, 0, 4) == 'ext-')
+			elseif (substr($controller, 0, 4) == 'ext-')
 			{
-				$name = substr($module, 4);
-				$this->setModule($Eresus->plugins->load($name));
+				$name = substr($controller, 4);
+				$this->setController($Eresus->plugins->load($name));
 			}
 			else
 			{
-				ErrorMessage(errFileNotFound . ': "' . $modulePath);
+				ErrorMessage(errFileNotFound . ': "' . $controllerPath);
 			}
 
 			/*
 			 * Отрисовка контента плагином
 			 */
-			$module = $this->getModule();
-			if (is_object($module))
+			$controller = $this->getController();
+			if (is_object($controller))
 			{
-				if (method_exists($module, 'adminRender'))
+				if (method_exists($controller, 'adminRender'))
 				{
 					try
 					{
-						$html .= $module->adminRender();
+						$html .= $controller->adminRender();
 					}
 					catch (Exception $e)
 					{
@@ -229,7 +229,7 @@ class EresusAdminFrontController
 						else
 						{
 							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
-							$msg = sprintf($msg, $module);
+							$msg = sprintf($msg, $controller);
 						}
 
 						EresusLogger::exception($e);
@@ -240,19 +240,19 @@ class EresusAdminFrontController
 				}
 				else
 				{
-					$html .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($module)));
+					$html .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($controller)));
 				}
 			}
 			else
 			{
-				EresusLogger::log(__METHOD__, LOG_ERR, '$module property is not an object');
+				EresusLogger::log(__METHOD__, LOG_ERR, '$controller property is not an object');
 				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
 				$html .= ErrorBox($msg);
 			}
 		}
 		else
 		{
-			$router = AdminRouteService::getInstance();
+			$router = EresusAdminRouteService::getInstance();
 			$router->init(HTTP::request());
 			$html = $router->call();
 		}

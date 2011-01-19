@@ -37,7 +37,7 @@
  * @package EresusCMS
  * @since 2.16
  */
-class FileManagerModule extends AdminModule
+class EresusFileManagerController extends EresusAdminController
 {
 	/**
 	 * (non-PHPdoc)

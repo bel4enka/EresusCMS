@@ -40,9 +40,6 @@ return array(
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
 
-	/* Службы */
-	'AdminRouteService' => 'core/classes/AdminRouteService.php',
-
 	/* AccessControl */
 	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
 
@@ -58,8 +55,11 @@ return array(
 	/* Domain */
 	'Plugins' => 'core/classes/Plugins.php',
 
-/* Helpers */
+	/* Helpers */
 	'EresusCollection' => 'core/Helpers/EresusCollection.php',
+
+	/* HTTP */
+	'EresusAdminRouteService' => 'core/HTTP/EresusAdminRouteService.php',
 
 	/* UI */
 	'AdminUI' => 'core/UI/AdminUI.php',

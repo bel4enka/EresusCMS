@@ -2,8 +2,6 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
  * Служба роутинга АИ
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
@@ -34,26 +32,26 @@
 /**
  * Служба роутинга АИ
  *
- * Служба производит разбор URL и позволяет загружать и выполнять запрошенные модули и методы.
+ * Служба производит разбор URL и позволяет загружать и выполнять запрошенные контроллеры и методы.
  *
  * <b>Формат URL</b>
- * /admin/[модуль/[метод/]][ключ1/значение1/[...]]
+ * /admin/[контроллер/[метод/]][ключ1/значение1/[...]]
  *
  * здесь:
  *
- * - "модуль" - имя модуля. Модули располагаются в admin/modules/имя_модуля
- * - "метод" - метод модуля. В классе модуля соответствующий метод должен иметь префикс "action"
+ * - "контроллер" - имя контроллера. Контроллеры располагаются в admin/controllers/имя_контроллера
+ * - "метод" - метод. В классе контроллера соответствующий метод должен иметь префикс "action"
  * - "ключ/значение" - произвольное количество дополнительных параметров
  *
  * @package EresusCMS
  * @since 2.16
  */
-class AdminRouteService implements ServiceInterface
+class EresusAdminRouteService implements ServiceInterface
 {
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var AdminRouteService
+	 * @var EresusAdminRouteService
 	 */
 	private static $instance = null;
 
@@ -65,18 +63,18 @@ class AdminRouteService implements ServiceInterface
 	private $request;
 
 	/**
-	 * Имя модуля
+	 * Имя контроллера
 	 *
 	 * @var string
 	 */
-	private $moduleName = '';
+	private $controllerName = '';
 
 	/**
-	 * Объект модуля
+	 * Объект контероллера
 	 *
-	 * @var AdminModule
+	 * @var EresusAdminController
 	 */
-	private $module = null;
+	private $controller = null;
 
 	/**
 	 * Имя метода (действия)
@@ -95,7 +93,7 @@ class AdminRouteService implements ServiceInterface
 	/**
 	 * Возвращает экземпляр класса
 	 *
-	 * @return AdminRouteService
+	 * @return EresusAdminRouteService
 	 *
 	 * @since 2.16
 	 */
@@ -122,8 +120,8 @@ class AdminRouteService implements ServiceInterface
 	 */
 	public function init(HttpRequest $request)
 	{
-		$this->moduleName = '';
-		$this->module = null;
+		$this->controllerName = '';
+		$this->controller = null;
 		$this->actionName = '';
 		$this->params = array();
 
@@ -140,13 +138,13 @@ class AdminRouteService implements ServiceInterface
 			array_pop($parts);
 		}
 
-		// Имя модуля
+		// Имя контроллера
 		$part = array_shift($parts);
 		if (!$part)
 		{
 			return;
 		}
-		$this->moduleName = $part;
+		$this->controllerName = $part;
 
 		// Имя метода (действия)
 		$part = array_shift($parts);
@@ -166,7 +164,7 @@ class AdminRouteService implements ServiceInterface
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Вызывает запрошенный модуль и возвращает результат
+	 * Вызывает запрошенный контроллер и возвращает результат
 	 *
 	 * @return string|false  HTML
 	 *
@@ -185,32 +183,32 @@ class AdminRouteService implements ServiceInterface
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает объект модуля
+	 * Возвращает объект контроллера
 	 *
-	 * Метод ищет модуль {@see $moduleName}, загружает и возвращает экземпляр класса модуля.
+	 * Метод ищет модуль {@see $controllerName}, загружает и возвращает экземпляр класса контроллера.
 	 *
-	 * @throws PageNotFoundException  если нет файла модуля
-	 * @throws LogicException  если нет класса модуля или этот класс не ялвяется потомком AdminModule
+	 * @throws PageNotFoundException  если нет файла контроллера
+	 * @throws LogicException  если нет класса контроллера или этот класс не ялвяется потомком EresusAdminController
 	 *
-	 * @return AdminModule|null
+	 * @return EresusAdminController|null
 	 *
 	 * @since 2.16
 	 */
-	public function getModule()
+	public function getController()
 	{
-		if ($this->module)
+		if ($this->controller)
 		{
-			return $this->module;
+			return $this->controller;
 		}
 
-		if (empty($this->moduleName))
+		if (empty($this->controllerName))
 		{
 			return null;
 		}
 		else
 		{
-			/* Ищем файл модуля */
-			$path = Core::app()->getFsRoot() . '/admin/modules/' . $this->moduleName . '.php';
+			/* Ищем файл контроллера */
+			$path = Core::app()->getFsRoot() . '/admin/controllers/' . $this->controllerName . '.php';
 			if (!is_file($path))
 			{
 				EresusLogger::log(__METHOD__, LOG_WARNING, 'File "%s" not found', $path);
@@ -218,22 +216,23 @@ class AdminRouteService implements ServiceInterface
 			}
 			include $path;
 
-			/* Ищем класс модуля */
-			$className = $this->moduleName . 'Module';
+			/* Ищем класс контроллера */
+			$className = 'Eresus' . $this->controllerName . 'Controller';
 			if (!class_exists($className, false))
 			{
 				throw new LogicException(sprintf('Class "%s" not found in "%s"', $className, $path));
 			}
 
-			$module = new $className();
-			if (!($module instanceof AdminModule))
+			$controller = new $className();
+			if (!($controller instanceof EresusAdminController))
 			{
-				throw new LogicException(sprintf('Class "%s" not a descendant of AdminModule', $className));
+				throw new LogicException(sprintf('Class "%s" not a descendant of EresusAdminController',
+					$className));
 			}
 		}
 
-		$this->module = $module;
-		return $module;
+		$this->controller = $controller;
+		return $controller;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -248,8 +247,8 @@ class AdminRouteService implements ServiceInterface
 	 */
 	public function getAction()
 	{
-		$module = $this->getModule();
-		if (is_null($module))
+		$controller = $this->getController();
+		if (is_null($controller))
 		{
 			return null;
 		}
@@ -263,14 +262,14 @@ class AdminRouteService implements ServiceInterface
 			$action = 'action' . $this->actionName;
 		}
 
-		if (!method_exists($module, $action))
+		if (!method_exists($controller, $action))
 		{
 			EresusLogger::log(__METHOD__, LOG_WARNING, 'Method "%s" not found in "%s"', $action,
-				get_class($module));
+				get_class($controller));
 			throw new PageNotFoundException;
 		}
 
-		$callback = array($module, $action);
+		$callback = array($controller, $action);
 
 		return $callback;
 	}
@@ -283,8 +282,8 @@ class AdminRouteService implements ServiceInterface
 	 *
 	 * @since 2.16
 	 */
-	private function __construct()
 	// @codeCoverageIgnoreStart
+	private function __construct()
 	{
 	}
 	// @codeCoverageIgnoreEnd
@@ -297,8 +296,8 @@ class AdminRouteService implements ServiceInterface
 	 *
 	 * @since 2.16
 	 */
-	private function __clone()
 	// @codeCoverageIgnoreStart
+	private function __clone()
 	{
 	}
 	// @codeCoverageIgnoreEnd
