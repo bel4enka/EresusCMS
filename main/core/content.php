@@ -37,6 +37,11 @@
  */
 class TContent
 {
+	/**
+	 * Описание раздела
+	 * @var array
+	 */
+	private $item;
 
 	/**
 	 * Возвращает разметку интерфейса управления контентом текущего раздела
@@ -46,85 +51,137 @@ class TContent
 	 */
 	public function adminRender()
 	{
-		global $Eresus, $page;
-
-		if (UserRights(EDITOR))
+		if (!UserRights(EDITOR))
 		{
-			useLib('sections');
-			$sections = new Sections();
-			$item = $sections->get(arg('section', 'int'));
+			return '';
+		}
 
-			$page->id = $item['id'];
-			if (!array_key_exists($item['type'], $Eresus->plugins->list))
+		$plugins = $GLOBALS['Eresus']->plugins;
+
+		useLib('sections');
+		$sections = new Sections();
+		$this->item = $sections->get(arg('section', 'int'));
+
+		$GLOBALS['page']->id = $this->item['id'];
+
+		if (!array_key_exists($this->item['type'], $plugins->list))
+		{
+			switch ($this->item['type'])
 			{
-				switch ($item['type'])
-				{
-					case 'default':
-						$editor = new ContentPlugin();
-						if (arg('update')) $editor->update();
-						else $result = $editor->adminRenderContent();
-					break;
+				case 'default':
+					return $this->contentTypeDefault();
+				break;
 
-					case 'list':
-						if (arg('update'))
-						{
-							$original = $item['content'];
-							$item['content'] = arg('content', 'dbsafe');
-							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
-							HttpResponse::redirect(arg('submitURL'));
-						}
-						else
-						{
-							$form = array(
-								'name' => 'editURL',
-								'caption' => admEdit,
-								'width' => '100%',
-								'fields' => array (
-									array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-									array ('type' => 'html', 'name' => 'content', 'label' => admTemplListLabel, 'height' => '300px', 'value'=>isset($item['content'])?$item['content']:'$(items)'),
-								),
-								'buttons' => array('apply', 'cancel'),
-							);
-							$result = $page->renderForm($form);
-						}
-					break;
+				case 'list':
+					return $this->contentTypeList();
+				break;
 
-					case 'url':
-						if (arg('update'))
-						{
-							$original = $item['content'];
-							$item['content'] = arg('url', 'dbsafe');
-							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
-							HttpResponse::redirect(arg('submitURL'));
-						}
-						else
-						{
-							$form = array(
-								'name' => 'editURL',
-								'caption' => admEdit,
-								'width' => '100%',
-								'fields' => array (
-									array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-									array ('type' => 'edit', 'name' => 'url', 'label' => 'URL:', 'width' => '100%', 'value'=>isset($item['content'])?$item['content']:''),
-								),
-								'buttons' => array('apply', 'cancel'),
-							);
-							$result = $page->renderForm($form);
-						}
-					break;
+				case 'url':
+					return $this->contentTypeURL();
+				break;
 
-					default:
-						$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
-					break;
-				}
+				default:
+					return $GLOBALS['page']->box(sprintf(errContentPluginNotFound, $this->item['type']),
+						'errorBox', errError);
+				break;
 			}
-			else
-			{
-				$Eresus->plugins->load($item['type']);
-				EresusCMS::app()->getFrontController()->setController($Eresus->plugins->items[$item['type']]);
-				$result = $Eresus->plugins->items[$item['type']]->adminRenderContent();
-			}
-			return $result;
+		}
+		else
+		{
+			$plugins->load($this->item['type']);
+			EresusCMS::app()->getFrontController()->setController($plugins->items[$this->item['type']]);
+			return $plugins->items[$this->item['type']]->adminRenderContent();
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Редактор для разделов типа "По умолчанию"
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	private function contentTypeDefault()
+	{
+		$editor = new ContentPlugin();
+		if (arg('update'))
+		{
+			$editor->update();
+		}
+		else
+		{
+			return $editor->adminRenderContent();
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Редактор для разделов типа "Список подразделов"
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 * @uses HttpResponse::redirect()
+	 */
+	private function contentTypeList()
+	{
+		if (arg('update'))
+		{
+			$original = $this->item['content'];
+			$item['content'] = arg('content', 'dbsafe');
+			$GLOBALS['Eresus']->db->updateItem('pages', $this->item, "`id`='".$this->item['id']."'");
+			HttpResponse::redirect(arg('submitURL'));
+		}
+		else
+		{
+			$form = array(
+				'name' => 'editURL',
+				'caption' => admEdit,
+				'width' => '100%',
+				'fields' => array (
+					array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
+					array ('type' => 'html', 'name' => 'content', 'label' => admTemplListLabel,
+						'height' => '300px', 'value'=>isset($item['content'])?$item['content']:'$(items)'),
+				),
+				'buttons' => array('apply', 'cancel'),
+			);
+			return $GLOBALS['page']->renderForm($form);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Редактор для разделов типа "URL"
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 * @uses HttpResponse::redirect()
+	 */
+	private function contentTypeURL()
+	{
+		if (arg('update'))
+		{
+			$original = $this->item['content'];
+			$this->item['content'] = arg('url', 'dbsafe');
+			$GLOBALS['Eresus']->db->updateItem('pages', $this->item, "`id`='".$this->item['id']."'");
+			HttpResponse::redirect(arg('submitURL'));
+		}
+		else
+		{
+			$form = array(
+				'name' => 'editURL',
+				'caption' => admEdit,
+				'width' => '100%',
+				'fields' => array (
+					array('type'=>'hidden','name'=>'update', 'value' => $this->item['id']),
+					array ('type' => 'edit', 'name' => 'url', 'label' => 'URL:', 'width' => '100%',
+						'value'=>isset($this->item['content']) ? $this->item['content']:''),
+				),
+				'buttons' => array('apply', 'cancel'),
+			);
+			return $GLOBALS['page']->renderForm($form);
 		}
 	}
 	//-----------------------------------------------------------------------------
