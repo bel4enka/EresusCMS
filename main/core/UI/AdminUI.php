@@ -469,7 +469,7 @@ class AdminUI extends WebPage
 
 		$result = '';
 
-		$module = EresusCMS::app()->getFrontController()->getModule();
+		$module = EresusCMS::app()->getFrontController()->getController();
 
 		$prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
 		$itemsPerPage = isset($table['itemsPerPage'])?$table['itemsPerPage']:
