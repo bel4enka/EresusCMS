@@ -26,12 +26,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package EresusCMS
+ *
+ * @cssdoc version 1.0-pre
+ *
  * $Id$
  */
 
-/****************************************************************
+/**
  * ОФОРМЛЕНИЕ ТЕКСТОВ
- ****************************************************************/
+ *
+ * @section typography
+ */
 
 /**
  * Базовые стили документа
@@ -49,7 +55,7 @@ html
 body
 {
 	color: #000;
-	background: #dfdfdf;
+	background: #eee;
 }
 
 
@@ -113,30 +119,20 @@ sup
 }
 
 
-/****************************************************************
- * РАЗМЕЩЕНИЕ ЭЛЕМЕНТОВ
- ****************************************************************/
 
-/**
- * Основные узлы документа
- */
-html,
-body
-{
-	display: block;
-	height: 100%;
-	margin:0;
-	padding:0;
-	width: 100%;
-}
 
-/**
- * Ограничитель по ширине для широких мониторов
- */
-.l-width-limit
-{
-	max-width: 1200px;
-}
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Заголовок страницы
@@ -193,9 +189,80 @@ body
 	width: 200px;
 }
 
-/****************************************************************
+/*************************************************************************************************/
+
+/**
  * СТИЛИ ВИДЖЕТОВ
- ****************************************************************/
+ *
+ * @section widgets
+ * @link http://docs.eresus.ru/cms/dev/themes/ref/widget-styles
+ */
+
+/**
+ * Этот класс абстрактный — он не определяет тип или назначение виджета, он только лишь помечает, 
+ * что имеющий его элемент — виджет. Поэтому вместе с ним обязательно должен указываться класс, 
+ * конкретизирующий, что это за виджет, такой как ui-dialog, ui-tabs и т. д.
+ */
+.ui-widget
+{
+}
+
+/* Область контента виджета */
+.ui-widget-content
+{
+	background-color: #eee;
+	border: solid 1px #888;
+	color: #222;
+}
+
+	/* Если один виджет вложен в другой... */
+	.ui-widget-content .ui-widget-content
+	{
+		border-color: #ccc;
+	}
+
+/**
+ * Виджет заголовка. Создаёт контейнер для размещения заголовка. 
+ * Должен использоваться внутри или совместно с ui-widget. Может использоваться как вне, так и 
+ * внутри ui-widget-content.
+ */
+.ui-widget-header
+{
+	-moz-box-shadow: 2px 2px 7px rgba(255, 255, 255, 0.4) inset;
+	-webkit-box-shadow: 2px 2px 7px rgba(255, 255, 255, 0.4) inset;
+	background-color: #007acc;
+	border-color: #6ad #005 #005 #6ad;
+	border-style: solid;
+	border-width: 1px;
+	box-shadow: 2px 2px 7px rgba(255, 255, 255, 0.4) inset;
+	color: #fff;
+	font-weight: bold;
+}
+
+	/**
+	 * Ссылки в заголовке виджета 
+	 */
+	.ui-widget-header a
+	{
+		color: #ffffff;
+	}
+	
+	/**
+	 * Заголовок виджета, непосредственно содержащий текст
+	 */
+	.ui-widget-title
+	{
+		padding: .1em .5em;
+	}
+
+
+/**
+ * Панель
+ */
+.ui-panel
+{
+	padding: .2em;
+}
 
 /**
  * Блок
@@ -325,67 +392,6 @@ table.ui-grid.ui-hlines
 	}
 
 
-/*** Layout helpers ***/
-.ui-helper-hidden
-{
-	display: none;
-}
-
-.ui-helper-hidden-accessible
-{
-	position: absolute;
-	left: -99999999px;
-}
-
-.ui-helper-reset
-{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	line-height: 1.3;
-	text-decoration: none;
-	font-size: 100%;
-	list-style: none;
-}
-
-.ui-helper-clearfix:after
-{
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
-}
-
-.ui-helper-clearfix
-{
-	display: inline-block;
-}
-
-/* required comment for clearfix to work in Opera \*/
-* html .ui-helper-clearfix
-{
-	height:1%;
-}
-
-.ui-helper-clearfix {
-	display: block;
-}
-/* end clearfix */
-
-.ui-helper-zfix
-{
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	position: absolute;
-	opacity: 0;
-	/*filter:Alpha(Opacity=0);*/
-}
-
-
 /* Interaction Cues
 ----------------------------------*/
 .ui-state-disabled { cursor: default !important; }
@@ -407,10 +413,8 @@ table.ui-grid.ui-hlines
 /** 
  * Внутренний отступ
  *
- * .ui-padding - не исползовать
  */
 .ui-helper-padding,
-.ui-padding
 {
 	padding: 2px;
 }
@@ -422,47 +426,6 @@ table.ui-grid.ui-hlines
 	font-size: 85%;
 }
 
-/*** Контейнеры компонентов ***/
-.ui-widget
-{
-}
-
-	.ui-widget input,
-	.ui-widget select,
-	.ui-widget textarea,
-	.ui-widget button
-	{
-	}
-
-/* Область контента виджета */
-.ui-widget-content
-{
-	background-color: #eee;
-	border: solid 1px #999;
-	color: #222;
-}
-
-	/* Если один виджет вложен в другой... */
-	.ui-widget-content .ui-widget-content
-	{
-		border-color: #ccc;
-	}
-
-/* Заголовок виджета */
-.ui-widget-header
-{
-	border-style: solid;
-	border-width: 1px;
-	border-color: #6ad #005 #005 #6ad;
-	background: #007acc;
-	color: #ffffff;
-	font-weight: bold;
-}
-
-	.ui-widget-header a
-	{
-		color: #ffffff;
-	}
 
 /*** Состояния взаимодействия ***/
 
@@ -884,40 +847,65 @@ table.ui-grid.ui-hlines
 .ui-slider-vertical .ui-slider-range-max { top: 0; }/* Tabs
 ----------------------------------*/
 
-/*** Вкладки ***/
-
-.ui-tabs
+/**
+ * Вкладки
+ */
+.ui-tabs-nav.ui-widget-header
 {
+	background-color: #e5e5e5;
+	border-width: 0;
+	color: #ffffff;
+	font-weight: bold;
 }
-	/* Переключатель вкладок */
+
+	/**
+	 * Переключатель вкладок 
+	 */
 	.ui-tabs .ui-tabs-nav
 	{
+		border-bottom: solid 1px #ccc;
 		list-style: none;
-		position: relative;
 		padding: .2em .2em 0;
-		border-bottom-color: #ccc;
+		position: relative;
 	}
 
 	.ui-tabs .ui-tabs-nav li
 	{
-		position: relative;
-		float: left;
+    background-color: #ddd;
+    border: 1px solid #ccc;
 		border-bottom-width: 0 !important;
+		float: left;
 		margin: 0 .2em -1px 0;
 		padding: 0;
+		position: relative;
 	}
-	/* Ссылка на кнопке вкладки */
-	.ui-tabs .ui-tabs-nav li a
-	{
-		float: left;
-		text-decoration: none;
-		padding: .2em .5em;
-	}
-	/* Нажатая кнопка вкладки */
+	
+		/**
+		 * Ссылка на кнопке вкладки
+		 */
+		.ui-tabs .ui-tabs-nav li a
+		{
+			float: left;
+			text-decoration: none;
+			padding: .2em .5em;
+		}
+
+	/**
+	 * Нажатая кнопка вкладки
+	 */
 	.ui-tabs .ui-tabs-nav li.ui-tabs-selected
 	{
-		padding-bottom: 1px;
+		background-color: #eee;
 		border-bottom-width: 0;
+		padding-bottom: 1px;
+	}
+
+	/**
+	 * Кнопка вкладки под курсором мыши
+	 */
+	.ui-tabs .ui-tabs-nav li.ui-state-hover a
+	{
+		background-color: #eee;
 	}
 
 	.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
@@ -926,7 +914,16 @@ table.ui-grid.ui-hlines
 	{
 		cursor: text;
 	}
-.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+
+	/**
+	 * first selector in group seems obsolete, but required to overcome bug in Opera applying 
+	 * cursor: text overall if defined elsewhere... 
+	 */
+	.ui-tabs .ui-tabs-nav li a, 
+	.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a 
+	{ 
+		cursor: pointer; 
+	}
 
 /* Панель вкладки */
 .ui-tabs .ui-tabs-panel
@@ -1231,3 +1228,114 @@ table.ui-grid.ui-hlines
 		opacity: .8;
 		position: absolute;
 	}
+
+/*************************************************************************************************/
+
+/**
+ * РАЗМЕЩЕНИЕ ЭЛЕМЕНТОВ
+ *
+ * Эта секция должна размещаться после секции widgets.
+ *
+ * @section layout
+ */
+
+/**
+ * Делает элемент невидимым
+ */
+.ui-helper-hidden
+{
+	display: none;
+}
+
+/**
+ * Прячет элемент, оставляя его доступным (перемещая за пределы страницы)
+ */
+.ui-helper-hidden-accessible
+{
+	position: absolute;
+	left: -99999999px;
+}
+
+/**
+ * Сбрасывает основные стили элемента, такие как padding, margins, text-decoration, 
+ * list-style и т. п.
+ */
+.ui-helper-reset
+{
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	border: 0;
+	box-shadow: none;
+	font-size: 100%;
+	line-height: 1.3;
+	list-style: none;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	text-decoration: none;
+}
+
+/**
+ * Applies float wrapping properties to parent elements
+ *
+ * См. следующие 4 правила. Порядок правил не изменять!
+ */
+.ui-helper-clearfix:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.ui-helper-clearfix
+{
+	display: inline-block;
+}
+
+/* required comment for clearfix to work in Opera \*/
+* html .ui-helper-clearfix
+{
+	height: 1%;
+}
+
+.ui-helper-clearfix 
+{
+	display: block;
+}
+/* end clearfix */
+
+/**
+ * Applies iframe "fix" css to iframe elements when needed in overlays
+ */
+.ui-helper-zfix
+{
+	height: 100%;
+	left: 0;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+/**
+ * Основные узлы документа
+ */
+html,
+body
+{
+	display: block;
+	height: 100%;
+	margin:0;
+	padding:0;
+	width: 100%;
+}
+
+/**
+ * Ограничитель по ширине для широких мониторов
+ */
+.l-width-limit
+{
+	max-width: 1200px;
+}
