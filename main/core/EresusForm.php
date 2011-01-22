@@ -111,7 +111,7 @@
  * - tabs
  *
  * Что делает тег:
- * 1. Создаёт "div" с таким же идентификатором и классом "tab-widget"
+ * 1. Создаёт "div" с таким же идентификатором и классом "ui-tabs"
  * 2. Вставляет JS-код для инициализации плагина jQuery
  *
  * <b>tabcontrol</b>
@@ -888,7 +888,7 @@ class EresusForm
 			$tabDiv->appendChild($child->cloneNode(true));
 		}
 		$tabDiv->setAttribute('id', $id);
-		$tabDiv->setAttribute('class', 'tab-widget');
+		$tabDiv->setAttribute('class', 'ui-tabs');
 		$parent->replaceChild($tabDiv, $node);
 
 		$tabControls = $tabDiv->getElementsByTagNameNS(self::NS, 'tabcontrol');
