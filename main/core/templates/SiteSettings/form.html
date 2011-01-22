@@ -1,5 +1,10 @@
 <form xmlns:fc="http://eresus.ru/schema/form/" action="" id="settingsForm" class="ui-widget ui-widget-content ui-corner-all">
-	<div class="ui-padding">
+	
+	<div class="ui-widget-header ui-widget-title">
+		 онфигураци€ сайта
+	</div>
+	
+	<div class="ui-panel">
 		<fc:tabwidget id="settingsFormTabs">
 
 			<fc:tabcontrol>
@@ -32,7 +37,7 @@
 							<td class="ui-minor">
 								“екст дл€ тега &lt;title&gt;, общий дл€ всех страниц. <em>¬нимание!</em> „тобы этот
 								текст подставл€лс€ в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
-								<a href="admin.php?mod=templates">шаблоны страниц</a>.
+								<a href="admin.php?mod=themes">шаблоны страниц</a>.
 							</td>
 						</tr>
 						<tr>
@@ -80,7 +85,7 @@
 							<td class="ui-minor">
 								 лючевые слова дл€ мета-тега <b>keywords</b>, общего дл€ всех страниц. <em>¬нимание!</em>
 								„тобы эти слова подставл€лись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
-								в нужные <a href="admin.php?mod=templates">шаблоны страниц</a>.
+								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
 							</td>
 						</tr>
 						<tr>
@@ -91,7 +96,7 @@
 							<td class="ui-minor">
 								“екст дл€ мета-тега <b>description</b>, общего дл€ всех страниц. <em>¬нимание!</em>
 								„тобы этот текст подставл€лс€ в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
-								в нужные <a href="admin.php?mod=templates">шаблоны страниц</a>.
+								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
 							</td>
 						</tr>
 					</table>
@@ -194,10 +199,13 @@
 			</fc:tabs>
 
 		</fc:tabwidget>
+		
 	</div>
+
 	<div class="ui-button-box">
 		<button type="submit">—охранить</button>
 	</div>
+	
 	<script type="text/javascript">//<![CDATA[
 		$(document).ready(function () {
 
