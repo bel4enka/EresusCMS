@@ -2,11 +2,9 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
+ * Файловый менеджер
  *
- * Файлвовый менеджер
- *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -27,27 +25,63 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
+ * @subpackage UI
  *
- * $Id: AuthService.php 1277 2010-12-10 12:31:54Z mk $
+ * $Id$
  */
 
+
 /**
- * Файлвовый менеджер
+ * Файловый менеджер
  *
  * @package EresusCMS
- * @since 2.16
+ * @subpackage UI
  */
-class EresusFileManagerController extends EresusAdminController
+class EresusFileManager
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see AdminModule::actionIndex()
+	 * Объект пользвоательского интерфейса
+	 *
+	 * @var AdminUI
 	 */
-	public function actionIndex($params = array())
+	private $ui;
+
+	/**
+	 * Корневая директория менеджера
+	 *
+	 * Задаётся относительно корня сайта
+	 *
+	 * @var string
+	 */
+	protected $rootFolder;
+
+	/**
+	 * Конструктор
+	 *
+	 * @param AdminUI $ui          объект пользовательского интерфейса
+	 * @param string  $rootFolder  корневая директория менеджера (относительно корня сайта)
+	 *
+	 * @return EresusFileManager
+	 */
+	public function __construct(AdminUI $ui, $rootFolder = '/data')
 	{
-		$fm = new EresusFileManager($GLOBALS['page']);
-		$html = $fm->render();
+		$this->ui = $ui;
+		$this->rootFolder = $rootFolder;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает разметку файлового менеджера
+	 *
+	 * @return string  HTML
+	 */
+	public function render()
+	{
+		$connector = new elFinderConnector();
+		$html = $connector->getDataBrowser();
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
 }
+
+

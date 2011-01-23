@@ -64,8 +64,9 @@ return array(
 	/* UI */
 	'AdminUI' => 'core/UI/AdminUI.php',
 	'AdminUITheme' => 'core/UI/AdminUITheme.php',
+	'EresusFileManager' => 'core/UI/EresusFileManager.php',
 
-/* Сторонние компоненты */
+	/* Сторонние компоненты */
 	'elFinderConnector' => 'ext-3rd/elfinder/eresus-connector.php',
 	'elFinder' => 'ext-3rd/elfinder/connectors/php/elFinder.class.php',
 
