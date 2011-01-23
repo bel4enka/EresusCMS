@@ -456,8 +456,6 @@ class TPages
 		$templates = $this->loadTemplates();
 		$item['options'] = array2text($item['options'], true);
 		$form['caption'] = $item['caption'];
-		# Вычисляем адрес страницы
-		$urlAbs = $page->clientURL($item['id']);
 
 		$form = array(
 			'name' => 'PageForm',
@@ -494,8 +492,6 @@ class TPages
 					'width' => '10em','maxlength' => '19'),
 				array ('type' => 'checkbox','name' => 'updatedAuto','label' => admPagesUpdatedAuto,
 					'default' => true),
-				array ('type' => 'text',
-					'value'=>admPagesThisURL.': <a href="'.$urlAbs.'">'.$urlAbs.'</a>'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
