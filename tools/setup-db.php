@@ -33,6 +33,7 @@
 
 
 ini_set('display_errors', true);
+error_reporting(E_ALL);
 
 
 /**
@@ -91,7 +92,7 @@ try
 	include_once $root . '/core/Doctrine.php';
 	spl_autoload_register(array('Doctrine', 'autoload'));
 	spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
-	require_once $root . '/core/classes/EresusActiveRecord.php';
+	require_once $root . '/core/DBAL/EresusActiveRecord.php';
 
 	Doctrine_Manager::connection(Core::$values['eresus.cms.dsn'], 'doctrine')->
 		setCharset('cp1251'); // TODO Убрать после перехода на UTF
