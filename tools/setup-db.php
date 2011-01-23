@@ -107,7 +107,7 @@ try
 		$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
 	}
 
-	Doctrine_Core::createTablesFromModels($root . '/core/models');
+	Doctrine_Core::createTablesFromModels($root . '/core/Domain');
 
 	$user = new User();
 	$user->username = 'root';
