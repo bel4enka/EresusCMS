@@ -118,7 +118,7 @@ try
 	$user->mail = 'root@example.org';
 	$user->save();
 
-	$section = new EresusSection();
+	$section = new EresusSiteSection();
 	$section->name = 'main';
 	$section->owner = 0;
 	$section->title = 'Главная страница';
