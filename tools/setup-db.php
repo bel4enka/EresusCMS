@@ -109,7 +109,7 @@ try
 
 	Doctrine_Core::createTablesFromModels($root . '/core/Domain');
 
-	$user = new User();
+	$user = new EresusUser();
 	$user->username = 'root';
 	$user->password = '';
 	$user->active = true;
@@ -118,7 +118,7 @@ try
 	$user->mail = 'root@example.org';
 	$user->save();
 
-	$section = new Section();
+	$section = new EresusSection();
 	$section->name = 'main';
 	$section->owner = 0;
 	$section->title = 'Главная страница';
