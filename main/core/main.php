@@ -76,6 +76,16 @@ interface FileManagerConnectorInterface
 
 
 /**
+ * Исключение "Ошибка конфигурации"
+ *
+ * @package EresusCMS
+ * @since 2.16
+ */
+class EresusConfigException extends DomainException {}
+
+
+
+/**
  * Исключение "Страница не найдена"
  *
  * @package EresusCMS
@@ -437,7 +447,12 @@ class EresusCMS extends EresusApplication
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 
-		$pdo = DB::connect(Core::getValue('eresus.cms.dsn'));
+		$dsn = Core::getValue('eresus.cms.dsn');
+		if (!$dsn)
+		{
+			throw new EresusConfigException('"eresus.cms.dsn" not set.');
+		}
+		$pdo = DB::connect($dsn);
 
 		Doctrine_Manager::connection($pdo, 'doctrine')->
 			setCharset('cp1251'); // TODO Убрать после перехода на UTF
