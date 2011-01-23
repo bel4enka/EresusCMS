@@ -57,6 +57,7 @@ class TContent
 		}
 
 		$plugins = $GLOBALS['Eresus']->plugins;
+		$plugin = null;
 
 		useLib('sections');
 		$sections = new Sections();
@@ -69,19 +70,19 @@ class TContent
 			switch ($this->item['type'])
 			{
 				case 'default':
-					return $this->contentTypeDefault();
+					$html = $this->contentTypeDefault();
 				break;
 
 				case 'list':
-					return $this->contentTypeList();
+					$html = $this->contentTypeList();
 				break;
 
 				case 'url':
-					return $this->contentTypeURL();
+					$html = $this->contentTypeURL();
 				break;
 
 				default:
-					return $GLOBALS['page']->box(sprintf(errContentPluginNotFound, $this->item['type']),
+					$html = $GLOBALS['page']->box(sprintf(errContentPluginNotFound, $this->item['type']),
 						'errorBox', errError);
 				break;
 			}
@@ -89,9 +90,21 @@ class TContent
 		else
 		{
 			$plugins->load($this->item['type']);
-			EresusCMS::app()->getFrontController()->setController($plugins->items[$this->item['type']]);
-			return $plugins->items[$this->item['type']]->adminRenderContent();
+			$plugin = $plugins->items[$this->item['type']];
+			EresusCMS::app()->getFrontController()->setController($plugin);
+			$html = $plugin->adminRenderContent();
 		}
+
+		$tmpl = new Template('core/templates/ContentEditor/common.html');
+		$data = array(
+			'editor' => $html,
+			'sectionPropsURL' => 'admin.php?mod=pages&id=' . arg('section', 'int'),
+			'plugin' => $plugin,
+			'clientURL' => $GLOBALS['page']->clientURL(arg('section', 'int'))
+		);
+		$html = $tmpl->compile($data);
+
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 

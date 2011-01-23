@@ -55,7 +55,7 @@ html
 body
 {
 	color: #000;
-	background: #eee;
+	background-color: #555;
 }
 
 
@@ -125,69 +125,6 @@ sup
 
 
 
-
-
-
-
-
-
-
-
-
-/**
- * Заголовок страницы
- */
-.ui-page-header
-{
-	font-size: 12px;
-	line-height: 16px;
-	padding: 0 10px;
-}
-
-	.ui-page-header h1
-	{
-		color: #ffd700;
-		font-family : Sans, Arial, Helvetica, sans-serif;
-		font-size : 16px;
-		margin: 0;
-		padding: 0;
-	}
-
-	/**
-	 * Логотип
-	 */
-	.ui-page-header .cms-logo
-	{
-		float: right;
-		width: 150px;
-		height: 30px;
-	}
-
-#body
-{
-	width: 100%;
-	border-collapse: collapse;
-}
-
-
-/**
- * Область контента
- */
-#content
-{
-	margin-left: 205px;
-	padding: 1px;
-}
-
-/**
- * Боковая панель
- */
-.nav.sidebar
-{
-	position: absolute;
-	padding: 1px;
-	width: 200px;
-}
 
 /*************************************************************************************************/
 
@@ -506,6 +443,14 @@ table.ui-grid.ui-hlines
 	height: 16px;
 	background-image: url(img/small/icons.png);
 }
+
+.ui-inline-icon
+{
+	background-position: left bottom;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+
 .ui-widget-content .ui-icon {background-image: url(img/small/icons.png); }
 
 .ui-widget-header .ui-icon {background-image: url(img/small/icons.png); }
@@ -689,7 +634,14 @@ table.ui-grid.ui-hlines
 .ui-icon-grip-solid-horizontal { background-position: -48px -224px; }
 .ui-icon-gripsmall-diagonal-se { background-position: -64px -224px; }
 .ui-icon-grip-diagonal-se { background-position: -80px -224px; }
-
+.ui-icon-item-config
+{
+	background-image: url(img/medium/item-config.png);
+}
+.ui-icon-link-external
+{
+	background-image: url(img/medium/link-external.png);
+}
 
 /*** Закругления углов ***/
 .ui-corner-tl {}
@@ -903,7 +855,7 @@ table.ui-grid.ui-hlines
 	/**
 	 * Кнопка вкладки под курсором мыши
 	 */
-	.ui-tabs .ui-tabs-nav li.ui-state-hover a
+	.ui-tabs .ui-tabs-nav li.ui-state-hover
 	{
 		background-color: #eee;
 	}
@@ -969,12 +921,48 @@ table.ui-grid.ui-hlines
 
 
 /**
+ * Вкладки области контента
+ */
+.ui-content-tabs
+{
+	background-color: transparent;
+	border: solid #ddd; 
+	border-width: 0 0 1px;
+	line-height: 2em;
+}
+
+	.ui-content-tabs .ui-tabs
+	{
+		float: left;
+	}
+	
+	.ui-content-tabs .ui-widget-content
+	{
+		background-color: transparent;
+		border-width: 0;
+	}
+
+	.ui-content-tabs ul.ui-tabs-nav
+	{
+		background-color: transparent;
+		border-width: 0;
+		padding-top: .2em;
+	}
+
+		.ui-content-tabs ul.ui-tabs-nav a:hover
+		{
+			background-color: #eee;
+			color: #07c;
+		}
+
+/**
  * Заголовки боксов в области навигации
  */
 .nav .box .header
 {
 	color: #ffd700;
 }
+
 
 /**
  * Меню
@@ -1109,125 +1097,9 @@ table.ui-grid.ui-hlines
 			margin-left: 2em;
 		}
 
-/****************************************************************
- * СТИЛИ ФАЙЛОВОГО МЕНЕДЖЕРА
- ****************************************************************/
 
-/**
- * Окно ФМ
- */
-.fm-main-pane
-{
-	height: 600px;
-	padding-bottom: 6px !important;
-}
 
-.fm-folders-pane
-{
-	background-color: #fff;
-	box-sizing: border-box;
-	float: left;
-	height: 100%;
-	width: 200px;
-}
 
-	.fm-folders-pane ul
-	{
-		list-style: none;
-		margin: 0;
-		overflow: hidden;
-		padding: 0;
-	}
-
-	/**
-	 * Для подпапок
-	 */
-	.fm-folders-pane ul ul
-	{
-		margin-left: .5em;
-	}
-
-	/**
-	 * Папка
-	 */
-	.fm-folders-pane li
-	{
-		height: 16px;
-		line-height: 16px;
-		margin: 0;
-		padding: 5px;
-		white-space: nowrap;
-	}
-
-		/**
-		 * Картинки в пунктах
-		 */
-		.fm-folders-pane li img
-		{
-			display: block;
-			float: left;
-		}
-
-		/**
-		 * Значок "Развернуть"
-		 */
-		.fm-folders-pane img:first-child
-		{
-			background: url(img/menu-tree.png) no-repeat scroll -9px 0;
-			cursor: pointer;
-			height: 9px;
-			margin-top: 4px;
-			width: 9px;
-		}
-
-			/**
-			 * Значок "Свернуть"
-			 */
-			.fm-folders-pane .opened > img:first-child
-			{
-				background-position: -18px 0;
-			}
-
-		/**
-		 * Значок папки
-		 */
-		.fm-folders-pane img + img
-		{
-			margin: 0 5px;
-		}
-
-.fm-files-pane
-{
-	box-sizing: border-box;
-	height: 100%;
-	margin-left: 210px;
-}
-
-	.fm-files-pane > .content
-	{
-		background-color: #fff;
-		box-sizing: border-box;
-		height: 100%;
-		overflow-y: scroll;
-		width: 99%;
-	}
-
-	.fm-files-pane .fm-object
-	{
-		cursor: default;
-		display: inline-block;
-		padding: 5px;
-		text-align: center;
-		vertical-align: top;
-		width: 8em;
-	}
-
-	.fm-files-pane .placeholder
-	{
-		background: #bbb url(img/large/loading.gif) no-repeat 50% 50%;
-		opacity: .8;
-		position: absolute;
-	}
 
 /*************************************************************************************************/
 
@@ -1338,4 +1210,73 @@ body
 .l-width-limit
 {
 	max-width: 1200px;
+}
+
+
+/*************************************************************************************************/
+
+/**
+ * КОМПОНЕНТЫ CMS
+ *
+ * @section cms
+ */
+
+/**
+ * Страница интерфейса
+ */
+.cms-page
+{
+	background-color: #f5f5f5;
+	min-height: 100%;
+}
+
+/**
+ * Заголовок страницы
+ */
+.cms-page-header
+{
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	font-size: 12px;
+	line-height: 16px;
+	padding: 0 10px;
+}
+
+	.cms-page-header h1
+	{
+		color: #ffd700;
+		font-family : Sans, Arial, Helvetica, sans-serif;
+		font-size : 16px;
+		margin: 0;
+		padding: 0;
+	}
+
+	/**
+	 * Логотип
+	 */
+	.cms-page-header .cms-logo
+	{
+		float: right;
+		width: 150px;
+		height: 30px;
+	}
+
+/**
+ * Область контента
+ */
+.cms-content
+{
+	margin-left: 205px;
+	max-width: 1100px;
+}
+
+/**
+ * Боковая панель
+ */
+.cms-sidebar
+{
+	position: absolute;
+	padding: 1px;
+	width: 200px;
 }
