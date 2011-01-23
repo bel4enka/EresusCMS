@@ -405,7 +405,7 @@ table.ui-grid.ui-hlines
 	.ui-state-active a:link,
 	.ui-state-active a:visited
 	{
-		color: #07c;
+		color: #000;
 		outline: none;
 		text-decoration: none;
 	}
@@ -953,6 +953,12 @@ table.ui-grid.ui-hlines
 		{
 			background-color: #eee;
 			color: #07c;
+		}
+		
+		.ui-content-tabs ul.ui-tabs-nav .ui-tabs-selected a:hover
+		{
+			background-color: #eee;
+			color: #000;
 		}
 
 /**
