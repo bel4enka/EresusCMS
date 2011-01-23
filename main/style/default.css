@@ -1,9 +1,11 @@
 /* Стандартные стили */
 
 
-/*******************************************
+/**
  * ТИПОГРАФИКА
- ******************************************/
+ *
+ * @section typography
+ */
 
 /**
  * Базовые стили документа
@@ -60,9 +62,11 @@ h6
 {
 }
 
-/*******************************************
+/**
  * ИНТЕРФЕЙС САЙТА
- ******************************************/
+ *
+ * @section UI
+ */
 
 /**
  * Основные узлы документа
@@ -73,13 +77,13 @@ body
 	background-color: #eee;
 	display: block;
 	height: 100%;
-	margin:0;
-	padding:0;
+	margin: 0;
+	padding: 0;
 	width: 100%;
 }
 
 /**
- * Пространство страницы
+ * Пространство страницы (исключая футер)
  */
 .page-layout
 {
@@ -88,9 +92,9 @@ body
 	border-style: solid;
 	border-width: 0 1px;
 	color: #111;
-	height: 100%;
 	margin: 0 auto;
 	max-width: 1200px;
+	min-height: 100%;
 	position: relative;
 }
 
@@ -130,7 +134,7 @@ body
  */
 #Content
 {
-  padding: .5em 1em;
+  padding: .5em 1em 60px;
 }
 
 /**
@@ -140,9 +144,11 @@ body
 {
 	background-color: #778899;
 	border-top: solid 1px #555;
-	bottom: 0;
+	clear: both;
 	height: 60px;
-	position: absolute;
+	margin: -60px auto 0;
+	max-width: 1200px;
+	position: relative;
 	width: 100%;
 }
 
