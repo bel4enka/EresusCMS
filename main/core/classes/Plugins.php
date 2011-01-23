@@ -263,36 +263,25 @@ class Plugins
 				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
 					$page->httpError(404);
 
-				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') " .
+				$items = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') " .
 					"AND (`access` >= '".($_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
-				$template = loadTemplate('std/SectionListItem');
-				if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
-				$items = '';
-				foreach($subitems as $item) {
-					$items .= str_replace(
-						array(
-							'$(id)',
-							'$(name)',
-							'$(title)',
-							'$(caption)',
-							'$(description)',
-							'$(hint)',
-							'$(link)',
-						),
-						array(
-							$item['id'],
-							$item['name'],
-							$item['title'],
-							$item['caption'],
-							$item['description'],
-							$item['hint'],
-							$Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
-						),
-						$template['html']
-					);
-					$result = str_replace('$(items)', $items, $page->content);
+
+				$tmpl = new Template('templates/std/SectionList.html');
+
+				foreach ($items as &$item)
+				{
+					$item['clientURL'] = $Eresus->request['url'] .
+						($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/';
 				}
+
+				$data = array(
+					'page' => $page,
+					'sections' => $items
+				);
+
+				$result = $tmpl->compile($data);
+
 			break;
 			case 'url':
 				HttpResponse::redirect($page->replaceMacros($page->content));

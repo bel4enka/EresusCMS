@@ -1,0 +1,8 @@
+<!-- Шаблон списка подразделов -->
+
+{$page->content}
+
+{foreach $sections section}
+	<h2><a href="{$section.clientURL}" title="{$section.hint}">{$section.caption}</a></h2>
+	{$section.description}
+{/foreach}

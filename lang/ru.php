@@ -352,9 +352,9 @@ define('admPagesUpdatedAuto', 'Обновить дату изменения автоматически');
 define('admPagesOptions', 'Дополнительные опции');
 define('admPagesContent', 'Контент страницы');
 
-define('admTemplList', 'Шаблон элемента списка разделов');
-define('admTemplListLabel', 'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
-define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок; <strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание; <strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.');
+define('admTemplList', 'Шаблон списка подразделов');
+define('admTemplListLabel', 'Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
+define('admTemplListItemLabel', 'Макросы:<table><tr><th>Свойства текущего раздела</th><th>Свойства подразделов</th></tr><tr><td><dl><dt>{$page->title}</dt><dd>Заголовок раздела</dd><dt>{$page->content}</dt><dd>Текст раздела</dd></dl></td><td><dl><dt>{$section.title}</dt><dd>Заголовок раздела</dd><dt>{$section.description}</dt><dd>Описание раздела</dd><dt>{$section.clientURL}</dt><dd>URL раздела</dd></dl></td></tr></table>');
 
 define('admTemplPageSelector', 'Шаблон переключателя страниц');
 define('admTemplPageSelectorLabel', 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol><li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li><li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон перехода к первой странице, $(href) - ссылка</li><li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>');

@@ -140,11 +140,10 @@ class TContent
 	 */
 	private function contentTypeList()
 	{
-		if (arg('update'))
+		if (arg('action') == 'update')
 		{
-			$original = $this->item['content'];
-			$item['content'] = arg('content', 'dbsafe');
-			$GLOBALS['Eresus']->db->updateItem('pages', $this->item, "`id`='".$this->item['id']."'");
+			$this->item['content'] = arg('content', 'dbsafe');
+			$GLOBALS['Eresus']->sections->update($this->item);
 			HttpResponse::redirect(arg('submitURL'));
 		}
 		else
@@ -154,9 +153,10 @@ class TContent
 				'caption' => admEdit,
 				'width' => '100%',
 				'fields' => array (
-					array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
+					array('type' => 'hidden', 'name' => 'section', 'value' => $this->item['id']),
+					array('type' => 'hidden', 'name' => 'action', 'value' => 'update'),
 					array ('type' => 'html', 'name' => 'content', 'label' => admTemplListLabel,
-						'height' => '300px', 'value'=>isset($item['content'])?$item['content']:'$(items)'),
+						'height' => '300px', 'value' => $this->item['content']),
 				),
 				'buttons' => array('apply', 'cancel'),
 			);

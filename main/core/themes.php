@@ -64,7 +64,7 @@ class TThemes
 	 * @var unknown_type
 	 */
 	public $stdTemplates = array(
-		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
+		'SectionList' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
 		'PageSelector' => array('caption' => admTemplPageSelector, 'hint' => admTemplPageSelectorLabel),
 		'400' => array('caption' => 'HTTP 400 - Bad Request'),
 		'401' => array('caption' => 'HTTP 401 - Unauthorized'),
@@ -343,8 +343,13 @@ class TThemes
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'_name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl ('.$this->stdTemplates[$item['name']]['caption'].')', 'disabled' => true, 'value'=>$item['name']),
-				array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
+				array('type'=>'edit','name'=>'_name','label'=>admThemesFilenameLabel, 'width'=>'200px',
+					'comment'=>'.html ('.$this->stdTemplates[$item['name']]['caption'].')',
+					'disabled' => true, 'value'=>$item['name']),
+				array('type'=>'text','name'=>'hint',
+					'value' => isset($this->stdTemplates[$item['name']]['hint']) ?
+						$this->stdTemplates[$item['name']]['hint']:
+						'', 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
