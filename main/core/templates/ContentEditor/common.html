@@ -1,8 +1,8 @@
 <div class="ui-widget ui-content-tabs ui-helper-clearfix">
 	<div class="ui-widget ui-widget-content ui-tabs content-editor-tabs">
 		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header">
-			<li class="ui-state-default ui-tabs-selected ui-state-active"><a href="#" onclick="return false;">Наполнение</a></li>
-			<li class="ui-state-default"><a href="{$sectionPropsURL}">Свойства раздела</a></li>
+			<li class="ui-state-default{if $contentURL == '#'} ui-tabs-selected ui-state-active{/if}"><a href="{$contentURL}">Наполнение</a></li>
+			<li class="ui-state-default{if $propertiesURL == '#'} ui-tabs-selected ui-state-active{/if}"><a href="{$propertiesURL}">Свойства раздела</a></li>
 		</ul>
 	</div>
 	

@@ -98,7 +98,8 @@ class TContent
 		$tmpl = new Template('core/templates/ContentEditor/common.html');
 		$data = array(
 			'editor' => $html,
-			'sectionPropsURL' => 'admin.php?mod=pages&id=' . arg('section', 'int'),
+			'contentURL' => '#',
+			'propertiesURL' => 'admin.php?mod=pages&id=' . arg('section', 'int'),
 			'plugin' => $plugin,
 			'clientURL' => $GLOBALS['page']->clientURL(arg('section', 'int'))
 		);

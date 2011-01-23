@@ -500,7 +500,21 @@ class TPages
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
 		$result = $page->renderForm($form, $item);
-		return $result;
+
+		$tmpl = new Template('core/templates/ContentEditor/common.html');
+
+		$plugin = $GLOBALS['Eresus']->plugins->load($item['type']);
+
+		$data = array(
+			'editor' => $result,
+			'contentURL' => 'admin.php?mod=content&section=' . $item['id'],
+			'propertiesURL' => '#',
+			'plugin' => $plugin,
+			'clientURL' => $GLOBALS['page']->clientURL($item['id'])
+		);
+		$html = $tmpl->compile($data);
+
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
