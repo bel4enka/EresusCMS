@@ -81,7 +81,7 @@ class EresusAuthService implements ServiceInterface
 	/**
 	 * Модель текущего пользователя
 	 *
-	 * @var User
+	 * @var EresusUser
 	 */
 	private $user = null;
 
@@ -105,7 +105,7 @@ class EresusAuthService implements ServiceInterface
 	/**
 	 * Возвращает модель текущего пользователя
 	 *
-	 * @return User|null
+	 * @return EresusUser|null
 	 *
 	 * @since 2.16
 	 */
@@ -123,7 +123,7 @@ class EresusAuthService implements ServiceInterface
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
-	 * @uses User::passwordHash()
+	 * @uses EresusUser::passwordHash()
 	 * @uses loginByHash()
 	 * @since 2.16
 	 */
