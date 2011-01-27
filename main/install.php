@@ -369,15 +369,15 @@ class Installer extends EresusApplication
 		$user->password = '';
 		$user->active = true;
 		$user->access = 1;
-		$user->fullname = 'Главный администратор';
+		$user->fullname = iconv('utf-8', 'cp1251', 'Главный администратор');
 		$user->mail = 'root@example.org';
 		$user->save();
 
 		$section = new EresusSiteSection();
 		$section->name = 'main';
 		$section->owner = 0;
-		$section->title = 'Главная страница';
-		$section->caption = 'Главная';
+		$section->title = iconv('utf-8', 'cp1251', 'Главная страница');
+		$section->caption = iconv('utf-8', 'cp1251', 'Главная');
 		$section->active = true;
 		$section->access = 5;
 		$section->visible = true;
