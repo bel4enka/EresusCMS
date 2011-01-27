@@ -72,6 +72,12 @@
 					сайтом невозможна, и может привести к потере информации!
 				</div>
 			</noscript>
+			{if $Eresus->conf.debug.enable}
+			<div class="ui-state-error ui-panel">
+				Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
+				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
+			</div>
+			{/if}
 			{$content}
 		</div>
 		
