@@ -58,19 +58,34 @@ if (isset($php_errormsg))
 }
 ini_set('track_errors', false);
 
+/*
+ * Если есть файл install.php, запускаем инсталлятор, а не CMS
+ */
+if (is_file('install.php'))
+{
+	$fileName = 'install.php';
+	$appName = 'Installer';
+}
+else
+{
+	$fileName = 'core/main.php';
+	$appName = 'EresusCMS';
+}
+
+
 try
 {
 	/**
 	 * Подключение главного приложения
 	 */
-	include_once 'core/main.php';
+	include_once $fileName;
 }
 catch (Exception $e)
 {
-	die('Can not include file "core/main.php". Is it present and accessible?');
+	die('Can not include file "' . $fileName . '". Is it present and accessible?');
 }
 
 /*
- * Запуск CMS
+ * Запуск приложения
  */
-Core::exec('EresusCMS');
+Core::exec($appName);
