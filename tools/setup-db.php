@@ -101,10 +101,10 @@ try
 	$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 	$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 
-	$prefix = Core::$values['eresus.cms.dsn.prefix'];
-	if ($prefix)
+	if (isset(Core::$values['eresus.cms.dsn.prefix']))
 	{
-		$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
+		$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT,
+			Core::$values['eresus.cms.dsn.prefix'] . '%s');
 	}
 
 	Doctrine_Core::createTablesFromModels($root . '/core/Domain');
