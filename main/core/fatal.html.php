@@ -30,25 +30,115 @@
  * $Id$
  */
 ?>
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+     "http://www.w3.org/TR/html4/strict.dtd">
 
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Ошибка!</title>
+    <style type="text/css">
+    	html,
+    	body
+    	{
+    		height: 100%;
+    		margin: 0;
+    		padding: 0;
+    		width: 100%;
+			}
+			h1
+			{
+    		-moz-box-shadow: 0 2px 4px #000;
+    		-webkit-box-shadow: 0 2px 4px #000;
+				background-color: #a00;
+				box-shadow: 0 2px 4px #000;
+				color: #fff;
+				margin: 0;
+				padding: .2em .5em;
+			}
+			h2,
+			h3
+			{
+				margin: .2em 0;
+			}
+			.report
+			{
+				padding: .2em .5em;
+			}
+			.message
+			{
+				color: #f00;
+				font-weight: bold;
+				padding: .5em 0;
+			}
+			.location
+			{
+				font-family: monospace;
+			}
+			.code,
+			.trace
+			{
+				border: solid 1px #000;
+				margin: 0 0 1em;
+				padding: .5em 0;
+			}
+				.code code
+				{
+					display: block;
+				}
+				.code .error-line
+				{
+					background-color: #faa;
+				}
+			.trace
+			{
+				padding: .5em 1em;
+			}
+
+    </style>
   </head>
 <body>
 	<h1>На сайте произошла ошибка!</h1>
-	<?php
-		if (isset($e))
-		{
-			echo '<h2>' . get_class($e) . '</h2>';
-			if ($e instanceof DomainException)
+	<div class="report">
+		<?php
+			if (isset($error))
 			{
-				echo '<p>' . $e->getMessage() . '</p>';
+				echo '<h2>' . get_class($error) . '</h2>';
+				if (defined('ERESUS_CMS_DEBUG'))
+				{
+					?>
+					<div class="message"><?php echo $error->getMessage();?></div>
+					<h3>Место возникновения ошибки</h3>
+					<div class="location"><?php echo $error->getFile();?>: <?php echo $error->getLine();?></div>
+					<div class="code">
+					<?php
+						$lines = file($error->getFile());
+						$firstLine = $error->getLine() > 5 ? $error->getLine() - 5 : 0;
+						$lastLine = $error->getLine() + 4 < count($lines) ? $error->getLine() + 4 : count($lines);
+						for ($i = $firstLine; $i < $lastLine; $i++)
+						{
+							$s = highlight_string('<?php' . $lines[$i], true);
+							$s = preg_replace('/&lt;\?php/', '', $s, 1);
+							if ($i == $error->getLine() - 1)
+							{
+								$s = preg_replace('/(<\w+)/', '$1 class="error-line"', $s);
+							}
+							echo $s;
+						}
+					?>
+					</div>
+					<h3>Стек вызовов</h3>
+					<pre class="trace"><?php echo $error->getTraceAsString();?></pre>
+					<h3>Другая информация</h3>
+					<?php
+				}
+				elseif ($error instanceof DomainException)
+				{
+					echo '<p>' . $error->getMessage() . '</p>';
+				}
 			}
-		}
-	?>
-	<p>Дополнительная информация об ошибке доступна в журнале var/log/eresus.log</p>
+		?>
+		<p>Дополнительная информация об ошибке доступна в журнале <code>var/log/eresus.log</code></p>
+	</div>
 </body>
 </html>

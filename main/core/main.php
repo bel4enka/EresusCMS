@@ -155,6 +155,10 @@ class EresusCMS extends EresusApplication
 			include_once 'kernel-legacy.php';
 			$GLOBALS['Eresus'] = new Eresus;
 			$this->initConf();
+			if ($GLOBALS['Eresus']->conf['debug']['enable'])
+			{
+				include_once 'debug.php';
+			}
 			$i18n = I18n::getInstance();
 			TemplateSettings::setGlobalValue('i18n', $i18n);
 			$this->initDB();
@@ -180,7 +184,7 @@ class EresusCMS extends EresusApplication
 		{
 			EresusLogger::exception($e);
 			ob_end_clean();
-			include dirname(__FILE__) . '/fatal.html.php';
+			$this->fatalError($e, false);
 		}
 
 	}
@@ -209,6 +213,26 @@ class EresusCMS extends EresusApplication
 	public function getFrontController()
 	{
 		return $this->frontController;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Выводит сообщение о фатальной ошибке и прекращает работу приложения
+	 *
+	 * @param Exception|string $error  исключение или описание ошибки
+	 * @param bool             $exit   завершить или нет выполнение приложения
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function fatalError($error = null, $exit = true)
+	{
+		include dirname(__FILE__) . '/fatal.html.php';
+		if ($exit)
+		{
+			throw new ExitException;
+		}
 	}
 	//-----------------------------------------------------------------------------
 
