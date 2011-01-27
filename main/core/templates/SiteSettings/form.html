@@ -32,7 +32,7 @@
 						<tr>
 							<td>
 								<label>Заголовок сайта</label><br />
-								<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle}</textarea>
+								<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle|escape}</textarea>
 							</td>
 							<td class="ui-minor">
 								Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
@@ -80,7 +80,7 @@
 						<tr>
 							<td>
 								<label>Ключевые слова</label><br />
-								<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords}</textarea>
+								<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords|escape}</textarea>
 							</td>
 							<td class="ui-minor">
 								Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
@@ -91,7 +91,7 @@
 						<tr>
 							<td>
 								<label>Описание</label><br />
-								<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription}</textarea>
+								<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription|escape}</textarea>
 							</td>
 							<td class="ui-minor">
 								Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
