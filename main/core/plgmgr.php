@@ -242,10 +242,11 @@ class TPlgMgr
 					$msg =  I18n::getInstance()->getText('Class "%s" not found in plugin file', $this);
 					$plugin['errors'] []= sprintf($msg, $plugin['name']);
 				}
-				$data['plugins'] []= $plugin;
+				$data['plugins'][$plugin['title']] = $plugin;
 			}
 		}
 
+		ksort($data['plugins']);
 		$tmpl = new Template('core/templates/PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
 
