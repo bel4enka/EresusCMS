@@ -125,17 +125,49 @@ function InfoBox($text, $caption=strInformation)
 }
 //------------------------------------------------------------------------------
 
+/**
+ * Помещает сообщение об ошибке в очередь сообщений в сесии
+ *
+ * @param string $message
+ *
+ * @return void
+ *
+ * @since ?.??
+ */
 function ErrorMessage($message)
 {
-	global $Eresus;
-	$Eresus->session['msg']['errors'][] = $message;
+	if (!isset($_SESSION['msg']))
+	{
+		$_SESSION['msg'] = array();
+	}
+	if (!isset($_SESSION['msg']['errors']))
+	{
+		$_SESSION['msg']['errors'] = array();
+	}
+	$_SESSION['msg']['errors'] []= $message;
 }
 //------------------------------------------------------------------------------
 
+/**
+ * Помещает сообщение об ошибке в очередь сообщений в сесии
+ *
+ * @param string $message
+ *
+ * @return void
+ *
+ * @since ?.??
+ */
 function InfoMessage($message)
 {
-	global $Eresus;
-	$Eresus->session['msg']['information'][] = $message;
+	if (!isset($_SESSION['msg']))
+	{
+		$_SESSION['msg'] = array();
+	}
+	if (!isset($_SESSION['msg']['information']))
+	{
+		$_SESSION['msg']['information'] = array();
+	}
+	$_SESSION['msg']['information'] []= $message;
 }
 //------------------------------------------------------------------------------
 
@@ -475,21 +507,32 @@ function arg($arg, $filter = null)
 }
 //-----------------------------------------------------------------------------
 
+/**
+ * Функция сохраняет в сессии текущие аргументы
+ *
+ * @return void
+ *
+ * @since ?.??
+ */
 function saveRequest()
-# Функция сохраняет в сессии текущие аргументы
 {
-	global $Eresus;
-	$Eresus->session['request'] = $Eresus->request;
+	$_SESSION['request'] = $Eresus->request;
 }
 //-----------------------------------------------------------------------------
 
+/**
+ * Функция сохраняет в сессии текущие аргументы
+ *
+ * @return void
+ *
+ * @since ?.??
+ */
 function restoreRequest()
-# Функция сохраняет в сессии текущие аргументы
 {
-	global $Eresus;
-	if (isset($Eresus->session['request'])) {
-		$Eresus->request = $Eresus->session['request'];
-		unset($Eresus->session['request']);
+	if (isset($_SESSION['request']))
+	{
+		$Eresus->request = $_SESSION['request'];
+		unset($_SESSION);
 	}
 }
 //-----------------------------------------------------------------------------
@@ -880,7 +923,8 @@ class Eresus
 	 *
 	 * @var array
 	 */
-	var $session;
+	public $session;
+
  /**
 	* Интерфейс к расширениям системы
 	*

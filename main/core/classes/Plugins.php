@@ -102,7 +102,6 @@ class Plugins
 			if (!$valid)
 			{
 				throw new EresusSourceParseException(
-					sprintf('Parsing error in file "%s"', $filename),
 					sprintf('Plugin "%s" is broken (parse error)', $name)
 				);
 			}

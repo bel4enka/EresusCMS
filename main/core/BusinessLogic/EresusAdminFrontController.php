@@ -218,6 +218,10 @@ class EresusAdminFrontController
 					{
 						$html .= $controller->adminRender();
 					}
+					catch (SuccessException $e)
+					{
+						throw $e;
+					}
 					catch (Exception $e)
 					{
 						if (isset($name))
@@ -229,7 +233,7 @@ class EresusAdminFrontController
 						else
 						{
 							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
-							$msg = sprintf($msg, $controller);
+							$msg = sprintf($msg, get_class($controller));
 						}
 
 						EresusLogger::exception($e);
@@ -257,27 +261,26 @@ class EresusAdminFrontController
 			$html = $router->call();
 		}
 
-		if (isset($Eresus->session['msg']['information']) &&
-			count($Eresus->session['msg']['information']))
+		if (isset($_SESSION['msg']['information']) && count($_SESSION['msg']['information']))
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['information'] as $message)
+			foreach ($_SESSION['msg']['information'] as $message)
 			{
 				$messages .= InfoBox($message);
 			}
 			$html = $messages . $html;
-			$Eresus->session['msg']['information'] = array();
+			$_SESSION['msg']['information'] = array();
 		}
-		if (isset($Eresus->session['msg']['errors']) &&
-			count($Eresus->session['msg']['errors']))
+		if (isset($_SESSION['msg']['errors']) &&
+			count($_SESSION['msg']['errors']))
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['errors'] as $message)
+			foreach ($_SESSION['msg']['errors'] as $message)
 			{
 				$messages .= ErrorBox($message);
 			}
 			$html = $messages . $html;
-			$Eresus->session['msg']['errors'] = array();
+			$_SESSION['msg']['errors'] = array();
 		}
 		return $html;
 	}

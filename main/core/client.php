@@ -326,17 +326,25 @@ class TClientUI extends WebPage
 		$this->template = $templates->get($this->template);
 		$content = $Eresus->plugins->clientOnContentRender($content);
 
-		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
+		if (isset($_SESSION['msg']['information']) && count($_SESSION['msg']['information']))
+		{
 			$messages = '';
-			foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
+			foreach ($_SESSION['msg']['information'] as $message)
+			{
+				$messages .= InfoBox($message);
+			}
 			$content = $messages.$content;
-			$Eresus->session['msg']['information'] = array();
+			$_SESSION['msg']['information'] = array();
 		}
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
+		if (isset($_SESSION['msg']['errors']) && count($_SESSION['msg']['errors']))
+		{
 			$messages = '';
-			foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message);
+			foreach ($_SESSION['msg']['errors'] as $message)
+			{
+				$messages .= ErrorBox($message);
+			}
 			$content = $messages.$content;
-			$Eresus->session['msg']['errors'] = array();
+			$_SESSION['msg']['errors'] = array();
 		}
 		$result = str_replace('$(Content)', $content, $this->template);
 

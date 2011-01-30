@@ -178,7 +178,7 @@ class EresusCMS extends EresusApplication
 		}
 		catch (SuccessException $e)
 		{
-			// Нормальное завершение
+			return 0;
 		}
 		catch (Exception $e)
 		{
