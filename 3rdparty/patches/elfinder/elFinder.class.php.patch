@@ -18,6 +18,15 @@
  			$this->_result['error'] = 'Unable to create folder';
  		} else {
  			$this->_logContext['dir'] = $dir.DIRECTORY_SEPARATOR.$name;
+@@ -596,7 +596,7 @@
+				} elseif (!$this->_isUploadAllow($_FILES['upload']['name'][$i], $_FILES['upload']['tmp_name'][$i])) {
+					$this->_errorData($_FILES['upload']['name'][$i], 'Not allowed file type');					
+				} else {
+-					$file = $dir.DIRECTORY_SEPARATOR.$_FILES['upload']['name'][$i];
++					$file = $dir.DIRECTORY_SEPARATOR . translit($_FILES['upload']['name'][$i]);
+					if (!@move_uploaded_file($_FILES['upload']['tmp_name'][$i], $file)) {
+						$this->_errorData($_FILES['upload']['name'][$i], 'Unable to save uploaded file');	
+					} else {
 @@ -1185,7 +1185,7 @@
  			@chmod($trg, $this->_options['fileMode']);
  		} else {
