@@ -146,8 +146,8 @@ class EresusAdminFrontController
 
 		if ($req->getMethod() == 'POST')
 		{
-			$username = $req->arg('username', EresusUser::USERNAME_FILTER);
-			$password = $req->arg('password');
+			$username = trim($req->arg('username', EresusUser::USERNAME_FILTER));
+			$password = trim($req->arg('password'));
 			$state = EresusAuthService::getInstance()->login($username, $password);
 			if ($state == EresusAuthService::SUCCESS)
 			{
