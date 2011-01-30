@@ -133,9 +133,9 @@ class TPlgMgr
 					{
 						$Eresus->plugins->install($plugin);
 					}
-					catch (EresusSourceParseException $e)
+					catch (DomainException $e)
 					{
-						ErrorMessage("Plugin file \"$plugin.php\" is broken (parse error)!");
+						ErrorMessage($e->getMessage());
 					}
 				}
 			}

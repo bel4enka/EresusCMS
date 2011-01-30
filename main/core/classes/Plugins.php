@@ -98,11 +98,13 @@ class Plugins
 			$code = file_get_contents($filename);
 			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
 			$code = str_replace('__FILE__', "'$filename'", $code);
+			ini_set('track_errors', true);
 			@$valid = eval($code) !== false;
+			ini_set('track_errors', false);
 			if (!$valid)
 			{
-				throw new EresusSourceParseException(
-					sprintf('Plugin "%s" is broken (parse error)', $name)
+				throw new DomainException(
+					sprintf(iconv('utf-8', 'cp1251', 'Плагин "%s" повреждён: %s'), $name, $php_errormsg)
 				);
 			}
 
