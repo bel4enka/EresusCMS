@@ -229,62 +229,59 @@ function useLib($library)
 }
 //------------------------------------------------------------------------------
 
+/**
+ * Отсылает письмо по указанному адресу
+ *
+ * @param string $address   адрес получателя
+ * @param string $subject   тема письма
+ * @param string $text      текст письма
+ * @param bool   $html      отправить текст как HTML
+ * @param string $fromName  имя отправителя
+ * @param string $fromAddr  адрес отпрвителя
+ * @param string $fromOrg   игнорируется
+ * @param string $fromSign  игнорируется
+ * @param string $replyTo   адрес для ответа
+ *
+ * @return bool
+ *
+ * @since ?.??
+ * @deprecated с версии 2.16. Используйте класс {@see EresusMail}
+ */
 function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='',
 	$fromSign='', $replyTo='')
-# Функция отсылает письмо по указанному адресу
 {
-	global $Eresus;
-
-	if (empty($fromName)) $fromName = option('mailFromName');
-	if (empty($fromAddr)) $fromAddr = option('mailFromAddr');
-	if (empty($fromOrg)) $fromOrg = option('mailFromOrg');
-	if (empty($fromSign)) $fromSign = option('mailFromSign');
-	if (empty($replyTo)) $replyTo = option('mailReplyTo');
-	if (empty($replyTo)) $replyTo = $fromAddr;
-
-	$charset = CHARSET;
-
-	$sender = strlen($fromName) ? "=?".$charset."?B?".base64_encode($fromName)."?= <$fromAddr>" : $fromAddr;
-	if (strlen($fromOrg)) $sender .= ' (=?'.$charset.'?B?'.base64_encode($fromOrg).'?=)';
-	if (strpos($sender, '@') === false) $sender = 'no-reply@'.preg_replace('/^www\./', '', httpHost);
-	$fromSign = "\n-- \n".$fromSign;
-	if ($html) $fromSign = nl2br($fromSign);
-	if (strlen($fromSign)) $text .= $fromSign;
-
-	$headers =
-	 "MIME-Version: 1.0\n".
-	 "From: $sender\n".
-	 "Subject: $subject\n".
-	 "Reply-To: $replyTo\n".
-	 "X-Mailer: PHP/" . phpversion()."\n";
-
-	if ($html) {
-
-		$text = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head></head>\n<body>\n".$text."\n</body>\n</html>";
-
-		$boundary="=_".md5(uniqid(time()));
-		$headers.="Content-Type: multipart/mixed; boundary=$boundary\n";
-		$multipart="";
-		$multipart.="This is a MIME encoded message.\n\n";
-
-		$multipart.="--$boundary\n";
-		$multipart.="Content-Type: text/html; charset=$charset\n";
-		$multipart.="Content-Transfer-Encoding: Base64\n\n";
-		$multipart.=chunk_split(base64_encode($text))."\n\n";
-		$multipart.="--$boundary--\n";
-		$text = $multipart;
-	} else $headers .= "Content-type: text/plain; charset=$charset\n";
-
-	if ($Eresus->conf['debug']['enable'] && $Eresus->conf['debug']['mail'] !== true) {
-		if (is_string($Eresus->conf['debug']['mail'])) {
-			$hnd = @fopen($Eresus->conf['debug']['mail'], 'a');
-			if ($hnd) {
-				fputs($hnd, "\n================================================================================\n$headers\nTo: $address\nSubject: $subject\n\n$text\n");
-				fclose($hnd);
-			}
-			return true;
-		}
-	} else return (mail($address, $subject, $text, $headers)===0);
+	$mail = new EresusMail();
+	$mail->addTo($address)->setSubject($subject);
+	if ($html)
+	{
+		$mail->setHTML($text);
+	}
+	else
+	{
+		$mail->setText($text);
+	}
+	if ($fromAddr)
+	{
+		$mail->setFrom($fromAddr, $fromName);
+	}
+	elseif ($fromName)
+	{
+		$mail->setFrom(option('mailFromAddr'), $fromName);
+	}
+	if ($replyTo)
+	{
+		$mail->setReplyTo($replyTo);
+	}
+	try
+	{
+		$mail->send();
+	}
+	catch (Exception $e)
+	{
+		EresusLogger::exception($e);
+		return false;
+	}
+	return true;
 }
 //-----------------------------------------------------------------------------
 
