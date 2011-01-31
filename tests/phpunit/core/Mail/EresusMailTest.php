@@ -115,6 +115,32 @@ class EresusMailTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers EresusMail::addCc
+	 */
+	public function test_addCc()
+	{
+		$mail = new EresusMail();
+		$composer = $this->getMock('ezcMailComposer', array('addCc'));
+		$composer->expects($this->once())->method('addCc');
+		$mail->setComposer($composer);
+		$this->assertSame($mail, $mail->addCc('user@example.org', 'Some name'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusMail::addBcc
+	 */
+	public function test_addBcc()
+	{
+		$mail = new EresusMail();
+		$composer = $this->getMock('ezcMailComposer', array('addBcc'));
+		$composer->expects($this->once())->method('addBcc');
+		$mail->setComposer($composer);
+		$this->assertSame($mail, $mail->addBcc('user@example.org', 'Some name'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers EresusMail::setFrom
 	 */
 	public function test_setFrom()
@@ -124,6 +150,17 @@ class EresusMailTest extends PHPUnit_Framework_TestCase
 		$mail->setComposer($composer);
 		$this->assertSame($mail, $mail->setFrom('user@example.org', 'Some name'));
 		$this->assertInstanceOf('ezcMailAddress', $composer->from);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusMail::setReplyTo
+	 */
+	public function test_setReplyTo()
+	{
+		$mail = $this->getMock('EresusMail', array('setHeader'));
+		$mail->expects($this->once())->method('setHeader')->with('Reply-To', 'mail@example.org');
+		$this->assertSame($mail, $mail->setReplyTo('mail@example.org'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -161,15 +198,29 @@ class EresusMailTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusMail::attachFile
+	 * @covers EresusMail::addAttachment
 	 */
-	public function test_attachFile()
+	public function test_addAttachment()
 	{
 		$mail = new EresusMail();
-		$composer = $this->getMock('ezcMailComposer', array('addFileAttachment'));
-		$composer->expects($this->once())->method('addFileAttachment');
+		$composer = $this->getMock('ezcMailComposer', array('addAttachment'));
+		$composer->expects($this->once())->method('addAttachment')->
+			with('filename', 'content', 'text', 'html');
 		$mail->setComposer($composer);
-		$this->assertSame($mail, $mail->attachFile(__FILE__));
+		$this->assertSame($mail, $mail->addAttachment('filename', 'content', 'text', 'html'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers EresusMail::setHeader
+	 */
+	public function test_setHeader()
+	{
+		$mail = new EresusMail();
+		$composer = $this->getMock('ezcMailComposer', array('setHeader'));
+		$composer->expects($this->once())->method('setHeader')->with('header-name', 'header-value');
+		$mail->setComposer($composer);
+		$this->assertSame($mail, $mail->setHeader('header-name', 'header-value'));
 	}
 	//-----------------------------------------------------------------------------
 

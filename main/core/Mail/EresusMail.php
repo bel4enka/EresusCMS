@@ -148,12 +148,52 @@ class EresusMail
 	 * @return EresusMail
 	 *
 	 * @since 2.16
-	 * @uses ezcMailComposer::addTo()
+	 * @uses ezcMail::addTo()
 	 * @uses ezcMailAddress
 	 */
 	public function addTo($address, $name = null)
 	{
 		$this->getComposer()->addTo(new ezcMailAddress($address, $name, CHARSET));
+
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Добавляет получаетля копии
+	 *
+	 * @param string $address  адрес получателя
+	 * @param string $name     имя получателя
+	 *
+	 * @return EresusMail
+	 *
+	 * @since 2.16
+	 * @uses ezcMail::addCc()
+	 * @uses ezcMailAddress
+	 */
+	public function addCc($address, $name = null)
+	{
+		$this->getComposer()->addCc(new ezcMailAddress($address, $name, CHARSET));
+
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Добавляет получаетля скрытой копии
+	 *
+	 * @param string $address  адрес получателя
+	 * @param string $name     имя получателя
+	 *
+	 * @return EresusMail
+	 *
+	 * @since 2.16
+	 * @uses ezcMail::addBcc()
+	 * @uses ezcMailAddress
+	 */
+	public function addBcc($address, $name = null)
+	{
+		$this->getComposer()->addBcc(new ezcMailAddress($address, $name, CHARSET));
 
 		return $this;
 	}
@@ -180,6 +220,22 @@ class EresusMail
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Устанавливает адрес для ответа
+	 *
+	 * @param string $address адрес для ответа
+	 *
+	 * @return EresusMail
+	 *
+	 * @since 2.16
+	 */
+	public function setReplyTo($address)
+	{
+		$this->setHeader('Reply-To', $address);
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Устанавливает заголовок
 	 *
 	 * @param string $subject
@@ -187,8 +243,8 @@ class EresusMail
 	 * @return EresusMail
 	 *
 	 * @since 2.16
-	 * @uses ezcMailComposer::$subject
-	 * @uses ezcMailComposer::$subjectCharset
+	 * @uses ezcMail::$subject
+	 * @uses ezcMail::$subjectCharset
 	 */
 	public function setSubject($subject)
 	{
@@ -236,18 +292,41 @@ class EresusMail
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Прикрепить файл
+	 * Присоединяет файл или строку
 	 *
-	 * @param string $filename  путь к файлу
+	 * @param string $filename     путь к файлу или имя файла (см. $content)
+	 * @param string $content      содержимое файла
+	 * @param string $contentType  тип контента (по умолчанию "application")
+	 * @param string $mimeType     тип MIME (по умолчанию "octet-stream")
 	 *
 	 * @return EresusMail
 	 *
 	 * @since 2.16
-	 * @uses ezcMailComposer::addFileAttachment()
+	 * @uses ezcMailComposer::addAttachment()
 	 */
-	public function attachFile($filename)
+	public function addAttachment($filename, $content = null, $contentType = null, $mimeType = null)
 	{
-		$this->getComposer()->addFileAttachment($filename);
+		$this->getComposer()->addAttachment($filename, $content, $contentType, $mimeType);
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает заголовок
+	 *
+	 * Если заголовок с таким именем уже есть, он будет перезаписан.
+	 *
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return EresusMail
+	 *
+	 * @since 2.16
+	 * @uses ezcMailPart::setHeader()
+	 */
+	public function setHeader($name, $value)
+	{
+		$this->getComposer()->setHeader($name, $value, CHARSET);
 		return $this;
 	}
 	//-----------------------------------------------------------------------------
