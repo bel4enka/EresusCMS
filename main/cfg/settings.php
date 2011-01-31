@@ -7,9 +7,7 @@
   define('siteDescription', 'описание');
   define('mailFromAddr', 'me@example.org');
   define('mailFromName', 'Имя');
-  define('mailFromOrg', 'Компания');
   define('mailReplyTo', 'reply-to@example.com');
-  define('mailFromSign', "Система управления сайтом.");
   define('filesModeSetOnUpload', true);
   define('filesModeDefault', '0666');
   define('filesTranslitNames', true);

@@ -111,9 +111,7 @@ class TSettings
 		$settings .= $this->mkstr('siteDescription', 'string', array('nobr'=>true));
 		$settings .= $this->mkstr('mailFromAddr', 'string');
 		$settings .= $this->mkstr('mailFromName', 'string');
-		$settings .= $this->mkstr('mailFromOrg', 'string');
 		$settings .= $this->mkstr('mailReplyTo', 'string');
-		$settings .= $this->mkstr('mailFromSign', 'string', array('savebr'=>true));
 		$settings .= $this->mkstr('filesModeSetOnUpload', 'bool');
 		$settings .= $this->mkstr('filesModeDefault', 'string');
 		$settings .= $this->mkstr('filesTranslitNames', 'bool');
