@@ -111,17 +111,20 @@
 									<label for="settings-mailFromAddr">Адрес отправителя</label><br />
 									<input type="text" name="mailFromAddr" value="{$mailFromAddr|escape}" size="20"
 										id="settings-mailFromAddr" tabindex="2" />
-									<div class="ui-minor nowrap">Пример: <em>robot@example.org</em></div>
 								</td>
+								<td class="ui-minor">
+									<br/>
+									Пример: <em>robot@example.org</em>
+								</td>
+							</tr>
+							<tr>
 								<td>
 									<label>Имя отправителя</label><br />
 									<input type="text" name="mailFromName" value="{$mailFromName|escape}" size="20" tabindex="3" />
-									<div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
 								</td>
-								<td style="width: 80%">
-									<label>Организация</label><br />
-									<input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="20" tabindex="4" />
-									<div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
+								<td class="ui-minor">
+									<br/>
+									Пример: <em>Администрация</em>
 								</td>
 							</tr>
 							<tr>
@@ -129,15 +132,9 @@
 									<label>Обратный адрес</label><br />
 									<input type="text" name="mailReplyTo" value="{$mailReplyTo|escape}" size="20" tabindex="5" />
 								</td>
-								<td class="ui-minor" colspan="2">
+								<td class="ui-minor">
 									<br/>
 									Вы можете указать адрес для ответа, отличный от адреса отправителя.
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<label>Подпись, добавляемая к тексту письма</label><br />
-									<textarea name="mailFromSign" cols="60" rows="4" tabindex="6">{$mailFromSign}</textarea>
 								</td>
 							</tr>
 						</table>
