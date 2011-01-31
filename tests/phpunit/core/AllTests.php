@@ -49,6 +49,7 @@ require_once dirname(__FILE__) . '/DBAL/AllTests.php';
 require_once dirname(__FILE__) . '/Domain/AllTests.php';
 require_once dirname(__FILE__) . '/Helpers/AllTests.php';
 require_once dirname(__FILE__) . '/HTTP/AllTests.php';
+require_once dirname(__FILE__) . '/Mail/AllTests.php';
 require_once dirname(__FILE__) . '/UI/AllTests.php';
 require_once dirname(__FILE__) . '/classes/AllTests.php';
 require_once dirname(__FILE__) . '/lib/AllTests.php';
@@ -70,6 +71,7 @@ class Core_AllTests
 		$suite->addTest(Core_Domain_AllTests::suite());
 		$suite->addTest(Core_Helpers_AllTests::suite());
 		$suite->addTest(Core_HTTP_AllTests::suite());
+		$suite->addTest(Core_Mail_AllTests::suite());
 		$suite->addTest(Core_UI_AllTests::suite());
 		$suite->addTest(Core_Classes_AllTests::suite());
 		$suite->addTest(Core_Lib_AllTests::suite());

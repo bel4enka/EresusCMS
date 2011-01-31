@@ -155,6 +155,7 @@ define('errFileNotFound', 'errFileNotFound');
 define('errInvalidPassword', 'errInvalidPassword');
 define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 define('filesRoot', '/home/exmaple.org/');
+define('CHARSET', 'cp1251');
 
 
 
@@ -183,6 +184,10 @@ class Doctrine_Record {}
 class Doctrine_Table {}
 class elFinder extends UniversalStub {}
 class EresusLogger extends MockFacade {}
+class ezcMailAddress extends UniversalStub {}
+class ezcMailComposer {}
+class ezcMailTransport extends UniversalStub {}
+class ezcMailMtaTransport extends ezcMailTransport {}
 
 /**
  * @package EresusCMS

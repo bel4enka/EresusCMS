@@ -58,7 +58,7 @@ class elFinderConnectorTest extends PHPUnit_Extensions_OutputTestCase
 		$test = $this->getMockBuilder('elFinderConnector')->setMethods(array())->
 			disableOriginalConstructor()->getMock();
 
-		$this->assertType('array', $getOptions->invoke($test));
+		$this->assertInternalType('array', $getOptions->invoke($test));
 	}
 	//-----------------------------------------------------------------------------
 

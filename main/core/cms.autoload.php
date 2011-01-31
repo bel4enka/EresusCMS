@@ -61,6 +61,9 @@ return array(
 	/* HTTP */
 	'EresusAdminRouteService' => 'core/HTTP/EresusAdminRouteService.php',
 
+	/* Mail */
+	'EresusMail' => 'core/Mail/EresusMail.php',
+
 	/* UI */
 	'AdminUI' => 'core/UI/AdminUI.php',
 	'AdminUITheme' => 'core/UI/AdminUITheme.php',
