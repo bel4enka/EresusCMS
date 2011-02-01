@@ -29,8 +29,8 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes/WebServer.php';
+require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/AbstractionLayers/WebServer.php';
 
 /**
  * @package EresusCMS
@@ -45,6 +45,14 @@ class WebServerTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getDocumentRoot()
 	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+		$instnce = new ReflectionProperty('WebServer', 'instance');
+		$instnce->setAccessible(true);
+		$instnce->setValue('WebServer', null);
+
 		$dir = dirname(__FILE__);
 		$_SERVER['DOCUMENT_ROOT'] = $dir;
 
