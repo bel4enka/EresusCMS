@@ -26,6 +26,7 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package EresusCMS
+ * @subpackage Domain
  *
  * $Id$
  */
@@ -33,7 +34,11 @@
 
 /**
  * Работа с учётными записями пользователей
+ *
  * @package EresusCMS
+ * @subpackage Domain
+ *
+ * @deprecated с 2.16. Следует пользоваться {@see EresusUser}.
  */
 class EresusAccounts
 {
@@ -156,10 +161,3 @@ class EresusAccounts
 	}
 	//------------------------------------------------------------------------------
 }
-
-/**
- * @deprecated since Eresus 2.11
- *
- * @package EresusCMS
- */
-class Accounts extends EresusAccounts {}
