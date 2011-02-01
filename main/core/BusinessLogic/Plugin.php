@@ -143,9 +143,9 @@ class Plugin
 	 *
 	 * Производит чтение настроек плагина и подключение языковых файлов
 	 *
-	 * @uses $Eresus
+	 * @uses Eresus
 	 * @uses $locale
-	 * @uses Plugin::resetPlugin
+	 * @uses Plugin::resetPlugin()
 	 */
 	public function __construct()
 	{

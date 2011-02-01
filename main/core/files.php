@@ -46,7 +46,7 @@ class TFiles
 	 * @return void
 	 *
 	 * @since 2.16
-	 * @uses HttpResponse::redirect
+	 * @uses HttpResponse::redirect()
 	 */
 	public function adminRender()
 	{

@@ -43,11 +43,14 @@ class TSettings
 
 	/**
 	 * Создаёт строку параметра для записи в файл
+	 *
 	 * @param string $name     Имя параметра
 	 * @param string $type
 	 * @param array  $options
+	 *
 	 * @return string
-	 * @uses HTTP::request
+	 *
+	 * @uses HTTP::request()
 	 */
 	private function mkstr($name, $type = 'string', $options = array())
 	{
@@ -95,7 +98,7 @@ class TSettings
 	/**
 	 * Записывает настройки
 	 * @return void
-	 * @uses HTTP::goback
+	 * @uses HTTP::goback()
 	 */
 	private function update()
 	{
@@ -189,7 +192,7 @@ class TSettings
 	/**
 	 * Отрисовка контента
 	 * @return string
-	 * @uses HTTP::request
+	 * @uses HTTP::request()
 	 */
 	function adminRender()
 	{

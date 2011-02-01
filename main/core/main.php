@@ -512,8 +512,8 @@ class EresusCMS extends EresusApplication
 	 * Инициализация сессии
 	 *
 	 * @return void
-	 * @uses EresusLogger::log
-	 * @uses EresusAuthService::getInstance
+	 * @uses EresusLogger::log()
+	 * @uses EresusAuthService::getInstance()
 	 */
 	private function initSession()
 	{
