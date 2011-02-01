@@ -30,7 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/classes.php';
+require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/Plugin.php';
 
 /**
  * @package EresusCMS

@@ -37,7 +37,6 @@ require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
 require_once dirname(__FILE__) . '/WebPageTest.php';
 require_once dirname(__FILE__) . '/PluginsTest.php';
-require_once dirname(__FILE__) . '/PluginTest.php';
 require_once dirname(__FILE__) . '/EresusExtensionConnectorTest.php';
 
 class Core_Classes_AllTests
@@ -52,7 +51,6 @@ class Core_Classes_AllTests
 		$suite->addTestSuite('HtmlScriptElementTest');
 		$suite->addTestSuite('WebPageTest');
 		$suite->addTestSuite('PluginsTest');
-		$suite->addTestSuite('PluginTest');
 		$suite->addTestSuite('EresusExtensionConnectorTest');
 
 		return $suite;

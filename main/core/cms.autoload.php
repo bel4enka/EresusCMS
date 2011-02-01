@@ -49,8 +49,9 @@ return array(
 	'ContentPlugin' => 'core/BusinessLogic/ContentPlugin.php',
 	'EresusAdminController' => 'core/BusinessLogic/EresusAdminController.php',
 	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',
+	'Plugin' => 'core/BusinessLogic/Plugin.php',
 
-/* DBAL */
+	/* DBAL */
 	'EresusActiveRecord' => 'core/DBAL/EresusActiveRecord.php',
 	'EresusORM' => 'core/DBAL/EresusORM.php',
 	'EresusQuery' => 'core/DBAL/EresusQuery.php',
