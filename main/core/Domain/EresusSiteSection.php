@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Domain
  *
  * $Id$
  */
@@ -55,7 +55,7 @@
  * @property string $created
  * @property string $updated
  *
- * @package	EresusCMS
+ * @package	Domain
  */
 class EresusSiteSection extends EresusActiveRecord
 {

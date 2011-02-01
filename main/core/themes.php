@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package BusinessLogic
  *
  * $Id$
  */
@@ -35,8 +35,7 @@
 /**
  * Упрвление темами оформления
  *
- * @package EresusCMS
- * @author mekras
+ * @package BusinessLogic
  */
 class TThemes
 {

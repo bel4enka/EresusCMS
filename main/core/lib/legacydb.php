@@ -24,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package DBAL
  *
  * $Id$
  */
@@ -32,7 +32,7 @@
 /**
  * Класс, имитирующий старую библиотеку MySQL
  *
- * @package EresusCMS
+ * @package DBAL
  */
 class LegacyDB
 {

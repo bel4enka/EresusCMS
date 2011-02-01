@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package UI
  *
  * $Id: AuthService.php 1277 2010-12-10 12:31:54Z mk $
  */
@@ -34,7 +34,7 @@
 /**
  * Файлвовый менеджер
  *
- * @package EresusCMS
+ * @package UI
  * @since 2.16
  */
 class EresusFileManagerController extends EresusAdminController

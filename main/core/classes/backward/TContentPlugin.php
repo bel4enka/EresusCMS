@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package BusinessLogic
  *
  * $Id$
  */
@@ -33,7 +33,7 @@
 /**
 * Базовый класс для плагинов, предоставляющих тип контента
 *
-* @package EresusCMS
+* @package BusinessLogic
 */
 class TContentPlugin extends TPlugin
 {

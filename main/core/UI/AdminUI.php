@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package UI
  *
  * $Id: WebPage.php 1132 2010-10-28 18:53:46Z mk $
  */
@@ -33,7 +33,7 @@
 /**
  * Класс представляет страницу административного интерфейса
  *
- * @package EresusCMS
+ * @package UI
  */
 class AdminUI extends WebPage
 {

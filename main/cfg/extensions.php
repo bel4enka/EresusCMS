@@ -23,7 +23,7 @@
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  *
  * $Id$
  */

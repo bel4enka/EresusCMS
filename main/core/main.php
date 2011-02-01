@@ -27,7 +27,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Core
  *
  * $Id$
  */
@@ -37,7 +37,7 @@
 /**
  * Интерфейс служб
  *
- * @package EresusCMS
+ * @package Core
  * @since 2.16
  */
 interface ServiceInterface
@@ -57,7 +57,7 @@ interface ServiceInterface
 /**
  * Интерфейс коннектора файлового менеджера
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  * @since 2.16
  */
 interface FileManagerConnectorInterface
@@ -78,7 +78,7 @@ interface FileManagerConnectorInterface
 /**
  * Исключение "Ошибка конфигурации"
  *
- * @package EresusCMS
+ * @package Core
  * @since 2.16
  */
 class EresusConfigException extends DomainException {}
@@ -88,7 +88,7 @@ class EresusConfigException extends DomainException {}
 /**
  * Исключение "Страница не найдена"
  *
- * @package EresusCMS
+ * @package Core
  * @since 2.16
  */
 class PageNotFoundException extends DomainException {}
@@ -98,7 +98,7 @@ class PageNotFoundException extends DomainException {}
 /**
  * Класс приложения Eresus CMS
  *
- * @package EresusCMS
+ * @package Core
  */
 class EresusCMS extends EresusApplication
 {
@@ -565,7 +565,7 @@ class EresusCMS extends EresusApplication
 /**
  * Компонент АИ
  *
- * @package EresusCMS
+ * @package UI
  */
 class EresusAdminComponent
 {

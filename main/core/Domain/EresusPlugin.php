@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Domain
  *
  * $Id$
  */
@@ -45,7 +45,7 @@
  * @property string $version
  * @property string $description
  *
- * @package EresusCMS
+ * @package Domain
  */
 class EresusPlugin extends EresusActiveRecord
 {

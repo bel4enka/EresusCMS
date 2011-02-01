@@ -24,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package HTTP
  *
  * $Id$
  */
@@ -43,7 +43,7 @@
  * - "метод" - метод. В классе контроллера соответствующий метод должен иметь префикс "action"
  * - "ключ/значение" - произвольное количество дополнительных параметров
  *
- * @package EresusCMS
+ * @package HTTP
  * @since 2.16
  */
 class EresusAdminRouteService implements ServiceInterface

@@ -24,8 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
- * @subpackage Mail
+ * @package Mail
  *
  * $Id: EresusFileManager.php 1412 2011-01-23 12:05:49Z mk $
  */
@@ -34,8 +33,7 @@
 /**
  * Отправка почты
  *
- * @package EresusCMS
- * @subpackage Mail
+ * @package Mail
  */
 class EresusMail
 {

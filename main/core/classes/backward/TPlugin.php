@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package BusinessLogic
  *
  * $Id$
  */
@@ -34,8 +34,8 @@
 /**
  * Родительский класс для всех плагинов
  *
- * @package EresusCMS
- * @deprecated Используйте Plugin
+ * @package BusinessLogic
+ * @deprecated Используйте {@link Plugin}
  */
 class TPlugin
 {

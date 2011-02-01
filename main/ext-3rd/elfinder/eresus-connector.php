@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  *
  * $Id: eresus-connector.php 749 2010-02-06 20:48:06Z mk $
  */
@@ -34,7 +34,7 @@
 /**
  * Класс-коннектор
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  */
 class elFinderConnector extends EresusExtensionConnector implements FileManagerConnectorInterface
 {

@@ -4,7 +4,7 @@
  *
  * Файл конфигурации
  *
- * @package EresusCMS
+ * @package Core
  *
  * $Id$
  */

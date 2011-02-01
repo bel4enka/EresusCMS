@@ -25,8 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
- * @subpackage Domain
+ * @package Domain
  *
  * $Id$
  */
@@ -34,8 +33,7 @@
 /**
  * Работа с плагинами
  *
- * @package EresusCMS
- * @subpackage Domain
+ * @package Domain
  */
 class Plugins
 {

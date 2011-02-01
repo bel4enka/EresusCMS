@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package UI
  *
  * $Id$
  */
@@ -34,7 +34,7 @@
 /**
  * Помощник нумерации
  *
- * @package EresusCMS
+ * @package UI
  *
  * @since 2.14
  */

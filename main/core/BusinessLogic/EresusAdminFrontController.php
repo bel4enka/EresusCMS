@@ -26,8 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
- * @subpackage BusinessLogic
+ * @package BusinessLogic
  *
  * $Id: EresusORM.php 1338 2011-01-14 20:39:53Z mk $
  */
@@ -35,8 +34,7 @@
 /**
  * Контроллер административного интерфейса
  *
- * @package EresusCMS
- * @subpackage BusinessLogic
+ * @package BusinessLogic
  * @since 2.16
  */
 class EresusAdminFrontController

@@ -25,13 +25,13 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package BusinessLogic
  *
  * $Id$
  */
 
 /**
- * @package EresusCMS
+ * @package BusinessLogic
  */
 class TSettings
 {

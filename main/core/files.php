@@ -26,8 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
- * @subpackage BusinessLogic
+ * @package BusinessLogic
  * @deprecated
  *
  * $Id$
@@ -36,7 +35,6 @@
 /**
  * Файловый менеджер
  *
- * @package EresusCMS
  * @package BusinessLogic
  * @deprecated с 2.16
  */

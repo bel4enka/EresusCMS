@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Core
  *
  * $Id$
  */
@@ -880,7 +880,7 @@ function __property($object, $property)
 /**
  * Основной класс приложения
  *
- * @package EresusCMS
+ * @package Core
  */
 class Eresus
 {

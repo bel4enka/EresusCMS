@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Core
  *
  * $Id$
  */
@@ -34,7 +34,7 @@
 /**
  * Простой некеширующий шаблонизатор
  *
- * @package EresusCMS
+ * @package Core
  * @since 2.16
  */
 class EresusTemplateNC
@@ -126,7 +126,7 @@ class EresusTemplateNC
 /**
  * Инсталлятор
  *
- * @package EresusCMS
+ * @package Core
  * @since 2.16
  */
 class Installer extends EresusApplication

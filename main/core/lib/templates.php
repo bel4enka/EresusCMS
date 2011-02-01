@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Templates
  *
  * $Id$
  */
@@ -33,7 +33,7 @@
 /**
  * Работа с шаблонами
  *
- * @package EresusCMS
+ * @package Templates
  */
 class Templates
 {

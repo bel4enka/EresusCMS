@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package UI
  *
  * $Id$
  */
@@ -35,7 +35,7 @@
 /**
  * Абстрактный элемент документа HTML
  *
- * @package EresusCMS
+ * @package UI
  * @since 2.15
  */
 class HtmlElement
@@ -166,7 +166,7 @@ class HtmlElement
 /**
  * Элемент <script>
  *
- * @package EresusCMS
+ * @package UI
  * @since 2.15
  */
 class HtmlScriptElement extends HtmlElement
@@ -227,7 +227,7 @@ class HtmlScriptElement extends HtmlElement
 /**
  * Родительский класс веб-интерфейсов
  *
- * @package EresusCMS
+ * @package UI
  */
 class WebPage
 {

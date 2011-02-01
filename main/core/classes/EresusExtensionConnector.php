@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  *
  * $Id$
  */
@@ -36,7 +36,7 @@
 /**
  * Базовый класс коннектора сторонних расширений
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  */
 class EresusExtensionConnector
 {

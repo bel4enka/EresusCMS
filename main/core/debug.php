@@ -26,11 +26,12 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
- * @subpackage Debug
+ * @package Debug
  *
  * $Id$
  */
 
-
+/**
+ * Признак включённого режима отладки
+ */
 define('ERESUS_CMS_DEBUG', true);

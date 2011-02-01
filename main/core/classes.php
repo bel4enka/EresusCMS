@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package BusinessLogic
  *
  * $Id$
  */
@@ -36,7 +36,7 @@
  *
  * Обычно это означает синтаксическую ошибку в файле плагина.
  *
- * @package EresusCMS
+ * @package Core
  */
 class EresusSourceParseException extends RuntimeException {};
 
@@ -50,7 +50,7 @@ class EresusSourceParseException extends RuntimeException {};
 /**
  * Родительский класс для всех плагинов
  *
- * @package EresusCMS
+ * @package BusinessLogic
  */
 class Plugin
 {
@@ -629,7 +629,7 @@ class Plugin
 /**
 * Базовый класс для плагинов, предоставляющих тип контента
 *
-* @package EresusCMS
+* @package BusinessLogic
 */
 class ContentPlugin extends Plugin
 {
@@ -755,7 +755,7 @@ class ContentPlugin extends Plugin
 /**
  * Класс для работы с расширениями системы
  *
- * @package EresusCMS
+ * @package CoreExtensionsAPI
  */
 class EresusExtensions
 {
