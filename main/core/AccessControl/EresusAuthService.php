@@ -84,7 +84,7 @@ class EresusAuthService implements ServiceInterface
 	private $user = null;
 
 	/**
-	 * Возвращает экземпляр класса
+	 * Возвращает экземпляр службы
 	 *
 	 * @return AuthService
 	 *
@@ -234,7 +234,7 @@ class EresusAuthService implements ServiceInterface
 	 * Устанавливает куки для автоматического входа
 	 *
 	 * Метод устанавливает куки, содержащее информацию для автоматической аутентификации посетителя.
-	 * Эта информация проверяется методом {@see AuthService::init}.
+	 * Эта информация проверяется методом {@link EresusAuthService::init()}.
 	 *
 	 * @return void
 	 *
@@ -257,7 +257,7 @@ class EresusAuthService implements ServiceInterface
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Удаляет куки, установленные {@see setCookies}
+	 * Удаляет куки, установленные {@link EresusAuthService::setCookies()}
 	 *
 	 * @return void
 	 *
