@@ -45,6 +45,8 @@ if (version_compare(PHP_VERSION, '5.3', '<'))
 {
 	PHP_CodeCoverage_FIlter::getInstance()->removeDirectoryFromWhitelist($root . '/main/core/models');
 }
+PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/admin');
+
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/editarea/eresus-connector.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/tinymce/eresus-connector.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/elfinder/eresus-connector.php');
