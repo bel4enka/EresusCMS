@@ -46,6 +46,7 @@ return array(
 	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
 
 	/* BusinessLogic */
+	'ContentPlugin' => 'core/BusinessLogic/ContentPlugin.php',
 	'EresusAdminController' => 'core/BusinessLogic/EresusAdminController.php',
 	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',
 
