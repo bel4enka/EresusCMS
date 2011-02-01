@@ -339,6 +339,7 @@ class EresusMail
 	 * @since 2.16
 	 * @uses ezcMailComposer::build()
 	 * @uses ezcMailTransport::send()
+	 * @uses option()
 	 */
 	public function send()
 	{
