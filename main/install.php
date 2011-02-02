@@ -453,7 +453,10 @@ class Installer extends EresusApplication
 			$files = ftp_nlist($this->ftp, $path);
 			foreach ($files as $file)
 			{
-				$this->makeWritable($path . '/' . $file);
+				if ($file != '.' && $file != '..')
+				{
+					$this->makeWritable($path . '/' . $file);
+				}
 			}
 		}
 		else
@@ -476,7 +479,7 @@ class Installer extends EresusApplication
 		$conf = file_get_contents($this->getFsRoot() . '/cfg/main.template.php');
 
 		$conf = preg_replace("/('eresus.cms.dsn',\s+').*('\);)/", "$1{$this->dsn}$2", $conf);
-		$mode = fileperms($this->getFsRoot() . '/cfg');
+		$mode = fileperms($this->getFsRoot() . '/cfg') & 0777;
 		ftp_chmod($this->ftp, 0777, $this->ftpSiteRoot . '/cfg');
 		file_put_contents($this->getFsRoot() . '/cfg/main.php', $conf);
 		ftp_chmod($this->ftp, $mode, $this->ftpSiteRoot . '/cfg');
