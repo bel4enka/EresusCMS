@@ -424,7 +424,7 @@ class Installer extends EresusApplication
 		$candidats = array_intersect($tokens, $dirs);
 		foreach ($candidats as $dir)
 		{
-			$pos = strpos($this->getFsRoot(), '/' . $dir . '/');
+			$pos = strpos($this->getFsRoot() . '/', '/' . $dir . '/');
 			$relDir = substr($this->getFsRoot(), $pos);
 			if (ftp_chdir($this->ftp, $relDir))
 			{
