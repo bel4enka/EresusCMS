@@ -1,7 +1,7 @@
 /**
  * ${product.title} ${product.version}
  *
- * Скрипты темы Default.
+ * Скрипты панели управления
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -26,18 +26,15 @@
  * $Id$
  */
 
-/*
- * Инициализация
+/**
+ * Глобальный объект Eresus
  */
-jQuery(document).ready(function ()
+window.Eresus =
 {
-	jQuery("div.menu-content").click(function (e)
-	{
-		if (e.target.nodeName.toLowerCase() != "img")
-			return;
-
-		jQuery(e.target).parent().
-			toggleClass("opened").
-			children("ul").toggle();
-	});
-});
+		/**
+		 * Корневой адрес сайта
+		 *
+		 * @var String
+		 */
+		siteRoot: '/'
+};
