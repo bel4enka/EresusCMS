@@ -17,17 +17,7 @@
 		<a name="license"></a>
 		<h2>Лицензия</h2>
 
-		<p>Данная программа является свободным программным обеспечением. Вы вправе распространять ее и/или
-		модифицировать в соответствии с условиями версии 3 либо (по вашему выбору) с условиями более поздней
-		версии Стандартной Общественной Лицензии GNU, опубликованной <a href="http://fsf.org/">Free Software
-		Foundation</a>.</p>
-
-		<p>Мы распространяем эту программу в надежде на то, что она будет вам полезной, однако НЕ
-		ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и
-		ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации
-		ознакомьтесь со <a href="http://www.gnu.org/licenses/gpl.html">Стандартной Общественной Лицензией
-		GNU</a> (<a href="http://code.google.com/p/gpl3rus/wiki/LatestRelease">неофициальный русский
-		перевод</a>).</p>
+		{$license.text}
 		
 		<a name="components"></a>
 		<h2>Компоненты</h2>
@@ -43,58 +33,18 @@
 		<table>
 			<tbody>
 
+				{foreach $uses item}
 				<tr>
 					<td>
-						<a href="http://ezcomponents.org/">
-							<img src="{$Eresus->root}admin/logos/ezcomponents.png" alt="eZ Components logo" />
+						<a href="{$item.url}">
+							<img src="{$Eresus->root}{$item.logo}" alt="{$item.title} logo" />
 						</a>
 					</td>
 					<td>
-						Библиотека компонентов для PHP.
+						{$item.info}
 					</td>
 				</tr>
-
-				<tr>
-					<td>
-						<a href="http://jquery.com/">
-							<img src="{$Eresus->root}admin/logos/jquery.png" alt="TinyMCE logo" />
-						</a>
-					</td>
-					<td>
-						Библиотека JavaScript для простой и быстрой работы с документами HTML.
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						<a href="http://dwoo.org/">
-							<img src="{$Eresus->root}admin/logos/dwoo.gif" alt="Dwoo logo" />
-						</a>
-					</td>
-					<td>
-						Шаблонизатор для PHP5.
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						<a href="http://tinymce.moxiecode.com/">
-							<img src="{$Eresus->root}admin/logos/tinymce.png" alt="TinyMCE logo" />
-						</a>
-					</td>
-					<td>
-						Визуальный редактор HTML.
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						<a href="http://sourceforge.net/projects/codepress/">CodePress</a>
-					</td>
-					<td>
-						Редактор исходного кода с подсветкой синтаксиса.
-					</td>
-				</tr>
+				{/foreach}
 
 			</tbody>
 		</table>

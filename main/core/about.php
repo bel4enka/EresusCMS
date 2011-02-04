@@ -45,30 +45,36 @@ class TAbout
 	{
 		global $Eresus, $page, $locale;
 
-		$xml = new DOMDocument('1.0', 'UTF-8');
-		$xml->load($Eresus->froot . 'core/about.xml');
+		$xml = simplexml_load_file($Eresus->froot . 'core/about.xml');
 
 		$data = array();
 
-		$product = $xml->getElementsByTagName('product')->item(0);
 		$data['product'] = array();
-		$data['product']['title'] = $product->getAttribute('title');
-		$data['product']['version'] = $product->getAttribute('version');
-
+		$data['product']['title'] = $xml->product['title'];
+		$data['product']['version'] = $xml->product['version'];
 		$data['product']['copyrights'] = array();
-		$copyrights = $product->getElementsByTagName('copyright');
-		for ($i = 0; $i < $copyrights->length; $i++)
+		foreach ($xml->product->copyright as $copyright)
 		{
 			$data['product']['copyrights'] []= array(
-				'year' => $copyrights->item($i)->getAttribute('year'),
-				'owner' => $copyrights->item($i)->getAttribute('owner'),
-				'url' => $copyrights->item($i)->getAttribute('url'),
+				'year' => $copyright['year'],
+				'owner' => iconv('utf-8', 'cp1251', $copyright['owner']),
+				'url' => $copyright['url'],
 			);
 		}
 
-		$license = $xml->getElementsByTagName('license')->item(0);
 		$data['license'] = array();
-		$data['license']['text'] = $license->getElementsByTagName($locale['lang'])->item(0)->textContent;
+		$data['license']['text'] = iconv('utf-8', 'cp1251', $xml->license->ru->asXML());
+
+		$data['uses'] = array();
+		foreach ($xml->uses->item as $item)
+		{
+			$data['uses'] []= array(
+				'title' => iconv('utf-8', 'cp1251', $item['title']),
+				'url' => $item['url'],
+				'logo' => $item['logo'],
+				'info' => iconv('utf-8', 'cp1251', $item->asXML())
+			);
+		}
 
 		$tmpl = new Template('core/templates/misc/about.html');
 		$html = $tmpl->compile($data);
