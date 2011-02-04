@@ -5,8 +5,60 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Вход - ${product.title}</title>
 	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/auth.css" />
+	<style type="text/css">
+		.ie
+		{
+			background-color: #feefda;
+			border: 1px solid #f7941d;
+			height: 75px;
+			text-align: center;
+		}
+		.ie-contents
+		{
+			color: black;
+			margin: 0 auto;
+			overflow: hidden;
+			padding: 0;
+			text-align: left;
+			width: 640px;
+		}
+		
+		.ie a img
+		{
+			border: none;
+		}
+	</style>
 </head>
 <body onload="document.getElementById('username').focus();">
+
+<!--[if lt IE 8]>
+<div class="ie">
+	<div class="ie-contents">
+		<div style="width: 75px; float: left;">
+			<img src="http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg" alt="Внимание!" />
+		</div>
+		<div style="width: 275px; float: left; font-family: Arial, sans-serif;">
+			<div style="font-size: 14px; font-weight: bold; margin-top: 12px;">Ваш браузер устарел</div>
+			<div style="font-size: 12px; margin-top: 6px; line-height: 12px;">
+				Чтобы сайт отображался правильно, установите современный браузер.
+			</div>
+		</div>
+		<div style="width: 75px; float: left;">
+			<a href="http://www.mozilla.com/ru/firefox/" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg" alt="Скачать Firefox 3.6" /></a>
+		</div>
+		<div style="width: 75px; float: left;">
+			<a href="http://www.browserforthebetter.com/download.html" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg" alt="Скачать Internet Explorer 8" /></a>
+		</div>
+		<div style="width: 73px; float: left;">
+			<a href="http://www.apple.com/safari/download/" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg" alt="Скачать Safari 5" /></a>
+		</div>
+		<div style="float: left;">
+			<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg" alt="Скачать Google Chrome" /></a>
+		</div>
+	</div>
+</div>
+<![endif]-->
+
 
 	<table>
 		<tr>
