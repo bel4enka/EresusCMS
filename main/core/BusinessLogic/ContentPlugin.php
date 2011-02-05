@@ -100,9 +100,9 @@ class ContentPlugin extends Plugin
 	{
 		global $Eresus, $page;
 
-		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
-		$item['content'] = $content;
-		$Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+		$item = EresusORM::getTable('EresusSiteSection')->find($page->id);
+		$item->content = $content;
+		$item->save();
 	}
 	//------------------------------------------------------------------------------
 
