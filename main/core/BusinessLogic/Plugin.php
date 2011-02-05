@@ -211,6 +211,7 @@ class Plugin
 	public function __call($method, $args)
 	{
 		throw new EresusMethodNotExistsException($method, get_class($this));
+		$args = $args; // PHPMD hack
 	}
 	//-----------------------------------------------------------------------------
 
@@ -260,8 +261,6 @@ class Plugin
 	 */
 	protected function loadSettings()
 	{
-		global $Eresus;
-
 		$pluginInfo = ORM::getTable('EresusPlugin')->find($this->name);
 		if ($pluginInfo)
 		{
@@ -337,9 +336,8 @@ class Plugin
 	 */
 	public function updateSettings()
 	{
-		global $Eresus;
-
-		foreach ($this->settings as $key => $value)
+		$keys = array_keys($this->settings);
+		foreach ($keys as $key)
 		{
 			if (!is_null(arg($key)))
 			{
