@@ -59,9 +59,7 @@ class TContent
 		$plugins = $GLOBALS['Eresus']->plugins;
 		$plugin = null;
 
-		useLib('sections');
-		$sections = new Sections();
-		$this->item = $sections->get(arg('section', 'int'));
+		$this->item = EresusORM::getTable('EresusSiteSection')->find(arg('section', 'int'));
 
 		$GLOBALS['page']->id = $this->item['id'];
 
@@ -177,9 +175,8 @@ class TContent
 	{
 		if (arg('update'))
 		{
-			$original = $this->item['content'];
-			$this->item['content'] = arg('url', 'dbsafe');
-			$GLOBALS['Eresus']->db->updateItem('pages', $this->item, "`id`='".$this->item['id']."'");
+			$this->item->content = arg('url', 'dbsafe');
+			$this->item->save();
 			HttpResponse::redirect(arg('submitURL'));
 		}
 		else
