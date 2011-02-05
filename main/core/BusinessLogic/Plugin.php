@@ -154,11 +154,14 @@ class Plugin
 		$this->name = strtolower(get_class($this));
 		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
 		{
-			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'],
+				$this->settings);
 			# Если установлена версия плагина отличная от установленной ранее
 			# то необходимо произвести обновление информации о плагине в БД
 			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
+			{
 				$this->resetPlugin();
+			}
 		}
 		$this->dirData = $Eresus->fdata.$this->name.'/';
 		$this->urlData = $Eresus->data.$this->name.'/';
@@ -188,7 +191,8 @@ class Plugin
 		$result['name'] = $this->name;
 		$result['content'] = false;
 		$result['active'] = is_null($item)? true : $item['active'];
-		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+		$result['settings'] = $Eresus->db->escape(is_null($item) ?
+			encodeOptions($this->settings) : $item['settings']);
 		$result['title'] = $this->title;
 		$result['version'] = $this->version;
 		$result['description'] = $this->description;
@@ -263,7 +267,7 @@ class Plugin
 		{
 			$this->settings = $pluginInfo->settings;
 		}
-		return (bool)$pluginInfo;
+		return (bool) $pluginInfo;
 	}
 	//------------------------------------------------------------------------------
 
@@ -298,7 +302,9 @@ class Plugin
 	/**
 	 * Действия, выполняемые при инсталляции плагина
 	 */
-	public function install() {}
+	public function install()
+	{
+	}
 	//------------------------------------------------------------------------------
 
 	/**
@@ -308,18 +314,22 @@ class Plugin
 	{
 		global $Eresus;
 
-		# TODO: Перенести в IDataSource
 		$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
-		$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
+		$tables = array_merge($tables,
+			$Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
 		for ($i=0; $i < count($tables); $i++)
+		{
 			$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
+		}
 	}
 	//------------------------------------------------------------------------------
 
 	/**
 	 * Действия при изменении настроек
 	 */
-	public function onSettingsUpdate() {}
+	public function onSettingsUpdate()
+	{
+	}
 	//------------------------------------------------------------------------------
 
 	/**
@@ -330,8 +340,12 @@ class Plugin
 		global $Eresus;
 
 		foreach ($this->settings as $key => $value)
+		{
 			if (!is_null(arg($key)))
+			{
 				$this->settings[$key] = arg($key);
+			}
+		}
 		$this->onSettingsUpdate();
 		$this->saveSettings();
 	}
@@ -363,17 +377,32 @@ class Plugin
 		$result = true;
 		$umask = umask(0000);
 		# Проверка и создание корневой директории данных
-		if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
-		if ($result) {
+		if (!is_dir($this->dirData))
+		{
+			$result = mkdir($this->dirData);
+		}
+		if ($result)
+		{
 			# Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
 			$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-			if ($name) {
+			if ($name)
+			{
 				$name = explode('/', $name);
 				$root = substr($this->dirData, 0, -1);
-				for($i=0; $i<count($name); $i++) if ($name[$i]) {
-					$root .= '/'.$name[$i];
-					if (!is_dir($root)) $result = mkdir($root);
-					if (!$result) break;
+				for ($i=0; $i<count($name); $i++)
+				{
+					if ($name[$i])
+					{
+						$root .= '/'.$name[$i];
+						if (!is_dir($root))
+						{
+							$result = mkdir($root);
+						}
+						if (!$result)
+						{
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -393,15 +422,32 @@ class Plugin
 		$result = true;
 		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
 		$name = $this->dirData.$name;
-		if (is_dir($name)) {
+		if (is_dir($name))
+		{
 			$files = glob($name.'/{.*,*}', GLOB_BRACE);
-			for ($i = 0; $i < count($files); $i++) {
-				if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
-				if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
-				elseif (is_file($files[$i])) $result = filedelete($files[$i]);
-				if (!$result) break;
+			for ($i = 0; $i < count($files); $i++)
+			{
+				if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..')
+				{
+					continue;
+				}
+				if (is_dir($files[$i]))
+				{
+					$result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
+				}
+				elseif (is_file($files[$i]))
+				{
+					$result = filedelete($files[$i]);
+				}
+				if (!$result)
+				{
+					break;
+				}
 			}
-			if ($result) $result = rmdir($name);
+			if ($result)
+			{
+				$result = rmdir($name);
+			}
 		}
 		return $result;
 	}
@@ -527,10 +573,17 @@ class Plugin
 	{
 		global $Eresus;
 
-		if (is_array($data)) {
-			if (empty($condition)) $condition = 'id';
-			$result = $Eresus->db->updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
-		} elseif (is_string($data)) {
+		if (is_array($data))
+		{
+			if (empty($condition))
+			{
+				$condition = 'id';
+			}
+			$result = $Eresus->db->updateItem($this->__table($table), $data,
+				"`$condition` = '{$data[$condition]}'");
+		}
+		elseif (is_string($data))
+		{
 			$result = $Eresus->db->update($this->__table($table), $data, $condition);
 		}
 
@@ -551,7 +604,8 @@ class Plugin
 	{
 		global $Eresus;
 
-		$result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
+		$result = $Eresus->db->delete($this->__table($table),
+			"`$key` = '" . (is_array($item) ? $item[$key] : $item)."'");
 
 		return $result;
 	}
@@ -604,8 +658,10 @@ class Plugin
 	{
 		global $Eresus;
 
-		for($i=0; $i < func_num_args(); $i++)
+		for ($i=0; $i < func_num_args(); $i++)
+		{
 			$Eresus->plugins->events[func_get_arg($i)][] = $this->name;
+		}
 	}
 	//------------------------------------------------------------------------------
 }
