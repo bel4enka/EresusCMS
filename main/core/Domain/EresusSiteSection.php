@@ -250,4 +250,19 @@ class EresusSiteSection extends EresusActiveRecord
 		$this->hasAccessorMutator('options', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see Doctrine_Record::delete()
+	 */
+	public function delete(Doctrine_Connection $conn = null)
+	{
+		$children = $this->getTable()->findBy('owner', $this->id);
+		foreach ($children as $child)
+		{
+			$child->delete($conn);
+		}
+		parent::delete($conn);
+	}
+	//-----------------------------------------------------------------------------
 }

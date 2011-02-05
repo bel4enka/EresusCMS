@@ -279,51 +279,20 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @param unknown_type $id
-	 * @return unknown_type
+	 * Удаляет ветку разделов
+	 *
+	 * @return void
+	 *
+	 * @uses HttpResponse::redirect()
 	 */
-	function deleteBranch($id)
-	{
-		global $Eresus;
-
-		$item = $Eresus->db->selectItem('pages', "`id`='".$id."'");
-		if ($Eresus->plugins->load($item['type']))
-		{
-			if (isset($Eresus->plugins->items[$item['type']]->table))
-			{
-				// TODO этот код не работает с новыми плагинами
-				$fields = $Eresus->db->fields($Eresus->plugins->items[$item['type']]->table['name']);
-				if (in_array('section', $fields))
-				{
-					$Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'],
-						"`section`='".$item['id']."'");
-				}
-			}
-		}
-		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
-		if (count($items))
-		{
-			foreach ($items as $item)
-			{
-				$this->deleteBranch($item['id']);
-			}
-		}
-		$Eresus->db->delete('pages', "`id`='".$id."'");
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Удаляет страницу
-	 * @return unknown_type
-	 */
-	function delete()
+	private function delete()
 	{
 		global $Eresus, $page;
 
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		$Eresus->sections->delete(arg('id', 'int'));
-		dbReorderItems('pages', "`owner`='".$item['owner']."'");
+		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
+		$owner = $item->owner;
+		$item->delete();
+		dbReorderItems('pages', "`owner`='".$owner."'");
 		HttpResponse::redirect($page->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
@@ -529,7 +498,7 @@ class TPages
 
 		$result = array();
 		$items = $Eresus->sections->children($owner,
-			$_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST);
+			$_SESSION['user'] ? $Eresus->user['access'] : GUEST);
 		for ($i=0; $i<count($items); $i++)
 		{
 			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?
