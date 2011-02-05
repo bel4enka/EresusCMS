@@ -72,14 +72,16 @@ table.slim {border-collapse: collapse; border-spacing: 0;}
 table.admWindow
 {
 	background-color: #eee;
-	font-size: 8pt;
-	font-weight: bold;
 	border: solid 1px #aaa;
-	margin: 0px;
 	line-height: 1.3em;
+	margin: 0;
 }
 .admWindow th {background: #007acc url('img/hbg.gif') repeat-x; color: white;  border: solid 1px #aaa;}
-.admWindow td {vertical-align: top; font-size: 8pt; color: #000; font-weight: normal;}
+.admWindow td 
+{
+	color: #000;
+	vertical-align: top; 
+}
 .admWindow h1 {font-size: 12pt; margin: 2px; color: #007acc;}
 .admWindow h2 {font-size: 10pt; margin: 2px}
 

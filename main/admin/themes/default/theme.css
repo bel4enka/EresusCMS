@@ -135,6 +135,20 @@ sup
  * @link http://docs.eresus.ru/cms/dev/themes/ref/widget-styles
  */
 
+
+/**
+ * Поля ввода
+ */
+input[type=text],
+input[type=password],
+select,
+textarea
+{
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 /**
  * Этот класс абстрактный — он не определяет тип или назначение виджета, он только лишь помечает, 
  * что имеющий его элемент — виджет. Поэтому вместе с ним обязательно должен указываться класс, 

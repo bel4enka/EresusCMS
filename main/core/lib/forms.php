@@ -417,7 +417,7 @@ class Form
 			"<form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".$page->url()."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
 			$this->hidden.
 			"\n\t<table width=\"100%\">\n".
-			"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".
+			"\t\t<colgroup><col width=\"5%\" /><col width=\"*\" /></colgroup>\n".
 			$result.
 			"\t\t<tr><td colspan=\"2\" class=\"ui-button-box\"><br />".
 			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<button name="form_ok" type="submit">'.$this->form['buttons']['ok'].'</button> ':'').
