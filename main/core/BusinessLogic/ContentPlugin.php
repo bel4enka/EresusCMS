@@ -142,8 +142,11 @@ class ContentPlugin extends Plugin
 	{
 		global $page, $Eresus;
 
-		if (arg('action') == 'update') $this->adminUpdate();
-		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+		if (arg('action') == 'update')
+		{
+			$this->adminUpdate();
+		}
+		$item = EresusORM::getTable('EresusSiteSection')->find($page->id);
 		$form = array(
 			'name' => 'editForm',
 			'caption' => $page->title,
