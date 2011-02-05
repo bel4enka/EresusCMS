@@ -39,7 +39,7 @@ class Plugins
 {
 	/**
 	 * Список всех плагинов
-	 * @var array
+	 * @var array(string => EresusPlugin)
 	 */
 	public $list = array();
 

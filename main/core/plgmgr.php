@@ -159,7 +159,7 @@ class TPlgMgr
 		/*
 		 * Составляем список доступных плагинов
 		 */
-		$files = glob($Eresus->froot . 'ext/*.php');
+		$files = glob($GLOBALS['Eresus']->froot . 'ext/*.php');
 		if ($files === false)
 		{
 			$files = array();
@@ -168,11 +168,10 @@ class TPlgMgr
 		/*
 		 * Составляем список установленных плагинов
 		 */
-		$items = $Eresus->db->select('`plugins`', '', "`name`");
-		$installed = array();
-		foreach ($items as $item)
+		$installed = array_keys($GLOBALS['Eresus']->plugins->list);
+		foreach ($installed as &$item)
 		{
-			$installed []= $Eresus->froot . 'ext/' . $item['name'] . '.php';
+			$item = $GLOBALS['Eresus']->froot . 'ext/' . $item . '.php';
 		}
 
 		// Оставляем только неустановленные
