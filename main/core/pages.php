@@ -269,13 +269,10 @@ class TPages
 	 */
 	private function delete()
 	{
-		global $Eresus, $page;
-
 		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
 		$owner = $item->owner;
 		$item->delete();
-		dbReorderItems('pages', "`owner`='".$owner."'");
-		HttpResponse::redirect($page->url(array('id'=>'')));
+		HttpResponse::redirect($GLOBALS['page']->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 
