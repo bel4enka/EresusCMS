@@ -62,6 +62,8 @@ class EresusSiteSection extends EresusActiveRecord
 	/**
 	 * (non-PHPdoc)
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 *
+	 * @since 2.16
 	 */
 	public function setTableDefinition()
 	{
@@ -244,6 +246,8 @@ class EresusSiteSection extends EresusActiveRecord
 	/**
 	 * (non-PHPdoc)
 	 * @see Doctrine_Record::setUp()
+	 *
+	 * @since 2.16
 	 */
 	public function setUp()
 	{
@@ -254,6 +258,8 @@ class EresusSiteSection extends EresusActiveRecord
 	/**
 	 * (non-PHPdoc)
 	 * @see Doctrine_Record::delete()
+	 *
+	 * @since 2.16
 	 */
 	public function delete(Doctrine_Connection $conn = null)
 	{
@@ -263,6 +269,52 @@ class EresusSiteSection extends EresusActiveRecord
 			$child->delete($conn);
 		}
 		parent::delete($conn);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Перемещает раздел на одну позицию выше в списке разделов
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function moveUp()
+	{
+		$upper = $this->getTable()->findByDql(
+			'owner = ? AND position < ? ORDER BY position DESC LIMIT 1',
+			array($this->owner, $this->position))->getFirst();
+		if ($upper)
+		{
+			$p = $upper->position;
+			$upper->position = $this->position;
+			$this->position = $p;
+			$this->save();
+			$upper->save();
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Перемещает раздел на одну позицию ниже в списке разделов
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function moveDown()
+	{
+		$lower = $this->getTable()->findByDql(
+			'owner = ? AND position > ? ORDER BY position ASC LIMIT 1',
+			array($this->owner, $this->position))->getFirst();
+		if ($lower)
+		{
+			$p = $lower->position;
+			$lower->position = $this->position;
+			$this->position = $p;
+			$this->save();
+			$lower->save();
+		}
 	}
 	//-----------------------------------------------------------------------------
 }

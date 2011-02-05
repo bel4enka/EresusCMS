@@ -165,58 +165,40 @@ class TPages
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Функция перемещает страницу вверх в списке
-	 * @return unknown_type
+	 * Перемещает раздел вверх в списке
+	 *
+	 * @return void
+	 *
+	 * @uses EresusORM::getTable()
+	 * @uses HttpResponse::redirect()
 	 */
-	function moveUp()
+	private function moveUp()
 	{
-		global $Eresus, $page;
-
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		if ($item['position'] > 0)
+		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
+		if ($item)
 		{
-			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".
-				($item['position']-1)."')");
-			if (count($temp))
-			{
-				$temp = $temp[0];
-				$item['position']--;
-				$temp['position']++;
-				$Eresus->sections->update($item);
-				$Eresus->sections->update($temp);
-			}
+			$item->moveUp();
 		}
-		HttpResponse::redirect($page->url(array('id'=>'')));
+		HttpResponse::redirect($GLOBALS['page']->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Функция перемещает страницу вниз в списке
-	 * @return unknown_type
+	 * Перемещает раздел вниз в списке
+	 *
+	 * @return void
+	 *
+	 * @uses EresusORM::getTable()
+	 * @uses HttpResponse::redirect()
 	 */
-	function moveDown()
+	private function moveDown()
 	{
-		global $Eresus, $page;
-
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		if ($item['position'] < count($Eresus->sections->children($item['owner'])))
+		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
+		if ($item)
 		{
-			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".
-				($item['position']+1)."')");
-			if ($temp)
-			{
-				$temp = $temp[0];
-				$item['position']++;
-				$temp['position']--;
-				$Eresus->sections->update($item);
-				$Eresus->sections->update($temp);
-			}
+			$item->moveDown();
 		}
-		HttpResponse::redirect($page->url(array('id'=>'')));
+		HttpResponse::redirect($GLOBALS['page']->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
 
