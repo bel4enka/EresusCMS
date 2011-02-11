@@ -35,11 +35,9 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 $root = realpath(dirname(__FILE__) . '/../..');
 
-if (version_compare(PHP_VERSION, '5.3', '<'))
-{
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
-	PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
-}
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
+
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
 if (version_compare(PHP_VERSION, '5.3', '<'))
 {
