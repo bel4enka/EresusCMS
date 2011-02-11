@@ -309,7 +309,12 @@ class Plugins
 	{
 	global $page;
 		if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
-		if ($buttonBack) $text .= '<br /><br />'.$page->buttonBack();
+		if ($buttonBack)
+		{
+			$text .= '<br /><br /><form class="contentButton" action="" method="get"><div>' .
+				'<input type="button" value="'.strReturn .'" class="contentButton" ' .
+				'onclick="javascript:history.back();" /></div></form>';
+		}
 		return $text;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
