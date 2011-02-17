@@ -39,9 +39,6 @@ return array(
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebPage' => 'core/classes/WebPage.php',
 
-	/* AbstractionLayers */
-	'WebServer' => 'core/AbstractionLayers/WebServer.php',
-
 	/* AccessControl */
 	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
 

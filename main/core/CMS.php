@@ -148,7 +148,7 @@ class Eresus_CMS extends EresusApplication
 		}
 
 		$fileName = $this->getFsRoot() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .
-			str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+			str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
 
 		if (file_exists($fileName))
 		{
@@ -438,7 +438,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function detectWebRoot()
 	{
-		$webServer = WebServer::getInstance();
+		$webServer = Eresus_WebServer::getInstance();
 		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
 		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));

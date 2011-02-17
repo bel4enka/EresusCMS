@@ -39,7 +39,7 @@
  * @package AbstractionLayers
  * @since 2.15
  */
-class WebServer
+class Eresus_WebServer
 {
 	/**
 	 * Экземпляр-одиночка
@@ -60,7 +60,7 @@ class WebServer
 	/**
 	 * Возвращает экземпляр класса
 	 *
-	 * @return WebServer
+	 * @return Eresus_WebServer
 	 *
 	 * @since 2.15
 	 */
@@ -90,7 +90,7 @@ class WebServer
 	/**
 	 * Конструктор
 	 *
-	 * @return WebServer
+	 * @return Eresus_WebServer
 	 *
 	 * @uses FS::driver()
 	 * @since 2.15

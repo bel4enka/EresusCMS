@@ -29,19 +29,19 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/AbstractionLayers/WebServer.php';
+require_once dirname(__FILE__) . '/../stubs.php';
+require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class WebServerTest extends PHPUnit_Framework_TestCase
+class Eresus_WebServer_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers WebServer::__construct
-	 * @covers WebServer::getInstance
-	 * @covers WebServer::getDocumentRoot
+	 * @covers Eresus_WebServer::__construct
+	 * @covers Eresus_WebServer::getInstance
+	 * @covers Eresus_WebServer::getDocumentRoot
 	 */
 	public function test_getDocumentRoot()
 	{
@@ -49,9 +49,9 @@ class WebServerTest extends PHPUnit_Framework_TestCase
 		{
 			$this->markTestSkipped('PHP 5.3 required');
 		}
-		$instnce = new ReflectionProperty('WebServer', 'instance');
+		$instnce = new ReflectionProperty('Eresus_WebServer', 'instance');
 		$instnce->setAccessible(true);
-		$instnce->setValue('WebServer', null);
+		$instnce->setValue('Eresus_WebServer', null);
 
 		$dir = dirname(__FILE__);
 		$_SERVER['DOCUMENT_ROOT'] = $dir;
@@ -60,7 +60,7 @@ class WebServerTest extends PHPUnit_Framework_TestCase
 		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
 		FS::$driver = $driver;
 
-		$server = WebServer::getInstance();
+		$server = Eresus_WebServer::getInstance();
 		$this->assertEquals($dir, $server->getDocumentRoot());
 	}
 	//-----------------------------------------------------------------------------

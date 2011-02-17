@@ -31,7 +31,7 @@
 
 require_once dirname(__FILE__) . '/../stubs.php';
 require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
-require_once dirname(__FILE__) . '/../../../main/core/AbstractionLayers/WebServer.php';
+require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../main/core/AccessControl/EresusAuthService.php';
 
 require_once 'vfsStream/vfsStream.php';
@@ -85,8 +85,8 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		FS::$driver = $driver;
 
 		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
+		$webServer = Eresus_WebServer::getInstance();
+		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
@@ -118,8 +118,8 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		}
 
 		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
+		$webServer = Eresus_WebServer::getInstance();
+		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
@@ -151,8 +151,8 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		}
 
 		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
+		$webServer = Eresus_WebServer::getInstance();
+		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
 
