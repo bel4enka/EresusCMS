@@ -89,7 +89,7 @@ class TContent
 		{
 			$plugins->load($this->item['type']);
 			$plugin = $plugins->items[$this->item['type']];
-			EresusCMS::app()->getFrontController()->setController($plugin);
+			Eresus_CMS::app()->getFrontController()->setController($plugin);
 			$html = $plugin->adminRenderContent();
 		}
 

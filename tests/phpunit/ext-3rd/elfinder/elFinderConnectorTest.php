@@ -32,7 +32,7 @@
 require_once 'PHPUnit/Extensions/OutputTestCase.php';
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/main.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusExtensionConnector.php';
 require_once dirname(__FILE__) . '/../../../../main/ext-3rd/elfinder/eresus-connector.php';
 

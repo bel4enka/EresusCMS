@@ -30,14 +30,20 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../main/core/main.php';
+require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../main/core/AbstractionLayers/WebServer.php';
+require_once dirname(__FILE__) . '/../../../main/core/AccessControl/EresusAuthService.php';
+
+require_once 'vfsStream/vfsStream.php';
+$vfsStream = new ReflectionClass('vfsStream');
+$dir = dirname($vfsStream->getFileName());
+PHP_CodeCoverage_Filter::getInstance()->addDirectoryToBlacklist($dir);
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusCMSTest extends PHPUnit_Framework_TestCase
+class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * (non-PHPdoc)
@@ -50,7 +56,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::app
+	 * @covers Eresus_CMS::app
 	 */
 	public function test_app()
 	{
@@ -60,12 +66,12 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		}
 
 		Core::$app = new stdClass();
-		$this->assertSame(Core::$app, EresusCMS::app());
+		$this->assertSame(Core::$app, Eresus_CMS::app());
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::detectWebRoot
+	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot()
 	{
@@ -84,16 +90,16 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new EresusCMS;
+		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
 		$obj->fsRoot = '/home/user/public_html';
 		$httpRequest = new HttpRequest();
 
-		$request = new ReflectionProperty('EresusCMS', 'request');
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
 
-		$detectWebRoot = new ReflectionMethod('EresusCMS', 'detectWebRoot');
+		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
@@ -102,7 +108,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::detectWebRoot
+	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot_notRoot()
 	{
@@ -117,16 +123,16 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new EresusCMS;
+		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
 		$obj->fsRoot = '/home/user/public_html/example.org';
 		$httpRequest = new HttpRequest();
 
-		$request = new ReflectionProperty('EresusCMS', 'request');
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
 
-		$detectWebRoot = new ReflectionMethod('EresusCMS', 'detectWebRoot');
+		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
@@ -135,7 +141,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::detectWebRoot
+	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot_windows()
 	{
@@ -150,16 +156,16 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
 
-		$obj = new EresusCMS;
+		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
 		$obj->fsRoot = FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org');
 		$httpRequest = new HttpRequest();
 
-		$request = new ReflectionProperty('EresusCMS', 'request');
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
 
-		$detectWebRoot = new ReflectionMethod('EresusCMS', 'detectWebRoot');
+		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
@@ -168,7 +174,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::getDataDir
+	 * @covers Eresus_CMS::getDataDir
 	 */
 	public function test_getDataDir()
 	{
@@ -177,7 +183,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$mock = $this->getMockBuilder('EresusCMS')->setMethods(array('getFsRoot'))->
+		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('getFsRoot'))->
 			disableOriginalConstructor()->getMock();
 		$mock->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/home/example.org'));
@@ -187,7 +193,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::getFrontController
+	 * @covers Eresus_CMS::getFrontController
 	 */
 	public function test_getFrontController()
 	{
@@ -198,8 +204,8 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 
 		$test = new stdClass();
 
-		$obj = new EresusCMS;
-		$frontController = new ReflectionProperty('EresusCMS', 'frontController');
+		$obj = new Eresus_CMS;
+		$frontController = new ReflectionProperty('Eresus_CMS', 'frontController');
 		$frontController->setAccessible(true);
 		$frontController->setValue($obj, $test);
 
@@ -208,7 +214,60 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::initSession
+	 * @covers Eresus_CMS::initDB
+	 */
+	public function test_initDB()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+
+		if (extension_loaded('suhosin') &&
+			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
+		{
+			$this->markTestSkipped(__METHOD__ .
+				' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
+		}
+
+		$Doctrine_Core = $this->getMock('stdClass', array('loadModels'));
+		$Doctrine_Core->expects($this->once())->method('loadModels')->
+			will($this->returnCallback(
+				function ($path)
+				{
+					if (!is_dir($path))
+					{
+						throw new PHPUnit_Framework_AssertionFailedError(
+							'Doctrine_Core::loadModels passed invalid path: ' . $path);
+					}
+				}
+			));
+
+		Doctrine_Core::setMock($Doctrine_Core);
+
+		$initDB = new ReflectionMethod('Eresus_CMS', 'initDB');
+		$initDB->setAccessible(true);
+
+		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+		$fsRoot->setAccessible(true);
+
+		$cms = new Eresus_CMS();
+
+		vfsStreamWrapper::register();
+		$file = new vfsStreamFile('Doctrine.php');
+		$dir = new vfsStreamDirectory('core');
+		$dir->addChild($file);
+		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
+		vfsStreamWrapper::getRoot()->addChild($dir);
+
+
+		$fsRoot->setValue($cms, vfsStream::url('htdocs'));
+		$initDB->invoke($cms);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS::initSession
 	 */
 	public function test_initSession()
 	{
@@ -217,12 +276,12 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3.2 required');
 		}
 
-		$initSession = new ReflectionMethod('EresusCMS', 'initSession');
+		$initSession = new ReflectionMethod('Eresus_CMS', 'initSession');
 		$initSession->setAccessible(true);
 
 		ini_set('session.save_path', '/tmp');
-		$EresusCMS = new EresusCMS();
-		$initSession->invoke($EresusCMS);
+		$cms = new Eresus_CMS();
+		$initSession->invoke($cms);
 	}
 	//-----------------------------------------------------------------------------
 

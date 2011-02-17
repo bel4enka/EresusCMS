@@ -6,8 +6,7 @@
  *
  * Главный модуль
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2004, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -100,7 +99,7 @@ class PageNotFoundException extends DomainException {}
  *
  * @package Core
  */
-class EresusCMS extends EresusApplication
+class Eresus_CMS extends EresusApplication
 {
 	/**
 	 * Фронт-контроллер (АИ или КИ)
@@ -130,6 +129,38 @@ class EresusCMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Автозагрузка классов CMS
+	 *
+	 * Работает только для классов "Eresus_*". Все символы в имени класса "_" заменяются на
+	 * разделитель директорий и добавляется префикс ".php".
+	 *
+	 * @param string $className
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public function classAutoload($className)
+	{
+		if (stripos($className, 'Eresus_') !== 0 || PHP::classExists($className))
+		{
+			return false;
+		}
+
+		$fileName = $this->getFsRoot() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .
+			str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+		if (file_exists($fileName))
+		{
+			include $fileName;
+			return true;
+		}
+
+		return false;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
@@ -139,6 +170,8 @@ class EresusCMS extends EresusApplication
 	public function main()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+
+		spl_autoload_register(array($this, 'classAutoload'));
 
 		try
 		{
@@ -401,7 +434,7 @@ class EresusCMS extends EresusApplication
 	 * Определение корневого веб-адреса сайта
 	 *
 	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
-	 * образом localRoot объекта EresusCMS::request
+	 * образом localRoot объекта Eresus_CMS::$request
 	 */
 	private function detectWebRoot()
 	{
@@ -467,7 +500,8 @@ class EresusCMS extends EresusApplication
 		/**
 		 * Подключение Doctrine
 		 */
-		include_once 'core/Doctrine.php';
+		include $this->getFsRoot() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .
+			'Doctrine.php';
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 
@@ -493,7 +527,7 @@ class EresusCMS extends EresusApplication
 			$pdo->setOptions($options);
 		}
 
-		Doctrine_Core::loadModels(dirname(__FILE__) . '/Domain');
+		Doctrine_Core::loadModels(dirname(__FILE__) . '/Model');
 /*
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

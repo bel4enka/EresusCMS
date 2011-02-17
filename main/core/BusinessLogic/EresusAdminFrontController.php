@@ -170,7 +170,7 @@ class EresusAdminFrontController
 	 *
 	 * @uses EresusLogger::log()
 	 * @uses arg()
-	 * @uses EresusCMS::app()
+	 * @uses Eresus_CMS::app()
 	 * @uses I18n::getInstance()
 	 * @uses EresusLogger::exception()
 	 * @uses ErrorMessage()
@@ -187,7 +187,7 @@ class EresusAdminFrontController
 		if (arg('mod')) // TODO устаревшая функция
 		{
 			$controller = arg('mod', '/[^\w-]/');
-			$controllerPath = EresusCMS::app()->getFsRoot() . "/core/$controller.php";
+			$controllerPath = Eresus_CMS::app()->getFsRoot() . "/core/$controller.php";
 			if (file_exists($controllerPath))
 			{
 				include $controllerPath;

@@ -68,8 +68,8 @@ if (is_file('install.php'))
 }
 else
 {
-	$fileName = 'core/main.php';
-	$appName = 'EresusCMS';
+	$fileName = 'core/CMS.php';
+	$appName = 'Eresus_CMS';
 }
 
 

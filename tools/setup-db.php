@@ -107,7 +107,7 @@ try
 			Core::$values['eresus.cms.dsn.prefix'] . '%s');
 	}
 
-	Doctrine_Core::createTablesFromModels($root . '/core/Domain');
+	Doctrine_Core::createTablesFromModels($root . '/core/Model');
 
 	$user = new EresusUser();
 	$user->username = 'root';

@@ -32,7 +32,7 @@
 @require_once 'vfsStream/vfsStream.php';
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/main.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminController.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
 

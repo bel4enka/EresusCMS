@@ -38,7 +38,7 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
-require_once dirname(__FILE__) . '/EresusCMSTest.php';
+require_once dirname(__FILE__) . '/Eresus_CMS_Test.php';
 require_once dirname(__FILE__) . '/EresusTest.php';
 require_once dirname(__FILE__) . '/EresusFormTest.php';
 require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
@@ -47,7 +47,7 @@ require_once dirname(__FILE__) . '/AbstractionLayers/AllTests.php';
 require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
 require_once dirname(__FILE__) . '/BusinessLogic/AllTests.php';
 require_once dirname(__FILE__) . '/DBAL/AllTests.php';
-require_once dirname(__FILE__) . '/Domain/AllTests.php';
+require_once dirname(__FILE__) . '/Model/AllTests.php';
 require_once dirname(__FILE__) . '/Helpers/AllTests.php';
 require_once dirname(__FILE__) . '/HTTP/AllTests.php';
 require_once dirname(__FILE__) . '/Mail/AllTests.php';
@@ -61,7 +61,7 @@ class Core_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core tests');
 
-		$suite->addTestSuite('EresusCMSTest');
+		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('EresusTest');
 		$suite->addTestSuite('EresusFormTest');
 		$suite->addTestSuite('LegacyFunctionsTest');

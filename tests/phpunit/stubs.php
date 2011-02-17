@@ -176,14 +176,24 @@ class Core extends MockFacade
 }
 
 
+class DB extends MockFacade {}
+class Doctrine extends MockFacade {}
+class Doctrine_Core extends MockFacade
+{
+	const ATTR_AUTOLOAD_TABLE_CLASSES = 'ATTR_AUTOLOAD_TABLE_CLASSES';
+	const ATTR_TBLNAME_FORMAT = 'ATTR_TBLNAME_FORMAT';
+	const ATTR_VALIDATE = 'ATTR_VALIDATE';
+	const VALIDATE_ALL = 'VALIDATE_ALL';
+}
 
-class Doctrine_Core extends MockFacade {}
+
 class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
 class elFinder extends UniversalStub {}
 class EresusLogger extends MockFacade {}
+class ezcDbOptions extends UniversalStub {}
 class ezcMailAddress extends UniversalStub {}
 class ezcMailComposer {}
 class ezcMailTransport extends UniversalStub {}
