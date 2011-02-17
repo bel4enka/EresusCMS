@@ -33,6 +33,7 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminController.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
 
@@ -48,7 +49,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	public function test_interface()
 	{
 		$test = EresusAdminRouteService::getInstance();
-		$this->assertInstanceOf('ServiceInterface', $test);
+		$this->assertInstanceOf('Eresus_CMS_Service', $test);
 	}
 	//-----------------------------------------------------------------------------
 

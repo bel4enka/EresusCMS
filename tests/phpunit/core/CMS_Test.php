@@ -31,6 +31,7 @@
 
 require_once dirname(__FILE__) . '/../stubs.php';
 require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
+require_once dirname(__FILE__) . '/../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../main/core/AccessControl/EresusAuthService.php';
 

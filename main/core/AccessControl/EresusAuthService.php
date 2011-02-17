@@ -37,7 +37,7 @@
  * @package AccessControl
  * @since 2.16
  */
-class EresusAuthService implements ServiceInterface
+class EresusAuthService implements Eresus_CMS_Service
 {
 	/**
 	 * Операция выполнена успешно

@@ -34,26 +34,6 @@
 
 
 /**
- * Интерфейс служб
- *
- * @package Core
- * @since 2.16
- */
-interface ServiceInterface
-{
-	/**
-	 * Метод должен возвращать объект-одиночку
-	 *
-	 * @return object
-	 *
-	 * @since 2.16
-	 */
-	public static function getInstance();
-}
-
-
-
-/**
  * Интерфейс коннектора файлового менеджера
  *
  * @package CoreExtensionsAPI

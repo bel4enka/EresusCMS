@@ -46,7 +46,7 @@
  * @package HTTP
  * @since 2.16
  */
-class EresusAdminRouteService implements ServiceInterface
+class EresusAdminRouteService implements Eresus_CMS_Service
 {
 	/**
 	 * Экземпляр-одиночка
