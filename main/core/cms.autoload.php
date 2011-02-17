@@ -67,7 +67,6 @@ return array(
 
 	/* UI */
 	'AdminUI' => 'core/UI/AdminUI.php',
-	'AdminUITheme' => 'core/UI/AdminUITheme.php',
 	'EresusFileManager' => 'core/UI/EresusFileManager.php',
 
 	/* Сторонние компоненты */

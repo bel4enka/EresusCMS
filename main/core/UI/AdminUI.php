@@ -69,7 +69,7 @@ class AdminUI extends WebPage
 	/**
 	 * Тема оформления
 	 *
-	 * @var AdminUITheme
+	 * @var Eresus_UI_Admin_Theme
 	 */
 	protected $uiTheme;
 
@@ -85,7 +85,7 @@ class AdminUI extends WebPage
 
 		parent::__construct();
 
-		$theme = new AdminUITheme();
+		$theme = new Eresus_UI_Admin_Theme();
 		$this->setUITheme($theme);
 		TemplateSettings::setGlobalValue('theme', $theme);
 
@@ -129,7 +129,7 @@ class AdminUI extends WebPage
 
 	/**
 	 * Возвращает объект текущей темы оформления
-	 * @return AdminUITheme
+	 * @return Eresus_UI_Admin_Theme
 	 */
 	public function getUITheme()
 	{
@@ -139,10 +139,10 @@ class AdminUI extends WebPage
 
 	/**
 	 * Устанавливает новую тему оформления
-	 * @param AdminUITheme $theme
+	 * @param Eresus_UI_Admin_Theme $theme
 	 * @return void
 	 */
-	public function setUITheme(AdminUITheme $theme)
+	public function setUITheme(Eresus_UI_Admin_Theme $theme)
 	{
 		$this->uiTheme = $theme;
 	}
