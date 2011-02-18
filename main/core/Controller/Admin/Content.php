@@ -49,7 +49,7 @@ class Eresus_Controller_Admin_Content extends Eresus_Controller_Admin_Abstract
 	 * @return string  HTML
 	 * @uses EresusAdminFrontController::setController()
 	 */
-	public function adminRender()
+	public function actionIndex()
 	{
 		if (!UserRights(EDITOR))
 		{

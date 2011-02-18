@@ -41,9 +41,9 @@ class Eresus_Controller_Admin_Files extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see AdminModule::actionIndex()
+	 * @see Eresus_Controller_Admin_Abstract::actionIndex()
 	 */
-	public function actionIndex($params = array())
+	public function actionIndex()
 	{
 		$fm = new EresusFileManager($GLOBALS['page']);
 		$html = $fm->render();

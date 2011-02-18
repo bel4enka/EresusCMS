@@ -47,6 +47,7 @@ require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
 require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
 require_once dirname(__FILE__) . '/BusinessLogic/AllTests.php';
 require_once dirname(__FILE__) . '/DBAL/AllTests.php';
+require_once dirname(__FILE__) . '/Controller/AllTests.php';
 require_once dirname(__FILE__) . '/Model/AllTests.php';
 require_once dirname(__FILE__) . '/Helpers/AllTests.php';
 require_once dirname(__FILE__) . '/HTTP/AllTests.php';
@@ -71,6 +72,7 @@ class Core_AllTests
 		$suite->addTest(Core_BusinessLogic_AllTests::suite());
 		$suite->addTest(Core_DBAL_AllTests::suite());
 		$suite->addTest(Core_Domain_AllTests::suite());
+		$suite->addTest(Core_Controller_AllTests::suite());
 		$suite->addTest(Core_Helpers_AllTests::suite());
 		$suite->addTest(Core_HTTP_AllTests::suite());
 		$suite->addTest(Core_Mail_AllTests::suite());

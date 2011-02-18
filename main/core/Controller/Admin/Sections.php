@@ -537,10 +537,10 @@ class Eresus_Controller_Admin_Sections extends Eresus_Controller_Admin_Abstract
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @return unknown_type
+	 * (non-PHPdoc)
+	 * @see Eresus_Controller_Admin_Abstract::actionIndex()
 	 */
-	function adminRender()
+	public function actionIndex()
 	{
 		global $Eresus, $page;
 

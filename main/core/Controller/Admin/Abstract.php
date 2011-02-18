@@ -35,19 +35,39 @@
  * @package BusinessLogic
  * @since 2.16
  */
-abstract class Eresus_Controller_Admin_Abstract extends Eresus_Controller_Admin_Abstract
+abstract class Eresus_Controller_Admin_Abstract
 {
+	/**
+	 * Список параметров из URL
+	 *
+	 * @var array
+	 */
+	protected $params;
+
+	/**
+	 * Конструктор
+	 *
+	 * @param array $params  дополнительные параметры из URL
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function __construct($params = array())
+	{
+		;
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * Метод должен возвращать разметку интерфейса модуля
 	 *
 	 * Потомки должны перекрывать этот метод
 	 *
-	 * @param array $params дополнительные параметры из запроса
-	 *
 	 * @return string HTML
 	 *
 	 * @since 2.16
 	 */
-	abstract public function actionIndex($params = array());
+	abstract public function actionIndex();
 	//-----------------------------------------------------------------------------
 }

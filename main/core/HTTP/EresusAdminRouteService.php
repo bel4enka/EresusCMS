@@ -72,7 +72,7 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 	/**
 	 * Объект контероллера
 	 *
-	 * @var EresusAdminController
+	 * @var Eresus_Controller_Admin_Abstract
 	 */
 	private $controller = null;
 
@@ -188,9 +188,10 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 	 * Метод ищет модуль {@see $controllerName}, загружает и возвращает экземпляр класса контроллера.
 	 *
 	 * @throws PageNotFoundException  если нет файла контроллера
-	 * @throws LogicException  если нет класса контроллера или этот класс не ялвяется потомком EresusAdminController
+	 * @throws LogicException  если нет класса контроллера или этот класс не ялвяется потомком
+	 *                         Eresus_Controller_Admin_Abstract
 	 *
-	 * @return EresusAdminController|null
+	 * @return Eresus_Controller_Admin_Abstract|null
 	 *
 	 * @since 2.16
 	 */
@@ -224,10 +225,10 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 			}
 
 			$controller = new $className();
-			if (!($controller instanceof EresusAdminController))
+			if (!($controller instanceof Eresus_Controller_Admin_Abstract))
 			{
-				throw new LogicException(sprintf('Class "%s" not a descendant of EresusAdminController',
-					$className));
+				throw new LogicException(
+					sprintf('Class "%s" not a descendant of Eresus_Controller_Admin_Abstract', $className));
 			}
 		}
 

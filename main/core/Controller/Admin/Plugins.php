@@ -258,7 +258,7 @@ class Eresus_Controller_Admin_Plugins extends Eresus_Controller_Admin_Abstract
 	 *
 	 * @return string
 	 */
-	public function adminRender()
+	public function actionIndex()
 	{
 		global $page, $Eresus;
 

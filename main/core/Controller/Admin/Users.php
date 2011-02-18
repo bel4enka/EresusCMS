@@ -307,10 +307,10 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
-	 * @return string
+	 * (non-PHPdoc)
+	 * @see Eresus_Controller_Admin_Abstract::actionIndex()
 	 */
-	public function adminRender()
+	public function actionIndex()
 	{
 		global $Eresus, $page;
 

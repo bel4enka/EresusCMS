@@ -190,11 +190,10 @@ class Eresus_Controller_Admin_Settings extends Eresus_Controller_Admin_Abstract
 	//--------------------------------------------------------------------
 
 	/**
-	 * Отрисовка контента
-	 * @return string
-	 * @uses HTTP::request()
+	 * (non-PHPdoc)
+	 * @see Eresus_Controller_Admin_Abstract::actionIndex()
 	 */
-	function adminRender()
+	public function actionIndex()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 		if (!UserRights($this->access))

@@ -38,13 +38,13 @@ require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
 require_once dirname(__FILE__) . '/../../../../main/core/kernel-legacy.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
 require_once dirname(__FILE__) . '/../../../../main/core/i18n.php';
-require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminFrontController.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Controller/Admin.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
+class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * (non-PHPdoc)
@@ -63,27 +63,27 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::__construct
+	 * @covers Eresus_Controller_Admin::__construct
 	 */
 	public function test_render_construct()
 	{
 		$ui = new stdClass();
 
-		$test = new EresusAdminFrontController($ui);
+		$test = new Eresus_Controller_Admin($ui);
 
 		$this->assertAttributeSame($ui, 'ui', $test);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::setController
-	 * @covers EresusAdminFrontController::getController
+	 * @covers Eresus_Controller_Admin::setController
+	 * @covers Eresus_Controller_Admin::getController
 	 */
 	public function test_setgetController()
 	{
 		$controller = new stdClass();
 
-		$mock = $this->getMockBuilder('EresusAdminFrontController')->setMethods(array('__constrcut'))->
+		$mock = $this->getMockBuilder('Eresus_Controller_Admin')->setMethods(array('__constrcut'))->
 			disableOriginalConstructor()->getMock();
 		$mock->setController($controller);
 		$this->assertSame($controller, $mock->getController());
@@ -91,7 +91,7 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::render
+	 * @covers Eresus_Controller_Admin::render
 	 */
 	public function test_render_logged()
 	{
@@ -123,13 +123,13 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$instance->setAccessible(true);
 		$instance->setValue('EresusAdminRouteService', $EresusAdminRouteService);
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
-		$EresusAdminFrontController->render();
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
+		$Eresus_Controller_Admin->render();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::render
+	 * @covers Eresus_Controller_Admin::render
 	 */
 	public function test_render_logged_logout()
 	{
@@ -166,13 +166,13 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$instance->setAccessible(true);
 		$instance->setValue('EresusAdminRouteService', $EresusAdminRouteService);
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
-		$EresusAdminFrontController->render();
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
+		$Eresus_Controller_Admin->render();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::auth
+	 * @covers Eresus_Controller_Admin::auth
 	 */
 	public function test_auth_GET()
 	{
@@ -188,16 +188,16 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('getAuthScreen'));
 		$ui->expects($this->once())->method('getAuthScreen');
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 
-		$auth = new ReflectionMethod('EresusAdminFrontController', 'auth');
+		$auth = new ReflectionMethod('Eresus_Controller_Admin', 'auth');
 		$auth->setAccessible(true);
-		$auth->invoke($EresusAdminFrontController);
+		$auth->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::auth
+	 * @covers Eresus_Controller_Admin::auth
 	 */
 	public function test_auth_POST_failed()
 	{
@@ -220,16 +220,16 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('getAuthScreen'));
 		$ui->expects($this->once())->method('getAuthScreen');
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 
-		$auth = new ReflectionMethod('EresusAdminFrontController', 'auth');
+		$auth = new ReflectionMethod('Eresus_Controller_Admin', 'auth');
 		$auth->setAccessible(true);
-		$auth->invoke($EresusAdminFrontController);
+		$auth->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::auth
+	 * @covers Eresus_Controller_Admin::auth
 	 */
 	public function test_auth_POST_success()
 	{
@@ -253,16 +253,16 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('getAuthScreen'));
 		$ui->expects($this->once())->method('getAuthScreen');
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 
-		$auth = new ReflectionMethod('EresusAdminFrontController', 'auth');
+		$auth = new ReflectionMethod('Eresus_Controller_Admin', 'auth');
 		$auth->setAccessible(true);
-		$auth->invoke($EresusAdminFrontController);
+		$auth->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::getContentHTML
+	 * @covers Eresus_Controller_Admin::getContentHTML
 	 */
 	public function test_getContentHTML_using_EresusAdminRouteService()
 	{
@@ -277,16 +277,16 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 
 		$ui = $this->getMock('stdClass', array('render'));
 
-		$getContentHTML = new ReflectionMethod('EresusAdminFrontController', 'getContentHTML');
+		$getContentHTML = new ReflectionMethod('Eresus_Controller_Admin', 'getContentHTML');
 		$getContentHTML->setAccessible(true);
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
-		$getContentHTML->invoke($EresusAdminFrontController);
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
+		$getContentHTML->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::getContentHTML
+	 * @covers Eresus_Controller_Admin::getContentHTML
 	 */
 	public function test_getContentHTML_using_arg_plugin()
 	{
@@ -301,10 +301,10 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 
 		$ui = $this->getMock('stdClass', array('render'));
 
-		$getContentHTML = new ReflectionMethod('EresusAdminFrontController', 'getContentHTML');
+		$getContentHTML = new ReflectionMethod('Eresus_Controller_Admin', 'getContentHTML');
 		$getContentHTML->setAccessible(true);
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 
 		$GLOBALS['Eresus'] = new stdClass;
 		$GLOBALS['Eresus']->request = array('arg' => array('mod' => 'ext-dummy'));
@@ -315,12 +315,12 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->plugins->expects($this->once())->method('load')->
 			will($this->returnValue($plugin));
 
-		$getContentHTML->invoke($EresusAdminFrontController);
+		$getContentHTML->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminFrontController::getContentHTML
+	 * @covers Eresus_Controller_Admin::getContentHTML
 	 */
 	public function test_getContentHTML_using_arg_plugin_exception()
 	{
@@ -335,10 +335,10 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 
 		$ui = $this->getMock('stdClass', array('render'));
 
-		$getContentHTML = new ReflectionMethod('EresusAdminFrontController', 'getContentHTML');
+		$getContentHTML = new ReflectionMethod('Eresus_Controller_Admin', 'getContentHTML');
 		$getContentHTML->setAccessible(true);
 
-		$EresusAdminFrontController = new EresusAdminFrontController($ui);
+		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 
 		$GLOBALS['Eresus'] = new stdClass;
 		$GLOBALS['Eresus']->request = array('arg' => array('mod' => 'ext-dummy'));
@@ -351,7 +351,7 @@ class EresusAdminFrontControllerTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->plugins->expects($this->once())->method('load')->
 			will($this->returnValue($plugin));
 
-		$getContentHTML->invoke($EresusAdminFrontController);
+		$getContentHTML->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------
 

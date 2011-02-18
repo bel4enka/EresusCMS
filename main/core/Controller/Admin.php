@@ -37,7 +37,7 @@
  * @package BusinessLogic
  * @since 2.16
  */
-class EresusAdminFrontController
+class Eresus_Controller_Admin
 {
 	/**
 	 * Текущий модуль АИ

@@ -41,7 +41,7 @@ class Eresus_Controller_Admin_About extends Eresus_Controller_Admin_Abstract
 	 *
 	 * @return string  HTML
 	 */
-	public function adminRender()
+	public function actionIndex()
 	{
 		global $Eresus, $page, $locale;
 

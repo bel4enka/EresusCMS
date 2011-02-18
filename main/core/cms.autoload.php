@@ -44,7 +44,6 @@ return array(
 
 	/* BusinessLogic */
 	'ContentPlugin' => 'core/BusinessLogic/ContentPlugin.php',
-	'EresusAdminController' => 'core/BusinessLogic/EresusAdminController.php',
 	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',
 	'Plugin' => 'core/BusinessLogic/Plugin.php',
 

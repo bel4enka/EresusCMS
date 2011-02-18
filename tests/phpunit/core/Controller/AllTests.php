@@ -26,22 +26,24 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
- * $Id: AllTests.php 1369 2011-01-16 20:04:53Z mk $
+ * $Id$
  */
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/ContentPluginTest.php';
-require_once dirname(__FILE__) . '/PluginTest.php';
+require_once dirname(__FILE__) . '/Admin_Test.php';
 
-class Core_BusinessLogic_AllTests
+require_once dirname(__FILE__) . '/Admin/AllTests.php';
+
+class Core_Controller_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/BusinessLogic');
+		$suite = new PHPUnit_Framework_TestSuite('core/Controller');
 
-		$suite->addTestSuite('ContentPluginTest');
-		$suite->addTestSuite('PluginTest');
+		$suite->addTestSuite('Eresus_Controller_Admin_Test');
+
+		$suite->addTest(Core_Controller_Admin_AllTests::suite());
 
 		return $suite;
 	}

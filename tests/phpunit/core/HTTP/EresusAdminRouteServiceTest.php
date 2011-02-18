@@ -34,7 +34,7 @@
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
-require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminController.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Controller/Admin.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
 
 /**
@@ -356,10 +356,10 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
 		$controller = new vfsStreamFile('example2.php');
-		$controller->setContent('<?php class EresusExample2Controller extends EresusAdminController {function actionIndex($p = array()){return "";}}');
+		$controller->setContent('<?php class EresusExample2Controller extends Eresus_Controller_Admin_Abstract {function actionIndex($p = array()){return "";}}');
 		$htdocs->getChild('admin')->getChild('controllers')->addChild($controller);
 
-		$this->assertInstanceOf('EresusAdminController', $test->getController());
+		$this->assertInstanceOf('Eresus_Controller_Admin_Abstract', $test->getController());
 	}
 	//-----------------------------------------------------------------------------
 

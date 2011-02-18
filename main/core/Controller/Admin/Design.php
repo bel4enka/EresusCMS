@@ -587,9 +587,9 @@ class Eresus_Controller_Admin_Design extends Eresus_Controller_Admin_Abstract
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
-	public function adminRender()
+	public function actionIndex()
 	{
 		global $page;
 
