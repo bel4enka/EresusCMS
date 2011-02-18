@@ -34,7 +34,7 @@ require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAuthService.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Model/EresusUser.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
 require_once dirname(__FILE__) . '/../../../../main/core/kernel-legacy.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
 require_once dirname(__FILE__) . '/../../../../main/core/i18n.php';

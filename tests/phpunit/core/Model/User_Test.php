@@ -31,20 +31,20 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Model/EresusUser.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusUserTest extends PHPUnit_Framework_TestCase
+class Eresus_Model_User_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusUser::setTableDefinition
+	 * @covers Eresus_Model_User::setTableDefinition
 	 */
 	public function test_setTableDefinition()
 	{
-		$test = $this->getMockBuilder('EresusUser')->
+		$test = $this->getMockBuilder('Eresus_Model_User')->
 			setMethods(array('setTableName', 'hasColumns'))->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('setTableName')->with('users');
 		$test->expects($this->once())->method('hasColumns');
@@ -53,11 +53,11 @@ class EresusUserTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusUser::setUp
+	 * @covers Eresus_Model_User::setUp
 	 */
 	public function test_setUp()
 	{
-		$test = $this->getMockBuilder('EresusUser')->
+		$test = $this->getMockBuilder('Eresus_Model_User')->
 			setMethods(array('hasAccessorMutator', 'hasMutator'))
 			->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('hasAccessorMutator')->
@@ -68,27 +68,27 @@ class EresusUserTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusUser::usernameMutator
+	 * @covers Eresus_Model_User::usernameMutator
 	 */
 	public function test_usernameMutator()
 	{
-		$user = $this->getMock('EresusUser', array('_set'));
+		$user = $this->getMock('Eresus_Model_User', array('_set'));
 		$user->expects($this->once())->method('_set')->with('username', 'user');
 		$user->usernameMutator('user');
 
-		$user = $this->getMock('EresusUser', array('_set'));
+		$user = $this->getMock('Eresus_Model_User', array('_set'));
 		$user->expects($this->once())->method('_set')->with('username', '');
 		$user->usernameMutator('тест');
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusUser::passwordMutator
-	 * @covers EresusUser::passwordHash
+	 * @covers Eresus_Model_User::passwordMutator
+	 * @covers Eresus_Model_User::passwordHash
 	 */
 	public function test_passwordMutator()
 	{
-		$user = $this->getMock('EresusUser', array('_set'));
+		$user = $this->getMock('Eresus_Model_User', array('_set'));
 		$user->expects($this->once())->method('_set')->
 			with('password', $user->passwordHash('test'));
 		$user->passwordMutator('test');
@@ -96,11 +96,11 @@ class EresusUserTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusUser::isPasswordValid
+	 * @covers Eresus_Model_User::isPasswordValid
 	 */
 	public function test_isPasswordValid()
 	{
-		$user = new EresusUser;
+		$user = new Eresus_Model_User;
 		$user->password = $user->passwordHash('test');
 		$this->assertTrue($user->isPasswordValid('test'));
 		$this->assertFalse($user->isPasswordValid(''));

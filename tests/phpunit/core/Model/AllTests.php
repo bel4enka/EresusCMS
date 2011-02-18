@@ -33,7 +33,7 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/EresusPluginTest.php';
 require_once dirname(__FILE__) . '/EresusSiteSectionTest.php';
-require_once dirname(__FILE__) . '/EresusUserTest.php';
+require_once dirname(__FILE__) . '/User_Test.php';
 
 class Core_Domain_AllTests
 {
@@ -43,7 +43,7 @@ class Core_Domain_AllTests
 
 		$suite->addTestSuite('EresusPluginTest');
 		$suite->addTestSuite('EresusSiteSectionTest');
-		$suite->addTestSuite('EresusUserTest');
+		$suite->addTestSuite('Eresus_Model_User_Test');
 
 		return $suite;
 	}

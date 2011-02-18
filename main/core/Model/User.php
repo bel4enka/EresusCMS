@@ -32,7 +32,7 @@
  */
 
 // Connection Component Binding
-//Doctrine_Manager::getInstance()->bindComponent('EresusUser', 'doctrine');
+//Doctrine_Manager::getInstance()->bindComponent('Eresus_Model_User', 'doctrine');
 
 /**
  * Модель пользователя
@@ -53,7 +53,7 @@
  *
  * @since 2.16
  */
-class EresusUser extends EresusActiveRecord
+class Eresus_Model_User extends EresusActiveRecord
 {
 	/**
 	 * PRCE-фильтр для свойства "username"

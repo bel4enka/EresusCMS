@@ -133,7 +133,7 @@ class EresusAdminFrontController
 	 * @return string  HTML
 	 *
 	 * @uses HTTP::request()
-	 * @uses EresusUser::USERNAME_FILTER
+	 * @uses Eresus_Model_User::USERNAME_FILTER
 	 * @uses EresusAuthService::getInstance()
 	 * @uses EresusAuthService::SUCCESS
 	 * @uses HttpResponse::redirect()
@@ -144,7 +144,7 @@ class EresusAdminFrontController
 
 		if ($req->getMethod() == 'POST')
 		{
-			$username = trim($req->arg('username', EresusUser::USERNAME_FILTER));
+			$username = trim($req->arg('username', Eresus_Model_User::USERNAME_FILTER));
 			$password = trim($req->arg('password'));
 			$state = EresusAuthService::getInstance()->login($username, $password);
 			if ($state == EresusAuthService::SUCCESS)

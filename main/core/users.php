@@ -186,7 +186,7 @@ class TUsers
 			$error = true;
 		}
 		/* Проверка данных на уникальность */
-		$users = ORM::getTable('EresusUser')->findByUsername($username);
+		$users = ORM::getTable('Eresus_Model_User')->findByUsername($username);
 		if (count($users))
 		{
 			ErrorMessage(admUsersLoginExists);
@@ -246,7 +246,7 @@ class TUsers
 	{
 		global $Eresus, $page;
 
-		$item = ORM::getTable('EresusUser')->find(arg('id', 'int'));
+		$item = ORM::getTable('Eresus_Model_User')->find(arg('id', 'int'));
 		$form = array(
 			'name' => 'UserForm',
 			'caption' => admUsersChangeUser.' №'.$item['id'],

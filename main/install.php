@@ -364,7 +364,7 @@ class Installer extends EresusApplication
 		Doctrine_Core::createTablesFromModels($this->getFsRoot() . '/core/Domain');
 
 		/* TODO: Переделать через YAML */
-		$user = new EresusUser();
+		$user = new Eresus_Model_User();
 		$user->username = 'root';
 		$user->password = '';
 		$user->active = true;

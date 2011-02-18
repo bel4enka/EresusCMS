@@ -79,7 +79,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	/**
 	 * Модель текущего пользователя
 	 *
-	 * @var EresusUser
+	 * @var Eresus_Model_User
 	 */
 	private $user = null;
 
@@ -103,7 +103,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	/**
 	 * Возвращает модель текущего пользователя
 	 *
-	 * @return EresusUser|null
+	 * @return Eresus_Model_User|null
 	 *
 	 * @since 2.16
 	 */
@@ -121,13 +121,13 @@ class EresusAuthService implements Eresus_CMS_Service
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
-	 * @uses EresusUser::passwordHash()
+	 * @uses Eresus_Model_User::passwordHash()
 	 * @uses loginByHash()
 	 * @since 2.16
 	 */
 	public function login($username, $password)
 	{
-		$hash = EresusUser::passwordHash($password);
+		$hash = Eresus_Model_User::passwordHash($password);
 		return $this->loginByHash($username, $hash);
 	}
 	//-----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	 */
 	public function loginByHash($username, $hash)
 	{
-		$users = EresusORM::getTable('EresusUser')->findByUsername($username);
+		$users = EresusORM::getTable('Eresus_Model_User')->findByUsername($username);
 
 		if (!count($users))
 		{
@@ -217,7 +217,7 @@ class EresusAuthService implements Eresus_CMS_Service
 		if (isset($_SESSION['user']) && $_SESSION['user'])
 		{
 			$id = intval($_SESSION['user']);
-			$this->user = EresusORM::getTable('EresusUser')->find($id);
+			$this->user = EresusORM::getTable('Eresus_Model_User')->find($id);
 		}
 		elseif (isset($_COOKIE['eresus_auth']))
 		{

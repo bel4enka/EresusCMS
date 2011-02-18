@@ -977,7 +977,7 @@ class AdminUI extends WebPage
 		$req = HTTP::request();
 
 		$data = array(
-			'username' => $req->arg('username', EresusUser::USERNAME_FILTER),
+			'username' => $req->arg('username', Eresus_Model_User::USERNAME_FILTER),
 			'password' => $req->arg('password'),
 			'autologin' => $req->arg('autologin'),
 			'error' => $errorMessage

@@ -36,7 +36,7 @@
  *
  * @package Domain
  *
- * @deprecated с 2.16. Следует пользоваться {@link EresusUser}.
+ * @deprecated с 2.16. Следует пользоваться {@link Eresus_Model_User}.
  */
 class EresusAccounts
 {

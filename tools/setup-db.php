@@ -109,7 +109,7 @@ try
 
 	Doctrine_Core::createTablesFromModels($root . '/core/Model');
 
-	$user = new EresusUser();
+	$user = new Eresus_Model_User();
 	$user->username = 'root';
 	$user->password = '';
 	$user->active = true;
