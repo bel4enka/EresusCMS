@@ -30,13 +30,13 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/EresusAdminController.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Controller/Admin.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusAdminControllerTest extends PHPUnit_Framework_TestCase
+class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 *
