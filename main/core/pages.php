@@ -174,7 +174,7 @@ class TPages
 	 */
 	private function moveUp()
 	{
-		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
+		$item = EresusORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
 		if ($item)
 		{
 			$item->moveUp();
@@ -193,7 +193,7 @@ class TPages
 	 */
 	private function moveDown()
 	{
-		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
+		$item = EresusORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
 		if ($item)
 		{
 			$item->moveDown();
@@ -269,7 +269,7 @@ class TPages
 	 */
 	private function delete()
 	{
-		$item = EresusORM::getTable('EresusSiteSection')->find(arg('id', 'int'));
+		$item = EresusORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
 		$owner = $item->owner;
 		$item->delete();
 		HttpResponse::redirect($GLOBALS['page']->url(array('id'=>'')));

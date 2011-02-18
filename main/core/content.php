@@ -59,7 +59,7 @@ class TContent
 		$plugins = $GLOBALS['Eresus']->plugins;
 		$plugin = null;
 
-		$this->item = EresusORM::getTable('EresusSiteSection')->find(arg('section', 'int'));
+		$this->item = EresusORM::getTable('Eresus_Model_Section')->find(arg('section', 'int'));
 
 		$GLOBALS['page']->id = $this->item['id'];
 

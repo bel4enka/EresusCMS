@@ -31,7 +31,7 @@
  * $Id$
  */
 // Connection Component Binding
-//Doctrine_Manager::getInstance()->bindComponent('EresusSiteSection', 'doctrine');
+//Doctrine_Manager::getInstance()->bindComponent('Eresus_Model_Section', 'doctrine');
 
 /**
  * Раздел сайта
@@ -57,7 +57,7 @@
  *
  * @package	Domain
  */
-class EresusSiteSection extends EresusActiveRecord
+class Eresus_Model_Section extends EresusActiveRecord
 {
 	/**
 	 * (non-PHPdoc)

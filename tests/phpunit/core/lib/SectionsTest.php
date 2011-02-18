@@ -52,7 +52,7 @@ class SectionsTest extends PHPUnit_Framework_TestCase
 		$index->setAccessible(true);
 
 		$Doctrine_Core = $this->getMock('stdClass', array('getTable'));
-		$Doctrine_Core->expects($this->once())->method('getTable')->with('EresusSiteSection')->
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('Eresus_Model_Section')->
 			will($this->returnValue(new UniversalStub()));
 
 		Doctrine_Core::setMock($Doctrine_Core);

@@ -31,20 +31,20 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Model/EresusSiteSection.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Model/Section.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusSiteSectionTest extends PHPUnit_Framework_TestCase
+class Eresus_Model_Section_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusSiteSection::setTableDefinition
+	 * @covers Eresus_Model_Section::setTableDefinition
 	 */
 	public function test_setTableDefinition()
 	{
-		$test = $this->getMockBuilder('EresusSiteSection')->
+		$test = $this->getMockBuilder('Eresus_Model_Section')->
 			setMethods(array('setTableName', 'hasColumns'))->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('setTableName')->with('pages');
 		$test->expects($this->once())->method('hasColumns');
@@ -53,11 +53,11 @@ class EresusSiteSectionTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusSiteSection::setUp
+	 * @covers Eresus_Model_Section::setUp
 	 */
 	public function test_setUp()
 	{
-		$test = $this->getMockBuilder('EresusSiteSection')->setMethods(array('hasAccessorMutator'))
+		$test = $this->getMockBuilder('Eresus_Model_Section')->setMethods(array('hasAccessorMutator'))
 			->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('hasAccessorMutator')->
 			with('options', 'unserializeAccessor', 'serializeMutator');

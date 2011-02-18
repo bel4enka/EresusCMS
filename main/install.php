@@ -373,7 +373,7 @@ class Installer extends EresusApplication
 		$user->mail = 'root@example.org';
 		$user->save();
 
-		$section = new EresusSiteSection();
+		$section = new Eresus_Model_Section();
 		$section->name = 'main';
 		$section->owner = 0;
 		$section->title = iconv('utf-8', 'cp1251', 'Главная страница');
