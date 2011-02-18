@@ -261,7 +261,7 @@ class Plugin
 	 */
 	protected function loadSettings()
 	{
-		$pluginInfo = ORM::getTable('EresusPlugin')->find($this->name);
+		$pluginInfo = ORM::getTable('Eresus_Model_Plugin')->find($this->name);
 		if ($pluginInfo)
 		{
 			$this->settings = $pluginInfo->settings;

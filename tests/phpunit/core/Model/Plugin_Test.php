@@ -31,20 +31,20 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Model/EresusPlugin.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Model/Plugin.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusPluginTest extends PHPUnit_Framework_TestCase
+class Eresus_Model_Plugin_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusPlugin::setTableDefinition
+	 * @covers Eresus_Model_Plugin::setTableDefinition
 	 */
 	public function test_setTableDefinition()
 	{
-		$test = $this->getMockBuilder('EresusPlugin')->setMethods(array('setTableName', 'hasColumns'))
+		$test = $this->getMockBuilder('Eresus_Model_Plugin')->setMethods(array('setTableName', 'hasColumns'))
 			->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('setTableName')->with('plugins');
 		$test->expects($this->once())->method('hasColumns');
@@ -53,11 +53,11 @@ class EresusPluginTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusPlugin::setUp
+	 * @covers Eresus_Model_Plugin::setUp
 	 */
 	public function test_setUp()
 	{
-		$test = $this->getMockBuilder('EresusPlugin')->setMethods(array('hasAccessorMutator'))
+		$test = $this->getMockBuilder('Eresus_Model_Plugin')->setMethods(array('hasAccessorMutator'))
 			->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('hasAccessorMutator')->
 			with('settings', 'unserializeAccessor', 'serializeMutator');

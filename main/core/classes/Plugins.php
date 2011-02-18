@@ -39,7 +39,7 @@ class Plugins
 {
 	/**
 	 * Список всех плагинов
-	 * @var array(string => EresusPlugin)
+	 * @var array(string => Eresus_Model_Plugin)
 	 */
 	public $list = array();
 
@@ -60,7 +60,7 @@ class Plugins
 	 */
 	public function __construct()
 	{
-		$items = EresusORM::getTable('EresusPlugin')->findAll();
+		$items = EresusORM::getTable('Eresus_Model_Plugin')->findAll();
 		if (count($items))
 		{
 			foreach($items as $item)
@@ -145,7 +145,7 @@ class Plugins
 		{
 			$this->items[$name]->uninstall();
 		}
-		$pluginInfo = ORM::getTable('EresusPlugin')->find($name);
+		$pluginInfo = ORM::getTable('Eresus_Model_Plugin')->find($name);
 		if ($pluginInfo)
 		{
 			$pluginInfo->delete();

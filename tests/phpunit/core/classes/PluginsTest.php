@@ -32,7 +32,7 @@
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusORM.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Model/EresusPlugin.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Model/Plugin.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/Plugins.php';
 
 /**
@@ -54,7 +54,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
 		$Doctrine_Table->expects($this->once())->method('findAll')->will($this->returnValue(array()));
 
 		$Doctrine_Core = $this->getMock('stdClass', array('getTable'));
-		$Doctrine_Core->expects($this->once())->method('getTable')->with('EresusPlugin')->
+		$Doctrine_Core->expects($this->once())->method('getTable')->with('Eresus_Model_Plugin')->
 			will($this->returnValue($Doctrine_Table));
 		Doctrine_Core::setMock($Doctrine_Core);
 
