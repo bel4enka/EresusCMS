@@ -34,7 +34,7 @@
  *
  * @package BusinessLogic
  */
-class TAbout
+class Eresus_Controller_Admin_About extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Возвращает страницу "О программе"

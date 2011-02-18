@@ -37,7 +37,7 @@
  *
  * @package BusinessLogic
  */
-class TThemes
+class Eresus_Controller_Admin_Design extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * ???

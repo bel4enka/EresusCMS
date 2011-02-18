@@ -35,7 +35,7 @@
  *
  * @package BusinessLogic
  */
-class TContent
+class Eresus_Controller_Admin_Content extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Описание раздела

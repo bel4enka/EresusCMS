@@ -37,7 +37,7 @@
  * @package UI
  * @since 2.16
  */
-class EresusFileManagerController extends EresusAdminController
+class Eresus_Controller_Admin_Files extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * (non-PHPdoc)

@@ -35,7 +35,7 @@
  * @package BusinessLogic
  * @since 2.16
  */
-abstract class EresusAdminController
+abstract class Eresus_Controller_Admin_Abstract extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Метод должен возвращать разметку интерфейса модуля

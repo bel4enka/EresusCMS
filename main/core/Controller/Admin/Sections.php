@@ -35,7 +35,7 @@
  *
  * @package BusinessLogic
  */
-class TPages
+class Eresus_Controller_Admin_Sections extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Уровень доступа к этому модулу

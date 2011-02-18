@@ -33,7 +33,7 @@
 /**
  * @package BusinessLogic
  */
-class TSettings
+class Eresus_Controller_Admin_Settings extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Минимальный требуемый уровнеь доступа

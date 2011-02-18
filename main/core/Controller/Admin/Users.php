@@ -30,14 +30,12 @@
  * $Id$
  */
 
-useLib('accounts');
-
 /**
  * Управление пользователями
  *
  * @package BusinessLogic
  */
-class TUsers
+class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Интерфейс управления аккаунтами

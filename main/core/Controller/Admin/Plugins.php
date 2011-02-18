@@ -34,7 +34,7 @@
  *
  * @package BusinessLogic
  */
-class TPlgMgr
+class Eresus_Controller_Admin_Plugins extends Eresus_Controller_Admin_Abstract
 {
 	/**
 	 * Уровень доступа к модулю
