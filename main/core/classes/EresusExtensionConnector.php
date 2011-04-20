@@ -206,7 +206,7 @@ class EresusExtensionConnector
 	 */
 	protected function proxyUnexistent($path)
 	{
-		header('Not found', true, 404);
+		PHP::isCLI() || header('Not found', true, 404);
 		echo '<h1>Not found.</h1>';
 		throw new ExitException;
 	}
