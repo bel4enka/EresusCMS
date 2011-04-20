@@ -326,6 +326,13 @@ class HttpResponse extends MockFacade {}
 /**
  * @package EresusCMS
  * @subpackage Tests
+ * @since 2.16
+ */
+class PHP extends MockFacade {}
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
  * @since 2.15
  */
 class TemplateSettings
