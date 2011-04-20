@@ -35,14 +35,14 @@ Options -Indexes +FollowSymLinks
 # Отключаем установку кодировки по умолчанию
 AddDefaultCharset Off
 
-<IfModule charset_module>
+<IfModule mod_charset.c>
 	CharsetDisable On
 </IfModule>
 
 #
 # Конфигурация трансформации URL
 #
-<IfModule rewrite_module>
+<IfModule mod_rewrite.c>
 	RewriteEngine on
 
 	### БЕЗОПАСНОСТЬ ###
@@ -69,7 +69,7 @@ AddDefaultCharset Off
 </IfModule>
 
 # Если mod_rewrite не сработал (модуль не подключен, нет нужного файла), то...
-<IfModule dir_module>
+<IfModule mod_dir.c>
 	DirectoryIndex index.php index.html index.htm
 </IfModule>
 
