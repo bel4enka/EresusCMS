@@ -282,6 +282,11 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		ini_set('session.save_path', '/tmp');
 		$cms = new Eresus_CMS();
+
+		$mock = $this->getMock('stdClass', array('isCLI'));
+		$mock->expects($this->any())->method('isCLI')->will($this->returnValue(true));
+		PHP::setMock($mock);
+
 		$initSession->invoke($cms);
 	}
 	//-----------------------------------------------------------------------------

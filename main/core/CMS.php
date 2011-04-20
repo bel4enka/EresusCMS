@@ -96,9 +96,16 @@ class Eresus_CMS extends EresusApplication
 	private $request;
 
 	/**
+	 * Адрес сайта
+	 *
+	 * @var string
+	 */
+	private $webRoot;
+
+	/**
 	 * Возвращает экземпляр-одиночку этого класса
 	 *
-	 * @return EresusCMS
+	 * @return Eresus_CMS
 	 *
 	 * @since 2.16
 	 */
@@ -200,6 +207,19 @@ class Eresus_CMS extends EresusApplication
 			$this->fatalError($e, false);
 		}
 
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневой адрес сайта (без финального слеша)
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getWebRoot()
+	{
+		return $this->webRoot;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -404,7 +424,7 @@ class Eresus_CMS extends EresusApplication
 		define('ADMINUI', true);
 
 		$page = new AdminUI();
-		$this->frontController = new EresusAdminFrontController($page);
+		$this->frontController = new Eresus_Controller_Admin($page);
 
 		return $this->frontController->render();
 	}
@@ -425,11 +445,9 @@ class Eresus_CMS extends EresusApplication
 		$this->request->setLocalRoot($SUFFIX);
 		EresusLogger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
-		TemplateSettings::setGlobalValue('siteRoot',
-			$this->request->getScheme() . '://' .
-			$this->request->getHost() .
-			$this->request->getLocalRoot()
-		);
+		$this->webRoot = $this->request->getScheme() . '://' . $this->request->getHost() .
+			$this->request->getLocalRoot();
+		TemplateSettings::setGlobalValue('siteRoot', $this->webRoot);
 
 	}
 	//-----------------------------------------------------------------------------
@@ -536,7 +554,7 @@ class Eresus_CMS extends EresusApplication
 		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		ini_set('session.use_only_cookies', true);
 		session_name('sid');
-		session_start();
+		PHP::isCLI() || session_start();
 
 		EresusAuthService::getInstance()->init();
 		// TODO Убрать. Оставлено для обратной совместимости
