@@ -117,7 +117,7 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
 
-		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init'));
+		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init', 'getController'));
 
 		$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
 		$instance->setAccessible(true);
@@ -160,7 +160,7 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
 
-		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init'));
+		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init', 'getController'));
 
 		$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
 		$instance->setAccessible(true);

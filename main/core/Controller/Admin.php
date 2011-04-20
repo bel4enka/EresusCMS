@@ -184,25 +184,12 @@ class Eresus_Controller_Admin
 
 		$html = '';
 
-		if (arg('mod')) // TODO устаревшая функция
+		// TODO устаревшая функция
+		if (arg('mod') && substr(arg('mod'), 0, 4) == 'ext-')
 		{
-			$controller = arg('mod', '/[^\w-]/');
-			$controllerPath = Eresus_CMS::app()->getFsRoot() . "/core/$controller.php";
-			if (file_exists($controllerPath))
-			{
-				include $controllerPath;
-				$class = "T$controller";
-				$this->setController(new $class);
-			}
-			elseif (substr($controller, 0, 4) == 'ext-')
-			{
-				$name = substr($controller, 4);
-				$this->setController($Eresus->plugins->load($name));
-			}
-			else
-			{
-				ErrorMessage(errFileNotFound . ': "' . $controllerPath);
-			}
+			$name = arg('mod', '/[^\w-]/');
+			$name = substr($name, 4);
+			$this->setController($Eresus->plugins->load($name));
 
 			/*
 			 * Отрисовка контента плагином
@@ -222,17 +209,9 @@ class Eresus_Controller_Admin
 					}
 					catch (Exception $e)
 					{
-						if (isset($name))
-						{
-							$logMsg = 'Error in plugin "' . $name . '"';
-							$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
-							$msg = sprintf($msg, $name);
-						}
-						else
-						{
-							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
-							$msg = sprintf($msg, get_class($controller));
-						}
+						$logMsg = 'Error in plugin "' . $name . '"';
+						$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+						$msg = sprintf($msg, $name);
 
 						EresusLogger::exception($e);
 
@@ -256,6 +235,7 @@ class Eresus_Controller_Admin
 		{
 			$router = EresusAdminRouteService::getInstance();
 			$router->init(HTTP::request());
+			$this->setController($router->getController());
 			$html = $router->call();
 		}
 
