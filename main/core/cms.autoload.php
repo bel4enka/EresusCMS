@@ -76,4 +76,5 @@ return array(
 	'TPlugin' => 'core/classes/backward/TPlugin.php',
 	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
 	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
+	'EresusAccounts' => 'core/lib/accounts.php',
 );
