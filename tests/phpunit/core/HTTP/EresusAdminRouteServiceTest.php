@@ -113,7 +113,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$pParams = new ReflectionProperty('EresusAdminRouteService', 'params');
 		$pParams->setAccessible(true);
 
-		$this->assertEquals('some_controller', $pControllerName->getValue($test));
+		$this->assertEquals('Some_controller', $pControllerName->getValue($test));
 		$this->assertEquals('some_method', $pActionName->getValue($test));
 		$this->assertEquals(array('p1' => 'v1', 'p2' => 'v2', 'p3' => null), $pParams->getValue($test));
 	}
@@ -146,7 +146,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$pParams = new ReflectionProperty('EresusAdminRouteService', 'params');
 		$pParams->setAccessible(true);
 
-		$this->assertEquals('some_controller', $pControllerName->getValue($test));
+		$this->assertEquals('Some_controller', $pControllerName->getValue($test));
 		$this->assertEquals('', $pActionName->getValue($test));
 		$this->assertEquals(array(), $pParams->getValue($test));
 	}
@@ -353,11 +353,15 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		Core::$app = $app;
 
-		$htdocs->addChild(new vfsStreamDirectory('admin'));
-		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
+		$htdocs->addChild(new vfsStreamDirectory('core'));
+		$htdocs->getChild('core')->addChild(new vfsStreamDirectory('Controller'));
+		$htdocs->getChild('core')->getChild('Controller')->addChild(new vfsStreamDirectory('Admin'));
 		$controller = new vfsStreamFile('example2.php');
-		$controller->setContent('<?php class EresusExample2Controller extends Eresus_Controller_Admin_Abstract {function actionIndex($p = array()){return "";}}');
-		$htdocs->getChild('admin')->getChild('controllers')->addChild($controller);
+		$controller->setContent(
+			'<?php class Eresus_Controller_Admin_Example2 extends Eresus_Controller_Admin_Abstract' .
+			'{function actionIndex($p = array()){return "";}}'
+		);
+		$htdocs->getChild('core')->getChild('Controller')->getChild('Admin')->addChild($controller);
 
 		$this->assertInstanceOf('Eresus_Controller_Admin_Abstract', $test->getController());
 	}
