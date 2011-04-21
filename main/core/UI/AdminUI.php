@@ -104,6 +104,7 @@ class AdminUI extends WebPage
 		$Eresus->plugins->preload(array('admin'));
 
 		/* Создаем меню */
+		/*
 		$this->menu = array(
 			array(
 				"access"  => EDITOR,
@@ -123,7 +124,14 @@ class AdminUI extends WebPage
 						"hint"  => admConfigurationHint, 'access'=>ADMIN),
 				)
 			),
-		);
+		);*/
+		$this->menu = new Eresus_UI_Admin_Menu();
+		$this->menu->addItem(admStructure, '/sections/', ADMIN);
+		$this->menu->addItem(admFileManager, '/files/', EDITOR);
+		$this->menu->addItem(admPlugins, '/plugins/', ADMIN);
+		$this->menu->addItem(admThemes, '/design/', ADMIN);
+		$this->menu->addItem(admUsers, '/users/', ADMIN);
+		$this->menu->addItem(admConfiguration, '/settings/', ADMIN);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -232,9 +240,7 @@ class AdminUI extends WebPage
 		{
 			$result[0] = '?';
 		}
-		// См. баг http://bugs.eresus.ru/view.php?id=365
-		//$result = str_replace('&', '&amp;', $result);
-		$result = httpRoot.'admin.php'.$result;
+		$result = $result;
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -935,7 +941,7 @@ class AdminUI extends WebPage
 				$menu .= "</div>\n";
 			}
 		}
-
+		/*
 		for ($section = 0; $section < count($this->menu); $section++)
 		{
 			if (UserRights($this->menu[$section]['access']))
@@ -961,6 +967,8 @@ class AdminUI extends WebPage
 				$menu .= "</div>\n";
 			}
 		}
+		*/
+		$menu .= $this->menu->render();
 
 		return $menu;
 	}

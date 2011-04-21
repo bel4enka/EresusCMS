@@ -144,7 +144,7 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 		{
 			return;
 		}
-		$this->controllerName = $part;
+		$this->controllerName = strtoupper(substr($part, 0, 1)) . substr($part, 1);
 
 		// Имя метода (действия)
 		$part = array_shift($parts);
@@ -209,7 +209,7 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 		else
 		{
 			/* Ищем файл контроллера */
-			$path = Core::app()->getFsRoot() . '/admin/controllers/' . $this->controllerName . '.php';
+			$path = Core::app()->getFsRoot() . '/core/Controller/Admin/' . $this->controllerName . '.php';
 			if (!is_file($path))
 			{
 				EresusLogger::log(__METHOD__, LOG_WARNING, 'File "%s" not found', $path);
@@ -218,7 +218,7 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 			include $path;
 
 			/* Ищем класс контроллера */
-			$className = 'Eresus' . $this->controllerName . 'Controller';
+			$className = 'Eresus_Controller_Admin_' . $this->controllerName;
 			if (!class_exists($className, false))
 			{
 				throw new LogicException(sprintf('Class "%s" not found in "%s"', $className, $path));

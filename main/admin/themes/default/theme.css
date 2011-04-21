@@ -685,6 +685,32 @@ table.ui-grid.ui-hlines
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 }
+
+
+
+/**
+ * Меню
+ */
+ul.ui-menu
+{
+	list-style: none;
+}
+
+	.ui-menu a,
+	.ui-menu a:visited
+	{
+		color: #08c;
+		text-decoration: none;
+	}
+	
+	.ui-menu a:hover
+	{
+		color: #f00;
+		text-decoration: none;
+	}
+
+
+
 /* Accordion ----------------------------------*/
 .ui-accordion .ui-accordion-header
 {
