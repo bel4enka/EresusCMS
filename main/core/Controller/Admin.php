@@ -96,7 +96,7 @@ class Eresus_Controller_Admin
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отправляет созданную страницу пользователю
+	 * Строит страницу и возвращает её код
 	 *
 	 * @return string  HTML
 	 *
@@ -233,7 +233,7 @@ class Eresus_Controller_Admin
 		}
 		else
 		{
-			$router = EresusAdminRouteService::getInstance();
+			$router = Eresus_Service_Admin_Router::getInstance();
 			$router->init(HTTP::request());
 			$this->setController($router->getController());
 			$html = $router->call();

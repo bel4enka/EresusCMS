@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAut
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
 require_once dirname(__FILE__) . '/../../../../main/core/kernel-legacy.php';
-require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Service/Admin/Router.php';
 require_once dirname(__FILE__) . '/../../../../main/core/i18n.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Controller/Admin.php';
 
@@ -55,9 +55,9 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		HTTP::$request = null;
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
+			$instance = new ReflectionProperty('Eresus_Service_Admin_Router', 'instance');
 			$instance->setAccessible(true);
-			$instance->setValue('EresusAdminRouteService', null);
+			$instance->setValue('Eresus_Service_Admin_Router', null);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -117,11 +117,11 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
 
-		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init', 'getController'));
+		$Eresus_Service_Admin_Router = $this->getMock('stdClass', array('call', 'init', 'getController'));
 
-		$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
+		$instance = new ReflectionProperty('Eresus_Service_Admin_Router', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('EresusAdminRouteService', $EresusAdminRouteService);
+		$instance->setValue('Eresus_Service_Admin_Router', $Eresus_Service_Admin_Router);
 
 		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 		$Eresus_Controller_Admin->render();
@@ -160,11 +160,11 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$ui = $this->getMock('stdClass', array('render'));
 		$ui->expects($this->once())->method('render');
 
-		$EresusAdminRouteService = $this->getMock('stdClass', array('call', 'init', 'getController'));
+		$Eresus_Service_Admin_Router = $this->getMock('stdClass', array('call', 'init', 'getController'));
 
-		$instance = new ReflectionProperty('EresusAdminRouteService', 'instance');
+		$instance = new ReflectionProperty('Eresus_Service_Admin_Router', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('EresusAdminRouteService', $EresusAdminRouteService);
+		$instance->setValue('Eresus_Service_Admin_Router', $Eresus_Service_Admin_Router);
 
 		$Eresus_Controller_Admin = new Eresus_Controller_Admin($ui);
 		$Eresus_Controller_Admin->render();
@@ -264,7 +264,7 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers Eresus_Controller_Admin::getContentHTML
 	 */
-	public function test_getContentHTML_using_EresusAdminRouteService()
+	public function test_getContentHTML_using_Eresus_Service_Admin_Router()
 	{
 		if (version_compare(PHP_VERSION, '5.3.2', '<'))
 		{

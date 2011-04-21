@@ -31,30 +31,30 @@
 
 @require_once 'vfsStream/vfsStream.php';
 
-require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
-require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Controller/Admin.php';
-require_once dirname(__FILE__) . '/../../../../main/core/HTTP/EresusAdminRouteService.php';
+require_once dirname(__FILE__) . '/../../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../../main/core/CMS.php';
+require_once dirname(__FILE__) . '/../../../../../main/core/CMS/Service.php';
+require_once dirname(__FILE__) . '/../../../../../main/core/Controller/Admin.php';
+require_once dirname(__FILE__) . '/../../../../../main/core/Service/Admin/Router.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
+class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusAdminRouteService::getInstance
+	 * @covers Eresus_Service_Admin_Router::getInstance
 	 */
 	public function test_interface()
 	{
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 		$this->assertInstanceOf('Eresus_CMS_Service', $test);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::init
+	 * @covers Eresus_Service_Admin_Router::init
 	 */
 	public function test_init_no_controller()
 	{
@@ -63,7 +63,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required for ' . __METHOD__);
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
 		$request = $this->getMock('HttpRequest', array('getLocal'));
 		$request->expects($this->once())->method('getLocal')->
@@ -71,13 +71,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		$test->init($request);
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 
-		$pActionName = new ReflectionProperty('EresusAdminRouteService', 'actionName');
+		$pActionName = new ReflectionProperty('Eresus_Service_Admin_Router', 'actionName');
 		$pActionName->setAccessible(true);
 
-		$pParams = new ReflectionProperty('EresusAdminRouteService', 'params');
+		$pParams = new ReflectionProperty('Eresus_Service_Admin_Router', 'params');
 		$pParams->setAccessible(true);
 
 		$this->assertEquals('', $pControllerName->getValue($test));
@@ -87,7 +87,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::init
+	 * @covers Eresus_Service_Admin_Router::init
 	 */
 	public function test_init_full()
 	{
@@ -96,7 +96,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required for ' . __METHOD__);
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
 		$request = $this->getMock('HttpRequest', array('getLocal'));
 		$request->expects($this->once())->method('getLocal')->
@@ -104,13 +104,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		$test->init($request);
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 
-		$pActionName = new ReflectionProperty('EresusAdminRouteService', 'actionName');
+		$pActionName = new ReflectionProperty('Eresus_Service_Admin_Router', 'actionName');
 		$pActionName->setAccessible(true);
 
-		$pParams = new ReflectionProperty('EresusAdminRouteService', 'params');
+		$pParams = new ReflectionProperty('Eresus_Service_Admin_Router', 'params');
 		$pParams->setAccessible(true);
 
 		$this->assertEquals('Some_controller', $pControllerName->getValue($test));
@@ -120,7 +120,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::init
+	 * @covers Eresus_Service_Admin_Router::init
 	 */
 	public function test_init_no_action()
 	{
@@ -129,7 +129,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required for ' . __METHOD__);
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
 		$request = $this->getMock('HttpRequest', array('getLocal'));
 		$request->expects($this->once())->method('getLocal')->
@@ -137,13 +137,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		$test->init($request);
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 
-		$pActionName = new ReflectionProperty('EresusAdminRouteService', 'actionName');
+		$pActionName = new ReflectionProperty('Eresus_Service_Admin_Router', 'actionName');
 		$pActionName->setAccessible(true);
 
-		$pParams = new ReflectionProperty('EresusAdminRouteService', 'params');
+		$pParams = new ReflectionProperty('Eresus_Service_Admin_Router', 'params');
 		$pParams->setAccessible(true);
 
 		$this->assertEquals('Some_controller', $pControllerName->getValue($test));
@@ -153,7 +153,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getController
+	 * @covers Eresus_Service_Admin_Router::getController
 	 */
 	public function test_getController_default()
 	{
@@ -162,9 +162,9 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required for ' . __METHOD__);
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 		$pControllerName->setValue($test, '');
 
@@ -173,7 +173,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getController
+	 * @covers Eresus_Service_Admin_Router::getController
 	 * @expectedException PageNotFoundException
 	 */
 	public function test_getController_noFile()
@@ -187,13 +187,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('vfsStream required for ' . __METHOD__);
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 		$pControllerName->setValue($test, 'example');
 
-		$pController = new ReflectionProperty('EresusAdminRouteService', 'controller');
+		$pController = new ReflectionProperty('Eresus_Service_Admin_Router', 'controller');
 		$pController->setAccessible(true);
 		$pController->setValue($test, null);
 
@@ -215,7 +215,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getController
+	 * @covers Eresus_Service_Admin_Router::getController
 	 * @expectedException LogicException
 	 */
 	public function test_getController_noClass()
@@ -234,13 +234,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped(__METHOD__ . ' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 		$pControllerName->setValue($test, 'example');
 
-		$pController = new ReflectionProperty('EresusAdminRouteService', 'controller');
+		$pController = new ReflectionProperty('Eresus_Service_Admin_Router', 'controller');
 		$pController->setAccessible(true);
 		$pController->setValue($test, null);
 
@@ -265,7 +265,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getController
+	 * @covers Eresus_Service_Admin_Router::getController
 	 * @expectedException LogicException
 	 */
 	public function test_getController_invalidClass()
@@ -284,13 +284,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped(__METHOD__ . ' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 		$pControllerName->setValue($test, 'example1');
 
-		$pController = new ReflectionProperty('EresusAdminRouteService', 'controller');
+		$pController = new ReflectionProperty('Eresus_Service_Admin_Router', 'controller');
 		$pController->setAccessible(true);
 		$pController->setValue($test, null);
 
@@ -315,7 +315,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getController
+	 * @covers Eresus_Service_Admin_Router::getController
 	 */
 	public function test_getController_success()
 	{
@@ -333,13 +333,13 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped(__METHOD__ . ' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
 		}
 
-		$test = EresusAdminRouteService::getInstance();
+		$test = Eresus_Service_Admin_Router::getInstance();
 
-		$pControllerName = new ReflectionProperty('EresusAdminRouteService', 'controllerName');
+		$pControllerName = new ReflectionProperty('Eresus_Service_Admin_Router', 'controllerName');
 		$pControllerName->setAccessible(true);
 		$pControllerName->setValue($test, 'example2');
 
-		$pController = new ReflectionProperty('EresusAdminRouteService', 'controller');
+		$pController = new ReflectionProperty('Eresus_Service_Admin_Router', 'controller');
 		$pController->setAccessible(true);
 		$pController->setValue($test, null);
 
@@ -368,7 +368,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getAction
+	 * @covers Eresus_Service_Admin_Router::getAction
 	 */
 	public function test_getAction_default()
 	{
@@ -379,11 +379,11 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		$controller = $this->getMock('stdClass', array('actionIndex'));
 
-		$service = $this->getMockBuilder('EresusAdminRouteService')->setMethods(array('getController'))
+		$service = $this->getMockBuilder('Eresus_Service_Admin_Router')->setMethods(array('getController'))
 			->disableOriginalConstructor()->getMock();
 		$service->expects($this->once())->method('getController')->will($this->returnValue($controller));
 
-		$pActionName = new ReflectionProperty('EresusAdminRouteService', 'actionName');
+		$pActionName = new ReflectionProperty('Eresus_Service_Admin_Router', 'actionName');
 		$pActionName->setAccessible(true);
 		$pActionName->setValue($service, '');
 
@@ -392,7 +392,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getAction
+	 * @covers Eresus_Service_Admin_Router::getAction
 	 * @expectedException PageNotFoundException
 	 */
 	public function test_getAction_noMethod()
@@ -404,11 +404,11 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		$controller = $this->getMock('stdClass');
 
-		$service = $this->getMockBuilder('EresusAdminRouteService')->setMethods(array('getController'))
+		$service = $this->getMockBuilder('Eresus_Service_Admin_Router')->setMethods(array('getController'))
 			->disableOriginalConstructor()->getMock();
 		$service->expects($this->once())->method('getController')->will($this->returnValue($controller));
 
-		$pActionName = new ReflectionProperty('EresusAdminRouteService', 'actionName');
+		$pActionName = new ReflectionProperty('Eresus_Service_Admin_Router', 'actionName');
 		$pActionName->setAccessible(true);
 		$pActionName->setValue($service, '');
 
@@ -417,7 +417,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::getAction
+	 * @covers Eresus_Service_Admin_Router::getAction
 	 */
 	public function test_getAction()
 	{
@@ -428,11 +428,11 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 
 		$controller = $this->getMock('stdClass', array('actionMethod'));
 
-		$service = $this->getMockBuilder('EresusAdminRouteService')->setMethods(array('getController'))
+		$service = $this->getMockBuilder('Eresus_Service_Admin_Router')->setMethods(array('getController'))
 			->disableOriginalConstructor()->getMock();
 		$service->expects($this->once())->method('getController')->will($this->returnValue($controller));
 
-		$pActionName = new ReflectionProperty('EresusAdminRouteService', 'actionName');
+		$pActionName = new ReflectionProperty('Eresus_Service_Admin_Router', 'actionName');
 		$pActionName->setAccessible(true);
 		$pActionName->setValue($service, 'method');
 
@@ -441,7 +441,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAdminRouteService::call
+	 * @covers Eresus_Service_Admin_Router::call
 	 */
 	public function test_call()
 	{
@@ -453,7 +453,7 @@ class EresusAdminRouteServiceTest extends PHPUnit_Framework_TestCase
 		$controller = $this->getMock('stdClass', array('actionMethod'));
 		$controller->expects($this->once())->method('actionMethod')->will($this->returnValue(123));
 
-		$service = $this->getMockBuilder('EresusAdminRouteService')->setMethods(array('getAction'))->
+		$service = $this->getMockBuilder('Eresus_Service_Admin_Router')->setMethods(array('getAction'))->
 			disableOriginalConstructor()->getMock();
 		$service->expects($this->once())->method('getAction')->
 			will($this->returnValue(array($controller, 'actionMethod')));

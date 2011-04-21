@@ -31,15 +31,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Eresus_Service_Admin_Router_Test.php';
+require_once dirname(__FILE__) . '/Admin/AllTests.php';
 
-class Core_Service_Admin_AllTests
+class Core_Service_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/Service/Admin');
+		$suite = new PHPUnit_Framework_TestSuite('core/Service');
 
-		$suite->addTestSuite('Eresus_Service_Admin_Router_Test');
+		$suite->addTest(Core_Service_Admin_AllTests::suite());
 
 		return $suite;
 	}

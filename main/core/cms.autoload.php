@@ -58,9 +58,6 @@ return array(
 	/* Helpers */
 	'EresusCollection' => 'core/Helpers/EresusCollection.php',
 
-	/* HTTP */
-	'EresusAdminRouteService' => 'core/HTTP/EresusAdminRouteService.php',
-
 	/* Mail */
 	'EresusMail' => 'core/Mail/EresusMail.php',
 
