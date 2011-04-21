@@ -317,12 +317,21 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 		$result = '';
 		$granted = false;
 		if (UserRights($this->access))
-			$granted = true;
-			else
 		{
-			if (arg('id') == $Eresus->user['id']) {
-				if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
-				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
+			$granted = true;
+		}
+		else
+		{
+			if (arg('id') == $Eresus->user['id'])
+			{
+				if (!arg('password') || (arg('password') == $Eresus->user['id']))
+				{
+					$granted = true;
+				}
+				if (!arg('update') || (arg('update') == $Eresus->user['id']))
+				{
+					$granted = true;
+				}
 			}
 		}
 		if ($granted)
