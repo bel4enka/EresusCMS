@@ -46,12 +46,12 @@
  * @package HTTP
  * @since 2.16
  */
-class EresusAdminRouteService implements Eresus_CMS_Service
+class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 {
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var EresusAdminRouteService
+	 * @var Eresus_Service_Admin_Router
 	 */
 	private static $instance = null;
 
@@ -93,7 +93,7 @@ class EresusAdminRouteService implements Eresus_CMS_Service
 	/**
 	 * Возвращает экземпляр класса
 	 *
-	 * @return EresusAdminRouteService
+	 * @return Eresus_Service_Admin_Router
 	 *
 	 * @since 2.16
 	 */
