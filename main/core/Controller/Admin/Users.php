@@ -184,7 +184,7 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 			$error = true;
 		}
 		/* Проверка данных на уникальность */
-		$users = ORM::getTable('Eresus_Model_User')->findByUsername($username);
+		$users = EresusORM::getTable('Eresus_Model_User')->findByUsername($username);
 		if (count($users))
 		{
 			ErrorMessage(admUsersLoginExists);
@@ -195,7 +195,7 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 			saveRequest();
 			HttpResponse::redirect($Eresus->request['referer']);
 		}
-		$user = new User;
+		$user = new Eresus_Model_User();
 		$user->username = $username;
 		$user->password = $password;
 		$user->fullname = $fullname;
@@ -244,7 +244,7 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 	{
 		global $Eresus, $page;
 
-		$item = ORM::getTable('Eresus_Model_User')->find(arg('id', 'int'));
+		$item = EresusORM::getTable('Eresus_Model_User')->find(arg('id', 'int'));
 		$form = array(
 			'name' => 'UserForm',
 			'caption' => admUsersChangeUser.' №'.$item['id'],
