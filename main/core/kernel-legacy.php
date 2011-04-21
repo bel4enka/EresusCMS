@@ -957,30 +957,6 @@ class Eresus
 	var $sections;
 
 	/**
-	 * Читает и применяет конфигурационный файл
-	 */
-	private function init_config()
-	{
-		/*
-		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
-		 * мог записывать в неё свои значения.
-		 */
-		global $Eresus;
-
-		$filename = Core::app()->getFsRoot() . '/cfg/main.php';
-		$nativeFilename = FS::driver()->nativeForm($filename);
-		if (is_file($filename))
-		{
-			include_once $nativeFilename;
-		}
-		else
-		{
-			FatalError("Main config file '$nativeFilename' not found!");
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Определяет файловые пути
 	 *
 	 * @return void
@@ -1118,6 +1094,7 @@ class Eresus
 		else FatalError("Locale file '$filename' not found!");
 	}
 	//------------------------------------------------------------------------------
+
  /**
 	* Подключение базовых классов
 	*
@@ -1125,7 +1102,6 @@ class Eresus
 	*/
 	function init_classes()
 	{
-		# Подключение строковых данных
 		$filename = $this->froot.'core/classes.php';
 		if (is_file($filename))
 		{
@@ -1186,8 +1162,6 @@ class Eresus
 		{
 			set_magic_quotes_runtime(0);
 		}
-		# Читаем конфигурацию
-		$this->init_config();
 		if ($this->conf['timezone'])
 		{
 			date_default_timezone_set($this->conf['timezone']);
