@@ -207,15 +207,19 @@ class TClientUI extends WebPage
 		if ($result) $result = $Eresus->sections->get($result['id']);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
-	# ОБЩИЕ ФУНКЦИИ
-	//------------------------------------------------------------------------------
-	function init()
-	# Проводит инициализацию страницы
+
+	/**
+	 * Проводит инициализацию интерфейса
+	 *
+	 * @return void
+	 *
+	 * @since ?.??
+	 */
+	public function init()
 	{
 		global $Eresus;
 
-		$Eresus->plugins->preload(array('client'),array('ondemand'));
+		$Eresus->plugins->preload();
 		$Eresus->plugins->clientOnStart();
 
 		$item = $this->loadPage();
