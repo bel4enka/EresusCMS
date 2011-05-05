@@ -350,6 +350,11 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 
 				$provider = new Eresus_UI_Admin_List_DataProvider_Model('Eresus_Model_User');
 				$list = new Eresus_UI_Admin_List($provider);
+				$list->hideAll();
+				$list->show('username', 'Пользователь');
+				$list->show('fullname', 'Полное имя');
+				$list->show('mail', 'E-mail');
+				$list->show('access', 'Доступ');
 				$html = $list->render();
 				return $html;
 

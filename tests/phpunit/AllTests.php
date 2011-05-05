@@ -35,14 +35,15 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 $root = realpath(dirname(__FILE__) . '/../..');
 
+/*
+ * На некоторых системах некоторые файлы включаются не в том порядке, что приводит к ошибкам.
+ * Добавление этих файлов в начало белого списка решает проблему.
+ */
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/DataProvider.php');
 
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
-if (version_compare(PHP_VERSION, '5.3', '<'))
-{
-	PHP_CodeCoverage_FIlter::getInstance()->removeDirectoryFromWhitelist($root . '/main/core/models');
-}
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/admin');
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/editarea/eresus-connector.php');

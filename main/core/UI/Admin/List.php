@@ -45,11 +45,18 @@ class Eresus_UI_Admin_List
 	protected $provider;
 
 	/**
-	 * Описание столбцов
+	 * Кэш описаний столбцов
 	 *
 	 * @var array
 	 */
 	protected $cols;
+
+	/**
+	 * Кэш строк
+	 *
+	 * @var array
+	 */
+	protected $rows;
 
 	/**
 	 * Скрытые столбцы
@@ -288,8 +295,22 @@ class Eresus_UI_Admin_List
 	 */
 	public function getRows()
 	{
-		$rows = $this->provider->getRows();
-		return $rows;
+		if (!$this->rows)
+		{
+			$rows = $this->provider->getRows();
+			$this->rows = array();
+			$cols = $this->getCols();
+			foreach ($rows as $model)
+			{
+				$row = array();
+				foreach ($cols as $key => $options)
+				{
+					$row []= $model[$key];
+				}
+				$this->rows []= $row;
+			}
+		}
+		return $this->rows;
 	}
 	//-----------------------------------------------------------------------------
 }
