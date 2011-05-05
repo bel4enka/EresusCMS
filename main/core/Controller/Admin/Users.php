@@ -355,6 +355,15 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 				$list->show('fullname', 'Полное имя');
 				$list->show('mail', 'E-mail');
 				$list->show('access', 'Доступ');
+				$list->setMutator('mail',
+					new Eresus_UI_Admin_List_Mutator_RegExp('/^(.*)$/', '<a href="mailto:$1">$1</a>'));
+				$list->setMutator('access', new Eresus_UI_Admin_List_Mutator_Map(array(
+					1 => 'Главный администратор',
+					2 => 'Администратор',
+					3 => 'Редактор',
+					4 => 'Пользователь'
+				)));
+
 				$html = $list->render();
 				return $html;
 

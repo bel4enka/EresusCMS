@@ -42,6 +42,7 @@ $root = realpath(dirname(__FILE__) . '/../..');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/DataProvider.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/Mutator.php');
 
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/admin');

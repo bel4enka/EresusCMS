@@ -218,27 +218,24 @@ class Eresus_UI_Admin_List
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Устанавливает правила замены значений для столбца
+	 * Устанавливает заменитель значений столбца
 	 *
-	 * @param string $colName имя столбца
-	 * @param array  $source  массив заменяемых значений
-	 * @param array  $target  массив замещающих значений
+	 * @param string                        $colName  имя столбца
+	 * @param Eresus_UI_Admin_List_Mutator  $mutator  заменитель, если не указан или null, предыдущий
+	 *                                                заменитель будет удалён
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	public function setReplace($colName, $source, $target)
+	public function setMutator($colName, Eresus_UI_Admin_List_Mutator $mutator = null)
 	{
 		$this->getCols();
 		if (!isset($this->cols[$colName]))
 		{
 			return;
 		}
-		$this->cols[$colName]['replace'] = array(
-			'source' => $source,
-			'target' => $target
-		);
+		$this->cols[$colName]['mutator'] = $mutator;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -305,7 +302,12 @@ class Eresus_UI_Admin_List
 				$row = array();
 				foreach ($cols as $key => $options)
 				{
-					$row []= $model[$key];
+					$value = $model[$key];
+					if (isset($options['mutator']))
+					{
+						$value = $options['mutator']->mutate($value);
+					}
+					$row []= $value;
 				}
 				$this->rows []= $row;
 			}
