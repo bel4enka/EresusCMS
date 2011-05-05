@@ -345,6 +345,16 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 				case 'create': $result = $this->create(); break;
 				case 'insert': $this->insert(); break;
 			} else {
+
+
+
+				$provider = new Eresus_UI_Admin_List_DataProvider_Model('Eresus_Model_User');
+				$list = new Eresus_UI_Admin_List($provider);
+				$html = $list->render();
+				return $html;
+
+
+
 				$table = array (
 					'name' => 'users',
 					'key'=>'id',

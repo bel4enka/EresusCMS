@@ -1,0 +1,20 @@
+<table class="admList">
+	<thead>
+		<tr>
+			{foreach $list->getCols() col}
+			<th>{$col.caption}</th>
+			{/foreach}
+		</tr>
+	</thead>
+	<tbody>
+		{foreach $list->getRows() row}
+		<tr>
+			{foreach $row cell}
+			<td>
+				{$cell}
+			</td>
+			{/foreach}
+		</tr>
+		{/foreach}
+	</tbody>
+</table>
