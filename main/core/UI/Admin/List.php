@@ -70,7 +70,7 @@ class Eresus_UI_Admin_List
 	 *
 	 * @var array
 	 */
-	protected $controls = array();
+	protected $itemControls = array();
 
 	/**
 	 * Создаёт новый виджет
@@ -121,7 +121,7 @@ class Eresus_UI_Admin_List
 	 *
 	 * @since 2.16
 	 */
-	public function addControls()
+	public function addItemControls()
 	{
 		$args = func_get_args();
 		foreach ($args as $arg)
@@ -129,7 +129,7 @@ class Eresus_UI_Admin_List
 			switch (true)
 			{
 				case is_string($arg):
-					$className = 'Eresus_UI_Admin_List_Control_' . strtoupper(substr($arg, 0, 1)) .
+					$className = 'Eresus_UI_Admin_List_ItemControl_' . strtoupper(substr($arg, 0, 1)) .
 						substr($arg, 1);
 					if (!class_exists($className))
 					{
@@ -299,7 +299,7 @@ class Eresus_UI_Admin_List
 			$cols = $this->getCols();
 			foreach ($rows as $model)
 			{
-				$row = array();
+				$row = array('model' => $model, 'values' => array());
 				foreach ($cols as $key => $options)
 				{
 					$value = $model[$key];
@@ -307,12 +307,49 @@ class Eresus_UI_Admin_List
 					{
 						$value = $options['mutator']->mutate($value);
 					}
-					$row []= $value;
+					$row['values'] []= $value;
 				}
 				$this->rows []= $row;
 			}
 		}
 		return $this->rows;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возращает true если в списке предусмотрены ЭУ
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public function hasItemControls()
+	{
+		return count($this->itemControls) > 0 ;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возращает элементы управления для строки списка
+	 *
+	 * @param object $item  элемент, для которого надо отобразить ЭУ
+	 *
+	 * @return array
+	 *
+	 * @since 2.16
+	 */
+	public function getItemControls($item)
+	{
+		if (!is_object($item))
+		{
+			throw new InvalidArgumentException('$item must be an object, ' . gettype($item) . 'given');
+		}
+
+		foreach ($this->itemControls as &$control)
+		{
+			$control->setListItem($item);
+		}
+		return $this->itemControls;
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -29,104 +29,118 @@
  * $Id$
  */
 
-
 /**
- * Тема оформления административного интерфейса
- *
- * Экземпляр этого класса доступен через переменную {$theme} в шаблонах и может быть использован
- * для определения путей к файлам темы, вызова помощников (helpers) и других вспомогательных
- * функций.
- *
- * Автор темы может создать потомка этого класса, размещённого в файле theme.php в корне темы.
- * В этом случае его класс будет использован вместо стандартного.
+ * Абстрактный ЭУ для {@link Eresus_UI_Admin_List}
  *
  * @package UI
+ *
+ * @since 2.16
  */
-class Eresus_UI_Admin_Theme
+abstract class Eresus_UI_Admin_List_ItemControl
 {
 	/**
-	 * Путь к директории тем относительно корня сайта
+	 * Действие
+	 *
+	 * Фрагмент, дописываемый к текущему URL для запроса нужного действия
 	 *
 	 * @var string
 	 */
-	protected $prefix = 'admin/themes';
+	protected $action;
 
 	/**
-	 * Внутреннее имя темы
-	 *
-	 * Должно совпадать с именем директории темы.
+	 * Название действия
 	 *
 	 * @var string
-	 * @see getName
 	 */
-	protected $name = 'default';
+	protected $title;
 
 	/**
-	 * Конструктор
+	 * Имя файла значка
 	 *
-	 * @param string $name  Внутреннее имя темы (директория внутри themes)
-	 *
-	 * @return Eresus_UI_Admin_Theme
+	 * @var string
 	 */
-	public function __construct($name = null)
+	protected $icon;
+
+	/**
+	 * Альтернативный текст значка
+	 *
+	 * @var string
+	 */
+	protected $alt;
+
+	/**
+	 * Обрабатываемый элемент списка
+	 *
+	 * @var array
+	 */
+	protected $item;
+
+	/**
+	 * Устанавливает элемент списка, для которого нужно отобразить этот элемент управления
+	 *
+	 * @param array $item
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setListItem($item)
 	{
-		if ($name)
-			$this->name = $name;
+		$this->item = $item;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает внутреннее имя темы
+	 * Возвращает действие
 	 *
 	 * @return string
-	 * @see $name
+	 *
+	 * @since 2.16
 	 */
-	public function getName()
+	public function getAction()
 	{
-		return $this->name;
+		return $this->action . '/' . $this->item->id;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает адрес ресурса относительно корня сайта
-	 *
-	 * @param string $path
+	 * Возвращает название действия
 	 *
 	 * @return string
+	 *
+	 * @since 2.16
 	 */
-	public function getResource($path)
+	public function getTitle()
 	{
-		return $this->prefix . '/' . $this->getName() . '/' . $path;
+		return $this->title;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает адрес картинки относительно корня сайта
-	 *
-	 * @param string $image
+	 * Возвращает URL значка
 	 *
 	 * @return string
-	 * @since 2.14
+	 *
+	 * @since 2.16
 	 */
-	public function getImage($image)
+	public function getIcon()
 	{
-		return $this->getResource('img/' . $image);
+		$theme = $GLOBALS['page']->getUITheme();
+		return Eresus_CMS::app()->getWebRoot() . '/' . $theme->getImage('medium/' . $this->icon);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает адрес иконки относительно корня сайта
-	 *
-	 * @param string $icon             Имя иконки
-	 * @param string $size [optional]  Размер иконки. По умолчанию 'medium'
+	 * Возвращает альтернативный текст для значка
 	 *
 	 * @return string
+	 *
+	 * @since 2.16
 	 */
-	public function getIcon($icon, $size = 'medium')
+	public function getAlt()
 	{
-		return $this->getResource('img/' . $size . '/' . $icon);
+		return $this->alt;
 	}
 	//-----------------------------------------------------------------------------
+
 }
-
-

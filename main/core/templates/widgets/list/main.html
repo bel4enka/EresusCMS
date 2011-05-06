@@ -1,6 +1,7 @@
 <table class="admList">
 	<thead>
 		<tr>
+			{if $list->hasItemControls()}<th>&nbsp;</th>{/if}
 			{foreach $list->getCols() col}
 			<th>{$col.caption}</th>
 			{/foreach}
@@ -9,7 +10,15 @@
 	<tbody>
 		{foreach $list->getRows() row}
 		<tr>
-			{foreach $row cell}
+			{if $list->hasItemControls()}
+			<td>
+				{foreach $list->getItemControls($row.model) control}
+				<a href="./{$control->getAction()}/"><img src="{$control->getIcon()}"
+					alt="{$control->getAlt()}" title="{$control->getTitle()}"></a>
+				{/foreach}
+			</td>
+			{/if}
+			{foreach $row.values cell}
 			<td>
 				{$cell}
 			</td>
