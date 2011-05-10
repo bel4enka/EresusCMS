@@ -13,8 +13,8 @@
 			{if $list->hasItemControls()}
 			<td>
 				{foreach $list->getItemControls($row.model) control}
-				<a href="./{$control->getAction()}/"><img src="{$control->getIcon()}"
-					alt="{$control->getAlt()}" title="{$control->getTitle()}"></a>
+				<a href="./{$control->getAction()}/" title="{$control->getTitle()}"><img 
+					src="{$control->getIcon()}"	alt="{$control->getAlt()}"></a>
 				{/foreach}
 			</td>
 			{/if}

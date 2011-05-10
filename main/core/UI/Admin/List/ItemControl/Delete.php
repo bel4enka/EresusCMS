@@ -44,11 +44,6 @@ class Eresus_UI_Admin_List_ItemControl_Delete extends Eresus_UI_Admin_List_ItemC
 	protected $action = 'delete';
 
 	/**
-	 * @see Eresus_UI_Admin_List_ItemControl::$title
-	 */
-	protected $title = 'Удалить';
-
-	/**
 	 * @see Eresus_UI_Admin_List_ItemControl::$icon
 	 */
 	protected $icon = 'item-delete.png';
@@ -56,5 +51,15 @@ class Eresus_UI_Admin_List_ItemControl_Delete extends Eresus_UI_Admin_List_ItemC
 	/**
 	 * @see Eresus_UI_Admin_List_ItemControl::$alt
 	 */
-	protected $alt = 'X';
+	protected $alt = '[x]';
+
+	/**
+	 * @see Eresus_UI_Admin_List_ItemControl::__construct()
+	 */
+	public function __construct()
+	{
+		$i18n = I18n::getInstance();
+		$this->title = $i18n->getText('admDelete');
+	}
+	//-----------------------------------------------------------------------------
 }

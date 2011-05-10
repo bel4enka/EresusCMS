@@ -44,11 +44,6 @@ class Eresus_UI_Admin_List_ItemControl_Edit extends Eresus_UI_Admin_List_ItemCon
 	protected $action = 'edit';
 
 	/**
-	 * @see Eresus_UI_Admin_List_ItemControl::$title
-	 */
-	protected $title = 'Изменить';
-
-	/**
 	 * @see Eresus_UI_Admin_List_ItemControl::$icon
 	 */
 	protected $icon = 'item-edit.png';
@@ -56,5 +51,15 @@ class Eresus_UI_Admin_List_ItemControl_Edit extends Eresus_UI_Admin_List_ItemCon
 	/**
 	 * @see Eresus_UI_Admin_List_ItemControl::$alt
 	 */
-	protected $alt = 'изм.';
+	protected $alt = '[edit]';
+
+	/**
+	 * @see Eresus_UI_Admin_List_ItemControl::__construct()
+	 */
+	public function __construct()
+	{
+		$i18n = I18n::getInstance();
+		$this->title = $i18n->getText('admEdit');
+	}
+	//-----------------------------------------------------------------------------
 }

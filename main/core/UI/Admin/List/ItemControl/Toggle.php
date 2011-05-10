@@ -53,7 +53,8 @@ class Eresus_UI_Admin_List_ItemControl_Toggle extends Eresus_UI_Admin_List_ItemC
 	 */
 	public function getTitle()
 	{
-		return $this->item->active ? 'Отключить' : 'Включить';
+		$i18n = I18n::getInstance();
+		return $this->item->active ? $i18n->getText('admDeactivate') : $i18n->getText('admActivate');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -77,7 +78,7 @@ class Eresus_UI_Admin_List_ItemControl_Toggle extends Eresus_UI_Admin_List_ItemC
 	 */
 	public function getAlt()
 	{
-		return $this->item->active ? 'откл.' : 'вкл.';
+		return $this->item->active ? '[off]' : '[on]';
 	}
 	//-----------------------------------------------------------------------------
 
