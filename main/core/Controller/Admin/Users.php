@@ -363,7 +363,7 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 					3 => 'Редактор',
 					4 => 'Пользователь'
 				)));
-				$list->addItemControls('edit'/*, 'delete', 'toggle'*/);
+				$list->addItemControls('edit', 'delete', 'toggle');
 
 				$html = $list->render();
 				return $html;
