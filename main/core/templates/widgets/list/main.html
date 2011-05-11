@@ -1,3 +1,4 @@
+{$pagination}
 <table class="admList">
 	<thead>
 		<tr>
@@ -13,8 +14,10 @@
 			{if $list->hasItemControls()}
 			<td>
 				{foreach $list->getItemControls($row.model) control}
+				{if $control->isAvailable()}
 				<a href="./{$control->getAction()}/" title="{$control->getTitle()}"><img 
 					src="{$control->getIcon()}"	alt="{$control->getAlt()}"></a>
+				{/if}
 				{/foreach}
 			</td>
 			{/if}
@@ -27,3 +30,4 @@
 		{/foreach}
 	</tbody>
 </table>
+{$pagination}

@@ -73,6 +73,31 @@ class Eresus_UI_Admin_List
 	protected $itemControls = array();
 
 	/**
+	 * Размер страницы
+	 *
+	 * @var int
+	 */
+	protected $pageSize = 100;
+
+	/**
+	 * Задаёт порядок расположения ЭУ
+	 *
+	 * @var array
+	 */
+	private $itemControlsOrderMap = array(
+		'Eresus_UI_Admin_List_ItemControl_Edit' => 0,
+		'Eresus_UI_Admin_List_ItemControl_Toggle' => 99,
+		'Eresus_UI_Admin_List_ItemControl_Delete' => 100,
+	);
+
+	/**
+	 * Индекс массива $itemControls, куда надо вставить следующий нестандартный ЭУ
+	 *
+	 * @var int
+	 */
+	private $itemControlIndex = 1;
+
+	/**
 	 * Создаёт новый виджет
 	 *
 	 * @param Eresus_UI_Admin_List_DataProvider $provider  поставщик данных для списка
@@ -126,17 +151,15 @@ class Eresus_UI_Admin_List
 		$args = func_get_args();
 		foreach ($args as $arg)
 		{
-			switch (true)
+			$control = $this->getItemControlObject($arg);
+			$controlClass = get_class($control);
+			if (isset($this->itemControlsOrderMap[$controlClass]))
 			{
-				case is_string($arg):
-					$className = 'Eresus_UI_Admin_List_ItemControl_' . strtoupper(substr($arg, 0, 1)) .
-						substr($arg, 1);
-					if (!class_exists($className))
-					{
-						throw new RuntimeException('Unknown list widget control: ' . $arg);
-					}
-					$this->itemControls []= new $className;
-				break;
+				$this->itemControls[$this->itemControlsOrderMap[$controlClass]]= $control;
+			}
+			else
+			{
+				$this->itemControls[$this->itemControlIndex++]= $control;
 			}
 		}
 	}
@@ -250,7 +273,9 @@ class Eresus_UI_Admin_List
 	{
 		$data = array();
 
+		ksort($this->itemControls);
 		$data['list'] = $this;
+		$data['pagination'] = new Eresus_
 
 		$tmpl = new Template('core/templates/widgets/list/main.html');
 		$html = $tmpl->compile($data);
@@ -350,6 +375,52 @@ class Eresus_UI_Admin_List
 			$control->setListItem($item);
 		}
 		return $this->itemControls;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает размер страницы
+	 *
+	 * @param int $size
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setPageSize($size)
+	{
+		$this->pageSize = $size;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект ЭУ
+	 *
+	 * @param mixed $control  объект или ключевое слово
+	 *
+	 * @return Eresus_UI_Admin_List_ItemControl
+	 *
+	 * @since 2.16
+	 */
+	private function getItemControlObject($control)
+	{
+		if ($control instanceof Eresus_UI_Admin_List_ItemControl)
+		{
+			return $control;
+		}
+
+		if (is_string($control))
+		{
+			$className = 'Eresus_UI_Admin_List_ItemControl_' . strtoupper(substr($control, 0, 1)) .
+				substr($control, 1);
+			if (!class_exists($className))
+			{
+				throw new RuntimeException('Unknown list widget control: ' . $control);
+			}
+			return new $className;
+		}
+
+		throw new InvalidArgumentException();
 	}
 	//-----------------------------------------------------------------------------
 }

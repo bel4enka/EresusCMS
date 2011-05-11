@@ -76,6 +76,13 @@ abstract class Eresus_UI_Admin_List_ItemControl
 	protected $item;
 
 	/**
+	 * Функция для проверки необходимости показа ЭУ
+	 *
+	 * @var callback
+	 */
+	private $switch;
+
+	/**
 	 * Устанавливает элемент списка, для которого нужно отобразить этот элемент управления
 	 *
 	 * @param array $item
@@ -143,4 +150,38 @@ abstract class Eresus_UI_Admin_List_ItemControl
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Устанавливает функцию, включающую или отключающую ЭУ для конкретного объекта
+	 *
+	 * callback-функция в качестве аргумента должна принимать объект и возвращать булево значение —
+	 * true, если ЭУ надо отрисовывать и false если не надо.
+	 *
+	 * @param callback $callback
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setSwitch($callback)
+	{
+		$this->switch = $callback;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает true, если этот ЭУ доступен для текущего объекта
+	 *
+	 * @return false
+	 *
+	 * @since 2.16
+	 */
+	public function isAvailable()
+	{
+		if ($this->switch)
+		{
+			return call_user_func($this->switch, $this->item);
+		}
+		return true;
+	}
+	//-----------------------------------------------------------------------------
 }

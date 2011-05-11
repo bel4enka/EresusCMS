@@ -363,7 +363,12 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 					3 => 'Редактор',
 					4 => 'Пользователь'
 				)));
-				$list->addItemControls('edit', 'delete', 'toggle');
+				$ctlDelete = new Eresus_UI_Admin_List_ItemControl_Delete();
+				$ctlDelete->setSwitch(array($this, 'ctrlDeleteSwitch'));
+				$ctlToggle = new Eresus_UI_Admin_List_ItemControl_Toggle();
+				$ctlToggle->setSwitch(array($this, 'ctrlToggleSwitch'));
+				$list->addItemControls('edit', $ctlDelete, $ctlToggle);
+				$list->setPageSize(1);
 
 				$html = $list->render();
 				return $html;
@@ -406,6 +411,36 @@ class Eresus_Controller_Admin_Users extends Eresus_Controller_Admin_Abstract
 			}
 			return $result;
 		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка для ЭУ "Удалить"
+	 *
+	 * @param Eresus_Model_User $item
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public function ctrlDeleteSwitch(Eresus_Model_User $item)
+	{
+		return ($item->access != ROOT);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверка для ЭУ "Активность"
+	 *
+	 * @param Eresus_Model_User $item
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public function ctrlToggleSwitch(Eresus_Model_User $item)
+	{
+		return ($item->access != ROOT);
 	}
 	//-----------------------------------------------------------------------------
 }
