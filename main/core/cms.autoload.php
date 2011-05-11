@@ -36,7 +36,6 @@ return array(
 	'EresusExtensionConnector' => 'core/classes/EresusExtensionConnector.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
-	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebPage' => 'core/classes/WebPage.php',
 
 	/* AccessControl */
@@ -74,4 +73,5 @@ return array(
 	'TContentPlugin' => 'core/classes/backward/TContentPlugin.php',
 	'TListContentPlugin' => 'core/classes/backward/TListContentPlugin.php',
 	'EresusAccounts' => 'core/lib/accounts.php',
+	'PaginationHelper' => 'core/classes/backward/PaginationHelper.php',
 );

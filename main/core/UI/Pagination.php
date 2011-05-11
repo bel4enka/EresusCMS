@@ -38,7 +38,7 @@
  *
  * @since 2.14
  */
-class PaginationHelper
+class Eresus_UI_Pagination
 implements Iterator, Countable
 {
 	/**
