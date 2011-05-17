@@ -39,12 +39,125 @@ require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
 class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 *
+	 * @covers Eresus_Kernel::exec
 	 */
-	public function test_fake()
+	public function testExecOk()
 	{
+		$this->assertEquals(123, Eresus_Kernel::exec('Eresus_Kernel_Test_Application1'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::exec
+	 * @expectedException LogicException
+	 */
+	public function testExecInvalidClass()
+	{
+		Eresus_Kernel::exec('StdClass');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::exec
+	 * @expectedException LogicException
+	 */
+	public function testExecUnexistentClass()
+	{
+		Eresus_Kernel::exec('UnexistentClass');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::exec
+	 */
+	public function testExecAppWithException()
+	{
+		$this->assertEquals(0xFFFF, Eresus_Kernel::exec('Eresus_Kernel_Test_Application2'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::exec
+	 */
+	public function test_ExecAppWith_with_SuccessException()
+	{
+		$this->assertEquals(0, Eresus_Kernel::exec('Eresus_Kernel_Test_Application3'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/* */
 }
+
+
+// @codeCoverageIgnoreStart
+/**
+ * EresusApplication stub
+ */
+class Eresus_Kernel_Test_Application1 extends EresusApplication
+{
+	/**
+	 * (non-PHPdoc)
+	 * @see core/EresusApplication#main()
+	 */
+	public function main()
+	{
+		return 123;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * EresusApplication stub
+ *
+ */
+class Eresus_Kernel_Test_Application2 extends EresusApplication
+{
+	/**
+	 * (non-PHPdoc)
+	 * @see core/EresusApplication#main()
+	 */
+	public function main()
+	{
+		throw new RuntimeException('Message');
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * EresusApplication stub
+ *
+ */
+class Eresus_Kernel_Test_Application3 extends EresusApplication
+{
+	/**
+	 * (non-PHPdoc)
+	 * @see core/EresusApplication#main()
+	 */
+	public function main()
+	{
+		throw new ExitException;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * Autoloader stub
+ * @param string $class
+ */
+function Eresus_Kernel_Test_autoloader($class)
+{
+
+}
+//-----------------------------------------------------------------------------
+
+/**
+ *
+ */
+function Eresus_Kernel_Test_error_handler()
+{
+
+}
+//-----------------------------------------------------------------------------
+ /* */
+
+// @codeCoverageIgnoreEnd

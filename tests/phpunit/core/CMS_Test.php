@@ -30,8 +30,11 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
+require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../main/core/Kernel/PHP.php';
 require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../main/core/CMS/Service.php';
+require_once dirname(__FILE__) . '/../../../main/core/Helper/Registry.php';
 require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../main/core/AccessControl/EresusAuthService.php';
 
@@ -52,7 +55,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
-		Core::$app = null;
+		$app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$app->setAccessible(true);
+		$app->setValue('Eresus_Kernel', null);
+		Eresus_Helper_Registry::drop('eresus.cms.dsn');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -66,8 +72,12 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		Core::$app = new stdClass();
-		$this->assertSame(Core::$app, Eresus_CMS::app());
+		$obj = new stdClass();
+		$app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$app->setAccessible(true);
+		$app->setValue('Eresus_Kernel', $obj);
+
+		$this->assertSame($obj, Eresus_CMS::app());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -261,6 +271,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
 		vfsStreamWrapper::getRoot()->addChild($dir);
 
+		Eresus_Helper_Registry::set('eresus.cms.dsn', 'null://');
 
 		$fsRoot->setValue($cms, vfsStream::url('htdocs'));
 		$initDB->invoke($cms);

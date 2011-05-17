@@ -674,7 +674,7 @@ function upload($name, $filename, $overwrite = true)
 function loadTemplate($name)
 # Считывает указанный шаблон
 {
-	$filename = Core::app()->getFsRoot() . '/templates/'.$name.(strpos($name, '.html')===false?'.html':'');
+	$filename = Eresus_CMS::app()->getFsRoot() . '/templates/'.$name.(strpos($name, '.html')===false?'.html':'');
 	if (file_exists($filename)) {
 		$result['html'] = file_get_contents($filename);
 		preg_match('/<!--(.*?)-->/', $result['html'], $result['description']);
@@ -692,7 +692,7 @@ function saveTemplate($name, $template)
 # Сохраняет указанный шаблон
 {
 	$file = "<!-- ".$template['description']." -->\r\n\r\n".$template['html'];
-	$fp = fopen(Core::app()->getFsRoot() . '/templates/'.$name.(strpos($name, '.tmpl')===false?'.html':''), 'w');
+	$fp = fopen(Eresus_CMS::app()->getFsRoot() . '/templates/'.$name.(strpos($name, '.tmpl')===false?'.html':''), 'w');
 	fwrite($fp, $file);
 	fclose($fp);
 }
@@ -748,15 +748,15 @@ function img($imagename)
 
 
 	if (strpos($imagename, httpRoot) !== false) $imagename = str_replace(httpRoot, '', $imagename);
-	if (strpos($imagename, Core::app()->getFsRoot()) !== false)
+	if (strpos($imagename, Eresus_CMS::app()->getFsRoot()) !== false)
 	{
-		$imagename = str_replace(Core::app()->getFsRoot(), '', $imagename);
+		$imagename = str_replace(Eresus_CMS::app()->getFsRoot(), '', $imagename);
 	}
 	if (strpos($imagename, '://') === false) $imagename = httpRoot.$imagename;
 	$local = (strpos($imagename, httpRoot) === 0);
 
 	if ($p['autosize'] && $local && empty($p['width']) && empty($p['height'])) {
-		$filename = str_replace(httpRoot, Core::app()->getFsRoot(), $imagename);
+		$filename = str_replace(httpRoot, Eresus_CMS::app()->getFsRoot(), $imagename);
 		if (is_file($filename)) $info = getimagesize($filename);
 	}
 	if (isset($info)) {
@@ -965,7 +965,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = FS::driver()->nativeForm(Core::app()->getFsRoot() . '/');
+			$this->froot = FS::driver()->nativeForm(Eresus_CMS::app()->getFsRoot() . '/');
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;

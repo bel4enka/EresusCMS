@@ -32,9 +32,11 @@
 @require_once 'vfsStream/vfsStream.php';
 
 require_once dirname(__FILE__) . '/../../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Controller/Admin.php';
+require_once dirname(__FILE__) . '/../../../../../main/core/Controller/Admin/Abstract.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Service/Admin/Router.php';
 
 /**
@@ -205,7 +207,9 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
@@ -252,7 +256,9 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
@@ -302,7 +308,9 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
@@ -351,7 +359,9 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$htdocs->addChild(new vfsStreamDirectory('core'));
 		$htdocs->getChild('core')->addChild(new vfsStreamDirectory('Controller'));

@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusORM.php';
 require_once dirname(__FILE__) . '/../../../../main/core/lib/sections.php';
 
 /**

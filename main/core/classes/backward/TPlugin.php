@@ -95,7 +95,7 @@ class TPlugin
 				$this->resetPlugin();
 			}
 		}
-		$filename = Core::app()->getFsRoot() . '/lang/'.$this->name.'/'.$locale['lang'].'.php';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
 			include $filename;

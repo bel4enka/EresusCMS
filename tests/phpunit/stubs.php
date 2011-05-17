@@ -157,25 +157,6 @@ define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 define('filesRoot', '/home/exmaple.org/');
 define('CHARSET', 'cp1251');
 
-
-
-class Core extends MockFacade
-{
-	public static $app = null;
-
-	public static function app()
-	{
-		if (self::$app == null)
-		{
-			return new UniversalStub();
-		}
-
-		return self::$app;
-	}
-	//-----------------------------------------------------------------------------
-}
-
-
 class DB extends MockFacade {}
 class Doctrine extends MockFacade {}
 class Doctrine_Core extends MockFacade
@@ -247,7 +228,14 @@ class EresusRuntimeException extends Exception {}
  * @subpackage Tests
  * @since 2.15
  */
-class ExitException extends Exception {}
+class ExitException extends SuccessException {}
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.16
+ */
+class SuccessException extends Exception {}
 
 /**
  * @package EresusCMS

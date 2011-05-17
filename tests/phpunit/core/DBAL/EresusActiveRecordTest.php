@@ -29,6 +29,7 @@
  * $Id$
  */
 
+require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 
 /**

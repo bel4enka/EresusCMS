@@ -90,10 +90,8 @@ try
 }
 catch (Exception $e)
 {
-	die('Can not include file "' . $fileName . '". Is it present and accessible?');
+	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
 }
 
-/*
- * Запуск приложения
- */
-Core::exec($appName);
+// Запуск приложения
+Eresus_Kernel::exec($appName);

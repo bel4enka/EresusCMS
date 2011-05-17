@@ -48,7 +48,7 @@ class Templates
 	function enum($type = '')
 	{
 		$result = array();
-		$dir = Core::app()->getFsRoot() . '/templates/';
+		$dir = Eresus_CMS::app()->getFsRoot() . '/templates/';
 		if ($type) $dir .= "$type/";
 		$list = glob("$dir*.html");
 		if ($list) foreach($list as $filename) {
@@ -76,7 +76,7 @@ class Templates
 	{
 		$result = false;
 		if (empty($name)) $name = 'default';
-		$filename = Core::app()->getFsRoot() . '/templates/';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = fileread($filename);
@@ -112,7 +112,7 @@ class Templates
 	function add($name, $type, $code, $desc = '')
 	{
 		$result = false;
-		$filename = Core::app()->getFsRoot() . '/templates/';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
@@ -133,7 +133,7 @@ class Templates
 	function update($name, $type, $code, $desc = null)
 	{
 		$result = false;
-		$filename = Core::app()->getFsRoot() . '/templates/';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$item = $this->get($name, $type, true);
@@ -154,7 +154,7 @@ class Templates
 	function delete($name, $type = '')
 	{
 		$result = false;
-		$filename = Core::app()->getFsRoot() . '/templates/';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = filedelete($filename);

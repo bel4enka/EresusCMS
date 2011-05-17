@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAuthService.php';
@@ -328,6 +329,13 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		{
 			$this->markTestSkipped('PHP 5.3.2 required');
 		}
+
+		$app = $this->getMock('stdClass', array('getFsRoot'));
+		$app->expects($this->once())->method('getFsRoot')->
+			will($this->returnValue('/home/exmaple.org'));
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
 		$HttpRequest->expects($this->any())->method('getLocal')->will($this->returnValue(''));

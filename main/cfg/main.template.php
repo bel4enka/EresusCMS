@@ -17,8 +17,8 @@ $Eresus->conf['debug']['enable'] = false;
 //-------------------------------------------------------------------------------
 
 // FIXME Задокументировать!
-Core::setValue('eresus.cms.dsn', 'mysql://user:password@localhost/database');
-//Core::setValue('eresus.cms.dsn.prefix', 'prefix_');
+Eresus_Helper_Registry::set('eresus.cms.dsn', 'mysql://user:password@localhost/database');
+//Eresus_Helper_Registry::set('eresus.cms.dsn.prefix', 'prefix_');
 
 //-------------------------------------------------------------------------------
 //  Региональные настройки

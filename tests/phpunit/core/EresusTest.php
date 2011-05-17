@@ -30,6 +30,8 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
+require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../main/core/kernel-legacy.php';
 
 /**
@@ -45,7 +47,9 @@ class EresusTest extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		MockFacade::setMock(null);
-		Core::$app = null;
+		$app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$app->setAccessible(true);
+		$app->setValue('Eresus_Kernel', null);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -68,7 +72,9 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/home/user/public_html/site'));
 
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
 		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));
@@ -105,7 +111,9 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/c:'));
 
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
 		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));

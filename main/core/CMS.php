@@ -111,7 +111,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	public static function app()
 	{
-		return Core::app();
+		return Eresus_Kernel::app();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -345,10 +345,10 @@ class Eresus_CMS extends EresusApplication
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
-		Core::setValue('core.template.templateDir', $this->getFsRoot());
-		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
+		Eresus_Helper_Registry::set('core.template.templateDir', $this->getFsRoot());
+		Eresus_Helper_Registry::set('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 		// FIXME Следующая строка нужна только до перехода на UTF-8
-		Core::setValue('core.template.charset', 'CP1251');
+		Eresus_Helper_Registry::set('core.template.charset', 'CP1251');
 
 		$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
@@ -469,7 +469,7 @@ class Eresus_CMS extends EresusApplication
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 
-		$dsn = Core::getValue('eresus.cms.dsn');
+		$dsn = Eresus_Helper_Registry::get('eresus.cms.dsn');
 		if (!$dsn)
 		{
 			throw new EresusConfigException('"eresus.cms.dsn" not set.');
@@ -483,7 +483,7 @@ class Eresus_CMS extends EresusApplication
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 
-		$prefix = Core::getValue('eresus.cms.dsn.prefix');
+		$prefix = Eresus_Helper_Registry::get('eresus.cms.dsn.prefix');
 		if ($prefix)
 		{
 			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');

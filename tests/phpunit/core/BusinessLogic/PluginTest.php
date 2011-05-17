@@ -30,6 +30,8 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/Plugin.php';
 
 /**
@@ -44,7 +46,9 @@ class PluginTest extends PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
-		Core::$app = null;
+		$app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$app->setAccessible(true);
+		$app->setValue('Eresus_Kernel', null);
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -55,7 +59,9 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/home/exmaple.org'));
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
@@ -77,7 +83,9 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/home/exmaple.org'));
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
@@ -99,7 +107,9 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->once())->method('getFsRoot')->
 			will($this->returnValue('/home/exmaple.org'));
-		Core::$app = $app;
+		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
+		$appProp->setAccessible(true);
+		$appProp->setValue('Eresus_Kernel', $app);
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';

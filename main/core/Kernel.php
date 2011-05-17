@@ -52,6 +52,14 @@ class Eresus_Kernel
 	static private $inited = false;
 
 	/**
+	 * Выполняемое приложение
+	 *
+	 * @var EresusApplication
+	 * @see exec, app()
+	 */
+	static private $app = null;
+
+	/**
 	 * Инициализация ядра
 	 */
 	// @codeCoverageIgnoreStart
@@ -148,4 +156,61 @@ class Eresus_Kernel
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Создаёт экземпляр приложения и выполняет его
+	 *
+	 * @param string $class  Имя класса приложения. Класс должен быть унаследован от
+	 *                       {@link EresusApplication} FIXME Создать класс Eresus_Application
+	 * @return int  Код завершения (0 — успешное завершение)
+	 *
+	 * @see $app, app(), EresusApplication
+	 */
+	static public function exec($class)
+	{
+		if (!class_exists($class))
+		{
+			throw new LogicException('Application class "' . $class . '" does not exists');
+		}
+
+		if (!is_subclass_of($class, 'EresusApplication'))
+		{
+			throw new LogicException('Application "' . $class .
+				'" must be descendant of EresusApplication');
+		}
+
+		self::$app = new $class();
+
+		try
+		{
+			EresusLogger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
+			$exitCode = self::$app->main();
+			EresusLogger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
+		}
+		catch (SuccessException $e)
+		{
+			$exitCode = 0;
+		}
+		catch (Exception $e)
+		{
+			//FIXME Заменить на self::
+			//Core::handleException($e);
+			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
+		}
+		self::$app = null;
+		return $exitCode;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает выполняемое приложение или null, если приложение не запущено
+	 *
+	 * @return EresusApplication
+	 *
+	 * @see $app, exec(), EresusApplication
+	 */
+	static public function app()
+	{
+		return self::$app;
+	}
+	//-----------------------------------------------------------------------------
 }

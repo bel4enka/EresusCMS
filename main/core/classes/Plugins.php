@@ -86,7 +86,7 @@ class Plugins
 
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
-		$filename = Core::app()->getFsRoot() . '/ext/'.$name.'.php';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/ext/'.$name.'.php';
 		if (is_file($filename))
 		{
 			/*
@@ -150,7 +150,7 @@ class Plugins
 		{
 			$pluginInfo->delete();
 		}
-		$filename = Core::app()->getFsRoot() . '/ext/'.$name.'.php';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/ext/'.$name.'.php';
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -205,7 +205,7 @@ class Plugins
 		}
 
 		// Путь к файлу плагина
-		$filename = Core::app()->getFsRoot() . '/ext/' . $name . '.php';
+		$filename = Eresus_CMS::app()->getFsRoot() . '/ext/' . $name . '.php';
 
 		/* Если такого файла нет, возвращаем FASLE */
 		if (!file_exists($filename))
