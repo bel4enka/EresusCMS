@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Ядро
+ * Дополнения PHP
  *
  * @copyright 2004, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -28,81 +28,116 @@
  *
  * @package Kernel
  *
- * $Id$
+ * $Id: CMS.php 1577 2011-05-17 14:12:30Z mk $
  */
-
-
 
 /**
- * Ядро
+ * Интерфейс к интерпретатору PHP
  *
- * Ядро содержит в себе:
- * 1. основные средства абстрагирования;
- * 2. минимальный набор функционала, необходимый для обработки большинства запросов
+ * Часть функций взята из {@link http://limb-project.com/ Limb3 project}
+ *
+ * <b>Внимание!</b> Этот класс не должен использовать другие части Eresus
  *
  * @package Kernel
+ * @since 2.16
  */
-class Eresus_Kernel
+class Eresus_Kernel_PHP
 {
 	/**
-	 * Признак иницилизации ядра
+	 * Список директорий open_basedir
+	 *
+	 * @var array
+	 */
+	protected static $open_basedir;
+
+	/**
+	 * Для тестирования
 	 *
 	 * @var bool
+	 * @ignore
 	 */
-	static private $inited = false;
+	private static $override_isCLI = null;
 
 	/**
-	 * Инициализация ядра
-	 */
-	// @codeCoverageIgnoreStart
-	static public function init()
-	{
-		/* Разрешаем только однократный вызов этого метода */
-		if (self::$inited)
-		{
-			return;
-		}
-
-		/* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
-		@$timezone = date_default_timezone_get();
-		date_default_timezone_set($timezone);
-
-		// Регистрация автозагрузчика классов
-		spl_autoload_register(array('Eresus_Kernel', 'autoload'));
-
-		self::$inited = true;
-	}
-	// @codeCoverageIgnoreEnd
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Автозагрузка классов
-	 *
-	 * Работает только для классов "Eresus_*". Все символы в имени класса "_" заменяются на
-	 * разделитель директорий и добавляется префикс ".php".
-	 *
-	 * @param string $className
+	 * Возвращает true, если используется CLI SAPI
 	 *
 	 * @return bool
 	 *
 	 * @since 2.16
 	 */
-	public static function autoload($className)
+	static function isCLI()
 	{
-		if (stripos($className, 'Eresus_') !== 0 ||
-			class_exists($className, false) ||
-			interface_exists($className, false))
+		if (self::$override_isCLI !== null)
 		{
-			return false;
+			return self::$override_isCLI;
 		}
 
-		$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-			str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
+		return PHP_SAPI == 'cli';
+	}
+	//-----------------------------------------------------------------------------
 
-		if (file_exists($fileName))
+	/**
+	 * Возвращает true, если используется CGI SAPI
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	static function isCGI()
+	{
+		return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает true, если используется SAPI модуля веб-сервера
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	static function isModule()
+	{
+		return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверяет, находится ли путь в списке open_basedir
+	 *
+	 * Если опция open_basedir не установлена, всегда возвращает true.
+	 *
+	 * @param string $path  Путь для проверки
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public static function inOpenBaseDir($path)
+	{
+		// The second argument can be passed for testing purpose
+		$open_basedir = func_num_args() > 1 ? func_get_arg(1) : ini_get('open_basedir');
+
+		if ($open_basedir == false)
 		{
-			include $fileName;
 			return true;
+		}
+
+		if (! self::$open_basedir)
+		{
+			self::$open_basedir = explode(PATH_SEPARATOR, $open_basedir);
+		}
+
+		if (substr($path, 0, 1) == '.')
+		{
+			$path = getcwd() . substr($path, 1);
+		}
+
+		foreach (self::$open_basedir as $dir)
+		{
+			if (substr($path, 0, strlen($dir)) == $dir)
+			{
+				return true;
+			}
 		}
 
 		return false;
@@ -110,42 +145,18 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает true если PHP запущен на UNIX-подобной ОС
+	 * Проверяет, загружен ли указанный класс или интерфейс
 	 *
+	 * Этот метод не инициирует автозагрузку
+	 *
+	 * @param string $name  Имя класса или интерфейса
 	 * @return bool
 	 *
 	 * @since 2.16
 	 */
-	static function isUnixLike()
+	static public function classExists($name)
 	{
-		return DIRECTORY_SEPARATOR == '/';
+		return class_exists($name, false) || interface_exists($name, false);
 	}
 	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает true если PHP запущен на Microsoft Windows
-	 *
-	 * @return bool
-	 *
-	 * @since 2.16
-	 */
-	static function isWindows()
-	{
-		return strncasecmp(PHP_OS, 'WIN', 3) == 0;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает true если PHP запущен на MacOS
-	 *
-	 * @return bool
-	 *
-	 * @since 2.16
-	 */
-	static function isMac()
-	{
-		return strncasecmp(PHP_OS, 'MAC', 3) == 0;
-	}
-	//-----------------------------------------------------------------------------
-
 }

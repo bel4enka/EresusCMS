@@ -810,7 +810,7 @@ function __clearargs($args)
 			}
 				else
 			{
-				if ( ! PHP::checkVersion('5.3') )
+				if (version_compare(PHP_VERSION, '5.3', '<'))
 				{
 					if (get_magic_quotes_gpc())
 						$value = StripSlashes($value);
@@ -1038,7 +1038,7 @@ class Eresus
 
 		if (is_null($this->path)) {
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-(System::isWindows()?2:0));
+			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-(Eresus_Kernel::isWindows()?2:0));
 			if (!strlen($s) || sbstr($s, -1) != '/') $s .= '/';
 			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
 		}
@@ -1158,7 +1158,7 @@ class Eresus
 	function init()
 	{
 		// Отключение закавычивания передаваемых данных
-		if (!PHP::checkVersion('5.3'))
+		if (version_compare(PHP_VERSION, '5.3', '<'))
 		{
 			set_magic_quotes_runtime(0);
 		}

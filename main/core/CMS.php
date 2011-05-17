@@ -152,7 +152,7 @@ class Eresus_CMS extends EresusApplication
 			$GLOBALS['Eresus']->init();
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
-			if (PHP::isCLI())
+			if (Eresus_Kernel_PHP::isCLI())
 			{
 				return $this->runCLI();
 			}
@@ -268,7 +268,7 @@ class Eresus_CMS extends EresusApplication
 
 		if ($errors)
 		{
-			if (!PHP::isCLI())
+			if (!Eresus_Kernel_PHP::isCLI())
 			{
 				require_once 'errors.html.php';
 			}
@@ -520,7 +520,7 @@ class Eresus_CMS extends EresusApplication
 		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		ini_set('session.use_only_cookies', true);
 		session_name('sid');
-		PHP::isCLI() || session_start();
+		Eresus_Kernel_PHP::isCLI() || session_start();
 
 		EresusAuthService::getInstance()->init();
 		// TODO Убрать. Оставлено для обратной совместимости
