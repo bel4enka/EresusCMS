@@ -29,87 +29,87 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../../../main/core/Helpers/EresusCollection.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Helper/Collection.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusCollectionTest extends PHPUnit_Framework_TestCase
+class Eresus_Helper_Collection_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusCollection::__construct
+	 * @covers Eresus_Helper_Collection::__construct
 	 */
 	public function test_construct()
 	{
-		$test = new EresusCollection(array(1, 2, 3));
+		$test = new Eresus_Helper_Collection(array(1, 2, 3));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::__construct
+	 * @covers Eresus_Helper_Collection::__construct
 	 * @expectedException InvalidArgumentException
 	 */
 	public function test_construct_not_array()
 	{
-		$test = new EresusCollection(1);
+		$test = new Eresus_Helper_Collection(1);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetExists
-	 * @covers EresusCollection::checkOffsetType
+	 * @covers Eresus_Helper_Collection::offsetExists
+	 * @covers Eresus_Helper_Collection::checkOffsetType
 	 */
 	public function test_offsetExists()
 	{
-		$test = new EresusCollection(array(1));
+		$test = new Eresus_Helper_Collection(array(1));
 		$this->assertTrue(isset($test[0]), 'Case 1');
 		$this->assertFalse(isset($test[1]), 'Case 2');
 
-		$test = new EresusCollection(array('a' => 'b'));
+		$test = new Eresus_Helper_Collection(array('a' => 'b'));
 		$this->assertTrue(isset($test['a']), 'Case 3');
 		$this->assertFalse(isset($test['b']), 'Case 4');
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::checkOffsetType
+	 * @covers Eresus_Helper_Collection::checkOffsetType
 	 * @expectedException InvalidArgumentException
 	 */
 	public function test_offsetExists_nonScalar()
 	{
-		$test = new EresusCollection();
+		$test = new Eresus_Helper_Collection();
 		isset($test[new stdClass()]);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetGet
+	 * @covers Eresus_Helper_Collection::offsetGet
 	 */
 	public function test_offsetGet()
 	{
-		$test = new EresusCollection(array(12, 34, 56));
+		$test = new Eresus_Helper_Collection(array(12, 34, 56));
 		$this->assertEquals(34, $test[1]);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetSet
+	 * @covers Eresus_Helper_Collection::offsetSet
 	 */
 	public function test_offsetSet()
 	{
-		$test = new EresusCollection();
+		$test = new Eresus_Helper_Collection();
 		$test['a'] = 'b';
 		$this->assertEquals('b', $test['a']);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetSet
+	 * @covers Eresus_Helper_Collection::offsetSet
 	 */
 	public function test_append()
 	{
-		$test = new EresusCollection(array('a'));
+		$test = new Eresus_Helper_Collection(array('a'));
 		$test []= 'b';
 
 		$this->assertEquals('b', $test[1]);
@@ -117,33 +117,33 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetGet
+	 * @covers Eresus_Helper_Collection::offsetGet
 	 */
 	public function test_get_unexistent()
 	{
-		$test = new EresusCollection();
+		$test = new Eresus_Helper_Collection();
 		$this->assertNull($test['unexistent']);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetGet
-	 * @covers EresusCollection::setDefaultValue
+	 * @covers Eresus_Helper_Collection::offsetGet
+	 * @covers Eresus_Helper_Collection::setDefaultValue
 	 */
 	public function test_get_defaultValue()
 	{
-		$test = new EresusCollection();
+		$test = new Eresus_Helper_Collection();
 		$test->setDefaultValue(true);
 		$this->assertTrue($test['unexistent']);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetUnset
+	 * @covers Eresus_Helper_Collection::offsetUnset
 	 */
 	public function test_offsetUnset()
 	{
-		$test = new EresusCollection(array('a' => 'b'));
+		$test = new Eresus_Helper_Collection(array('a' => 'b'));
 		$this->assertEquals('b', $test['a']);
 		unset($test['a']);
 		$this->assertNull($test['a']);
@@ -151,13 +151,13 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::offsetGet
-	 * @covers EresusCollection::offsetSet
-	 * @covers EresusCollection::setDefaultValue
+	 * @covers Eresus_Helper_Collection::offsetGet
+	 * @covers Eresus_Helper_Collection::offsetSet
+	 * @covers Eresus_Helper_Collection::setDefaultValue
 	 */
 	public function test_addToUnexistentArray()
 	{
-		$test = new EresusCollection();
+		$test = new Eresus_Helper_Collection();
 		$test->setDefaultValue(array());
 		$test['a']['b'] = 'c';
 		$this->assertEquals('c', $test['a']['b']);
@@ -165,22 +165,22 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::count
+	 * @covers Eresus_Helper_Collection::count
 	 */
 	public function test_count()
 	{
-		$test = new EresusCollection(array('a', 'b', 'c'));
+		$test = new Eresus_Helper_Collection(array('a', 'b', 'c'));
 		$this->assertEquals(3, count($test));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCollection::serialize
-	 * @covers EresusCollection::unserialize
+	 * @covers Eresus_Helper_Collection::serialize
+	 * @covers Eresus_Helper_Collection::unserialize
 	 */
 	public function test_serializable()
 	{
-		$test1 = new EresusCollection(array('a', 'b', 'c'));
+		$test1 = new Eresus_Helper_Collection(array('a', 'b', 'c'));
 		$s = serialize($test1);
 		$test2 = unserialize($s);
 		$this->assertEquals('b', $test2[1]);

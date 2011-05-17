@@ -44,12 +44,6 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- l10n files -->
-	<fileset dir="." id="l10n_files">
-		<include name="lang/**" />
-		<exclude name=".svn" />
-	</fileset>
-
 	<!-- Tools files -->
 	<fileset dir="." id="tools_files">
 		<include name="tools/**" />
@@ -191,13 +185,6 @@
 		<!-- jQuery -->
 		<copy todir="${build.dir}/core/jquery">
 			<fileset refid="files.3rd.jquery" />
-		</copy>
-
-		<copy todir="${build.dir}/">
-			<fileset refid="l10n_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
 		</copy>
 
 		<!-- elFinder -->

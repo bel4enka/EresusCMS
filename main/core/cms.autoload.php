@@ -54,9 +54,6 @@ return array(
 	/* Domain */
 	'Plugins' => 'core/classes/Plugins.php',
 
-	/* Helpers */
-	'EresusCollection' => 'core/Helpers/EresusCollection.php',
-
 	/* Mail */
 	'EresusMail' => 'core/Mail/EresusMail.php',
 

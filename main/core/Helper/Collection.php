@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Helpers
+ * @package Helper
  *
  * $Id$
  */
@@ -34,11 +34,11 @@
 /**
  * Коллекция
  *
- * @package Helpers
+ * @package Helper
  *
  * @since 2.15
  */
-class EresusCollection implements ArrayAccess, Countable, Serializable
+class Eresus_Helper_Collection implements ArrayAccess, Countable, Serializable
 {
 	/**
 	 * Значение, возвращаемое, при обращении к несуществующему элементу коллекции
@@ -61,7 +61,7 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	 *
 	 * @param array $data
 	 *
-	 * @return EresusCollection
+	 * @return Eresus_Helper_Collection
 	 *
 	 * @throws InvalidArgumentException если $data не массив
 	 * @since 2.15
