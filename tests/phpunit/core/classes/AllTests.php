@@ -31,8 +31,6 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/helpers/AllTests.php';
-
 require_once dirname(__FILE__) . '/HtmlElementTest.php';
 require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
 require_once dirname(__FILE__) . '/WebPageTest.php';
@@ -44,8 +42,6 @@ class Core_Classes_AllTests
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core/classes');
-
-		$suite->addTest(Core_Classes_Helpers_AllTests::suite());
 
 		$suite->addTestSuite('HtmlElementTest');
 		$suite->addTestSuite('HtmlScriptElementTest');

@@ -75,7 +75,6 @@ class Eresus_UI_Admin_List_DataProvider_Model implements Eresus_UI_Admin_List_Da
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
 	 * @see Eresus_UI_Admin_List_DataProvider::getCols()
 	 */
 	public function getCols()
@@ -89,7 +88,15 @@ class Eresus_UI_Admin_List_DataProvider_Model implements Eresus_UI_Admin_List_Da
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
+	 * @see Eresus_UI_Admin_List_DataProvider::getCount()
+	 */
+	public function getCount()
+	{
+		return count($this->getTable());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @see Eresus_UI_Admin_List_DataProvider::getRows()
 	 */
 	public function getRows()

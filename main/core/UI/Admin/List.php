@@ -275,7 +275,9 @@ class Eresus_UI_Admin_List
 
 		ksort($this->itemControls);
 		$data['list'] = $this;
-		$data['pagination'] = new Eresus_
+
+		$totalPages = ceil($this->provider->getCount() / $this->pageSize);
+		$data['pagination'] = new Eresus_UI_Pagination($totalPages);
 
 		$tmpl = new Template('core/templates/widgets/list/main.html');
 		$html = $tmpl->compile($data);
