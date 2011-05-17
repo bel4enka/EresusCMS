@@ -41,6 +41,7 @@ else
 require_once dirname(__FILE__) . '/CMS_Test.php';
 require_once dirname(__FILE__) . '/EresusTest.php';
 require_once dirname(__FILE__) . '/EresusFormTest.php';
+require_once dirname(__FILE__) . '/Kernel_Test.php';
 require_once dirname(__FILE__) . '/WebServer_Test.php';
 require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
 
@@ -65,6 +66,7 @@ class Core_AllTests
 		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('EresusTest');
 		$suite->addTestSuite('EresusFormTest');
+		$suite->addTestSuite('Eresus_Kernel_Test');
 		$suite->addTestSuite('Eresus_WebServer_Test');
 		$suite->addTestSuite('LegacyFunctionsTest');
 

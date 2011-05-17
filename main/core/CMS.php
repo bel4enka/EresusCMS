@@ -116,38 +116,6 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Автозагрузка классов CMS
-	 *
-	 * Работает только для классов "Eresus_*". Все символы в имени класса "_" заменяются на
-	 * разделитель директорий и добавляется префикс ".php".
-	 *
-	 * @param string $className
-	 *
-	 * @return bool
-	 *
-	 * @since 2.16
-	 */
-	public function classAutoload($className)
-	{
-		if (stripos($className, 'Eresus_') !== 0 || PHP::classExists($className))
-		{
-			return false;
-		}
-
-		$fileName = $this->getFsRoot() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .
-			str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
-
-		if (file_exists($fileName))
-		{
-			include $fileName;
-			return true;
-		}
-
-		return false;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
@@ -157,8 +125,6 @@ class Eresus_CMS extends EresusApplication
 	public function main()
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
-
-		spl_autoload_register(array($this, 'classAutoload'));
 
 		try
 		{

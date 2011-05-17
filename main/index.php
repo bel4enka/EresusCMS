@@ -32,6 +32,7 @@
  * $Id$
  */
 
+// Временно включаем вывод ошибок, пока не инициализированы средства журанлирования
 ini_set('display_errors', true);
 
 /*
@@ -51,6 +52,13 @@ ini_set('track_errors', true);
  */
 include_once 'core/framework/core/eresus-core.compiled.php';
 //include_once 'core/framework/core/eresus-core.php';
+
+/**
+ * Подключение ядра
+ */
+include_once 'core/Kernel.php';
+
+Eresus_Kernel::init();
 
 if (isset($php_errormsg))
 {
