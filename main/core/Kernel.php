@@ -45,6 +45,13 @@
 class Eresus_Kernel
 {
 	/**
+	 * Резервный буфер для отлова ошибок переполнения памяти (в Кб)
+	 *
+	 * @var int
+	 */
+	const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
+
+	/**
 	 * Признак иницилизации ядра
 	 *
 	 * @var bool
@@ -78,9 +85,157 @@ class Eresus_Kernel
 		// Регистрация автозагрузчика классов
 		spl_autoload_register(array('Eresus_Kernel', 'autoload'));
 
+		self::initExceptionHandling();
+
 		self::$inited = true;
 	}
 	// @codeCoverageIgnoreEnd
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует обработчики ошибок
+	 */
+	static private function initExceptionHandling()
+	{
+		/* Резервируем буфер на случай переполнения памяти */
+		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
+
+		/* Меняем значения php.ini */
+		ini_set('html_errors', 0); // Немного косметики
+
+		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
+		EresusLogger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+
+		//set_exception_handler('Core::handleException');
+		//EresusLogger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+
+		/*
+		 * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
+		 * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
+		 * Но только не в режиме CLI.
+		 */
+		// @codeCoverageIgnoreStart
+		if (! Eresus_Kernel_PHP::isCLI())
+		{
+			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
+			{
+				EresusLogger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+			}
+			else
+			{
+				EresusLogger::log(
+					LOG_NOTICE, __METHOD__,
+					'Fatal error handler not instaled! Fatal error will be not handled!'
+				);
+			}
+		}
+		// @codeCoverageIgnoreEnd
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Обработчик ошибок
+	 *
+	 * @param int    $errno       тип ошибки
+	 * @param string $errstr      описание ошибки
+	 * @param string $errfile     имя файла в котором произошла ошибка
+	 * @param int    $errline     строка где произошла ошибка
+	 * @param array  $errcontext  контекст ошибки
+	 *
+	 * @return bool
+	 */
+	public static function errorHandler($errno, $errstr, $errfile, $errline)
+	{
+		/* Нулевое значение 'error_reporting' означает что был использован оператор "@" */
+		if (error_reporting() == 0)
+		{
+			return true;
+		}
+
+		/*
+		 *  Примечание: На самом деле этот метод обрабатывает только E_WARNING, E_NOTICE, E_USER_ERROR,
+		 *  E_USER_WARNING, E_USER_NOTICE и E_STRICT
+		 */
+
+		/* Определяем серьёзность ошибки */
+		switch ($errno)
+		{
+			case E_STRICT:
+			case E_NOTICE:
+			case E_USER_NOTICE:
+				$level = LOG_NOTICE;
+			break;
+			case E_WARNING:
+			case E_USER_WARNING:
+				$level = LOG_WARNING;
+			break;
+			default:
+				$level = LOG_ERR;
+			break;
+		}
+
+		if ($level < LOG_NOTICE)
+		{
+			throw new ErrorException($errstr, $errno, $level, $errfile, $errline);
+		}
+		else
+		{
+			$logMessage = sprintf(
+				"%s in %s:%s",
+				$errstr,
+				$errfile,
+				$errline
+			);
+			EresusLogger::log(__FUNCTION__, $level, $logMessage);
+		}
+
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Обработчик фатальных ошибок
+	 *
+	 * Замечание по производительности: этот метод освобождает в начале и выделет в конце своей работы
+	 * буфер в памяти для отлова ошибок переполнения памяти. Эти операции затормаживают вывод примерно
+	 * на 1-2%.
+	 */
+	public static function fatalErrorHandler($output)
+	{
+		// Освобождает резервный буфер
+		unset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']);
+		if (preg_match('/(parse|fatal) error:.*in .* on line/Ui', $output, $m))
+		{
+			$GLOBALS['ERESUS_CORE_FATAL_ERROR_HANDLER'] = true;
+			switch(strtolower($m[1]))
+			{
+				case 'fatal':
+					$priority = LOG_CRIT;
+					$message = 'FATAL ERROR';
+				break;
+
+				case 'parse':
+					$priority = LOG_EMERG;
+					$message = 'PARSE ERROR';
+				break;
+			}
+
+			EresusLogger::log(__FUNCTION__, $priority, trim($output));
+			if (!Eresus_Kernel_PHP::isCLI())
+			{
+				header('Internal Server Error', true, 500);
+				header('Content-type: text/plain', true);
+			}
+
+			return $message . "\nSee application log for more info.\n";
+		}
+		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
+
+		// возвращаем fase для вывода буфера
+		return false;
+	}
 	//-----------------------------------------------------------------------------
 
 	/**

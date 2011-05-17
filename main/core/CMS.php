@@ -146,11 +146,11 @@ class Eresus_CMS extends EresusApplication
 				include_once 'debug.php';
 			}
 			$i18n = I18n::getInstance();
-			TemplateSettings::setGlobalValue('i18n', $i18n);
+			Eresus_Template::setGlobalValue('i18n', $i18n);
 			$this->initDB();
 			$this->initSession();
 			$GLOBALS['Eresus']->init();
-			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+			Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 			if (Eresus_Kernel_PHP::isCLI())
 			{
@@ -345,10 +345,10 @@ class Eresus_CMS extends EresusApplication
 	{
 		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
 
-		Eresus_Helper_Registry::set('core.template.templateDir', $this->getFsRoot());
-		Eresus_Helper_Registry::set('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
+		Eresus_Config::set('core.template.templateDir', $this->getFsRoot());
+		Eresus_Config::set('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 		// FIXME Следующая строка нужна только до перехода на UTF-8
-		Eresus_Helper_Registry::set('core.template.charset', 'CP1251');
+		Eresus_Config::set('core.template.charset', 'CP1251');
 
 		$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
@@ -413,7 +413,7 @@ class Eresus_CMS extends EresusApplication
 
 		$this->webRoot = $this->request->getScheme() . '://' . $this->request->getHost() .
 			$this->request->getLocalRoot();
-		TemplateSettings::setGlobalValue('siteRoot', $this->webRoot);
+		Eresus_Template::setGlobalValue('siteRoot', $this->webRoot);
 
 	}
 	//-----------------------------------------------------------------------------
@@ -469,7 +469,7 @@ class Eresus_CMS extends EresusApplication
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 
-		$dsn = Eresus_Helper_Registry::get('eresus.cms.dsn');
+		$dsn = Eresus_Config::get('eresus.cms.dsn');
 		if (!$dsn)
 		{
 			throw new EresusConfigException('"eresus.cms.dsn" not set.');
@@ -483,7 +483,7 @@ class Eresus_CMS extends EresusApplication
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 
-		$prefix = Eresus_Helper_Registry::get('eresus.cms.dsn.prefix');
+		$prefix = Eresus_Config::get('eresus.cms.dsn.prefix');
 		if ($prefix)
 		{
 			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');

@@ -246,7 +246,7 @@ class Eresus_Controller_Admin_Plugins extends Eresus_Controller_Admin_Abstract
 		}
 
 		ksort($data['plugins']);
-		$tmpl = new Template('core/templates/PluginManager/add-dialog.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
 
 		return $html;

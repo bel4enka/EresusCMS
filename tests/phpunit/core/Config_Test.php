@@ -26,31 +26,31 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
- * $Id: PHPTest.php 669 2010-12-04 10:36:49Z mk $
+ * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Helper/Registry.php';
+require_once dirname(__FILE__) . '/../stubs.php';
+require_once dirname(__FILE__) . '/../../../main/core/Config.php';
 
 /**
  * @package Kernel
  * @subpackage Tests
  */
-class Eresus_Helper_Registry_Test extends PHPUnit_Framework_TestCase
+class Eresus_Config_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Eresus_Helper_Registry::set
-	 * @covers Eresus_Helper_Registry::get
-	 * @covers Eresus_Helper_Registry::drop
+	 * @covers Eresus_Config::set
+	 * @covers Eresus_Config::get
+	 * @covers Eresus_Config::drop
 	 */
 	public function test_set_get_drop()
 	{
-		Eresus_Helper_Registry::set('key1', 'value1');
-		$this->assertEquals('value1', Eresus_Helper_Registry::get('key1'));
-		Eresus_Helper_Registry::drop('key1');
-		$this->assertNull(Eresus_Helper_Registry::get('key1'));
+		Eresus_Config::set('key1', 'value1');
+		$this->assertEquals('value1', Eresus_Config::get('key1'));
+		Eresus_Config::drop('key1');
+		$this->assertNull(Eresus_Config::get('key1'));
 
-		$this->assertEquals('value2', Eresus_Helper_Registry::get('key2', 'value2'));
+		$this->assertEquals('value2', Eresus_Config::get('key2', 'value2'));
 	}
 	//-----------------------------------------------------------------------------
 

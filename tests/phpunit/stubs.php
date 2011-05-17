@@ -172,6 +172,8 @@ class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
+class Dwoo extends UniversalStub {}
+class Dwoo_Template_File extends UniversalStub {}
 class elFinder extends UniversalStub {}
 class EresusLogger extends MockFacade {}
 class ezcDbOptions extends UniversalStub {}

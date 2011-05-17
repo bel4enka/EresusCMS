@@ -76,7 +76,7 @@ class Eresus_Controller_Admin_About extends Eresus_Controller_Admin_Abstract
 			);
 		}
 
-		$tmpl = new Template('core/templates/misc/about.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/misc/about.html');
 		$html = $tmpl->compile($data);
 
 		return $html;

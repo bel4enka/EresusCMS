@@ -279,7 +279,7 @@ class Eresus_UI_Admin_List
 		$totalPages = ceil($this->provider->getCount() / $this->pageSize);
 		$data['pagination'] = new Eresus_UI_Pagination($totalPages);
 
-		$tmpl = new Template('core/templates/widgets/list/main.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/widgets/list/main.html');
 		$html = $tmpl->compile($data);
 		return $html;
 	}

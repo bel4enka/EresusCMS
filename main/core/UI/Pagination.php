@@ -417,7 +417,7 @@ implements Iterator, Countable
 	 */
 	public function render()
 	{
-		$tmpl = new Template($this->getTemplate());
+		$tmpl = Eresus_Template::fromFile($this->getTemplate());
 
 		$data = array('pagination' => $this);
 

@@ -446,7 +446,7 @@ class Eresus_Controller_Admin_Sections extends Eresus_Controller_Admin_Abstract
 		);
 		$result = $page->renderForm($form, $item);
 
-		$tmpl = new Template('core/templates/ContentEditor/common.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/ContentEditor/common.html');
 
 		$plugin = $GLOBALS['Eresus']->plugins->load($item['type']);
 

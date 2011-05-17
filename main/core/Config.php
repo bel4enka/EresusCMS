@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Реестр
+ * Реестр настроек
  *
  * @copyright 2004, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -26,18 +26,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Helper
+ * @package Core
  *
- * $Id: CMS.php 1577 2011-05-17 14:12:30Z mk $
+ * $Id$
  */
 
 /**
- * Реестр
+ * Реестр настроек
  *
- * @package Helper
+ * @package Core
  * @since 2.16
  */
-class Eresus_Helper_Registry
+class Eresus_Config
 {
 	/**
 	 * Данные реестра

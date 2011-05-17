@@ -266,7 +266,7 @@ class Plugins
 					"AND (`access` >= '".($_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
 
-				$tmpl = new Template('templates/std/SectionList.html');
+				$tmpl = Eresus_Template::fromFile('templates/std/SectionList.html');
 
 				foreach ($items as &$item)
 				{

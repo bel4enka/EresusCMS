@@ -38,26 +38,29 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
-require_once dirname(__FILE__) . '/CMS_Test.php';
-require_once dirname(__FILE__) . '/EresusTest.php';
-require_once dirname(__FILE__) . '/EresusFormTest.php';
-require_once dirname(__FILE__) . '/Helper/AllTests.php';
-require_once dirname(__FILE__) . '/Kernel_Test.php';
-require_once dirname(__FILE__) . '/Kernel/AllTests.php';
-require_once dirname(__FILE__) . '/WebServer_Test.php';
-require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
-
 require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
 require_once dirname(__FILE__) . '/BusinessLogic/AllTests.php';
-require_once dirname(__FILE__) . '/DBAL/AllTests.php';
+require_once dirname(__FILE__) . '/Config_Test.php';
 require_once dirname(__FILE__) . '/Controller/AllTests.php';
-require_once dirname(__FILE__) . '/Model/AllTests.php';
+require_once dirname(__FILE__) . '/classes/AllTests.php';
+require_once dirname(__FILE__) . '/CMS_Test.php';
+require_once dirname(__FILE__) . '/DBAL/AllTests.php';
+require_once dirname(__FILE__) . '/EresusTest.php';
+require_once dirname(__FILE__) . '/EresusFormTest.php';
+//require_once dirname(__FILE__) . '/Helper/AllTests.php';
 require_once dirname(__FILE__) . '/Helpers/AllTests.php';
+require_once dirname(__FILE__) . '/Kernel_Test.php';
+require_once dirname(__FILE__) . '/Kernel/AllTests.php';
+require_once dirname(__FILE__) . '/lib/AllTests.php';
+require_once dirname(__FILE__) . '/Model/AllTests.php';
 require_once dirname(__FILE__) . '/Mail/AllTests.php';
 require_once dirname(__FILE__) . '/Service/AllTests.php';
+require_once dirname(__FILE__) . '/Template_Test.php';
 require_once dirname(__FILE__) . '/UI/AllTests.php';
-require_once dirname(__FILE__) . '/classes/AllTests.php';
-require_once dirname(__FILE__) . '/lib/AllTests.php';
+require_once dirname(__FILE__) . '/WebServer_Test.php';
+
+require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
+
 
 class Core_AllTests
 {
@@ -65,14 +68,16 @@ class Core_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core tests');
 
+		$suite->addTestSuite('Eresus_Config_Test');
 		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('EresusTest');
 		$suite->addTestSuite('EresusFormTest');
-		$suite->addTest(Core_Helper_AllTests::suite());
+		//$suite->addTest(Core_Helper_AllTests::suite());
 		$suite->addTestSuite('Eresus_Kernel_Test');
 		$suite->addTest(Core_Kernel_AllTests::suite());
 		$suite->addTestSuite('Eresus_WebServer_Test');
 		$suite->addTestSuite('LegacyFunctionsTest');
+		$suite->addTestSuite('Eresus_Template_Test');
 
 		$suite->addTest(Core_AccessControl_AllTests::suite());
 		$suite->addTest(Core_BusinessLogic_AllTests::suite());

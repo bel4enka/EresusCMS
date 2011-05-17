@@ -85,7 +85,7 @@ class Eresus_UI_Admin_Menu
 			$items []= $item;
 		}
 
-		$tmpl = new Template('core/templates/widgets/menu/' . $this->tmplName . '.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/widgets/menu/' . $this->tmplName . '.html');
 		$html = $tmpl->compile(array('items' => $items));
 		return $html;
 	}

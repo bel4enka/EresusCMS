@@ -183,10 +183,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(10, 5);
 
-		$data = $test->render();
-		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
-
-		$helper = $data['pagination'];
+		$helper = $test->render();
 
 		$i = 1;
 		foreach ($helper as $page)
@@ -217,10 +214,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(100, 1);
 
-		$data = $test->render();
-		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
-
-		$helper = $data['pagination'];
+		$helper = $test->render();
 
 		$i = 1;
 		foreach ($helper as $page)
@@ -257,10 +251,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(100, 100);
 
-		$data = $test->render();
-		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
-
-		$helper = $data['pagination'];
+		$helper = $test->render();
 
 		$i = 1;
 		foreach ($helper as $page)
@@ -297,10 +288,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(100, 50);
 
-		$data = $test->render();
-		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
-
-		$helper = $data['pagination'];
+		$helper = $test->render();
 
 		$i = 1;
 		foreach ($helper as $page)

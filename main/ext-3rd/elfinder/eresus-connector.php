@@ -250,7 +250,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 		$data['root'] = preg_replace('~/$~', '', $GLOBALS['Eresus']->root);
 		$data['initScript'] = $this->getInitScript('data');
 
-		$tmpl = new Template('ext-3rd/elfinder/popup.html');
+		$tmpl = Eresus_Template::fromFile('ext-3rd/elfinder/popup.html');
 		echo $tmpl->compile($data);
 		throw new ExitException;
 	}

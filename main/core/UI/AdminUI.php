@@ -87,7 +87,7 @@ class AdminUI extends WebPage
 
 		$theme = new Eresus_UI_Admin_Theme();
 		$this->setUITheme($theme);
-		TemplateSettings::setGlobalValue('theme', $theme);
+		Eresus_Template::setGlobalValue('theme', $theme);
 
 		$this->title = admControls;
 		/* Определяем уровень вложенности */
@@ -990,7 +990,7 @@ class AdminUI extends WebPage
 			'autologin' => $req->arg('autologin'),
 			'error' => $errorMessage
 		);
-		$tmpl = new Template('core/templates/auth.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/auth.html');
 		$html = $tmpl->compile($data);
 		return $html;
 	}
@@ -1022,7 +1022,7 @@ class AdminUI extends WebPage
 		$data['controlMenu'] = $this->renderControlMenu();
 		$data['user'] = $Eresus->user;
 
-		$tmpl = new Template('core/templates/page.default.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/page.default.html');
 		$html = $tmpl->compile($data);
 
 		if (count($this->headers))

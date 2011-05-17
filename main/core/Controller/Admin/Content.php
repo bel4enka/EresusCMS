@@ -93,7 +93,7 @@ class Eresus_Controller_Admin_Content extends Eresus_Controller_Admin_Abstract
 			$html = $plugin->adminRenderContent();
 		}
 
-		$tmpl = new Template('core/templates/ContentEditor/common.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/ContentEditor/common.html');
 		$data = array(
 			'editor' => $html,
 			'contentURL' => '#',
