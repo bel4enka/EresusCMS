@@ -124,7 +124,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	public function main()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		try
 		{
@@ -135,7 +135,7 @@ class Eresus_CMS extends EresusApplication
 			$this->checkEnviroment();
 			$this->createFileStructure();
 
-			EresusLogger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+			Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 
 			/* Подключение старого ядра */
 			include_once 'kernel-legacy.php';
@@ -167,7 +167,7 @@ class Eresus_CMS extends EresusApplication
 		}
 		catch (Exception $e)
 		{
-			EresusLogger::exception($e);
+			Eresus_Logger::exception($e);
 			ob_end_clean();
 			$this->fatalError($e, false);
 		}
@@ -312,7 +312,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function runWeb()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$this->initWeb();
 
@@ -342,7 +342,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function initWeb()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		Eresus_Config::set('core.template.templateDir', $this->getFsRoot());
 		Eresus_Config::set('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
@@ -365,7 +365,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		global $page;
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'client.php';
 
@@ -384,7 +384,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		global $page;
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		define('ADMINUI', true);
 
@@ -408,7 +408,7 @@ class Eresus_CMS extends EresusApplication
 		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
 		$this->request->setLocalRoot($SUFFIX);
-		EresusLogger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
 		$this->webRoot = $this->request->getScheme() . '://' . $this->request->getHost() .
 			$this->request->getLocalRoot();
@@ -422,7 +422,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function runCLI()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$this->initCLI();
 		return 0;
@@ -434,7 +434,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function initCLI()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -443,7 +443,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function initConf()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
@@ -480,7 +480,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	private function initDB()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		/**
 		 * Подключение Doctrine
@@ -531,12 +531,12 @@ class Eresus_CMS extends EresusApplication
 	 * Инициализация сессии
 	 *
 	 * @return void
-	 * @uses EresusLogger::log()
+	 * @uses Eresus_Logger::log()
 	 * @uses Eresus_Security_AuthService::getInstance()
 	 */
 	private function initSession()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		ini_set('session.use_only_cookies', true);

@@ -54,19 +54,6 @@ Eresus_Config::set('eresus.cms.dsn', 'mysql://user:password@localhost/database')
 //  Отладка и ошибки
 //-------------------------------------------------------------------------------
 
-// $Eresus->conf['debug']['mail'] - управление отсылкой почты
-// = false       - отключить
-// = true        - отправлять как обычно
-// = <имя_файла> - записывать в файл
-
-if ($Eresus->conf['debug']['enable'])
-{
-	ini_set('display_errors', true);
-	error_reporting(E_ALL);
-	$Eresus->conf['debug']['mail'] = realpath(dirname(__FILE__)).'/../data/.sent';
-}
-else
-{
-	ini_set('display_errors', false);
-	error_reporting(0);
-}
+// Уровень детализации журнала. Возможные значения:
+// LOG_EMERG, LOG_ALERT, LOG_ERR, LOG_WARNING, LOG_NOTICE, LOG_INFO, LOG_DEBUG
+//Eresus_Config::get('eresus.cms.log.level', LOG_DEBUG);

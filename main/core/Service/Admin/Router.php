@@ -212,7 +212,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 			$path = Eresus_CMS::app()->getFsRoot() . '/core/Controller/Admin/' . $this->controllerName . '.php';
 			if (!is_file($path))
 			{
-				EresusLogger::log(__METHOD__, LOG_WARNING, 'File "%s" not found', $path);
+				Eresus_Logger::log(__METHOD__, LOG_WARNING, 'File "%s" not found', $path);
 				throw new PageNotFoundException;
 			}
 			include $path;
@@ -265,7 +265,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 
 		if (!method_exists($controller, $action))
 		{
-			EresusLogger::log(__METHOD__, LOG_WARNING, 'Method "%s" not found in "%s"', $action,
+			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Method "%s" not found in "%s"', $action,
 				get_class($controller));
 			throw new PageNotFoundException;
 		}

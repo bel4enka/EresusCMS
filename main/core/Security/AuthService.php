@@ -180,7 +180,7 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 		}
 		catch (Exception $e)
 		{
-			EresusLogger::exception($e);
+			Eresus_Logger::exception($e);
 			throw new DomainException('Ошибка при обновлении состояния учётной записи');
 		}
 		// Наличие в сессии идентификатора пользователя - признак успешной аутентификации

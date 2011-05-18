@@ -838,7 +838,7 @@ class EresusForm
 		}
 		else
 		{
-			EresusLogger::log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
+			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -1064,7 +1064,7 @@ class EresusForm
 		}
 		else
 		{
-			EresusLogger::log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm attribute "%s"', $attr->name);
+			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm attribute "%s"', $attr->name);
 		}
 
 		$node->removeAttributeNode($attr);

@@ -102,7 +102,7 @@ class Eresus_Controller_Admin_Settings extends Eresus_Controller_Admin_Abstract
 	 */
 	private function update()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$settings = "<?php\n";
 
@@ -195,7 +195,7 @@ class Eresus_Controller_Admin_Settings extends Eresus_Controller_Admin_Abstract
 	 */
 	public function actionIndex()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 		if (!UserRights($this->access))
 			return;
 

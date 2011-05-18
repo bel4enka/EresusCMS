@@ -100,14 +100,14 @@ class Eresus_Controller_Admin
 	 *
 	 * @return string  HTML
 	 *
-	 * @uses EresusLogger::log()
+	 * @uses Eresus_Logger::log()
 	 * @uses UserRights()
 	 * @uses HTTP::request()
 	 * @uses HttpResponse::redirect()
 	 */
 	public function render()
 	{
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверям права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
@@ -168,11 +168,11 @@ class Eresus_Controller_Admin
 	 *
 	 * @since 2.16
 	 *
-	 * @uses EresusLogger::log()
+	 * @uses Eresus_Logger::log()
 	 * @uses arg()
 	 * @uses Eresus_CMS::app()
 	 * @uses i18n()
-	 * @uses EresusLogger::exception()
+	 * @uses Eresus_Logger::exception()
 	 * @uses ErrorMessage()
 	 * @uses ErrorBox()
 	 */
@@ -180,7 +180,7 @@ class Eresus_Controller_Admin
 	{
 		global $Eresus;
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$html = '';
 
@@ -213,7 +213,7 @@ class Eresus_Controller_Admin
 						$msg = i18n('An error occured in plugin "%s"', __CLASS__);
 						$msg = sprintf($msg, $name);
 
-						EresusLogger::exception($e);
+						Eresus_Logger::exception($e);
 
 						$msg .= '<br />' . $e->getMessage();
 						$html .= ErrorBox($msg);
@@ -226,7 +226,7 @@ class Eresus_Controller_Admin
 			}
 			else
 			{
-				EresusLogger::log(__METHOD__, LOG_ERR, '$controller property is not an object');
+				Eresus_Logger::log(__METHOD__, LOG_ERR, '$controller property is not an object');
 				$msg = i18n('Unexpected error! See log for more info.', __CLASS__);
 				$html .= ErrorBox($msg);
 			}

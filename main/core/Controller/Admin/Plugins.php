@@ -120,7 +120,7 @@ class Eresus_Controller_Admin_Plugins extends Eresus_Controller_Admin_Abstract
 	{
 		global $page, $Eresus;
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$files = arg('files');
 		if ($files && is_array($files))
@@ -264,12 +264,12 @@ class Eresus_Controller_Admin_Plugins extends Eresus_Controller_Admin_Abstract
 
 		if (!UserRights($this->access))
 		{
-			EresusLogger::log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
+			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
 				$Eresus->user['username']);
 			return '';
 		}
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
 		$page->title = admPlugins;

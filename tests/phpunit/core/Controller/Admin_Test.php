@@ -26,7 +26,7 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
- * $Id: AdminUITest.php 1369 2011-01-16 20:04:53Z mk $
+ * $Id$
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';

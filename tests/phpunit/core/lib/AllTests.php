@@ -26,7 +26,7 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
- * $Id: AllTests.php 1344 2011-01-14 21:52:06Z mk $
+ * $Id$
  */
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);

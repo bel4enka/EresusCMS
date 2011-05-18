@@ -105,10 +105,10 @@ class Eresus_Kernel
 		ini_set('html_errors', 0); // Немного косметики
 
 		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
-		EresusLogger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
 
 		//set_exception_handler('Core::handleException');
-		//EresusLogger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
 
 		/*
 		 * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
@@ -120,11 +120,11 @@ class Eresus_Kernel
 		{
 			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
 			{
-				EresusLogger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+				Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
 			}
 			else
 			{
-				EresusLogger::log(
+				Eresus_Logger::log(
 					LOG_NOTICE, __METHOD__,
 					'Fatal error handler not instaled! Fatal error will be not handled!'
 				);
@@ -187,7 +187,7 @@ class Eresus_Kernel
 				$errfile,
 				$errline
 			);
-			EresusLogger::log(__FUNCTION__, $level, $logMessage);
+			Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
 		}
 
 		return true;
@@ -221,7 +221,7 @@ class Eresus_Kernel
 				break;
 			}
 
-			EresusLogger::log(__FUNCTION__, $priority, trim($output));
+			Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
 			if (!Eresus_Kernel_PHP::isCLI())
 			{
 				header('Internal Server Error', true, 500);
@@ -337,9 +337,9 @@ class Eresus_Kernel
 
 		try
 		{
-			EresusLogger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
+			Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
 			$exitCode = self::$app->main();
-			EresusLogger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
+			Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
 		}
 		catch (SuccessException $e)
 		{

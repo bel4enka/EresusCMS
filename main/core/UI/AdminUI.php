@@ -81,7 +81,7 @@ class AdminUI extends WebPage
 	{
 		global $Eresus;
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		parent::__construct();
 
@@ -1004,7 +1004,7 @@ class AdminUI extends WebPage
 	{
 		global $locale, $Eresus;
 
-		EresusLogger::log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 		$data = array();
 
 		$data['page'] = $this;

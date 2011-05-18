@@ -278,7 +278,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	}
 	catch (Exception $e)
 	{
-		EresusLogger::exception($e);
+		Eresus_Logger::exception($e);
 		return false;
 	}
 	return true;

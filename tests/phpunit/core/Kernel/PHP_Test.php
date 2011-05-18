@@ -26,7 +26,7 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
- * $Id: PHPTest.php 669 2010-12-04 10:36:49Z mk $
+ * $Id$
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
