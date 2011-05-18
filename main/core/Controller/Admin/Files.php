@@ -28,7 +28,7 @@
  *
  * @package UI
  *
- * $Id: AuthService.php 1277 2010-12-10 12:31:54Z mk $
+ * $Id$
  */
 
 /**

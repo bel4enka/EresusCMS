@@ -26,7 +26,7 @@
  *
  * @package UI
  *
- * $Id: Mutator.php 1566 2011-05-05 18:55:23Z mk $
+ * $Id$
  */
 
 /**

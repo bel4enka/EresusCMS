@@ -26,7 +26,7 @@
  *
  * @package UI
  *
- * $Id: WebPage.php 1132 2010-10-28 18:53:46Z mk $
+ * $Id$
  */
 
 /**

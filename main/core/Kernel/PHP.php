@@ -28,7 +28,7 @@
  *
  * @package Kernel
  *
- * $Id: CMS.php 1577 2011-05-17 14:12:30Z mk $
+ * $Id$
  */
 
 /**

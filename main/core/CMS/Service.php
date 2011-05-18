@@ -28,7 +28,7 @@
  *
  * @package AbstractionLayers
  *
- * $Id: WebServer.php 1492 2011-02-17 20:31:34Z mk $
+ * $Id$
  */
 
 /**

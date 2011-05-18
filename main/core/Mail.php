@@ -26,7 +26,7 @@
  *
  * @package Mail
  *
- * $Id: EresusFileManager.php 1412 2011-01-23 12:05:49Z mk $
+ * $Id$
  */
 
 
