@@ -252,15 +252,53 @@ class Eresus_Kernel
 	 */
 	public static function autoload($className)
 	{
-		if (stripos($className, 'Eresus_') !== 0 ||
-			class_exists($className, false) ||
-			interface_exists($className, false))
-		{
-			return false;
-		}
+		/* Устаревшие классы */
+		$legacy = array(
 
-		$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-			str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
+			'EresusExtensionConnector' => 'classes/EresusExtensionConnector.php',
+			'EresusForm' => 'EresusForm.php',
+			'WebPage' => 'classes/WebPage.php',
+
+			/* BusinessLogic */
+			'ContentPlugin' => 'BusinessLogic/ContentPlugin.php',
+			'EresusAdminFrontController' => 'BusinessLogic/EresusAdminFrontController.php',
+			'Plugin' => 'BusinessLogic/Plugin.php',
+
+			/* Domain */
+			'Plugins' => 'classes/Plugins.php',
+
+			/* UI */
+			'AdminUI' => 'UI/AdminUI.php',
+			'EresusFileManager' => 'UI/EresusFileManager.php',
+
+			/* Сторонние компоненты */
+			'elFinderConnector' => '../ext-3rd/elfinder/eresus-connector.php',
+			'elFinder' => '../ext-3rd/elfinder/connectors/php/elFinder.class.php',
+
+			/* Обратная совместимость */
+			'TPlugin' => 'classes/backward/TPlugin.php',
+			'TContentPlugin' => 'classes/backward/TContentPlugin.php',
+			'TListContentPlugin' => 'classes/backward/TListContentPlugin.php',
+			'EresusAccounts' => 'lib/accounts.php',
+			'PaginationHelper' => 'classes/backward/PaginationHelper.php',
+		);
+
+		if (isset($legacy[$className]))
+		{
+			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . $legacy[$className];
+		}
+		else
+		{
+			if (stripos($className, 'Eresus_') !== 0 ||
+				class_exists($className, false) ||
+				interface_exists($className, false))
+			{
+				return false;
+			}
+
+			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
+				str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
+		}
 
 		if (file_exists($fileName))
 		{

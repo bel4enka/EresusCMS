@@ -129,8 +129,6 @@ class Eresus_CMS
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
-	 *
-	 * @see framework/core/EresusApplication#main()
 	 */
 	public function main()
 	{
@@ -139,15 +137,10 @@ class Eresus_CMS
 		try
 		{
 			$this->initFS();
-			/* Подключение таблицы автозагрузки классов */
-			EresusClassAutoloader::register('core/cms.autoload.php', $this->getFsRoot());
-
-			/* Общая инициализация */
 			$this->checkEnviroment();
 			$this->createFileStructure();
 
 			Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-
 			/* Подключение старого ядра */
 			include_once 'kernel-legacy.php';
 			$GLOBALS['Eresus'] = new Eresus;
@@ -156,6 +149,7 @@ class Eresus_CMS
 			{
 				include_once 'debug.php';
 			}
+
 			$this->initLocale();
 			$this->initDB();
 			$this->initSession();
