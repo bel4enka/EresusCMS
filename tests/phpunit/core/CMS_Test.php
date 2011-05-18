@@ -92,10 +92,6 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3.2 required');
 		}
 
-		$driver = $this->getMock('stdClass', array('canonicalForm'));
-		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
-		FS::$driver = $driver;
-
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = Eresus_WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
@@ -104,7 +100,9 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html';
+		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+		$fsRoot->setAccessible(true);
+		$fsRoot->setValue($obj, '/home/user/public_html');
 		$httpRequest = new HttpRequest();
 
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
@@ -137,7 +135,9 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html/example.org';
+		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+		$fsRoot->setAccessible(true);
+		$fsRoot->setValue($obj, '/home/user/public_html/example.org');
 		$httpRequest = new HttpRequest();
 
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
@@ -166,11 +166,13 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$webServer = Eresus_WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
-		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
+		$documentRoot->setValue($webServer, 'C:/Program Files/Apache Webserver/docs');
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
-		$obj->fsRoot = FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org');
+		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+		$fsRoot->setAccessible(true);
+		$fsRoot->setValue($obj, 'C:/Program Files/Apache Webserver/docs/example.org');
 		$httpRequest = new HttpRequest();
 
 		$request = new ReflectionProperty('Eresus_CMS', 'request');

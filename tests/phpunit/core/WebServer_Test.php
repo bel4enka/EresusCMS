@@ -56,10 +56,6 @@ class Eresus_WebServer_Test extends PHPUnit_Framework_TestCase
 		$dir = dirname(__FILE__);
 		$_SERVER['DOCUMENT_ROOT'] = $dir;
 
-		$driver = $this->getMock('stdClass', array('canonicalForm'));
-		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
-		FS::$driver = $driver;
-
 		$server = Eresus_WebServer::getInstance();
 		$this->assertEquals($dir, $server->getDocumentRoot());
 	}

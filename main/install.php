@@ -129,7 +129,7 @@ class EresusTemplateNC
  * @package Core
  * @since 2.16
  */
-class Installer extends EresusApplication
+class Installer
 {
 	/**
 	 * Внутреннние переменные

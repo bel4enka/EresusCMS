@@ -98,7 +98,11 @@ class Eresus_WebServer
 	private function __construct()
 	{
 		$path = realpath($_SERVER['DOCUMENT_ROOT']);
-		$this->documentRoot = FS::driver()->canonicalForm($path);
+		if (DIRECTORY_SEPARATOR != '/')
+		{
+			$path = str_replace($path, DIRECTORY_SEPARATOR, '/');
+		}
+		$this->documentRoot = $path;
 	}
 	//-----------------------------------------------------------------------------
 

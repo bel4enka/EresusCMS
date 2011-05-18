@@ -79,8 +79,18 @@ class PageNotFoundException extends DomainException {}
  *
  * @package Core
  */
-class Eresus_CMS extends EresusApplication
+class Eresus_CMS
 {
+	/**
+	 * Коренвая директория приложения
+	 *
+	 * Устанавливается в {@link initFS()}. Используйте {@link getFsRoot()} для получения значения.
+	 *
+	 * @var string
+	 * @see getFsRoot(), initFS()
+	 */
+	private $fsRoot;
+
 	/**
 	 * Фронт-контроллер (АИ или КИ)
 	 *
@@ -128,6 +138,7 @@ class Eresus_CMS extends EresusApplication
 
 		try
 		{
+			$this->initFS();
 			/* Подключение таблицы автозагрузки классов */
 			EresusClassAutoloader::register('core/cms.autoload.php', $this->getFsRoot());
 
@@ -172,6 +183,18 @@ class Eresus_CMS extends EresusApplication
 			$this->fatalError($e, false);
 		}
 
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневую директорию приложения
+	 *
+	 * @return string
+	 * @see $fsRoot
+	 */
+	public function getFsRoot()
+	{
+		return $this->fsRoot;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -396,28 +419,6 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Определение корневого веб-адреса сайта
-	 *
-	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
-	 * образом localRoot объекта Eresus_CMS::$request
-	 */
-	private function detectWebRoot()
-	{
-		$webServer = Eresus_WebServer::getInstance();
-		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
-		$SUFFIX = $this->getFsRoot();
-		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		$this->request->setLocalRoot($SUFFIX);
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
-
-		$this->webRoot = $this->request->getScheme() . '://' . $this->request->getHost() .
-			$this->request->getLocalRoot();
-		Eresus_Template::setGlobalValue('siteRoot', $this->webRoot);
-
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Выполнение в режиме CLI
 	 */
 	private function runCLI()
@@ -435,6 +436,21 @@ class Eresus_CMS extends EresusApplication
 	private function initCLI()
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует работу с файловой системой
+	 *
+	 * Устанвливает {@link $fsRoot} при помощи{@link detectFsRoot()}.
+	 *
+	 * @return void
+	 *
+	 * @see $fsRoot, detectFsRoot()
+	 */
+	private function initFS()
+	{
+		$this->fsRoot = $this->detectFsRoot();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -575,6 +591,66 @@ class Eresus_CMS extends EresusApplication
 			header('404 Not Found', true, 404);
 			echo '404 Not Found';
 		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Определение корневого веб-адреса сайта
+	 *
+	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
+	 * образом localRoot объекта Eresus_CMS::$request
+	 */
+	private function detectWebRoot()
+	{
+		$webServer = Eresus_WebServer::getInstance();
+		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
+		$SUFFIX = $this->getFsRoot();
+		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
+		$this->request->setLocalRoot($SUFFIX);
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
+
+		$this->webRoot = $this->request->getScheme() . '://' . $this->request->getHost() .
+			$this->request->getLocalRoot();
+		Eresus_Template::setGlobalValue('siteRoot', $this->webRoot);
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Пытается определить корневую директорию приложения
+	 *
+	 * В режиме CLI используется $GLOBALS['argv'][0].
+	 *
+	 * В остальных режимах используется $_SERVER['SCRIPT_FILENAME'].
+	 *
+	 * @return string
+	 * @see $fsRoot, getFsRoot()
+	 */
+	private function detectFsRoot()
+	{
+		$path = false;
+
+		switch (true)
+		{
+			case Eresus_Kernel_PHP::isCLI():
+				$path = reset($GLOBALS['argv']);
+				Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Using global $argv variable: %s', $path);
+			break;
+
+			default:
+				$path = $_SERVER['SCRIPT_FILENAME'];
+				Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Using $_SERVER["SCRIPT_FILENAME"]: %s', $path);
+			break;
+		}
+
+		if (DIRECTORY_SEPARATOR != '/')
+		{
+			$path = str_replace($path, DIRECTORY_SEPARATOR, '/');
+		}
+		$path = dirname($path);
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '"%s"', $path);
+
+		return $path;
 	}
 	//-----------------------------------------------------------------------------
 }
