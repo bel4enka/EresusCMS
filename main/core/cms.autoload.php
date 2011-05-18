@@ -50,9 +50,6 @@ return array(
 	/* Domain */
 	'Plugins' => 'core/classes/Plugins.php',
 
-	/* Mail */
-	'EresusMail' => 'core/Mail/EresusMail.php',
-
 	/* UI */
 	'AdminUI' => 'core/UI/AdminUI.php',
 	'EresusFileManager' => 'core/UI/EresusFileManager.php',

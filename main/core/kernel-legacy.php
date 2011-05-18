@@ -245,12 +245,12 @@ function useLib($library)
  * @return bool
  *
  * @since ?.??
- * @deprecated с версии 2.16. Используйте класс {@see EresusMail}
+ * @deprecated с версии 2.16. Используйте класс {@link Eresus_Mail}
  */
 function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='',
 	$fromSign='', $replyTo='')
 {
-	$mail = new EresusMail();
+	$mail = new Eresus_Mail();
 	$mail->addTo($address)->setSubject($subject);
 	if ($html)
 	{

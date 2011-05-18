@@ -34,8 +34,9 @@
  * Отправка почты
  *
  * @package Mail
+ * @since 2.16
  */
-class EresusMail
+class Eresus_Mail
 {
 	/**
 	 * Объект-составитель письма
@@ -54,7 +55,7 @@ class EresusMail
 	/**
 	 * Конструктор
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 */
@@ -68,7 +69,7 @@ class EresusMail
 	 *
 	 * @param ezcMailComposer $composer
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailComposer
@@ -105,7 +106,7 @@ class EresusMail
 	 *
 	 * @param ezcMailTransport $transport
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailTransport
@@ -143,7 +144,7 @@ class EresusMail
 	 * @param string $address  адрес получателя
 	 * @param string $name     имя получателя
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMail::addTo()
@@ -163,7 +164,7 @@ class EresusMail
 	 * @param string $address  адрес получателя
 	 * @param string $name     имя получателя
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMail::addCc()
@@ -183,7 +184,7 @@ class EresusMail
 	 * @param string $address  адрес получателя
 	 * @param string $name     имя получателя
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMail::addBcc()
@@ -203,7 +204,7 @@ class EresusMail
 	 * @param string $address  адрес отправителя
 	 * @param string $name     имя отправителя
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailComposer::$from
@@ -222,7 +223,7 @@ class EresusMail
 	 *
 	 * @param string $address адрес для ответа
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 */
@@ -238,7 +239,7 @@ class EresusMail
 	 *
 	 * @param string $subject
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMail::$subject
@@ -258,7 +259,7 @@ class EresusMail
 	 *
 	 * @param string $html
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailComposer::$htmlText
@@ -276,7 +277,7 @@ class EresusMail
 	 *
 	 * @param string $text
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailComposer::$plainText
@@ -297,7 +298,7 @@ class EresusMail
 	 * @param string $contentType  тип контента (по умолчанию "application")
 	 * @param string $mimeType     тип MIME (по умолчанию "octet-stream")
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailComposer::addAttachment()
@@ -317,7 +318,7 @@ class EresusMail
 	 * @param string $name
 	 * @param string $value
 	 *
-	 * @return EresusMail
+	 * @return Eresus_Mail
 	 *
 	 * @since 2.16
 	 * @uses ezcMailPart::setHeader()
