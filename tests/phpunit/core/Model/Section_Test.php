@@ -30,7 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DB/Record.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/Section.php';
 
 /**

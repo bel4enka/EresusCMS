@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package DBAL
+ * @package DB
  *
  * $Id$
  */
@@ -34,10 +34,10 @@
 /**
  * Набор статических методов для работы с ORM
  *
- * @package DBAL
+ * @package DB
  * @since 2.16
  */
-class EresusORM
+class Eresus_DB_ORM
 {
 	/**
 	 * Возвращает объект таблицы заданного компонента

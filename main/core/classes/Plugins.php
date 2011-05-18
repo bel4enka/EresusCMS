@@ -60,7 +60,7 @@ class Plugins
 	 */
 	public function __construct()
 	{
-		$items = EresusORM::getTable('Eresus_Model_Plugin')->findAll();
+		$items = Eresus_DB_ORM::getTable('Eresus_Model_Plugin')->findAll();
 		if (count($items))
 		{
 			foreach($items as $item)

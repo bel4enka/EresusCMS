@@ -42,11 +42,6 @@ return array(
 	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',
 	'Plugin' => 'core/BusinessLogic/Plugin.php',
 
-	/* DBAL */
-	'EresusActiveRecord' => 'core/DBAL/EresusActiveRecord.php',
-	'EresusORM' => 'core/DBAL/EresusORM.php',
-	'EresusQuery' => 'core/DBAL/EresusQuery.php',
-
 	/* Domain */
 	'Plugins' => 'core/classes/Plugins.php',
 

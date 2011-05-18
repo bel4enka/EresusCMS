@@ -53,7 +53,7 @@
  *
  * @since 2.16
  */
-class Eresus_Model_User extends EresusActiveRecord
+class Eresus_Model_User extends Eresus_DB_Record
 {
 	/**
 	 * PRCE-фильтр для свойства "username"

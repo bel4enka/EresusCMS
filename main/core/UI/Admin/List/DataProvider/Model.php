@@ -118,7 +118,7 @@ class Eresus_UI_Admin_List_DataProvider_Model implements Eresus_UI_Admin_List_Da
 	{
 		if (!$this->table)
 		{
-			$this->table = EresusORM::getTable($this->componentName);
+			$this->table = Eresus_DB_ORM::getTable($this->componentName);
 		}
 		return $this->table;
 	}

@@ -100,7 +100,7 @@ class ContentPlugin extends Plugin
 	{
 		global $Eresus, $page;
 
-		$item = EresusORM::getTable('Eresus_Model_Section')->find($page->id);
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find($page->id);
 		$item->content = $content;
 		$item->save();
 	}
@@ -146,7 +146,7 @@ class ContentPlugin extends Plugin
 		{
 			$this->adminUpdate();
 		}
-		$item = EresusORM::getTable('Eresus_Model_Section')->find($page->id);
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find($page->id);
 		$form = array(
 			'name' => 'editForm',
 			'caption' => $page->title,

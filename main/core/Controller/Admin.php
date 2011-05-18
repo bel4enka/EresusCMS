@@ -28,7 +28,7 @@
  *
  * @package BusinessLogic
  *
- * $Id: EresusORM.php 1338 2011-01-14 20:39:53Z mk $
+ * $Id$
  */
 
 /**

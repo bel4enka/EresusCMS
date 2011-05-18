@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package DBAL
+ * @package DB
  *
  * $Id$
  */
@@ -34,10 +34,10 @@
 /**
  * Активная запись
  *
- * @package DBAL
+ * @package DB
  * @since 2.16
  */
-class EresusActiveRecord extends Doctrine_Record
+class Eresus_DB_Record extends Doctrine_Record
 {
 
 	/**

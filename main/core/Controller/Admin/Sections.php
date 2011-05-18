@@ -169,12 +169,12 @@ class Eresus_Controller_Admin_Sections extends Eresus_Controller_Admin_Abstract
 	 *
 	 * @return void
 	 *
-	 * @uses EresusORM::getTable()
+	 * @uses Eresus_DB_ORM::getTable()
 	 * @uses HttpResponse::redirect()
 	 */
 	private function moveUp()
 	{
-		$item = EresusORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
 		if ($item)
 		{
 			$item->moveUp();
@@ -188,12 +188,12 @@ class Eresus_Controller_Admin_Sections extends Eresus_Controller_Admin_Abstract
 	 *
 	 * @return void
 	 *
-	 * @uses EresusORM::getTable()
+	 * @uses Eresus_DB_ORM::getTable()
 	 * @uses HttpResponse::redirect()
 	 */
 	private function moveDown()
 	{
-		$item = EresusORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
 		if ($item)
 		{
 			$item->moveDown();
@@ -269,7 +269,7 @@ class Eresus_Controller_Admin_Sections extends Eresus_Controller_Admin_Abstract
 	 */
 	private function delete()
 	{
-		$item = EresusORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find(arg('id', 'int'));
 		$owner = $item->owner;
 		$item->delete();
 		HttpResponse::redirect($GLOBALS['page']->url(array('id'=>'')));

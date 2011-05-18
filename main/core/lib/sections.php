@@ -83,8 +83,8 @@ class Sections
 	{
 		if ($force || !$this->index)
 		{
-			$query = EresusORM::getTable('Eresus_Model_Section')->createQuery('s')->select('s.id, s.owner')->
-				orderBy('s.position');
+			$query = Eresus_DB_ORM::getTable('Eresus_Model_Section')->createQuery('s')->
+				select('s.id, s.owner')->orderBy('s.position');
 			$items = $query->fetchArray();
 			if ($items)
 			{
@@ -160,8 +160,8 @@ class Sections
 			if (count($set))
 			{
 				/* Читаем из БД */
-				$q = EresusORM::getTable('Eresus_Model_Section')->createQuery('s')->whereIn('s.id', $set)->
-					andWhere('s.access >= ?', $access)->orderBy('position');
+				$q = Eresus_DB_ORM::getTable('Eresus_Model_Section')->createQuery('s')->
+					whereIn('s.id', $set)->andWhere('s.access >= ?', $access)->orderBy('position');
 				$items = $q->fetchArray();
 				for ($i=0; $i<count($items); $i++)
 				{

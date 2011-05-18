@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package DBAL
+ * @package DB
  *
  * $Id$
  */
@@ -34,11 +34,11 @@
 /**
  * Запрос к БД
  *
- * @package DBAL
+ * @package DB
  * @since 2.16
  */
 // @codeCoverageIgnoreStart
-class EresusQuery extends Doctrine_Query
+class Eresus_DB_Query extends Doctrine_Query
 {
 }
 // @codeCoverageIgnoreEnd

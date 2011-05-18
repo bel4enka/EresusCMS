@@ -140,12 +140,12 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
-	 * @uses EresusORM::getTable()
+	 * @uses Eresus_DB_ORM::getTable()
 	 * @since 2.16
 	 */
 	public function loginByHash($username, $hash)
 	{
-		$users = EresusORM::getTable('Eresus_Model_User')->findByUsername($username);
+		$users = Eresus_DB_ORM::getTable('Eresus_Model_User')->findByUsername($username);
 
 		if (!count($users))
 		{
@@ -217,7 +217,7 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 		if (isset($_SESSION['user']) && $_SESSION['user'])
 		{
 			$id = intval($_SESSION['user']);
-			$this->user = EresusORM::getTable('Eresus_Model_User')->find($id);
+			$this->user = Eresus_DB_ORM::getTable('Eresus_Model_User')->find($id);
 		}
 		elseif (isset($_COOKIE['eresus_auth']))
 		{

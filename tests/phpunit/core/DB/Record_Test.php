@@ -30,32 +30,32 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
+require_once dirname(__FILE__) . '/../../../../main/core/DB/Record.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusActiveRecordTest extends PHPUnit_Framework_TestCase
+class Eresus_DB_Record_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusActiveRecord::unserializeAccessor
+	 * @covers Eresus_DB_Record::unserializeAccessor
 	 */
 	public function test_unserializeAccessor()
 	{
-		$test = $this->getMock('EresusActiveRecord', array('_set', '_get'));
+		$test = $this->getMock('Eresus_DB_Record', array('_set', '_get'));
 		$test->expects($this->once())->method('_set')->with('a', array());
 		$test->expects($this->once())->method('_get')->with('a', false)->
 			will($this->returnValue(null));
 		$test->unserializeAccessor(true, 'a');
 
-		$test = $this->getMock('EresusActiveRecord', array('_set', '_get'));
+		$test = $this->getMock('Eresus_DB_Record', array('_set', '_get'));
 		$test->expects($this->once())->method('_set')->with('a', array());
 		$test->expects($this->once())->method('_get')->with('a', false)->
 			will($this->returnValue(''));
 		$test->unserializeAccessor(true, 'a');
 
-		$test = $this->getMock('EresusActiveRecord', array('_set', '_get'));
+		$test = $this->getMock('Eresus_DB_Record', array('_set', '_get'));
 		$test->expects($this->once())->method('_set')->with('a', array('a' => 'b'));
 		$test->expects($this->once())->method('_get')->with('a', false)->
 			will($this->returnValue('a:1:{s:1:"a";s:1:"b";}'));
@@ -64,11 +64,11 @@ class EresusActiveRecordTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusActiveRecord::serializeMutator
+	 * @covers Eresus_DB_Record::serializeMutator
 	 */
 	public function test_serializeMutator()
 	{
-		$test = $this->getMock('EresusActiveRecord', array('_set'));
+		$test = $this->getMock('Eresus_DB_Record', array('_set'));
 		$test->expects($this->once())->method('_set')->with('a', 'a:1:{s:1:"a";s:1:"b";}');
 		$test->serializeMutator(array('a' => 'b'), true, 'a');
 	}

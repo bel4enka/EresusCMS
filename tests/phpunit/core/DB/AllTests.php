@@ -31,22 +31,22 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/EresusActiveRecordTest.php';
+require_once dirname(__FILE__) . '/Record_Test.php';
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
-	require_once dirname(__FILE__) . '/EresusORMTest.php';
+	require_once dirname(__FILE__) . '/ORM_Test.php';
 }
 
-class Core_DBAL_AllTests
+class Eresus_DB_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/DBAL');
+		$suite = new PHPUnit_Framework_TestSuite('Eresus/DB');
 
-		$suite->addTestSuite('EresusActiveRecordTest');
+		$suite->addTestSuite('Eresus_DB_Record_Test');
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$suite->addTestSuite('EresusORMTest');
+			$suite->addTestSuite('Eresus_DB_ORM_Test');
 		}
 
 		return $suite;

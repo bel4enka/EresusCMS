@@ -57,7 +57,7 @@
  *
  * @package	Domain
  */
-class Eresus_Model_Section extends EresusActiveRecord
+class Eresus_Model_Section extends Eresus_DB_Record
 {
 	/**
 	 * (non-PHPdoc)

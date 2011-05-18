@@ -350,7 +350,7 @@ class Installer extends EresusApplication
 	 */
 	private function setupDatabase()
 	{
-		require_once $this->getFsRoot() . '/core/DBAL/EresusActiveRecord.php';
+		require_once $this->getFsRoot() . '/core/DB/Record.php';
 		$manager = Doctrine_Manager::getInstance();
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);

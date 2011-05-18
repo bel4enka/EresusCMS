@@ -59,7 +59,7 @@ class Eresus_Controller_Admin_Content extends Eresus_Controller_Admin_Abstract
 		$plugins = $GLOBALS['Eresus']->plugins;
 		$plugin = null;
 
-		$this->item = EresusORM::getTable('Eresus_Model_Section')->find(arg('section', 'int'));
+		$this->item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find(arg('section', 'int'));
 
 		$GLOBALS['page']->id = $this->item['id'];
 
