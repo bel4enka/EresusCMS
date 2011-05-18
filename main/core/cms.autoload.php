@@ -35,7 +35,6 @@ return array(
 
 	'EresusExtensionConnector' => 'core/classes/EresusExtensionConnector.php',
 	'EresusForm' => 'core/EresusForm.php',
-	'I18n' => 'core/i18n.php',
 	'WebPage' => 'core/classes/WebPage.php',
 
 	/* AccessControl */

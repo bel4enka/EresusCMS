@@ -58,8 +58,7 @@ class Eresus_UI_Admin_List_ItemControl_Edit extends Eresus_UI_Admin_List_ItemCon
 	 */
 	public function __construct()
 	{
-		$i18n = I18n::getInstance();
-		$this->title = $i18n->getText('admEdit');
+		$this->title = i18n('Edit');
 	}
 	//-----------------------------------------------------------------------------
 }

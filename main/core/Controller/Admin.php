@@ -171,7 +171,7 @@ class Eresus_Controller_Admin
 	 * @uses EresusLogger::log()
 	 * @uses arg()
 	 * @uses Eresus_CMS::app()
-	 * @uses I18n::getInstance()
+	 * @uses i18n()
 	 * @uses EresusLogger::exception()
 	 * @uses ErrorMessage()
 	 * @uses ErrorBox()
@@ -210,7 +210,7 @@ class Eresus_Controller_Admin
 					catch (Exception $e)
 					{
 						$logMsg = 'Error in plugin "' . $name . '"';
-						$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+						$msg = i18n('An error occured in plugin "%s"', __CLASS__);
 						$msg = sprintf($msg, $name);
 
 						EresusLogger::exception($e);
@@ -227,7 +227,7 @@ class Eresus_Controller_Admin
 			else
 			{
 				EresusLogger::log(__METHOD__, LOG_ERR, '$controller property is not an object');
-				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
+				$msg = i18n('Unexpected error! See log for more info.', __CLASS__);
 				$html .= ErrorBox($msg);
 			}
 		}

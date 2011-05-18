@@ -58,8 +58,7 @@ class Eresus_UI_Admin_List_ItemControl_Delete extends Eresus_UI_Admin_List_ItemC
 	 */
 	public function __construct()
 	{
-		$i18n = I18n::getInstance();
-		$this->title = $i18n->getText('admDelete');
+		$this->title = i18n('Delete');
 	}
 	//-----------------------------------------------------------------------------
 }

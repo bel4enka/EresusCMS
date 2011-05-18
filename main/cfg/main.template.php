@@ -24,8 +24,8 @@ Eresus_Config::set('eresus.cms.dsn', 'mysql://user:password@localhost/database')
 //  Региональные настройки
 //-------------------------------------------------------------------------------
 
-// Код языка по умолчанию. По умолчанию: 'ru'
-//$Eresus->conf['lang'] = 'ru';
+// Локаль по умолчанию.
+//Eresus_Config::set('eresus.cms.locale', 'ru_RU');
 
 // Временная зона по умолчанмю (для PHP 5.1.0+)
 //$Eresus->conf['timezone'] = 'Europe/Moscow';

@@ -121,7 +121,7 @@ class Plugins
 		{
 			EresusLogger::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
 				$name);
-			$msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
+			$msg = i18n('Can not find main file "%s" for plugin "%s"', __CLASS__);
 			$msg = sprintf($msg, $filename, $name);
 			ErrorMessage($msg);
 		}

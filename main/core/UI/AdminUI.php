@@ -89,7 +89,7 @@ class AdminUI extends WebPage
 		$this->setUITheme($theme);
 		Eresus_Template::setGlobalValue('theme', $theme);
 
-		$this->title = admControls;
+		$this->title = i18n('Controls');
 		/* Определяем уровень вложенности */
 		do
 		{
@@ -126,12 +126,12 @@ class AdminUI extends WebPage
 			),
 		);*/
 		$this->menu = new Eresus_UI_Admin_Menu();
-		$this->menu->addItem(admStructure, '/sections/', ADMIN);
-		$this->menu->addItem(admFileManager, '/files/', EDITOR);
-		$this->menu->addItem(admPlugins, '/plugins/', ADMIN);
-		$this->menu->addItem(admThemes, '/design/', ADMIN);
-		$this->menu->addItem(admUsers, '/users/', ADMIN);
-		$this->menu->addItem(admConfiguration, '/settings/', ADMIN);
+		$this->menu->addItem(i18n('Site Sections'), '/sections/', ADMIN);
+		$this->menu->addItem(i18n('File Manager'), '/files/', EDITOR);
+		$this->menu->addItem(i18n('Plugins'), '/plugins/', ADMIN);
+		$this->menu->addItem(i18n('Design'), '/design/', ADMIN);
+		$this->menu->addItem(i18n('Users'), '/users/', ADMIN);
+		$this->menu->addItem(i18n('Configuration'), '/settings/', ADMIN);
 	}
 	//-----------------------------------------------------------------------------
 

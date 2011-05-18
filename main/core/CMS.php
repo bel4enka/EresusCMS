@@ -145,8 +145,7 @@ class Eresus_CMS extends EresusApplication
 			{
 				include_once 'debug.php';
 			}
-			$i18n = I18n::getInstance();
-			Eresus_Template::setGlobalValue('i18n', $i18n);
+			$this->initLocale();
 			$this->initDB();
 			$this->initSession();
 			$GLOBALS['Eresus']->init();
@@ -451,6 +450,28 @@ class Eresus_CMS extends EresusApplication
 		@include_once $this->getFsRoot() . '/cfg/main.php';
 
 		// TODO: Сделать проверку успешного подключения файла
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация локали
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function initLocale()
+	{
+		$i18n = Eresus_i18n::getInstance();
+		if ($locale = Eresus_Config::get('eresus.cms.locale'))
+		{
+			$i18n->setLocale($locale);
+		}
+		else
+		{
+			$i18n->setLocale('ru_RU');
+		}
+		Eresus_Template::setGlobalValue('i18n', $i18n);
 	}
 	//-----------------------------------------------------------------------------
 

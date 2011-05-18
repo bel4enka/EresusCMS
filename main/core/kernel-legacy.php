@@ -1076,24 +1076,6 @@ class Eresus
 		$this->https = $request['scheme'] == 'https';
 	}
 	//------------------------------------------------------------------------------
-	/**
-	* Инициализация локали
-	*
-	* @access private
-	*/
-	function init_locale()
-	{
-		global $locale;
-
-		$locale['lang'] = $this->conf['lang'];
-		$locale['prefix'] = '';
-
-		# Подключение строковых данных
-		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
-		if (is_file($filename)) include_once($filename);
-		else FatalError("Locale file '$filename' not found!");
-	}
-	//------------------------------------------------------------------------------
 
  /**
 	* Подключение базовых классов
@@ -1141,9 +1123,10 @@ class Eresus
 		}
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Инициализация механизма плагинов
-	*/
+
+	/**
+	 * Инициализация механизма плагинов
+	 */
 	function init_plugins()
 	{
 		$this->plugins = new Plugins;
@@ -1174,8 +1157,6 @@ class Eresus
 		$this->init_settings();
 		# Первичный разбор запроса
 		$this->init_request();
-		# Настройка локали
-		$this->init_locale();
 		# Подключение базовых классов
 		$this->init_classes();
 		# Инициализация расширений

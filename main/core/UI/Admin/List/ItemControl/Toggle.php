@@ -53,8 +53,7 @@ class Eresus_UI_Admin_List_ItemControl_Toggle extends Eresus_UI_Admin_List_ItemC
 	 */
 	public function getTitle()
 	{
-		$i18n = I18n::getInstance();
-		return $this->item->active ? $i18n->getText('admDeactivate') : $i18n->getText('admActivate');
+		return $this->item->active ? i18n('Disable') : i18n('Enable');
 	}
 	//-----------------------------------------------------------------------------
 

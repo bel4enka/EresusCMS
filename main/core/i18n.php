@@ -4,10 +4,9 @@
  *
  * ${product.description}
  *
- * Модуль интернационализации.
+ * Модуль интернационализации
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @copyright 2004, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -38,13 +37,13 @@
  *
  * @package i18n
  */
-class I18n
+class Eresus_i18n
 {
 
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var I18n
+	 * @var Eresus_i18n
 	 */
 	static private $instance;
 
@@ -61,14 +60,23 @@ class I18n
 	private $locale;
 
 	/**
+	 * Строковые данные
+	 *
+	 * @var array
+	 */
+	private $data = array();
+
+	/**
 	 * Возвращает экземпляр-одиночку
 	 *
-	 * @return I18n
+	 * @return Eresus_i18n
 	 */
 	static public function getInstance()
 	{
 		if (!self::$instance)
-			self::$instance = new I18n(Eresus_CMS::app()->getFsRoot() . '/lang');
+		{
+			self::$instance = new self(Eresus_CMS::app()->getFsRoot() . '/lang');
+		}
 
 		return self::$instance;
 	}
@@ -78,7 +86,7 @@ class I18n
 	 * Конструктор
 	 *
 	 * @param string $path  Путь к файлам локализации
-	 * @return I18n
+	 * @return Eresus_i18n
 	 */
 	public function __construct($path)
 	{
@@ -95,23 +103,51 @@ class I18n
 	public function setLocale($locale)
 	{
 		$this->locale = $locale;
-		include_once $this->path . '/' . $this->locale . '.php';
+		if (!isset($this->data[$this->locale]))
+		{
+			$this->data[$this->locale] = include $this->path . '/' . $this->locale . '.php';
+		}
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает текст в заданной локали
 	 *
-	 * @param string $key                 Ключ искомой строки
-	 * @param string $context [optional]  Контекст
+	 * @param string $text     Искомый текст
+	 * @param string $context  Контекст
 	 * @return string
 	 */
-	public function getText($key, $context = null)
+	public function getText($text, $context = null)
 	{
-		if (defined($key))
-			return constant($key);
+		if (isset($this->data[$this->locale]))
+		{
+			if ($context && isset($this->data[$this->locale]['messages'][$context]))
+			{
+				$messages = $this->data[$this->locale]['messages'][$context];
+			}
+			else
+			{
+				$messages = $this->data[$this->locale]['messages']['global'];
+			}
+			if (isset($messages[$text]))
+			{
+				return $messages[$text];
+			}
+		}
 
-		return $key;
+		return $text;
 	}
 	//-----------------------------------------------------------------------------
 }
+
+
+/**
+ * Сокращение для "Eresus_i18n::getInstance()->getText()"
+ *
+ * @since 2.16
+ */
+function i18n($text, $context = null)
+{
+	return Eresus_i18n::getInstance()->getText($text, $context);
+}
+//-----------------------------------------------------------------------------

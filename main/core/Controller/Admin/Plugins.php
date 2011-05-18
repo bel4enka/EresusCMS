@@ -232,13 +232,13 @@ class Eresus_Controller_Admin_Plugins extends Eresus_Controller_Admin_Abstract
 						version_compare($plugin['kernel'], $kernelVersion, '>')
 					)
 					{
-						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
+						$msg =  i18n('Required kernel of version %s or higher', get_class($this));
 						$plugin['errors'] []= sprintf($msg, $plugin['kernel']);
 					}
 				}
 				else
 				{
-					$msg =  I18n::getInstance()->getText('Class "%s" not found in plugin file', $this);
+					$msg =  i18n('Class "%s" not found in plugin file', get_class($this));
 					$plugin['errors'] []= sprintf($msg, $plugin['name']);
 				}
 				$data['plugins'][$plugin['title']] = $plugin;
