@@ -31,7 +31,7 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Eresus_Service_Admin_Router_Test.php';
+require_once dirname(__FILE__) . '/Router_Test.php';
 
 class Core_Service_Admin_AllTests
 {

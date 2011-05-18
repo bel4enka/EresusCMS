@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package AccessControl
+ * @package Security
  *
  * $Id$
  */
@@ -34,10 +34,10 @@
 /**
  * Служба аутентификации
  *
- * @package AccessControl
+ * @package Security
  * @since 2.16
  */
-class EresusAuthService implements Eresus_CMS_Service
+class Eresus_Security_AuthService implements Eresus_CMS_Service
 {
 	/**
 	 * Операция выполнена успешно
@@ -72,7 +72,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var AuthService
+	 * @var Eresus_Security_AuthService
 	 */
 	private static $instance = null;
 
@@ -86,7 +86,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	/**
 	 * Возвращает экземпляр службы
 	 *
-	 * @return AuthService
+	 * @return Eresus_Security_AuthService
 	 *
 	 * @since 2.16
 	 */
@@ -234,7 +234,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	 * Устанавливает куки для автоматического входа
 	 *
 	 * Метод устанавливает куки, содержащее информацию для автоматической аутентификации посетителя.
-	 * Эта информация проверяется методом {@link EresusAuthService::init()}.
+	 * Эта информация проверяется методом {@link Eresus_Security_AuthService::init()}.
 	 *
 	 * @return void
 	 *
@@ -257,7 +257,7 @@ class EresusAuthService implements Eresus_CMS_Service
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Удаляет куки, установленные {@link EresusAuthService::setCookies()}
+	 * Удаляет куки, установленные {@link Eresus_Security_AuthService::setCookies()}
 	 *
 	 * @return void
 	 *

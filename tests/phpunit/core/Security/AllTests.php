@@ -33,18 +33,18 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
-	require_once dirname(__FILE__) . '/EresusAuthServiceTest.php';
+	require_once dirname(__FILE__) . '/AuthService_Test.php';
 }
 
-class Core_AccessControl_AllTests
+class Eresus_Security_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/AccessControl');
+		$suite = new PHPUnit_Framework_TestSuite('Eresus/Security');
 
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
-			$suite->addTestSuite('EresusAuthServiceTest');
+			$suite->addTestSuite('Eresus_Security_AuthService_Test');
 		}
 
 		return $suite;

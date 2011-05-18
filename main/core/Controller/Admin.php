@@ -117,7 +117,7 @@ class Eresus_Controller_Admin
 		{
 			if (HTTP::request()->getLocal() == '/admin/logout/')
 			{
-				EresusAuthService::getInstance()->logout();
+				Eresus_Security_AuthService::getInstance()->logout();
 				HttpResponse::redirect($GLOBALS['Eresus']->root . 'admin/');
 			}
 
@@ -134,8 +134,8 @@ class Eresus_Controller_Admin
 	 *
 	 * @uses HTTP::request()
 	 * @uses Eresus_Model_User::USERNAME_FILTER
-	 * @uses EresusAuthService::getInstance()
-	 * @uses EresusAuthService::SUCCESS
+	 * @uses Eresus_Security_AuthService::getInstance()
+	 * @uses Eresus_Security_AuthService::SUCCESS
 	 * @uses HttpResponse::redirect()
 	 */
 	private function auth()
@@ -146,12 +146,12 @@ class Eresus_Controller_Admin
 		{
 			$username = trim($req->arg('username', Eresus_Model_User::USERNAME_FILTER));
 			$password = trim($req->arg('password'));
-			$state = EresusAuthService::getInstance()->login($username, $password);
-			if ($state == EresusAuthService::SUCCESS)
+			$state = Eresus_Security_AuthService::getInstance()->login($username, $password);
+			if ($state == Eresus_Security_AuthService::SUCCESS)
 			{
 				if ($req->arg('autologin'))
 				{
-					EresusAuthService::getInstance()->setCookies();
+					Eresus_Security_AuthService::getInstance()->setCookies();
 				}
 				HttpResponse::redirect('./admin.php');
 			}

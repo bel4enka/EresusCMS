@@ -37,9 +37,6 @@ return array(
 	'EresusForm' => 'core/EresusForm.php',
 	'WebPage' => 'core/classes/WebPage.php',
 
-	/* AccessControl */
-	'EresusAuthService' => 'core/AccessControl/EresusAuthService.php',
-
 	/* BusinessLogic */
 	'ContentPlugin' => 'core/BusinessLogic/ContentPlugin.php',
 	'EresusAdminFrontController' => 'core/BusinessLogic/EresusAdminFrontController.php',

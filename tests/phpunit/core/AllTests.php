@@ -38,7 +38,6 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
-require_once dirname(__FILE__) . '/AccessControl/AllTests.php';
 require_once dirname(__FILE__) . '/BusinessLogic/AllTests.php';
 require_once dirname(__FILE__) . '/Config_Test.php';
 require_once dirname(__FILE__) . '/Controller/AllTests.php';
@@ -53,6 +52,7 @@ require_once dirname(__FILE__) . '/Kernel/AllTests.php';
 require_once dirname(__FILE__) . '/lib/AllTests.php';
 require_once dirname(__FILE__) . '/Model/AllTests.php';
 require_once dirname(__FILE__) . '/Mail/AllTests.php';
+require_once dirname(__FILE__) . '/Security/AllTests.php';
 require_once dirname(__FILE__) . '/Service/AllTests.php';
 require_once dirname(__FILE__) . '/Template_Test.php';
 require_once dirname(__FILE__) . '/UI/AllTests.php';
@@ -74,11 +74,12 @@ class Core_AllTests
 		$suite->addTest(Core_Helper_AllTests::suite());
 		$suite->addTestSuite('Eresus_Kernel_Test');
 		$suite->addTest(Core_Kernel_AllTests::suite());
+		$suite->addTest(Eresus_Security_AllTests::suite());
 		$suite->addTestSuite('Eresus_WebServer_Test');
+
 		$suite->addTestSuite('LegacyFunctionsTest');
 		$suite->addTestSuite('Eresus_Template_Test');
 
-		$suite->addTest(Core_AccessControl_AllTests::suite());
 		$suite->addTest(Core_BusinessLogic_AllTests::suite());
 		$suite->addTest(Core_DBAL_AllTests::suite());
 		$suite->addTest(Core_Domain_AllTests::suite());

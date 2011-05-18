@@ -189,7 +189,7 @@ function UserRights($level)
 		return true;
 	}
 
-	$user = EresusAuthService::getInstance()->getUser();
+	$user = Eresus_Security_AuthService::getInstance()->getUser();
 
 	if (!$user)
 	{

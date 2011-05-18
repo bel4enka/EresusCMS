@@ -35,26 +35,26 @@ require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusORM.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DBAL/EresusActiveRecord.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
-require_once dirname(__FILE__) . '/../../../../main/core/AccessControl/EresusAuthService.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Security/AuthService.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
+class Eresus_Security_AuthService_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusAuthService::getInstance
+	 * @covers Eresus_Security_AuthService::getInstance
 	 */
 	public function test_interface()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 		$this->assertInstanceOf('Eresus_CMS_Service', $test);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::getUser
+	 * @covers Eresus_Security_AuthService::getUser
 	 */
 	public function test_getUser()
 	{
@@ -63,9 +63,9 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
-		$userProperty = new ReflectionProperty('EresusAuthService', 'user');
+		$userProperty = new ReflectionProperty('Eresus_Security_AuthService', 'user');
 		$userProperty->setAccessible(true);
 		$userProperty->setValue($test, 123);
 		$this->assertEquals(123, $test->getUser());
@@ -73,11 +73,11 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::login
+	 * @covers Eresus_Security_AuthService::login
 	 */
 	public function test_login_UNKNOWN_USER()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$table = $this->getMock('stdClass', array('findByUsername'));
 		$table->expects($this->once())->method('findByUsername')->will($this->returnValue(array()));
@@ -86,16 +86,16 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::UNKNOWN_USER, $test->login('noexistent_user', 'pass'));
+		$this->assertEquals(Eresus_Security_AuthService::UNKNOWN_USER, $test->login('noexistent_user', 'pass'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::login
+	 * @covers Eresus_Security_AuthService::login
 	 */
 	public function test_login_ACCOUNT_DISABLED()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$user = new stdClass();
 		$user->active = false;
@@ -108,16 +108,16 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::ACCOUNT_DISABLED, $test->login('disabled_user', 'pass'));
+		$this->assertEquals(Eresus_Security_AuthService::ACCOUNT_DISABLED, $test->login('disabled_user', 'pass'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::login
+	 * @covers Eresus_Security_AuthService::login
 	 */
 	public function test_login_BRUTEFORCING()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$user = new stdClass();
 		$user->active = true;
@@ -132,16 +132,16 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::BRUTEFORCING, $test->login('user', 'pass'));
+		$this->assertEquals(Eresus_Security_AuthService::BRUTEFORCING, $test->login('user', 'pass'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::login
+	 * @covers Eresus_Security_AuthService::login
 	 */
 	public function test_login_BAD_PASSWORD()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$user = new stdClass;
 		$user->active = true;
@@ -157,12 +157,12 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::BAD_PASSWORD, $test->login('user', 'bad_pass'));
+		$this->assertEquals(Eresus_Security_AuthService::BAD_PASSWORD, $test->login('user', 'bad_pass'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::login
+	 * @covers Eresus_Security_AuthService::login
 	 */
 	public function test_login_SUCCESS()
 	{
@@ -171,9 +171,9 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
-		$userProperty = new ReflectionProperty('EresusAuthService', 'user');
+		$userProperty = new ReflectionProperty('Eresus_Security_AuthService', 'user');
 		$userProperty->setAccessible(true);
 		$userProperty->setValue($test, null);
 
@@ -193,18 +193,18 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::SUCCESS, $test->login('user', 'pass'));
+		$this->assertEquals(Eresus_Security_AuthService::SUCCESS, $test->login('user', 'pass'));
 		$this->assertSame($user, $userProperty->getValue($test));
 		$this->assertEquals(123, $_SESSION['user']);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::loginByHash
+	 * @covers Eresus_Security_AuthService::loginByHash
 	 */
 	public function test_loginByHash_UNKNOWN_USER()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$table = $this->getMock('stdClass', array('findByUsername'));
 		$table->expects($this->once())->method('findByUsername')->will($this->returnValue(array()));
@@ -213,16 +213,16 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::UNKNOWN_USER, $test->loginByHash('noexistent_user', 'hash'));
+		$this->assertEquals(Eresus_Security_AuthService::UNKNOWN_USER, $test->loginByHash('noexistent_user', 'hash'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::loginByHash
+	 * @covers Eresus_Security_AuthService::loginByHash
 	 */
 	public function test_loginByHash_ACCOUNT_DISABLED()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$user = new stdClass();
 		$user->active = false;
@@ -235,16 +235,16 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::ACCOUNT_DISABLED, $test->loginByHash('disabled_user', 'hash'));
+		$this->assertEquals(Eresus_Security_AuthService::ACCOUNT_DISABLED, $test->loginByHash('disabled_user', 'hash'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::loginByHash
+	 * @covers Eresus_Security_AuthService::loginByHash
 	 */
 	public function test_loginByHash_BRUTEFORCING()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$user = new stdClass();
 		$user->active = true;
@@ -259,16 +259,16 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::BRUTEFORCING, $test->loginByHash('user', 'hash'));
+		$this->assertEquals(Eresus_Security_AuthService::BRUTEFORCING, $test->loginByHash('user', 'hash'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::loginByHash
+	 * @covers Eresus_Security_AuthService::loginByHash
 	 */
 	public function test_loginByHash_BAD_PASSWORD()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$user = new stdClass;
 		$user->active = true;
@@ -284,12 +284,12 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::BAD_PASSWORD, $test->loginByHash('user', 'bad_hash'));
+		$this->assertEquals(Eresus_Security_AuthService::BAD_PASSWORD, $test->loginByHash('user', 'bad_hash'));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::loginByHash
+	 * @covers Eresus_Security_AuthService::loginByHash
 	 */
 	public function test_loginByHash_SUCCESS()
 	{
@@ -298,9 +298,9 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
-		$userProperty = new ReflectionProperty('EresusAuthService', 'user');
+		$userProperty = new ReflectionProperty('Eresus_Security_AuthService', 'user');
 		$userProperty->setAccessible(true);
 		$userProperty->setValue($test, null);
 
@@ -320,14 +320,14 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 		$core->expects($this->once())->method('getTable')->will($this->returnValue($table));
 		Doctrine_Core::setMock($core);
 
-		$this->assertEquals(EresusAuthService::SUCCESS, $test->loginByHash('user', 'hash'));
+		$this->assertEquals(Eresus_Security_AuthService::SUCCESS, $test->loginByHash('user', 'hash'));
 		$this->assertSame($user, $userProperty->getValue($test));
 		$this->assertEquals(123, $_SESSION['user']);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::loginByHash
+	 * @covers Eresus_Security_AuthService::loginByHash
 	 * @expectedException DomainException
 	 */
 	public function test_loginByHash_saveError()
@@ -337,9 +337,9 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
-		$userProperty = new ReflectionProperty('EresusAuthService', 'user');
+		$userProperty = new ReflectionProperty('Eresus_Security_AuthService', 'user');
 		$userProperty->setAccessible(true);
 		$userProperty->setValue($test, null);
 
@@ -365,7 +365,7 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::logout
+	 * @covers Eresus_Security_AuthService::logout
 	 */
 	public function test_logout()
 	{
@@ -374,9 +374,9 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
-		$userProperty = new ReflectionProperty('EresusAuthService', 'user');
+		$userProperty = new ReflectionProperty('Eresus_Security_AuthService', 'user');
 		$userProperty->setAccessible(true);
 		$userProperty->setValue($test, true);
 
@@ -390,11 +390,11 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::init
+	 * @covers Eresus_Security_AuthService::init
 	 */
 	public function test_init_fromSession()
 	{
-		$test = EresusAuthService::getInstance();
+		$test = Eresus_Security_AuthService::getInstance();
 
 		$table = $this->getMock('stdClass', array('find'));
 		$table->expects($this->once())->method('find')->will($this->returnArgument(0));
@@ -412,11 +412,11 @@ class EresusAuthServiceTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusAuthService::init
+	 * @covers Eresus_Security_AuthService::init
 	 */
 	public function test_init_fromCookies()
 	{
-		$test = $this->getMockBuilder('EresusAuthService')->setMethods(array('loginByHash'))
+		$test = $this->getMockBuilder('Eresus_Security_AuthService')->setMethods(array('loginByHash'))
 			->disableOriginalConstructor()->getMock();
 		$test->expects($this->once())->method('loginByHash')->
 			with('root', '74be16979710d4c4e7c6647856088456');
