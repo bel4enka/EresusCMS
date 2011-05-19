@@ -479,7 +479,7 @@ function arg($arg, $filter = null)
 		switch($filter)
 		{
 			case 'dbsafe':
-				$arg = $Eresus->db->escape($arg);
+				// Оставлено для предотвращения распознавания "dbsafe" в качестве регулярного выражения
 			break;
 
 			case 'int':
