@@ -75,7 +75,7 @@ class Eresus_i18n
 	{
 		if (!self::$instance)
 		{
-			self::$instance = new self(Eresus_CMS::app()->getFsRoot() . '/lang');
+			self::$instance = new self(Eresus_CMS::app()->getRootDir() . '/lang');
 		}
 
 		return self::$instance;

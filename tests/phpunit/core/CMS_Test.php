@@ -83,111 +83,6 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_CMS::detectWebRoot
-	 */
-	public function test_detectWebRoot()
-	{
-		if (version_compare(PHP_VERSION, '5.3.2', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3.2 required');
-		}
-
-		/* Подменяем DOCUMENT_ROOT */
-		$webServer = Eresus_WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
-		$documentRoot->setAccessible(true);
-		$documentRoot->setValue($webServer, '/home/user/public_html');
-
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
-		$fsRoot->setAccessible(true);
-		$fsRoot->setValue($obj, '/home/user/public_html');
-		$httpRequest = new HttpRequest();
-
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
-
-		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
-		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-		$this->assertEquals('', $httpRequest->localRoot);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_CMS::detectWebRoot
-	 */
-	public function test_detectWebRoot_notRoot()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
-		/* Подменяем DOCUMENT_ROOT */
-		$webServer = Eresus_WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
-		$documentRoot->setAccessible(true);
-		$documentRoot->setValue($webServer, '/home/user/public_html');
-
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
-		$fsRoot->setAccessible(true);
-		$fsRoot->setValue($obj, '/home/user/public_html/example.org');
-		$httpRequest = new HttpRequest();
-
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
-
-		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
-		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-		$this->assertEquals('/example.org', $httpRequest->localRoot);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_CMS::detectWebRoot
-	 */
-	public function test_detectWebRoot_windows()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
-		/* Подменяем DOCUMENT_ROOT */
-		$webServer = Eresus_WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
-		$documentRoot->setAccessible(true);
-		$documentRoot->setValue($webServer, 'C:/Program Files/Apache Webserver/docs');
-
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
-		$fsRoot->setAccessible(true);
-		$fsRoot->setValue($obj, 'C:/Program Files/Apache Webserver/docs/example.org');
-		$httpRequest = new HttpRequest();
-
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
-
-		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
-		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-		$this->assertEquals('/example.org', $httpRequest->localRoot);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * @covers Eresus_CMS::getDataDir
 	 */
 	public function test_getDataDir()
@@ -197,9 +92,9 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3 required');
 		}
 
-		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('getFsRoot'))->
+		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('getRootDir'))->
 			disableOriginalConstructor()->getMock();
-		$mock->expects($this->once())->method('getFsRoot')->
+		$mock->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/example.org'));
 
 		$this->assertEquals('/home/example.org/data', $mock->getDataDir());
@@ -262,8 +157,8 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$initDB = new ReflectionMethod('Eresus_CMS', 'initDB');
 		$initDB->setAccessible(true);
 
-		$fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
-		$fsRoot->setAccessible(true);
+		$rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$rootDir->setAccessible(true);
 
 		$cms = new Eresus_CMS();
 
@@ -276,7 +171,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		Eresus_Config::set('eresus.cms.dsn', 'null://');
 
-		$fsRoot->setValue($cms, vfsStream::url('htdocs'));
+		$rootDir->setValue($cms, vfsStream::url('htdocs'));
 		$initDB->invoke($cms);
 	}
 	//-----------------------------------------------------------------------------

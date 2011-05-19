@@ -56,8 +56,8 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getDataURL()
 	{
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
 		$appProp->setAccessible(true);
@@ -80,8 +80,8 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getCodeURL()
 	{
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
 		$appProp->setAccessible(true);
@@ -104,8 +104,8 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getStyleURL()
 	{
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
 		$appProp->setAccessible(true);

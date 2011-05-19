@@ -4,10 +4,9 @@
  *
  * ${product.description}
  *
- * Запускающий скрипт
+ * Обрабатываемый запрос
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -32,66 +31,44 @@
  * $Id$
  */
 
-// Временно включаем вывод ошибок, пока не инициализированы средства журанлирования
-ini_set('display_errors', true);
-
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
-
 /**
- * Уровень детализации журнала
+ * Обрабатываемый запрос
+ *
+ * @package Core
+ * @since 2.16
  */
-define('ERESUS_LOG_LEVEL' , ${log.level});
-
-ini_set('track_errors', true);
-/**
- * Подключение Eresus Core
- */
-//include_once 'core/framework/core/eresus-core.compiled.php';
-//include_once 'core/framework/core/eresus-core.php';
-
-/**
- * Подключение ядра
- */
-include_once 'core/Kernel.php';
-
-Eresus_Kernel::init();
-
-if (isset($php_errormsg))
-{
-	die($php_errormsg);
-}
-ini_set('track_errors', false);
-
-/*
- * Если есть файл install.php, запускаем инсталлятор, а не CMS
- */
-if (is_file('install.php'))
-{
-	$fileName = 'install.php';
-	$appName = 'Installer';
-}
-else
-{
-	$fileName = 'core/CMS.php';
-	$appName = 'Eresus_CMS';
-}
-
-
-try
+class Eresus_CMS_Request
 {
 	/**
-	 * Подключение главного приложения
+	 * Сообщение HTTP
+	 *
+	 * @var Eresus_HTTP_Message
 	 */
-	include_once $fileName;
-}
-catch (Exception $e)
-{
-	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
-}
+	protected $message;
 
-// Запуск приложения
-Eresus_Kernel::exec($appName);
+	/**
+	 * Создаёт запрос на основе окружения приложения
+	 *
+	 * @return Eresus_CMS_Request
+	 *
+	 * @since 2.16
+	 */
+	public function __construct()
+	{
+		$this->message = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект Eresus_HTTP_Message
+	 *
+	 * @return Eresus_HTTP_Message
+	 *
+	 * @since 2.16
+	 */
+	public function getHttpMessage()
+	{
+		return $this->message;
+	}
+	//-----------------------------------------------------------------------------
+}

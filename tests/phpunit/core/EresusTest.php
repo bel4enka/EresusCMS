@@ -68,8 +68,8 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$_SERVER['SCRIPT_FILENAME'] = '/home/user/public_html/site/index.php';
 		$_SERVER['DOCUMENT_ROOT'] = '/home/user/public_html';
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/user/public_html/site'));
 
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
@@ -102,8 +102,8 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$_SERVER['SCRIPT_FILENAME'] =  'c:\\index.php';
 		$_SERVER['DOCUMENT_ROOT'] = 'c:/';
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/c:'));
 
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');

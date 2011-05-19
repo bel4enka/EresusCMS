@@ -197,7 +197,7 @@ class Installer
 				$this->vars['ftphost'] = $_SERVER['HTTP_HOST'];
 			}
 
-			$tmpl = new EresusTemplateNC($this->getFsRoot() . '/core/templates/Installer/page.html');
+			$tmpl = new EresusTemplateNC($this->getRootDir() . '/core/templates/Installer/page.html');
 			echo $tmpl->compile($this->vars);
 		}
 		catch (Exception $e)
@@ -350,7 +350,7 @@ class Installer
 	 */
 	private function setupDatabase()
 	{
-		require_once $this->getFsRoot() . '/core/DB/Record.php';
+		require_once $this->getRootDir() . '/core/DB/Record.php';
 		$manager = Doctrine_Manager::getInstance();
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
 		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
@@ -361,7 +361,7 @@ class Installer
 			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
 		}*/
 
-		Doctrine_Core::createTablesFromModels($this->getFsRoot() . '/core/Domain');
+		Doctrine_Core::createTablesFromModels($this->getRootDir() . '/core/Domain');
 
 		/* TODO: Переделать через YAML */
 		$user = new Eresus_Model_User();
@@ -419,13 +419,13 @@ class Installer
 	 */
 	private function getFtpSiteRoot()
 	{
-		$tokens = explode('/', $this->getFsRoot());
+		$tokens = explode('/', $this->getRootDir());
 		$dirs = ftp_nlist($this->ftp, '/');
 		$candidats = array_intersect($tokens, $dirs);
 		foreach ($candidats as $dir)
 		{
-			$pos = strpos($this->getFsRoot() . '/', '/' . $dir . '/');
-			$relDir = substr($this->getFsRoot(), $pos);
+			$pos = strpos($this->getRootDir() . '/', '/' . $dir . '/');
+			$relDir = substr($this->getRootDir(), $pos);
 			if (ftp_chdir($this->ftp, $relDir))
 			{
 				$this->ftpSiteRoot = $relDir;
@@ -476,12 +476,12 @@ class Installer
 	 */
 	private function saveConfig()
 	{
-		$conf = file_get_contents($this->getFsRoot() . '/cfg/main.template.php');
+		$conf = file_get_contents($this->getRootDir() . '/cfg/main.template.php');
 
 		$conf = preg_replace("/('eresus.cms.dsn',\s+').*('\);)/", "$1{$this->dsn}$2", $conf);
-		$mode = fileperms($this->getFsRoot() . '/cfg') & 0777;
+		$mode = fileperms($this->getRootDir() . '/cfg') & 0777;
 		ftp_chmod($this->ftp, 0777, $this->ftpSiteRoot . '/cfg');
-		file_put_contents($this->getFsRoot() . '/cfg/main.php', $conf);
+		file_put_contents($this->getRootDir() . '/cfg/main.php', $conf);
 		ftp_chmod($this->ftp, $mode, $this->ftpSiteRoot . '/cfg');
 	}
 	//-----------------------------------------------------------------------------

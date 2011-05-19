@@ -292,7 +292,7 @@ class TClientUI extends WebPage
 		$this->access = GUEST;
 		$this->visible = true;
 		$this->type = 'default';
-		if (file_exists(Eresus_CMS::app()->getFsRoot() . '/templates/std/'.$code.'.tmpl'))
+		if (file_exists(Eresus_CMS::app()->getRootDir() . '/templates/std/'.$code.'.tmpl'))
 		{
 			$this->template = 'std/'.$code;
 			$this->content = '';

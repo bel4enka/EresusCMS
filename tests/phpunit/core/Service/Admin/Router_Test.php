@@ -203,8 +203,8 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$htdocs = new vfsStreamDirectory('htdocs');
 		vfsStreamWrapper::setRoot($htdocs);
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
@@ -252,8 +252,8 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$htdocs = new vfsStreamDirectory('htdocs');
 		vfsStreamWrapper::setRoot($htdocs);
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
@@ -304,8 +304,8 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$htdocs = new vfsStreamDirectory('htdocs');
 		vfsStreamWrapper::setRoot($htdocs);
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
@@ -355,8 +355,8 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$htdocs = new vfsStreamDirectory('htdocs');
 		vfsStreamWrapper::setRoot($htdocs);
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
 
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');

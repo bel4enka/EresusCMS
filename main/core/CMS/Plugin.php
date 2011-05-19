@@ -169,7 +169,7 @@ class Eresus_CMS_Plugin
 		$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
 		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 		$this->urlStyle = $Eresus->style.$this->name.'/';
-		$filename = Eresus_CMS::app()->getFsRoot() . '/lang/'.$this->name.'/'.$locale['lang'].'.php';
+		$filename = Eresus_CMS::app()->getRootDir() . '/lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
 			include $filename;

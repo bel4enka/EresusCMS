@@ -50,7 +50,7 @@ require_once dirname(__FILE__) . '/EresusFormTest.php';
 require_once dirname(__FILE__) . '/Helper/AllTests.php';
 require_once dirname(__FILE__) . '/Kernel_Test.php';
 require_once dirname(__FILE__) . '/Kernel/AllTests.php';
-require_once dirname(__FILE__) . '/lib/AllTests.php';
+//require_once dirname(__FILE__) . '/lib/AllTests.php';
 require_once dirname(__FILE__) . '/Logger_Test.php';
 require_once dirname(__FILE__) . '/Mail_Test.php';
 require_once dirname(__FILE__) . '/Model/AllTests.php';
@@ -92,7 +92,7 @@ class Core_AllTests
 		$suite->addTest(Core_Service_AllTests::suite());
 		$suite->addTest(Core_UI_AllTests::suite());
 		$suite->addTest(Core_Classes_AllTests::suite());
-		$suite->addTest(Core_Lib_AllTests::suite());
+		//$suite->addTest(Core_Lib_AllTests::suite());
 
 		return $suite;
 	}

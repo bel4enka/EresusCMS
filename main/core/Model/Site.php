@@ -4,10 +4,9 @@
  *
  * ${product.description}
  *
- * Запускающий скрипт
+ * Сайт, обслуживаемый CMS
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -27,71 +26,76 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Core
+ * @package Domain
  *
  * $Id$
  */
 
-// Временно включаем вывод ошибок, пока не инициализированы средства журанлирования
-ini_set('display_errors', true);
-
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
-
 /**
- * Уровень детализации журнала
+ * Модель сайта
+ *
+ * @package	Domain
+ *
+ * @since 2.16
  */
-define('ERESUS_LOG_LEVEL' , ${log.level});
-
-ini_set('track_errors', true);
-/**
- * Подключение Eresus Core
- */
-//include_once 'core/framework/core/eresus-core.compiled.php';
-//include_once 'core/framework/core/eresus-core.php';
-
-/**
- * Подключение ядра
- */
-include_once 'core/Kernel.php';
-
-Eresus_Kernel::init();
-
-if (isset($php_errormsg))
-{
-	die($php_errormsg);
-}
-ini_set('track_errors', false);
-
-/*
- * Если есть файл install.php, запускаем инсталлятор, а не CMS
- */
-if (is_file('install.php'))
-{
-	$fileName = 'install.php';
-	$appName = 'Installer';
-}
-else
-{
-	$fileName = 'core/CMS.php';
-	$appName = 'Eresus_CMS';
-}
-
-
-try
+class Eresus_Model_Site
 {
 	/**
-	 * Подключение главного приложения
+	 * Адрес корня сайта
+	 *
+	 * @var string
 	 */
-	include_once $fileName;
-}
-catch (Exception $e)
-{
-	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
-}
+	private $rootURL;
 
-// Запуск приложения
-Eresus_Kernel::exec($appName);
+	/**
+	 * Создаёт экземпляр модели сайта
+	 *
+	 * @return Eresus_Model_Site
+	 *
+	 * @since 2.16
+	 */
+	public function __construct()
+	{
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневой URL сайта
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getRootURL()
+	{
+		if (!$this->rootURL)
+		{
+			$this->detectRootURL();
+		}
+		return $this->rootURL;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Определяет корневной URL сайта
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function detectRootURL()
+	{
+		$webServer = Eresus_WebServer::getInstance();
+		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
+		$SUFFIX = Eresus_CMS::app()->getRootDir();
+		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
+		if (substr($SUFFIX, -1) != '/')
+		{
+			$SUFFIX .= '/';
+		}
+
+		$req = Eresus_CMS::app()->getRequest()->getHttpMessage();
+		$this->rootURL = $req->getScheme() . '://' . $req->getHost() . $SUFFIX;
+	}
+	//-----------------------------------------------------------------------------
+}

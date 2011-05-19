@@ -31,8 +31,6 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-ini_set('error_log', 'none');
-
 /**
  * Универсальная заглушка
  *

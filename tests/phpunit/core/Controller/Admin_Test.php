@@ -47,6 +47,17 @@ require_once dirname(__FILE__) . '/../../../../main/core/Controller/Admin.php';
  */
 class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 {
+	private $error_log;
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		$this->error_log = ini_get('error_log');
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::tearDown()
@@ -60,6 +71,7 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 			$instance->setAccessible(true);
 			$instance->setValue('Eresus_Service_Admin_Router', null);
 		}
+		ini_set('error_log', $this->error_log);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -333,8 +345,8 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('PHP 5.3.2 required');
 		}
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->once())->method('getFsRoot')->
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
 		$appProp->setAccessible(true);
@@ -362,6 +374,7 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->plugins->expects($this->once())->method('load')->
 			will($this->returnValue($plugin));
 
+		ini_set('error_log', '/dev/null');
 		$getContentHTML->invoke($Eresus_Controller_Admin);
 	}
 	//-----------------------------------------------------------------------------

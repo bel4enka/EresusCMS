@@ -72,14 +72,21 @@ class PageNotFoundException extends DomainException {}
 class Eresus_CMS
 {
 	/**
-	 * Коренвая директория приложения
+	 * Сайт
 	 *
-	 * Устанавливается в {@link initFS()}. Используйте {@link getFsRoot()} для получения значения.
+	 * @var Eresus_Model_Site
+	 */
+	private $site;
+
+	/**
+	 * Корневая директория приложения
+	 *
+	 * Устанавливается в {@link initFS()}. Используйте {@link getRootDir()} для получения значения.
 	 *
 	 * @var string
-	 * @see getFsRoot(), initFS()
+	 * @see getRootDir(), initFS()
 	 */
-	private $fsRoot;
+	private $rootDir;
 
 	/**
 	 * Фронт-контроллер (АИ или КИ)
@@ -142,6 +149,7 @@ class Eresus_CMS
 
 			$this->initLocale();
 			$this->initDB();
+			$this->initSite();
 			$this->initSession();
 			$GLOBALS['Eresus']->init();
 			Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
@@ -171,14 +179,25 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает обрабатываемый запрос
+	 *
+	 * @return Eresus_CMS_Request
+	 */
+	public function getRequest()
+	{
+		return $this->request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает корневую директорию приложения
 	 *
 	 * @return string
-	 * @see $fsRoot
+	 * @see $rootDir
 	 */
-	public function getFsRoot()
+	public function getRootDir()
 	{
-		return $this->fsRoot;
+		return $this->rootDir;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -204,7 +223,7 @@ class Eresus_CMS
 	 */
 	public function getDataDir()
 	{
-		return $this->getFsRoot() . '/data';
+		return $this->getRootDir() . '/data';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -303,10 +322,10 @@ class Eresus_CMS
 
 		foreach ($dirs as $dir)
 		{
-			if (!file_exists($this->getFsRoot() . $dir))
+			if (!file_exists($this->getRootDir() . $dir))
 			{
 				$umask = umask(0000);
-				mkdir($this->getFsRoot() . $dir, 0777);
+				mkdir($this->getRootDir() . $dir, 0777);
 				umask($umask);
 			}
 			// TODO Сделать проверку на запись в созданные директории
@@ -327,13 +346,13 @@ class Eresus_CMS
 
 		switch (true)
 		{
-			case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
+			/*case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
 				$this->call3rdPartyExtension();
 			break;
 
 			case substr($this->request->getLocal(), 0, 6) == '/admin':
 				$output = $this->runWebAdminUI();
-			break;
+			break;*/
 
 			default:
 				$output = $this->runWebClientUI();
@@ -351,14 +370,13 @@ class Eresus_CMS
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
-		Eresus_Config::set('core.template.templateDir', $this->getFsRoot());
-		Eresus_Config::set('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
+		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
+		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
 		// FIXME Следующая строка нужна только до перехода на UTF-8
 		Eresus_Config::set('core.template.charset', 'CP1251');
 
-		$this->request = HTTP::request();
+		$this->request = new Eresus_CMS_Request();
 		//$this->response = new HttpResponse();
-		$this->detectWebRoot();
 		//$this->initRoutes();
 	}
 	//-----------------------------------------------------------------------------
@@ -434,7 +452,7 @@ class Eresus_CMS
 	 */
 	private function initFS()
 	{
-		$this->fsRoot = $this->detectFsRoot();
+		$this->rootDir = $this->detectRootDir();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -447,7 +465,7 @@ class Eresus_CMS
 
 		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
-		@include_once $this->getFsRoot() . '/cfg/main.php';
+		@include_once $this->getRootDir() . '/cfg/main.php';
 
 		// TODO: Сделать проверку успешного подключения файла
 	}
@@ -485,7 +503,7 @@ class Eresus_CMS
 		/**
 		 * Подключение Doctrine
 		 */
-		include $this->getFsRoot() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .
+		include $this->getRootDir() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .
 			'Doctrine.php';
 		spl_autoload_register(array('Doctrine', 'autoload'));
 		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
@@ -510,6 +528,20 @@ class Eresus_CMS
 		}
 
 		Doctrine_Core::loadModels(dirname(__FILE__) . '/Model');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует сайт
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function initSite()
+	{
+		$this->site = new Eresus_Model_Site();
+		Eresus_Template::setGlobalValue('site', $this->site);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -548,7 +580,7 @@ class Eresus_CMS
 		$extension = substr($this->request->getLocal(), 9);
 		$extension = substr($extension, 0, strpos($extension, '/'));
 
-		$filename = $this->getFsRoot().'/ext-3rd/'.$extension.'/eresus-connector.php';
+		$filename = $this->getRootDir().'/ext-3rd/'.$extension.'/eresus-connector.php';
 		if ($extension && is_file($filename))
 		{
 			include_once $filename;
@@ -565,59 +597,18 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Определение корневого веб-адреса сайта
-	 *
-	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
-	 * образом localRoot объекта Eresus_CMS::$request
-	 */
-	private function detectWebRoot()
-	{
-		$webServer = Eresus_WebServer::getInstance();
-		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
-		$SUFFIX = $this->getFsRoot();
-		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		$this->request->setLocalRoot($SUFFIX);
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
-
-		$this->webRoot = $this->request->getScheme() . '://' . $this->request->getHost() .
-			$this->request->getLocalRoot();
-		Eresus_Template::setGlobalValue('siteRoot', $this->webRoot);
-
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Пытается определить корневую директорию приложения
-	 *
-	 * В режиме CLI используется $GLOBALS['argv'][0].
-	 *
-	 * В остальных режимах используется $_SERVER['SCRIPT_FILENAME'].
+	 * Определяет корневую директорию приложения
 	 *
 	 * @return string
-	 * @see $fsRoot, getFsRoot()
+	 * @see $rootDir, getRootDir()
 	 */
-	private function detectFsRoot()
+	private function detectRootDir()
 	{
-		$path = false;
-
-		switch (true)
-		{
-			case Eresus_Kernel_PHP::isCLI():
-				$path = reset($GLOBALS['argv']);
-				Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Using global $argv variable: %s', $path);
-			break;
-
-			default:
-				$path = $_SERVER['SCRIPT_FILENAME'];
-				Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Using $_SERVER["SCRIPT_FILENAME"]: %s', $path);
-			break;
-		}
-
+		$path = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
 		if (DIRECTORY_SEPARATOR != '/')
 		{
 			$path = str_replace($path, DIRECTORY_SEPARATOR, '/');
 		}
-		$path = dirname($path);
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '"%s"', $path);
 
 		return $path;
