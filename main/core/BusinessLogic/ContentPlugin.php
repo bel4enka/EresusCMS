@@ -84,10 +84,7 @@ class ContentPlugin extends Plugin
 	 */
 	public function onSectionDelete($id, $table = '')
 	{
-		if (count($this->dbTable($table)))
-		{
-			$this->dbDelete($table, $id, 'section');
-		}
+		throw new LogicException(__METHOD__ . ' not impelmented!');
 	}
 	//-----------------------------------------------------------------------------
 
