@@ -276,9 +276,6 @@ class Eresus_Kernel
 			'elFinder' => '../ext-3rd/elfinder/connectors/php/elFinder.class.php',
 
 			/* Обратная совместимость */
-			'TPlugin' => 'classes/backward/TPlugin.php',
-			'TContentPlugin' => 'classes/backward/TContentPlugin.php',
-			'TListContentPlugin' => 'classes/backward/TListContentPlugin.php',
 			'EresusAccounts' => 'lib/accounts.php',
 			'PaginationHelper' => 'classes/backward/PaginationHelper.php',
 		);
