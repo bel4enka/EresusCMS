@@ -53,7 +53,6 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3r
 PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
 PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/fatal.html.php');
 PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
-PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/models/User.php');
 
 require_once dirname(__FILE__) . '/core/AllTests.php';
 require_once dirname(__FILE__) . '/ext-3rd/AllTests.php';
