@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package CMS
+ * @package Core
  *
  * $Id$
  */
@@ -34,7 +34,7 @@
 /**
  * Средство журналирования
  *
- * @package CMS
+ * @package Core
  *
  * @since 2.16
  */

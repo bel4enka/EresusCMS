@@ -1106,23 +1106,6 @@ class Eresus
 		$this->extensions = new EresusExtensions();
 	}
 	//-----------------------------------------------------------------------------
-	/**
-	* Подключение к источнику данных
-	*
-	* @access private
-	*/
-	function init_datasource()
-	{
-		if (useLib('legacydb'))
-		{
-			$this->db = new LegacyDB();
-		}
-		else
-		{
-			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
-		}
-	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Инициализация механизма плагинов
@@ -1161,8 +1144,6 @@ class Eresus
 		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
-		# Подключение к источнику данных
-		$this->init_datasource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
 		# Подключение работы с разделами сайта

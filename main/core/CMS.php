@@ -55,16 +55,6 @@ interface FileManagerConnectorInterface
 
 
 /**
- * Исключение "Ошибка конфигурации"
- *
- * @package Core
- * @since 2.16
- */
-class EresusConfigException extends DomainException {}
-
-
-
-/**
  * Исключение "Страница не найдена"
  *
  * @package Core
@@ -503,11 +493,10 @@ class Eresus_CMS
 		$dsn = Eresus_Config::get('eresus.cms.dsn');
 		if (!$dsn)
 		{
-			throw new EresusConfigException('"eresus.cms.dsn" not set.');
+			throw new DomainException('Configuration parameter "eresus.cms.dsn" not set.');
 		}
-		$pdo = DB::connect($dsn);
 
-		Doctrine_Manager::connection($pdo, 'doctrine')->
+		Doctrine_Manager::connection($dsn)->
 			setCharset('cp1251'); // TODO Убрать после перехода на UTF
 
 		$manager = Doctrine_Manager::getInstance();
@@ -518,22 +507,9 @@ class Eresus_CMS
 		if ($prefix)
 		{
 			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
-			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
-			$pdo->setOptions($options);
 		}
 
 		Doctrine_Core::loadModels(dirname(__FILE__) . '/Model');
-/*
-		global $Eresus; // FIXME: Устаревшая переменная $Eresus
-
-		// FIXME Использование устаревших настроек
-		$dsn = ($Eresus->conf['db']['engine'] ? $Eresus->conf['db']['engine'] : 'mysql') .
-			'://' . $Eresus->conf['db']['user'] .
-			':' . $Eresus->conf['db']['password'] .
-			'@' . ($Eresus->conf['db']['host'] ? $Eresus->conf['db']['host'] : 'localhost') .
-			'/' . $Eresus->conf['db']['name'];
-
-		DBSettings::setDSN($dsn);*/
 	}
 	//-----------------------------------------------------------------------------
 
