@@ -947,7 +947,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = FS::driver()->nativeForm(Eresus_CMS::app()->getFsRoot() . '/');
+			$this->froot = Eresus_CMS::app()->getFsRoot() . '/';
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
@@ -957,7 +957,6 @@ class Eresus
 		{
 			$s = $this->froot;
 			$s = substr(dirname($_SERVER['SCRIPT_FILENAME']), strlen($_SERVER['DOCUMENT_ROOT']));
-			$s = FS::driver()->canonicalForm($s);
 			if (strlen($s) == 0 || substr($s, -1) != '/')
 			{
 				$s .= '/';

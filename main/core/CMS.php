@@ -306,7 +306,7 @@ class Eresus_CMS
 			if (!file_exists($this->getFsRoot() . $dir))
 			{
 				$umask = umask(0000);
-				mkdir(FS::driver()->nativeForm($this->getFsRoot() . $dir), 0777);
+				mkdir($this->getFsRoot() . $dir, 0777);
 				umask($umask);
 			}
 			// TODO Сделать проверку на запись в созданные директории

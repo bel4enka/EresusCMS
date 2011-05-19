@@ -145,7 +145,7 @@ class EresusExtensionConnector
 
 		if (is_dir($filename))
 		{
-			$filename = FS::driver()->normalize($filename . '/index.php');
+			$filename = $filename . '/index.php';
 		}
 
 		if (!is_file($filename))

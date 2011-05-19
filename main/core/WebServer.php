@@ -92,7 +92,6 @@ class Eresus_WebServer
 	 *
 	 * @return Eresus_WebServer
 	 *
-	 * @uses FS::driver()
 	 * @since 2.15
 	 */
 	private function __construct()

@@ -76,11 +76,6 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$appProp->setAccessible(true);
 		$appProp->setValue('Eresus_Kernel', $app);
 
-		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
-		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));
-		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
-		FS::$driver = $driver;
-
 		$init_resolve = new ReflectionMethod('Eresus', 'init_resolve');
 		$init_resolve->setAccessible(true);
 
@@ -114,11 +109,6 @@ class EresusTest extends PHPUnit_Framework_TestCase
 		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
 		$appProp->setAccessible(true);
 		$appProp->setValue('Eresus_Kernel', $app);
-
-		$driver = $this->getMock('stdClass', array('nativeForm', 'canonicalForm'));
-		$driver->expects($this->once())->method('nativeForm')->will($this->returnArgument(0));
-		$driver->expects($this->once())->method('canonicalForm')->will($this->returnArgument(0));
-		FS::$driver = $driver;
 
 		$init_resolve = new ReflectionMethod('Eresus', 'init_resolve');
 		$init_resolve->setAccessible(true);

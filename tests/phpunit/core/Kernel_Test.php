@@ -93,7 +93,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 /**
  * EresusApplication stub
  */
-class Eresus_Kernel_Test_Application1 extends EresusApplication
+class Eresus_Kernel_Test_Application1
 {
 	/**
 	 * (non-PHPdoc)
@@ -110,7 +110,7 @@ class Eresus_Kernel_Test_Application1 extends EresusApplication
  * EresusApplication stub
  *
  */
-class Eresus_Kernel_Test_Application2 extends EresusApplication
+class Eresus_Kernel_Test_Application2
 {
 	/**
 	 * (non-PHPdoc)
@@ -127,7 +127,7 @@ class Eresus_Kernel_Test_Application2 extends EresusApplication
  * EresusApplication stub
  *
  */
-class Eresus_Kernel_Test_Application3 extends EresusApplication
+class Eresus_Kernel_Test_Application3
 {
 	/**
 	 * (non-PHPdoc)

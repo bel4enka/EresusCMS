@@ -31,6 +31,8 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
+ini_set('error_log', 'none');
+
 /**
  * Универсальная заглушка
  *
@@ -148,7 +150,6 @@ define('errTooEarlyRelogin', 'errTooEarlyRelogin');
 define('filesRoot', '/home/exmaple.org/');
 define('CHARSET', 'cp1251');
 
-class DB extends MockFacade {}
 class Doctrine extends MockFacade {}
 class Doctrine_Core extends MockFacade
 {
@@ -166,47 +167,11 @@ class Doctrine_Table {}
 class Dwoo extends UniversalStub {}
 class Dwoo_Template_File extends UniversalStub {}
 class elFinder extends UniversalStub {}
-class EresusLogger extends MockFacade {}
-class ezcDbOptions extends UniversalStub {}
 class ezcMailAddress extends UniversalStub {}
 class ezcMailComposer {}
 class ezcMailTransport extends UniversalStub {}
 class ezcMailMtaTransport extends ezcMailTransport {}
 
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
-class FS extends MockFacade
-{
-	public static $driver = null;
-
-	public static function canonicalForm($filename)
-	{
-		/* Convert slashes */
-    $filename = str_replace('\\', '/', $filename);
-
-    /* Prepend drive letter with slash if needed */
-    if (substr($filename, 1, 1) == ':')
-      $filename = '/' . $filename;
-
-    return $filename;
-	}
-	//-----------------------------------------------------------------------------
-
-	public static function isFile($filename)
-	{
-    return is_file($filename);
-	}
-	//-----------------------------------------------------------------------------
-
-	public static function driver()
-	{
-		return self::$driver;
-	}
-	//-----------------------------------------------------------------------------
-}
 
 
 /**
@@ -230,21 +195,6 @@ class ExitException extends SuccessException {}
  */
 class SuccessException extends Exception {}
 
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
-class EresusApplication
-{
-	public $fsRoot;
-
-	public function getFsRoot()
-	{
-		return $this->fsRoot;
-	}
-	//-----------------------------------------------------------------------------
-}
 
 
 /**
@@ -303,25 +253,3 @@ class HttpRequest
  * @since 2.16
  */
 class HttpResponse extends MockFacade {}
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.16
- */
-class PHP extends MockFacade {}
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
-class TemplateSettings
-{
-	public static function setGlobalValue($a, $b)
-	{
-		;
-	}
-	//-----------------------------------------------------------------------------
-}
-

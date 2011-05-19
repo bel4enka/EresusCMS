@@ -77,10 +77,6 @@ class EresusExtensionConnectorTest extends PHPUnit_Extensions_OutputTestCase
 		$GLOBALS['Eresus']->froot = '/home/example.org/htdocs/';
 		$test = new EresusExtensionConnector();
 
-		$mock = $this->getMock('stdClass', array('isCLI'));
-		$mock->expects($this->any())->method('isCLI')->will($this->returnValue(true));
-		PHP::setMock($mock);
-
 		$proxyUnexistent->invoke($test, 'somefile');
 	}
 	//-----------------------------------------------------------------------------
