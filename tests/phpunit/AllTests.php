@@ -39,8 +39,6 @@ $root = realpath(dirname(__FILE__) . '/../..');
  * На некоторых системах некоторые файлы включаются не в том порядке, что приводит к ошибкам.
  * Добавление этих файлов в начало белого списка решает проблему.
  */
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TPlugin.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/classes/backward/TContentPlugin.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/DataProvider.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/Mutator.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/ItemControl.php');

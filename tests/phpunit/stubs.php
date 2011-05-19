@@ -29,16 +29,9 @@
  * $Id$
  */
 
-if (class_exists('PHP_CodeCoverage_Filter', false))
-{
-	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-}
-else
-{
-	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
-}
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-
+ini_set('error_log', '/dev/null');
 
 /**
  * Универсальная заглушка
