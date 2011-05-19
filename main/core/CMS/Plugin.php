@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package BusinessLogic
+ * @package Core
  *
  * $Id$
  */
@@ -34,9 +34,9 @@
 /**
  * Родительский класс для всех плагинов
  *
- * @package BusinessLogic
+ * @package Core
  */
-class Plugin
+class Eresus_CMS_Plugin
 {
 	/**
 	 * Имя плагина

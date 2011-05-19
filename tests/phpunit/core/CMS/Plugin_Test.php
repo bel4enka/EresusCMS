@@ -32,13 +32,13 @@
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
-require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/Plugin.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS/Plugin.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class PluginTest extends PHPUnit_Framework_TestCase
+class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * (non-PHPdoc)
@@ -52,7 +52,7 @@ class PluginTest extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 	/**
-	 * @covers Plugin::getDataURL
+	 * @covers Eresus_CMS_Plugin::getDataURL
 	 */
 	public function test_getDataURL()
 	{
@@ -70,13 +70,13 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
 		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
 		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/data/plugin/', $test->getDataURL());
+		$test = new Eresus_CMS_Plugin();
+		$this->assertEquals('http://exmaple.org/data/eresus_cms_plugin/', $test->getDataURL());
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Plugin::getCodeURL
+	 * @covers Eresus_CMS_Plugin::getCodeURL
 	 */
 	public function test_getCodeURL()
 	{
@@ -94,13 +94,13 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
 		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
 		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/ext/plugin/', $test->getCodeURL());
+		$test = new Eresus_CMS_Plugin();
+		$this->assertEquals('http://exmaple.org/ext/eresus_cms_plugin/', $test->getCodeURL());
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Plugin::getStyleURL
+	 * @covers Eresus_CMS_Plugin::getStyleURL
 	 */
 	public function test_getStyleURL()
 	{
@@ -118,8 +118,8 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
 		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
 		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/style/plugin/', $test->getStyleURL());
+		$test = new Eresus_CMS_Plugin();
+		$this->assertEquals('http://exmaple.org/style/eresus_cms_plugin/', $test->getStyleURL());
 	}
 	//-----------------------------------------------------------------------------
 

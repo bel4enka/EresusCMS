@@ -262,7 +262,6 @@ class Eresus_Kernel
 			/* BusinessLogic */
 			'ContentPlugin' => 'BusinessLogic/ContentPlugin.php',
 			'EresusAdminFrontController' => 'BusinessLogic/EresusAdminFrontController.php',
-			'Plugin' => 'BusinessLogic/Plugin.php',
 
 			/* Domain */
 			'Plugins' => 'classes/Plugins.php',

@@ -31,15 +31,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/ContentPluginTest.php';
+require_once dirname(__FILE__) . '/Plugin_Test.php';
 
-class Core_BusinessLogic_AllTests
+class Eresus_CMS_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/BusinessLogic');
+		$suite = new PHPUnit_Framework_TestSuite('Eresus/CMS');
 
-		$suite->addTestSuite('ContentPluginTest');
+		$suite->addTestSuite('Eresus_CMS_Plugin_Test');
 
 		return $suite;
 	}

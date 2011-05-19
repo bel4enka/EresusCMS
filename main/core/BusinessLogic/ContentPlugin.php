@@ -36,7 +36,7 @@
  *
  * @package BusinessLogic
  */
-class ContentPlugin extends Plugin
+class ContentPlugin extends Eresus_CMS_Plugin
 {
 	/**
 	 * Конструктор
