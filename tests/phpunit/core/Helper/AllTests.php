@@ -31,6 +31,7 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
+require_once dirname(__FILE__) . '/ArrayAccessDecorator_Test.php';
 require_once dirname(__FILE__) . '/Collection_Test.php';
 
 class Core_Helper_AllTests
@@ -39,6 +40,7 @@ class Core_Helper_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core/Helper');
 
+		$suite->addTestSuite('Eresus_Helper_ArrayAccessDecorator_Test');
 		$suite->addTestSuite('Eresus_Helper_Collection_Test');
 		return $suite;
 	}
