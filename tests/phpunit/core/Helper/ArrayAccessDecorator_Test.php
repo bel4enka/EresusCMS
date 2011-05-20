@@ -33,7 +33,7 @@ require_once dirname(__FILE__) . '/../../../../main/core/Helper/ArrayAccessDecor
 /**
  * @package Tests
  */
-class Eresus_Helper_ArrayAccess_Test extends PHPUnit_Framework_TestCase
+class Eresus_Helper_ArrayAccessDecorator_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers Eresus_Helper_ArrayAccessDecorator::__construct
