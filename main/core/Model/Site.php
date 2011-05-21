@@ -94,8 +94,8 @@ class Eresus_Model_Site
 			$SUFFIX .= '/';
 		}
 
-		$req = Eresus_CMS::app()->getRequest()->getHttpMessage();
-		$this->rootURL = $req->getScheme() . '://' . $req->getHost() . $SUFFIX;
+		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
+		$this->rootURL = $req->getScheme() . '://' . $req->getRequestHost() . $SUFFIX;
 	}
 	//-----------------------------------------------------------------------------
 }

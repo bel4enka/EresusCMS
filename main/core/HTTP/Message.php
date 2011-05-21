@@ -70,10 +70,30 @@ class Eresus_HTTP_Message
 	private $httpVersion;
 
 	/**
+	 * Схема запроса http или https
+	 *
+	 * @var string
+	 */
+	private $scheme;
+
+	/**
+	 * Запрашиваемый хост
+	 *
+	 * @var string
+	 */
+	private $requestHost;
+
+	/**
 	 * Метод запроса
 	 * @var string
 	 */
 	private $requestMethod;
+
+	/**
+	 * URL запроса
+	 * @var string
+	 */
+	private $requestURL;
 
 	/**
 	 * Код ответа
@@ -132,8 +152,45 @@ class Eresus_HTTP_Message
 		}
 		else
 		{
-			$message->setRequestMethod(self::METH_GET);
+			$message->setRequestMethod('GET');
 		}
+
+		if (isset($_SERVER['']))
+		{
+			$host = $_SERVER['HTTP_HOST'];
+		}
+		else
+		{
+			$host = 'localhost';
+		}
+
+		$scheme = 'http';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != '' && $_SERVER['HTTPS'] != 'off')
+		{
+			$scheme .= 's';
+		}
+		$message->setScheme($scheme);
+
+		if (isset($_SERVER['HTTP_HOST']))
+		{
+			$host = $_SERVER['HTTP_HOST'];
+		}
+		else
+		{
+			$host = 'localhost';
+		}
+		$message->setRequestHost($host);
+
+		if (isset($_SERVER['REQUEST_URI']))
+		{
+			$uri = $_SERVER['REQUEST_URI'];
+		}
+		else
+		{
+			$uri = '/';
+		}
+
+		$message->setRequestUrl($scheme . '://' . $host . $uri);
 
 		return $message;
 	}
@@ -196,25 +253,80 @@ class Eresus_HTTP_Message
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Set the Request Method of the HTTP Message
+	 * Устанавливает схему запроса
 	 *
-	 * @param string $method  The request method name.
-	 *                         {@link http://tools.ietf.org/html/rfc2068#section-5.1.1
-	 *                         See RFC2068 section 5.1.1}
-	 *                         for list of acceptable methods
-	 * @return bool  TRUE on success, or FALSE if the message is not of type
-	 *                HttpMessage::TYPE_REQUEST or an invalid request method was supplied
+	 * @param string $scheme
+	 * @return bool  возвращает true в случае успеха, и false если схема не "http" или "https"
+	 */
+	public function setScheme($scheme)
+	{
+		if (! preg_match('/https?/', $scheme))
+		{
+			return false;
+		}
+
+		$this->scheme = $scheme;
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает схему запроса
+	 *
+	 * @return string
+	 */
+	public function getScheme()
+	{
+		return $this->scheme;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает запрашиваемый хост
+	 *
+	 * @param string $host
+	 * @return void
+	 */
+	public function setRequestHost($host)
+	{
+		$this->requestHost = $host;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает запрашиваемый хост
+	 *
+	 * @return string
+	 */
+	public function getRequestHost()
+	{
+		return $this->requestHost;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает метод запроса HTTP
+	 *
+	 * @param string $method  имя метода запроса. См. список имён в
+	 *                        {@link http://tools.ietf.org/html/rfc2068#section-5.1.1
+	 *                        RFC2068, раздел 5.1.1}
+	 * @return bool  true в случае успеха или false если тип сообщения не TYPE_REQUEST или указано
+	 *               неправильное имя метода
 	 */
 	public function setRequestMethod($method)
 	{
 		if ($this->getType() !== self::TYPE_REQUEST)
+		{
 			return false;
+		}
 
 		$method = strtoupper($method);
 		$REQUEST_METHODS = array('OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE');
 
 		if (!in_array($method, $REQUEST_METHODS))
+		{
 			return false;
+		}
 
 		$this->requestMethod = $method;
 		return true;
@@ -233,6 +345,41 @@ class Eresus_HTTP_Message
 			return false;
 
 		return $this->requestMethod;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает запрошенный URL
+	 *
+	 * @return string|false  запрошенный URL или false если тип сообщения не TYPE_REQUEST
+	 */
+	public function getRequestUrl()
+	{
+		if ($this->getType() !== self::TYPE_REQUEST)
+		{
+			return false;
+		}
+
+		return $this->requestURL;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает URL запроса
+	 *
+	 * @param string $url
+	 *
+	 * @return bool  true в случае успеха или false если тип сообщения не TYPE_REQUEST
+	 */
+	public function setRequestUrl($url)
+	{
+		if ($this->getType() !== self::TYPE_REQUEST)
+		{
+			return false;
+		}
+
+		$this->requestURL = $url;
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 

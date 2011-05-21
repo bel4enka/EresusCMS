@@ -33,6 +33,7 @@ require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Message.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/Site.php';
 
 /**
@@ -58,25 +59,17 @@ class Eresus_Model_Site_Test extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new Eresus_Model_Site;
-
-		$message = $this->getMock('stdClass', array('getScheme', 'getHost'));
-		$message->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
-		$message->expects($this->any())->method('getHost')->will($this->returnValue('example.org'));
-
-		$request = $this->getMock('stdClass', array('getHttpMessage'));
-		$request->expects($this->any())->method('getHttpMessage')->
-			will($this->returnValue($message));
-
 		$Eresus_CMS = $this->getMock('stdClass', array('getRootDir', 'getRequest'));
 		$Eresus_CMS->expects($this->any())->method('getRootDir')->
 			will($this->returnValue('/home/user/public_html'));
-		$Eresus_CMS->expects($this->any())->method('getRequest')->
-			will($this->returnValue($request));
+
+		$obj = new Eresus_Model_Site;
 
 		$app = new ReflectionProperty('Eresus_Kernel', 'app');
 		$app->setAccessible(true);
 		$app->setValue('Eresus_Kernel', $Eresus_CMS);
+
+		$_SERVER['HTTP_HOST'] = 'example.org';
 
 		$this->assertEquals('http://example.org/', $obj->getRootURL());
 	}
@@ -100,23 +93,15 @@ class Eresus_Model_Site_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_Model_Site;
 
-		$message = $this->getMock('stdClass', array('getScheme', 'getHost'));
-		$message->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
-		$message->expects($this->any())->method('getHost')->will($this->returnValue('example.org'));
-
-		$request = $this->getMock('stdClass', array('getHttpMessage'));
-		$request->expects($this->any())->method('getHttpMessage')->
-			will($this->returnValue($message));
-
 		$Eresus_CMS = $this->getMock('stdClass', array('getRootDir', 'getRequest'));
 		$Eresus_CMS->expects($this->any())->method('getRootDir')->
 			will($this->returnValue('/home/user/public_html/site'));
-		$Eresus_CMS->expects($this->any())->method('getRequest')->
-			will($this->returnValue($request));
 
 		$app = new ReflectionProperty('Eresus_Kernel', 'app');
 		$app->setAccessible(true);
 		$app->setValue('Eresus_Kernel', $Eresus_CMS);
+
+		$_SERVER['HTTP_HOST'] = 'example.org';
 
 		$this->assertEquals('http://example.org/site/', $obj->getRootURL());
 	}
@@ -140,23 +125,15 @@ class Eresus_Model_Site_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_Model_Site;
 
-		$message = $this->getMock('stdClass', array('getScheme', 'getHost'));
-		$message->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
-		$message->expects($this->any())->method('getHost')->will($this->returnValue('example.org'));
-
-		$request = $this->getMock('stdClass', array('getHttpMessage'));
-		$request->expects($this->any())->method('getHttpMessage')->
-			will($this->returnValue($message));
-
 		$Eresus_CMS = $this->getMock('stdClass', array('getRootDir', 'getRequest'));
 		$Eresus_CMS->expects($this->any())->method('getRootDir')->
 			will($this->returnValue('C:/Program Files/Apache Webserver/docs/site'));
-		$Eresus_CMS->expects($this->any())->method('getRequest')->
-			will($this->returnValue($request));
 
 		$app = new ReflectionProperty('Eresus_Kernel', 'app');
 		$app->setAccessible(true);
 		$app->setValue('Eresus_Kernel', $Eresus_CMS);
+
+		$_SERVER['HTTP_HOST'] = 'example.org';
 
 		$this->assertEquals('http://example.org/site/', $obj->getRootURL());
 	}

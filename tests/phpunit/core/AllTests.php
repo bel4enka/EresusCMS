@@ -48,6 +48,7 @@ require_once dirname(__FILE__) . '/DB/AllTests.php';
 require_once dirname(__FILE__) . '/EresusTest.php';
 require_once dirname(__FILE__) . '/EresusFormTest.php';
 require_once dirname(__FILE__) . '/Helper/AllTests.php';
+require_once dirname(__FILE__) . '/HTTP/AllTests.php';
 require_once dirname(__FILE__) . '/Kernel_Test.php';
 require_once dirname(__FILE__) . '/Kernel/AllTests.php';
 //require_once dirname(__FILE__) . '/lib/AllTests.php';
@@ -76,6 +77,7 @@ class Core_AllTests
 		$suite->addTestSuite('EresusTest');
 		$suite->addTestSuite('EresusFormTest');
 		$suite->addTest(      Core_Helper_AllTests::suite());
+		$suite->addTest(      Eresus_HTTP_AllTests::suite());
 		$suite->addTest(      Core_Kernel_AllTests::suite());
 		$suite->addTestSuite('Eresus_Kernel_Test');
 		$suite->addTestSuite('Eresus_Logger_Test');

@@ -38,7 +38,7 @@
  *
  * @since 2.15
  */
-class Eresus_Helper_Collection implements ArrayAccess, Countable, Serializable
+class Eresus_Helper_Collection implements ArrayAccess, Countable, Serializable, Iterator
 {
 	/**
 	 * Значение, возвращаемое, при обращении к несуществующему элементу коллекции
@@ -71,10 +71,17 @@ class Eresus_Helper_Collection implements ArrayAccess, Countable, Serializable
 		if (!is_array($data))
 		{
 			throw new InvalidArgumentException(
-				'First argument of EresusCollection::__construct must be an array and not ' .
+				'First argument of ' . __CLASS__ . '::__construct must be an array and not ' .
 				gettype($data));
 		}
 		$this->data = $data;
+		foreach ($this->data as &$item)
+		{
+			if (is_array($item))
+			{
+				$item = new self($item);
+			}
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -189,6 +196,100 @@ class Eresus_Helper_Collection implements ArrayAccess, Countable, Serializable
 	public function unserialize($serialized)
 	{
 		$this->data = unserialize($serialized);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::current()
+	 */
+	public function current()
+	{
+		return current($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::key()
+	 */
+	public function key()
+	{
+		return key($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::next()
+	 */
+	public function next()
+	{
+		return next($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::rewind()
+	 */
+	public function rewind()
+	{
+		return reset($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::valid()
+	 */
+	public function valid()
+	{
+		return current($this->data) !== false;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Ищёт элемент в коллекции
+	 *
+	 * @param array|object $search  критерий поиска
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.16
+	 */
+	public function find($search)
+	{
+		if (!is_array($search) && !is_object($search))
+		{
+			throw new InvalidArgumentException('$search must be an array or object and not ' .
+				gettype($search));
+		}
+
+		if (is_object($search))
+		{
+			$search = get_object_vars($search);
+		}
+
+		foreach ($this->data as $item)
+		{
+			if (is_object($item))
+			{
+				$matched = true;
+				foreach ($search as $property => $value)
+				{
+					if (
+						($item instanceof ArrayAccess && (!isset($item[$property]) ||
+							$item[$property] != $value)) &&
+						(!property_exists($item, $property) || @$item->$property != $value)
+					)
+					{
+						$matched = false;
+						break;
+					}
+				}
+				if ($matched)
+				{
+					return $item;
+				}
+			}
+		}
+		return null;
 	}
 	//-----------------------------------------------------------------------------
 

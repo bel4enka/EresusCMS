@@ -26,22 +26,20 @@
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
- * $Id$
+ * $Id: AllTests.php 1624 2011-05-19 11:14:04Z mk $
  */
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Plugin_Test.php';
-require_once dirname(__FILE__) . '/Request_Test.php';
+require_once dirname(__FILE__) . '/Message_Test.php';
 
-class Eresus_CMS_AllTests
+class Eresus_HTTP_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Eresus/CMS');
+		$suite = new PHPUnit_Framework_TestSuite('Eresus/HTTP');
 
-		$suite->addTestSuite('Eresus_CMS_Plugin_Test');
-		$suite->addTestSuite('Eresus_CMS_Request_Test');
+		$suite->addTestSuite('Eresus_HTTP_Message_Test');
 
 		return $suite;
 	}

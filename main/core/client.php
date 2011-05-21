@@ -112,7 +112,7 @@ class TClientUI extends WebPage
 				'$(pageDescription)',
 				'$(pageKeywords)',
 				'$(pageAccessLevel)',
-				'$(pageAccessName)',
+				//'$(pageAccessName)',
 
 				'$(sectionTitle)',
 			),
@@ -136,7 +136,7 @@ class TClientUI extends WebPage
 				$this->description,
 				$this->keywords,
 				$this->access,
-				constant('ACCESSLEVEL'.$this->access),
+				//constant('ACCESSLEVEL'.$this->access),
 				$section,
 			),
 			$text
@@ -175,6 +175,49 @@ class TClientUI extends WebPage
 	 */
 	private function loadPage()
 	{
+		$srvSections = Eresus_Service_Sections::getInstance();
+		$section = $srvSections->getRoot();
+
+		$req = Eresus_CMS::app()->getRequest();
+		$names = explode('/', $req->getPath());
+
+		$userAccessLevel = $_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST;
+
+		$url = '';
+
+		foreach ($names as $name)
+		{
+			$tmp = $section->getChildByName($name);
+			if (!$tmp)
+			{
+				break;
+			}
+
+			if (!$tmp->active)
+			{
+				throw new Eresus_CMS_Exception_NotFound();
+			}
+
+			if ($tmp->access < $userAccessLevel)
+			{
+				throw new Eresus_CMS_Exception_Forbidden();
+			}
+
+			$section = $tmp;
+
+			if ($section->name)
+			{
+				$url .= $section->name . '/';
+			}
+			$GLOBALS['Eresus']->plugins->clientOnURLSplit($section->toArray(), $url);
+			$this->section []= $section->title;
+		}
+
+		$GLOBALS['Eresus']->request['path'] = $GLOBALS['Eresus']->root . $url;
+
+		return $section;
+
+		/*
 		global $Eresus;
 
 		$result = false;
@@ -203,7 +246,7 @@ class TClientUI extends WebPage
 		} while ($item && current($Eresus->request['params']));
 		$Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
 		if ($result) $result = $Eresus->sections->get($result['id']);
-		return $result;
+		return $result; */
 	}
 
 	/**

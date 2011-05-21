@@ -47,15 +47,26 @@ class Eresus_CMS_Request
 	protected $message;
 
 	/**
+	 * Корневой URL сайта
+	 *
+	 * @var string
+	 */
+	protected $rootURL;
+
+	/**
 	 * Создаёт запрос на основе окружения приложения
+	 *
+	 * @param Eresus_HTTP_Message $message  запрос HTTP
+	 * @param string                        корневой URL сайта
 	 *
 	 * @return Eresus_CMS_Request
 	 *
 	 * @since 2.16
 	 */
-	public function __construct()
+	public function __construct(Eresus_HTTP_Message $message, $rootURL)
 	{
-		$this->message = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
+		$this->message = $message;
+		$this->rootURL = $rootURL;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -69,6 +80,21 @@ class Eresus_CMS_Request
 	public function getHttpMessage()
 	{
 		return $this->message;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает часть запроса, соответствующую пути от корня сайта
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getPath()
+	{
+		$path = substr($this->message->getRequestUrl(), strlen($this->rootURL));
+		$path = dirname($path);
+		return $path;
 	}
 	//-----------------------------------------------------------------------------
 }

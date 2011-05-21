@@ -207,10 +207,7 @@ class Eresus_Model_Section extends Eresus_DB_Record
 			'content' => array(
 				'type' => 'string',
 				'fixed' => false,
-				'unsigned' => false,
-				'primary' => false,
 				'notnull' => true,
-				'autoincrement' => false,
 			),
 			'options' => array(
 				'type' => 'string',
@@ -315,6 +312,22 @@ class Eresus_Model_Section extends Eresus_DB_Record
 			$this->save();
 			$lower->save();
 		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает дочерний раздел по его имени
+	 *
+	 * @param string $name
+	 *
+	 * @return Eresus_Model_Section|null
+	 *
+	 * @since 2.16
+	 */
+	public function getChildByName($name)
+	{
+		$svc = Eresus_Service_Sections::getInstance();
+		return $svc->getChildByName($this->id, $name);
 	}
 	//-----------------------------------------------------------------------------
 }

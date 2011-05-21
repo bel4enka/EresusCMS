@@ -103,13 +103,6 @@ class Eresus_CMS
 	private $request;
 
 	/**
-	 * Адрес сайта
-	 *
-	 * @var string
-	 */
-	private $webRoot;
-
-	/**
 	 * Возвращает экземпляр-одиночку этого класса
 	 *
 	 * @return Eresus_CMS
@@ -119,6 +112,19 @@ class Eresus_CMS
 	public static function app()
 	{
 		return Eresus_Kernel::app();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает модель текущего сайта
+	 *
+	 * @return Eresus_Model_Site
+	 *
+	 * @since 2.16
+	 */
+	public static function site()
+	{
+		return Eresus_Kernel::app()->getSite();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -160,6 +166,7 @@ class Eresus_CMS
 			}
 			else
 			{
+				$this->initWeb();
 				$this->runWeb();
 				return 0;
 			}
@@ -179,17 +186,6 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает обрабатываемый запрос
-	 *
-	 * @return Eresus_CMS_Request
-	 */
-	public function getRequest()
-	{
-		return $this->request;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Возвращает корневую директорию приложения
 	 *
 	 * @return string
@@ -202,15 +198,25 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает корневой адрес сайта (без финального слеша)
+	 * Возвращает обрабатываемый запрос
 	 *
-	 * @return string
-	 *
-	 * @since 2.16
+	 * @return Eresus_CMS_Request
 	 */
-	public function getWebRoot()
+	public function getRequest()
 	{
-		return $this->webRoot;
+		return $this->request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает текущий сайт
+	 *
+	 * @return Eresus_Model_Site
+	 * @see site()
+	 */
+	public function getSite()
+	{
+		return $this->site;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -340,8 +346,6 @@ class Eresus_CMS
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
-		$this->initWeb();
-
 		$output = '';
 
 		switch (true)
@@ -360,24 +364,6 @@ class Eresus_CMS
 		}
 
 		echo $output;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация Web
-	 */
-	private function initWeb()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
-		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
-		// FIXME Следующая строка нужна только до перехода на UTF-8
-		Eresus_Config::set('core.template.charset', 'CP1251');
-
-		$this->request = new Eresus_CMS_Request();
-		//$this->response = new HttpResponse();
-		//$this->initRoutes();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -565,6 +551,25 @@ class Eresus_CMS
 		// TODO Убрать. Оставлено для обратной совместимости
 		$GLOBALS['Eresus']->user = Eresus_Security_AuthService::getInstance()->getUser();
 		$_SESSION['activity'] = time();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация Web
+	 */
+	private function initWeb()
+	{
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
+
+		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
+		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
+		// FIXME Следующая строка нужна только до перехода на UTF-8
+		Eresus_Config::set('core.template.charset', 'CP1251');
+
+		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
+		$this->request = new Eresus_CMS_Request($req, $this->getSite()->getRootURL());
+		//$this->response = new HttpResponse();
+		//$this->initRoutes();
 	}
 	//-----------------------------------------------------------------------------
 

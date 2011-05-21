@@ -187,5 +187,48 @@ class Eresus_Helper_Collection_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * @covers Eresus_Helper_Collection::current
+	 * @covers Eresus_Helper_Collection::key
+	 * @covers Eresus_Helper_Collection::next
+	 * @covers Eresus_Helper_Collection::rewind
+	 * @covers Eresus_Helper_Collection::valid
+	 */
+	public function test_Iterator()
+	{
+		$test = new Eresus_Helper_Collection(array(2, 3, 4));
+		$count = 1;
+		foreach ($test as $key => $value)
+		{
+			$this->assertEquals($count-1, $key, 'key in pass ' . $count);
+			$this->assertEquals($count + 1, $value, 'value in pass ' . $count);
+			$count++;
+		}
+		$this->assertEquals(4, $count, 'Invalid count');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Helper_Collection::find
+	 */
+	public function test_find()
+	{
+		$a = array('a' => 1, 'b' => 2);
+		$b = array('a' => 2, 'b' => 3);
+		$test = new Eresus_Helper_Collection(array($a, $b));
+		$x = $test->find(array('a' => 1));
+		$this->assertEquals(1 , $x['a'], 'Array');
+
+		$a = new stdClass();
+		$a->a = 1;
+		$a->b = 2;
+		$b = new stdClass();
+		$b->a = 2;
+		$b->b = 3;
+		$test = new Eresus_Helper_Collection(array($a, $b));
+		$this->assertEquals($a , $test->find(array('a' => 1)), 'Object');
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }
