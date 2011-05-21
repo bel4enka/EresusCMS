@@ -4,7 +4,7 @@
  *
  * Файл конфигурации
  *
- * @package Core
+ * @package Kernel
  *
  * $Id$
  */
@@ -62,7 +62,7 @@ Eresus_Config::set('eresus.cms.dsn', 'mysql://user:password@localhost/database')
 
 /*
  * Путь от хоста до корня сайта. Раскомментируйте если Eresus не может определить его самостоятельно
- *
+ */
 //Eresus_Config::set('eresus.cms.http.root', '/site_path/');
 
 //-------------------------------------------------------------------------------
