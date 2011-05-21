@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../main/core/Config.php';
 require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
-require_once dirname(__FILE__) . '/../../../main/core/Security/AuthService.php';
+require_once dirname(__FILE__) . '/../../../main/core/Service/Auth.php';
 require_once dirname(__FILE__) . '/../../../main/core/Template.php';
 
 require_once 'vfsStream/vfsStream.php';

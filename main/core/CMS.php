@@ -485,7 +485,7 @@ class Eresus_CMS
 	 *
 	 * @return void
 	 * @uses Eresus_Logger::log()
-	 * @uses Eresus_Security_AuthService::getInstance()
+	 * @uses Eresus_Service_Auth::getInstance()
 	 */
 	private function initSession()
 	{
@@ -496,9 +496,7 @@ class Eresus_CMS
 		session_name('sid');
 		Eresus_Kernel_PHP::isCLI() || session_start();
 
-		Eresus_Security_AuthService::getInstance()->init();
-		// TODO Убрать. Оставлено для обратной совместимости
-		$GLOBALS['Eresus']->user = Eresus_Security_AuthService::getInstance()->getUser();
+		Eresus_Service_Auth::getInstance()->init();
 		$_SESSION['activity'] = time();
 	}
 	//-----------------------------------------------------------------------------
@@ -511,13 +509,8 @@ class Eresus_CMS
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-		/* Подключение старого ядра */
-		//include_once 'kernel-legacy.php';
-		//$GLOBALS['Eresus'] = new Eresus;
 
 		$this->initSession();
-		//$GLOBALS['Eresus']->init();
-		//Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
@@ -568,7 +561,7 @@ class Eresus_CMS
 	{
 		global $page;
 
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		Eresus_Logger::log(__METHOD__, LOG_NOTICE, 'This method is temporary.');
 
 		include_once 'client.php';
 

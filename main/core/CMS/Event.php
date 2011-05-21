@@ -2,7 +2,9 @@
 /**
  * ${product.title} ${product.version}
  *
- * Служба событий
+ * ${product.description}
+ *
+ * Событие
  *
  * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -24,113 +26,64 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Service
+ * @package CMS
  *
  * $Id$
  */
 
 /**
- * Служба событий
+ * Событие
  *
- * @package Service
+ * @package CMS
  * @since 2.16
  */
-class Eresus_Service_Events implements Eresus_CMS_Service
+class Eresus_CMS_Event
 {
 	/**
-	 * Экземпляр-одиночка
+	 * Имя события
 	 *
-	 * @var Eresus_Service_Events
+	 * @var string
 	 */
-	private static $instance = null;
+	protected $name;
 
 	/**
-	 * Реестр подписчиков
+	 * Конструктор события
 	 *
-	 * @var Eresus_Helper_Collection
-	 */
-	private $registry;
-
-	/**
-	 * Возвращает экземпляр класса
+	 * @param string  имя события
 	 *
-	 * @return Eresus_Service_Events
+	 * @return Eresus_CMS_Event
 	 *
 	 * @since 2.16
 	 */
-	public static function getInstance()
+	public function __construct($name)
 	{
-		if (is_null(self::$instance))
-		{
-			self::$instance = new self();
-		}
-		return self::$instance;
+		$this->name = $name;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Добавляет подписчика
+	 * Возвращает имя события
 	 *
-	 * @param string   $event     событие
-	 * @param callback $listener  подписчик
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отправляет событие подписчикам
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	public function addListener($event, $listener)
+	public function dispath()
 	{
-		$this->registry[$event] []= $listener;
+		Eresus_Service_Events::getInstance()->dispatch($this);
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Отправляет извещение о событии
-	 *
-	 * @param Eresus_CMS_Event $event  событие
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	public function dispatch(Eresus_CMS_Event $event)
-	{
-		$listeners = $this->registry[$event->getName()];
-		if ($listeners)
-		{
-			foreach ($listeners as $listener)
-			{
-				call_user_func($listener, $event);
-			}
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Скрываем конструктор
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	private function __construct()
-	{
-		$this->registry = new Eresus_Helper_Collection();
-		$this->registry->setDefaultValue(array());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Блокируем клонирование
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	// @codeCoverageIgnoreStart
-	private function __clone()
-	{
-	}
-	// @codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
 }

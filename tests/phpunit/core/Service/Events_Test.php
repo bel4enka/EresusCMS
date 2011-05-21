@@ -31,6 +31,7 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS/Event.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Helper/Collection.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Service/Events.php';
 
@@ -53,8 +54,6 @@ class Eresus_Service_Events_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers Eresus_Service_Events::addListener
 	 * @covers Eresus_Service_Events::dispatch
-	 *
-	 * @expectedException DomainException
 	 */
 	public function test_dispatch()
 	{
@@ -64,12 +63,12 @@ class Eresus_Service_Events_Test extends PHPUnit_Framework_TestCase
 		}
 		$test = Eresus_Service_Events::getInstance();
 
-		$test->addListener('event1', function () {});
-		$test->addListener('event2', function () {throw new DomainException;});
-		$test->addListener('event3', function () {throw new LogicException;});
+		$test->addListener('event1', function ($e) {$e->a = 'A';});
+		$test->addListener('event2', function ($e) {throw new Exception;});
 
-		$test->dispatch('event1');
-		$test->dispatch('event2');
+		$e = new Eresus_CMS_Event('event1');
+		$test->dispatch($e);
+		$this->assertEquals('A', $e->a);
 	}
 	//-----------------------------------------------------------------------------
 

@@ -330,4 +330,17 @@ class Eresus_Model_Section extends Eresus_DB_Record
 		return $svc->getChildByName($this->id, $name);
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает контент раздела
+	 *
+	 * @return string  HTML
+	 *
+	 * @since 2.16
+	 */
+	public function getContent()
+	{
+		return $this->content;
+	}
+	//-----------------------------------------------------------------------------
 }

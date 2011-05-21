@@ -43,53 +43,48 @@ define('CLIENTUI', true);
  */
 class TClientUI extends WebPage
 {
-	var $dbItem = array(); # Информация о странице из БД
-	var $name = ''; # Имя страницы
-	var $owner = 0; # Идентификатор родительской страницы
-	var $title = ''; # Заголовок страницы
-	var $section = array(); # Массив заголовков страниц
-	var $caption = ''; # Название страницы
-	var $hint = ''; # Подсказка с описанием страницы
-	var $description = ''; # Описание страницы
-	var $keywords = ''; # Ключевые слова страницы
-	var $access = GUEST; # Базовый уровень доступа к странице
-	var $visible = true; # Видимость страницы
-	var $type = 'default'; # Тип страницы
-	var $content = ''; # Контент страницы
-	var $options = array(); # Опции страницы
-	var $Document; # DOM-интерфейс к странице
-	var $plugin; # Плагин контента
-	var $scripts = ''; # Скрипты
-	var $styles = ''; # Стили
-	var $subpage = 0; # Подстраница списка элементов
+	//var $section = array(); # Массив заголовков страниц
+	//var $Document; # DOM-интерфейс к странице
+	//var $plugin; # Плагин контента
 
 	/**
-	 * Идентификатор объекта контента
+	 * Текущий раздел сайта
 	 *
-	 * @var string|bool
+	 * @var Eresus_Model_Section
+	 * @since 2.16
 	 */
-	var $topic = false;
+	public $section;
 
-	//------------------------------------------------------------------------------
 	/**
-	 * Конструктор
+	 * Контент страницы
 	 *
-	 * @access  public
+	 * @var string
 	 */
-	function __construct()
-	{
-	}
-	//------------------------------------------------------------------------------
-	# ВНУТРЕННИЕ ФУНКЦИИ
-	//------------------------------------------------------------------------------
+	public $content = '';
+
+	/**
+	 * Имя файла шаблона страницы
+	 *
+	 * @var string
+	 */
+	public $templateName;
+
+	/**
+	 * Подставляет значения макросов
+	 *
+	 * @param unknown_type $text
+	 *
+	 * @return void
+	 *
+	 * @since ?.??
+	 */
 	function replaceMacros($text)
-	# Подставляет значения макросов
 	{
 		global $Eresus;
 
-		$section = $this->section;
+		/*$section = $this->section;
 		if (siteTitleReverse) $section = array_reverse($section);
-		$section = strip_tags(implode($section, option('siteTitleDivider')));
+		$section = strip_tags(implode($section, option('siteTitleDivider')));*/
 
 		$result = str_replace(
 			array(
@@ -114,7 +109,7 @@ class TClientUI extends WebPage
 				'$(pageAccessLevel)',
 				//'$(pageAccessName)',
 
-				'$(sectionTitle)',
+				//'$(sectionTitle)',
 			),
 			array(
 				httpHost,
@@ -137,12 +132,12 @@ class TClientUI extends WebPage
 				$this->keywords,
 				$this->access,
 				//constant('ACCESSLEVEL'.$this->access),
-				$section,
+				//$section,
 			),
 			$text
 		);
-		$result = preg_replace_callback('/\$\(const:(.*?)\)/i', '__macroConst', $result);
-		$result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i', '__macroVar', $result);
+		//$result = preg_replace_callback('/\$\(const:(.*?)\)/i', '__macroConst', $result);
+		//$result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i', '__macroVar', $result);
 		$result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
 		return $result;
 	}
@@ -181,7 +176,8 @@ class TClientUI extends WebPage
 		$req = Eresus_CMS::app()->getRequest();
 		$names = explode('/', $req->getPath());
 
-		$userAccessLevel = $_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST;
+		$user = Eresus_Service_Auth::getInstance()->getUser();
+		$userAccessLevel = $user ? $user->access : 5; // FIXME: Заменить на константу
 
 		$url = '';
 
@@ -209,11 +205,14 @@ class TClientUI extends WebPage
 			{
 				$url .= $section->name . '/';
 			}
-			$GLOBALS['Eresus']->plugins->clientOnURLSplit($section->toArray(), $url);
-			$this->section []= $section->title;
+			$event = new Eresus_CMS_Event('clientOnURLSplit');
+			$event->section = $section;
+			$event->url = $url;
+			$event->dispath();
+			//$this->section []= $section->title;
 		}
 
-		$GLOBALS['Eresus']->request['path'] = $GLOBALS['Eresus']->root . $url;
+		//$GLOBALS['Eresus']->request['path'] = $GLOBALS['Eresus']->root . $url;
 
 		return $section;
 
@@ -258,40 +257,25 @@ class TClientUI extends WebPage
 	 */
 	public function init()
 	{
-		global $Eresus;
+		$event = new Eresus_CMS_Event('clientOnStart');
+		$event->dispath();
 
-		Eresus_Service_Events::getInstance()->dispatch('clientOnStart');
-
-		$item = $this->loadPage();
-		if ($item) {
-			if (count($Eresus->request['params']))
+		$this->section = $this->loadPage();
+		if ($this->section)
+		{
+			/*if (count($Eresus->request['params']))
 			{
 				if (preg_match('/p[\d]+/i', $Eresus->request['params'][0]))
 					$this->subpage = substr(array_shift($Eresus->request['params']), 1);
 
 				if (count($Eresus->request['params']))
 					$this->topic = array_shift($Eresus->request['params']);
-			}
-			$this->dbItem = $item;
-			$this->id = $item['id'];
-			$this->name = $item['name'];
-			$this->owner = $item['owner'];
-			$this->title = $item['title'];
-			$this->description = $item['description'];
-			$this->keywords = $item['keywords'];
-			$this->caption = $item['caption'];
-			$this->hint = $item['hint'];
-			$this->access = $item['access'];
-			$this->visible = $item['visible'];
-			$this->type = $item['type'];
-			$this->template = $item['template'];
-			$this->created = $item['created'];
-			$this->updated = $item['updated'];
-			$this->content = $item['content'];
-			$this->scripts = '';
-			$this->styles = '';
-			$this->options = $item['options'];
-		} else $this->httpError(404);
+			}*/
+		}
+		else
+		{
+			$this->httpError(404);
+		}
 	}
 	//------------------------------------------------------------------------------
 	function httpError($code)
@@ -347,24 +331,28 @@ class TClientUI extends WebPage
 		exit;
 	}
 	//------------------------------------------------------------------------------
-	function render()
-	# Отправляет созданную страницу пользователю.
+
+	/**
+	 * Отправляет созданную страницу пользователю.
+	 *
+	 * @return string  HTML
+	 *
+	 * @since ?.??
+	 */
+	public function render()
 	{
-		global $Eresus, $KERNEL;
+		// Выбираем шаблон для страницы
+		$this->templateName = $this->section->template;
 
-		if (arg('HTTP_ERROR')) $this->httpError(arg('HTTP_ERROR', 'int'));
-		# Отрисовываем контент
-		$content = $Eresus->plugins->clientRenderContent();
-		#$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
-		#if ($this->updated < 0) $this->updated = 0;
-		#$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
-		#$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
-		useLib('templates');
-		$templates = new Templates;
-		$this->template = $templates->get($this->template);
-		$content = $Eresus->plugins->clientOnContentRender($content);
+		// Отрисовываем контент
+		$this->content = $this->section->getContent();
 
-		if (isset($_SESSION['msg']['information']) && count($_SESSION['msg']['information']))
+		$event = new Eresus_CMS_Event('clientOnContentRender');
+		$event->content = $this->content;
+		$event->dispath();
+		$this->content = $event->content;
+
+		/*if (isset($_SESSION['msg']['information']) && count($_SESSION['msg']['information']))
 		{
 			$messages = '';
 			foreach ($_SESSION['msg']['information'] as $message)
@@ -383,28 +371,36 @@ class TClientUI extends WebPage
 			}
 			$content = $messages.$content;
 			$_SESSION['msg']['errors'] = array();
-		}
-		$result = str_replace('$(Content)', $content, $this->template);
+		}*/
 
-		# FIX: Обратная совместимость
-		if (!empty($this->styles))	$this->addStyles($this->styles);
+		$vars = array(
+			'page' => $this,
+		);
 
-		$result = $Eresus->plugins->clientOnPageRender($result);
+		$tmpl = new Eresus_Template($this->templateName);
+		$html = $tmpl->compile($vars);
 
-		// FIXME: Обратная совместимость
-		if (!empty($this->scripts))	$this->addScripts($this->scripts);
+		$event = new Eresus_CMS_Event('clientOnPageRender');
+		$event->content = $html;
+		$event->dispath();
+		$html = $event->content;
 
-		$result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
+		$html = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $html);
 
-		# Замена макросов
-		$result = $this->replaceMacros($result);
+		// Замена макросов
+		//$result = $this->replaceMacros($result);
 
-		if (count($this->headers)) foreach ($this->headers as $header) Header($header);
+		//if (count($this->headers)) foreach ($this->headers as $header) Header($header);
 
-		$result = $Eresus->plugins->clientBeforeSend($result);
-		if (!$Eresus->conf['debug']['enable']) ob_start('ob_gzhandler');
-		echo $result;
-		if (!$Eresus->conf['debug']['enable']) ob_end_flush();
+		//$result = $Eresus->plugins->clientBeforeSend($result);
+		$event = new Eresus_CMS_Event('clientBeforeSend');
+		$event->content = $html;
+		$event->dispath();
+		$html = $event->content;
+
+		//if (!$Eresus->conf['debug']['enable']) ob_start('ob_gzhandler');
+		echo $html;
+		//if (!$Eresus->conf['debug']['enable']) ob_end_flush();
 	}
 	//------------------------------------------------------------------------------
 	function pages($pagesCount, $itemsPerPage, $reverse = false)

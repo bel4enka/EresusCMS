@@ -33,7 +33,7 @@ require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Security/AuthService.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Service/Auth.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DB/Record.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
 require_once dirname(__FILE__) . '/../../../../main/core/kernel-legacy.php';
@@ -116,13 +116,13 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$user = new stdClass();
 		$user->access = 1;
 
-		$Eresus_Security_AuthService = $this->getMock('stdClass', array('getUser'));
-		$Eresus_Security_AuthService->expects($this->once())->method('getUser')->
+		$Eresus_Service_Auth = $this->getMock('stdClass', array('getUser'));
+		$Eresus_Service_Auth->expects($this->once())->method('getUser')->
 			will($this->returnValue($user));
 
-		$instance = new ReflectionProperty('Eresus_Security_AuthService', 'instance');
+		$instance = new ReflectionProperty('Eresus_Service_Auth', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('Eresus_Security_AuthService', $Eresus_Security_AuthService);
+		$instance->setValue('Eresus_Service_Auth', $Eresus_Service_Auth);
 
 		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
 		$HttpRequest->expects($this->any())->method('getLocal')->will($this->returnValue(''));
@@ -155,14 +155,14 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$user = new stdClass();
 		$user->access = 1;
 
-		$Eresus_Security_AuthService = $this->getMock('stdClass', array('getUser', 'logout'));
-		$Eresus_Security_AuthService->expects($this->once())->method('getUser')->
+		$Eresus_Service_Auth = $this->getMock('stdClass', array('getUser', 'logout'));
+		$Eresus_Service_Auth->expects($this->once())->method('getUser')->
 			will($this->returnValue($user));
-		$Eresus_Security_AuthService->expects($this->once())->method('logout');
+		$Eresus_Service_Auth->expects($this->once())->method('logout');
 
-		$instance = new ReflectionProperty('Eresus_Security_AuthService', 'instance');
+		$instance = new ReflectionProperty('Eresus_Service_Auth', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('Eresus_Security_AuthService', $Eresus_Security_AuthService);
+		$instance->setValue('Eresus_Service_Auth', $Eresus_Service_Auth);
 
 		$HttpRequest = $this->getMock('HttpRequest', array('getLocal'));
 		$HttpRequest->expects($this->any())->method('getLocal')->
@@ -226,12 +226,12 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$HttpRequest->expects($this->exactly(2))->method('arg')->will($this->returnArgument(0));
 		HTTP::$request = $HttpRequest;
 
-		$Eresus_Security_AuthService = $this->getMock('stdClass', array('login'));
-		$Eresus_Security_AuthService->expects($this->once())->method('login')->
+		$Eresus_Service_Auth = $this->getMock('stdClass', array('login'));
+		$Eresus_Service_Auth->expects($this->once())->method('login')->
 			will($this->returnValue(-1));
-		$instance = new ReflectionProperty('Eresus_Security_AuthService', 'instance');
+		$instance = new ReflectionProperty('Eresus_Service_Auth', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('Eresus_Security_AuthService', $Eresus_Security_AuthService);
+		$instance->setValue('Eresus_Service_Auth', $Eresus_Service_Auth);
 
 		$ui = $this->getMock('stdClass', array('getAuthScreen'));
 		$ui->expects($this->once())->method('getAuthScreen');
@@ -259,12 +259,12 @@ class Eresus_Controller_Admin_Test extends PHPUnit_Framework_TestCase
 		$HttpRequest->expects($this->exactly(3))->method('arg')->will($this->returnArgument(0));
 		HTTP::$request = $HttpRequest;
 
-		$Eresus_Security_AuthService = $this->getMock('stdClass', array('login', 'setCookies'));
-		$Eresus_Security_AuthService->expects($this->once())->method('login')->
-			will($this->returnValue(Eresus_Security_AuthService::SUCCESS));
-		$instance = new ReflectionProperty('Eresus_Security_AuthService', 'instance');
+		$Eresus_Service_Auth = $this->getMock('stdClass', array('login', 'setCookies'));
+		$Eresus_Service_Auth->expects($this->once())->method('login')->
+			will($this->returnValue(Eresus_Service_Auth::SUCCESS));
+		$instance = new ReflectionProperty('Eresus_Service_Auth', 'instance');
 		$instance->setAccessible(true);
-		$instance->setValue('Eresus_Security_AuthService', $Eresus_Security_AuthService);
+		$instance->setValue('Eresus_Service_Auth', $Eresus_Service_Auth);
 
 		$ui = $this->getMock('stdClass', array('getAuthScreen'));
 		$ui->expects($this->once())->method('getAuthScreen');

@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Security
+ * @package Service
  *
  * $Id$
  */
@@ -34,10 +34,10 @@
 /**
  * Служба аутентификации
  *
- * @package Security
+ * @package Service
  * @since 2.16
  */
-class Eresus_Security_AuthService implements Eresus_CMS_Service
+class Eresus_Service_Auth implements Eresus_CMS_Service
 {
 	/**
 	 * Операция выполнена успешно
@@ -72,7 +72,7 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var Eresus_Security_AuthService
+	 * @var Eresus_Service_Auth
 	 */
 	private static $instance = null;
 
@@ -86,7 +86,7 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 	/**
 	 * Возвращает экземпляр службы
 	 *
-	 * @return Eresus_Security_AuthService
+	 * @return Eresus_Service_Auth
 	 *
 	 * @since 2.16
 	 */
@@ -234,7 +234,7 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 	 * Устанавливает куки для автоматического входа
 	 *
 	 * Метод устанавливает куки, содержащее информацию для автоматической аутентификации посетителя.
-	 * Эта информация проверяется методом {@link Eresus_Security_AuthService::init()}.
+	 * Эта информация проверяется методом {@link Eresus_Service_Auth::init()}.
 	 *
 	 * @return void
 	 *
@@ -257,7 +257,7 @@ class Eresus_Security_AuthService implements Eresus_CMS_Service
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Удаляет куки, установленные {@link Eresus_Security_AuthService::setCookies()}
+	 * Удаляет куки, установленные {@link Eresus_Service_Auth::setCookies()}
 	 *
 	 * @return void
 	 *
