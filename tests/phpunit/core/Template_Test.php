@@ -68,5 +68,15 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * @covers Eresus_Template::__construct
+	 */
+	public function test_setCharset()
+	{
+		Eresus_Config::set('core.template.charset', 'windows-1251');
+		$test = new Eresus_Template();
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }

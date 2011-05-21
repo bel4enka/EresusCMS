@@ -67,10 +67,12 @@ class Eresus_Kernel_PHP
 	 */
 	static function isCLI()
 	{
+		//@codeCoverageIgnoreStart
 		if (self::$override_isCLI !== null)
 		{
 			return self::$override_isCLI;
 		}
+		//@codeCoverageIgnoreEnd
 
 		return PHP_SAPI == 'cli';
 	}

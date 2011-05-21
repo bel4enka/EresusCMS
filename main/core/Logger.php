@@ -110,9 +110,13 @@ class Eresus_Logger
 			return;
 		}
 
+		//@codeCoverageIgnoreStart
 		fputs(STDERR, __FUNCTION__ . ": Can not log message!\n");
+		//@codeCoverageIgnoreEnd
 
+	//@codeCoverageIgnoreStart
 	}
+	//@codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
 
 	/**

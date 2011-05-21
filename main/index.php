@@ -41,18 +41,7 @@ ini_set('display_errors', true);
  */
 ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
 
-/**
- * Уровень детализации журнала
- */
-define('ERESUS_LOG_LEVEL' , ${log.level});
-
 ini_set('track_errors', true);
-/**
- * Подключение Eresus Core
- */
-//include_once 'core/framework/core/eresus-core.compiled.php';
-//include_once 'core/framework/core/eresus-core.php';
-
 /**
  * Подключение ядра
  */

@@ -29,6 +29,8 @@
  * $Id$
  */
 
+require_once 'PHPUnit/Extensions/OutputTestCase.php';
+
 require_once dirname(__FILE__) . '/../stubs.php';
 require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
 
@@ -38,6 +40,95 @@ require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
  */
 class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @var mixed
+	 */
+	protected $error_log;
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		$this->error_log = ini_get('error_log');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		ini_set('error_log', $this->error_log);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::initExceptionHandling
+	 */
+	public function test_initExceptionHandling()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('This test requires at PHP 5.3.2 or higher');
+		}
+		$method = new ReflectionMethod('Eresus_Kernel', 'initExceptionHandling');
+		$method->setAccessible(true);
+		$method->invoke(null);
+
+		$this->assertTrue(isset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']), 'No emergency buffer');
+		$this->assertEquals(0, ini_get('html_errors'), '"html_errors" option is set');
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @ covers Eresus_Kernel::handleException
+	 * /
+	public function test_handleException()
+	{
+		$e = new Exception;
+		ini_set('error_log', '/dev/null');
+		$this->expectOutputString("Unhandled Exception!\n");
+		Eresus_Kernel::handleException($e);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 */
+	public function test_errorHandler_at()
+	{
+		@Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function test_errorHandler_NOTICE()
+	{
+		Eresus_Kernel::errorHandler(E_NOTICE, 'Notice', '/some/file', 123);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @expectedException ErrorException
+	 */
+	public function test_errorHandler_WARNING()
+	{
+		Eresus_Kernel::errorHandler(E_WARNING, 'Warning', '/some/file', 123);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @expectedException ErrorException
+	 */
+	public function test_errorHandler_ERROR()
+	{
+		Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * @covers Eresus_Kernel::exec
 	 */

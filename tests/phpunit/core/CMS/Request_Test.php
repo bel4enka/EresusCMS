@@ -40,6 +40,21 @@ require_once dirname(__FILE__) . '/../../../../main/core/CMS/Request.php';
 class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @covers Eresus_CMS_Request::__construct
+	 * @covers Eresus_CMS_Request::getHttpMessage
+	 */
+	public function test_construct()
+	{
+		$msg = new Eresus_HTTP_Message();
+		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
+		$msg->setRequestUrl('http://example.org/dir1/dir2/dir3/file.ext');
+		$test = new Eresus_CMS_Request($msg, 'http://example.org/');
+		$this->assertSame($msg, $test->getHttpMessage());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::__construct
 	 * @covers Eresus_CMS_Request::getPath
 	 */
 	public function test_getPath()

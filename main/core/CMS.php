@@ -142,23 +142,10 @@ class Eresus_CMS
 			$this->initFS();
 			$this->checkEnviroment();
 			$this->createFileStructure();
-
-			Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-			/* Подключение старого ядра */
-			include_once 'kernel-legacy.php';
-			$GLOBALS['Eresus'] = new Eresus;
 			$this->initConf();
-			if ($GLOBALS['Eresus']->conf['debug']['enable'])
-			{
-				include_once 'debug.php';
-			}
-
 			$this->initLocale();
 			$this->initDB();
 			$this->initSite();
-			$this->initSession();
-			$GLOBALS['Eresus']->init();
-			Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 			if (Eresus_Kernel_PHP::isCLI())
 			{
@@ -340,94 +327,6 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Выполнение в режиме Web
-	 */
-	private function runWeb()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		$output = '';
-
-		switch (true)
-		{
-			/*case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
-				$this->call3rdPartyExtension();
-			break;
-
-			case substr($this->request->getLocal(), 0, 6) == '/admin':
-				$output = $this->runWebAdminUI();
-			break;*/
-
-			default:
-				$output = $this->runWebClientUI();
-			break;
-		}
-
-		echo $output;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Запуск КИ
-	 * @return string
-	 * @deprecated Это временная функция
-	 */
-	private function runWebClientUI()
-	{
-		global $page;
-
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
-
-		include_once 'client.php';
-
-		$page = new TClientUI();
-		$page->init();
-		/*return */$page->render();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Запуск АИ
-	 * @return string
-	 * @deprecated Это временная функция
-	 */
-	private function runWebAdminUI()
-	{
-		global $page;
-
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
-
-		define('ADMINUI', true);
-
-		$page = new AdminUI();
-		$this->frontController = new Eresus_Controller_Admin($page);
-
-		return $this->frontController->render();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Выполнение в режиме CLI
-	 */
-	private function runCLI()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		$this->initCLI();
-		return 0;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация CLI
-	 */
-	private function initCLI()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Инициализирует работу с файловой системой
 	 *
 	 * Устанвливает {@link $fsRoot} при помощи{@link detectFsRoot()}.
@@ -448,8 +347,6 @@ class Eresus_CMS
 	private function initConf()
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
 		@include_once $this->getRootDir() . '/cfg/main.php';
 
@@ -561,6 +458,19 @@ class Eresus_CMS
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+		/* Подключение старого ядра */
+		include_once 'kernel-legacy.php';
+		$GLOBALS['Eresus'] = new Eresus;
+		if ($GLOBALS['Eresus']->conf['debug']['enable'])
+		{
+			include_once 'debug.php';
+		}
+
+		$this->initSession();
+		$GLOBALS['Eresus']->init();
+		Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
 		// FIXME Следующая строка нужна только до перехода на UTF-8
@@ -570,6 +480,94 @@ class Eresus_CMS
 		$this->request = new Eresus_CMS_Request($req, $this->getSite()->getRootURL());
 		//$this->response = new HttpResponse();
 		//$this->initRoutes();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Выполнение в режиме Web
+	 */
+	private function runWeb()
+	{
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
+
+		$output = '';
+
+		switch (true)
+		{
+			/*case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
+				$this->call3rdPartyExtension();
+			break;
+
+			case substr($this->request->getLocal(), 0, 6) == '/admin':
+				$output = $this->runWebAdminUI();
+			break;*/
+
+			default:
+				$output = $this->runWebClientUI();
+			break;
+		}
+
+		echo $output;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Запуск КИ
+	 * @return string
+	 * @deprecated Это временная функция
+	 */
+	private function runWebClientUI()
+	{
+		global $page;
+
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+
+		include_once 'client.php';
+
+		$page = new TClientUI();
+		$page->init();
+		/*return */$page->render();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Запуск АИ
+	 * @return string
+	 * @deprecated Это временная функция
+	 */
+	private function runWebAdminUI()
+	{
+		global $page;
+
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+
+		define('ADMINUI', true);
+
+		$page = new AdminUI();
+		$this->frontController = new Eresus_Controller_Admin($page);
+
+		return $this->frontController->render();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Выполнение в режиме CLI
+	 */
+	private function runCLI()
+	{
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
+
+		$this->initCLI();
+		return 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация CLI
+	 */
+	private function initCLI()
+	{
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 	}
 	//-----------------------------------------------------------------------------
 
