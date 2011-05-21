@@ -83,6 +83,7 @@ class Core_AllTests
 		$suite->addTestSuite('Eresus_Logger_Test');
 		$suite->addTestSuite('Eresus_Mail_Test');
 		$suite->addTest(      Eresus_Security_AllTests::suite());
+		$suite->addTest(      Eresus_Service_AllTests::suite());
 		$suite->addTestSuite('Eresus_WebServer_Test');
 
 		$suite->addTestSuite('LegacyFunctionsTest');
@@ -91,7 +92,6 @@ class Core_AllTests
 		$suite->addTest(Core_BusinessLogic_AllTests::suite());
 		$suite->addTest(Core_Domain_AllTests::suite());
 		$suite->addTest(Core_Controller_AllTests::suite());
-		$suite->addTest(Core_Service_AllTests::suite());
 		$suite->addTest(Core_UI_AllTests::suite());
 		$suite->addTest(Core_Classes_AllTests::suite());
 		//$suite->addTest(Core_Lib_AllTests::suite());

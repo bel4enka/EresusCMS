@@ -32,14 +32,16 @@
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/Admin/AllTests.php';
+require_once dirname(__FILE__) . '/Events_Test.php';
 
-class Core_Service_AllTests
+class Eresus_Service_AllTests
 {
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core/Service');
 
 		$suite->addTest(Core_Service_Admin_AllTests::suite());
+		$suite->addTestSuite('Eresus_Service_Events_Test');
 
 		return $suite;
 	}

@@ -70,6 +70,10 @@ class Eresus_i18n
 	 * Возвращает экземпляр-одиночку
 	 *
 	 * @return Eresus_i18n
+	 *
+	 * @uses $instance
+	 * @uses Eresus_CMS::app()
+	 * @uses Eresus_CMS::getRootDir()
 	 */
 	static public function getInstance()
 	{
@@ -83,30 +87,17 @@ class Eresus_i18n
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Конструктор
-	 *
-	 * @param string $path  Путь к файлам локализации
-	 * @return Eresus_i18n
-	 */
-	public function __construct($path)
-	{
-		$this->path = $path;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Выбор локали
 	 *
 	 * @param string $locale
+	 *
 	 * @return void
+	 *
+	 * @uses $locale
 	 */
 	public function setLocale($locale)
 	{
 		$this->locale = $locale;
-		if (!isset($this->data[$this->locale]))
-		{
-			$this->data[$this->locale] = include $this->path . '/' . $this->locale . '.php';
-		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -115,10 +106,17 @@ class Eresus_i18n
 	 *
 	 * @param string $text     Искомый текст
 	 * @param string $context  Контекст
+	 *
 	 * @return string
+	 *
+	 * @uses localeLazyLoad()
+	 * @uses $data
+	 * @uses $locale
 	 */
 	public function getText($text, $context = null)
 	{
+		$this->localeLazyLoad();
+
 		if (isset($this->data[$this->locale]))
 		{
 			if ($context && isset($this->data[$this->locale]['messages'][$context]))
@@ -138,6 +136,46 @@ class Eresus_i18n
 		return $text;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Конструктор
+	 *
+	 * @param string $path  Путь к файлам локализации
+	 * @return Eresus_i18n
+	 */
+	private function __construct($path)
+	{
+		$this->path = $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Ленивая загрузка файла локали
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @uses $data
+	 * @uses $locale
+	 * @uses $path
+	 */
+	private function localeLazyLoad()
+	{
+		if (!isset($this->data[$this->locale]))
+		{
+			$filename = $this->path . '/' . $this->locale . '.php';
+			if (file_exists($filename))
+			{
+				$this->data[$this->locale] = include $filename;
+			}
+			else
+			{
+				Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Can not load language file "%s"', $filename);
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 

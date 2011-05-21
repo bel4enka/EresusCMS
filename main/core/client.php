@@ -260,8 +260,7 @@ class TClientUI extends WebPage
 	{
 		global $Eresus;
 
-		$Eresus->plugins->preload();
-		$Eresus->plugins->clientOnStart();
+		Eresus_Service_Events::getInstance()->dispatch('clientOnStart');
 
 		$item = $this->loadPage();
 		if ($item) {

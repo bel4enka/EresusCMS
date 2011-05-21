@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Средства отладки
+ * Исключение "Доступ запрещён"
  *
  * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -26,12 +26,17 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Debug
+ * @package CMS
  *
- * $Id$
+ * $Id: Service.php 1610 2011-05-18 09:58:04Z mk $
  */
 
 /**
- * Признак включённого режима отладки
+ * Исключение "Доступ запрещён"
+ *
+ * @package CMS
+ * @since 2.16
  */
-define('ERESUS_CMS_DEBUG', true);
+class Eresus_CMS_Exception_Forbidden extends DomainException
+{
+}

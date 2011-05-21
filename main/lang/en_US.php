@@ -4,10 +4,7 @@
  *
  * ${product.description}
  *
- * Запускающий скрипт
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -27,60 +24,20 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Kernel
+ * @package l10n
  *
  * $Id$
  */
 
-// Временно включаем вывод ошибок, пока не инициализированы средства журанлирования
-ini_set('display_errors', true);
-
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
-
-ini_set('track_errors', true);
-/**
- * Подключение ядра
- */
-include_once 'core/Kernel.php';
-
-Eresus_Kernel::init();
-
-if (isset($php_errormsg))
-{
-	die($php_errormsg);
-}
-ini_set('track_errors', false);
-
-/*
- * Если есть файл install.php, запускаем инсталлятор, а не CMS
- */
-if (is_file('install.php'))
-{
-	$fileName = 'install.php';
-	$appName = 'Installer';
-}
-else
-{
-	$fileName = 'core/CMS.php';
-	$appName = 'Eresus_CMS';
-}
-
-
-try
-{
-	/**
-	 * Подключение главного приложения
+return array(
+	/*
+	 * Сообщения
 	 */
-	include_once $fileName;
-}
-catch (Exception $e)
-{
-	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
-}
-
-// Запуск приложения
-Eresus_Kernel::exec($appName);
+	'messages' => array(
+		/*
+		 * Глобальный контекст
+		 */
+		'global' => array(
+		)
+	),
+);

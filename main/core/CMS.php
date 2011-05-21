@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Core
+ * @package CMS
  *
  * $Id$
  */
@@ -57,7 +57,7 @@ interface FileManagerConnectorInterface
 /**
  * Исключение "Страница не найдена"
  *
- * @package Core
+ * @package CMS
  * @since 2.16
  */
 class PageNotFoundException extends DomainException {}
@@ -67,7 +67,7 @@ class PageNotFoundException extends DomainException {}
 /**
  * Класс приложения Eresus CMS
  *
- * @package Core
+ * @package CMS
  */
 class Eresus_CMS
 {
@@ -132,6 +132,21 @@ class Eresus_CMS
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
+	 *
+	 * @uses Eresus_Logger::log()
+	 * @uses Eresus_Logger::exception()
+	 * @uses initFS()
+	 * @uses checkEnviroment()
+	 * @uses createFileStructure()
+	 * @uses initConf()
+	 * @uses initLocale()
+	 * @uses initDB()
+	 * @uses initSite()
+	 * @uses Eresus_Kernel_PHP::isCLI()
+	 * @uses runCLI()
+	 * @uses initWeb()
+	 * @uses runWeb()
+	 * @uses fatalError()
 	 */
 	public function main()
 	{
@@ -176,7 +191,7 @@ class Eresus_CMS
 	 * Возвращает корневую директорию приложения
 	 *
 	 * @return string
-	 * @see $rootDir
+	 * @uses $rootDir
 	 */
 	public function getRootDir()
 	{
@@ -256,7 +271,12 @@ class Eresus_CMS
 	/**
 	 * Проверка окружения
 	 *
+	 * Проверяет наличие файлов, необходимых для работы CMS, а также доступность нужных файлов на
+	 * запись.
+	 *
 	 * @return void
+	 *
+	 * @uses Eresus_Kernel_PHP::isCLI()
 	 */
 	private function checkEnviroment()
 	{
@@ -281,8 +301,12 @@ class Eresus_CMS
 			'style'
 		);
 		foreach ($writable as $filename)
+		{
 			if (!is_writable($filename))
+			{
 				$errors []= array('file' => $filename, 'problem' => 'non-writable');
+			}
+		}
 
 		if ($errors)
 		{
@@ -302,6 +326,8 @@ class Eresus_CMS
 	 * Создание файловой структуры
 	 *
 	 * @return void
+	 *
+	 * @uses getRootDir()
 	 */
 	private function createFileStructure()
 	{
@@ -329,11 +355,11 @@ class Eresus_CMS
 	/**
 	 * Инициализирует работу с файловой системой
 	 *
-	 * Устанвливает {@link $fsRoot} при помощи{@link detectFsRoot()}.
+	 * Устанвливает {@link $rootDir} при помощи {@link detectRootDir()}.
 	 *
 	 * @return void
 	 *
-	 * @see $fsRoot, detectFsRoot()
+	 * @uses detectRootDir()
 	 */
 	private function initFS()
 	{
@@ -342,15 +368,31 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Инициализация конфигурации
+	 * Чтение настроек
+	 *
+	 * @throws DomainException  если файл настроек содержит ошибки
+	 *
+	 * @uses getRootDir()
+	 * @uses Eresus_Logger::log()
 	 */
 	private function initConf()
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
-		@include_once $this->getRootDir() . '/cfg/main.php';
-
-		// TODO: Сделать проверку успешного подключения файла
+		$config = file_get_contents($this->getRootDir() . '/cfg/main.php');
+		if (substr($config, 0, 5) == '<?php')
+		{
+			$config = substr($config, 5);
+		}
+		elseif (substr($config, 0, 2) == '<?')
+		{
+			$config = substr($config, 2);
+		}
+		$result = @eval($config);
+		if ($result === false)
+		{
+			throw new DomainException('Error parsing cfg/main.php');
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -360,24 +402,32 @@ class Eresus_CMS
 	 * @return void
 	 *
 	 * @since 2.16
+	 * @uses Eresus_i18n::getInstance()
+	 * @uses Eresus_i18n::setLocale()
+	 * @uses Eresus_Config::get()
+	 * @uses Eresus_Template::setGlobalValue()
 	 */
 	private function initLocale()
 	{
 		$i18n = Eresus_i18n::getInstance();
-		if ($locale = Eresus_Config::get('eresus.cms.locale'))
-		{
-			$i18n->setLocale($locale);
-		}
-		else
-		{
-			$i18n->setLocale('ru_RU');
-		}
+		$locale = Eresus_Config::get('eresus.cms.locale', 'ru_RU');
+		$i18n->setLocale($locale);
 		Eresus_Template::setGlobalValue('i18n', $i18n);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализация БД
+	 *
+	 * Настраивает "ленивое" соединение с БД.
+	 *
+	 * @throws DomainException если в настройках не указан параметр "eresus.cms.dsn"
+	 *
+	 * @return void
+	 *
+	 * @uses Eresus_Logger::log()
+	 * @uses getRootDir()
+	 * @uses Eresus_Config::get()
 	 */
 	private function initDB()
 	{
@@ -420,6 +470,8 @@ class Eresus_CMS
 	 * @return void
 	 *
 	 * @since 2.16
+	 * @uses Eresus_Model_Site
+	 * @uses Eresus_Template::setGlobalValue() для установки глобальной переменной "site"
 	 */
 	private function initSite()
 	{
@@ -460,16 +512,12 @@ class Eresus_CMS
 
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 		/* Подключение старого ядра */
-		include_once 'kernel-legacy.php';
-		$GLOBALS['Eresus'] = new Eresus;
-		if ($GLOBALS['Eresus']->conf['debug']['enable'])
-		{
-			include_once 'debug.php';
-		}
+		//include_once 'kernel-legacy.php';
+		//$GLOBALS['Eresus'] = new Eresus;
 
 		$this->initSession();
-		$GLOBALS['Eresus']->init();
-		Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+		//$GLOBALS['Eresus']->init();
+		//Eresus_Template::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
@@ -603,7 +651,6 @@ class Eresus_CMS
 	 * Определяет корневую директорию приложения
 	 *
 	 * @return string
-	 * @see $rootDir, getRootDir()
 	 */
 	private function detectRootDir()
 	{
@@ -612,7 +659,6 @@ class Eresus_CMS
 		{
 			$path = str_replace($path, DIRECTORY_SEPARATOR, '/');
 		}
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '"%s"', $path);
 
 		return $path;
 	}

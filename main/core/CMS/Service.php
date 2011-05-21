@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package AbstractionLayers
+ * @package CMS
  *
  * $Id$
  */
@@ -34,7 +34,7 @@
 /**
  * Интерфейс служб
  *
- * @package Core
+ * @package CMS
  * @since 2.16
  */
 interface Eresus_CMS_Service

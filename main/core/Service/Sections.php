@@ -24,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Domain
+ * @package Service
  *
  * $Id$
  */
@@ -32,7 +32,7 @@
 /**
  * Служба по работе с разделами сайта
  *
- * @package Domain
+ * @package Service
  * @since 2.16
  */
 class Eresus_Service_Sections implements Eresus_CMS_Service
