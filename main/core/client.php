@@ -374,7 +374,7 @@ class TClientUI extends WebPage
 		}*/
 
 		$vars = array(
-			'page' => $this,
+			'page' => new Eresus_Helper_ArrayAccessDecorator($this),
 		);
 
 		$tmpl = Eresus_Template::fromFile('templates/' . $this->templateName . '.html');
