@@ -38,8 +38,8 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- Framework files -->
-	<fileset dir="framework" id="files.framework">
+	<!-- 3rd party: Dwoo -->
+	<fileset dir="3rdparty/dwoo" id="files.3rd.dwoo">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
@@ -165,14 +165,6 @@
 		  </filterchain>
 		</copy>
 		
-		<!-- Eresus Core -->
-		<!-- phing phingfile="build.xml" dir="3rdparty/eresus-core" inheritAll="false">
-			<property name="type" value="builtin" override="yes" />
-			<property name="build.dir" value="${build.dir}/core/framework/core" override="yes" />
-			<property name="php.lint" value="no" override="yes" />
-			<property name="phpunit" value="no" override="yes" />
-		</phing -->
-
 		<!-- Doctrine -->
 		<echo msg="Copying Doctrine..." level="info" />
 		<copy todir="${build.dir}/core">
@@ -180,6 +172,11 @@
 			<filterchain>
 				<expandproperties />
 			</filterchain>
+		</copy>
+
+		<!-- Dwoo -->
+		<copy todir="${build.dir}/core/Dwoo">
+			<fileset refid="files.3rd.dwoo" />
 		</copy>
 
 		<!-- jQuery -->

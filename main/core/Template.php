@@ -33,6 +33,13 @@
 
 
 
+if (!class_exists('Dwoo', false))
+{
+	include dirname(__FILE__) . '/Dwoo/dwooAutoload.php';
+}
+
+
+
 /**
  * Шаблон
  *
@@ -150,19 +157,25 @@ class Eresus_Template
 	 */
 	public function compile($data = null)
 	{
-		$vars = array();
-		if ($data)
+		if (!$this->file)
 		{
-			$vars = array_merge($data, self::$globals);
+			throw new InvalidArgumentException('No template file specified');
 		}
+
+		if (is_null($data))
+		{
+			$data = array();
+		}
+		$data['globals'] = self::$globals;
 
 		try
 		{
-			$result = $this->dwoo->get($this->file, $vars);
+			$result = $this->dwoo->get($this->file, $data);
 		}
-		catch (ErrorException $e)
+		catch (Exception $e)
 		{
-			throw new RuntimeException('Error in template: ' . $e->getMessage());
+			Eresus_Logger::exception($e);
+			$result = '';
 		}
 
 		return $result;
@@ -176,9 +189,9 @@ class Eresus_Template
 	 */
 	protected function detectTemplateDir()
 	{
-		$compileDir = Eresus_Config::get('core.template.templateDir', '');
+		$templateDir = Eresus_Config::get('core.template.templateDir', '');
 
-		return $compileDir;
+		return $templateDir;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -205,8 +218,12 @@ class Eresus_Template
 	protected function loadFromFile($filename)
 	{
 		$templateDir = $this->detectTemplateDir();
-		$template = $templateDir . '/' . $filename;
-		$this->file = new Dwoo_Template_File($template, null, $filename, $filename);
+		$fullname = $templateDir . '/' . $filename;
+		if (!file_exists($fullname))
+		{
+			Eresus_Logger::log(__METHOD__, LOG_ERR, 'Template file "%s" not found', $fullname);
+		}
+		$this->file = new Dwoo_Template_File($fullname, null, $filename, $filename);
 	}
 	//-----------------------------------------------------------------------------
 

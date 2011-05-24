@@ -34,11 +34,20 @@
 /**
  * Модель сайта
  *
+ * @property int	  $id
+ * @property string $root
+ * @property string $name
+ * @property string $title
+ * @property bool   $titleReverse
+ * @property string $titleDiv
+ * @property string $keywords
+ * @property int	  $position
+ *
  * @package	Domain
  *
  * @since 2.16
  */
-class Eresus_Model_Site
+class Eresus_Model_Site extends Eresus_DB_Record
 {
 	/**
 	 * Адрес корня сайта
@@ -48,14 +57,62 @@ class Eresus_Model_Site
 	private $rootURL;
 
 	/**
-	 * Создаёт экземпляр модели сайта
-	 *
-	 * @return Eresus_Model_Site
+	 * @see Doctrine_Record_Abstract::setTableDefinition()
 	 *
 	 * @since 2.16
 	 */
-	public function __construct()
+	public function setTableDefinition()
 	{
+		$this->setTableName('sites');
+
+		$this->hasColumns(array(
+			'id' => array(
+				'type' => 'integer',
+				'length' => 4,
+				'unsigned' => true,
+				'primary' => true,
+				'autoincrement' => true,
+			),
+			'root' => array(
+				'type' => 'string',
+				'length' => 255,
+				'default' => '',
+				'notnull' => true,
+			),
+			'name' => array(
+				'type' => 'string',
+				'length' => 32,
+				'default' => '',
+				'notnull' => true,
+			),
+			'title' => array(
+				'type' => 'string',
+				'default' => '',
+				'notnull' => true,
+			),
+			'title_reverse' => array(
+				'type' => 'integer',
+				'length' => 1,
+				'default' => '1',
+				'notnull' => true,
+			),
+			'title_div' => array(
+				'type' => 'string',
+				'length' => 32,
+				'default' => ' &ndash; ',
+				'notnull' => true,
+			),
+			'description' => array(
+				'type' => 'string',
+				'default' => '',
+				'notnull' => true,
+			),
+			'keywords' => array(
+				'type' => 'string',
+				'default' => '',
+				'notnull' => true,
+			)
+		));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -73,6 +130,28 @@ class Eresus_Model_Site
 			$this->detectRootURL();
 		}
 		return $this->rootURL;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Doctrine_Record::get()
+	 */
+	public function get($fieldName, $load = true)
+	{
+		switch ($fieldName)
+		{
+			case 'rootURL':
+				return $this->rootURL;
+			break;
+
+			case 'stylesURL':
+				return $this->rootURL . 'style/';
+			break;
+
+			default:
+				return parent::get($fieldName, $load);
+			break;
+		}
 	}
 	//-----------------------------------------------------------------------------
 

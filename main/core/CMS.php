@@ -72,6 +72,13 @@ class PageNotFoundException extends DomainException {}
 class Eresus_CMS
 {
 	/**
+	 * Версия CMS
+	 *
+	 * @var string
+	 */
+	private $version = '${product.version}';
+
+	/**
 	 * Сайт
 	 *
 	 * @var Eresus_Model_Site
@@ -184,6 +191,18 @@ class Eresus_CMS
 			$this->fatalError($e, false);
 		}
 
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает версию приложения
+	 *
+	 * @return string
+	 * @uses $version
+	 */
+	public function getVersion()
+	{
+		return $this->version;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -470,12 +489,12 @@ class Eresus_CMS
 	 * @return void
 	 *
 	 * @since 2.16
-	 * @uses Eresus_Model_Site
+	 * @uses Eresus_DB_ORM::getTable()
 	 * @uses Eresus_Template::setGlobalValue() для установки глобальной переменной "site"
 	 */
 	private function initSite()
 	{
-		$this->site = new Eresus_Model_Site();
+		$this->site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
 		Eresus_Template::setGlobalValue('site', $this->site);
 	}
 	//-----------------------------------------------------------------------------
@@ -516,6 +535,8 @@ class Eresus_CMS
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
 		// FIXME Следующая строка нужна только до перехода на UTF-8
 		Eresus_Config::set('core.template.charset', 'CP1251');
+
+		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($this));
 
 		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
 		$this->request = new Eresus_CMS_Request($req, $this->getSite()->getRootURL());

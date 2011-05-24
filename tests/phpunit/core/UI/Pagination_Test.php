@@ -29,6 +29,10 @@
  * $Id$
  */
 
+require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Config.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Logger.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Template.php';
 require_once dirname(__FILE__) . '/../../../../main/core/UI/Pagination.php';
 
 /**
@@ -183,6 +187,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(10, 5);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$helper = $test->render();
 
 		$i = 1;
@@ -214,6 +219,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(100, 1);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$helper = $test->render();
 
 		$i = 1;
@@ -251,6 +257,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(100, 100);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$helper = $test->render();
 
 		$i = 1;
@@ -288,6 +295,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_UI_Pagination(100, 50);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$helper = $test->render();
 
 		$i = 1;
@@ -329,6 +337,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 		$test = new Eresus_UI_Pagination(4, 4);
 		$test->setSize(2);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$data = $test->render();
 		$helper = $data['pagination'];
 
@@ -366,6 +375,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 		$test = new Eresus_UI_Pagination(4, 1);
 		$test->setSize(2);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$data = $test->render();
 		$helper = $data['pagination'];
 
@@ -403,6 +413,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 		$test = new Eresus_UI_Pagination(4, 3);
 		$test->setSize(2);
 
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$data = $test->render();
 		$helper = $data['pagination'];
 
@@ -438,14 +449,4 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/* */
-}
-
-
-class Template
-{
-	public function compile($data)
-	{
-		return $data;
-	}
-	//-----------------------------------------------------------------------------
 }

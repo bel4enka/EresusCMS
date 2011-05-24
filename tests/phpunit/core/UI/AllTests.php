@@ -32,7 +32,7 @@
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/AdminUITest.php';
-require_once dirname(__FILE__) . '/PaginationTest.php';
+require_once dirname(__FILE__) . '/Pagination_Test.php';
 
 class Core_UI_AllTests
 {

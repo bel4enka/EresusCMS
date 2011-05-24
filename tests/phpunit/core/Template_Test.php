@@ -34,13 +34,33 @@ require_once dirname(__FILE__) . '/../../../main/core/Template.php';
 
 class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 {
+	private $error_log;
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		$this->error_log = ini_get('error_log');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		ini_set('error_log', $this->error_log);
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * @covers Eresus_Template::compile
-	 * @expectedException RuntimeException
+	 * @expectedException InvalidArgumentException
 	 */
 	public function test_unexistent()
 	{
-		$exception = new ErrorException('file not found', 0, E_ERROR, 'some_file', 123);
+		/*$exception = new ErrorException('file not found', 0, E_ERROR, 'some_file', 123);
 		$dwoo = $this->getMockBuilder('stdClass')->setMethods(array('get'))->getMock();
 		$dwoo->expects($this->once())->method('get')->will($this->throwException($exception));
 
@@ -50,6 +70,10 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 		$dwooProp->setAccessible(true);
 		$dwooProp->setValue($test, $dwoo);
 
+		ini_set('error_log', false);
+		$this->assertEmpty($test->compile());*/
+
+		$test = new Eresus_Template();
 		$test->compile();
 	}
 	//-----------------------------------------------------------------------------

@@ -31,6 +31,8 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
+define('TESTS_SRC_ROOT', realpath(__DIR__ . '/../../main'));
+
 /**
  * Универсальная заглушка
  *

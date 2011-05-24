@@ -87,6 +87,12 @@ class Eresus_Helper_ArrayAccessDecorator implements ArrayAccess
 	{
 		$this->checkOffsetType($offset);
 
+		$getter = 'get' . $offset;
+		if (method_exists($this->object, $getter))
+		{
+			return $this->object->$getter();
+		}
+
 		return $this->object->$offset;
 	}
 	//-----------------------------------------------------------------------------
@@ -97,7 +103,16 @@ class Eresus_Helper_ArrayAccessDecorator implements ArrayAccess
 	public function offsetSet($offset, $value)
 	{
 		$this->checkOffsetType($offset);
-		$this->object->$offset = $value;
+
+		$setter = 'set' . $offset;
+		if (method_exists($this->object, $setter))
+		{
+			$this->object->$setter($value);
+		}
+		else
+		{
+			$this->object->$offset = $value;
+		}
 	}
 	//-----------------------------------------------------------------------------
 

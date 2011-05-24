@@ -377,7 +377,7 @@ class TClientUI extends WebPage
 			'page' => $this,
 		);
 
-		$tmpl = new Eresus_Template($this->templateName);
+		$tmpl = Eresus_Template::fromFile('templates/' . $this->templateName . '.html');
 		$html = $tmpl->compile($vars);
 
 		$event = new Eresus_CMS_Event('clientOnPageRender');

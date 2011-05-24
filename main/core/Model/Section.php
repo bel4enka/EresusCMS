@@ -30,8 +30,6 @@
  *
  * $Id$
  */
-// Connection Component Binding
-//Doctrine_Manager::getInstance()->bindComponent('Eresus_Model_Section', 'doctrine');
 
 /**
  * Раздел сайта
@@ -60,7 +58,6 @@
 class Eresus_Model_Section extends Eresus_DB_Record
 {
 	/**
-	 * (non-PHPdoc)
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
 	 *
 	 * @since 2.16
@@ -241,7 +238,6 @@ class Eresus_Model_Section extends Eresus_DB_Record
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Doctrine_Record::setUp()
 	 *
 	 * @since 2.16
