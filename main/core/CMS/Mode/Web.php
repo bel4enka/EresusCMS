@@ -53,17 +53,34 @@ class Eresus_CMS_Mode_Web extends Eresus_CMS_Mode
 		$cms = Eresus_CMS::app();
 		Eresus_Config::set('core.template.templateDir', $cms->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $cms->getRootDir() . '/var/cache/templates');
-
 		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($cms));
 
+		if (substr($this->getRequest()->getBasePath(), 0, 6) == '/admin')
+		{
+			$this->ui = new Eresus_CMS_UI_Admin($this->getRequest());
+		}
+		else
+		{
+			$this->ui = new Eresus_CMS_UI_Client($this->getRequest());
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект запроса к CMS
+	 *
+	 * @return Eresus_CMS_Request
+	 *
+	 * @since 2.16
+	 */
+	protected function createRequest()
+	{
 		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
 		/*
 		 * FIXME Нельзя передавать здесь корень сайта на основе модели сайта. Наоборот, модель сайта
 		 * должна выбираться на основе адреса.
 		 */
-		$this->request = new Eresus_CMS_Request($req, $cms->getSite()->getRootURL());
-
-		$this->ui = new Eresus_CMS_UI_Client($this->getRequest());
+		return new Eresus_CMS_Request($req, $cms->getSite()->getRootURL());
 	}
 	//-----------------------------------------------------------------------------
 

@@ -31,6 +31,8 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Config.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Logger.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Service/Auth.php';

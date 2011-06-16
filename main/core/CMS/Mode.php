@@ -44,7 +44,7 @@ abstract class Eresus_CMS_Mode
 	 *
 	 * @var Eresus_CMS_Request
 	 */
-	protected $request;
+	private $request;
 
 	/**
 	 * Пользовательский интерфейс
@@ -62,6 +62,10 @@ abstract class Eresus_CMS_Mode
 	 */
 	public function getRequest()
 	{
+		if (!$this->request)
+		{
+			$this->request = $this->createRequest();
+		}
 		return $this->request;
 	}
 	//-----------------------------------------------------------------------------
@@ -90,5 +94,15 @@ abstract class Eresus_CMS_Mode
 	{
 		return $this->ui->process();
 	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Метод должен возвращать объект запроса к CMS
+	 *
+	 * @return Eresus_CMS_Request
+	 *
+	 * @since 2.16
+	 */
+	abstract protected function createRequest();
 	//-----------------------------------------------------------------------------
 }

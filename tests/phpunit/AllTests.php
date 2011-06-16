@@ -36,12 +36,14 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 $root = realpath(dirname(__FILE__) . '/../..');
 
 /*
- * На некоторых системах некоторые файлы включаются не в том порядке, что приводит к ошибкам.
- * Добавление этих файлов в начало белого списка решает проблему.
+ * На некоторых системах некоторые файлы (содержащие абстрактные классы?) включаются не в том
+ * порядке, что приводит к ошибкам. Добавление этих файлов в начало белого списка решает проблему.
  */
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/DataProvider.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/Mutator.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/ItemControl.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/CMS/Mode.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/CMS/UI.php');
 
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/admin');

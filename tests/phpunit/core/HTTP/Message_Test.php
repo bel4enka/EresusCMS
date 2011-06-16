@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Config.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Message.php';
 
 /**

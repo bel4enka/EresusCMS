@@ -38,7 +38,6 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
-require_once dirname(__FILE__) . '/BusinessLogic/AllTests.php';
 require_once dirname(__FILE__) . '/Config_Test.php';
 require_once dirname(__FILE__) . '/Controller/AllTests.php';
 require_once dirname(__FILE__) . '/classes/AllTests.php';
@@ -87,7 +86,6 @@ class Core_AllTests
 		$suite->addTestSuite('LegacyFunctionsTest');
 		$suite->addTestSuite('Eresus_Template_Test');
 
-		$suite->addTest(Core_BusinessLogic_AllTests::suite());
 		$suite->addTest(Core_Domain_AllTests::suite());
 		$suite->addTest(Core_Controller_AllTests::suite());
 		$suite->addTest(Core_UI_AllTests::suite());

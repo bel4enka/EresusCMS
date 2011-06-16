@@ -67,6 +67,12 @@ class Eresus_CMS_UI_Client extends Eresus_CMS_UI
 			$this->module = $this->section->getModule();
 			$response = new Eresus_CMS_Response($this->module->clientRenderContent($this->section));
 		}
+		catch (Eresus_CMS_Exception_Forbidden $e)
+		{
+			$tmpl = Eresus_Service_Templates::getInstance()->get('errors/403');
+			$html = $tmpl ? $tmpl->compile() : 'Access denied';
+			$response = new Eresus_CMS_Response($html, Eresus_CMS_Response::FORBIDDEN);
+		}
 		catch (Eresus_CMS_Exception_NotFound $e)
 		{
 			$tmpl = Eresus_Service_Templates::getInstance()->get('errors/404');

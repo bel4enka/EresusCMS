@@ -47,6 +47,13 @@ class Eresus_CMS_Response
 	const OK = 200;
 
 	/**
+	 * Доступ к ресурсу запрещён
+	 *
+	 * @var int
+	 */
+	const FORBIDDEN = 403;
+
+	/**
 	 * Запрошенный ресурс не найден
 	 *
 	 * @var int

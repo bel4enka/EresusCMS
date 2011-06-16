@@ -31,13 +31,13 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Plugin.php';
-require_once dirname(__FILE__) . '/../../../../main/core/BusinessLogic/ContentPlugin.php';
+require_once dirname(__FILE__) . '/../../../../main/core/CMS/ContentPlugin.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class ContentPluginTest extends PHPUnit_Framework_TestCase
+class Eresus_CMS_ContentPlugin_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 *
