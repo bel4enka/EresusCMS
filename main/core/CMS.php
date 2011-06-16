@@ -73,7 +73,6 @@ class Eresus_CMS
 	 *
 	 * @var array
 	 * @see get()
-	 * @see set()
 	 * @since 2.16
 	 */
 	private $container = array();
@@ -82,6 +81,7 @@ class Eresus_CMS
 	 * Сайт
 	 *
 	 * @var Eresus_Model_Site
+	 * @see site(), getSite()
 	 */
 	private $site;
 
@@ -96,25 +96,12 @@ class Eresus_CMS
 	private $rootDir;
 
 	/**
-	 * Фронт-контроллер (АИ или КИ)
-	 *
-	 * @var object
-	 */
-	private $frontController;
-
-	/**
-	 * HTTP-запрос
-	 *
-	 * @var HttpRequest
-	 */
-	private $request;
-
-	/**
 	 * Возвращает экземпляр-одиночку этого класса
 	 *
 	 * @return Eresus_CMS
 	 *
 	 * @since 2.16
+	 * @uses Eresus_Kernel::app()
 	 */
 	public static function app()
 	{
@@ -132,6 +119,7 @@ class Eresus_CMS
 	 * @return object
 	 *
 	 * @since 2.16
+	 * @see $container
 	 */
 	public function get($name)
 	{
@@ -149,6 +137,8 @@ class Eresus_CMS
 	 * @return Eresus_Model_Site
 	 *
 	 * @since 2.16
+	 * @uses Eresus_Kernel::app()
+	 * @uses getSite()
 	 */
 	public static function site()
 	{
@@ -161,7 +151,6 @@ class Eresus_CMS
 	 *
 	 * @return int  Код завершения для консольных вызовов
 	 *
-	 * @uses Eresus_Logger::log()
 	 * @uses Eresus_Logger::exception()
 	 * @uses initFS()
 	 * @uses checkEnviroment()
@@ -171,9 +160,8 @@ class Eresus_CMS
 	 * @uses initDB()
 	 * @uses initSite()
 	 * @uses Eresus_Kernel_PHP::isCLI()
-	 * @uses runCLI()
-	 * @uses runWeb()
 	 * @uses fatalError()
+	 * @uses Eresus_CMS_Mode_CLI
 	 */
 	public function main()
 	{
@@ -282,19 +270,6 @@ class Eresus_CMS
 	public function getDataDir()
 	{
 		return $this->getRootDir() . '/data';
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает объект текущего фронт-контроллера
-	 *
-	 * @return object
-	 *
-	 * @since 2.16
-	 */
-	public function getFrontController()
-	{
-		return $this->frontController;
 	}
 	//-----------------------------------------------------------------------------
 

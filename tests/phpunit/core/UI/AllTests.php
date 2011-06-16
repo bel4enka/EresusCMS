@@ -31,16 +31,14 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/AdminUITest.php';
 require_once dirname(__FILE__) . '/Pagination_Test.php';
 
-class Core_UI_AllTests
+class Eresus_UI_AllTests
 {
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core/UI');
 
-		$suite->addTestSuite('AdminUITest');
 		$suite->addTestSuite('Eresus_UI_Pagination_Test');
 		return $suite;
 	}

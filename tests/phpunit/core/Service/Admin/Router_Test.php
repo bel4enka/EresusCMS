@@ -38,8 +38,6 @@ require_once dirname(__FILE__) . '/../../../../../main/core/Config.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Logger.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/CMS/Exception/NotFound.php';
-require_once dirname(__FILE__) . '/../../../../../main/core/Controller/Admin.php';
-require_once dirname(__FILE__) . '/../../../../../main/core/Controller/Admin/Abstract.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Service/Admin/Router.php';
 
 /**

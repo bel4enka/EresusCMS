@@ -38,19 +38,16 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
+require_once dirname(__FILE__) . '/CMS/AllTests.php';
+require_once dirname(__FILE__) . '/CMS_Test.php';
 require_once dirname(__FILE__) . '/Config_Test.php';
 require_once dirname(__FILE__) . '/Controller/AllTests.php';
-require_once dirname(__FILE__) . '/classes/AllTests.php';
-require_once dirname(__FILE__) . '/CMS_Test.php';
-require_once dirname(__FILE__) . '/CMS/AllTests.php';
 require_once dirname(__FILE__) . '/DB/AllTests.php';
-require_once dirname(__FILE__) . '/EresusTest.php';
 require_once dirname(__FILE__) . '/EresusFormTest.php';
 require_once dirname(__FILE__) . '/Helper/AllTests.php';
 require_once dirname(__FILE__) . '/HTTP/AllTests.php';
-require_once dirname(__FILE__) . '/Kernel_Test.php';
 require_once dirname(__FILE__) . '/Kernel/AllTests.php';
-//require_once dirname(__FILE__) . '/lib/AllTests.php';
+require_once dirname(__FILE__) . '/Kernel_Test.php';
 require_once dirname(__FILE__) . '/Logger_Test.php';
 require_once dirname(__FILE__) . '/Mail_Test.php';
 require_once dirname(__FILE__) . '/Model/AllTests.php';
@@ -59,20 +56,17 @@ require_once dirname(__FILE__) . '/Template_Test.php';
 require_once dirname(__FILE__) . '/UI/AllTests.php';
 require_once dirname(__FILE__) . '/WebServer_Test.php';
 
-require_once dirname(__FILE__) . '/LegacyFunctionsTest.php';
-
-
 class Core_AllTests
 {
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core tests');
 
-		$suite->addTestSuite('Eresus_Config_Test');
-		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTest(      Eresus_CMS_AllTests::suite());
+		$suite->addTestSuite('Eresus_CMS_Test');
+		$suite->addTestSuite('Eresus_Config_Test');
+		$suite->addTest(      Eresus_Controller_AllTests::suite());
 		$suite->addTest(      Eresus_DB_AllTests::suite());
-		$suite->addTestSuite('EresusTest');
 		$suite->addTestSuite('EresusFormTest');
 		$suite->addTest(      Core_Helper_AllTests::suite());
 		$suite->addTest(      Eresus_HTTP_AllTests::suite());
@@ -80,17 +74,11 @@ class Core_AllTests
 		$suite->addTestSuite('Eresus_Kernel_Test');
 		$suite->addTestSuite('Eresus_Logger_Test');
 		$suite->addTestSuite('Eresus_Mail_Test');
+		$suite->addTest(      Eresus_Model_AllTests::suite());
 		$suite->addTest(      Eresus_Service_AllTests::suite());
-		$suite->addTestSuite('Eresus_WebServer_Test');
-
-		$suite->addTestSuite('LegacyFunctionsTest');
 		$suite->addTestSuite('Eresus_Template_Test');
-
-		$suite->addTest(Core_Domain_AllTests::suite());
-		$suite->addTest(Core_Controller_AllTests::suite());
-		$suite->addTest(Core_UI_AllTests::suite());
-		$suite->addTest(Core_Classes_AllTests::suite());
-		//$suite->addTest(Core_Lib_AllTests::suite());
+		$suite->addTest(      Eresus_UI_AllTests::suite());
+		$suite->addTestSuite('Eresus_WebServer_Test');
 
 		return $suite;
 	}

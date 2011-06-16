@@ -102,27 +102,6 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_CMS::getFrontController
-	 */
-	public function test_getFrontController()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
-		$test = new stdClass();
-
-		$obj = new Eresus_CMS;
-		$frontController = new ReflectionProperty('Eresus_CMS', 'frontController');
-		$frontController->setAccessible(true);
-		$frontController->setValue($obj, $test);
-
-		$this->assertSame($test, $obj->getFrontController());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * @covers Eresus_CMS::initDB
 	 */
 	public function test_initDB()
