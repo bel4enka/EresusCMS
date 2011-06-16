@@ -187,7 +187,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 	 *
 	 * Метод ищет модуль {@see $controllerName}, загружает и возвращает экземпляр класса контроллера.
 	 *
-	 * @throws PageNotFoundException  если нет файла контроллера
+	 * @throws Eresus_CMS_Exception_NotFound  если нет файла контроллера
 	 * @throws LogicException  если нет класса контроллера или этот класс не ялвяется потомком
 	 *                         Eresus_Controller_Admin_Abstract
 	 *
@@ -214,7 +214,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 			if (!is_file($path))
 			{
 				Eresus_Logger::log(__METHOD__, LOG_WARNING, 'File "%s" not found', $path);
-				throw new PageNotFoundException;
+				throw new Eresus_CMS_Exception_NotFound;
 			}
 			include $path;
 
@@ -241,7 +241,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 	/**
 	 * Возвращает callback для запрошенного метода
 	 *
-	 * @throws PageNotFoundException  если запрошенного метода нет в модуле
+	 * @throws Eresus_CMS_Exception_NotFound  если запрошенного метода нет в модуле
 	 *
 	 * @return callback
 	 *
@@ -268,7 +268,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 		{
 			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Method "%s" not found in "%s"', $action,
 				get_class($controller));
-			throw new PageNotFoundException;
+			throw new Eresus_CMS_Exception_NotFound;
 		}
 
 		$callback = array($controller, $action);

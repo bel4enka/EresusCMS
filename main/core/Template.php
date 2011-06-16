@@ -83,7 +83,7 @@ class Eresus_Template
 	 *
 	 * @param string $filename
 	 *
-	 * @return Eresus_Template
+	 * @return Eresus_Template|null
 	 *
 	 * @since 2.16
 	 */
@@ -91,6 +91,10 @@ class Eresus_Template
 	{
 		$tmpl = new self();
 		$tmpl->loadFromFile($filename);
+		if (!$tmpl->file)
+		{
+			return null;
+		}
 		return $tmpl;
 	}
 	//-----------------------------------------------------------------------------
@@ -219,11 +223,15 @@ class Eresus_Template
 	{
 		$templateDir = $this->detectTemplateDir();
 		$fullname = $templateDir . '/' . $filename;
-		if (!file_exists($fullname))
+		if (file_exists($fullname))
 		{
+			$this->file = new Dwoo_Template_File($fullname, null, $filename, $filename);
+		}
+		else
+		{
+			$this->file = null;
 			Eresus_Logger::log(__METHOD__, LOG_ERR, 'Template file "%s" not found', $fullname);
 		}
-		$this->file = new Dwoo_Template_File($fullname, null, $filename, $filename);
 	}
 	//-----------------------------------------------------------------------------
 

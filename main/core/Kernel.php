@@ -252,57 +252,26 @@ class Eresus_Kernel
 	 */
 	public static function autoload($className)
 	{
-		/* Устаревшие классы */
-		$legacy = array(
-
-			'EresusExtensionConnector' => 'classes/EresusExtensionConnector.php',
-			'EresusForm' => 'EresusForm.php',
-			'WebPage' => 'classes/WebPage.php',
-
-			/* BusinessLogic */
-			'ContentPlugin' => 'BusinessLogic/ContentPlugin.php',
-			'EresusAdminFrontController' => 'BusinessLogic/EresusAdminFrontController.php',
-
-			/* Domain */
-			'Plugins' => 'classes/Plugins.php',
-
-			/* UI */
-			'AdminUI' => 'UI/AdminUI.php',
-			'EresusFileManager' => 'UI/EresusFileManager.php',
-
-			/* Сторонние компоненты */
-			'elFinderConnector' => '../ext-3rd/elfinder/eresus-connector.php',
-			'elFinder' => '../ext-3rd/elfinder/connectors/php/elFinder.class.php',
-
-			/* Обратная совместимость */
-			'EresusAccounts' => 'lib/accounts.php',
-			'PaginationHelper' => 'classes/backward/PaginationHelper.php',
-		);
-
-		if (isset($legacy[$className]))
+		if (stripos($className, 'Eresus_') !== 0 ||
+			class_exists($className, false) ||
+			interface_exists($className, false))
 		{
-			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . $legacy[$className];
+			return false;
 		}
-		else
-		{
-			if (stripos($className, 'Eresus_') !== 0 ||
-				class_exists($className, false) ||
-				interface_exists($className, false))
-			{
-				return false;
-			}
 
-			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-				str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
-		}
+		$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
+			str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
 
 		if (file_exists($fileName))
 		{
 			include $fileName;
-			return true;
+		}
+		elseif (substr($className, -5) !== 'Table')
+		{
+			throw new LogicException('Class "' . $className . '" not found');
 		}
 
-		return false;
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 

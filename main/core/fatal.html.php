@@ -104,7 +104,7 @@
 			if (isset($error))
 			{
 				echo '<h2>' . get_class($error) . '</h2>';
-				if (defined('ERESUS_CMS_DEBUG'))
+				if (class_exists('Eresus_Config', false) && Eresus_Config::get('eresus.cms.debug', false))
 				{
 					?>
 					<div class="message"><?php echo $error->getMessage();?></div>

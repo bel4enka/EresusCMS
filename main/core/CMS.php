@@ -55,16 +55,6 @@ interface FileManagerConnectorInterface
 
 
 /**
- * Исключение "Страница не найдена"
- *
- * @package CMS
- * @since 2.16
- */
-class PageNotFoundException extends DomainException {}
-
-
-
-/**
  * Класс приложения Eresus CMS
  *
  * @package CMS
@@ -77,6 +67,16 @@ class Eresus_CMS
 	 * @var string
 	 */
 	private $version = '${product.version}';
+
+	/**
+	 * Контейнер оснонвых объектов CMS
+	 *
+	 * @var array
+	 * @see get()
+	 * @see set()
+	 * @since 2.16
+	 */
+	private $container = array();
 
 	/**
 	 * Сайт
@@ -123,6 +123,27 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает объект CMS
+	 *
+	 * @param string $name
+	 *
+	 * @throws LogicException если нет объекта с запрошенным именем
+	 *
+	 * @return object
+	 *
+	 * @since 2.16
+	 */
+	public function get($name)
+	{
+		if (isset($this->container[$name]))
+		{
+			return $this->container[$name];
+		}
+		throw new LogicException('CMS continer has no object "' . $name . '"');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает модель текущего сайта
 	 *
 	 * @return Eresus_Model_Site
@@ -151,7 +172,6 @@ class Eresus_CMS
 	 * @uses initSite()
 	 * @uses Eresus_Kernel_PHP::isCLI()
 	 * @uses runCLI()
-	 * @uses initWeb()
 	 * @uses runWeb()
 	 * @uses fatalError()
 	 */
@@ -167,18 +187,40 @@ class Eresus_CMS
 			$this->initConf();
 			$this->initLocale();
 			$this->initDB();
-			$this->initSite();
+			$this->initSite(); // TODO Скорее всего надо перенести это куда-то после создания интерфейса
 
 			if (Eresus_Kernel_PHP::isCLI())
 			{
-				return $this->runCLI();
+				$mode = new Eresus_CMS_Mode_CLI();
 			}
 			else
 			{
-				$this->initWeb();
-				$this->runWeb();
-				return 0;
+				$mode = new Eresus_CMS_Mode_Web();
 			}
+
+			/*
+			 * Собираем контейнер объектов CMS
+			 */
+			$this->container['mode'] = $mode;
+			$this->container['request'] = $mode->getRequest();
+			$this->container['ui'] = $mode->getUI();
+
+			$response = $mode->process();
+			$response->send();
+
+			// FIXME Сделать вывод зависимым от режима
+			if (Eresus_Config::get('eresus.cms.debug'))
+			{
+				$memory = number_format(memory_get_peak_usage(true) / 1024, 0, ',', ' ');
+				echo "<!-- Memory: $memory MiB -->\n";
+				if (!Eresus_Kernel::isWindows())
+				{
+					$ru = getrusage();
+					echo sprintf("<!-- utime: %d.%06d sec -->\n", $ru['ru_utime.tv_sec'],
+						$ru['ru_utime.tv_usec']);
+				}
+			}
+
 		}
 		catch (SuccessException $e)
 		{
@@ -215,17 +257,6 @@ class Eresus_CMS
 	public function getRootDir()
 	{
 		return $this->rootDir;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает обрабатываемый запрос
-	 *
-	 * @return Eresus_CMS_Request
-	 */
-	public function getRequest()
-	{
-		return $this->request;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -396,8 +427,6 @@ class Eresus_CMS
 	 */
 	private function initConf()
 	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
 		$config = file_get_contents($this->getRootDir() . '/cfg/main.php');
 		if (substr($config, 0, 5) == '<?php')
 		{
@@ -450,8 +479,6 @@ class Eresus_CMS
 	 */
 	private function initDB()
 	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
 		/**
 		 * Подключение Doctrine
 		 */
@@ -466,8 +493,7 @@ class Eresus_CMS
 			throw new DomainException('Configuration parameter "eresus.cms.dsn" not set.');
 		}
 
-		Doctrine_Manager::connection($dsn)->
-			setCharset('cp1251'); // TODO Убрать после перехода на UTF
+		Doctrine_Manager::connection($dsn);
 
 		$manager = Doctrine_Manager::getInstance();
 		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
@@ -496,140 +522,6 @@ class Eresus_CMS
 	{
 		$this->site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
 		Eresus_Template::setGlobalValue('site', $this->site);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация сессии
-	 *
-	 * @return void
-	 * @uses Eresus_Logger::log()
-	 * @uses Eresus_Service_Auth::getInstance()
-	 */
-	private function initSession()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
-		ini_set('session.use_only_cookies', true);
-		session_name('sid');
-		Eresus_Kernel_PHP::isCLI() || session_start();
-
-		Eresus_Service_Auth::getInstance()->init();
-		$_SESSION['activity'] = time();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация Web
-	 */
-	private function initWeb()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-
-		$this->initSession();
-
-		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
-		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
-		// FIXME Следующая строка нужна только до перехода на UTF-8
-		Eresus_Config::set('core.template.charset', 'CP1251');
-
-		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($this));
-
-		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
-		$this->request = new Eresus_CMS_Request($req, $this->getSite()->getRootURL());
-		//$this->response = new HttpResponse();
-		//$this->initRoutes();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Выполнение в режиме Web
-	 */
-	private function runWeb()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		$output = '';
-
-		switch (true)
-		{
-			/*case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
-				$this->call3rdPartyExtension();
-			break;
-
-			case substr($this->request->getLocal(), 0, 6) == '/admin':
-				$output = $this->runWebAdminUI();
-			break;*/
-
-			default:
-				$output = $this->runWebClientUI();
-			break;
-		}
-
-		echo $output;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Запуск КИ
-	 * @return string
-	 * @deprecated Это временная функция
-	 */
-	private function runWebClientUI()
-	{
-		global $page;
-
-		Eresus_Logger::log(__METHOD__, LOG_NOTICE, 'This method is temporary.');
-
-		include_once 'client.php';
-
-		$page = new TClientUI();
-		$page->init();
-		/*return */$page->render();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Запуск АИ
-	 * @return string
-	 * @deprecated Это временная функция
-	 */
-	private function runWebAdminUI()
-	{
-		global $page;
-
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
-
-		define('ADMINUI', true);
-
-		$page = new AdminUI();
-		$this->frontController = new Eresus_Controller_Admin($page);
-
-		return $this->frontController->render();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Выполнение в режиме CLI
-	 */
-	private function runCLI()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
-
-		$this->initCLI();
-		return 0;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация CLI
-	 */
-	private function initCLI()
-	{
-		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 	}
 	//-----------------------------------------------------------------------------
 

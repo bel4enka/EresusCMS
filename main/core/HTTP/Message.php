@@ -116,7 +116,7 @@ class Eresus_HTTP_Message
 	{
 		if (!class_exists($className, true))
 		{
-			throw new RuntimeException("Class \n$className\" not exists");
+			throw new RuntimeException("Class \"$className\" not exists");
 		}
 
 		$message = new $className();
@@ -155,7 +155,7 @@ class Eresus_HTTP_Message
 			$message->setRequestMethod('GET');
 		}
 
-		if (isset($_SERVER['']))
+		if (isset($_SERVER['HTTP_HOST']))
 		{
 			$host = $_SERVER['HTTP_HOST'];
 		}
@@ -163,6 +163,7 @@ class Eresus_HTTP_Message
 		{
 			$host = 'localhost';
 		}
+		$host = Eresus_Config::get('eresus.cms.http.host', $host);
 
 		$scheme = 'http';
 		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != '' && $_SERVER['HTTPS'] != 'off')
@@ -434,4 +435,21 @@ class Eresus_HTTP_Message
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Отправляет сообщение
+	 *
+	 * @return Eresus_HTTP_Message
+	 *
+	 * @since 2.16
+	 */
+	public function send()
+	{
+		switch ($this->getType())
+		{
+			case self::TYPE_RESPONSE:
+
+			break;
+		}
+	}
+	//-----------------------------------------------------------------------------
 }
