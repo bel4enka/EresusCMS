@@ -86,14 +86,31 @@ class Eresus_CMS_Request
 	/**
 	 * Возвращает путь к текущей вертуальной директории относительно корня сайта
 	 *
+	 * Примеры:
+	 *
+	 * - Для "….org/" будет ""
+	 * - Для "….org/dir/" будет "/dir"
+	 * - Для "….org/dir/file.ext" будет "/dir"
+	 *
 	 * @return string
 	 *
 	 * @since 2.16
 	 */
 	public function getBasePath()
 	{
-		$path = substr($this->message->getRequestUrl(), strlen($this->rootURL));
-		$path = dirname($path);
+		$path = '/' . substr($this->message->getRequestUrl(), strlen($this->rootURL));
+		if (substr($path, -1) == '/')
+		{
+			$path = substr($path, 0, -1);
+		}
+		else
+		{
+			$path = dirname($path);
+			if ($path == '/')
+			{
+				$path = '';
+			}
+		}
 		return $path;
 	}
 	//-----------------------------------------------------------------------------

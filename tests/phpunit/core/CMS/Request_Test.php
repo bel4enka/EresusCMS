@@ -55,6 +55,37 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers Eresus_CMS_Request::__construct
+	 * @covers Eresus_CMS_Request::getBasePath
+	 */
+	public function test_getBasePath()
+	{
+		$msg = new Eresus_HTTP_Message();
+		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
+
+		$url = 'http://example.org/';
+		$msg->setRequestUrl($url);
+		$test = new Eresus_CMS_Request($msg, 'http://example.org/');
+		$this->assertEquals('', $test->getBasePath(), $url);
+
+		$url = 'http://example.org/file.ext';
+		$msg->setRequestUrl($url);
+		$test = new Eresus_CMS_Request($msg, 'http://example.org/');
+		$this->assertEquals('', $test->getBasePath(), $url);
+
+		$url = 'http://example.org/dir1/dir2/';
+		$msg->setRequestUrl($url);
+		$test = new Eresus_CMS_Request($msg, 'http://example.org/');
+		$this->assertEquals('/dir1/dir2', $test->getBasePath(), $url);
+
+		$url = 'http://example.org/dir1/dir2/dir3/file.ext';
+		$msg->setRequestUrl($url);
+		$test = new Eresus_CMS_Request($msg, 'http://example.org/');
+		$this->assertEquals('/dir1/dir2/dir3', $test->getBasePath(), $url);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::__construct
 	 * @covers Eresus_CMS_Request::getPath
 	 */
 	public function test_getPath()
