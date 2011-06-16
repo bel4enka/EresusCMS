@@ -64,25 +64,6 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_CMS::app
-	 */
-	public function test_app()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
-		$obj = new stdClass();
-		$app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$app->setAccessible(true);
-		$app->setValue('Eresus_Kernel', $obj);
-
-		$this->assertSame($obj, Eresus_CMS::app());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * @covers Eresus_CMS::getDataDir
 	 */
 	public function test_getDataDir()

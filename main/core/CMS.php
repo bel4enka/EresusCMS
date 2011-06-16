@@ -78,14 +78,6 @@ class Eresus_CMS
 	private $container = array();
 
 	/**
-	 * Сайт
-	 *
-	 * @var Eresus_Model_Site
-	 * @see site(), getSite()
-	 */
-	private $site;
-
-	/**
 	 * Корневая директория приложения
 	 *
 	 * Устанавливается в {@link initFS()}. Используйте {@link getRootDir()} для получения значения.
@@ -94,20 +86,6 @@ class Eresus_CMS
 	 * @see getRootDir(), initFS()
 	 */
 	private $rootDir;
-
-	/**
-	 * Возвращает экземпляр-одиночку этого класса
-	 *
-	 * @return Eresus_CMS
-	 *
-	 * @since 2.16
-	 * @uses Eresus_Kernel::app()
-	 */
-	public static function app()
-	{
-		return Eresus_Kernel::app();
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает объект CMS
@@ -128,21 +106,6 @@ class Eresus_CMS
 			return $this->container[$name];
 		}
 		throw new LogicException('CMS continer has no object "' . $name . '"');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает модель текущего сайта
-	 *
-	 * @return Eresus_Model_Site
-	 *
-	 * @since 2.16
-	 * @uses Eresus_Kernel::app()
-	 * @uses getSite()
-	 */
-	public static function site()
-	{
-		return Eresus_Kernel::app()->getSite();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -218,7 +181,7 @@ class Eresus_CMS
 		{
 			Eresus_Logger::exception($e);
 			ob_end_clean();
-			$this->fatalError($e, false);
+			include dirname(__FILE__) . '/fatal.html.php';
 		}
 
 	}
@@ -249,18 +212,6 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает текущий сайт
-	 *
-	 * @return Eresus_Model_Site
-	 * @see site()
-	 */
-	public function getSite()
-	{
-		return $this->site;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Возвращает путь к директории данных сайта (без финального слеша)
 	 *
 	 * @return string
@@ -270,26 +221,6 @@ class Eresus_CMS
 	public function getDataDir()
 	{
 		return $this->getRootDir() . '/data';
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Выводит сообщение о фатальной ошибке и прекращает работу приложения
-	 *
-	 * @param Exception|string $error  исключение или описание ошибки
-	 * @param bool             $exit   завершить или нет выполнение приложения
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	public function fatalError($error = null, $exit = true)
-	{
-		include dirname(__FILE__) . '/fatal.html.php';
-		if ($exit)
-		{
-			throw new ExitException;
-		}
 	}
 	//-----------------------------------------------------------------------------
 

@@ -166,7 +166,7 @@ class Eresus_Model_Site extends Eresus_DB_Record
 	{
 		$webServer = Eresus_WebServer::getInstance();
 		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
-		$SUFFIX = Eresus_CMS::app()->getRootDir();
+		$SUFFIX = Eresus_Kernel::app()->getRootDir();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
 		if (substr($SUFFIX, -1) != '/')
 		{

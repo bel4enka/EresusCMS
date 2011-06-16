@@ -209,7 +209,7 @@ class Eresus_Service_Admin_Router implements Eresus_CMS_Service
 		else
 		{
 			/* Ищем файл контроллера */
-			$path = Eresus_CMS::app()->getRootDir() . '/core/Controller/Admin/' . $this->controllerName .
+			$path = Eresus_Kernel::app()->getRootDir() . '/core/Controller/Admin/' . $this->controllerName .
 				'.php';
 			if (!is_file($path))
 			{

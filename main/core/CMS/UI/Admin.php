@@ -44,6 +44,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	 */
 	public function process()
 	{
+		return new Eresus_CMS_Response('admin');
 /*		$router = Eresus_Service_Client_Router::getInstance();
 		$request = $this->get('request');
 
