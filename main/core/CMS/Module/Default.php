@@ -4,8 +4,9 @@
  *
  * ${product.description}
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * Модуль "По умолчанию"
+ *
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -27,23 +28,25 @@
  *
  * @package CMS
  *
- * $Id$
+ * $Id: ContentPlugin.php 1653 2011-06-16 06:53:17Z mk $
  */
 
 
 /**
- * Базовый класс для плагинов, предоставляющих тип контента
+ * Модуль "По умолчанию"
  *
  * @package CMS
  */
-abstract class Eresus_CMS_ContentPlugin extends Eresus_CMS_Plugin
+class Eresus_CMS_Module_Default extends Eresus_CMS_ContentPlugin
 {
 	/**
 	 * Действия при удалении раздела данного типа
 	 * @param int     $id     Идентификатор удаляемого раздела
 	 * @param string  $table  Имя таблицы
 	 */
-	abstract public function onSectionDelete($id, $table = '');
+	public function onSectionDelete($id, $table = '')
+	{
+	}
 	//-----------------------------------------------------------------------------
 
 	/**
@@ -51,23 +54,41 @@ abstract class Eresus_CMS_ContentPlugin extends Eresus_CMS_Plugin
 	 *
 	 * @param  string  $content  Контент
 	 */
-	abstract public function updateContent($content);
+	public function updateContent($content)
+	{
+		global $Eresus, $page;
+
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find($page->id);
+		$item->content = $content;
+		$item->save();
+	}
 	//------------------------------------------------------------------------------
 
 	/**
-	 * Обновляет контент страницы
-	 */
-	abstract public function adminUpdate();
+	* Обновляет контент страницы
+	*/
+	function adminUpdate()
+	{
+		$this->updateContent(arg('content', 'dbsafe'));
+		HttpResponse::redirect(arg('submitURL'));
+	}
 	//------------------------------------------------------------------------------
 
 	/**
-	 * Метод должен отрисовывать область контента указанного раздела сайта
+	 * Отрисовывает область контента указанного раздела сайта
 	 *
 	 * @param Eresus_Model_Section $section  раздел, для которого надо отрисовать контент
 	 *
-	 * @return string  контент
+	 * @return string  Контент
 	 */
-	abstract public function clientRenderContent(Eresus_Model_Section $section);
+	public function clientRenderContent(Eresus_Model_Section $section)
+	{
+		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 * /
+		if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+			$page->httpError(404);*/
+
+		return $section->getContent();
+	}
 	//------------------------------------------------------------------------------
 
 	/**
@@ -75,6 +96,28 @@ abstract class Eresus_CMS_ContentPlugin extends Eresus_CMS_Plugin
 	 *
 	 * @return  string  Контент
 	 */
-	abstract public function adminRenderContent();
+	public function adminRenderContent()
+	{
+		global $page, $Eresus;
+
+		if (arg('action') == 'update')
+		{
+			$this->adminUpdate();
+		}
+		$item = Eresus_DB_ORM::getTable('Eresus_Model_Section')->find($page->id);
+		$form = array(
+			'name' => 'editForm',
+			'caption' => $page->title,
+			'width' => '100%',
+			'fields' => array (
+				array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
+				array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
+			),
+			'buttons' => array('apply', 'reset'),
+		);
+
+		$result = $page->renderForm($form, $item);
+		return $result;
+	}
 	//------------------------------------------------------------------------------
 }

@@ -63,18 +63,95 @@ class Eresus_Service_Client_Router implements Eresus_CMS_Service
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает метод на основе запроса
+	 * Возвращает запрошенный раздел
 	 *
 	 * @param Eresus_CMS_Request $request
 	 *
 	 * @throws Eresus_CMS_Exception_NotFound  если запрошенный ресурс не найден
 	 *
-	 * @return callback
+	 * @return Eresus_Model_Section
 	 *
 	 * @since 2.16
 	 */
-	public function findAction(Eresus_CMS_Request $request)
+	public function findSection(Eresus_CMS_Request $request)
 	{
+		$srvSections = Eresus_Service_Sections::getInstance();
+		$section = $srvSections->getRoot();
+
+		$names = explode('/', $request->getPath());
+
+		$user = Eresus_Service_Auth::getInstance()->getUser();
+		$userAccessLevel = $user ? $user->access : 5; // FIXME: Заменить на константу
+
+		$url = '';
+
+		foreach ($names as $name)
+		{
+			$tmp = $section->getChildByName($name);
+			if (!$tmp)
+			{
+				break;
+			}
+
+			if (!$tmp->active)
+			{
+				throw new Eresus_CMS_Exception_NotFound();
+			}
+
+			if ($tmp->access < $userAccessLevel)
+			{
+				throw new Eresus_CMS_Exception_Forbidden();
+			}
+
+			$section = $tmp;
+
+			if ($section->name)
+			{
+				$url .= $section->name . '/';
+			}
+			$event = new Eresus_CMS_Event('clientOnURLSplit');
+			$event->section = $section;
+			$event->url = $url;
+			$event->dispath();
+			//$this->section []= $section->title;
+		}
+
+		//$GLOBALS['Eresus']->request['path'] = $GLOBALS['Eresus']->root . $url;
+
+		return $section;
+
+		/*
+		global $Eresus;
+
+		$result = false;
+		$main_fake = false;
+		if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
+			array_unshift($Eresus->request['params'], 'main');
+			$main_fake = true;
+		}
+		reset($Eresus->request['params']);
+		$item['id'] = 0;
+		$url = '';
+		do {
+			$items = $Eresus->sections->children($item['id'],
+				$_SESSION['user_auth'] ? $Eresus->user['access'] : GUEST, SECTIONS_ACTIVE);
+			$item = false;
+			for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
+				$result = $item = $items[$i];
+				if ($item['id'] != 1 || !$main_fake) $url .= $item['name'].'/';
+				$Eresus->plugins->clientOnURLSplit($item, $url);
+				$this->section[] = $item['title'];
+				next($Eresus->request['params']);
+				array_shift($Eresus->request['params']);
+				break;
+			}
+			if ($item && $item['id'] == 1 && $main_fake) $item['id'] = 0;
+		} while ($item && current($Eresus->request['params']));
+		$Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
+		if ($result) $result = $Eresus->sections->get($result['id']);
+		return $result; */
+
+
 		throw new Eresus_CMS_Exception_NotFound;
 	}
 	//-----------------------------------------------------------------------------

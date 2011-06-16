@@ -339,4 +339,28 @@ class Eresus_Model_Section extends Eresus_DB_Record
 		return $this->content;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает объект модуля, обслуживающего этог раздел
+	 *
+	 * @return Eresus_CMS_ContentPlugin
+	 *
+	 * @since 2.16
+	 */
+	public function getModule()
+	{
+		switch ($this->type)
+		{
+			case 'default':
+				$module = new Eresus_CMS_Module_Default();
+			break;
+
+			default:
+				$srv = Eresus_Service_Plugins::getInstance();
+				$module = $srv->get($this->type);
+			break;
+		}
+		return $module;
+	}
+	//-----------------------------------------------------------------------------
 }

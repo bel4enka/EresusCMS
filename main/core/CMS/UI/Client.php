@@ -40,6 +40,20 @@
 class Eresus_CMS_UI_Client extends Eresus_CMS_UI
 {
 	/**
+	 * Текущий раздел сайта
+	 *
+	 * @var Eresus_Model_Section
+	 */
+	private $section;
+
+	/**
+	 * Текущий модуль контента
+	 *
+	 * @var Eresus_CMS_ContentPlugin
+	 */
+	private $module;
+
+	/**
 	 * @see Eresus_CMS_UI::process()
 	 */
 	public function process()
@@ -49,8 +63,9 @@ class Eresus_CMS_UI_Client extends Eresus_CMS_UI
 
 		try
 		{
-			$action = $router->findAction($request);
-			$response = call_user_func($action);
+			$this->section = $router->findSection($request);
+			$this->module = $this->section->getModule();
+			$response = new Eresus_CMS_Response($this->module->clientRenderContent($this->section));
 		}
 		catch (Eresus_CMS_Exception_NotFound $e)
 		{
