@@ -179,7 +179,7 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers Eresus_Service_Admin_Router::getController
-	 * @expectedException PageNotFoundException
+	 * @expectedException Eresus_CMS_Exception_NotFound
 	 */
 	public function test_getController_noFile()
 	{
@@ -406,7 +406,7 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers Eresus_Service_Admin_Router::getAction
-	 * @expectedException PageNotFoundException
+	 * @expectedException Eresus_CMS_Exception_NotFound
 	 */
 	public function test_getAction_noMethod()
 	{
