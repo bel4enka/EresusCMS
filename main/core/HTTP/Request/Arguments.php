@@ -4,6 +4,8 @@
  *
  * ${product.description}
  *
+ * Аргументы запроса
+ *
  * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
@@ -24,91 +26,86 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
+ * @package HTTP
  *
- * $Id$
+ * $Id: Response.php 1652 2011-06-16 06:31:36Z mk $
  */
-
 
 /**
- * Меню в АИ
+ * Аргументы запроса
  *
- * @package UI
+ * @package HTTP
+ * @since 2.16
  */
-class Eresus_UI_Admin_Menu
+class Eresus_HTTP_Request_Arguments
 {
 	/**
-	 * Пункты меню
+	 * Аргументы
 	 *
 	 * @var array
 	 */
-	private $items = array();
+	private $args = array();
 
-	/**
-	 * Имя шаблона
-	 *
-	 * @var string
-	 */
-	private $tmplName = 'default';
-
-	/**
-	 * Конструктор
-	 *
-	 * @param string $tmplName имя шаблона меню
-	 *
-	 * @return Eresus_UI_Admin_Menu
-	 */
-	public function __construct($tmplName = null)
+	public function __construct(array $args = array())
 	{
-		if ($tmplName)
-		{
-			$this->tmplName = $tmplName;
-		}
+		$this->args = $args;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает разметку меню
+	 * Возвращает аргумент
 	 *
-	 * @return string
-	 */
-	public function render()
-	{
-		$items = array();
-		foreach ($this->items as $item)
-		{
-			if (!UserRights($item['accessLevel']))
-			{
-				continue;
-			}
-			$item['url'] = Eresus_Kernel::app()->getWebRoot() . '/admin' . $item['url'];
-			$items []= $item;
-		}
-
-		$tmpl = Eresus_Template::fromFile('core/templates/widgets/menu/' . $this->tmplName . '.html');
-		$html = $tmpl->compile(array('items' => $items));
-		return $html;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Добавляет новый пункт в меню
+	 * $filter может быть:
+	 * - строкой, содержащей ключевое слово 'int', 'integer' or 'float'
+	 * - PCRE. Все символы, соответствующие выражению, будут удалены. Пример: '/\W/'
+	 * - callback-функцией (или методом)
 	 *
-	 * @param string $title        текст пункта меню
-	 * @param string $url          адрес
-	 * @param int    $accessLevel  требуемый уровень доступа
+	 * @param string $name    имя аргумента
+	 * @param mixed  $filter  опциональный фильтр
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since ?.??
 	 */
-	public function addItem($title, $url = null, $accessLevel = ADMIN)
+	public function get($name, $filter = null)
 	{
-		$this->items []= array(
-			'title' => $title,
-			'url' => $url,
-			'accessLevel' => $accessLevel
-		);
+		$value = isset($this->args[$name]) ? $this->args[$name] : null;
+		switch (true)
+		{
+			case is_callable($filter, false, $callback):
+				if (is_array($filter) && is_object($filter[0]))
+				{
+					return $filter[0]->$filter[1]($value);
+				}
+				else
+				{
+					return $callback($value);
+				}
+			break;
+
+			case is_string($filter):
+
+				switch ($filter)
+				{
+					case 'int':
+					case 'integer':
+						return intval(filter_var($value, FILTER_SANITIZE_NUMBER_INT));
+					break;
+					case 'float':
+						return floatval(filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT,
+							FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND |
+							FILTER_FLAG_ALLOW_SCIENTIFIC));
+					break;
+					default:
+						return preg_replace($filter, '', $value);
+					break;
+				}
+
+			break;
+		}
+
+		return $value;
 	}
 	//-----------------------------------------------------------------------------
 }
+

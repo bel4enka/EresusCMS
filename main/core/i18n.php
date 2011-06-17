@@ -72,14 +72,14 @@ class Eresus_i18n
 	 * @return Eresus_i18n
 	 *
 	 * @uses $instance
-	 * @uses Eresus_CMS::app()
-	 * @uses Eresus_CMS::getRootDir()
+	 * @uses Eresus_Kernel::app()
+	 * @uses Eresus_Kernel::getRootDir()
 	 */
 	static public function getInstance()
 	{
 		if (!self::$instance)
 		{
-			self::$instance = new self(Eresus_CMS::app()->getRootDir() . '/lang');
+			self::$instance = new self(Eresus_Kernel::app()->getRootDir() . '/lang');
 		}
 
 		return self::$instance;

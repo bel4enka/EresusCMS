@@ -102,6 +102,20 @@ class Eresus_HTTP_Message
 	private $responseCode;
 
 	/**
+	 * Аргументы GET
+	 *
+	 * @var Eresus_HTTP_Request_Arguments
+	 */
+	private $query;
+
+	/**
+	 * Аргументы POST
+	 *
+	 * @var Eresus_HTTP_Request_Arguments
+	 */
+	private $post;
+
+	/**
 	 * Сооздаёт сообщение из окружения приложения
 	 *
 	 * @param int    $messageType  тип сообщения
@@ -432,6 +446,40 @@ class Eresus_HTTP_Message
 		}
 
 		return $this->responseCode;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает коллекцию аргументов запроса GET
+	 *
+	 * @return Eresus_HTTP_Request_Arguments
+	 *
+	 * @since 2.16
+	 */
+	public function getQuery()
+	{
+		if (!$this->query)
+		{
+			$this->query = new Eresus_HTTP_Request_Arguments($_GET);
+		}
+		return $this->query;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает коллекцию аргументов запроса POST
+	 *
+	 * @return Eresus_HTTP_Request_Arguments
+	 *
+	 * @since 2.16
+	 */
+	public function getPost()
+	{
+		if (!$this->post)
+		{
+			$this->post = new Eresus_HTTP_Request_Arguments($_POST);
+		}
+		return $this->post;
 	}
 	//-----------------------------------------------------------------------------
 

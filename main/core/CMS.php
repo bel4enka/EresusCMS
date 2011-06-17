@@ -426,8 +426,9 @@ class Eresus_CMS
 	 */
 	private function initSite()
 	{
-		$this->site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
-		Eresus_Template::setGlobalValue('site', $this->site);
+		$site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
+		$this->container['site'] = $site;
+		Eresus_Template::setGlobalValue('site', $site);
 	}
 	//-----------------------------------------------------------------------------
 

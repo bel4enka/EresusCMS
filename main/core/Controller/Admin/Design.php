@@ -426,7 +426,7 @@ class Eresus_Controller_Admin_Design extends Eresus_Controller_Admin_Abstract
 	public function sectionStylesInsert()
 	{
 		$file = "/* ".arg('description')." */\r\n\r\n".arg('html');
-		$fp = fopen(Eresus_CMS::app()->getRootDir() . '/style/'.arg('filename').'.css', 'w');
+		$fp = fopen(Eresus_Kernel::app()->getRootDir() . '/style/'.arg('filename').'.css', 'w');
 		fwrite($fp, $file);
 		fclose($fp);
 		HttpResponse::redirect(arg('submitURL'));
@@ -452,7 +452,7 @@ class Eresus_Controller_Admin_Design extends Eresus_Controller_Admin_Abstract
 	{
 		global $page;
 
-		$filename = Eresus_CMS::app()->getRootDir() . '/style/'.arg('delete');
+		$filename = Eresus_Kernel::app()->getRootDir() . '/style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
 		HttpResponse::redirect($page->url());
 	}
@@ -493,7 +493,7 @@ class Eresus_Controller_Admin_Design extends Eresus_Controller_Admin_Abstract
 		global $page;
 
 		$item['filename'] = arg('id');
-		$item['html'] = trim(file_get_contents(Eresus_CMS::app()->getRootDir() . '/style/'.$item['filename']));
+		$item['html'] = trim(file_get_contents(Eresus_Kernel::app()->getRootDir() . '/style/'.$item['filename']));
 		preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
 		$item['description'] = trim($item['description'][1]);
 		$item['filename'] = substr($item['filename'], 0, strrpos($item['filename'], '.'));
@@ -546,7 +546,7 @@ class Eresus_Controller_Admin_Design extends Eresus_Controller_Admin_Abstract
 			),
 		);
 		# Загружаем список шаблонов
-		$dir = Eresus_CMS::app()->getRootDir() . '/style/';
+		$dir = Eresus_Kernel::app()->getRootDir() . '/style/';
 		$hnd = opendir($dir);
 		while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.css$/', $filename)) {
 			$description = file_get_contents($dir.$filename);

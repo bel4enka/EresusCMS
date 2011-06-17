@@ -91,7 +91,20 @@ class Eresus_Service_Templates implements Eresus_CMS_Service
 	 */
 	public function get($name, $module = null)
 	{
-		$tmpl = Eresus_Template::fromFile('templates/' . $name . '.html');
+		switch ($module)
+		{
+			case null:
+				$path = 'templates';
+			break;
+
+			case 'core':
+				$path = 'core/templates';
+			break;
+
+			default:
+				throw new LogicException('Not implemented');
+		}
+		$tmpl = Eresus_Template::fromFile($path . '/' . $name . '.html');
 		return $tmpl;
 	}
 	//-----------------------------------------------------------------------------

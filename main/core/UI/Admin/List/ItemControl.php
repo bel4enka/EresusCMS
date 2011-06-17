@@ -133,7 +133,7 @@ abstract class Eresus_UI_Admin_List_ItemControl
 	public function getIcon()
 	{
 		$theme = $GLOBALS['page']->getUITheme();
-		return Eresus_CMS::app()->getWebRoot() . '/' . $theme->getImage('medium/' . $this->icon);
+		return Eresus_Kernel::app()->getWebRoot() . '/' . $theme->getImage('medium/' . $this->icon);
 	}
 	//-----------------------------------------------------------------------------
 

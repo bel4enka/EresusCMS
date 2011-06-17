@@ -89,7 +89,7 @@ class Eresus_Controller_Admin_Content extends Eresus_Controller_Admin_Abstract
 		{
 			$plugins->load($this->item['type']);
 			$plugin = $plugins->items[$this->item['type']];
-			Eresus_CMS::app()->getFrontController()->setController($plugin);
+			Eresus_Kernel::app()->getFrontController()->setController($plugin);
 			$html = $plugin->adminRenderContent();
 		}
 

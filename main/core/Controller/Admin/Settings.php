@@ -121,7 +121,7 @@ class Eresus_Controller_Admin_Settings extends Eresus_Controller_Admin_Abstract
 		$settings .= $this->mkstr('contentTypeDefault', 'string');
 		$settings .= $this->mkstr('pageTemplateDefault', 'string');
 
-		file_put_contents(Eresus_CMS::app()->getRootDir() . '/cfg/settings.php', $settings);
+		file_put_contents(Eresus_Kernel::app()->getRootDir() . '/cfg/settings.php', $settings);
 		HTTP::goback();
 	}
 	//--------------------------------------------------------------------

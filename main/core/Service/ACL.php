@@ -4,6 +4,8 @@
  *
  * ${product.description}
  *
+ * Служба списков контроля доступа
+ *
  * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
@@ -24,91 +26,101 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
+ * @package Service
  *
  * $Id$
  */
 
-
 /**
- * Меню в АИ
+ * Служба списков контроля доступа
  *
- * @package UI
+ * @package Service
+ * @since 2.16
  */
-class Eresus_UI_Admin_Menu
+class Eresus_Service_ACL implements Eresus_CMS_Service
 {
 	/**
-	 * Пункты меню
+	 * Экземпляр-одиночка
 	 *
-	 * @var array
+	 * @var Eresus_Service_ACL
 	 */
-	private $items = array();
+	private static $instance = null;
 
 	/**
-	 * Имя шаблона
+	 * Возвращает экземпляр службы
 	 *
-	 * @var string
+	 * @return Eresus_Service_ACL
+	 *
+	 * @since 2.16
 	 */
-	private $tmplName = 'default';
-
-	/**
-	 * Конструктор
-	 *
-	 * @param string $tmplName имя шаблона меню
-	 *
-	 * @return Eresus_UI_Admin_Menu
-	 */
-	public function __construct($tmplName = null)
+	public static function getInstance()
 	{
-		if ($tmplName)
+		if (is_null(self::$instance))
 		{
-			$this->tmplName = $tmplName;
+			self::$instance = new self();
 		}
+		return self::$instance;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает разметку меню
+	 * Проверяет, наличие у пользователя указанной роли
 	 *
-	 * @return string
+	 * @param string $role
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
 	 */
-	public function render()
+	public function isGranted($role)
 	{
-		$items = array();
-		foreach ($this->items as $item)
+		$user = Eresus_Service_Auth::getInstance()->getUser();
+		if (is_null($user) || is_null($user->access) || $user->access < 1)
 		{
-			if (!UserRights($item['accessLevel']))
-			{
-				continue;
-			}
-			$item['url'] = Eresus_Kernel::app()->getWebRoot() . '/admin' . $item['url'];
-			$items []= $item;
+			return false;
 		}
-
-		$tmpl = Eresus_Template::fromFile('core/templates/widgets/menu/' . $this->tmplName . '.html');
-		$html = $tmpl->compile(array('items' => $items));
-		return $html;
+		switch ($role)
+		{
+			case 'ROOT':
+				return $user->access == 1;
+			case 'ADMIN':
+				return $user->access <= 2;
+			case 'EDITOR':
+				return $user->access <= 3;
+			case 'USER':
+				return $user->access <= 4;
+			case 'GUEST':
+				return $user->access <= 5;
+		}
+		return false;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Добавляет новый пункт в меню
-	 *
-	 * @param string $title        текст пункта меню
-	 * @param string $url          адрес
-	 * @param int    $accessLevel  требуемый уровень доступа
+	 * Скрываем конструктор
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	public function addItem($title, $url = null, $accessLevel = ADMIN)
+	// @codeCoverageIgnoreStart
+	private function __construct()
 	{
-		$this->items []= array(
-			'title' => $title,
-			'url' => $url,
-			'accessLevel' => $accessLevel
-		);
 	}
+	// @codeCoverageIgnoreEnd
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Блокируем клонирование
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	// @codeCoverageIgnoreStart
+	private function __clone()
+	{
+	}
+	// @codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
 }

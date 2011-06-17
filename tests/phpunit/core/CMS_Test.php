@@ -64,6 +64,39 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_CMS::getVersion
+	 */
+	public function test_getVersion()
+	{
+		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('fake'))->
+			disableOriginalConstructor()->getMock();
+
+		$this->assertEquals('${product.version}', $mock->getVersion());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS::getRootDir
+	 */
+	public function test_getRootDir()
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3 required');
+		}
+
+		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('fake'))->
+			disableOriginalConstructor()->getMock();
+
+		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir->setAccessible(true);
+		$p_rootDir->setValue($mock, '/home/example.org');
+
+		$this->assertEquals('/home/example.org', $mock->getRootDir());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers Eresus_CMS::getDataDir
 	 */
 	public function test_getDataDir()

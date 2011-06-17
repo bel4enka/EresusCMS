@@ -84,6 +84,58 @@ class Eresus_CMS_Request
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проверяет, является ли запрос запросом POST
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public function isGET()
+	{
+		return $this->getHttpMessage()->getRequestMethod() == 'GET';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверяет, является ли запрос запросом POST
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public function isPOST()
+	{
+		return $this->getHttpMessage()->getRequestMethod() == 'POST';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает аргументы GET
+	 *
+	 * @return Eresus_HTTP_Request_Arguments
+	 *
+	 * @since 2.16
+	 */
+	public function getQuery()
+	{
+		return $this->getHttpMessage()->getQuery();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает аргументы POST
+	 *
+	 * @return Eresus_HTTP_Request_Arguments
+	 *
+	 * @since 2.16
+	 */
+	public function getPost()
+	{
+		return $this->getHttpMessage()->getPost();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает путь к текущей вертуальной директории относительно корня сайта
 	 *
 	 * Примеры:

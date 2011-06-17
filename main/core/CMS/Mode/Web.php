@@ -50,7 +50,7 @@ class Eresus_CMS_Mode_Web extends Eresus_CMS_Mode
 	{
 		$this->initSession();
 
-		$cms = Eresus_CMS::app();
+		$cms = Eresus_Kernel::app();
 		Eresus_Config::set('core.template.templateDir', $cms->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $cms->getRootDir() . '/var/cache/templates');
 		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($cms));
@@ -80,8 +80,8 @@ class Eresus_CMS_Mode_Web extends Eresus_CMS_Mode
 		 * FIXME Нельзя передавать здесь корень сайта на основе модели сайта. Наоборот, модель сайта
 		 * должна выбираться на основе адреса.
 		 */
-		$cms = Eresus_CMS::app();
-		return new Eresus_CMS_Request($req, $cms->getSite()->getRootURL());
+		$cms = Eresus_Kernel::app();
+		return new Eresus_CMS_Request($req, $cms->get('site')->getRootURL());
 	}
 	//-----------------------------------------------------------------------------
 

@@ -44,7 +44,14 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	 */
 	public function process()
 	{
-		return new Eresus_CMS_Response('admin');
+		if (!Eresus_Service_ACL::getInstance()->isGranted('EDITOR'))
+		{
+			return $this->auth();
+		}
+		else
+		{
+			return new Eresus_CMS_Response('admin');
+		}
 /*		$router = Eresus_Service_Client_Router::getInstance();
 		$request = $this->get('request');
 
@@ -70,4 +77,62 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		return $response;*/
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Аутентификация
+	 *
+	 * @return string  HTML
+	 *
+	 * @uses Eresus_Model_User::USERNAME_FILTER
+	 * @uses Eresus_Service_Auth::getInstance()
+	 * @uses Eresus_Service_Auth::SUCCESS
+	 * @uses Eresus_HTTP_Response::redirect()
+	 */
+	private function auth()
+	{
+		$req = $this->get('request');
+
+		if ($req->isPOST())
+		{
+			$username = trim($req->query->get('username', Eresus_Model_User::USERNAME_FILTER));
+			$password = trim($req->query->get('password'));
+			$state = Eresus_Service_Auth::getInstance()->login($username, $password);
+			if ($state == Eresus_Service_Auth::SUCCESS)
+			{
+				if ($req->arg('autologin'))
+				{
+					Eresus_Service_Auth::getInstance()->setCookies();
+				}
+				Eresus_HTTP_Response::redirect('./admin.php');
+			}
+			$html = $this->getAuthScreen('Неправильное имя пользователя или пароль');
+		}
+		$html = $this->getAuthScreen();
+		return new Eresus_CMS_Response($html);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает диалог аутентификации
+	 *
+	 * @param string $errorMessage  сообщение об ошибке
+	 * @return string
+	 */
+	public function getAuthScreen($errorMessage = '')
+	{
+		$req = $this->get('request');
+
+		$data = array(
+			'username' => $req->getPost()->get('username', Eresus_Model_User::USERNAME_FILTER),
+			'password' => $req->getPost()->get('password'),
+			'autologin' => $req->getPost()->get('autologin'),
+			'error' => $errorMessage
+		);
+		$ts = Eresus_Service_Templates::getInstance();
+		$tmpl = $ts->get('auth', 'core');
+		$html = $tmpl->compile($data);
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
 }

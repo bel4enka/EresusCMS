@@ -60,7 +60,7 @@ abstract class Eresus_CMS_UI
 	 */
 	protected function get($name)
 	{
-		return Eresus_CMS::app()->get($name);
+		return Eresus_Kernel::app()->get($name);
 	}
 	//-----------------------------------------------------------------------------
 }
