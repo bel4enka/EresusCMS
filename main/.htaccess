@@ -55,14 +55,10 @@ AddDefaultCharset Off
 
 	### ДРУГИЕ ПЕРЕАДРЕСАЦИИ ###
 
-	# Включаем gzip-сжатие CSS и JavaScript
-	RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [last]
-	RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [last]
-
 	# Отключаем перехват запросов в следующих директориях
 	RewriteRule ^(admin/themes|admin/logos|ext|data|style)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
-	RewriteRule ^(robots.txt|favicon.[^\.]+|core/gziph.php.*)$ - [last]
+	RewriteRule ^(robots.txt|favicon.[^\.]+|.*\.(css|js))$ - [last]
 
 	# Все остальные запросы должны перехватываться запускающим скриптом
 	RewriteRule .* index.php

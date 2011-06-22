@@ -182,8 +182,9 @@ class Eresus_CMS
 			Eresus_Logger::exception($e);
 			ob_end_clean();
 			include dirname(__FILE__) . '/fatal.html.php';
+			return -1;
 		}
-
+		return 0;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -366,6 +367,7 @@ class Eresus_CMS
 		$i18n = Eresus_i18n::getInstance();
 		$locale = Eresus_Config::get('eresus.cms.locale', 'ru_RU');
 		$i18n->setLocale($locale);
+		$this->container['i18n'] = $i18n;
 		Eresus_Template::setGlobalValue('i18n', $i18n);
 	}
 	//-----------------------------------------------------------------------------

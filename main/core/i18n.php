@@ -87,6 +87,19 @@ class Eresus_i18n
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает текущую локаль
+	 *
+	 * @return string
+	 *
+	 * @uses $locale
+	 */
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Выбор локали
 	 *
 	 * @param string $locale
@@ -113,7 +126,7 @@ class Eresus_i18n
 	 * @uses $data
 	 * @uses $locale
 	 */
-	public function getText($text, $context = null)
+	public function get($text, $context = null)
 	{
 		$this->localeLazyLoad();
 
@@ -186,6 +199,6 @@ class Eresus_i18n
  */
 function i18n($text, $context = null)
 {
-	return Eresus_i18n::getInstance()->getText($text, $context);
+	return Eresus_i18n::getInstance()->get($text, $context);
 }
 //-----------------------------------------------------------------------------

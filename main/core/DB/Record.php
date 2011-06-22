@@ -37,8 +37,43 @@
  * @package DB
  * @since 2.16
  */
-class Eresus_DB_Record extends Doctrine_Record
+class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 {
+	/**
+	 * @see ArrayAccess::offsetExists()
+	 */
+	public function offsetExists($offset)
+	{
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see ArrayAccess::offsetGet()
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->$offset;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see ArrayAccess::offsetSet()
+	 */
+	public function offsetSet($offset, $value)
+	{
+		throw $this->$offset = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see ArrayAccess::offsetUnset()
+	 */
+	public function offsetUnset($offset)
+	{
+		throw new LogicException;
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Аксесор-десериализатор
@@ -80,4 +115,5 @@ class Eresus_DB_Record extends Doctrine_Record
 		$this->_set($fieldName, serialize($value), $load);
 	}
 	//-----------------------------------------------------------------------------
+
 }
