@@ -122,7 +122,7 @@ class Eresus_CMS
 	 * @uses initLocale()
 	 * @uses initDB()
 	 * @uses initSite()
-	 * @uses Eresus_Kernel_PHP::isCLI()
+	 * @uses Eresus_Kernel::isCLI()
 	 * @uses fatalError()
 	 * @uses Eresus_CMS_Mode_CLI
 	 */
@@ -133,14 +133,13 @@ class Eresus_CMS
 		try
 		{
 			$this->initFS();
-			$this->checkEnviroment();
 			$this->createFileStructure();
 			$this->initConf();
 			$this->initLocale();
 			$this->initDB();
 			$this->initSite(); // TODO Скорее всего надо перенести это куда-то после создания интерфейса
 
-			if (Eresus_Kernel_PHP::isCLI())
+			if (Eresus_Kernel::isCLI())
 			{
 				$mode = new Eresus_CMS_Mode_CLI();
 			}
@@ -233,7 +232,7 @@ class Eresus_CMS
 	 *
 	 * @return void
 	 *
-	 * @uses Eresus_Kernel_PHP::isCLI()
+	 * @uses Eresus_Kernel::isCLI()
 	 */
 	private function checkEnviroment()
 	{
@@ -267,14 +266,7 @@ class Eresus_CMS
 
 		if ($errors)
 		{
-			if (!Eresus_Kernel_PHP::isCLI())
-			{
-				require_once 'errors.html.php';
-			}
-			else
-			{
-				die("Errors...\n"); // TODO Доделать
-			}
+			require_once 'errors.html.php';
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -288,23 +280,27 @@ class Eresus_CMS
 	 */
 	private function createFileStructure()
 	{
-		$dirs = array(
-			'/var/log',
-			'/var/cache',
-			'/var/cache/templates',
-		);
-
-		$errors = array();
-
-		foreach ($dirs as $dir)
+		$root = $this->getRootDir() . '/var';
+		if (is_dir($root))
 		{
-			if (!file_exists($this->getRootDir() . $dir))
+			$dirs = array(
+				'/log',
+				'/cache',
+				'/cache/templates',
+			);
+
+			$errors = array();
+
+			foreach ($dirs as $dir)
 			{
-				$umask = umask(0000);
-				mkdir($this->getRootDir() . $dir, 0777);
-				umask($umask);
+				if (!file_exists($root . $dir))
+				{
+					$umask = umask(0000);
+					mkdir($root . $dir, 0777);
+					umask($umask);
+				}
+				// TODO Сделать проверку на запись в созданные директории
 			}
-			// TODO Сделать проверку на запись в созданные директории
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -334,19 +330,23 @@ class Eresus_CMS
 	 */
 	private function initConf()
 	{
-		$config = file_get_contents($this->getRootDir() . '/cfg/main.php');
-		if (substr($config, 0, 5) == '<?php')
+		$filename = $this->getRootDir() . '/cfg/main.php';
+		if (file_exists($filename))
 		{
-			$config = substr($config, 5);
-		}
-		elseif (substr($config, 0, 2) == '<?')
-		{
-			$config = substr($config, 2);
-		}
-		$result = @eval($config);
-		if ($result === false)
-		{
-			throw new DomainException('Error parsing cfg/main.php');
+			$config = file_get_contents($filename);
+			if (substr($config, 0, 5) == '<?php')
+			{
+				$config = substr($config, 5);
+			}
+			elseif (substr($config, 0, 2) == '<?')
+			{
+				$config = substr($config, 2);
+			}
+			$result = @eval($config);
+			if ($result === false)
+			{
+				throw new DomainException('Error parsing cfg/main.php');
+			}
 		}
 	}
 	//-----------------------------------------------------------------------------

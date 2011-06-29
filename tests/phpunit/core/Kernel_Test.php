@@ -43,13 +43,19 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @var mixed
 	 */
-	protected $error_log;
+	private $error_log;
+
+	/**
+	 * @var string
+	 */
+	private $inclue_path;
 
 	/**
 	 * @see PHPUnit_Framework_TestCase::setUp()
 	 */
 	protected function setUp()
 	{
+		$this->inclue_path = get_include_path();
 		$this->error_log = ini_get('error_log');
 	}
 	//-----------------------------------------------------------------------------
@@ -60,6 +66,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		ini_set('error_log', $this->error_log);
+		set_include_path($this->inclue_path);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -176,6 +183,68 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Just make sure that method can be executed
+	 *
+	 * @covers Eresus_Kernel::isCGI
+	 */
+	public function test_lint_isCGI()
+	{
+		Eresus_Kernel::isCGI();
+		$this->assertTrue(true);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Just make sure that method can be executed
+	 *
+	 * @covers Eresus_Kernel::isCLI
+	 */
+	public function test_lint_isCLI()
+	{
+		Eresus_Kernel::isCLI();
+		$this->assertTrue(true);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Just make sure that method can be executed
+	 *
+	 * @covers Eresus_Kernel::isModule
+	 */
+	public function test_lint_isModule()
+	{
+		Eresus_Kernel::isModule();
+		$this->assertTrue(true);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::inOpenBaseDir
+	 */
+	public function test_inOpenBaseDir()
+	{
+		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir/file', false), 'Test 1');
+		$cwd = getcwd();
+		$this->assertFalse(Eresus_Kernel::inOpenBaseDir('/dir/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 2');
+		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir1/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 3');
+		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir2/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 4');
+		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir3/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 5');
+		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('./file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 6');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::classExists
+	 */
+	public function test_classExists()
+	{
+		$this->assertFalse(Eresus_Kernel::classExists('UnexistentClass'));
+		$this->assertTrue(Eresus_Kernel::classExists('Eresus_Kernel_Test_Class'));
+		$this->assertTrue(Eresus_Kernel::classExists('Eresus_Kernel_Test_Interface'));
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }
 
@@ -251,4 +320,8 @@ function Eresus_Kernel_Test_error_handler()
 //-----------------------------------------------------------------------------
  /* */
 
+interface Eresus_Kernel_Test_Interface {};
+class Eresus_Kernel_Test_Class {};
+
 // @codeCoverageIgnoreEnd
+

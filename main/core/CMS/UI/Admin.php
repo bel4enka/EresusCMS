@@ -94,20 +94,23 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 
 		if ($req->isPOST())
 		{
-			$username = trim($req->query->get('username', Eresus_Model_User::USERNAME_FILTER));
-			$password = trim($req->query->get('password'));
+			$username = trim($req->getPost()->get('username', Eresus_Model_User::USERNAME_FILTER));
+			$password = trim($req->getPost()->get('password'));
 			$state = Eresus_Service_Auth::getInstance()->login($username, $password);
 			if ($state == Eresus_Service_Auth::SUCCESS)
 			{
-				if ($req->arg('autologin'))
+				if ($req->getPost()->get('autologin'))
 				{
 					Eresus_Service_Auth::getInstance()->setCookies();
 				}
 				Eresus_HTTP_Response::redirect('./admin.php');
 			}
-			$html = $this->getAuthScreen('Неправильное имя пользователя или пароль');
+			$html = $this->getAuthScreen(i18n('Invalid username or password', 'admin.auth'));
 		}
-		$html = $this->getAuthScreen();
+		else
+		{
+			$html = $this->getAuthScreen();
+		}
 		return new Eresus_CMS_Response($html);
 	}
 	//-----------------------------------------------------------------------------

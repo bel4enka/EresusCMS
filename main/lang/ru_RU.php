@@ -85,6 +85,7 @@ return array(
 			'Enter' => 'Войти',
 			'Entrance' => 'Вход',
 			'Entrance to control panel' => 'Вход в панель управления',
+			'Invalid username or password' => 'Неправильное имя пользователя или пароль',
 			'Password' => 'Пароль',
 			'Remember me' => 'Запомнить',
 			'Username' => 'Пользователь',

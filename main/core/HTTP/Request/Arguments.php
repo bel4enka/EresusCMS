@@ -65,7 +65,7 @@ class Eresus_HTTP_Request_Arguments
 	 *
 	 * @return void
 	 *
-	 * @since ?.??
+	 * @since 2.16
 	 */
 	public function get($name, $filter = null)
 	{

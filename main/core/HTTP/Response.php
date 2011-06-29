@@ -140,7 +140,7 @@ class Eresus_HTTP_Response
 	public static function redirect($url = null, $params = null, $session = false, $status = null)
 	{
 		/* Перед редиректом не должно быть отправленных заголовков */
-		if (headers_sent() && (!Eresus_Kernel_PHP::isCLI()))
+		if (headers_sent() && (!Eresus_Kernel::isCLI()))
 		{
 			return false;
 		}

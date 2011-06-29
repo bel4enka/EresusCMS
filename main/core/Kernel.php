@@ -67,6 +67,21 @@ class Eresus_Kernel
 	static private $app = null;
 
 	/**
+	 * Список директорий open_basedir
+	 *
+	 * @var array
+	 */
+	private static $open_basedir;
+
+	/**
+	 * Для тестирования
+	 *
+	 * @var bool
+	 * @ignore
+	 */
+	private static $override_isCLI = null;
+
+	/**
 	 * Инициализация ядра
 	 */
 	// @codeCoverageIgnoreStart
@@ -116,7 +131,7 @@ class Eresus_Kernel
 		 * Но только не в режиме CLI.
 		 */
 		// @codeCoverageIgnoreStart
-		if (! Eresus_Kernel_PHP::isCLI())
+		if (! self::isCLI())
 		{
 			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
 			{
@@ -222,7 +237,7 @@ class Eresus_Kernel
 			}
 
 			Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
-			if (!Eresus_Kernel_PHP::isCLI())
+			if (!self::isCLI())
 			{
 				header('Internal Server Error', true, 500);
 				header('Content-type: text/plain', true);
@@ -311,6 +326,110 @@ class Eresus_Kernel
 	static function isMac()
 	{
 		return strncasecmp(PHP_OS, 'MAC', 3) == 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает true, если используется CLI SAPI
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	static function isCLI()
+	{
+		//@codeCoverageIgnoreStart
+		if (self::$override_isCLI !== null)
+		{
+			return self::$override_isCLI;
+		}
+		//@codeCoverageIgnoreEnd
+
+		return PHP_SAPI == 'cli';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает true, если используется CGI SAPI
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	static function isCGI()
+	{
+		return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает true, если используется SAPI модуля веб-сервера
+	 *
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	static function isModule()
+	{
+		return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверяет, находится ли путь в списке open_basedir
+	 *
+	 * Если опция open_basedir не установлена, всегда возвращает true.
+	 *
+	 * @param string $path  Путь для проверки
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	public static function inOpenBaseDir($path)
+	{
+		// The second argument can be passed for testing purpose
+		$open_basedir = func_num_args() > 1 ? func_get_arg(1) : ini_get('open_basedir');
+
+		if ($open_basedir == false)
+		{
+			return true;
+		}
+
+		if (! self::$open_basedir)
+		{
+			self::$open_basedir = explode(PATH_SEPARATOR, $open_basedir);
+		}
+
+		if (substr($path, 0, 1) == '.')
+		{
+			$path = getcwd() . substr($path, 1);
+		}
+
+		foreach (self::$open_basedir as $dir)
+		{
+			if (substr($path, 0, strlen($dir)) == $dir)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Проверяет, загружен ли указанный класс или интерфейс
+	 *
+	 * Этот метод не инициирует автозагрузку
+	 *
+	 * @param string $name  Имя класса или интерфейса
+	 * @return bool
+	 *
+	 * @since 2.16
+	 */
+	static public function classExists($name)
+	{
+		return class_exists($name, false) || interface_exists($name, false);
 	}
 	//-----------------------------------------------------------------------------
 

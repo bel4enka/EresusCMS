@@ -4,7 +4,7 @@
  *
  * ${product.description}
  *
- * Запускающий скрипт
+ * Запускающий скрипт для режима Web
  *
  * @copyright 2004, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/

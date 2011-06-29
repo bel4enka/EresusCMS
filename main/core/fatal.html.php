@@ -29,14 +29,62 @@
  *
  * $Id$
  */
+
+$messages = array(
+	'en' => array(
+		'header' => 'Error occured!',
+		'location' => 'Error location',
+		'stack' => 'Call stack',
+		'additional' => 'Additional info',
+		'production' => 'Site currently unavailable. We apologize.',
+),
+	'ru' => array(
+		'header' => 'Сбой на сайте!',
+		'location' => 'Место возникновения ошибки',
+		'stack' => 'Стек вызовов',
+		'additional' => 'Дополнительные сведения',
+		'production' => 'Сайт временно недоступен. Приносим свои извинения.	',
+	),
+);
+
+
+$local = $messages['ru'];
+if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+{
+	$hal = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+	$langs = array();
+	foreach ($hal as $value)
+	{
+		list($code, $priority) = explode(';', $value);
+		if (@$priority)
+		{
+			$priority = substr($priority, 2);
+		}
+		else
+		{
+			$priority = 1;
+		}
+		$langs[$code] = $priority;
+	}
+	arsort($langs);
+	$langs = array_keys($langs);
+	foreach ($langs as $lang)
+	{
+		if (isset($messages[$lang]))
+		{
+			$local = $messages[$lang];
+			break;
+		}
+	}
+}
+
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-     "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Ошибка!</title>
+    <meta charset="UTF-8">
+    <title><?php echo $local['header'];?></title>
     <style type="text/css">
     	html,
     	body
@@ -50,7 +98,7 @@
 			{
     		-moz-box-shadow: 0 2px 4px #000;
     		-webkit-box-shadow: 0 2px 4px #000;
-				background-color: #a00;
+				background: #a00;
 				box-shadow: 0 2px 4px #000;
 				color: #fff;
 				margin: 0;
@@ -98,7 +146,7 @@
     </style>
   </head>
 <body>
-	<h1>На сайте произошла ошибка!</h1>
+	<h1><?php echo $local['header'];?></h1>
 	<div class="report">
 		<?php
 			if (isset($error))
@@ -108,7 +156,7 @@
 				{
 					?>
 					<div class="message"><?php echo $error->getMessage();?></div>
-					<h3>Место возникновения ошибки</h3>
+					<h3><?php echo $local['location'];?></h3>
 					<div class="location"><?php echo $error->getFile();?>: <?php echo $error->getLine();?></div>
 					<div class="code">
 					<?php
@@ -127,9 +175,9 @@
 						}
 					?>
 					</div>
-					<h3>Стек вызовов</h3>
+					<h3><?php echo $local['stack'];?></h3>
 					<pre class="trace"><?php echo $error->getTraceAsString();?></pre>
-					<h3>Другая информация</h3>
+					<h3><?php echo $local['additional'];?></h3>
 					<?php
 				}
 				elseif ($error instanceof DomainException)
@@ -137,8 +185,11 @@
 					echo '<p>' . $error->getMessage() . '</p>';
 				}
 			}
+			else
+			{
+				echo '<p>' . $local['production'] . '</p>';
+			}
 		?>
-		<p>Дополнительная информация об ошибке доступна в журнале <code>var/log/eresus.log</code></p>
 	</div>
 </body>
 </html>

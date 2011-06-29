@@ -98,7 +98,7 @@ class Eresus_CMS_Mode_Web extends Eresus_CMS_Mode
 		ini_set('session.use_only_cookies', true);
 		session_name('sid');
 		// Проверка на CLI для юнит-тестов
-		Eresus_Kernel_PHP::isCLI() || session_start();
+		Eresus_Kernel::isCLI() || session_start();
 
 		Eresus_Service_Auth::getInstance()->init();
 		$_SESSION['activity'] = time();
