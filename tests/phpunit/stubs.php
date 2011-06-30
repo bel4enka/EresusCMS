@@ -184,22 +184,6 @@ class EresusRuntimeException extends Exception {}
 /**
  * @package EresusCMS
  * @subpackage Tests
- * @since 2.15
- */
-class ExitException extends SuccessException {}
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.16
- */
-class SuccessException extends Exception {}
-
-
-
-/**
- * @package EresusCMS
- * @subpackage Tests
  * @since 2.16
  */
 class HTTP extends MockFacade

@@ -208,7 +208,7 @@ class EresusExtensionConnector
 	{
 		Eresus_Kernel::isCLI() || header('Not found', true, 404);
 		echo '<h1>Not found.</h1>';
-		throw new ExitException;
+		throw new Eresus_ExitException;
 	}
 	//-----------------------------------------------------------------------------
 }

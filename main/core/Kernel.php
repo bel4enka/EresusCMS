@@ -32,6 +32,23 @@
  */
 
 
+/**
+ * Исключительная ситуация, не связанная с ошибкой
+ *
+ * @package Kernel
+ * @since 2.16
+ */
+class Eresus_SuccessException extends Exception {}
+
+
+/**
+ * Исключительная ситуация, не связанная с ошибкой, требующая завершения приложения
+ *
+ * @package Kernel
+ * @since 2.16
+ */
+class Eresus_ExitException extends Eresus_SuccessException {}
+
 
 /**
  * Ядро
@@ -464,7 +481,7 @@ class Eresus_Kernel
 			$exitCode = self::$app->main();
 			Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
 		}
-		catch (SuccessException $e)
+		catch (Eresus_SuccessException $e)
 		{
 			$exitCode = 0;
 		}

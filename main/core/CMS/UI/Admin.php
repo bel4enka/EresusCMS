@@ -50,9 +50,15 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		}
 		else
 		{
+			if ($this->get('request')->getBasePath() == '/admin/logout')
+			{
+				Eresus_Service_Auth::getInstance()->logout();
+				Eresus_HTTP_Response::redirect($this->get('site')->getRootURL() . '/admin/');
+			}
+			//$router = Eresus_Service_Admin_Router::getInstance();
 			return new Eresus_CMS_Response('admin');
 		}
-/*		$router = Eresus_Service_Client_Router::getInstance();
+/*
 		$request = $this->get('request');
 
 		try
@@ -103,7 +109,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 				{
 					Eresus_Service_Auth::getInstance()->setCookies();
 				}
-				Eresus_HTTP_Response::redirect('./admin.php');
+				Eresus_HTTP_Response::redirect($req->getHeader('Referer'));
 			}
 			$html = $this->getAuthScreen(i18n('Invalid username or password', 'admin.auth'));
 		}

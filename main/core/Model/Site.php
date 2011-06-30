@@ -125,11 +125,7 @@ class Eresus_Model_Site extends Eresus_DB_Record
 	 */
 	public function getRootURL()
 	{
-		if (!$this->rootURL)
-		{
-			$this->detectRootURL();
-		}
-		return $this->rootURL;
+		return Eresus_Kernel::app()->get('request')->getRootURL();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -152,29 +148,6 @@ class Eresus_Model_Site extends Eresus_DB_Record
 				return parent::get($fieldName, $load);
 			break;
 		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Определяет корневной URL сайта
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	private function detectRootURL()
-	{
-		$webServer = Eresus_WebServer::getInstance();
-		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
-		$SUFFIX = Eresus_Kernel::app()->getRootDir();
-		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		if (substr($SUFFIX, -1) != '/')
-		{
-			$SUFFIX .= '/';
-		}
-
-		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
-		$this->rootURL = $req->getScheme() . '://' . $req->getRequestHost() . $SUFFIX;
 	}
 	//-----------------------------------------------------------------------------
 }

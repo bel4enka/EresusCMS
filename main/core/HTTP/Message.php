@@ -102,6 +102,13 @@ class Eresus_HTTP_Message
 	private $responseCode;
 
 	/**
+	 * Заголовки
+	 *
+	 * @var array
+	 */
+	private $headers = array();
+
+	/**
 	 * Аргументы GET
 	 *
 	 * @var Eresus_HTTP_Request_Arguments
@@ -206,6 +213,8 @@ class Eresus_HTTP_Message
 		}
 
 		$message->setRequestUrl($scheme . '://' . $host . $uri);
+
+		$message->headers = Eresus_WebServer::getInstance()->getRequestHeaders();
 
 		return $message;
 	}
@@ -436,7 +445,7 @@ class Eresus_HTTP_Message
 	 *
 	 * @return Returns the HTTP response code if the message is of type HttpMessage::TYPE_RESPONSE,
 	 *          else FALSE.
-	 * @since 0.2.0
+	 * @since 2.16
 	 */
 	public function getResponseCode()
 	{
@@ -446,6 +455,25 @@ class Eresus_HTTP_Message
 		}
 
 		return $this->responseCode;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает заголовок
+	 *
+	 * @param string $header
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 */
+	public function getHeader($header)
+	{
+		if (!isset($this->headers[$header]))
+		{
+			return null;
+		}
+		return $this->headers[$header];
 	}
 	//-----------------------------------------------------------------------------
 

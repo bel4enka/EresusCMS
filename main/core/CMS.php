@@ -150,10 +150,10 @@ class Eresus_CMS
 				$this->container['ui'] = new Eresus_CMS_UI_Client();
 			}
 
-			$response = $mode->process();
+			$response = $this->get('ui')->process();
 			$response->send();
 
-			// FIXME Сделать вывод зависимым от режима
+			// FIXME Проверять тип ответа. Возможно это будет не HTML
 			if (Eresus_Config::get('eresus.cms.debug'))
 			{
 				$memory = number_format(memory_get_peak_usage(true) / 1024, 0, ',', ' ');
@@ -167,7 +167,7 @@ class Eresus_CMS
 			}
 
 		}
-		catch (SuccessException $e)
+		catch (Eresus_SuccessException $e)
 		{
 			return 0;
 		}
@@ -429,6 +429,7 @@ class Eresus_CMS
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
 		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($this));
+		Eresus_Template::setGlobalValue('prefix', Eresus_WebServer::getInstance()->getPrefix());
 	}
 	//-----------------------------------------------------------------------------
 

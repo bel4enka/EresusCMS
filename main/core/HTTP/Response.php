@@ -212,7 +212,7 @@ class Eresus_HTTP_Response
 </html>
 PAGE;
 
-		throw new ExitException;
+		throw new Eresus_ExitException;
 	}
 	//-----------------------------------------------------------------------------
 

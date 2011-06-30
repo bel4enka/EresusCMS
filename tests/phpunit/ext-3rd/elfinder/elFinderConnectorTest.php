@@ -32,6 +32,7 @@
 require_once 'PHPUnit/Extensions/OutputTestCase.php';
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusExtensionConnector.php';
 require_once dirname(__FILE__) . '/../../../../main/ext-3rd/elfinder/eresus-connector.php';
@@ -92,7 +93,7 @@ class elFinderConnectorTest extends PHPUnit_Extensions_OutputTestCase
 
 	/**
 	 * @covers elFinderConnector::proxyUnexistent
-	 * @expectedException ExitException
+	 * @expectedException Eresus_ExitException
 	 */
 	public function test_proxyUnexistent_generic()
 	{
@@ -230,7 +231,7 @@ class elFinderConnectorTest extends PHPUnit_Extensions_OutputTestCase
 
 	/**
 	 * @covers elFinderConnector::dataPopup
-	 * @expectedException ExitException
+	 * @expectedException Eresus_ExitException
 	 */
 	public function test_dataPopup()
 	{

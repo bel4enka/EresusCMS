@@ -295,7 +295,7 @@ class Eresus_Kernel_Test_Application3
 	 */
 	public function main()
 	{
-		throw new ExitException;
+		throw new Eresus_ExitException;
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -115,6 +115,19 @@ class Eresus_WebServer
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает заголовки запроса
+	 *
+	 * @return array
+	 *
+	 * @since 2.16
+	 */
+	public function getRequestHeaders()
+	{
+		return Eresus_Kernel::isModule() ? apache_request_headers() : array();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Конструктор
 	 *
 	 * @return Eresus_WebServer

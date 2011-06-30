@@ -252,7 +252,7 @@ class elFinderConnector extends EresusExtensionConnector implements FileManagerC
 
 		$tmpl = Eresus_Template::fromFile('ext-3rd/elfinder/popup.html');
 		echo $tmpl->compile($data);
-		throw new ExitException;
+		throw new Eresus_ExitException;
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -80,6 +80,27 @@ class Eresus_CMS_Request
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Проксирует запрос к объекту Eresus_HTTP_Message
+	 *
+	 * @param string $method
+	 * @param array  $args
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.16
+	 */
+	public function __call($method, $args)
+	{
+		if (!method_exists($this->message, $method))
+		{
+			throw new BadMethodCallException('Call of unknown method ' . get_class($this) . '::' .
+				$method);
+		}
+		return call_user_func_array(array($this->message, $method), $args);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает объект Eresus_HTTP_Message
 	 *
 	 * @return Eresus_HTTP_Message
@@ -119,32 +140,6 @@ class Eresus_CMS_Request
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает аргументы GET
-	 *
-	 * @return Eresus_HTTP_Request_Arguments
-	 *
-	 * @since 2.16
-	 */
-	public function getQuery()
-	{
-		return $this->getHttpMessage()->getQuery();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает аргументы POST
-	 *
-	 * @return Eresus_HTTP_Request_Arguments
-	 *
-	 * @since 2.16
-	 */
-	public function getPost()
-	{
-		return $this->getHttpMessage()->getPost();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Возвращает путь к текущей вертуальной директории относительно корня сайта
 	 *
 	 * Примеры:
@@ -173,6 +168,19 @@ class Eresus_CMS_Request
 			}
 		}
 		return $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневой URL
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getRootURL()
+	{
+		return $this->rootURL;
 	}
 	//-----------------------------------------------------------------------------
 
