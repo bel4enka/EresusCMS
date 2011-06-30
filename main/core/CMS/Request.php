@@ -47,7 +47,14 @@ class Eresus_CMS_Request
 	protected $message;
 
 	/**
-	 * Корневой URL сайта
+	 * Путь до корня сайта относительно домена
+	 *
+	 * @var string
+	 */
+	protected $prefix;
+
+	/**
+	 * Корневой URL
 	 *
 	 * @var string
 	 */
@@ -57,16 +64,18 @@ class Eresus_CMS_Request
 	 * Создаёт запрос на основе окружения приложения
 	 *
 	 * @param Eresus_HTTP_Message $message  запрос HTTP
-	 * @param string                        корневой URL сайта
+	 * @param string              $prefix   путь до корня сайта относительно домена
 	 *
 	 * @return Eresus_CMS_Request
 	 *
 	 * @since 2.16
 	 */
-	public function __construct(Eresus_HTTP_Message $message, $rootURL)
+	public function __construct(Eresus_HTTP_Message $message, $prefix)
 	{
 		$this->message = $message;
-		$this->rootURL = $rootURL;
+		$this->prefix = $prefix;
+		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($message->getRequestUrl(), array(),
+			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $prefix;
 	}
 	//-----------------------------------------------------------------------------
 

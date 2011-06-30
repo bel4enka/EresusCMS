@@ -117,23 +117,20 @@ class Eresus_HTTP_Toolkit
 	const URL_STRIP_ALL = 1024;
 
 	/**
-	 * Build an URL
+	 * Строит URL
 	 *
-	 * The parts of the second URL will be merged into the first according to the flags argument.
+	 * Части второго URL будут объединены с первым в соответствии с флагами.
 	 *
 	 * @param	 mixed $url      (Part(s) of) an URL in form of a string or associative array like
 	 *                         parse_url() returns
 	 * @param	 mixed $parts    Same as the first argument
 	 * @param	 int   $flags    A bitmask of binary or'ed HTTP_URL constants (Optional)
 	 *                         HTTP_URL_REPLACE is the default
-	 * @param	 array $new_url  If set, it will be filled with the parts of the composed url like
-	 *                         parse_url() would return
 	 *
 	 * @author tycoonmaster(at)gmail(dot)com
-	 * @author Mikhail Krasilnikov <mk@procreat.ru>
+	 * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
 	 */
-	public static function buildURL($url, $parts = array(), $flags = self::URL_REPLACE,
-		&$new_url = false)
+	public static function buildURL($url, $parts = array(), $flags = self::URL_REPLACE)
 	{
 		$keys = array('user','pass','port','path','query','fragment');
 
@@ -212,14 +209,11 @@ class Eresus_HTTP_Toolkit
 		// Note: Scheme and Host are never stripped
 		foreach ($keys as $key)
 		{
-			if ($flags & (int) constant('HTTP::URL_STRIP_' . strtoupper($key)))
+			if ($flags & (int) constant('Eresus_HTTP_Toolkit::URL_STRIP_' . strtoupper($key)))
 			{
 				unset($parse_url[$key]);
 			}
 		}
-
-
-		$new_url = $parse_url;
 
 		return
 			((isset($parse_url['scheme'])) ? $parse_url['scheme'] . '://' : '') .

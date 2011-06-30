@@ -122,7 +122,6 @@ class Eresus_CMS
 	 * @uses initLocale()
 	 * @uses initDB()
 	 * @uses initSite()
-	 * @uses Eresus_Kernel::isCLI()
 	 * @uses fatalError()
 	 * @uses Eresus_CMS_Mode_CLI
 	 */
@@ -135,25 +134,21 @@ class Eresus_CMS
 			$this->initFS();
 			$this->createFileStructure();
 			$this->initConf();
+			$this->initRequest();
 			$this->initLocale();
 			$this->initDB();
-			$this->initSite(); // TODO Скорее всего надо перенести это куда-то после создания интерфейса
+			$this->initSite();
+			$this->initSession();
+			$this->initTemplateEngine();
 
-			if (Eresus_Kernel::isCLI())
+			if (substr($this->get('request')->getBasePath(), 0, 6) == '/admin')
 			{
-				$mode = new Eresus_CMS_Mode_CLI();
+				$this->container['ui'] = new Eresus_CMS_UI_Admin();
 			}
 			else
 			{
-				$mode = new Eresus_CMS_Mode_Web();
+				$this->container['ui'] = new Eresus_CMS_UI_Client();
 			}
-
-			/*
-			 * Собираем контейнер объектов CMS
-			 */
-			$this->container['mode'] = $mode;
-			$this->container['request'] = $mode->getRequest();
-			$this->container['ui'] = $mode->getUI();
 
 			$response = $mode->process();
 			$response->send();
@@ -162,11 +157,11 @@ class Eresus_CMS
 			if (Eresus_Config::get('eresus.cms.debug'))
 			{
 				$memory = number_format(memory_get_peak_usage(true) / 1024, 0, ',', ' ');
-				echo "<!-- Memory: $memory MiB -->\n";
+				echo "\n<!-- Memory: $memory MiB -->";
 				if (!Eresus_Kernel::isWindows())
 				{
 					$ru = getrusage();
-					echo sprintf("<!-- utime: %d.%06d sec -->\n", $ru['ru_utime.tv_sec'],
+					echo sprintf("\n<!-- utime: %d.%06d sec -->", $ru['ru_utime.tv_sec'],
 						$ru['ru_utime.tv_usec']);
 				}
 			}
@@ -221,53 +216,6 @@ class Eresus_CMS
 	public function getDataDir()
 	{
 		return $this->getRootDir() . '/data';
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Проверка окружения
-	 *
-	 * Проверяет наличие файлов, необходимых для работы CMS, а также доступность нужных файлов на
-	 * запись.
-	 *
-	 * @return void
-	 *
-	 * @uses Eresus_Kernel::isCLI()
-	 */
-	private function checkEnviroment()
-	{
-		$errors = array();
-
-		/* Проверяем наличие нужных файлов */
-		$required = array('cfg/main.php');
-		foreach ($required as $filename)
-		{
-			if (!file_exists($filename))
-			{
-				$errors []= array('file' => $filename, 'problem' => 'missing');
-			}
-		}
-
-		/* Проверяем доступность для записи */
-		$writable = array(
-			'cfg/settings.php',
-			'var',
-			'data',
-			'templates',
-			'style'
-		);
-		foreach ($writable as $filename)
-		{
-			if (!is_writable($filename))
-			{
-				$errors []= array('file' => $filename, 'problem' => 'non-writable');
-			}
-		}
-
-		if ($errors)
-		{
-			require_once 'errors.html.php';
-		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -352,6 +300,21 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Инициализация запроса к CMS
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function initRequest()
+	{
+		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
+		$webServer = Eresus_WebServer::getInstance();
+		$this->container['request'] = new Eresus_CMS_Request($req, $webServer->getPrefix());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Инициализация локали
 	 *
 	 * @return void
@@ -431,6 +394,41 @@ class Eresus_CMS
 		$site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
 		$this->container['site'] = $site;
 		Eresus_Template::setGlobalValue('site', $site);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация сессии
+	 *
+	 * @return void
+	 * @uses Eresus_Logger::log()
+	 * @uses Eresus_Service_Auth::getInstance()
+	 */
+	private function initSession()
+	{
+		//session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
+		ini_set('session.use_only_cookies', true);
+		session_name('sid');
+		// Проверка на CLI для юнит-тестов
+		Eresus_Kernel::isCLI() || session_start();
+
+		Eresus_Service_Auth::getInstance()->init();
+		$_SESSION['activity'] = time();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует шаблонизатор
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function initTemplateEngine()
+	{
+		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
+		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
+		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($this));
 	}
 	//-----------------------------------------------------------------------------
 
