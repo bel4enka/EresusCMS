@@ -61,40 +61,5 @@ class Eresus_WebServer_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * @covers Eresus_WebServer::getPrefix
-	 */
-	public function test_getPrefix()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-		$instnce = new ReflectionProperty('Eresus_WebServer', 'instance');
-		$instnce->setAccessible(true);
-
-		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$p_app->setAccessible(true);
-
-		$instnce->setValue('Eresus_WebServer', null);
-		$_SERVER['DOCUMENT_ROOT'] = __DIR__;
-		$app = $this->getMockBuilder('stdClass')->setMethods(array('getRootDir'))->getMock();
-		$app->expects($this->any())->method('getRootDir')->
-			will($this->returnValue(__DIR__));
-		$p_app->setValue('Eresus_Kernel', $app);
-		$server = Eresus_WebServer::getInstance();
-		$this->assertEquals('', $server->getPrefix());
-
-		$instnce->setValue('Eresus_WebServer', null);
-		$_SERVER['DOCUMENT_ROOT'] = __DIR__;
-		$app = $this->getMockBuilder('stdClass')->setMethods(array('getRootDir'))->getMock();
-		$app->expects($this->any())->method('getRootDir')->
-			will($this->returnValue(__DIR__ . '/site_root'));
-		$p_app->setValue('Eresus_Kernel', $app);
-		$server = Eresus_WebServer::getInstance();
-		$this->assertEquals('/site_root', $server->getPrefix());
-	}
-	//-----------------------------------------------------------------------------
-
 	/* */
 }

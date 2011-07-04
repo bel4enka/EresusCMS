@@ -35,6 +35,7 @@
  * Модель сайта
  *
  * @property int	  $id
+ * @property string $host
  * @property string $root
  * @property string $name
  * @property string $title
@@ -49,13 +50,6 @@
  */
 class Eresus_Model_Site extends Eresus_DB_Record
 {
-	/**
-	 * Адрес корня сайта
-	 *
-	 * @var string
-	 */
-	private $rootURL;
-
 	/**
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
 	 *
@@ -73,6 +67,12 @@ class Eresus_Model_Site extends Eresus_DB_Record
 				'primary' => true,
 				'autoincrement' => true,
 			),
+			'host' => array(
+				'type' => 'string',
+				'length' => 255,
+				'default' => '',
+				'notnull' => true,
+			),
 			'root' => array(
 				'type' => 'string',
 				'length' => 255,
@@ -81,7 +81,7 @@ class Eresus_Model_Site extends Eresus_DB_Record
 			),
 			'name' => array(
 				'type' => 'string',
-				'length' => 32,
+				'length' => 63,
 				'default' => '',
 				'notnull' => true,
 			),
@@ -98,7 +98,7 @@ class Eresus_Model_Site extends Eresus_DB_Record
 			),
 			'title_div' => array(
 				'type' => 'string',
-				'length' => 32,
+				'length' => 31,
 				'default' => ' &ndash; ',
 				'notnull' => true,
 			),
@@ -113,41 +113,6 @@ class Eresus_Model_Site extends Eresus_DB_Record
 				'notnull' => true,
 			)
 		));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает корневой URL сайта
-	 *
-	 * @return string
-	 *
-	 * @since 2.16
-	 */
-	public function getRootURL()
-	{
-		return Eresus_Kernel::app()->get('request')->getRootURL();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see Doctrine_Record::get()
-	 */
-	public function get($fieldName, $load = true)
-	{
-		switch ($fieldName)
-		{
-			case 'rootURL':
-				return $this->rootURL;
-			break;
-
-			case 'stylesURL':
-				return $this->rootURL . 'style/';
-			break;
-
-			default:
-				return parent::get($fieldName, $load);
-			break;
-		}
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -30,7 +30,9 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/Config.php';
+require_once dirname(__FILE__) . '/../../../../main/core/WebServer.php';
+require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Toolkit.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Message.php';
 
 /**
@@ -99,19 +101,23 @@ class Eresus_HTTP_Message_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_HTTP_Message::setRequestUrl
-	 * @covers Eresus_HTTP_Message::getRequestUrl
+	 * @covers Eresus_HTTP_Message::setRequestUri
+	 * @covers Eresus_HTTP_Message::setRequestHost
+	 * @covers Eresus_HTTP_Message::getRequestUri
 	 */
-	public function test_setfetRequestUrl()
+	public function test_setgetRequestUri()
 	{
 		$test = new Eresus_HTTP_Message();
 
-		$this->assertFalse($test->setRequestUrl('http://example.org/'));
+		$this->assertFalse($test->setRequestUri('http://example.org/'));
 
 		$test->setType(Eresus_HTTP_Message::TYPE_REQUEST);
 
-		$this->assertTrue($test->setRequestUrl('http://example.org/'));
-		$this->assertEquals('http://example.org/', $test->getRequestUrl());
+		$this->assertTrue($test->setRequestUri('http://example.org/'));
+		$this->assertEquals('http://example.org/', $test->getRequestUri());
+
+		$test->setRequestHost('example.com');
+		$this->assertEquals('http://example.com/', $test->getRequestUri());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -130,7 +136,7 @@ class Eresus_HTTP_Message_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('GET', $test->getRequestMethod());
 		$this->assertEquals('1.0', $test->getHttpVersion());
 		$this->assertEquals('https://example.org/dir1/dir2/file.ext?p1=v1&p2=v2',
-			$test->getRequestUrl());
+			$test->getRequestUri());
 
 	}
 	//-----------------------------------------------------------------------------

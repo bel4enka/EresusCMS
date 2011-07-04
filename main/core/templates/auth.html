@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>{i18n('Entrance', 'admin.auth')} &mdash; ${product.title}</title>
-	<link rel="stylesheet" href="{$globals.prefix}/admin/auth.css">
+	<link rel="stylesheet" href="{$globals.site.root}/admin/auth.css">
 	<style>
 		.ie
 		{
@@ -61,7 +61,7 @@
 	<![endif]-->
 
 	<div id="auth-dialog">
-		<form action="{$globals.prefix}/admin/" method="post">
+		<form action="{$globals.site.root}/admin/" method="post">
 
 			<div class="title">{i18n('Entrance to control panel', 'admin.auth')}</div>
 			<div class="content">

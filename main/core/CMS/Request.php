@@ -47,11 +47,12 @@ class Eresus_CMS_Request
 	protected $message;
 
 	/**
-	 * Путь до корня сайта относительно домена
+	 * Префикс корневого URL относительно корня домена
 	 *
 	 * @var string
+	 * @since 2.16
 	 */
-	protected $prefix;
+	protected $rootPrefix;
 
 	/**
 	 * Корневой URL
@@ -64,7 +65,8 @@ class Eresus_CMS_Request
 	 * Создаёт запрос на основе окружения приложения
 	 *
 	 * @param Eresus_HTTP_Message $message  запрос HTTP
-	 * @param string              $prefix   путь до корня сайта относительно домена
+	 * @param string              $prefix   префикс корневого URL относительно корня домена (должен
+	 *                                      начинаться со слеша и не иметь слеша на конце)
 	 *
 	 * @return Eresus_CMS_Request
 	 *
@@ -73,9 +75,9 @@ class Eresus_CMS_Request
 	public function __construct(Eresus_HTTP_Message $message, $prefix)
 	{
 		$this->message = $message;
-		$this->prefix = $prefix;
-		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($message->getRequestUrl(), array(),
-			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $prefix;
+		$this->rootPrefix = $prefix;
+		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($this->message->getRequestUri(), array(),
+			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $this->rootPrefix;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -140,34 +142,29 @@ class Eresus_CMS_Request
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает путь к текущей вертуальной директории относительно корня сайта
+	 * Возвращает запрошенный хост
 	 *
-	 * Примеры:
+	 * @return string
 	 *
-	 * - Для "….org/" будет ""
-	 * - Для "….org/dir/" будет "/dir"
-	 * - Для "….org/dir/file.ext" будет "/dir"
+	 * @since 2.16
+	 * @see http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getHost()
+	 */
+	public function getHost()
+	{
+		return  Eresus_Config::get('eresus.cms.http.host', $this->message->getRequestHost());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневой префикс
 	 *
 	 * @return string
 	 *
 	 * @since 2.16
 	 */
-	public function getBasePath()
+	public function getRootPrefix()
 	{
-		$path = '/' . substr($this->message->getRequestUrl(), strlen($this->rootURL));
-		if (substr($path, -1) == '/')
-		{
-			$path = substr($path, 0, -1);
-		}
-		else
-		{
-			$path = dirname($path);
-			if ($path == '/')
-			{
-				$path = '';
-			}
-		}
-		return $path;
+		return $this->rootPrefix;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -187,14 +184,55 @@ class Eresus_CMS_Request
 	/**
 	 * Возвращает часть запроса, соответствующую пути от корня сайта
 	 *
+	 * Возвращает часть запроса, соответствующую пути от корня сайта. Всегда начинается с "/".
+	 *
 	 * @return string
 	 *
 	 * @since 2.16
+	 * @see http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getPathInfo()
+	 * @see getBasePath()
 	 */
-	public function getPath()
+	public function getPathInfo()
 	{
-		$path = substr($this->message->getRequestUrl(), strlen($this->rootURL));
-		$path = dirname($path);
+		$path = $this->message->getRequestPath();
+		if ($this->rootPrefix)
+		{
+			$path = substr($path, strlen($this->rootPrefix));
+		}
+		return $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает путь к текущей виртуальной директории относительно корня сайта
+	 *
+	 * Примеры:
+	 *
+	 * - Для "….org/" будет ""
+	 * - Для "….org/dir/" будет "/dir"
+	 * - Для "….org/dir/file.ext" будет "/dir"
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 * @see http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getBasePath()
+	 * @see getPathInfo()
+	 */
+	public function getBasePath()
+	{
+		$path = $this->getPathInfo();
+		if (substr($path, -1) == '/')
+		{
+			$path = substr($path, 0, -1);
+		}
+		else
+		{
+			$path = dirname($path);
+			if ($path == '/')
+			{
+				$path = '';
+			}
+		}
 		return $path;
 	}
 	//-----------------------------------------------------------------------------

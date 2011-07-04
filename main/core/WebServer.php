@@ -58,14 +58,6 @@ class Eresus_WebServer
 	private $documentRoot;
 
 	/**
-	 * Путь от домена до корня сайта
-	 *
-	 * @var string
-	 * @since 2.16
-	 */
-	private $prefix;
-
-	/**
 	 * Возвращает экземпляр класса
 	 *
 	 * @return Eresus_WebServer
@@ -92,25 +84,6 @@ class Eresus_WebServer
 	public function getDocumentRoot()
 	{
 		return $this->documentRoot;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает путь от доменного имени до корня сайта
-	 *
-	 * @return string
-	 *
-	 * @since 2.15
-	 */
-	public function getPrefix()
-	{
-		if (!$this->prefix)
-		{
-			$DOCUMENT_ROOT = $this->getDocumentRoot();
-			$this->prefix = Eresus_Kernel::app()->getRootDir();
-			$this->prefix = substr($this->prefix, strlen($DOCUMENT_ROOT));
-		}
-		return $this->prefix;
 	}
 	//-----------------------------------------------------------------------------
 

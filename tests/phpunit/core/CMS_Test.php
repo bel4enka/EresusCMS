@@ -37,6 +37,8 @@ require_once dirname(__FILE__) . '/../../../main/core/Config.php';
 require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../main/core/Service/Auth.php';
 require_once dirname(__FILE__) . '/../../../main/core/Template.php';
+require_once dirname(__FILE__) . '/../../../main/core/HTTP/Toolkit.php';
+require_once dirname(__FILE__) . '/../../../main/core/DB/ORM.php';
 
 require_once 'vfsStream/vfsStream.php';
 $vfsStream = new ReflectionClass('vfsStream');
@@ -165,6 +167,49 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$rootDir->setValue($cms, vfsStream::url('htdocs'));
 		$initDB->invoke($cms);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS::initSite
+	 */
+	public function test_initSite()
+	{
+		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		{
+			$this->markTestSkipped('PHP 5.3.2 required');
+		}
+		return;
+
+		$initSite = new ReflectionMethod('Eresus_CMS', 'initSite');
+		$initSite->setAccessible(true);
+
+		$p_container = new ReflectionProperty('Eresus_CMS', 'container');
+		$p_container->setAccessible(true);
+
+		$request = $this->getMock('stdClass', array('getHost', 'getRequestUri'));
+		$request->expects($this->any())->method('getHost')->will($this->returnValue('example.org'));
+		$request->expects($this->any())->method('getRequestUri')->
+			will($this->returnValue('http://example.org/site_root/some_path/file.ext'));
+
+		$site = $this->getMock('stdClass', array('setHost', 'setRoot'));
+		$site->expects($this->once())->method('setHost')->with('example.org');
+		$site->expects($this->once())->method('setRoot')->with('/site_root');
+
+		$dbTable = $this->getMock('stdClass', array('findOneByDql'));
+		$dbTable->expects($this->once())->method('findOneByDql')->will($this->returnValue($site));
+
+		$orm = $this->getMock('stdClass', array('getTable'));
+		$orm->expects($this->once())->method('getTable')->will($this->returnValue($dbTable));
+
+		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$p_app->setAccessible(true);
+
+		$cms = new Eresus_CMS();
+		$p_app->setValue('Eresus_Kernel', $cms);
+		$p_container->setValue($cms, array('request' => $request, 'orm' => $orm));
+
+		$initSite->invoke($cms);
 	}
 	//-----------------------------------------------------------------------------
 

@@ -55,7 +55,9 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 				Eresus_Service_Auth::getInstance()->logout();
 				Eresus_HTTP_Response::redirect($this->get('site')->getRootURL() . '/admin/');
 			}
-			//$router = Eresus_Service_Admin_Router::getInstance();
+
+			$controllerName = $req->getFolder();
+
 			return new Eresus_CMS_Response('admin');
 		}
 /*

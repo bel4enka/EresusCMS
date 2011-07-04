@@ -134,10 +134,10 @@ class Eresus_CMS
 			$this->initFS();
 			$this->createFileStructure();
 			$this->initConf();
-			$this->initRequest();
-			$this->initLocale();
 			$this->initDB();
+			$this->initRequest();
 			$this->initSite();
+			$this->initLocale();
 			$this->initSession();
 			$this->initTemplateEngine();
 
@@ -309,8 +309,12 @@ class Eresus_CMS
 	private function initRequest()
 	{
 		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
-		$webServer = Eresus_WebServer::getInstance();
-		$this->container['request'] = new Eresus_CMS_Request($req, $webServer->getPrefix());
+
+		$docRoot = Eresus_WebServer::getInstance()->getDocumentRoot();
+		$prefix = $this->getRootDir();
+		$prefix = substr($prefix, strlen($docRoot));
+
+		$this->container['request'] = new Eresus_CMS_Request($req, $prefix);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -377,6 +381,8 @@ class Eresus_CMS
 		}
 
 		Doctrine_Core::loadModels(dirname(__FILE__) . '/Model');
+
+		$this->container['orm'] = new Eresus_DB_ORM;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -391,7 +397,35 @@ class Eresus_CMS
 	 */
 	private function initSite()
 	{
-		$site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
+		$req = $this->get('request');
+/*
+		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($req->getRequestUri(), array(),
+			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . Eresus_WebServer::getInstance()->getPrefix();
+
+
+ 		$this->prefix = $prefix;
+		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($message->getRequestUrl(), array(),
+			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $prefix;
+
+		$host = preg_replace('/^www\./i', '', $req->getHost());
+
+		$docRoot = Eresus_WebServer::getInstance()->getDocumentRoot();
+		$root = $this->getRootDir();
+		var_dump($root);die;
+		$root = substr($root, strlen($docRoot));
+
+		$site = $this->get('orm')->getTable('Eresus_Model_Site')->
+			findOneByDql('host IN (?, "") AND (root IN (?, "")) ORDER BY host DESC, root DESC', $host,
+			$root);
+		if (!$site)
+		{
+			throw new DomainException('No default site found in database');
+		}
+*/
+		$site = $this->get('orm')->getTable('Eresus_Model_Site')->find(1);
+
+		//$site->setHost($req->getHost()); // не используем $host, чтобы не потерять "www."
+		$site->root = $req->getRootPrefix();
 		$this->container['site'] = $site;
 		Eresus_Template::setGlobalValue('site', $site);
 	}
@@ -429,7 +463,6 @@ class Eresus_CMS
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
 		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($this));
-		Eresus_Template::setGlobalValue('prefix', Eresus_WebServer::getInstance()->getPrefix());
 	}
 	//-----------------------------------------------------------------------------
 

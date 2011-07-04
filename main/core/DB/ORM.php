@@ -32,7 +32,7 @@
  */
 
 /**
- * Набор статических методов для работы с ORM
+ * Интерфейс к статическим метода Doctrine ORM
  *
  * @package DB
  * @since 2.16
@@ -46,9 +46,9 @@ class Eresus_DB_ORM
 	 *
 	 * @return Doctrine_Table  объект таблицы
 	 *
-	 * @since 2.16s
+	 * @since 2.16
 	 */
-	public static function getTable($componentName)
+	public function getTable($componentName)
 	{
 		return Doctrine_Core::getTable($componentName);
 	}

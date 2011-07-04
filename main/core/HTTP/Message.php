@@ -70,30 +70,17 @@ class Eresus_HTTP_Message
 	private $httpVersion;
 
 	/**
-	 * Схема запроса http или https
-	 *
-	 * @var string
-	 */
-	private $scheme;
-
-	/**
-	 * Запрашиваемый хост
-	 *
-	 * @var string
-	 */
-	private $requestHost;
-
-	/**
 	 * Метод запроса
 	 * @var string
 	 */
 	private $requestMethod;
 
 	/**
-	 * URL запроса
-	 * @var string
+	 * Компоненты URI запроса
+	 * @var array
+	 * @since 2.16
 	 */
-	private $requestURL;
+	private $requestUri = array();
 
 	/**
 	 * Код ответа
@@ -176,16 +163,6 @@ class Eresus_HTTP_Message
 			$message->setRequestMethod('GET');
 		}
 
-		if (isset($_SERVER['HTTP_HOST']))
-		{
-			$host = $_SERVER['HTTP_HOST'];
-		}
-		else
-		{
-			$host = 'localhost';
-		}
-		$host = Eresus_Config::get('eresus.cms.http.host', $host);
-
 		$scheme = 'http';
 		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != '' && $_SERVER['HTTPS'] != 'off')
 		{
@@ -212,7 +189,7 @@ class Eresus_HTTP_Message
 			$uri = '/';
 		}
 
-		$message->setRequestUrl($scheme . '://' . $host . $uri);
+		$message->setRequestUri($uri);
 
 		$message->headers = Eresus_WebServer::getInstance()->getRequestHeaders();
 
@@ -289,7 +266,7 @@ class Eresus_HTTP_Message
 			return false;
 		}
 
-		$this->scheme = $scheme;
+		$this->requestUri['scheme'] = $scheme;
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -301,7 +278,7 @@ class Eresus_HTTP_Message
 	 */
 	public function getScheme()
 	{
-		return $this->scheme;
+		return $this->requestUri['scheme'];
 	}
 	//-----------------------------------------------------------------------------
 
@@ -313,7 +290,7 @@ class Eresus_HTTP_Message
 	 */
 	public function setRequestHost($host)
 	{
-		$this->requestHost = $host;
+		$this->requestUri['host'] = $host;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -324,7 +301,7 @@ class Eresus_HTTP_Message
 	 */
 	public function getRequestHost()
 	{
-		return $this->requestHost;
+		return $this->requestUri['host'];
 	}
 	//-----------------------------------------------------------------------------
 
@@ -366,9 +343,28 @@ class Eresus_HTTP_Message
 	public function getRequestMethod()
 	{
 		if ($this->getType() !== self::TYPE_REQUEST)
+		{
 			return false;
+		}
 
 		return $this->requestMethod;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает путь к запрошенному файлу
+	 *
+	 * @return string  имя файла при успехе или false если тип сообщения не
+	 *                 Eresus_Http_Message::TYPE_REQUEST.
+	 */
+	public function getRequestPath()
+	{
+		if ($this->getType() !== self::TYPE_REQUEST)
+		{
+			return false;
+		}
+
+		return isset($this->requestUri['path']) ? $this->requestUri['path'] : '/';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -377,32 +373,37 @@ class Eresus_HTTP_Message
 	 *
 	 * @return string|false  запрошенный URL или false если тип сообщения не TYPE_REQUEST
 	 */
-	public function getRequestUrl()
+	public function getRequestUri()
 	{
 		if ($this->getType() !== self::TYPE_REQUEST)
 		{
 			return false;
 		}
 
-		return $this->requestURL;
+		return Eresus_HTTP_Toolkit::buildURL('', $this->requestUri);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Устанавливает URL запроса
+	 * Устанавливает URI запроса
 	 *
-	 * @param string $url
+	 * @param string $uri абсолютный или относительный URI
 	 *
 	 * @return bool  true в случае успеха или false если тип сообщения не TYPE_REQUEST
 	 */
-	public function setRequestUrl($url)
+	public function setRequestUri($uri)
 	{
+		if (!is_string($uri))
+		{
+			throw new InvalidArgumentException('String expected but ' . get_type($uri) . 'given');
+		}
 		if ($this->getType() !== self::TYPE_REQUEST)
 		{
 			return false;
 		}
 
-		$this->requestURL = $url;
+		$parts = parse_url($uri);
+		$this->requestUri = array_merge($this->requestUri, $parts);
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -523,7 +524,7 @@ class Eresus_HTTP_Message
 		switch ($this->getType())
 		{
 			case self::TYPE_RESPONSE:
-
+				// FIXME
 			break;
 		}
 	}
