@@ -62,6 +62,13 @@ class Eresus_CMS_Request
 	protected $rootURL;
 
 	/**
+	 * Очередь папок-параметров
+	 *
+	 * @var array|null
+	 */
+	protected $folders = null;
+
+	/**
 	 * Создаёт запрос на основе окружения приложения
 	 *
 	 * @param Eresus_HTTP_Message $message  запрос HTTP
@@ -234,6 +241,45 @@ class Eresus_CMS_Request
 			}
 		}
 		return $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает текущую папку из запроса
+	 *
+	 * Eresus_CMS_Request рассматривает последовательность папок в запросе как очередь параметров.
+	 * Механизм работы с ними, похож на механизм работы с массивами при помощи reset(), next(),
+	 * current() и т. д.
+	 *
+	 * Этот метод ялвяется аналогом current() и возвращает текущую папку в очереди.
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getFolder()
+	{
+		if (is_null($this->folders))
+		{
+			$this->splitFolders();
+		}
+		return current($this->folders);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Разбивает папки на массив
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	protected function splitFolders()
+	{
+		$this->folders = explode('/', $this->getBasePath());
+		// Т. к. basePath начинается со слеша, перый элемент массива всегда пустой. Удаляем его.
+		array_shift($this->folders);
+		reset($this->folders);
 	}
 	//-----------------------------------------------------------------------------
 }
