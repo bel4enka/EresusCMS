@@ -122,9 +122,9 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_CMS_Request::getFolder
+	 * @covers Eresus_CMS_Request::getParam
 	 */
-	public function test_getFolder()
+	public function test_getParam()
 	{
 		$msg = new Eresus_HTTP_Message();
 		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
@@ -132,21 +132,21 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 		$msg->setRequestUri('http://example.org/site_root/dir1/dir2/file.ext');
 		$req = new Eresus_CMS_Request($msg, '/site_root');
 
-		$this->assertEquals('dir1', $req->getFolder());
-		$this->assertEquals('dir1', $req->getFolder());
+		$this->assertEquals('dir1', $req->getParam());
+		$this->assertEquals('dir1', $req->getParam());
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_CMS_Request::splitFolders
+	 * @covers Eresus_CMS_Request::splitParams
 	 */
-	public function test_splitFolders()
+	public function test_splitParams()
 	{
-		$m_splitFolders = new ReflectionMethod('Eresus_CMS_Request', 'splitFolders');
-		$m_splitFolders->setAccessible(true);
+		$m_splitParams = new ReflectionMethod('Eresus_CMS_Request', 'splitParams');
+		$m_splitParams->setAccessible(true);
 
-		$p_folders = new ReflectionProperty('Eresus_CMS_Request', 'folders');
-		$p_folders->setAccessible(true);
+		$p_params = new ReflectionProperty('Eresus_CMS_Request', 'params');
+		$p_params->setAccessible(true);
 
 		$msg = new Eresus_HTTP_Message();
 		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
@@ -154,14 +154,14 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 		$msg->setRequestUri('http://example.org/site_root/dir1/dir2/file.ext');
 		$req = new Eresus_CMS_Request($msg, '/site_root');
 
-		$m_splitFolders->invoke($req);
-		$this->assertEquals(array('dir1', 'dir2'), $p_folders->getValue($req));
+		$m_splitParams->invoke($req);
+		$this->assertEquals(array('dir1', 'dir2'), $p_params->getValue($req));
 
 		$msg->setRequestUri('http://example.org/site_root/');
 		$req = new Eresus_CMS_Request($msg, '/site_root');
 
-		$m_splitFolders->invoke($req);
-		$this->assertEquals(array(), $p_folders->getValue($req));
+		$m_splitParams->invoke($req);
+		$this->assertEquals(array(), $p_params->getValue($req));
 	}
 	//-----------------------------------------------------------------------------
 

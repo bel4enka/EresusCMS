@@ -40,6 +40,13 @@
 class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 {
 	/**
+	 * Тема оформления
+	 *
+	 * @var Eresus_UI_Admin_Theme
+	 */
+	private $theme;
+
+	/**
 	 * @see Eresus_CMS_UI::process()
 	 */
 	public function process()
@@ -56,10 +63,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 				Eresus_HTTP_Response::redirect($this->get('site')->getRootURL() . '/admin/');
 			}
 
-			$req = $this->get('request');
-			$controllerName = $req->getFolder();
-
-			return new Eresus_CMS_Response('admin');
+			return $this->main();
 		}
 /*
 		$request = $this->get('request');
@@ -84,6 +88,44 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		}
 
 		return $response;*/
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Основной метод интерфейса
+	 *
+	 * @return Eresus_CMS_Response
+	 *
+	 * @since 2.16
+	 */
+	private function main()
+	{
+		$this->theme = new Eresus_UI_Admin_Theme();
+		Eresus_Template::setGlobalValue('theme', $this->theme);
+
+		$req = $this->get('request');
+		$controllerName = $req->getParam();
+		$controllerClass = 'Eresus_Controller_Admin_' . $controllerName;
+
+		$ts = Eresus_Service_Templates::getInstance();
+
+		try
+		{
+			if (!Eresus_Kernel::classExists($controllerClass))
+			{
+				throw new Eresus_CMS_Exception_NotFound;
+			}
+
+			$controller = new $controllerClass;
+			$contents = $controller->execute();
+		}
+		catch (Eresus_CMS_Exception_NotFound $e)
+		{
+			//$contents
+		}
+		$tmpl = $ts->get('page.default', 'core');
+		$html = $tmpl->compile(array('content' => $contents));
+		return new Eresus_CMS_Response($html);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -130,7 +172,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	 * @param string $errorMessage  сообщение об ошибке
 	 * @return string
 	 */
-	public function getAuthScreen($errorMessage = '')
+	private function getAuthScreen($errorMessage = '')
 	{
 		$req = $this->get('request');
 

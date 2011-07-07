@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+
+<html lang="{i18n('en', 'locale')}">
+<head>
+	<meta charset="utf-8">
+	<title>{i18n('Not Found', 'admin')}</title>
+	<link rel="stylesheet" href="{$globals.site.root}/{$globals.theme->getResource('theme.css')}">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <html>
@@ -68,14 +75,14 @@
 		<div class="cms-content" id="content">
 			<noscript>
 				<div class="ui-state-error ui-panel">
-					В вашем браузере не работает JavaScript. Без JavaScript работа с панелью управления
-					сайтом невозможна, и может привести к потере информации!
+					Р’ РІР°С€РµРј Р±СЂР°СѓР·РµСЂРµ РЅРµ СЂР°Р±РѕС‚Р°РµС‚ JavaScript. Р‘РµР· JavaScript СЂР°Р±РѕС‚Р° СЃ РїР°РЅРµР»СЊСЋ СѓРїСЂР°РІР»РµРЅРёСЏ
+					СЃР°Р№С‚РѕРј РЅРµРІРѕР·РјРѕР¶РЅР°, Рё РјРѕР¶РµС‚ РїСЂРёРІРµСЃС‚Рё Рє РїРѕС‚РµСЂРµ РёРЅС„РѕСЂРјР°С†РёРё!
 				</div>
 			</noscript>
 			{if $Eresus->conf.debug.enable}
 			<div class="ui-state-error ui-panel">
-				Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
-				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
+				Р’РЅРёРјР°РЅРёРµ! Р’РєР»СЋС‡РµРЅ СЂРµР¶РёРј РѕС‚Р»Р°РґРєРё. РќР° РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕРј СЃР°Р№С‚Рµ СЌС‚Рѕ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅРµР±РµР·РѕРїР°СЃРЅРѕ.
+				РћС‚РєР»СЋС‡РёС‚СЊ СЂРµР¶РёРј РѕС‚Р»Р°РґРєРё РјРѕР¶РЅРѕ РІ С„Р°Р№Р»Рµ <code>cfg/main.php</code>.
 			</div>
 			{/if}
 			{$content}

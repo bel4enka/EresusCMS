@@ -71,7 +71,9 @@ class Eresus_UI_Admin_Theme
 	public function __construct($name = null)
 	{
 		if ($name)
+		{
 			$this->name = $name;
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -128,5 +130,3 @@ class Eresus_UI_Admin_Theme
 	}
 	//-----------------------------------------------------------------------------
 }
-
-

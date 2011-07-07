@@ -254,7 +254,8 @@ class Eresus_Service_Auth implements Eresus_CMS_Service
 		$value = serialize($value);
 		//$site = Eresus_Kernel::app()->get('site');
 		// TODO Куки должен устанавливаться на корень сайта и это не обязательно "/"
-		setcookie('eresus_auth', $value, time() + 2592000, '/');
+		$req = Eresus_Kernel::app()->get('request');
+		setcookie('eresus_auth', $value, time() + 2592000, $req->getRootPrefix());
 	}
 	//-----------------------------------------------------------------------------
 

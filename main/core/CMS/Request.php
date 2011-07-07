@@ -66,7 +66,7 @@ class Eresus_CMS_Request
 	 *
 	 * @var array|null
 	 */
-	protected $folders = null;
+	protected $params = null;
 
 	/**
 	 * Создаёт запрос на основе окружения приложения
@@ -245,41 +245,41 @@ class Eresus_CMS_Request
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает текущую папку из запроса
+	 * Возвращает текущий параметр из запроса
 	 *
 	 * Eresus_CMS_Request рассматривает последовательность папок в запросе как очередь параметров.
 	 * Механизм работы с ними, похож на механизм работы с массивами при помощи reset(), next(),
 	 * current() и т. д.
 	 *
-	 * Этот метод ялвяется аналогом current() и возвращает текущую папку в очереди.
+	 * Этот метод ялвяется аналогом current() и возвращает текущий параметр в очереди.
 	 *
 	 * @return string
 	 *
 	 * @since 2.16
 	 */
-	public function getFolder()
+	public function getParam()
 	{
-		if (is_null($this->folders))
+		if (is_null($this->params))
 		{
-			$this->splitFolders();
+			$this->splitParams();
 		}
-		return current($this->folders);
+		return current($this->params);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Разбивает папки на массив
+	 * Разбивает папки на массив параметров
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	protected function splitFolders()
+	protected function splitParams()
 	{
-		$this->folders = explode('/', $this->getBasePath());
+		$this->params = explode('/', $this->getBasePath());
 		// Т. к. basePath начинается со слеша, перый элемент массива всегда пустой. Удаляем его.
-		array_shift($this->folders);
-		reset($this->folders);
+		array_shift($this->params);
+		reset($this->params);
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -26,8 +26,6 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
- *
  * @cssdoc version 1.0-pre
  *
  * $Id$
@@ -46,7 +44,7 @@ html
 {
 	font-family: Verdana, Helvetica, sans-serif;
 	font-size: 0.8125em; /* 13px для большинства браузеров */
-	line-height:1.54em;
+	line-height: 1.54em;
 }
 
 /**
@@ -55,7 +53,7 @@ html
 body
 {
 	color: #000;
-	background-color: #555;
+	background: #f8f8f8;
 }
 
 
