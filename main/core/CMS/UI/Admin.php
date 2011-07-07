@@ -103,11 +103,15 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		$this->theme = new Eresus_UI_Admin_Theme();
 		Eresus_Template::setGlobalValue('theme', $this->theme);
 
-		$req = $this->get('request');
-		$controllerName = $req->getParam();
-		$controllerClass = 'Eresus_Controller_Admin_' . $controllerName;
+		$doc = new Eresus_HTML_Document();
+		$doc->setTemplate('page.default', 'core');
+		Eresus_Template::setGlobalValue('document', $doc);
 
 		$ts = Eresus_Service_Templates::getInstance();
+		$req = $this->get('request');
+
+		$controllerName = $req->getParam();
+		$controllerClass = 'Eresus_Controller_Admin_' . $controllerName;
 
 		try
 		{
@@ -117,15 +121,14 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 			}
 
 			$controller = new $controllerClass;
-			$contents = $controller->execute();
+			$contents = $controller->execute($doc);
 		}
 		catch (Eresus_CMS_Exception_NotFound $e)
 		{
-			//$contents
+			$tmpl = $ts->get('errors/NotFound', 'core');
+			$doc->setVar('content', $tmpl->compile(array('error' => $e)));
 		}
-		$tmpl = $ts->get('page.default', 'core');
-		$html = $tmpl->compile(array('content' => $contents));
-		return new Eresus_CMS_Response($html);
+		return new Eresus_CMS_Response($doc->compile());
 	}
 	//-----------------------------------------------------------------------------
 
