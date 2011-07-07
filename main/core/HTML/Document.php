@@ -28,7 +28,7 @@
  *
  * @package HTML
  *
- * $Id: Toolkit.php 1664 2011-06-30 16:40:47Z mk $
+ * $Id$
  */
 
 

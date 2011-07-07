@@ -26,7 +26,7 @@
  *
  * @package Service
  *
- * $Id: Router.php 1628 2011-05-19 18:36:14Z mk $
+ * $Id$
  */
 
 /**

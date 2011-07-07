@@ -28,7 +28,7 @@
  *
  * @package CMS
  *
- * $Id: Service.php 1610 2011-05-18 09:58:04Z mk $
+ * $Id$
  */
 
 /**

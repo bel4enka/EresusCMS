@@ -28,7 +28,7 @@
  *
  * @package CMS
  *
- * $Id: ContentPlugin.php 1653 2011-06-16 06:53:17Z mk $
+ * $Id$
  */
 
 

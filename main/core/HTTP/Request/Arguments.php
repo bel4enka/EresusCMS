@@ -28,7 +28,7 @@
  *
  * @package HTTP
  *
- * $Id: Response.php 1652 2011-06-16 06:31:36Z mk $
+ * $Id$
  */
 
 /**
