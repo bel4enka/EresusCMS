@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Kernel
+ * @package Eresus
  *
  * $Id$
  */
@@ -35,7 +35,7 @@
 /**
  * Исключительная ситуация, не связанная с ошибкой
  *
- * @package Kernel
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_SuccessException extends Exception {}
@@ -44,20 +44,23 @@ class Eresus_SuccessException extends Exception {}
 /**
  * Исключительная ситуация, не связанная с ошибкой, требующая завершения приложения
  *
- * @package Kernel
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_ExitException extends Eresus_SuccessException {}
 
 
 /**
- * Ядро
+ * Ядро CMS
  *
- * Ядро содержит в себе:
- * 1. основные средства абстрагирования;
- * 2. минимальный набор функционала, необходимый для обработки большинства запросов
+ * Основные функции ядра
+ * 1. запуск {@link Eresus_CMS основного класса приложения};
+ * 2. перехват ошибок и исключений;
+ * 3. {@link autoload() автозагрузка классов};
+ * 4. получение основных сведений о системе.
  *
- * @package Kernel
+ * @package Eresus
+ * @since 2.16
  */
 class Eresus_Kernel
 {
@@ -100,6 +103,15 @@ class Eresus_Kernel
 
 	/**
 	 * Инициализация ядра
+	 *
+	 * Этот метод:
+	 * 1. устанавливает временну́ю зону;
+	 * 2. регистрирует {@link autoload() автозагрузчик классов};
+	 * 3. регистрирует {@link initExceptionHandling() перехватчики ошибок}.
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
 	 */
 	// @codeCoverageIgnoreStart
 	static public function init()
@@ -126,6 +138,17 @@ class Eresus_Kernel
 
 	/**
 	 * Инициализирует обработчики ошибок
+	 *
+	 * Этот метод:
+	 * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
+	 * 2. отключает HTML-оформление стандартных сообщенй об ошибках;
+	 * 3. регистрирует {@link errorHandler()};
+	 * 4. регистрирует {@link fatalErrorHandler()}.
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @uses Eresus_Logger::log()
 	 */
 	static private function initExceptionHandling()
 	{
@@ -169,13 +192,20 @@ class Eresus_Kernel
 	/**
 	 * Обработчик ошибок
 	 *
-	 * @param int    $errno       тип ошибки
-	 * @param string $errstr      описание ошибки
-	 * @param string $errfile     имя файла в котором произошла ошибка
-	 * @param int    $errline     строка где произошла ошибка
-	 * @param array  $errcontext  контекст ошибки
+	 * Обработчик ошибок, устанавливаемый через {@link set_error_handler() set_error_handler()} в
+	 * методе {@link initExceptionHandling()}. Все ошибки важнее E_NOTICE превращаются в исключения
+	 * {@link http://php.net/ErrorException ErrorException}, остальные передаются
+	 * {@link Eresus_Logger::log()}.
+	 *
+	 * @param int    $errno    тип ошибки
+	 * @param string $errstr   описание ошибки
+	 * @param string $errfile  имя файла, в котором произошла ошибка
+	 * @param int    $errline  строка, где произошла ошибка
 	 *
 	 * @return bool
+	 *
+	 * @since 2.16
+	 * @uses Eresus_Logger::log()
 	 */
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
 	{
@@ -229,9 +259,20 @@ class Eresus_Kernel
 	/**
 	 * Обработчик фатальных ошибок
 	 *
-	 * Замечание по производительности: этот метод освобождает в начале и выделет в конце своей работы
-	 * буфер в памяти для отлова ошибок переполнения памяти. Эти операции затормаживают вывод примерно
-	 * на 1-2%.
+	 * Этот обработчик пытается перехватывать сообщения о фатальных ошибках, недоступных при
+	 * использовании {@link set_error_handler() set_error_handler()}. Это делается через обработчик
+	 * {@link ob_start() ob_start()}, устанавливаемый в методе {@link initExceptionHandling()}.
+	 *
+	 * <i>Замечание по производительности</i>: этот метод освобождает в начале и выделет в конце
+	 * своей работы буфер в памяти для отлова ошибок переполнения памяти. Эти операции затормаживают
+	 * вывод примерно на 1-2%.
+	 *
+	 * @param string $output  содержимое буфера вывода
+	 *
+	 * @return string|false
+	 *
+	 * @since 2.16
+	 * @uses Eresus_Logger::log
 	 */
 	public static function fatalErrorHandler($output)
 	{
@@ -271,22 +312,28 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Автозагрузка классов
+	 * Автозагрузчик классов
 	 *
-	 * Работает только для классов "Eresus_*". Все символы в имени класса "_" заменяются на
-	 * разделитель директорий и добавляется префикс ".php".
+	 * Работает только для классов «Eresus_*». Из имени класса удаляется префикс «Eresus_», все
+	 * символы в имени класса «_» заменяются на разделитель директорий, добавляется суффикс «.php».
+	 *
+	 * Таким образом класс «Eresus_HTTP_Request» будет искаться в файле «core/HTTP/Request.php».
+	 *
+	 * Устанавливается через {@link spl_autoload_register() spl_autoload_register()} в методе
+	 * {@link init()}.
 	 *
 	 * @param string $className
+	 *
+	 * @throws LogicException если класс не найден
 	 *
 	 * @return bool
 	 *
 	 * @since 2.16
+	 * @uses classExists()
 	 */
 	public static function autoload($className)
 	{
-		if (stripos($className, 'Eresus_') !== 0 ||
-			class_exists($className, false) ||
-			interface_exists($className, false))
+		if (stripos($className, 'Eresus_') !== 0 || self::classExists($className))
 		{
 			return false;
 		}
@@ -297,13 +344,14 @@ class Eresus_Kernel
 		if (file_exists($fileName))
 		{
 			include $fileName;
+			return self::classExists($className);
 		}
 		elseif (substr($className, -5) !== 'Table')
 		{
 			throw new LogicException('Class "' . $className . '" not found');
 		}
 
-		return true;
+		return false;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -347,7 +395,9 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает true, если используется CLI SAPI
+	 * Возвращает true, если используется
+	 * {@link http://php.net/manual/en/features.commandline.php CLI}
+	 * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI}
 	 *
 	 * @return bool
 	 *
@@ -367,7 +417,8 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает true, если используется CGI SAPI
+	 * Возвращает true, если используется CGI
+	 * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI}
 	 *
 	 * @return bool
 	 *
@@ -380,7 +431,8 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает true, если используется SAPI модуля веб-сервера
+	 * Возвращает true, если используется
+	 * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI} модуля веб-сервера
 	 *
 	 * @return bool
 	 *
@@ -395,10 +447,11 @@ class Eresus_Kernel
 	/**
 	 * Проверяет, находится ли путь в списке open_basedir
 	 *
-	 * Если опция open_basedir не установлена, всегда возвращает true.
+	 * Если опция {@link http://php.net/open_basedir open_basedir} не установлена, всегда возвращает
+	 * true.
 	 *
-	 * @param string $path  Путь для проверки
-	 * @return bool
+	 * @param string $path  проверяемый путь
+	 * @return bool true если $path находится среди разрешений open_basedir
 	 *
 	 * @since 2.16
 	 */
@@ -435,12 +488,12 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Проверяет, загружен ли указанный класс или интерфейс
+	 * Проверяет, объявлен ли указанный класс или интерфейс
 	 *
-	 * Этот метод не инициирует автозагрузку
+	 * Этот метод не инициирует автозагрузку.
 	 *
-	 * @param string $name  Имя класса или интерфейса
-	 * @return bool
+	 * @param string $name  имя класса или интерфейса
+	 * @return bool true если класс или интерфейс $name объявлен
 	 *
 	 * @since 2.16
 	 */
@@ -453,12 +506,18 @@ class Eresus_Kernel
 	/**
 	 * Создаёт экземпляр приложения и выполняет его
 	 *
-	 * Класс приложения должен содержать публичный метод main().
+	 * Класс приложения должен содержать публичный метод main(), который будет вызван после создания
+	 * экземпляра класса.
 	 *
-	 * @param string $class  Имя класса приложения.
-	 * @return int  Код завершения (0 — успешное завершение)
+	 * @param string $class  имя класса приложения
 	 *
+	 * @throws LogicException если класс $class не найден или не содержит метода «main()»
+	 *
+	 * @return int  код завершения (0 — успешное завершение)
+	 *
+	 * @since 2.16
 	 * @see $app, app()
+	 * @uses Eresus_Logger::log()
 	 */
 	static public function exec($class)
 	{
@@ -499,11 +558,18 @@ class Eresus_Kernel
 	/**
 	 * Возвращает выполняемое приложение или null, если приложение не запущено
 	 *
-	 * @return EresusApplication
+	 * Пример: получение корневой директории приложения.
 	 *
-	 * @see $app, exec(), EresusApplication
+	 * <code>
+	 * $appRootDir = Eresus_Kernel::app()->getRootDir();
+	 * </code>
+	 *
+	 * @return Eresus_CMS  выполняемое приложение
+	 *
+	 * @see $app, exec()
+	 * @since 2.16
 	 */
-	static public function app()
+	public static function app()
 	{
 		return self::$app;
 	}
