@@ -220,21 +220,6 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_Kernel::inOpenBaseDir
-	 */
-	public function test_inOpenBaseDir()
-	{
-		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir/file', false), 'Test 1');
-		$cwd = getcwd();
-		$this->assertFalse(Eresus_Kernel::inOpenBaseDir('/dir/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 2');
-		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir1/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 3');
-		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir2/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 4');
-		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('/dir3/file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 5');
-		$this->assertTrue(Eresus_Kernel::inOpenBaseDir('./file', '/dir1:/dir2:/dir3:' . $cwd), 'Test 6');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * @covers Eresus_Kernel::classExists
 	 */
 	public function test_classExists()
