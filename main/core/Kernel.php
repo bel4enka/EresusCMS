@@ -306,7 +306,7 @@ class Eresus_Kernel
 		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
 			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
 
-		// возвращаем fase для вывода буфера
+		// возвращаем false для вывода буфера
 		return false;
 	}
 	//-----------------------------------------------------------------------------
@@ -346,6 +346,11 @@ class Eresus_Kernel
 			include $fileName;
 			return self::classExists($className);
 		}
+		/*
+		 * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
+		 * Отсутствие такого класса не является ошибкой. Отсутствие любого другого класса расцениваем
+		 * как логическую ошибку.
+		 */
 		elseif (substr($className, -5) !== 'Table')
 		{
 			throw new LogicException('Class "' . $className . '" not found');
@@ -369,7 +374,7 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает true если PHP запущен на Microsoft Windows
+	 * Возвращает true если PHP запущен на Microsoft® Windows™
 	 *
 	 * @return bool
 	 *
@@ -457,7 +462,7 @@ class Eresus_Kernel
 	 */
 	public static function inOpenBaseDir($path)
 	{
-		// The second argument can be passed for testing purpose
+		// Вторым аргументом в целях тестирования можно переопределить значение open_basedir
 		$open_basedir = func_num_args() > 1 ? func_get_arg(1) : ini_get('open_basedir');
 
 		if ($open_basedir == false)
