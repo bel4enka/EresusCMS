@@ -87,13 +87,6 @@ class Eresus_Kernel
 	static private $app = null;
 
 	/**
-	 * Список директорий open_basedir
-	 *
-	 * @var array
-	 */
-	private static $open_basedir;
-
-	/**
 	 * Для тестирования
 	 *
 	 * @var bool
@@ -162,7 +155,7 @@ class Eresus_Kernel
 		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
 
-		//set_exception_handler('Core::handleException');
+		//set_exception_handler('Eresus_Kernel::handleException');
 		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
 
 		/*
@@ -281,7 +274,7 @@ class Eresus_Kernel
 		if (preg_match('/(parse|fatal) error:.*in .* on line/Ui', $output, $m))
 		{
 			$GLOBALS['ERESUS_CORE_FATAL_ERROR_HANDLER'] = true;
-			switch(strtolower($m[1]))
+			switch (strtolower($m[1]))
 			{
 				case 'fatal':
 					$priority = LOG_CRIT;
@@ -450,49 +443,6 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Проверяет, находится ли путь в списке open_basedir
-	 *
-	 * Если опция {@link http://php.net/open_basedir open_basedir} не установлена, всегда возвращает
-	 * true.
-	 *
-	 * @param string $path  проверяемый путь
-	 * @return bool true если $path находится среди разрешений open_basedir
-	 *
-	 * @since 2.16
-	 */
-	public static function inOpenBaseDir($path)
-	{
-		// Вторым аргументом в целях тестирования можно переопределить значение open_basedir
-		$open_basedir = func_num_args() > 1 ? func_get_arg(1) : ini_get('open_basedir');
-
-		if ($open_basedir == false)
-		{
-			return true;
-		}
-
-		if (! self::$open_basedir)
-		{
-			self::$open_basedir = explode(PATH_SEPARATOR, $open_basedir);
-		}
-
-		if (substr($path, 0, 1) == '.')
-		{
-			$path = getcwd() . substr($path, 1);
-		}
-
-		foreach (self::$open_basedir as $dir)
-		{
-			if (substr($path, 0, strlen($dir)) == $dir)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Проверяет, объявлен ли указанный класс или интерфейс
 	 *
 	 * Этот метод не инициирует автозагрузку.
@@ -551,8 +501,7 @@ class Eresus_Kernel
 		}
 		catch (Exception $e)
 		{
-			//FIXME Заменить на self::
-			//Core::handleException($e);
+			//self::handleException($e);
 			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
 		}
 		self::$app = null;
