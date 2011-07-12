@@ -152,6 +152,34 @@
 
 	<!--
 	=====================================================================
+		Создание документации
+	=====================================================================
+  -->
+  <target name="docs" description="Generates API documentation">
+
+		<delete dir="${docs.dir}" includeemptydirs="true" failonerror="true" />
+
+		<phpdoc
+			title="Eresus CMS API"
+			destdir="${docs.dir}"
+			sourcecode="no"
+			parseprivate="true"
+			output="${docs.converter}">
+			<fileset dir="main">
+				<include name="core/**/*.php" />
+				<include name="3rd-ext/**/*.php" />
+			</fileset>
+			<projdocfileset dir=".">
+				<include name="README" />
+				<include name="INSTALL" />
+				<include name="CHANGELOG" />
+			</projdocfileset>
+		</phpdoc>
+
+  </target>
+
+	<!--
+	=====================================================================
 		Сборка проекта
 	=====================================================================
 	-->
