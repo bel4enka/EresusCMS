@@ -2,11 +2,9 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
  * Реестр настроек
  *
- * @copyright 2004, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
@@ -26,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Core
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,8 +32,23 @@
 /**
  * Реестр настроек
  *
- * @package Core
+ * Реестр настроек — это глобально доступное хранилище именованных значений произвольного типа.
+ * В нём хранятся настройки CMS.
+ *
+ * Некоторые ключи:
+ *
+ * - <b>eresus.cms.multiple</b>: bool — вкл. или выкл. режим обслуживания нескольких сайтов
+ * - <b>eresus.cms.dsn</b>: string — DSN для подключения к БД
+ * - <b>eresus.cms.dsn.prefix</b>: string — префикс имён таблиц БД
+ * - <b>eresus.cms.locale</b>: string — код локали «ru_RU», «en_US» и т. д.
+ * - <b>eresus.cms.timezone</b>: string — временна́я зона
+ * - <b>eresus.cms.session.timeout</b>: int — тайм-аут сессии
+ * - <b>eresus.cms.debug</b>: bool — вкл./выкл. режима отладки
+ * - <b>eresus.cms.log.level</b>: int — уровень детализации журнала
+ *
+ * @package Eresus
  * @since 2.16
+ * @link http://martinfowler.com/eaaCatalog/registry.html Registry pattern
  */
 class Eresus_Config
 {
@@ -49,14 +62,20 @@ class Eresus_Config
 	/**
 	 * Записывает значение в реестр
 	 *
-	 * @param string $key   Ключ
-	 * @param mixed $value  Значение
+	 * <b>Внимание!</b> Следующие префиксы зарезервированы для использования CMS. Авторам расширений
+	 * запрещено использовать их для создания собственных ключей:
+	 *
+	 * - eresus.
+	 * - php.
+	 * - system.
+	 *
+	 * @param string $key    ключ
+	 * @param mixed  $value  значение
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
-	 * @see get, drop
-	 * @link http://martinfowler.com/eaaCatalog/registry.html Registry pattern
+	 * @see get(), drop()
 	 */
 	public static function set($key, $value)
 	{
@@ -67,12 +86,13 @@ class Eresus_Config
 	/**
 	 * Возвращает значение из реестра
 	 *
-	 * @param string $key      Ключ
-	 * @param mixed  $default  Опциональне значение по умолчанию, если ключа нет в реестре
+	 * @param string $key      ключ
+	 * @param mixed  $default  опциональне значение по умолчанию, если ключа нет в реестре
 	 *
-	 * @return mixed  Значение ключа, $default или null
+	 * @return mixed  значение ключа, $default или null
 	 *
-	 * @see set, drop
+	 * @since 2.16
+	 * @see set(), drop()
 	 */
 	static public function get($key, $default = null)
 	{
@@ -87,9 +107,10 @@ class Eresus_Config
 	/**
 	 * Удаляет ключ из реестра
 	 *
-	 * @param string $key
+	 * @param string $key  имя ключа
 	 *
-	 * @see get, set
+	 * @since 2.16
+	 * @see get(), set()
 	 */
 	static public function drop($key)
 	{
