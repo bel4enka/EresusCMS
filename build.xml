@@ -163,7 +163,7 @@
 			title="Eresus CMS API"
 			destdir="${docs.dir}"
 			sourcecode="no"
-			parseprivate="true"
+			parseprivate="false"
 			output="${docs.converter}">
 			<fileset dir="main">
 				<include name="core/**/*.php" />
