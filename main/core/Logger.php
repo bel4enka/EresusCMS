@@ -2,13 +2,11 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
  * Средство журналирования
  *
- * @copyright 2004, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Core
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +32,21 @@
 /**
  * Средство журналирования
  *
- * @package Core
+ * Для примеров использования см. {@link log()} и {@link exception()}
+ *
+ * Сообщения записываются в журнал при помощи функции
+ * {@link http://php.net/manual/en/function.error-log.php error_log()}. Если эта функция возвращает
+ * false, производится попытка записать сообщение через вызов {@link syslog() syslog()}. Если и
+ * syslog() вернёт false, то будет выведено сообщение об ошибке в STDERR.
+ *
+ * <b>Настройка журнала</b>
+ *
+ * Расположение журнала задаётся переменной {@link error_log error_log}.
+ *
+ * Минимальный порог важности сообщения, при котором оно будет записано в журнал задаётся
+ * параметром «eresus.cms.log.level» через {@link Eresus_Config::set()}. По умолчанию это LOG_ERR.
+ *
+ * @package Eresus
  *
  * @since 2.16
  */
@@ -59,11 +71,85 @@ class Eresus_Logger
 	/**
 	 * Записывет сообщение в журнал
 	 *
-	 * По умолчанию записываются только сообщения с уровнем LOG_ERR или более важные.
-	 * Это можно изменить при помощи настройки
-	 * {@link Eresus_Config}::set('eresus.cms.log.level', LOG_XXX)
+	 * <b>Уровни важности сообщений</b> (в порядке уменьшения):
+	 * - LOG_EMERG — использование системы невозможно
+	 * - LOG_ALERT — требуется немедленное вмешательство
+	 * - LOG_CRIT — критическая ситуация
+	 * - LOG_ERR — ошибка
+	 * - LOG_WARNING — предупреждение
+	 * - LOG_NOTICE — замечание
+	 * - LOG_INFO — информационное сообщение
+	 * - LOG_DEBUG — отладочное сообщение
 	 *
-	 * Имя файла журнала задаётся параметрами PHP error_log и log_errors.
+	 * <i>В Microsoft™ Windows® значение констант LOG_EMERG и LOG_CRIT совпадает с LOG_ALERT, а
+	 * констант LOG_NOTICE и LOG_DEBUG с LOG_INFO. Значения LOG_ERR соответствует LOG_WARNING в Linux,
+	 * а LOG_WARNING соответствует LOG_NOTICE.</i>
+	 *
+	 * <b>Примеры</b>
+	 *
+	 * Пример 1:
+	 *
+	 * <code>
+	 * function my_function($filename)
+	 * {
+	 *   Eresus_Logger::log(__FUNCTION__, LOG_DEBUG, 'Reading from "%s"', $filename);
+	 * }
+	 *
+	 * my_function('test.txt');
+	 * </code>
+	 *
+	 * Запишет в лог примерно следующее:
+	 *
+	 * <samp>
+	 * [02-06-09 22:26:04] [debug] my_function: Reading from "test.txt"
+	 * </samp>
+	 *
+	 * Пример 2
+	 *
+	 * <code>
+	 * class MyClass
+	 * {
+	 *   function myMethod($filename)
+	 *   {
+	 *     Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Reading from "%s"', $filename);
+	 *   }
+	 * }
+	 *
+	 * $obj = new MyClass();
+	 * $obj->myMethod('test.txt');
+	 * </code>
+	 *
+	 * Запишет в лог примерно следующее:
+	 *
+	 * <samp>
+	 * [02-06-09 22:26:04] [debug] MyClass::myMethod: Reading from "test.txt"
+	 * </samp>
+	 *
+	 * Пример 3
+	 *
+	 * <code>
+	 * class BaseClass
+	 * {
+	 * 	function myMethod($filename)
+	 * 	{
+	 *  	Eresus_Logger::log(array(get_class($this), __METHOD__), LOG_DEBUG,
+	 *  		'Reading from "%s"', $filename);
+	 * 	}
+	 * }
+	 *
+	 * class MyClass extends MyClass
+	 * {
+	 * }
+	 *
+	 * $obj = new MyClass();
+	 * $obj->myMethod('test.txt');
+	 * </code>
+	 *
+	 * Запишет в лог примерно следующее:
+	 *
+	 * <samp>
+	 * [02-06-09 22:26:04] [debug] MyClass/BaseClass::myMethod: Reading from "test.txt"
+	 * </samp>
 	 *
 	 * @param string|array $sender    Отправитель сообщения. Используйте __METHOD__,
 	 *                                array(get_class($this), __METHOD__) или __FUNCTION__
@@ -122,11 +208,15 @@ class Eresus_Logger
 	/**
 	 * Записывет в журнал сообщение об исключительной ситуации
 	 *
+	 * Запись производится вызовом {@link log()} с важностью LOG_ERR.
+	 *
 	 * @param Exception $e  Исключение, которое следует записать
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
+	 * @uses exception2string()
+	 * @uses log()
 	 */
 	static public function exception($e)
 	{
