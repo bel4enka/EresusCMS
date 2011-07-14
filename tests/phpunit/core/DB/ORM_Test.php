@@ -40,7 +40,6 @@ require_once dirname(__FILE__) . '/../../../../main/core/DB/ORM.php';
 class Eresus_DB_ORM_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::tearDown()
 	 */
 	protected function tearDown()
