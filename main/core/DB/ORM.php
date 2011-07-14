@@ -2,8 +2,6 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
  * Набор статических методов для работы с ORM
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
@@ -26,15 +24,16 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package DB
+ * @package Eresus
  *
  * $Id$
  */
 
 /**
- * Интерфейс к статическим метода Doctrine ORM
+ * Интерфейс к статическим метода {@link http://www.doctrine-project.org/projects/orm/1.2/docs/en
+ * Doctrine ORM}
  *
- * @package DB
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_DB_ORM
@@ -42,9 +41,21 @@ class Eresus_DB_ORM
 	/**
 	 * Возвращает объект таблицы заданного компонента
 	 *
+	 * Псевдоним для {@link
+	 * http://www.doctrine-project.org/api/orm/1.2/doctrine/doctrine_core.html#getTable()
+	 * Doctrine_Core::getTable()}.
+	 *
+	 * <b>Пример</b>
+	 *
+	 * <code>
+	 * $user = Eresus_DB_ORM::getTable('Eresus_Model_User')->find(1);
+	 * </code>
+	 *
 	 * @param string $componentName  имя компонента
 	 *
-	 * @return Doctrine_Table  объект таблицы
+	 * @return Doctrine_Table  объект
+	 *                 {@link http://www.doctrine-project.org/api/orm/1.2/doctrine/doctrine_table.html
+	 *                 Doctrine_Table}
 	 *
 	 * @since 2.16
 	 */
