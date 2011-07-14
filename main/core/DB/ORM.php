@@ -30,7 +30,7 @@
  */
 
 /**
- * Интерфейс к статическим метода {@link http://www.doctrine-project.org/projects/orm/1.2/docs/en
+ * Интерфейс к статическим методам {@link http://www.doctrine-project.org/projects/orm/1.2/docs/en
  * Doctrine ORM}
  *
  * @package Eresus
