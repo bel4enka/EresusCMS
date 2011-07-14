@@ -2,8 +2,6 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
  * Интерфейс к веб-серверу
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
@@ -26,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package AbstractionLayers
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,9 +32,13 @@
 /**
  * Интерфейс к веб-серверу
  *
- * Этот класс - кандидат на перенос в Eresus Core
+ * <b>История изменений</b>
  *
- * @package AbstractionLayers
+ * <i>2.16</i>
+ *
+ * - Переименован из WebServer в Eresus_WebServer
+ *
+ * @package Eresus
  * @since 2.15
  */
 class Eresus_WebServer
@@ -44,7 +46,7 @@ class Eresus_WebServer
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var WebServer
+	 * @var Eresus_WebServer
 	 * @since 2.15
 	 */
 	private static $instance;
@@ -58,7 +60,16 @@ class Eresus_WebServer
 	private $documentRoot;
 
 	/**
-	 * Возвращает экземпляр класса
+	 * Возвращает экземпляр-одиночку класса
+	 *
+	 * В зависимости от используемого веб-сервера может возвращать объекты разных классов — потомков
+	 * Eresus_WebServer. Например, для сервера Apache будет возвращён {@link Eresus_WebServer_Apache}.
+	 *
+	 * Пример:
+	 *
+	 * <code>
+	 * $server = Eresus_WebServer::getInstance();
+	 * </code>
 	 *
 	 * @return Eresus_WebServer
 	 *
@@ -68,7 +79,16 @@ class Eresus_WebServer
 	{
 		if (!self::$instance)
 		{
-			self::$instance = new self();
+			switch (true)
+			{
+				case substr(PHP_SAPI, 0, 5) == 'apache':
+					self::$instance = new Eresus_WebServer_Apache();
+				break;
+
+				default:
+					self::$instance = new self();
+				break;
+			}
 		}
 		return self::$instance;
 	}
@@ -76,6 +96,20 @@ class Eresus_WebServer
 
 	/**
 	 * Возвращает корневую директорию веб-сервера
+	 *
+	 * Папки в возвращаемом пути всегда разделены символов «/». Путь никогда не содержит «/» на
+	 * конце.
+	 *
+	 * Пример:
+	 *
+	 * <code>
+	 * $server = Eresus_WebServer::getInstance();
+	 * $docRoot = $server->getDocumentRoot()
+	 * </code>
+	 *
+	 * $docRoot может быть таким:
+	 *
+	 * <samp>/home/user_name/public_html</samp>
 	 *
 	 * @return string
 	 *
@@ -90,13 +124,46 @@ class Eresus_WebServer
 	/**
 	 * Возвращает заголовки запроса
 	 *
+	 * Возвращает ассоциативный массив, где ключами выступают имена заголовков.
+	 *
+	 * Этот возвращает только следующие заголовки:
+	 * - Accept
+	 * - Accept-Encoding
+	 * - Accept-Language
+	 * - Connection
+	 * - Host
+	 * - Referer
+	 * - User-Agent
+	 *
+	 * Однако потомки Eresus_WebServer, специфичные для конкретного веб-сервера, могут возвращать
+	 * дополнительные заголовки.
+	 *
 	 * @return array
 	 *
 	 * @since 2.16
+	 * @see Eresus_WebServer_Apache::getRequestHeaders()
 	 */
 	public function getRequestHeaders()
 	{
-		return Eresus_Kernel::isModule() ? apache_request_headers() : array();
+		$knownHeaders = array(
+			'HTTP_ACCEPT' => 'Accept',
+			'HTTP_ACCEPT_CHARSET' => 'Accept-Encoding',
+			'HTTP_ACCEPT_LANGUAGE' => 'Accept-Language',
+			'HTTP_CONNECTION' => 'Connection',
+			'HTTP_HOST' => 'Host',
+			'HTTP_REFERER' => 'Referer',
+			'HTTP_USER_AGENT' => 'User-Agent'
+		);
+		$headers = array();
+		foreach ($knownHeaders as $key => $header)
+		{
+			if (isset($_SERVER[$key]))
+			{
+				$headers[$header] = $_SERVER[$key];
+			}
+		}
+
+		return $headers;
 	}
 	//-----------------------------------------------------------------------------
 
