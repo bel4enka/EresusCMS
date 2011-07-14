@@ -2,9 +2,7 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
- * Активная запись
+ * Запись БД
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
@@ -26,20 +24,67 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package DB
+ * @package Eresus
  *
  * $Id$
  */
 
 /**
- * Активная запись
+ * Запись БД
  *
- * @package DB
+ * Этот класс должен использоваться в качестве предка для всех моделей, используемых в Eresus CMS
+ * вместо {@link http://www.doctrine-project.org/api/orm/1.2/doctrine/doctrine_record.html
+ * Doctrine_Record}. Помимо предоставления новых возможностей, это позволяет CMS добавлять
+ * функционал, контролирующий поведение моделей.
+ *
+ * <b>Примеры</b>
+ *
+ * <code>
+ * class Catalog_Item extends Eresus_DB_Record
+ * {
+ * 	public function setTableDefinition()
+ * 	{
+ * 		$this->setTableName('users');
+ * 		$this->hasColumns(array(
+ * 			'id' => array(
+ * 				'type' => 'integer',
+ * 				'primary' => true,
+ * 				'autoincrement' => true,
+ * 			),
+ *			'login' => array(
+ *				'type' => 'string',
+ *				'length' => 16,
+ *			),
+ *			...
+ *		));
+ *	}
+ * }
+ * </code>
+ *
+ * <b>Доступ к свойствам, как к элементам массива</b>
+ *
+ * Eresus_DB_Record поддерживает интерфейс {@link http://php.net/ArrayAccess ArrayAccess}, что
+ * позволяет работать с моделью как с ассоциативным массивом. Например, если у модели есть свойство
+ * «someProp», то следующие записи будут эквивалентны:
+ *
+ * <code>
+ * echo $model->someProp;
+ * echo $model['someProp'];
+ * </code>
+ *
+ * Также это можно использовать в шаблонах:
+ *
+ * <code>
+ * {$model.someProp}
+ * </code>
+ *
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 {
 	/**
+	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
 	 * @see ArrayAccess::offsetExists()
 	 */
 	public function offsetExists($offset)
@@ -49,6 +94,7 @@ class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
 	 * @see ArrayAccess::offsetGet()
 	 */
 	public function offsetGet($offset)
@@ -58,6 +104,7 @@ class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
 	 * @see ArrayAccess::offsetSet()
 	 */
 	public function offsetSet($offset, $value)
@@ -67,6 +114,7 @@ class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
 	 * @see ArrayAccess::offsetUnset()
 	 */
 	public function offsetUnset($offset)
@@ -78,8 +126,10 @@ class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 	/**
 	 * Аксесор-десериализатор
 	 *
-	 * @param bool   $load
-	 * @param string $fieldName имя поля к которому применяется аксессор
+	 * Подробнее см. {@link serializeMutator}.
+	 *
+	 * @param bool   $load       ???
+	 * @param string $fieldName  имя поля к которому применяется аксессор
 	 *
 	 * @return void
 	 *
@@ -102,8 +152,56 @@ class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
 	/**
 	 * Мутатор-сериализатор
 	 *
-	 * @param mixed $value  исходные данные
-	 * @param bool  $load
+	 * Сериализует значение свойства модели.
+	 *
+	 * <b>Примеры</b>
+	 *
+	 * <code>
+	 * class User extends Eresus_DB_Record
+	 * {
+	 * 	public function setTableDefinition()
+	 * 	{
+	 * 		$this->setTableName('users');
+	 * 		$this->hasColumns(array(
+	 * 			…
+	 * 			'profile' => array(
+	 * 				'type' => 'string',
+	 * 			)
+	 * 		));
+	 * 		$this->hasAccessorMutator('profile', 'unserializeAccessor', 'serializeMutator');
+	 * 	}
+	 * }
+	 * </code>
+	 *
+	 * В этом примере у модели определяется поле «profile», которое в БД представлено текстовым полем.
+	 * Этому полю назначаются аксессор и мутатор, которые будут выполнять сериализацию при записи и
+	 * десериализацию при чтении свойства. Таким образом, если в программе установить свойство
+	 * «profile» следующим образом:
+	 *
+	 * <code>
+	 * $user = new User();
+	 * $user->profile = array('a' => 'b');
+	 * $user->save();
+	 * </code>
+	 *
+	 * …то в БД в поле «profile» попадёт значение «a:1:{s:1:"a";s:1:"b";}». И наоборот, при чтении
+	 * этого свойства:
+	 *
+	 * <code>
+	 * $user = Eresus_DB_ORM::getTable('User')->find(…);
+	 * print_r($user->profile);
+	 * </code>
+	 *
+	 * …выведет:
+	 *
+	 * <samp>
+	 * Array(
+	 * 	'a' => 'b'
+	 * )
+	 * </samp>
+	 *
+	 * @param mixed  $value     исходные данные
+	 * @param bool   $load      ???
 	 * @param string $fieldName имя поля к которому применяется мутатор
 	 *
 	 * @return void
