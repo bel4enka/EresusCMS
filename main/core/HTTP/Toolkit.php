@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Дополнительный инструментарий HTTP
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package HTTP
+ * @package Eresus
  *
  * $Id$
  */
@@ -35,82 +34,82 @@
 /**
  * Дополнительный инструментарий HTTP
  *
- * @package HTTP
+ * @package Eresus
  */
 class Eresus_HTTP_Toolkit
 {
 	/**
-	 * Replace every part of the first URL when there's one of the second URL
+	 * Заменить каждую часть первого URL соответствующей частью из второго URL
 	 *
 	 * @var int
 	 */
 	const URL_REPLACE = 1;
 
 	/**
-	 * Join relative paths
+	 * Объединить относительные пути
 	 *
 	 * @var int
 	 */
 	const URL_JOIN_PATH = 2;
 
 	/**
-	 * Join query strings
+	 * Объеднить строки запроса
 	 *
 	 * @var int
 	 */
 	const URL_JOIN_QUERY = 4;
 
 	/**
-	 * Strip any user authentication information
+	 * Удалить имя пользователя
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_USER = 8;
 
 	/**
-	 * Strip any password authentication information
+	 * Удалить пароль
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_PASS = 16;
 
 	/**
-	 * Strip any authentication information
+	 * Удалить авторизационную информацию
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_AUTH = 32;
 
 	/**
-	 * Strip explicit port numbers
+	 * Удалить номер порта
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_PORT = 64;
 
 	/**
-	 * Strip complete path
+	 * Полностью удалить путь
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_PATH = 128;
 
 	/**
-	 * Strip query string
+	 * Удалить строку запроса
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_QUERY = 256;
 
 	/**
-	 * Strip any fragments (#identifier)
+	 * Удалить фрагмент (#идентификатор)
 	 *
 	 * @var int
 	 */
 	const URL_STRIP_FRAGMENT = 512;
 
 	/**
-	 * Strip anything but scheme and host
+	 * Удалить всё кроме схемы и хоста
 	 *
 	 * @var int
 	 */
@@ -121,14 +120,13 @@ class Eresus_HTTP_Toolkit
 	 *
 	 * Части второго URL будут объединены с первым в соответствии с флагами.
 	 *
-	 * @param	 mixed $url      (Part(s) of) an URL in form of a string or associative array like
-	 *                         parse_url() returns
-	 * @param	 mixed $parts    Same as the first argument
-	 * @param	 int   $flags    A bitmask of binary or'ed HTTP_URL constants (Optional)
-	 *                         HTTP_URL_REPLACE is the default
+	 * @param	 mixed $url    URL (или его части) в виде строки или ассоциативного массива, как
+	 *                       возвращает {@link parse_url() parse_url()}
+	 * @param	 mixed $parts  То же, что и для первого аргумента
+	 * @param	 int   $flags  Битовая маска из констант URL_*. По умолчанию {@link URL_REPLACE}
 	 *
 	 * @author tycoonmaster(at)gmail(dot)com
-	 * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+	 * @author Михаил Красильников <mihalych@vsepofigu.ru>
 	 */
 	public static function buildURL($url, $parts = array(), $flags = self::URL_REPLACE)
 	{
@@ -223,8 +221,7 @@ class Eresus_HTTP_Toolkit
 			((isset($parse_url['port'])) ? ':' . $parse_url['port'] : '') .
 			((isset($parse_url['path'])) ? $parse_url['path'] : '') .
 			((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '') .
-			((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
-		;
+			((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '');
 	}
 	//-----------------------------------------------------------------------------
 }
