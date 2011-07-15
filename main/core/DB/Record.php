@@ -84,7 +84,7 @@
 class Eresus_DB_Record extends Doctrine_Record
 {
 	/**
-	 * Аксесор-десериализатор
+	 * Аксессор-десериализатор
 	 *
 	 * Подробнее см. {@link serializeMutator}.
 	 *
