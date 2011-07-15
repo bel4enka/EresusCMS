@@ -165,9 +165,10 @@
 			sourcecode="no"
 			parseprivate="false"
 			output="${docs.converter}">
-			<fileset dir="main">
-				<include name="core/**/*.php" />
-				<include name="3rd-ext/**/*.php" />
+			<fileset dir=".">
+				<include name="main/core/**/*.php" />
+				<include name="main/3rd-ext/**/*.php" />
+				<include name="3rdparty/doctrine/lib/**/*.php" />
 			</fileset>
 			<projdocfileset dir=".">
 				<include name="README" />
