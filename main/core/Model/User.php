@@ -2,8 +2,6 @@
 /**
  * ${product.title} ${product.version}
  *
- * ${product.description}
- *
  * Пользователь
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
@@ -26,30 +24,27 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Domain
+ * @package Eresus
  *
  * $Id$
  */
 
-// Connection Component Binding
-//Doctrine_Manager::getInstance()->bindComponent('Eresus_Model_User', 'doctrine');
-
 /**
  * Модель пользователя
  *
- * @property int	  $id
- * @property string $username
+ * @property int	  $id             идентификатор
+ * @property string $username       имя входа
  * @property string $password       при чтении возвразает хеш, при записи хеширует значение
- * @property int	  $active
- * @property string $lastVisit
+ * @property int	  $active         признак активности учётной записи
+ * @property string $lastVisit      время последнего удачного входа в систему
  * @property int	  $lastLoginTime  время последней попытки входа в систему
- * @property int	  $loginErrors
- * @property int	  $access
- * @property string $fullname
- * @property string $mail
- * @property string $profile
+ * @property int	  $loginErrors    количество неудачных попыток входа
+ * @property int	  $access         уровень доступа
+ * @property string $fullname       полное имя
+ * @property string $mail           адрес e-mail
+ * @property array  $profile        дополнительные данные профиля
  *
- * @package	Domain
+ * @package	Eresus
  *
  * @since 2.16
  */
@@ -63,7 +58,9 @@ class Eresus_Model_User extends Eresus_DB_Record
 	const USERNAME_FILTER = '/[^a-z0-9_\-\.\@]/';
 
 	/**
-	 * (non-PHPdoc)
+	 * Описание таблицы
+	 *
+	 * @since 2.16
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
 	 */
 	public function setTableDefinition()
@@ -140,7 +137,9 @@ class Eresus_Model_User extends Eresus_DB_Record
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
+	 * Подготовка модели к работе
+	 *
+	 * @since 2.16
 	 * @see Doctrine_Record::setUp()
 	 */
 	public function setUp()
@@ -153,6 +152,8 @@ class Eresus_Model_User extends Eresus_DB_Record
 
 	/**
 	 * Мутатор имени пользователя
+	 *
+	 * Очищает имя от символов, запрещённых фильтром USERNAME_FILTER.
 	 *
 	 * @param string $value
 	 *
@@ -170,7 +171,7 @@ class Eresus_Model_User extends Eresus_DB_Record
 	/**
 	 * Возвращает хеш пароля
 	 *
-	 * @param string $password
+	 * @param string $password  пароль
 	 *
 	 * @return string
 	 *
@@ -185,7 +186,7 @@ class Eresus_Model_User extends Eresus_DB_Record
 	/**
 	 * Мутатор пароля
 	 *
-	 * @param string $value
+	 * @param string $value  пароль
 	 *
 	 * @return void
 	 *
@@ -200,9 +201,9 @@ class Eresus_Model_User extends Eresus_DB_Record
 	/**
 	 * Проверяет правильность пароля
 	 *
-	 * @param string $password
+	 * @param string $password  пароль
 	 *
-	 * @return bool  TRUE если пароль верен и FALSE в противном случае
+	 * @return bool  true если пароль верен и false в противном случае
 	 *
 	 * @since 2.16
 	 */

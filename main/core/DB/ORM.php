@@ -41,9 +41,7 @@ class Eresus_DB_ORM
 	/**
 	 * Возвращает объект таблицы заданного компонента
 	 *
-	 * Псевдоним для {@link
-	 * http://www.doctrine-project.org/api/orm/1.2/doctrine/doctrine_core.html#getTable()
-	 * Doctrine_Core::getTable()}.
+	 * Псевдоним для {@link Doctrine_Core::getTable()}.
 	 *
 	 * <b>Пример</b>
 	 *
@@ -54,9 +52,7 @@ class Eresus_DB_ORM
 	 *
 	 * @param string $componentName  имя компонента
 	 *
-	 * @return Doctrine_Table  объект
-	 *                 {@link http://www.doctrine-project.org/api/orm/1.2/doctrine/doctrine_table.html
-	 *                 Doctrine_Table}
+	 * @return Doctrine_Table  объект таблицы
 	 *
 	 * @since 2.16
 	 */
