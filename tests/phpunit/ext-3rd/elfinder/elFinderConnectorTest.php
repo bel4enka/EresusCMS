@@ -35,6 +35,7 @@ require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/classes/EresusExtensionConnector.php';
+require_once dirname(__FILE__) . '/../../../../main/core/classes/FileManagerConnectorInterface.php';
 require_once dirname(__FILE__) . '/../../../../main/ext-3rd/elfinder/eresus-connector.php';
 
 /**

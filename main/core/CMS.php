@@ -31,29 +31,6 @@
  * $Id$
  */
 
-
-
-/**
- * Интерфейс коннектора файлового менеджера
- *
- * @package CoreExtensionsAPI
- * @since 2.16
- */
-interface FileManagerConnectorInterface
-{
-	/**
-	 * Метод должен возвращать разметку для файлового менеджера директории data.
-	 *
-	 * @return string HTML
-	 *
-	 * @since 2.16
-	 */
-	public function getDataBrowser();
-	//-----------------------------------------------------------------------------
-}
-
-
-
 /**
  * Класс приложения Eresus CMS
  *
