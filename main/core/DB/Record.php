@@ -62,9 +62,10 @@
  *
  * <b>Доступ к свойствам, как к элементам массива</b>
  *
- * Eresus_DB_Record поддерживает интерфейс {@link http://php.net/ArrayAccess ArrayAccess}, что
- * позволяет работать с моделью как с ассоциативным массивом. Например, если у модели есть свойство
- * «someProp», то следующие записи будут эквивалентны:
+ * Eresus_DB_Record (как потомок {@link Doctrine_Access}) поддерживает интерфейс
+ * {@link http://php.net/ArrayAccess ArrayAccess}, что позволяет работать с моделью как с
+ * ассоциативным массивом. Например, если у модели есть свойство «someProp», то следующие записи
+ * будут эквивалентны:
  *
  * <code>
  * echo $model->someProp;
@@ -80,48 +81,8 @@
  * @package Eresus
  * @since 2.16
  */
-class Eresus_DB_Record extends Doctrine_Record implements ArrayAccess
+class Eresus_DB_Record extends Doctrine_Record
 {
-	/**
-	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
-	 * @see ArrayAccess::offsetExists()
-	 */
-	public function offsetExists($offset)
-	{
-		return true;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
-	 * @see ArrayAccess::offsetGet()
-	 */
-	public function offsetGet($offset)
-	{
-		return $this->$offset;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
-	 * @see ArrayAccess::offsetSet()
-	 */
-	public function offsetSet($offset, $value)
-	{
-		throw $this->$offset = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Часть реализации интерфейса {@link http://php.net/ArrayAccess ArrayAccess}
-	 * @see ArrayAccess::offsetUnset()
-	 */
-	public function offsetUnset($offset)
-	{
-		throw new LogicException;
-	}
-	//-----------------------------------------------------------------------------
-
 	/**
 	 * Аксесор-десериализатор
 	 *
