@@ -81,7 +81,8 @@ class Eresus_HTTP_Request
 	/**
 	 * Создаёт объект из окружения приложения
 	 *
-	 * @param string $className    имя класса создаваемого объекта
+	 * @param string $className  имя класса создаваемого объекта (должен быть потомком
+	 *                           Eresus_HTTP_Request)
 	 *
 	 * @throws RuntimeException если класса $className не существует
 	 * @throws InvalidArgumentException если $className не является потомком Eresus_HTTP_Request
