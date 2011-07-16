@@ -34,7 +34,7 @@
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
-require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Toolkit.php';
+require_once dirname(__FILE__) . '/../../../../main/core/URI.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Request.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Request/Arguments.php';
 

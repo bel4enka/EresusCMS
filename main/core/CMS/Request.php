@@ -83,8 +83,8 @@ class Eresus_CMS_Request
 	{
 		$this->message = $message;
 		$this->rootPrefix = $prefix;
-		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($this->message->getUri(), array(),
-			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $this->rootPrefix;
+		$this->rootURL = Eresus_URI::buildURL($this->message->getUri(), array(),
+			Eresus_URI::URL_STRIP_PATH) . '/' . $this->rootPrefix;
 	}
 	//-----------------------------------------------------------------------------
 

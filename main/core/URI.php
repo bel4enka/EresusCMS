@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Дополнительный инструментарий HTTP
+ * Работа с URI
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -32,11 +32,11 @@
 
 
 /**
- * Дополнительный инструментарий HTTP
+ * Работа с URI
  *
  * @package Eresus
  */
-class Eresus_HTTP_Toolkit
+class Eresus_URI
 {
 	/**
 	 * Заменить каждую часть первого URL соответствующей частью из второго URL
@@ -207,7 +207,7 @@ class Eresus_HTTP_Toolkit
 		// Note: Scheme and Host are never stripped
 		foreach ($keys as $key)
 		{
-			if ($flags & (int) constant('Eresus_HTTP_Toolkit::URL_STRIP_' . strtoupper($key)))
+			if ($flags & (int) constant('Eresus_URI::URL_STRIP_' . strtoupper($key)))
 			{
 				unset($parse_url[$key]);
 			}

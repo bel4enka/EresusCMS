@@ -328,7 +328,7 @@ class Eresus_HTTP_Request
 	 */
 	public function getUri()
 	{
-		return Eresus_HTTP_Toolkit::buildURL('', $this->uri);
+		return Eresus_URI::buildURL('', $this->uri);
 	}
 	//-----------------------------------------------------------------------------
 
