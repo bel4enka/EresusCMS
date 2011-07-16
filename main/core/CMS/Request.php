@@ -79,11 +79,11 @@ class Eresus_CMS_Request
 	 *
 	 * @since 2.16
 	 */
-	public function __construct(Eresus_HTTP_Message $message, $prefix)
+	public function __construct(Eresus_HTTP_Request $message, $prefix)
 	{
 		$this->message = $message;
 		$this->rootPrefix = $prefix;
-		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($this->message->getRequestUri(), array(),
+		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($this->message->getUri(), array(),
 			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $this->rootPrefix;
 	}
 	//-----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ class Eresus_CMS_Request
 	 */
 	public function getPathInfo()
 	{
-		$path = $this->message->getRequestPath();
+		$path = $this->message->getPath();
 		if ($this->rootPrefix)
 		{
 			$path = substr($path, strlen($this->rootPrefix));

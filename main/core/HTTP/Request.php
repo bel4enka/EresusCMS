@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Запрос HTTP
  *
- * Сообщение HTTP
- *
- * @copyright 2004, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,43 +25,19 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package HTTP
+ * @package Eresus
  *
  * $Id$
  */
 
 /**
- * Сообщение HTTP
+ * Запрос HTTP
  *
- * @package HTTP
+ * @package Eresus
  * @since 2.16
  */
-class Eresus_HTTP_Message
+class Eresus_HTTP_Request
 {
-	/**
-	 * Тип сообщение не определён
-	 * @var int
-	 */
-	const TYPE_NONE = 0;
-
-	/**
-	 * Это сообщение — запрос HTTP
-	 * @var int
-	 */
-	const TYPE_REQUEST = 1;
-
-	/**
-	 * Это сообщение — ответ HTTP
-	 * @var int
-	 */
-	const TYPE_RESPONSE = 2;
-
-	/**
-	 * Тип сообщения
-	 * @var int
-	 */
-	private $type;
-
 	/**
 	 * Версия протокола
 	 * @var string
@@ -73,20 +48,14 @@ class Eresus_HTTP_Message
 	 * Метод запроса
 	 * @var string
 	 */
-	private $requestMethod;
+	private $method;
 
 	/**
 	 * Компоненты URI запроса
 	 * @var array
 	 * @since 2.16
 	 */
-	private $requestUri = array();
-
-	/**
-	 * Код ответа
-	 * @var int
-	 */
-	private $responseCode;
+	private $uri = array();
 
 	/**
 	 * Заголовки
@@ -110,31 +79,34 @@ class Eresus_HTTP_Message
 	private $post;
 
 	/**
-	 * Сооздаёт сообщение из окружения приложения
+	 * Создаёт объект из окружения приложения
 	 *
-	 * @param int    $messageType  тип сообщения
 	 * @param string $className    имя класса создаваемого объекта
 	 *
-	 * @return Eresus_HTTP_Message|null  объект сообщения или null в случае неудачи
-	 *
 	 * @throws RuntimeException если класса $className не существует
-	 * @throws InvalidArgumentException если $className не является потомком Eresus_HTTP_Message
+	 * @throws InvalidArgumentException если $className не является потомком Eresus_HTTP_Request
+	 *
+	 * @return Eresus_HTTP_Request|null  объект запроса или null в случае неудачи
+	 *
+	 * @since 2.16
+	 * @uses Eresus_WebServer::getInstance()
+	 * @uses Eresus_WebServer::getRequestHeaders()
 	 */
-	static public function fromEnv($messageType, $className = 'Eresus_HTTP_Message')
+	static public function fromEnv($className = 'Eresus_HTTP_Request')
 	{
 		if (!class_exists($className, true))
 		{
 			throw new RuntimeException("Class \"$className\" not exists");
 		}
 
-		$message = new $className();
+		$request = new $className();
 
-		if (! ($message instanceof self))
+		if (! ($request instanceof self))
 		{
 			throw new InvalidArgumentException("\"$className\" must be a descendent of " . __CLASS__);
 		}
 
-		$message->setType($messageType);
+		$request->headers = Eresus_WebServer::getInstance()->getRequestHeaders();
 
 		/*
 		 * Определяем версию протокола
@@ -149,18 +121,18 @@ class Eresus_HTTP_Message
 			$httpVersion = '1.0';
 		}
 
-		$message->setHttpVersion($httpVersion);
+		$request->setHttpVersion($httpVersion);
 
 		/*
 		 * Определяем метод запроса
 		 */
 		if (isset($_SERVER['REQUEST_METHOD']))
 		{
-			$message->setRequestMethod(strtoupper($_SERVER['REQUEST_METHOD']));
+			$request->setMethod(strtoupper($_SERVER['REQUEST_METHOD']));
 		}
 		else
 		{
-			$message->setRequestMethod('GET');
+			$request->setMethod('GET');
 		}
 
 		$scheme = 'http';
@@ -168,17 +140,17 @@ class Eresus_HTTP_Message
 		{
 			$scheme .= 's';
 		}
-		$message->setScheme($scheme);
+		$request->setScheme($scheme);
 
-		if (isset($_SERVER['HTTP_HOST']))
+		if (isset($request->headers['Host']))
 		{
-			$host = $_SERVER['HTTP_HOST'];
+			$host = $request->headers['Host'];
 		}
 		else
 		{
 			$host = 'localhost';
 		}
-		$message->setRequestHost($host);
+		$request->setHost($host);
 
 		if (isset($_SERVER['REQUEST_URI']))
 		{
@@ -189,50 +161,25 @@ class Eresus_HTTP_Message
 			$uri = '/';
 		}
 
-		$message->setRequestUri($uri);
+		$request->setUri($uri);
 
-		$message->headers = Eresus_WebServer::getInstance()->getRequestHeaders();
-
-		return $message;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Устанавливает тип сообщения
-	 *
-	 * @param int $type  один из Eresus_HTTP_Message::TYPE_*
-	 * @return void
-	 */
-	public function setType($type)
-	{
-		$this->type = $type;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает тип сообщения
-	 *
-	 * @return int  один из Eresus_HTTP_Message::TYPE_*
-	 */
-	public function getType()
-	{
-		return $this->type;
+		return $request;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает версию HTTP
 	 *
-	 * @param string $version
+	 * @param string $version  версия протокола
+	 *
 	 * @return bool  возвращает true в случае успеха, и false если передан неправильный номер версии
 	 *               (не 1.0 или 1.1)
+	 *
+	 * @see getHttpVersion()
 	 */
 	public function setHttpVersion($version)
 	{
-		// Version validation pattern
-		$pattern = '~^1\.[01]$~';
-
-		if (! preg_match($pattern, $version))
+		if (!preg_match('~^1\.[01]$~', $version))
 		{
 			return false;
 		}
@@ -243,9 +190,11 @@ class Eresus_HTTP_Message
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Get the HTTP Protocol Version of the Message
+	 * Возвращает версию протокола
 	 *
-	 * @return string  Returns the HTTP protocol version as string
+	 * @return string  номер версии протокола
+	 *
+	 * @see setHttpVersion()
 	 */
 	public function getHttpVersion()
 	{
@@ -256,17 +205,20 @@ class Eresus_HTTP_Message
 	/**
 	 * Устанавливает схему запроса
 	 *
-	 * @param string $scheme
+	 * @param string $scheme  схема
+	 *
 	 * @return bool  возвращает true в случае успеха, и false если схема не "http" или "https"
+	 *
+	 * @see getScheme()
 	 */
 	public function setScheme($scheme)
 	{
-		if (! preg_match('/https?/', $scheme))
+		if (!preg_match('/https?/', $scheme))
 		{
 			return false;
 		}
 
-		$this->requestUri['scheme'] = $scheme;
+		$this->uri['scheme'] = $scheme;
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -275,22 +227,27 @@ class Eresus_HTTP_Message
 	 * Возвращает схему запроса
 	 *
 	 * @return string
+	 *
+	 * @see setScheme()
 	 */
 	public function getScheme()
 	{
-		return $this->requestUri['scheme'];
+		return $this->uri['scheme'];
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает запрашиваемый хост
 	 *
-	 * @param string $host
+	 * @param string $host  хост
+	 *
 	 * @return void
+	 *
+	 * @see getHost()
 	 */
-	public function setRequestHost($host)
+	public function setHost($host)
 	{
-		$this->requestUri['host'] = $host;
+		$this->uri['host'] = $host;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -298,10 +255,12 @@ class Eresus_HTTP_Message
 	 * Возвращает запрашиваемый хост
 	 *
 	 * @return string
+	 *
+	 * @see setHost()
 	 */
-	public function getRequestHost()
+	public function getHost()
 	{
-		return $this->requestUri['host'];
+		return $this->uri['host'];
 	}
 	//-----------------------------------------------------------------------------
 
@@ -311,16 +270,12 @@ class Eresus_HTTP_Message
 	 * @param string $method  имя метода запроса. См. список имён в
 	 *                        {@link http://tools.ietf.org/html/rfc2068#section-5.1.1
 	 *                        RFC2068, раздел 5.1.1}
-	 * @return bool  true в случае успеха или false если тип сообщения не TYPE_REQUEST или указано
-	 *               неправильное имя метода
+	 * @return bool  true в случае успеха или false если указано неправильное имя метода
+	 *
+	 * @see getMethod()
 	 */
-	public function setRequestMethod($method)
+	public function setMethod($method)
 	{
-		if ($this->getType() !== self::TYPE_REQUEST)
-		{
-			return false;
-		}
-
 		$method = strtoupper($method);
 		$REQUEST_METHODS = array('OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE');
 
@@ -329,58 +284,48 @@ class Eresus_HTTP_Message
 			return false;
 		}
 
-		$this->requestMethod = $method;
+		$this->method = $method;
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Get the Request Method of the Message
+	 * Возвращает метод запроса
 	 *
-	 * @return string  Request method name on success, or FALSE if the message is not of type
-	 *                  HttpMessage::TYPE_REQUEST.
+	 * @return string
+	 *
+	 * @see setMethod()
 	 */
-	public function getRequestMethod()
+	public function getMethod()
 	{
-		if ($this->getType() !== self::TYPE_REQUEST)
-		{
-			return false;
-		}
-
-		return $this->requestMethod;
+		return $this->method;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает путь к запрошенному файлу
 	 *
-	 * @return string  имя файла при успехе или false если тип сообщения не
-	 *                 Eresus_Http_Message::TYPE_REQUEST.
+	 * Например, для URI «http://example.org/some/path/to/file?a=b» вернёт
+	 * «/some/path/to/file».
+	 *
+	 * @return string  имя файла
 	 */
-	public function getRequestPath()
+	public function getPath()
 	{
-		if ($this->getType() !== self::TYPE_REQUEST)
-		{
-			return false;
-		}
-
-		return isset($this->requestUri['path']) ? $this->requestUri['path'] : '/';
+		return isset($this->uri['path']) ? $this->uri['path'] : '/';
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает запрошенный URL
 	 *
-	 * @return string|false  запрошенный URL или false если тип сообщения не TYPE_REQUEST
+	 * @return string
+	 *
+	 * @see setUri()
 	 */
-	public function getRequestUri()
+	public function getUri()
 	{
-		if ($this->getType() !== self::TYPE_REQUEST)
-		{
-			return false;
-		}
-
-		return Eresus_HTTP_Toolkit::buildURL('', $this->requestUri);
+		return Eresus_HTTP_Toolkit::buildURL('', $this->uri);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -389,82 +334,30 @@ class Eresus_HTTP_Message
 	 *
 	 * @param string $uri абсолютный или относительный URI
 	 *
-	 * @return bool  true в случае успеха или false если тип сообщения не TYPE_REQUEST
+	 * @throws InvalidArgumentException  если $uri не строка
+	 *
+	 * @return void
+	 *
+	 * @see getUri()
 	 */
-	public function setRequestUri($uri)
+	public function setUri($uri)
 	{
 		if (!is_string($uri))
 		{
-			throw new InvalidArgumentException('String expected but ' . get_type($uri) . 'given');
-		}
-		if ($this->getType() !== self::TYPE_REQUEST)
-		{
-			return false;
+			throw new InvalidArgumentException('String expected but ' . gettype($uri) . 'given');
 		}
 
 		$parts = parse_url($uri);
-		$this->requestUri = array_merge($this->requestUri, $parts);
-		return true;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Set response code
-	 *
-	 * @param int $code  Response code
-	 * @return bool  TRUE on success, or FALSE if the message is not of type
-	 *                HttpMessage::TYPE_RESPONSE or the response code is out of range (100-510).
-	 * @since 0.2.0
-	 */
-	public function setResponseCode($code)
-	{
-		if ($this->getType() != self::TYPE_RESPONSE)
-		{
-			return false;
-		}
-
-		$isInt = is_int($code);
-		$isValidString = is_string($code) && ctype_digit($code);
-
-		if (!$isInt && !$isValidString)
-		{
-			throw new EresusTypeException($code, 'int', 'Ivalid HTTP response code value type.');
-		}
-
-		if ($code < 100 || $code > 510)
-		{
-			return false;
-		}
-
-		$this->responseCode = intval($code);
-		return true;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Returns response code
-	 *
-	 * @return Returns the HTTP response code if the message is of type HttpMessage::TYPE_RESPONSE,
-	 *          else FALSE.
-	 * @since 2.16
-	 */
-	public function getResponseCode()
-	{
-		if ($this->getType() != self::TYPE_RESPONSE)
-		{
-			return false;
-		}
-
-		return $this->responseCode;
+		$this->uri = array_merge($this->uri, $parts);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает заголовок
 	 *
-	 * @param string $header
+	 * @param string $header  имя заголовка, например "Host".
 	 *
-	 * @return string|null
+	 * @return string|null  значение заголовка или null, если такой заголовк отсутствует
 	 *
 	 * @since 2.16
 	 */
@@ -484,6 +377,7 @@ class Eresus_HTTP_Message
 	 * @return Eresus_HTTP_Request_Arguments
 	 *
 	 * @since 2.16
+	 * @uses Eresus_HTTP_Request_Arguments
 	 */
 	public function getQuery()
 	{
@@ -501,6 +395,7 @@ class Eresus_HTTP_Message
 	 * @return Eresus_HTTP_Request_Arguments
 	 *
 	 * @since 2.16
+	 * @uses Eresus_HTTP_Request_Arguments
 	 */
 	public function getPost()
 	{
@@ -509,24 +404,6 @@ class Eresus_HTTP_Message
 			$this->post = new Eresus_HTTP_Request_Arguments($_POST);
 		}
 		return $this->post;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Отправляет сообщение
-	 *
-	 * @return Eresus_HTTP_Message
-	 *
-	 * @since 2.16
-	 */
-	public function send()
-	{
-		switch ($this->getType())
-		{
-			case self::TYPE_RESPONSE:
-				// FIXME
-			break;
-		}
 	}
 	//-----------------------------------------------------------------------------
 }

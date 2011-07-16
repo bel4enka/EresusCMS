@@ -31,7 +31,7 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Message_Test.php';
+require_once dirname(__FILE__) . '/Request_Test.php';
 
 class Eresus_HTTP_AllTests
 {
@@ -39,7 +39,7 @@ class Eresus_HTTP_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Eresus/HTTP');
 
-		$suite->addTestSuite('Eresus_HTTP_Message_Test');
+		$suite->addTestSuite('Eresus_HTTP_Request_Test');
 
 		return $suite;
 	}

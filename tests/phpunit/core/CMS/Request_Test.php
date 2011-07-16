@@ -30,7 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Message.php';
+require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Request.php';
 require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Toolkit.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Request.php';
 
@@ -46,9 +46,8 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_construct()
 	{
-		$msg = new Eresus_HTTP_Message();
-		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
-		$msg->setRequestUri('http://example.org/dir1/dir2/dir3/file.ext');
+		$msg = new Eresus_HTTP_Request();
+		$msg->setUri('http://example.org/dir1/dir2/dir3/file.ext');
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertSame($msg, $test->getHttpMessage());
 	}
@@ -60,30 +59,29 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getPathInfo()
 	{
-		$msg = new Eresus_HTTP_Message();
-		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
+		$msg = new Eresus_HTTP_Request();
 
-		$msg->setRequestUri('http://example.org/');
+		$msg->setUri('http://example.org/');
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('/', $test->getPathInfo());
 
-		$msg->setRequestUri('http://example.org/dir1/dir2/file.ext?a=b');
+		$msg->setUri('http://example.org/dir1/dir2/file.ext?a=b');
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('/dir1/dir2/file.ext', $test->getPathInfo());
 
-		$msg->setRequestUri('http://example.org/dir1/dir2/');
+		$msg->setUri('http://example.org/dir1/dir2/');
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('/dir1/dir2/', $test->getPathInfo());
 
-		$msg->setRequestUri('http://example.org/site_root/');
+		$msg->setUri('http://example.org/site_root/');
 		$test = new Eresus_CMS_Request($msg, '/site_root');
 		$this->assertEquals('/', $test->getPathInfo());
 
-		$msg->setRequestUri('http://example.org/site_root/dir1/dir2/file.ext?a=b');
+		$msg->setUri('http://example.org/site_root/dir1/dir2/file.ext?a=b');
 		$test = new Eresus_CMS_Request($msg, '/site_root');
 		$this->assertEquals('/dir1/dir2/file.ext', $test->getPathInfo());
 
-		$msg->setRequestUri('http://example.org/site_root/dir1/dir2/');
+		$msg->setUri('http://example.org/site_root/dir1/dir2/');
 		$test = new Eresus_CMS_Request($msg, '/site_root');
 		$this->assertEquals('/dir1/dir2/', $test->getPathInfo());
 
@@ -96,26 +94,25 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getBasePath()
 	{
-		$msg = new Eresus_HTTP_Message();
-		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
+		$msg = new Eresus_HTTP_Request();
 
 		$url = 'http://example.org/';
-		$msg->setRequestUri($url);
+		$msg->setUri($url);
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('', $test->getBasePath(), $url);
 
 		$url = 'http://example.org/file.ext';
-		$msg->setRequestUri($url);
+		$msg->setUri($url);
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('', $test->getBasePath(), $url);
 
 		$url = 'http://example.org/dir1/dir2/';
-		$msg->setRequestUri($url);
+		$msg->setUri($url);
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('/dir1/dir2', $test->getBasePath(), $url);
 
 		$url = 'http://example.org/dir1/dir2/dir3/file.ext';
-		$msg->setRequestUri($url);
+		$msg->setUri($url);
 		$test = new Eresus_CMS_Request($msg, '');
 		$this->assertEquals('/dir1/dir2/dir3', $test->getBasePath(), $url);
 	}
@@ -126,10 +123,9 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getParam()
 	{
-		$msg = new Eresus_HTTP_Message();
-		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
+		$msg = new Eresus_HTTP_Request();
 
-		$msg->setRequestUri('http://example.org/site_root/dir1/dir2/file.ext');
+		$msg->setUri('http://example.org/site_root/dir1/dir2/file.ext');
 		$req = new Eresus_CMS_Request($msg, '/site_root');
 
 		$this->assertEquals('dir1', $req->getParam());
@@ -148,16 +144,15 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 		$p_params = new ReflectionProperty('Eresus_CMS_Request', 'params');
 		$p_params->setAccessible(true);
 
-		$msg = new Eresus_HTTP_Message();
-		$msg->setType(Eresus_HTTP_Message::TYPE_REQUEST);
+		$msg = new Eresus_HTTP_Request();
 
-		$msg->setRequestUri('http://example.org/site_root/dir1/dir2/file.ext');
+		$msg->setUri('http://example.org/site_root/dir1/dir2/file.ext');
 		$req = new Eresus_CMS_Request($msg, '/site_root');
 
 		$m_splitParams->invoke($req);
 		$this->assertEquals(array('dir1', 'dir2'), $p_params->getValue($req));
 
-		$msg->setRequestUri('http://example.org/site_root/');
+		$msg->setUri('http://example.org/site_root/');
 		$req = new Eresus_CMS_Request($msg, '/site_root');
 
 		$m_splitParams->invoke($req);
