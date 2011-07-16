@@ -29,6 +29,16 @@
  * $Id$
  */
 
+if (version_compare(PHP_VERSION, '5.3', '<'))
+{
+	die("You need PHP 5.3 to run tests\n");
+}
+
+if (!class_exists('PHP_CodeCoverage_Filter'))
+{
+	die("You need PHP_CodeCoverage PEAR package to run tests\n");
+}
+
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 define('TESTS_SRC_ROOT', realpath(__DIR__ . '/../../main'));
@@ -142,14 +152,6 @@ class MockFacade
 
 
 
-define('errAccountNotActive', 'errAccountNotActive');
-define('errError', 'errError');
-define('errFileNotFound', 'errFileNotFound');
-define('errInvalidPassword', 'errInvalidPassword');
-define('errTooEarlyRelogin', 'errTooEarlyRelogin');
-define('filesRoot', '/home/exmaple.org/');
-define('CHARSET', 'cp1251');
-
 class Doctrine extends MockFacade {}
 class Doctrine_Core extends MockFacade
 {
@@ -172,30 +174,6 @@ class ezcMailComposer {}
 class ezcMailTransport extends UniversalStub {}
 class ezcMailMtaTransport extends ezcMailTransport {}
 
-
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
-class EresusRuntimeException extends Exception {}
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.16
- */
-class HTTP extends MockFacade
-{
-	public static $request;
-
-	public static function request()
-	{
-		return self::$request;
-	}
-	//-----------------------------------------------------------------------------
-}
 
 /**
  * @package EresusCMS
@@ -230,10 +208,3 @@ class HttpRequest
 	}
 	//-----------------------------------------------------------------------------
 }
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.16
- */
-class HttpResponse extends MockFacade {}
