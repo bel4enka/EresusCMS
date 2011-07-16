@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Аргументы запроса
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package HTTP
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +33,7 @@
 /**
  * Аргументы запроса
  *
- * @package HTTP
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_HTTP_Request_Arguments
@@ -46,6 +45,15 @@ class Eresus_HTTP_Request_Arguments
 	 */
 	private $args = array();
 
+	/**
+	 * Конструктор
+	 *
+	 * @param array $args  ассоциативный массив аргументов из $_GET или $_POST
+	 *
+	 * @return Eresus_HTTP_Request_Arguments
+	 *
+	 * @since 2.16
+	 */
 	public function __construct(array $args = array())
 	{
 		$this->args = $args;
@@ -63,7 +71,7 @@ class Eresus_HTTP_Request_Arguments
 	 * @param string $name    имя аргумента
 	 * @param mixed  $filter  опциональный фильтр
 	 *
-	 * @return void
+	 * @return mixed
 	 *
 	 * @since 2.16
 	 */
@@ -108,4 +116,3 @@ class Eresus_HTTP_Request_Arguments
 	}
 	//-----------------------------------------------------------------------------
 }
-
