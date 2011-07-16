@@ -1,12 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
  * Отправка почты
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -152,7 +153,7 @@ class Eresus_Mail
 	 */
 	public function addTo($address, $name = null)
 	{
-		$this->getComposer()->addTo(new ezcMailAddress($address, $name, CHARSET));
+		$this->getComposer()->addTo(new ezcMailAddress($address, $name, 'UTF-8'));
 
 		return $this;
 	}
@@ -172,7 +173,7 @@ class Eresus_Mail
 	 */
 	public function addCc($address, $name = null)
 	{
-		$this->getComposer()->addCc(new ezcMailAddress($address, $name, CHARSET));
+		$this->getComposer()->addCc(new ezcMailAddress($address, $name, 'UTF-8'));
 
 		return $this;
 	}
@@ -192,7 +193,7 @@ class Eresus_Mail
 	 */
 	public function addBcc($address, $name = null)
 	{
-		$this->getComposer()->addBcc(new ezcMailAddress($address, $name, CHARSET));
+		$this->getComposer()->addBcc(new ezcMailAddress($address, $name, 'UTF-8'));
 
 		return $this;
 	}
@@ -212,7 +213,7 @@ class Eresus_Mail
 	 */
 	public function setFrom($address, $name = null)
 	{
-		$this->getComposer()->from = new ezcMailAddress($address, $name, CHARSET);
+		$this->getComposer()->from = new ezcMailAddress($address, $name, 'UTF-8');
 
 		return $this;
 	}
@@ -248,7 +249,7 @@ class Eresus_Mail
 	public function setSubject($subject)
 	{
 		$this->getComposer()->subject = $subject;
-		$this->getComposer()->subjectCharset = CHARSET;
+		$this->getComposer()->subjectCharset = 'UTF-8';
 
 		return $this;
 	}
@@ -325,7 +326,7 @@ class Eresus_Mail
 	 */
 	public function setHeader($name, $value)
 	{
-		$this->getComposer()->setHeader($name, $value, CHARSET);
+		$this->getComposer()->setHeader($name, $value, 'UTF-8');
 		return $this;
 	}
 	//-----------------------------------------------------------------------------
@@ -343,11 +344,11 @@ class Eresus_Mail
 	public function send()
 	{
 		$composer = $this->getComposer();
-		$composer->charset = CHARSET;
+		$composer->charset = 'UTF-8';
 
 		if (!$composer->from)
 		{
-			$composer->from = new ezcMailAddress(option('mailFromAddr'), option('mailFromName'), CHARSET);
+			$composer->from = new ezcMailAddress(option('mailFromAddr'), option('mailFromName'), 'UTF-8');
 		}
 
 		$composer->build();
