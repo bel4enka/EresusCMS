@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Главный модуль
  *
- * @copyright 2004, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package CMS
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +33,23 @@
 /**
  * Класс приложения Eresus CMS
  *
- * @package CMS
+ * Класс Eresus_CMS представляет собой реализацию шаблона {@link
+ * http://martinfowler.com/eaaCatalog/frontController.html Front Controller}. Экземпляр Eresus_CMS
+ * (доступный через {@link Eresus_Kernel::app()}) принимает все запросы к сайту и перенаправляет их
+ * подчинённым классам.
+ *
+ * Также класс проводит инициализацию необходимых источников данных, таких как файл настроек, СУБД,
+ * сессии.
+ *
+ * <b>История изменений</b>
+ *
+ * <i>2.16</i>
+ *
+ * - Переименован из EresusCMS в Eresus_CMS
+ * - Класс более не наследуется от EresusApplication
+ *
+ * @package Eresus
+ * @since 2.14
  */
 class Eresus_CMS
 {
@@ -46,7 +61,7 @@ class Eresus_CMS
 	private $version = '${product.version}';
 
 	/**
-	 * Контейнер оснонвых объектов CMS
+	 * Контейнер основных объектов CMS
 	 *
 	 * @var array
 	 * @see get()
@@ -57,21 +72,38 @@ class Eresus_CMS
 	/**
 	 * Корневая директория приложения
 	 *
-	 * Устанавливается в {@link initFS()}. Используйте {@link getRootDir()} для получения значения.
-	 *
 	 * @var string
-	 * @see getRootDir(), initFS()
+	 * @see getRootDir()
 	 */
 	private $rootDir;
 
 	/**
-	 * Возвращает объект CMS
+	 * Доступ к основным объектам CMS
 	 *
-	 * @param string $name
+	 * Этот метод — примитивная реализация {@link http://ru.wikipedia.org/wiki/Внедрение_зависимости
+	 * внедрения зависимостей}, позволяющая всем классам
+	 * приложения и расширений получать доступ к основным объектам CMS.
 	 *
-	 * @throws LogicException если нет объекта с запрошенным именем
+	 * <b>Примеры</b>
 	 *
-	 * @return object
+	 * Получение объекта {@link Eresus_DB_ORM}:
+	 * <code>
+	 * $orm = Eresus_Kernel::app()->get('orm');
+	 * </code>
+	 *
+	 * <b>Список объектов</b>
+	 *
+	 * - <b>i18n</b> — {@link Eresus_i18n}
+	 * - <b>orm</b> — {@link Eresus_DB_ORM}
+	 * - <b>request</b> — {@link Eresus_CMS_Request}
+	 * - <b>site</b> — {@link Eresus_Model_Site}
+	 * - <b>ui</b> — {@link Eresus_CMS_UI_Admin} или {@link Eresus_CMS_UI_Client}
+	 *
+	 * @param string $name  имя объекта
+	 *
+	 * @throws LogicException  если нет объекта с запрошенным именем
+	 *
+	 * @return object  запрошенный объект
 	 *
 	 * @since 2.16
 	 * @see $container
@@ -87,20 +119,53 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает версию приложения
+	 *
+	 * @return string
+	 * @uses $version
+	 */
+	public function getVersion()
+	{
+		return $this->version;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневую директорию приложения
+	 *
+	 * Полный файловый путь к директории приложения без финального слеша.
+	 *
+	 * @return string  корневая директория приложения
+	 */
+	public function getRootDir()
+	{
+		if (!$this->rootDir)
+		{
+			$this->rootDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
+			if (DIRECTORY_SEPARATOR != '/')
+			{
+				$this->rootDir = str_replace($this->rootDir, DIRECTORY_SEPARATOR, '/');
+			}
+		}
+		return $this->rootDir;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Основной метод приложения
 	 *
-	 * @return int  Код завершения для консольных вызовов
+	 * Этот метод вызывается автоматически.
 	 *
+	 * @return void
+	 *
+	 * @uses Eresus_Logger::log()
 	 * @uses Eresus_Logger::exception()
-	 * @uses initFS()
-	 * @uses checkEnviroment()
-	 * @uses createFileStructure()
-	 * @uses initConf()
-	 * @uses initLocale()
-	 * @uses initDB()
-	 * @uses initSite()
-	 * @uses fatalError()
-	 * @uses Eresus_CMS_Mode_CLI
+	 * @uses Eresus_CMS_Request::getBasePath()
+	 * @uses Eresus_CMS_UI_Admin::process()
+	 * @uses Eresus_CMS_UI_Client::process()
+	 * @uses Eresus_CMS_Response::send()
+	 * @uses Eresus_Config::get()
+	 * @uses Eresus_SuccessException
 	 */
 	public function main()
 	{
@@ -108,7 +173,6 @@ class Eresus_CMS
 
 		try
 		{
-			$this->initFS();
 			$this->createFileStructure();
 			$this->initConf();
 			$this->initDB();
@@ -146,53 +210,13 @@ class Eresus_CMS
 		}
 		catch (Eresus_SuccessException $e)
 		{
-			return 0;
 		}
 		catch (Exception $e)
 		{
 			Eresus_Logger::exception($e);
 			ob_end_clean();
 			include dirname(__FILE__) . '/fatal.html.php';
-			return -1;
 		}
-		return 0;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает версию приложения
-	 *
-	 * @return string
-	 * @uses $version
-	 */
-	public function getVersion()
-	{
-		return $this->version;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает корневую директорию приложения
-	 *
-	 * @return string
-	 * @uses $rootDir
-	 */
-	public function getRootDir()
-	{
-		return $this->rootDir;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает путь к директории данных сайта (без финального слеша)
-	 *
-	 * @return string
-	 *
-	 * @since 2.16
-	 */
-	public function getDataDir()
-	{
-		return $this->getRootDir() . '/data';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -200,8 +224,6 @@ class Eresus_CMS
 	 * Создание файловой структуры
 	 *
 	 * @return void
-	 *
-	 * @uses getRootDir()
 	 */
 	private function createFileStructure()
 	{
@@ -231,27 +253,11 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Инициализирует работу с файловой системой
-	 *
-	 * Устанвливает {@link $rootDir} при помощи {@link detectRootDir()}.
-	 *
-	 * @return void
-	 *
-	 * @uses detectRootDir()
-	 */
-	private function initFS()
-	{
-		$this->rootDir = $this->detectRootDir();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Чтение настроек
 	 *
 	 * @throws DomainException  если файл настроек содержит ошибки
 	 *
 	 * @uses getRootDir()
-	 * @uses Eresus_Logger::log()
 	 */
 	private function initConf()
 	{
@@ -326,7 +332,6 @@ class Eresus_CMS
 	 * @return void
 	 *
 	 * @uses Eresus_Logger::log()
-	 * @uses getRootDir()
 	 * @uses Eresus_Config::get()
 	 */
 	private function initDB()
@@ -471,20 +476,4 @@ class Eresus_CMS
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * Определяет корневую директорию приложения
-	 *
-	 * @return string
-	 */
-	private function detectRootDir()
-	{
-		$path = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
-		if (DIRECTORY_SEPARATOR != '/')
-		{
-			$path = str_replace($path, DIRECTORY_SEPARATOR, '/');
-		}
-
-		return $path;
-	}
-	//-----------------------------------------------------------------------------
 }

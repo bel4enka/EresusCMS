@@ -61,6 +61,15 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$app->setAccessible(true);
 		$app->setValue('Eresus_Kernel', null);
 		Eresus_Config::drop('eresus.cms.dsn');
+
+		$autoloaders = spl_autoload_functions();
+		foreach ($autoloaders as $autoloader)
+		{
+			if ($autoloader !== 'phpunit_autoload')
+			{
+				spl_autoload_unregister($autoloader);
+			}
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -94,25 +103,6 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$p_rootDir->setValue($mock, '/home/example.org');
 
 		$this->assertEquals('/home/example.org', $mock->getRootDir());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_CMS::getDataDir
-	 */
-	public function test_getDataDir()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
-		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('getRootDir'))->
-			disableOriginalConstructor()->getMock();
-		$mock->expects($this->once())->method('getRootDir')->
-			will($this->returnValue('/home/example.org'));
-
-		$this->assertEquals('/home/example.org/data', $mock->getDataDir());
 	}
 	//-----------------------------------------------------------------------------
 
