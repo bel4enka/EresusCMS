@@ -288,10 +288,14 @@ class Eresus_CMS
 	 * @return void
 	 *
 	 * @since 2.16
+	 * @uses Eresus_HTTP_Request::fromEnv()
+	 * @uses Eresus_WebServer::getInstance()
+	 * @uses Eresus_WebServer::getDocumentRoot()
+	 * @uses Eresus_CMS_Request
 	 */
 	private function initRequest()
 	{
-		$req = Eresus_HTTP_Message::fromEnv(Eresus_HTTP_Message::TYPE_REQUEST);
+		$req = Eresus_HTTP_Request::fromEnv();
 
 		$docRoot = Eresus_WebServer::getInstance()->getDocumentRoot();
 		$prefix = $this->getRootDir();

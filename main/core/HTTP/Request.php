@@ -82,12 +82,13 @@ class Eresus_HTTP_Request
 	 * Создаёт объект из окружения приложения
 	 *
 	 * @param string $className  имя класса создаваемого объекта (должен быть потомком
-	 *                           Eresus_HTTP_Request)
+	 *                           {@link Eresus_HTTP_Request})
 	 *
 	 * @throws RuntimeException если класса $className не существует
-	 * @throws InvalidArgumentException если $className не является потомком Eresus_HTTP_Request
+	 * @throws InvalidArgumentException если $className не является потомком
+	 *         {@link Eresus_HTTP_Request}
 	 *
-	 * @return Eresus_HTTP_Request|null  объект запроса или null в случае неудачи
+	 * @return Eresus_HTTP_Request|null  экземпляр $className или null в случае неудачи
 	 *
 	 * @since 2.16
 	 * @uses Eresus_WebServer::getInstance()
@@ -323,6 +324,7 @@ class Eresus_HTTP_Request
 	 * @return string
 	 *
 	 * @see setUri()
+	 * @uses Eresus_HTTP_Toolkit::buildURL()
 	 */
 	public function getUri()
 	{
