@@ -35,7 +35,7 @@ require_once dirname(__FILE__) . '/../../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Config.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Kernel.php';
-require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Message.php';
+require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Request.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/Site.php';
 
 /**
