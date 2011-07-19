@@ -93,6 +93,8 @@ class Eresus_HTTP_Request
 	 * @since 2.16
 	 * @uses Eresus_WebServer::getInstance()
 	 * @uses Eresus_WebServer::getRequestHeaders()
+	 * @uses Eresus_URI::setPath()
+	 * @uses Eresus_URI::setQuery()
 	 */
 	static public function fromEnv($className = 'Eresus_HTTP_Request')
 	{
@@ -177,6 +179,7 @@ class Eresus_HTTP_Request
 	 * @return Eresus_HTTP_Request
 	 *
 	 * @since 2.16
+	 * @uses Eresus_URI
 	 */
 	public function __construct()
 	{
@@ -229,6 +232,7 @@ class Eresus_HTTP_Request
 	 * @return void
 	 *
 	 * @see getScheme()
+	 * @uses Eresus_URI::setScheme()
 	 */
 	public function setScheme($scheme)
 	{
@@ -247,6 +251,7 @@ class Eresus_HTTP_Request
 	 * @return string
 	 *
 	 * @see setScheme()
+	 * @uses Eresus_URI::getScheme()
 	 */
 	public function getScheme()
 	{
@@ -262,6 +267,7 @@ class Eresus_HTTP_Request
 	 * @return void
 	 *
 	 * @see getHost()
+	 * @uses Eresus_URI::setHost()
 	 */
 	public function setHost($host)
 	{
@@ -275,6 +281,7 @@ class Eresus_HTTP_Request
 	 * @return string
 	 *
 	 * @see setHost()
+	 * @uses Eresus_URI::getHost()
 	 */
 	public function getHost()
 	{
@@ -327,6 +334,7 @@ class Eresus_HTTP_Request
 	 * «/some/path/to/file».
 	 *
 	 * @return string  имя файла
+	 * @uses Eresus_URI::getPath()
 	 */
 	public function getPath()
 	{
@@ -357,6 +365,7 @@ class Eresus_HTTP_Request
 	 * @return void
 	 *
 	 * @see getUri()
+	 * @uses Eresus_URI
 	 */
 	public function setUri($uri)
 	{

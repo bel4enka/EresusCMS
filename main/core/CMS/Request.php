@@ -78,6 +78,7 @@ class Eresus_CMS_Request
 	 * @return Eresus_CMS_Request
 	 *
 	 * @since 2.16
+	 * @uses Eresus_URI
 	 */
 	public function __construct(Eresus_HTTP_Request $message, $prefix)
 	{

@@ -142,7 +142,7 @@ class Eresus_HTTP_Response
 	 *
 	 * @author основано на коде от w999d
 	 * @uses Eresus_Kernel::isCLI()
-	 * @uses Eresus_URI::buildURL()
+	 * @uses Eresus_URI
 	 * @uses Eresus_HTTP_Request::fromEnv()
 	 * @uses Eresus_HTTP_Request::getHttpVersion()
 	 * @uses Eresus_ExitException
@@ -155,7 +155,8 @@ class Eresus_HTTP_Response
 			return false;
 		}
 
-		$uri = Eresus_URI::buildURL($uri);
+		$uri = new Eresus_URI($uri);
+		$uri = strval($uri);
 		$req = Eresus_HTTP_Request::fromEnv();
 
 		/* Выбираем код ответа */
