@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Модуль интернационализации
  *
- * @copyright 2004, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package i18n
+ * @package Eresus
  *
  * $Id$
  */
@@ -35,27 +34,55 @@
 /**
  * Служба интернационализации
  *
- * @package i18n
+ * Файлы локализации должны располагаться в папке «lang» и называться «код_локали.php». Например:
+ * «lang/ru_RU.php».
+ *
+ * <b>Примеры</b>
+ *
+ * <code>
+ * $i18n = Eresus_i18n::getInstance();
+ * $i18n->setLocale('ru_RU');
+ * echo $i18->getText('Hello world!'); // Может вывести, например, "Привет, мир!"
+ * </code>
+ *
+ * Можно использовать сокращённый вызов метода:
+ *
+ * <code>
+ * echo i18n('Hello world!');
+ * </code>
+ *
+ * И в шаблонах:
+ *
+ * <code>
+ * <div>{i18n('Hello world')}</div>
+ * </code>
+ *
+ * @package Eresus
+ * @since 2.16
  */
 class Eresus_i18n
 {
-
 	/**
 	 * Экземпляр-одиночка
 	 *
 	 * @var Eresus_i18n
+	 * @since 2.16
 	 */
 	static private $instance;
 
 	/**
 	 * Путь к файлам локализации
+	 *
 	 * @var string
+	 * @since 2.16
 	 */
 	private $path;
 
 	/**
 	 * Локаль
+	 *
 	 * @var string
+	 * @since 2.16
 	 */
 	private $locale;
 
@@ -63,6 +90,7 @@ class Eresus_i18n
 	 * Строковые данные
 	 *
 	 * @var array
+	 * @since 2.16
 	 */
 	private $data = array();
 
@@ -71,7 +99,7 @@ class Eresus_i18n
 	 *
 	 * @return Eresus_i18n
 	 *
-	 * @uses $instance
+	 * @since 2.16
 	 * @uses Eresus_Kernel::app()
 	 * @uses Eresus_Kernel::getRootDir()
 	 */
@@ -91,7 +119,7 @@ class Eresus_i18n
 	 *
 	 * @return string
 	 *
-	 * @uses $locale
+	 * @since 2.16
 	 */
 	public function getLocale()
 	{
@@ -102,11 +130,11 @@ class Eresus_i18n
 	/**
 	 * Выбор локали
 	 *
-	 * @param string $locale
+	 * @param string $locale  код локали (ru_RU, en_US, …)
 	 *
 	 * @return void
 	 *
-	 * @uses $locale
+	 * @since 2.16
 	 */
 	public function setLocale($locale)
 	{
@@ -117,14 +145,12 @@ class Eresus_i18n
 	/**
 	 * Возвращает текст в заданной локали
 	 *
-	 * @param string $text     Искомый текст
-	 * @param string $context  Контекст
+	 * @param string $text     искомый текст
+	 * @param string $context  контекст
 	 *
 	 * @return string
 	 *
-	 * @uses localeLazyLoad()
-	 * @uses $data
-	 * @uses $locale
+	 * @since 2.16
 	 */
 	public function get($text, $context = null)
 	{
@@ -153,8 +179,11 @@ class Eresus_i18n
 	/**
 	 * Конструктор
 	 *
-	 * @param string $path  Путь к файлам локализации
+	 * @param string $path  путь к файлам локализации
+	 *
 	 * @return Eresus_i18n
+	 *
+	 * @since 2.16
 	 */
 	private function __construct($path)
 	{
@@ -168,9 +197,6 @@ class Eresus_i18n
 	 * @return void
 	 *
 	 * @since 2.16
-	 * @uses $data
-	 * @uses $locale
-	 * @uses $path
 	 */
 	private function localeLazyLoad()
 	{
@@ -193,7 +219,12 @@ class Eresus_i18n
 
 
 /**
- * Сокращение для "Eresus_i18n::getInstance()->getText()"
+ * Сокращение для «{@link Eresus_i18n::get() Eresus_i18n::getInstance()->get()}»
+ *
+ * @param string $text     искомый текст
+ * @param string $context  контекст
+ *
+ * @return string
  *
  * @since 2.16
  */
