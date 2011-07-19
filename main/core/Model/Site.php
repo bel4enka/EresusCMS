@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Сайт, обслуживаемый CMS
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Domain
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,17 +33,17 @@
 /**
  * Модель сайта
  *
- * @property int	  $id
- * @property string $host
- * @property string $root
- * @property string $name
- * @property string $title
- * @property bool   $titleReverse
- * @property string $titleDiv
- * @property string $keywords
- * @property int	  $position
+ * @property int	  $id           идентификатор
+ * @property string $host         хост сайта
+ * @property string $root         корневой URL сайта
+ * @property string $name         краткое имя сайта
+ * @property string $title        заголовок сайта
+ * @property bool   $reverse      выводить элементы заголовка в обратном порядке
+ * @property string $div          разделитель элементов заголовка
+ * @property string $keywords     ключевые слова сайта
+ * @property string $description  описание сайта
  *
- * @package	Domain
+ * @package	Eresus
  *
  * @since 2.16
  */
@@ -90,13 +89,13 @@ class Eresus_Model_Site extends Eresus_DB_Record
 				'default' => '',
 				'notnull' => true,
 			),
-			'title_reverse' => array(
+			'reverse' => array(
 				'type' => 'integer',
 				'length' => 1,
 				'default' => '1',
 				'notnull' => true,
 			),
-			'title_div' => array(
+			'div' => array(
 				'type' => 'string',
 				'length' => 31,
 				'default' => ' &ndash; ',
