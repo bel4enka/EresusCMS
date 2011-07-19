@@ -51,11 +51,11 @@ class Eresus_HTTP_Request
 	private $method;
 
 	/**
-	 * Компоненты URI запроса
-	 * @var array
+	 * URI запроса
+	 * @var Eresus_URI
 	 * @since 2.16
 	 */
-	private $uri = array();
+	private $uri;
 
 	/**
 	 * Заголовки
@@ -156,16 +156,31 @@ class Eresus_HTTP_Request
 
 		if (isset($_SERVER['REQUEST_URI']))
 		{
-			$uri = $_SERVER['REQUEST_URI'];
+			$rel = $_SERVER['REQUEST_URI'];
 		}
 		else
 		{
-			$uri = '/';
+			$rel = '/';
 		}
 
-		$request->setUri($uri);
+		$rel = parse_url($rel);
+		$request->uri->setPath(@$rel['path']);
+		$request->uri->setQuery(@$rel['query']);
 
 		return $request;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Конструктор
+	 *
+	 * @return Eresus_HTTP_Request
+	 *
+	 * @since 2.16
+	 */
+	public function __construct()
+	{
+		$this->uri = new Eresus_URI();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -209,7 +224,9 @@ class Eresus_HTTP_Request
 	 *
 	 * @param string $scheme  схема
 	 *
-	 * @return bool  возвращает true в случае успеха, и false если схема не "http" или "https"
+	 * @throws InvalidArgumentException  если схема не http или https
+	 *
+	 * @return void
 	 *
 	 * @see getScheme()
 	 */
@@ -217,11 +234,10 @@ class Eresus_HTTP_Request
 	{
 		if (!preg_match('/https?/', $scheme))
 		{
-			return false;
+			throw new InvalidArgumentException('Unsupported request scheme: ' . $scheme);
 		}
 
-		$this->uri['scheme'] = $scheme;
-		return true;
+		$this->uri->setScheme($scheme);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -234,7 +250,7 @@ class Eresus_HTTP_Request
 	 */
 	public function getScheme()
 	{
-		return $this->uri['scheme'];
+		return $this->uri->getScheme();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -249,7 +265,7 @@ class Eresus_HTTP_Request
 	 */
 	public function setHost($host)
 	{
-		$this->uri['host'] = $host;
+		$this->uri->setHost($host);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -262,7 +278,7 @@ class Eresus_HTTP_Request
 	 */
 	public function getHost()
 	{
-		return $this->uri['host'];
+		return $this->uri->getHost();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -314,7 +330,7 @@ class Eresus_HTTP_Request
 	 */
 	public function getPath()
 	{
-		return isset($this->uri['path']) ? $this->uri['path'] : '/';
+		return $this->uri->getPath();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -324,11 +340,10 @@ class Eresus_HTTP_Request
 	 * @return string
 	 *
 	 * @see setUri()
-	 * @uses Eresus_HTTP_Toolkit::buildURL()
 	 */
 	public function getUri()
 	{
-		return Eresus_URI::buildURL('', $this->uri);
+		return strval($this->uri);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -350,8 +365,7 @@ class Eresus_HTTP_Request
 			throw new InvalidArgumentException('String expected but ' . gettype($uri) . 'given');
 		}
 
-		$parts = parse_url($uri);
-		$this->uri = array_merge($this->uri, $parts);
+		$this->uri = new Eresus_URI($uri);
 	}
 	//-----------------------------------------------------------------------------
 

@@ -32,198 +32,394 @@
 
 
 /**
- * Работа с URI
+ * URI
+ *
+ * Согласно {@link http://tools.ietf.org/html/rfc3986 RFC 3986} URI состоит из следующих частей:
+ *
+ * - схема — самая первая часть (до первого «:»), например «http:…» или «urn:…»
+ * - информация о пользователе — часть между схемой и хостом, например «…//username:password@…»
+ * - хост — доменное имя или IP-адрес, например «example.org» или «127.0.0.1»
+ * - порт — номер порта, следует после хоста
+ * - путь — путь, например «/some/path» или «some:path»
+ * - запрос — набор пар имя-значение, например «a=b&c=d»
+ * - фрагмент — часть после «#», например «…#part1»
+ *
+ * @link http://tools.ietf.org/html/rfc3986 RFC 3986
  *
  * @package Eresus
  */
 class Eresus_URI
 {
 	/**
-	 * Заменить каждую часть первого URL соответствующей частью из второго URL
+	 * Набор символов «unsereved»
 	 *
-	 * @var int
+	 * @var string
 	 */
-	const URL_REPLACE = 1;
+	const UNRESERVED = '[:alnum:]\-\._~';
 
 	/**
-	 * Объединить относительные пути
+	 * Набор символов для шестнадцатиричного кодирования
 	 *
-	 * @var int
+	 * @var string
 	 */
-	const URL_JOIN_PATH = 2;
+	const PCT_ENCODED = '%[:xdigit:]';
 
 	/**
-	 * Объеднить строки запроса
+	 * Основные разделители
 	 *
-	 * @var int
+	 * @var string
 	 */
-	const URL_JOIN_QUERY = 4;
+	const GEN_DELIMS = ':\/?#\[\]@';
 
 	/**
-	 * Удалить имя пользователя
+	 * Дополнительные разделители
 	 *
-	 * @var int
+	 * @var string
 	 */
-	const URL_STRIP_USER = 8;
+	const SUB_DELIMS = '!$&\'()*+,;=';
 
 	/**
-	 * Удалить пароль
+	 * Части URI
 	 *
-	 * @var int
+	 * @var array
 	 */
-	const URL_STRIP_PASS = 16;
+	private $uri = array();
 
 	/**
-	 * Удалить авторизационную информацию
+	 * Создаёт новый URI
 	 *
-	 * @var int
+	 * @param string $uri  исходный URI
+	 *
+	 * @return Eresus_URI
+	 *
+	 * @since 2.16
 	 */
-	const URL_STRIP_AUTH = 32;
-
-	/**
-	 * Удалить номер порта
-	 *
-	 * @var int
-	 */
-	const URL_STRIP_PORT = 64;
-
-	/**
-	 * Полностью удалить путь
-	 *
-	 * @var int
-	 */
-	const URL_STRIP_PATH = 128;
-
-	/**
-	 * Удалить строку запроса
-	 *
-	 * @var int
-	 */
-	const URL_STRIP_QUERY = 256;
-
-	/**
-	 * Удалить фрагмент (#идентификатор)
-	 *
-	 * @var int
-	 */
-	const URL_STRIP_FRAGMENT = 512;
-
-	/**
-	 * Удалить всё кроме схемы и хоста
-	 *
-	 * @var int
-	 */
-	const URL_STRIP_ALL = 1024;
-
-	/**
-	 * Строит URL
-	 *
-	 * Части второго URL будут объединены с первым в соответствии с флагами.
-	 *
-	 * @param	 mixed $url    URL (или его части) в виде строки или ассоциативного массива, как
-	 *                       возвращает {@link parse_url() parse_url()}
-	 * @param	 mixed $parts  То же, что и для первого аргумента
-	 * @param	 int   $flags  Битовая маска из констант URL_*. По умолчанию {@link URL_REPLACE}
-	 *
-	 * @author tycoonmaster(at)gmail(dot)com
-	 * @author Михаил Красильников <mihalych@vsepofigu.ru>
-	 */
-	public static function buildURL($url, $parts = array(), $flags = self::URL_REPLACE)
+	public function __construct($uri = null)
 	{
-		$keys = array('user','pass','port','path','query','fragment');
-
-		/* HTTP::URL_STRIP_ALL becomes all the HTTP::URL_STRIP_Xs */
-		if ($flags & self::URL_STRIP_ALL)
+		if ($uri)
 		{
-			$flags |= self::URL_STRIP_USER;
-			$flags |= self::URL_STRIP_PASS;
-			$flags |= self::URL_STRIP_PORT;
-			$flags |= self::URL_STRIP_PATH;
-			$flags |= self::URL_STRIP_QUERY;
-			$flags |= self::URL_STRIP_FRAGMENT;
+			$this->parseURI($uri);
 		}
-		/* HTTP::URL_STRIP_AUTH becomes HTTP::URL_STRIP_USER and HTTP::URL_STRIP_PASS */
-		else if ($flags & self::URL_STRIP_AUTH)
-		{
-			$flags |= self::URL_STRIP_USER;
-			$flags |= self::URL_STRIP_PASS;
-		}
+	}
+	//-----------------------------------------------------------------------------
 
-		// Parse the original URL
-		$parse_url = parse_url($url);
+	/**
+	 * Строковое представление URI
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function __toString()
+	{
+		$scheme = $this->getScheme();
+		$query = $this->getQuery();
+		$fragment = $this->getFragment();
+		$userinfo = $this->getUserinfo();
+		$port = $this->getPort();
+		$authority = ($userinfo ? $userinfo . '@' : '') . $this->getHost() . ($port ? ':' . $port : '');
+		$hierPart = ($authority ? '//' . $authority : '') . $this->getPath();
 
-		// Scheme and Host are always replaced
-		if (isset($parts['scheme']))
-		{
-			$parse_url['scheme'] = $parts['scheme'];
-		}
-		if (isset($parts['host']))
-		{
-			$parse_url['host'] = $parts['host'];
-		}
+		$uri =
+			($scheme ? $scheme . ':' : '') .
+			$hierPart .
+			($query ? '?' . $query : '') .
+			($fragment ? '#' . $fragment : '');
+		return $uri;
+	}
+	//-----------------------------------------------------------------------------
 
-		// (If applicable) Replace the original URL with it's new parts
-		if ($flags & self::URL_REPLACE)
+	/**
+	 * Устанавливает схему
+	 *
+	 * @param string $scheme  схема
+	 *
+	 * @throws InvalidArgumentException если схема не соответствует {@link
+	 *   http://tools.ietf.org/html/rfc3986 RFC 3986}
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getScheme()
+	 */
+	public function setScheme($scheme)
+	{
+		if (!preg_match('/^\w[\w\d+\-\.]*$/i', $scheme) && !is_null($scheme))
 		{
-			foreach ($keys as $key)
-			{
-				if (isset($parts[$key]))
-				{
-					$parse_url[$key] = $parts[$key];
-				}
-			}
-		}
-		else
-		{
-			// Join the original URL path with the new path
-			if (isset($parts['path']) && ($flags & self::URL_JOIN_PATH))
-			{
-				if (isset($parse_url['path']))
-				{
-					$parse_url['path'] = rtrim(str_replace(basename($parse_url['path']), '',
-						$parse_url['path']), '/') . '/' . ltrim($parts['path'], '/');
-				}
-				else
-				{
-					$parse_url['path'] = $parts['path'];
-				}
-			}
-
-			// Join the original query string with the new query string
-			if (isset($parts['query']) && ($flags & self::URL_JOIN_QUERY))
-			{
-				if (isset($parse_url['query']))
-				{
-					$parse_url['query'] .= '&' . $parts['query'];
-				}
-				else
-				{
-					$parse_url['query'] = $parts['query'];
-				}
-			}
+			throw new InvalidArgumentException('Invalid URI scheme: ' . $scheme);
 		}
 
-		// Strips all the applicable sections of the URL
-		// Note: Scheme and Host are never stripped
+		$this->uri['scheme'] = strtolower($scheme);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает схему запроса
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setScheme()
+	 */
+	public function getScheme()
+	{
+		return isset($this->uri['scheme']) ? $this->uri['scheme'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает информацию о пользователе
+	 *
+	 * @param string $userinfo  информация о пользователе
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getUserinfo()
+	 */
+	public function setUserinfo($userinfo)
+	{
+		$userinfo = strval($userinfo);
+		$allowedChars = self::UNRESERVED . self::PCT_ENCODED . self::SUB_DELIMS . ':';
+		if (!preg_match('/^[' . $allowedChars . ']*$/i', $userinfo))
+		{
+			throw new InvalidArgumentException('Invalid URI userinfo: ' . $userinfo);
+		}
+
+		$this->uri['userinfo'] = $userinfo;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает информацию о пользователе
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setUserinfo()
+	 */
+	public function getUserinfo()
+	{
+		return isset($this->uri['userinfo']) ? $this->uri['userinfo'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает хост
+	 *
+	 * @param string $host  хост
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getHost()
+	 */
+	public function setHost($host)
+	{
+		$host = strval($host);
+		$this->uri['host'] = strtolower($host);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает хост
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setHost()
+	 */
+	public function getHost()
+	{
+		return isset($this->uri['host']) ? $this->uri['host'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает порт
+	 *
+	 * @param int $port  порт
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getPort()
+	 */
+	public function setPort($port)
+	{
+		if (!is_numeric($port) && !is_null($port))
+		{
+			throw new InvalidArgumentException('Invalid URI port: ' . strval($port));
+		}
+		$this->uri['port'] = $port;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает порт
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setPort()
+	 */
+	public function getPort()
+	{
+		return isset($this->uri['port']) ? $this->uri['port'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает путь
+	 *
+	 * @param string $path  путь
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getPath()
+	 */
+	public function setPath($path)
+	{
+		$path = strval($path);
+		$this->uri['path'] = $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает путь
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setPath()
+	 */
+	public function getPath()
+	{
+		return isset($this->uri['path']) ? $this->uri['path'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает запрос
+	 *
+	 * @param string $query  запрос
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getQuery()
+	 */
+	public function setQuery($query)
+	{
+		$query = strval($query);
+		$this->uri['query'] = $query;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает запрос
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setQuery()
+	 */
+	public function getQuery()
+	{
+		return isset($this->uri['query']) ? $this->uri['query'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает фрагмент
+	 *
+	 * @param string $fragment  фрагмент
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 * @see getFragment()
+	 */
+	public function setFragment($fragment)
+	{
+		$fragment = strval($fragment);
+		$this->uri['fragment'] = $fragment;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает фрагмент
+	 *
+	 * @return string|null
+	 *
+	 * @since 2.16
+	 * @see setFragment()
+	 */
+	public function getFragment()
+	{
+		return isset($this->uri['fragment']) ? $this->uri['fragment'] : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Заменяет части URI указанными значениями
+	 *
+	 * Массив $parts может содержать ключи:
+	 * - <b>scheme</b> — схема
+	 * - <b>userinfo</b> — информация о пользователе
+	 * - <b>host</b> — хост
+	 * - <b>port</b> — порт
+	 * - <b>path</b> — путь
+	 * - <b>query</b> — запрос
+	 * - <b>fragment</b> — фрагмент
+	 *
+	 * @param array $parts  ассоциативный массив значений
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function replace(array $parts)
+	{
+		$keys = array('scheme', 'userinfo', 'host', 'port', 'path', 'query', 'fragment');
 		foreach ($keys as $key)
 		{
-			if ($flags & (int) constant('Eresus_URI::URL_STRIP_' . strtoupper($key)))
+			if (isset($parts[$key]))
 			{
-				unset($parse_url[$key]);
+				$setter = 'set' . $key;
+				$this->$setter($parts[$key]);
 			}
 		}
+	}
+	//-----------------------------------------------------------------------------
 
-		return
-			((isset($parse_url['scheme'])) ? $parse_url['scheme'] . '://' : '') .
-			((isset($parse_url['user'])) ? $parse_url['user'] . ((isset($parse_url['pass'])) ? ':' .
-			$parse_url['pass'] : '') .'@' : '') .
-			((isset($parse_url['host'])) ? $parse_url['host'] : '') .
-			((isset($parse_url['port'])) ? ':' . $parse_url['port'] : '') .
-			((isset($parse_url['path'])) ? $parse_url['path'] : '') .
-			((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '') .
-			((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '');
+	/**
+	 * Производит разбор URI
+	 *
+	 * @param string $uri
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	protected function parseURI($uri)
+	{
+		$url = parse_url($uri);
+		$keys = array('scheme', 'host', 'port', 'path', 'query', 'fragment');
+		foreach ($keys as $key)
+		{
+			if (isset($url[$key]))
+			{
+				$setter = 'set' . $key;
+				$this->$setter($url[$key]);
+			}
+		}
+		if (isset($url['user']))
+		{
+			$this->setUserinfo($url['user'] . (isset($url['pass']) ? ':' . $url['pass'] : ''));
+		}
 	}
 	//-----------------------------------------------------------------------------
 }
-//-----------------------------------------------------------------------------
 

@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Ответ HTTP
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package HTTP
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,11 +33,16 @@
 /**
  * Ответ HTTP
  *
- * @package HTTP
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_HTTP_Response
 {
+	/**
+	 * Коды ответа
+	 *
+	 * @var int
+	 */
 	const ST_CONTINUE = 100;
 	const ST_SWITCHING_PROTOCOLS = 101;
 	const ST_PROCESSING = 102;
@@ -84,7 +88,6 @@ class Eresus_HTTP_Response
 		500 => 'Internal Server Error',
 	);
 
-
 	/**
 	 * Код ответа HTTP
 	 *
@@ -103,7 +106,7 @@ class Eresus_HTTP_Response
 	/**
 	 * Тело ответа
 	 *
-	 * Тело ответа должно быть строкой или объектом с методом __toString
+	 * Тело ответа должно быть строкой или объектом с методом {@link __toString()}.
 	 *
 	 * @var string|object
 	 */
@@ -113,8 +116,10 @@ class Eresus_HTTP_Response
 	 * Конструктор
 	 *
 	 * @param string|object $body
+	 *
+	 * @return Eresus_HTTP_Response
 	 */
-	function __construct($body = null)
+	public function __construct($body = null)
 	{
 		if (!is_null($body))
 		{
@@ -124,20 +129,25 @@ class Eresus_HTTP_Response
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Перенаправление на заданный URL
+	 * Перенаправляет агент пользователя на заданный URI
 	 *
-	 * @param string $url      Адрес назначения
-	 * @param array  $params   Ассоциативный массив параметров (ещё не реализовано!)
-	 * @param bool   $session  Присоединять ли информацию о сессии (ещё не реализовано!)
-	 * @param int    $status   Код ответа
+	 * @param string $uri      адрес назначения
+	 * @param array  $params   ассоциативный массив параметров (ещё не реализовано!)
+	 * @param bool   $session  присоединять ли информацию о сессии (ещё не реализовано!)
+	 * @param int    $status   код ответа
 	 *
-	 * @throws ExitException  в случае успешной переадресации
+	 * @throws Eresus_ExitException  в случае успешной переадресации
 	 *
 	 * @return bool  false в случае ошибки
 	 *
-	 * @author based on function by w999d
+	 * @author основано на коде от w999d
+	 * @uses Eresus_Kernel::isCLI()
+	 * @uses Eresus_URI::buildURL()
+	 * @uses Eresus_HTTP_Request::fromEnv()
+	 * @uses Eresus_HTTP_Request::getHttpVersion()
+	 * @uses Eresus_ExitException
 	 */
-	public static function redirect($url = null, $params = null, $session = false, $status = null)
+	public static function redirect($uri = null, $params = null, $session = false, $status = null)
 	{
 		/* Перед редиректом не должно быть отправленных заголовков */
 		if (headers_sent() && (!Eresus_Kernel::isCLI()))
@@ -145,8 +155,8 @@ class Eresus_HTTP_Response
 			return false;
 		}
 
-		$url = Eresus_HTTP_Toolkit::buildURL($url);
-		$httpMessage = Eresus_Http_Message::fromEnv(Eresus_Http_Message::TYPE_REQUEST);
+		$uri = Eresus_URI::buildURL($uri);
+		$req = Eresus_HTTP_Request::fromEnv();
 
 		/* Выбираем код ответа */
 		switch (true)
@@ -155,7 +165,7 @@ class Eresus_HTTP_Response
 				$code = $status;
 			break;
 
-			case $httpMessage->getHttpVersion() == '1.0':
+			case $req->getHttpVersion() == '1.0':
 				$code = 302;
 			break;
 
@@ -181,18 +191,18 @@ class Eresus_HTTP_Response
 		}
 
 		/* Отправляем заголовки */
-		header('HTTP/' . $httpMessage->getHttpVersion() . ' ' . $message, true, $code);
-		header('Location: ' . $url);
+		header('HTTP/' . $req->getHttpVersion() . ' ' . $message, true, $code);
+		header('Location: ' . $uri);
 
 		/* Отправляем HTML для клиентов, неподдерживающих Location */
 		header('Content-type: text/html; charset=UTF-8');
 
-		$hUrl = htmlspecialchars($url);
+		$hUri = htmlspecialchars($uri);
 		echo <<<PAGE
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
 	<head>
-		<meta http-equiv="Refresh" content="0; url='{$hUrl}'">
+		<meta http-equiv="Refresh" content="0; url='{$hUri}'">
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 		<title>{$message}</title>
 	</head>
@@ -200,13 +210,13 @@ class Eresus_HTTP_Response
 		<script>
 			function doRedirect()
 			{
-				location.replace("{$hUrl}");
+				location.replace("{$hUri}");
 			}
 			setTimeout("doRedirect()", 1000);
 		</script>
 		<p>
 			Your browser does not support automatic redirection.
-			Please follow <a href="{$hUrl}">this link</a>.
+			Please follow <a href="{$hUri}">this link</a>.
 		</p>
 	</body>
 </html>
@@ -233,6 +243,8 @@ PAGE;
 
 	/**
 	 * Отправляет ответ
+	 *
+	 * @return void
 	 */
 	public function send()
 	{

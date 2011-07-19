@@ -42,9 +42,9 @@ class Eresus_CMS_Request
 	/**
 	 * Сообщение HTTP
 	 *
-	 * @var Eresus_HTTP_Message
+	 * @var Eresus_HTTP_Request
 	 */
-	protected $message;
+	protected $request;
 
 	/**
 	 * Префикс корневого URL относительно корня домена
@@ -81,10 +81,11 @@ class Eresus_CMS_Request
 	 */
 	public function __construct(Eresus_HTTP_Request $message, $prefix)
 	{
-		$this->message = $message;
+		$this->request = $message;
 		$this->rootPrefix = $prefix;
-		$this->rootURL = Eresus_URI::buildURL($this->message->getUri(), array(),
-			Eresus_URI::URL_STRIP_PATH) . '/' . $this->rootPrefix;
+		$this->rootURL = new Eresus_URI($this->request->getUri());
+		$this->rootURL->setPath($this->rootPrefix);
+		$this->rootURL->setQuery(null);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -100,12 +101,12 @@ class Eresus_CMS_Request
 	 */
 	public function __call($method, $args)
 	{
-		if (!method_exists($this->message, $method))
+		if (!method_exists($this->request, $method))
 		{
 			throw new BadMethodCallException('Call of unknown method ' . get_class($this) . '::' .
 				$method);
 		}
-		return call_user_func_array(array($this->message, $method), $args);
+		return call_user_func_array(array($this->request, $method), $args);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -118,7 +119,7 @@ class Eresus_CMS_Request
 	 */
 	public function getHttpMessage()
 	{
-		return $this->message;
+		return $this->request;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -158,7 +159,7 @@ class Eresus_CMS_Request
 	 */
 	public function getHost()
 	{
-		return  Eresus_Config::get('eresus.cms.http.host', $this->message->getRequestHost());
+		return  Eresus_Config::get('eresus.cms.http.host', $this->request->getRequestHost());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -201,7 +202,7 @@ class Eresus_CMS_Request
 	 */
 	public function getPathInfo()
 	{
-		$path = $this->message->getPath();
+		$path = $this->request->getPath();
 		if ($this->rootPrefix)
 		{
 			$path = substr($path, strlen($this->rootPrefix));

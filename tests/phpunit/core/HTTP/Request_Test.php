@@ -91,15 +91,22 @@ class Eresus_HTTP_Request_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = new Eresus_HTTP_Request();
 
-		$this->assertTrue($test->setScheme('http'));
+		$test->setScheme('http');
 		$this->assertEquals('http', $test->getScheme());
 
-		$this->assertTrue($test->setScheme('https'));
+		$test->setScheme('https');
 		$this->assertEquals('https', $test->getScheme());
+	}
+	//-----------------------------------------------------------------------------
 
-		$this->assertFalse($test->setScheme('ftp'));
-		$this->assertEquals('https', $test->getScheme());
-
+	/**
+	 * @covers Eresus_HTTP_Request::setScheme
+	 * @expectedException InvalidArgumentException
+	 */
+	public function test_setScheme_invalid()
+	{
+		$test = new Eresus_HTTP_Request();
+		$test->setScheme('ftp');
 	}
 	//-----------------------------------------------------------------------------
 
