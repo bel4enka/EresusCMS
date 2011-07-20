@@ -84,7 +84,7 @@ class Eresus_CMS_Response
 	 *
 	 * @since 2.16
 	 */
-	public function __construct($body, $code = 200)
+	public function __construct($body, $code = self::OK)
 	{
 		$this->body = $body;
 		$this->code = $code;

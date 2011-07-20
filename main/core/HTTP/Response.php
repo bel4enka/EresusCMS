@@ -39,14 +39,31 @@
 class Eresus_HTTP_Response
 {
 	/**
-	 * Коды ответа
+	 * Код ответа «Continue»
 	 *
 	 * @var int
 	 */
 	const ST_CONTINUE = 100;
+
+	/**
+	 * Код ответа «Переключение протоколов»
+	 *
+	 * @var int
+	 */
 	const ST_SWITCHING_PROTOCOLS = 101;
+
+	/**
+	 * Код ответа «Обрабатывается»
+	 *
+	 * @var int
+	 */
 	const ST_PROCESSING = 102;
 
+	/**
+	 * Код ответа «Успешно»
+	 *
+	 * @var int
+	 */
 	const ST_OK = 200;
 	const ST_CREATED = 201;
 	const ST_ACCEPTED = 202;
