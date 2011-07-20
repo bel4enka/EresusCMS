@@ -173,38 +173,3 @@ class ezcMailAddress extends UniversalStub {}
 class ezcMailComposer {}
 class ezcMailTransport extends UniversalStub {}
 class ezcMailMtaTransport extends ezcMailTransport {}
-
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
-class HttpRequest
-{
-	public $localRoot;
-
-	public function setLocalRoot($value)
-	{
-		$this->localRoot = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	public function getLocalRoot()
-	{
-		return $this->localRoot;
-	}
-	//-----------------------------------------------------------------------------
-
-	public function getScheme()
-	{
-		return 'http';
-	}
-	//-----------------------------------------------------------------------------
-
-	public function getHost()
-	{
-		return 'example.org';
-	}
-	//-----------------------------------------------------------------------------
-}
