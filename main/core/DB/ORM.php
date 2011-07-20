@@ -47,8 +47,7 @@ class Eresus_DB_ORM
 	 * <b>Пример</b>
 	 *
 	 * <code>
-	 * $orm = Eresus_Kernel::app()->get('orm');
-	 * $user = $orm->getTable('Eresus_Model_User')->find(1);
+	 * $user = Eresus_DB_ORM::getTable('Eresus_Model_User')->find(1);
 	 * </code>
 	 *
 	 * @param string $componentName  имя компонента
@@ -57,7 +56,7 @@ class Eresus_DB_ORM
 	 *
 	 * @since 2.16
 	 */
-	public function getTable($componentName)
+	public static function getTable($componentName)
 	{
 		return Doctrine_Core::getTable($componentName);
 	}
