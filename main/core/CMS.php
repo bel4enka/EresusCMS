@@ -337,6 +337,13 @@ class Eresus_CMS
 	 *
 	 * @uses Eresus_Logger::log()
 	 * @uses Eresus_Config::get()
+	 * @uses Eresus_DB_ORM
+	 * @uses Doctrine::autoload()
+	 * @uses Doctrine_Core::modelsAutoload()
+	 * @uses Doctrine_Manager::connection()
+	 * @uses Doctrine_Manager::getInstance()
+	 * @uses Doctrine_Manager::setAttribute()
+	 * @uses Doctrine_Core::loadModels()
 	 */
 	private function initDB()
 	{
@@ -423,6 +430,7 @@ class Eresus_CMS
 	 * @return void
 	 * @uses Eresus_Logger::log()
 	 * @uses Eresus_Service_Auth::getInstance()
+	 * @uses Eresus_Kernel::isCLI()
 	 */
 	private function initSession()
 	{

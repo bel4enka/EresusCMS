@@ -36,7 +36,7 @@
  *
  * @since 2.16
  */
-class Eresus_Service_Client_Router implements Eresus_CMS_Service
+class Eresus_Service_Client_Router
 {
 	/**
 	 * Экземпляр-одиночка

@@ -35,7 +35,7 @@
  * @package Service
  * @since 2.16
  */
-class Eresus_Service_Templates implements Eresus_CMS_Service
+class Eresus_Service_Templates
 {
 	/**
 	 * Экземпляр-одиночка

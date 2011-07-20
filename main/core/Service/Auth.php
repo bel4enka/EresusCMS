@@ -37,7 +37,7 @@
  * @package Service
  * @since 2.16
  */
-class Eresus_Service_Auth implements Eresus_CMS_Service
+class Eresus_Service_Auth
 {
 	/**
 	 * Операция выполнена успешно

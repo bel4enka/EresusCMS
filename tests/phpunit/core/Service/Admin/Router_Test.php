@@ -36,7 +36,6 @@ require_once dirname(__FILE__) . '/../../../../../main/core/Kernel.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Config.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Logger.php';
-require_once dirname(__FILE__) . '/../../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/CMS/Exception/NotFound.php';
 require_once dirname(__FILE__) . '/../../../../../main/core/Service/Admin/Router.php';
 
@@ -46,16 +45,6 @@ require_once dirname(__FILE__) . '/../../../../../main/core/Service/Admin/Router
  */
 class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Eresus_Service_Admin_Router::getInstance
-	 */
-	public function test_interface()
-	{
-		$test = Eresus_Service_Admin_Router::getInstance();
-		$this->assertInstanceOf('Eresus_CMS_Service', $test);
-	}
-	//-----------------------------------------------------------------------------
-
 	/**
 	 * @covers Eresus_Service_Admin_Router::init
 	 */

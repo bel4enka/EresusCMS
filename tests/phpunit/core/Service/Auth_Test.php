@@ -31,7 +31,6 @@
 
 require_once dirname(__FILE__) . '/../../stubs.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS.php';
-require_once dirname(__FILE__) . '/../../../../main/core/CMS/Service.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DB/ORM.php';
 require_once dirname(__FILE__) . '/../../../../main/core/DB/Record.php';
 require_once dirname(__FILE__) . '/../../../../main/core/Model/User.php';
@@ -43,16 +42,6 @@ require_once dirname(__FILE__) . '/../../../../main/core/Service/Auth.php';
  */
 class Eresus_Service_Auth_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Eresus_Service_Auth::getInstance
-	 */
-	public function test_interface()
-	{
-		$test = Eresus_Service_Auth::getInstance();
-		$this->assertInstanceOf('Eresus_CMS_Service', $test);
-	}
-	//-----------------------------------------------------------------------------
-
 	/**
 	 * @covers Eresus_Service_Auth::getUser
 	 */
