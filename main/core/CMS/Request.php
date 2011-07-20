@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Обрабатываемый запрос
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Core
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +33,9 @@
 /**
  * Обрабатываемый запрос
  *
- * @package Core
+ * Является обёрткой для {@link Eresus_HTTP_Request} и добавляет к нему логику предметной области.
+ *
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_CMS_Request
@@ -67,6 +68,41 @@ class Eresus_CMS_Request
 	 * @var array|null
 	 */
 	protected $params = null;
+
+	/**
+	 * Экземпляр-одиночка
+	 *
+	 * @var Eresus_CMS_Request
+	 */
+	private static $instance;
+
+	/**
+	 * Возвращает экземпляр-одиночку запроса
+	 *
+	 * @return Eresus_CMS_Request
+	 *
+	 * @uses Eresus_HTTP_Request::fromEnv()
+	 * @uses Eresus_WebServer::getInstance()
+	 * @uses Eresus_WebServer::getDocumentRoot()
+	 * @uses Eresus_Kernel::app()
+	 * @uses Eresus_CMS::getRootDir()
+	 * @since 2.16
+	 */
+	public static function getInstance()
+	{
+		if (!self::$instance)
+		{
+			$req = Eresus_HTTP_Request::fromEnv();
+
+			$docRoot = Eresus_WebServer::getInstance()->getDocumentRoot();
+			$prefix = Eresus_Kernel::app()->getRootDir();
+			$prefix = substr($prefix, strlen($docRoot));
+
+			self::$instance = new Eresus_CMS_Request($req, $prefix);
+		}
+		return self::$instance;
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Создаёт запрос на основе окружения приложения
@@ -153,14 +189,17 @@ class Eresus_CMS_Request
 	/**
 	 * Возвращает запрошенный хост
 	 *
+	 * Значение может быть переопределено через параметр «eresus.cms.http.host» (см. {@link
+	 * Eresus_Config}.
+	 *
 	 * @return string
 	 *
+	 * @link http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getHost()
 	 * @since 2.16
-	 * @see http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getHost()
 	 */
 	public function getHost()
 	{
-		return  Eresus_Config::get('eresus.cms.http.host', $this->request->getRequestHost());
+		return Eresus_Config::get('eresus.cms.http.host', $this->request->getRequestHost());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -197,9 +236,9 @@ class Eresus_CMS_Request
 	 *
 	 * @return string
 	 *
-	 * @since 2.16
-	 * @see http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getPathInfo()
+	 * @link http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getPathInfo()
 	 * @see getBasePath()
+	 * @since 2.16
 	 */
 	public function getPathInfo()
 	{
@@ -223,9 +262,9 @@ class Eresus_CMS_Request
 	 *
 	 * @return string
 	 *
-	 * @since 2.16
-	 * @see http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getBasePath()
+	 * @link http://api.symfony.com/2.0/Symfony/Component/HttpFoundation/Request.html#getBasePath()
 	 * @see getPathInfo()
+	 * @since 2.16
 	 */
 	public function getBasePath()
 	{
@@ -253,10 +292,12 @@ class Eresus_CMS_Request
 	 * Механизм работы с ними, похож на механизм работы с массивами при помощи reset(), next(),
 	 * current() и т. д.
 	 *
-	 * Этот метод ялвяется аналогом current() и возвращает текущий параметр в очереди.
+	 * Этот метод ялвяется аналогом {@link current() current()} и возвращает текущий параметр в
+	 * очереди.
 	 *
-	 * @return string
+	 * @return string|false
 	 *
+	 * @see getNextParam()
 	 * @since 2.16
 	 */
 	public function getParam()
@@ -270,6 +311,26 @@ class Eresus_CMS_Request
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает следующий параметр из запроса
+	 *
+	 * Этот метод ялвяется аналогом {@link next() next()} и возвращает следующий параметр в очереди.
+	 *
+	 * @return string|false
+	 *
+	 * @see getParam()
+	 * @since 2.16
+	 */
+	public function getNextParam()
+	{
+		if (is_null($this->params))
+		{
+			$this->splitParams();
+		}
+		return next($this->params);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Разбивает папки на массив параметров
 	 *
 	 * @return void
@@ -279,7 +340,7 @@ class Eresus_CMS_Request
 	protected function splitParams()
 	{
 		$this->params = explode('/', $this->getBasePath());
-		// Т. к. basePath начинается со слеша, перый элемент массива всегда пустой. Удаляем его.
+		// Т. к. basePath начинается со слеша, первый элемент массива всегда пустой. Удаляем его.
 		array_shift($this->params);
 		reset($this->params);
 	}
