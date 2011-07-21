@@ -80,15 +80,8 @@ class Eresus_HTTP_Request_Arguments
 		$value = isset($this->args[$name]) ? $this->args[$name] : null;
 		switch (true)
 		{
-			case is_callable($filter, false, $callback):
-				if (is_array($filter) && is_object($filter[0]))
-				{
-					return $filter[0]->$filter[1]($value);
-				}
-				else
-				{
-					return $callback($value);
-				}
+			case is_callable($filter):
+				return call_user_func($filter, $value);
 			break;
 
 			case is_string($filter):
@@ -101,7 +94,9 @@ class Eresus_HTTP_Request_Arguments
 					break;
 					case 'float':
 						return floatval(filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT,
+						  //@codeCoverageIgnoreStart
 							FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND |
+							//@codeCoverageIgnoreEnd
 							FILTER_FLAG_ALLOW_SCIENTIFIC));
 					break;
 					default:
