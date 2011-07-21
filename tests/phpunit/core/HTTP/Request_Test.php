@@ -45,6 +45,7 @@ require_once dirname(__FILE__) . '/../../../../main/core/HTTP/Request/Arguments.
 class Eresus_HTTP_Request_Test extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @covers Eresus_HTTP_Request::__construct
 	 * @covers Eresus_HTTP_Request::setHttpVersion
 	 * @covers Eresus_HTTP_Request::getHttpVersion
 	 */

@@ -1,30 +1,31 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
- * @version ${product.version}
+ * Модульные тесты
  *
- * PhpUnit Tests
- *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
  * $Id$
  */
@@ -35,21 +36,113 @@ require_once dirname(__FILE__) . '/../../../../main/core/URI.php';
 require_once dirname(__FILE__) . '/../../../../main/core/CMS/Request.php';
 
 /**
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
  */
 class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		Eresus_Config::drop('eresus.cms.http.host');
+	}
+	//-----------------------------------------------------------------------------
+	/**
 	 * @covers Eresus_CMS_Request::__construct
 	 * @covers Eresus_CMS_Request::getHttpMessage
+	 * @covers Eresus_CMS_Request::getRootPrefix
+	 * @covers Eresus_CMS_Request::getRootURL
 	 */
 	public function test_construct()
 	{
 		$msg = new Eresus_HTTP_Request();
 		$msg->setUri('http://example.org/dir1/dir2/dir3/file.ext');
-		$test = new Eresus_CMS_Request($msg, '');
+		$test = new Eresus_CMS_Request($msg, '/dir1');
 		$this->assertSame($msg, $test->getHttpMessage());
+		$this->assertEquals('/dir1', $test->getRootPrefix());
+		$this->assertEquals('http://example.org/dir1', strval($test->getRootURL()));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::getInstance
+	 */
+	public function test_getInstance()
+	{
+		$app = $this->getMock('stdClass', array('getRootDir'));
+		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$p_app->setAccessible(true);
+		$p_app->setValue('Eresus_Kernel', $app);
+		$req = Eresus_CMS_Request::getInstance();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::__call
+	 */
+	public function test_call()
+	{
+		$msg = new Eresus_HTTP_Request();
+		$msg->setUri('http://example.org/dir1/dir2/dir3/file.ext');
+		$test = new Eresus_CMS_Request($msg, '');
+		$this->assertEquals($msg->getMethod(), $test->getMethod());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::__call
+	 * @expectedException BadMethodCallException
+	 */
+	public function test_call_unexistent()
+	{
+		$msg = new Eresus_HTTP_Request();
+		$test = new Eresus_CMS_Request($msg, '');
+		$test->getUnexistent();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::isGET
+	 * @covers Eresus_CMS_Request::isPOST
+	 */
+	public function test_isGET()
+	{
+		$msg = new Eresus_HTTP_Request();
+		$msg->setMethod('GET');
+		$test = new Eresus_CMS_Request($msg, '');
+		$this->assertTrue($test->isGET());
+		$this->assertFalse($test->isPOST());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::getHost
+	 */
+	public function test_getHost()
+	{
+		$msg = new Eresus_HTTP_Request();
+		$test = new Eresus_CMS_Request($msg, '');
+
+		$msg->setHost('example.org');
+		$this->assertEquals('example.org', $test->getHost());
+		Eresus_Config::set('eresus.cms.http.host', 'example.com');
+		$this->assertEquals('example.com', $test->getHost());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::isPOST
+	 * @covers Eresus_CMS_Request::isGET
+	 */
+	public function test_isPOST()
+	{
+		$msg = new Eresus_HTTP_Request();
+		$msg->setMethod('POST');
+		$test = new Eresus_CMS_Request($msg, '');
+		$this->assertTrue($test->isPOST());
+		$this->assertFalse($test->isGET());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -120,6 +213,7 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers Eresus_CMS_Request::getParam
+	 * @covers Eresus_CMS_Request::getNextParam
 	 */
 	public function test_getParam()
 	{
@@ -130,6 +224,25 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals('dir1', $req->getParam());
 		$this->assertEquals('dir1', $req->getParam());
+		$this->assertEquals('dir2', $req->getNextParam());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_Request::getNextParam
+	 */
+	public function test_getNextParam()
+	{
+		$msg = new Eresus_HTTP_Request();
+
+		$msg->setUri('http://example.org/site_root/dir1/dir2/file.ext');
+		$req = new Eresus_CMS_Request($msg, '/site_root');
+
+		$p_params = new ReflectionProperty('Eresus_CMS_Request', 'params');
+		$p_params->setAccessible(true);
+		$p_params->setValue($msg, null);
+
+		$this->assertEquals('dir2', $req->getNextParam());
 	}
 	//-----------------------------------------------------------------------------
 

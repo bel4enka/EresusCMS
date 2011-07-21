@@ -31,19 +31,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Request/AllTests.php';
-require_once dirname(__FILE__) . '/Request_Test.php';
-require_once dirname(__FILE__) . '/Response_Test.php';
+require_once dirname(__FILE__) . '/Arguments_Test.php';
 
-class Eresus_HTTP_AllTests
+class Eresus_HTTP_Request_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Eresus/HTTP');
+		$suite = new PHPUnit_Framework_TestSuite('Eresus/HTTP/Request');
 
-		$suite->addTest(      Eresus_HTTP_Request_AllTests::suite());
-		$suite->addTestSuite('Eresus_HTTP_Request_Test');
-		$suite->addTestSuite('Eresus_HTTP_Response_Test');
+		$suite->addTestSuite('Eresus_HTTP_Request_Arguments_Test');
 
 		return $suite;
 	}
