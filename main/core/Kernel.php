@@ -80,8 +80,8 @@ class Eresus_Kernel
 	/**
 	 * Выполняемое приложение
 	 *
-	 * @var EresusApplication
-	 * @see exec, app()
+	 * @var object
+	 * @see exec(), app()
 	 */
 	static private $app = null;
 
@@ -288,10 +288,12 @@ class Eresus_Kernel
 
 			Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
 			if (!self::isCLI())
+			//@codeCoverageIgnoreStart
 			{
 				header('Internal Server Error', true, 500);
 				header('Content-type: text/plain', true);
 			}
+			//@codeCoverageIgnoreEnd
 
 			return $message . "\nSee application log for more info.\n";
 		}
