@@ -138,10 +138,7 @@ class Eresus_HTTP_Response
 	 */
 	public function __construct($body = null)
 	{
-		if (!is_null($body))
-		{
-			$this->body = $body;
-		}
+		$this->body = $body;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -260,31 +257,6 @@ PAGE;
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отправляет ответ
-	 *
-	 * @return void
-	 */
-	public function send()
-	{
-		/* Если статус не указан, позволим веб-серверу выбрать его самостоятельно */
-		if ($this->status)
-		{
-			header(self::getStatusMessage($this->status), true, $this->status);
-		}
-
-		if ($this->headers)
-		{
-			foreach ($this->headers as $name => $value)
-			{
-				header($name . ': ' . $value);
-			}
-		}
-
-		echo $this->body;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Устанавливает код ответа
 	 *
 	 * @param int $status
@@ -296,6 +268,22 @@ PAGE;
 	public function setStatus($status)
 	{
 		$this->status = $status;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Устанавливает заголовок
+	 *
+	 * @param string $name   имя заголовок
+	 * @param string $value  значение заголовок
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function setHeader($name, $value)
+	{
+		$this->headers[$name] = $value;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -318,6 +306,36 @@ PAGE;
 		{
 			return '';
 		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отправляет ответ
+	 *
+	 * @return void
+	 */
+	public function send()
+	{
+		/* Если статус не указан, позволим веб-серверу выбрать его самостоятельно */
+		if ($this->status)
+		{
+			$header = self::getStatusMessage($this->status);
+			//@codeCoverageIgnoreStart
+			Eresus_Kernel::isCLI() || header($header, true, $this->status);
+			//@codeCoverageIgnoreEnd
+		}
+
+		if ($this->headers)
+		{
+			foreach ($this->headers as $name => $value)
+			{
+				//@codeCoverageIgnoreStart
+				Eresus_Kernel::isCLI() || header($name . ': ' . $value);
+				//@codeCoverageIgnoreEnd
+			}
+		}
+
+		echo $this->body;
 	}
 	//-----------------------------------------------------------------------------
 }
