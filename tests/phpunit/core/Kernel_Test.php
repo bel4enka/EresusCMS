@@ -75,10 +75,6 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_initExceptionHandling()
 	{
-		if (version_compare(PHP_VERSION, '5.3.2', '<'))
-		{
-			$this->markTestSkipped('This test requires at PHP 5.3.2 or higher');
-		}
 		$method = new ReflectionMethod('Eresus_Kernel', 'initExceptionHandling');
 		$method->setAccessible(true);
 		$method->invoke(null);
@@ -102,6 +98,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_Kernel::errorHandler
 	 */
 	public function test_errorHandler_at()
 	{
@@ -110,7 +107,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
+	 * @covers Eresus_Kernel::errorHandler
 	 */
 	public function test_errorHandler_NOTICE()
 	{
@@ -119,6 +116,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_Kernel::errorHandler
 	 * @expectedException ErrorException
 	 */
 	public function test_errorHandler_WARNING()
@@ -128,6 +126,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_Kernel::errorHandler
 	 * @expectedException ErrorException
 	 */
 	public function test_errorHandler_ERROR()
@@ -137,7 +136,24 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_Kernel::fatalErrorHandler
+	 */
+	public function test_fatalErrorHandler()
+	{
+		$this->assertFalse(Eresus_Kernel::fatalErrorHandler(''));
+		Eresus_Config::set('eresus.cms.log.level', -1);
+		$this->assertEquals(
+			"PARSE ERROR\nSee application log for more info.\n",
+			Eresus_Kernel::fatalErrorHandler('Parse error: A in B on line C'));
+		$this->assertEquals(
+			"FATAL ERROR\nSee application log for more info.\n",
+			Eresus_Kernel::fatalErrorHandler('Fatal error: A in B on line C'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers Eresus_Kernel::exec
+	 * @covers Eresus_Kernel::app
 	 */
 	public function testExecOk()
 	{
@@ -246,6 +262,10 @@ class Eresus_Kernel_Test_Application1
 	 */
 	public function main()
 	{
+		if (!(Eresus_Kernel::app() instanceof self))
+		{
+			throw new Exception('Eresus_Kernel::app() returns invalid result');
+		}
 		return 123;
 	}
 	//-----------------------------------------------------------------------------
