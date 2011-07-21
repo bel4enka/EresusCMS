@@ -200,6 +200,11 @@ class Eresus_i18n
 	 */
 	private function localeLazyLoad()
 	{
+		if (!$this->locale)
+		{
+			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Locale not set');
+			return;
+		}
 		if (!isset($this->data[$this->locale]))
 		{
 			$filename = $this->path . '/' . $this->locale . '.php';
