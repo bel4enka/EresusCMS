@@ -147,6 +147,7 @@ class Eresus_Logger_Test extends PHPUnit_Extensions_OutputTestCase
 	 */
 	public function test_LOG_EMERG()
 	{
+		Eresus_Config::set('eresus.cms.log.level', LOG_ERR);
 		Eresus_Logger::log('some_function', LOG_EMERG, 'message');
 		$message = file_get_contents($this->logFilename);
 		$test = (Eresus_Kernel::isWindows() ? '[critical]' : '[PANIC]') . ' some_function: message';
