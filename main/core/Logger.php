@@ -201,7 +201,7 @@ class Eresus_Logger
 		fputs(STDERR, __FUNCTION__ . ": Can not log message!\n");
 		//@codeCoverageIgnoreEnd
 
-	//@codeCoverageIgnoreStart
+		//@codeCoverageIgnoreStart
 	}
 	//@codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
