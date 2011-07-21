@@ -169,7 +169,7 @@ class Eresus_CMS_Request
 	 */
 	public function isGET()
 	{
-		return $this->getHttpMessage()->getRequestMethod() == 'GET';
+		return $this->getHttpMessage()->getMethod() == 'GET';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -182,7 +182,7 @@ class Eresus_CMS_Request
 	 */
 	public function isPOST()
 	{
-		return $this->getHttpMessage()->getRequestMethod() == 'POST';
+		return $this->getHttpMessage()->getMethod() == 'POST';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -199,7 +199,7 @@ class Eresus_CMS_Request
 	 */
 	public function getHost()
 	{
-		return Eresus_Config::get('eresus.cms.http.host', $this->request->getRequestHost());
+		return Eresus_Config::get('eresus.cms.http.host', $this->request->getHost());
 	}
 	//-----------------------------------------------------------------------------
 
