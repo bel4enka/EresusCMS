@@ -132,12 +132,18 @@ class Eresus_i18n
 	 *
 	 * @param string $locale  код локали (ru_RU, en_US, …)
 	 *
+	 * @throws InvalidArgumentException  если код локали не в фомрате xx_XX
+	 *
 	 * @return void
 	 *
 	 * @since 2.16
 	 */
 	public function setLocale($locale)
 	{
+		if (!preg_match('/^[a-z]{2}_[A-Z]{2}$/', $locale))
+		{
+			throw new InvalidArgumentException('Invalid locale code: ' . $locale);
+		}
 		$this->locale = $locale;
 	}
 	//-----------------------------------------------------------------------------
