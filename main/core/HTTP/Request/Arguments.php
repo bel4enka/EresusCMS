@@ -94,7 +94,7 @@ class Eresus_HTTP_Request_Arguments
 					break;
 					case 'float':
 						return floatval(filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT,
-						  //@codeCoverageIgnoreStart
+							//@codeCoverageIgnoreStart
 							FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND |
 							//@codeCoverageIgnoreEnd
 							FILTER_FLAG_ALLOW_SCIENTIFIC));
