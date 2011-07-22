@@ -85,6 +85,10 @@ class Eresus_Auth
 	/**
 	 * Возвращает экземпляр службы
 	 *
+	 * <code>
+	 * $auth = Eresus_Auth::getInstance();
+	 * </code>
+	 *
 	 * @return Eresus_Auth
 	 *
 	 * @since 2.16
@@ -102,8 +106,10 @@ class Eresus_Auth
 	/**
 	 * Возвращает модель текущего пользователя
 	 *
-	 * @return Eresus_Model_User|null
+	 * @return Eresus_Model_User|null  модель пользователя или null, если посетитель не
+	 *                                 идентифицирован
 	 *
+	 * @see login(), loginByHash()
 	 * @since 2.16
 	 */
 	public function getUser()
@@ -114,6 +120,8 @@ class Eresus_Auth
 
 	/**
 	 * Проводит аутентификацию и авторизацию в системе
+	 *
+	 * Подробное описание см. в методе {@link loginByHash()}.
 	 *
 	 * @param string $username  имя пользователя
 	 * @param string $password  пароль
@@ -134,8 +142,39 @@ class Eresus_Auth
 	/**
 	 * Проводит аутентификацию и авторизацию в системе по хэшу пароля
 	 *
+	 * Метод проверяет:
+	 *
+	 * - Наличие пользователя с именем $username
+	 * - Активность учётной записи этого пользователя
+	 * - Не превышает ли время, прошедшее с момента последней попытки аутентификации, количества
+	 *   неудачных попыток (защита от подбора пароля перебором)
+	 * - Правильность пароля (хеша)
+	 *
+	 * В случае если все условия выполнены, метод делает следующее:
+	 *
+	 * - Обновляет время в свойствах {@link Eresus_Model_User::$lastVisit} и {@link
+	 *   Eresus_Model_User::$lastLoginTime}
+	 * - Очищает счётчик неудачных попыток входа в {@link Eresus_Model_User::$loginErrors}
+	 * - Сохраняет в сессии идентификатор пользователя
+	 *
+	 * <b>Пример</b>
+	 *
+	 * <code>
+	 * $auth = Eresus_Auth::getInstance();
+	 * if ($auth->login($username, $password) == Eresus_Auth::SUCCESS)
+	 * {
+	 * 	…
+	 * }
+	 * else
+	 * {
+	 * 	…
+	 * }
+	 * </code>
+	 *
 	 * @param string $username  имя пользователя
 	 * @param string $hash      хэш пароля
+	 *
+	 * @throws DomainException  в случае внутренней ошибки при проверке данных
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
@@ -181,7 +220,7 @@ class Eresus_Auth
 		}
 		catch (Exception $e)
 		{
-			//TODO (вызывает ошибку в юнит-тестах) Eresus_Logger::exception($e);
+			//TODO Eresus_Logger::exception($e); // сейчас это вызывает ошибку в юнит-тестах
 			throw new DomainException('Ошибка при обновлении состояния учётной записи');
 		}
 		// Наличие в сессии идентификатора пользователя - признак успешной аутентификации
@@ -193,6 +232,15 @@ class Eresus_Auth
 
 	/**
 	 * Выводит из системы текущего пользователя
+	 *
+	 * - Удаляет идентификатор пользователя из сессии.
+	 * - Вызывает {@link clearCookies()}
+	 *
+	 * <b>Пример</b>
+	 *
+	 * <code>
+	 * Eresus_Auth::getInstance()->logout();
+	 * </code>
 	 *
 	 * @return void
 	 *
@@ -209,9 +257,14 @@ class Eresus_Auth
 	/**
 	 * Инициализуирет службу
 	 *
+	 * Инициализирует службу. Вызывается автоматически.
+	 *
+	 * Если посетителю был установлен куки методом {@link setCookies()}, метод init пытается провести
+	 * аутентификацию по этому куки методом {@link loginByHash()}.
+	 *
 	 * @return void
 	 *
-	 * @uses Eresus_DB_ORM::getTable
+	 * @uses Eresus_DB_ORM::getTable()
 	 * @since 2.16
 	 */
 	public function init()
@@ -238,10 +291,21 @@ class Eresus_Auth
 	 * Метод устанавливает куки, содержащее информацию для автоматической аутентификации посетителя.
 	 * Эта информация проверяется методом {@link Eresus_Auth::init()}.
 	 *
+	 * <b>Пример</b>
+	 *
+	 * <code>
+	 * $auth = Eresus_Auth::getInstance();
+	 * if ($auth->login($username, $password) == Eresus_Auth::SUCCESS)
+	 * {
+	 * 	$auth->setCookies();
+	 * }
+	 * </code>
+	 *
 	 * @return void
 	 *
 	 * @uses Eresus_Kernel::app()
-	 * @uses Eresus_Kernel::get()
+	 * @uses Eresus_CMS_Request::getInstance()
+	 * @uses Eresus_CMS_Request::getRootPrefix()
 	 * @since 2.16
 	 */
 	public function setCookies()
@@ -265,6 +329,8 @@ class Eresus_Auth
 
 	/**
 	 * Удаляет куки, установленные {@link setCookies()}
+	 *
+	 * Вызывается автоматически методом {@link logout()}
 	 *
 	 * @return void
 	 *

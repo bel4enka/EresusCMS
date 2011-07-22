@@ -404,6 +404,7 @@ class Eresus_CMS
 	 * @return void
 	 * @uses Eresus_Logger::log()
 	 * @uses Eresus_Auth::getInstance()
+	 * @uses Eresus_Auth::init()
 	 * @uses Eresus_Kernel::isCLI()
 	 */
 	private function initSession()
