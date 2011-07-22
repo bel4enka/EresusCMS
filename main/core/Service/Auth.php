@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Служба авторизации
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Service
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +33,7 @@
 /**
  * Служба аутентификации
  *
- * @package Service
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_Service_Auth
@@ -116,13 +115,13 @@ class Eresus_Service_Auth
 	/**
 	 * Проводит аутентификацию и авторизацию в системе
 	 *
-	 * @param string $username
-	 * @param string $password
+	 * @param string $username  имя пользователя
+	 * @param string $password  пароль
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
 	 * @uses Eresus_Model_User::passwordHash()
-	 * @uses loginByHash()
+	 * @see loginByHash()
 	 * @since 2.16
 	 */
 	public function login($username, $password)
@@ -133,14 +132,16 @@ class Eresus_Service_Auth
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Проводит аутентификацию и авторизацию в системе
+	 * Проводит аутентификацию и авторизацию в системе по хэшу пароля
 	 *
 	 * @param string $username  имя пользователя
 	 * @param string $hash      хэш пароля
 	 *
 	 * @return int  код результата (см. константы класса)
 	 *
+	 * @see login()
 	 * @uses Eresus_DB_ORM::getTable()
+	 * @uses Eresus_Logger::exception()
 	 * @since 2.16
 	 */
 	public function loginByHash($username, $hash)
@@ -180,7 +181,7 @@ class Eresus_Service_Auth
 		}
 		catch (Exception $e)
 		{
-			//Eresus_Logger::exception($e);
+			//TODO (вызывает ошибку в юнит-тестах) Eresus_Logger::exception($e);
 			throw new DomainException('Ошибка при обновлении состояния учётной записи');
 		}
 		// Наличие в сессии идентификатора пользователя - признак успешной аутентификации
@@ -210,6 +211,7 @@ class Eresus_Service_Auth
 	 *
 	 * @return void
 	 *
+	 * @uses Eresus_DB_ORM::getTable
 	 * @since 2.16
 	 */
 	public function init()
@@ -238,6 +240,8 @@ class Eresus_Service_Auth
 	 *
 	 * @return void
 	 *
+	 * @uses Eresus_Kernel::app()
+	 * @uses Eresus_Kernel::get()
 	 * @since 2.16
 	 */
 	public function setCookies()
@@ -253,8 +257,8 @@ class Eresus_Service_Auth
 		);
 		$value = serialize($value);
 		//$site = Eresus_Kernel::app()->get('site');
-		// TODO Куки должен устанавливаться на корень сайта и это не обязательно "/"
-		$req = Eresus_Kernel::app()->get('request');
+		// TODO Куки должны устанавливаться на корень сайта и это не обязательно "/"
+		$req = Eresus_CMS_Request::getInstance();
 		setcookie('eresus_auth', $value, time() + 2592000, $req->getRootPrefix());
 	}
 	//-----------------------------------------------------------------------------
