@@ -32,6 +32,7 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
+require_once dirname(__FILE__) . '/Auth_Test.php';
 require_once dirname(__FILE__) . '/CMS/AllTests.php';
 require_once dirname(__FILE__) . '/CMS_Test.php';
 require_once dirname(__FILE__) . '/Config_Test.php';
@@ -58,6 +59,7 @@ class Core_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('Core tests');
 
+		$suite->addTestSuite('Eresus_Auth_Test');
 		$suite->addTest(      Eresus_CMS_AllTests::suite());
 		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('Eresus_Config_Test');

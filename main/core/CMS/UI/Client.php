@@ -59,7 +59,7 @@ class Eresus_CMS_UI_Client extends Eresus_CMS_UI
 	public function process()
 	{
 		$router = Eresus_Service_Client_Router::getInstance();
-		$request = $this->get('request');
+		$request = Eresus_CMS_Request::getInstance();
 
 		try
 		{

@@ -35,6 +35,9 @@
 
 if (!class_exists('Dwoo', false))
 {
+	/**
+	 * Подключаем механизм автозагрузки классов Dwoo.
+	 */
 	include dirname(__FILE__) . '/Dwoo/dwooAutoload.php';
 }
 

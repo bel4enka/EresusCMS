@@ -74,7 +74,7 @@ class Eresus_Service_ACL
 	 */
 	public function isGranted($role)
 	{
-		$user = Eresus_Service_Auth::getInstance()->getUser();
+		$user = Eresus_Auth::getInstance()->getUser();
 		if (is_null($user) || is_null($user->access) || $user->access < 1)
 		{
 			return false;

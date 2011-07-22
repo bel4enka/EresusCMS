@@ -36,7 +36,7 @@
  * @package Eresus
  * @since 2.16
  */
-class Eresus_Service_Auth
+class Eresus_Auth
 {
 	/**
 	 * Операция выполнена успешно
@@ -71,7 +71,7 @@ class Eresus_Service_Auth
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var Eresus_Service_Auth
+	 * @var Eresus_Auth
 	 */
 	private static $instance = null;
 
@@ -85,7 +85,7 @@ class Eresus_Service_Auth
 	/**
 	 * Возвращает экземпляр службы
 	 *
-	 * @return Eresus_Service_Auth
+	 * @return Eresus_Auth
 	 *
 	 * @since 2.16
 	 */
@@ -236,7 +236,7 @@ class Eresus_Service_Auth
 	 * Устанавливает куки для автоматического входа
 	 *
 	 * Метод устанавливает куки, содержащее информацию для автоматической аутентификации посетителя.
-	 * Эта информация проверяется методом {@link Eresus_Service_Auth::init()}.
+	 * Эта информация проверяется методом {@link Eresus_Auth::init()}.
 	 *
 	 * @return void
 	 *
@@ -264,7 +264,7 @@ class Eresus_Service_Auth
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Удаляет куки, установленные {@link Eresus_Service_Auth::setCookies()}
+	 * Удаляет куки, установленные {@link setCookies()}
 	 *
 	 * @return void
 	 *

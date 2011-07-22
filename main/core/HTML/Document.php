@@ -105,7 +105,7 @@ class Eresus_HTML_Document
 	public function linkCSS($url, $media = '')
 	{
 		//$this->css[$url] = $media;
-		$req = Eresus_Kernel::app()->get('request');
+		$req = Eresus_CMS_Request::getInstance();
 		$html .= '<link rel="stylesheet" href="' . $req->getRootPrefix() . '/' . $url . '"' .
 			($media ? ' media="' . $media . '"' : '') .'>';
 		return $html;
@@ -124,7 +124,7 @@ class Eresus_HTML_Document
 	public function linkJavaScript($url)
 	{
 		//$this->css[$url] = $media;
-		$req = Eresus_Kernel::app()->get('request');
+		$req = Eresus_CMS_Request::getInstance();
 		$html .= '<script src="' . $req->getRootPrefix() . '/' . $url .
 			'" type="text/javascript"></script>';
 		return $html;

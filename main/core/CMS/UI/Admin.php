@@ -57,16 +57,16 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		}
 		else
 		{
-			if ($this->get('request')->getBasePath() == '/admin/logout')
+			if (Eresus_CMS_Request::getInstance()->getBasePath() == '/admin/logout')
 			{
-				Eresus_Service_Auth::getInstance()->logout();
+				Eresus_Auth::getInstance()->logout();
 				Eresus_HTTP_Response::redirect($this->get('site')->getRootURL() . '/admin/');
 			}
 
 			return $this->main();
 		}
 /*
-		$request = $this->get('request');
+		$request = Eresus_CMS_Request::getInstance();
 
 		try
 		{
@@ -108,7 +108,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		Eresus_Template::setGlobalValue('document', $doc);
 
 		$ts = Eresus_Service_Templates::getInstance();
-		$req = $this->get('request');
+		$req = Eresus_CMS_Request::getInstance();
 
 		$controllerName = $req->getParam();
 		$controllerClass = 'Eresus_Controller_Admin_' . $controllerName;
@@ -138,24 +138,24 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	 * @return string  HTML
 	 *
 	 * @uses Eresus_Model_User::USERNAME_FILTER
-	 * @uses Eresus_Service_Auth::getInstance()
-	 * @uses Eresus_Service_Auth::SUCCESS
+	 * @uses Eresus_Auth::getInstance()
+	 * @uses Eresus_Auth::SUCCESS
 	 * @uses Eresus_HTTP_Response::redirect()
 	 */
 	private function auth()
 	{
-		$req = $this->get('request');
+		$req = Eresus_CMS_Request::getInstance();
 
 		if ($req->isPOST())
 		{
 			$username = trim($req->getPost()->get('username', Eresus_Model_User::USERNAME_FILTER));
 			$password = trim($req->getPost()->get('password'));
-			$state = Eresus_Service_Auth::getInstance()->login($username, $password);
-			if ($state == Eresus_Service_Auth::SUCCESS)
+			$state = Eresus_Auth::getInstance()->login($username, $password);
+			if ($state == Eresus_Auth::SUCCESS)
 			{
 				if ($req->getPost()->get('autologin'))
 				{
-					Eresus_Service_Auth::getInstance()->setCookies();
+					Eresus_Auth::getInstance()->setCookies();
 				}
 				Eresus_HTTP_Response::redirect($req->getHeader('Referer'));
 			}
@@ -177,7 +177,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	 */
 	private function getAuthScreen($errorMessage = '')
 	{
-		$req = $this->get('request');
+		$req = Eresus_CMS_Request::getInstance();
 
 		$data = array(
 			'username' => $req->getPost()->get('username', Eresus_Model_User::USERNAME_FILTER),

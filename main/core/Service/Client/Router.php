@@ -80,7 +80,7 @@ class Eresus_Service_Client_Router
 
 		$names = explode('/', $request->getPath());
 
-		$user = Eresus_Service_Auth::getInstance()->getUser();
+		$user = Eresus_Auth::getInstance()->getUser();
 		$userAccessLevel = $user ? $user->access : 5; // FIXME: Заменить на константу
 
 		$url = '';
