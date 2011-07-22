@@ -1,9 +1,8 @@
-#Wed Jun 22 17:39:26 MSD 2011
+#Fri Jul 22 16:01:08 MSD 2011
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
 encoding//SDK/plugin_template/src/myplugin.php=windows-1251
-encoding//main/cfg/settings.php=windows-1251
 encoding//main/core/Controller/Admin/Design.php=windows-1251
 encoding//main/core/Controller/Admin/Plugins.php=windows-1251
 encoding//main/core/Controller/Admin/Settings.php=windows-1251
@@ -13,7 +12,6 @@ encoding//main/core/templates/SiteSettings/form.html=windows-1251
 encoding//main/core/templates/misc/about.html=windows-1251
 encoding//main/core/templates/widgets/menu/default.html=windows-1251
 encoding//main/ext-3rd/elfinder/js/i18n/elfinder.ru.js=windows-1251
-encoding//main/lang/ru.php=windows-1251
 encoding//main/style/default.css=windows-1251
 encoding//main/templates/default.html=windows-1251
 encoding//main/templates/std/PageSelector.html=windows-1251
