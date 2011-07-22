@@ -43,7 +43,7 @@ $messages = array(
 		'location' => 'Место возникновения ошибки',
 		'stack' => 'Стек вызовов',
 		'additional' => 'Дополнительные сведения',
-		'production' => 'Сайт временно недоступен. Приносим свои извинения.	',
+		'production' => 'Сайт временно недоступен. Приносим свои извинения.',
 	),
 );
 
@@ -148,48 +148,51 @@ if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 <body>
 	<h1><?php echo $local['header'];?></h1>
 	<div class="report">
-		<?php
-			if (isset($error))
-			{
-				echo '<h2>' . get_class($error) . '</h2>';
-				if (class_exists('Eresus_Config', false) && Eresus_Config::get('eresus.cms.debug', false))
-				{
-					?>
-					<div class="message"><?php echo $error->getMessage();?></div>
-					<h3><?php echo $local['location'];?></h3>
-					<div class="location"><?php echo $error->getFile();?>: <?php echo $error->getLine();?></div>
-					<div class="code">
-					<?php
-						$lines = file($error->getFile());
-						$firstLine = $error->getLine() > 5 ? $error->getLine() - 5 : 0;
-						$lastLine = $error->getLine() + 4 < count($lines) ? $error->getLine() + 4 : count($lines);
-						for ($i = $firstLine; $i < $lastLine; $i++)
-						{
-							$s = highlight_string('<?php' . $lines[$i], true);
-							$s = preg_replace('/&lt;\?php/', '', $s, 1);
-							if ($i == $error->getLine() - 1)
-							{
-								$s = preg_replace('/(<\w+)/', '$1 class="error-line"', $s);
-							}
-							echo $s;
-						}
-					?>
-					</div>
-					<h3><?php echo $local['stack'];?></h3>
-					<pre class="trace"><?php echo $error->getTraceAsString();?></pre>
-					<h3><?php echo $local['additional'];?></h3>
-					<?php
-				}
-				elseif ($error instanceof DomainException)
-				{
-					echo '<p>' . $error->getMessage() . '</p>';
-				}
-			}
-			else
-			{
-				echo '<p>' . $local['production'] . '</p>';
-			}
+<?php
+if (isset($error))
+{
+	echo '<h2>' . get_class($error) . '</h2>';
+	if (class_exists('Eresus_Config', false) && Eresus_Config::get('eresus.cms.debug', false))
+	{
 		?>
+		<div class="message"><?php echo $error->getMessage();?></div>
+		<h3><?php echo $local['location'];?></h3>
+		<div class="location">
+			<?php echo $error->getFile();?>:
+			<?php echo $error->getLine();?>
+		</div>
+		<div class="code">
+		<?php
+		$lines = file($error->getFile());
+		$firstLine = $error->getLine() > 5 ? $error->getLine() - 5 : 0;
+		$lastLine = $error->getLine() + 4 < count($lines) ? $error->getLine() + 4 : count($lines);
+		for ($i = $firstLine; $i < $lastLine; $i++)
+		{
+			$s = highlight_string('<?php' . $lines[$i], true);
+			$s = preg_replace('/&lt;\?php/', '', $s, 1);
+			if ($i == $error->getLine() - 1)
+			{
+				$s = preg_replace('/(<\w+)/', '$1 class="error-line"', $s);
+			}
+			echo $s;
+		}
+		?>
+		</div>
+		<h3><?php echo $local['stack'];?></h3>
+		<pre class="trace"><?php echo $error->getTraceAsString();?></pre>
+		<h3><?php echo $local['additional'];?></h3>
+		<?php
+	}
+	elseif ($error instanceof DomainException)
+	{
+		echo '<p>' . $error->getMessage() . '</p>';
+	}
+}
+else
+{
+	echo '<p>' . $local['production'] . '</p>';
+}
+?>
 	</div>
 </body>
 </html>
