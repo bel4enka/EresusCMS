@@ -61,15 +61,6 @@ class Eresus_CMS
 	private $version = '${product.version}';
 
 	/**
-	 * Контейнер основных объектов CMS
-	 *
-	 * @var array
-	 * @see get()
-	 * @since 2.16
-	 */
-	private $container = array();
-
-	/**
 	 * Корневая директория приложения
 	 *
 	 * @var string
@@ -78,43 +69,11 @@ class Eresus_CMS
 	private $rootDir;
 
 	/**
-	 * Доступ к основным объектам CMS
+	 * Сайт
 	 *
-	 * Этот метод — примитивная реализация {@link http://ru.wikipedia.org/wiki/Внедрение_зависимости
-	 * внедрения зависимостей}, позволяющая всем классам
-	 * приложения и расширений получать доступ к основным объектам CMS.
-	 *
-	 * <b>Примеры</b>
-	 *
-	 * Получение объекта {@link Eresus_DB_ORM}:
-	 * <code>
-	 * $site = Eresus_Kernel::app()->get('site');
-	 * </code>
-	 *
-	 * <b>Список объектов</b>
-	 *
-	 * - <b>i18n</b> — {@link Eresus_i18n}
-	 * - <b>site</b> — {@link Eresus_Model_Site}
-	 * - <b>ui</b> — {@link Eresus_CMS_UI_Admin} или {@link Eresus_CMS_UI_Client}
-	 *
-	 * @param string $name  имя объекта
-	 *
-	 * @throws LogicException  если нет объекта с запрошенным именем
-	 *
-	 * @return object  запрошенный объект
-	 *
-	 * @since 2.16
-	 * @see $container
+	 * @var Eresus_Model_Site
 	 */
-	public function get($name)
-	{
-		if (isset($this->container[$name]))
-		{
-			return $this->container[$name];
-		}
-		throw new LogicException('CMS continer has no object "' . $name . '"');
-	}
-	//-----------------------------------------------------------------------------
+	private $site;
 
 	/**
 	 * Возвращает версию приложения
@@ -150,6 +109,51 @@ class Eresus_CMS
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает модель сайта
+	 *
+	 * @return Eresus_Model_Site
+	 *
+	 * @since 2.16
+	 */
+	public function getSite()
+	{
+		if (!$this->site)
+		{
+			$req = Eresus_CMS_Request::getInstance();
+			/*
+			 $this->rootURL = Eresus_HTTP_Toolkit::buildURL($req->getRequestUri(), array(),
+			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . Eresus_WebServer::getInstance()->getPrefix();
+
+
+			$this->prefix = $prefix;
+			$this->rootURL = Eresus_HTTP_Toolkit::buildURL($message->getRequestUrl(), array(),
+			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $prefix;
+
+			$host = preg_replace('/^www\./i', '', $req->getHost());
+
+			$docRoot = Eresus_WebServer::getInstance()->getDocumentRoot();
+			$root = $this->getRootDir();
+			var_dump($root);die;
+			$root = substr($root, strlen($docRoot));
+
+			$site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->
+			findOneByDql('host IN (?, "") AND (root IN (?, "")) ORDER BY host DESC, root DESC', $host,
+			$root);
+			if (!$site)
+			{
+			throw new DomainException('No default site found in database');
+			}
+			*/
+			$this->site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
+
+			//$site->setHost($req->getHost()); // не используем $host, чтобы не потерять "www."
+			$this->site->root = $req->getRootPrefix();
+		}
+		return $this->site;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Основной метод приложения
 	 *
 	 * Этот метод вызывается автоматически.
@@ -174,35 +178,21 @@ class Eresus_CMS
 			$this->createFileStructure();
 			$this->initConf();
 			$this->initDB();
-			$this->initSite();
 			$this->initLocale();
 			$this->initSession();
 			$this->initTemplateEngine();
 
 			if (substr(Eresus_CMS_Request::getInstance()->getBasePath(), 0, 6) == '/admin')
 			{
-				$this->container['ui'] = new Eresus_CMS_UI_Admin();
+				$ui = Eresus_CMS_UI::getInstance('Eresus_CMS_UI_Admin');
 			}
 			else
 			{
-				$this->container['ui'] = new Eresus_CMS_UI_Client();
+				$ui = Eresus_CMS_UI::getInstance('Eresus_CMS_UI_Client');
 			}
 
-			$response = $this->get('ui')->process();
+			$response = $ui->process();
 			$response->send();
-
-			// FIXME Проверять тип ответа. Возможно это будет не HTML
-			if (Eresus_Config::get('eresus.cms.debug'))
-			{
-				$memory = number_format(memory_get_peak_usage(true) / 1024, 0, ',', ' ');
-				echo "\n<!-- Memory: $memory MiB -->";
-				if (!Eresus_Kernel::isWindows())
-				{
-					$ru = getrusage();
-					echo sprintf("\n<!-- utime: %d.%06d sec -->", $ru['ru_utime.tv_sec'],
-						$ru['ru_utime.tv_usec']);
-				}
-			}
 
 		}
 		catch (Eresus_SuccessException $e)
@@ -295,7 +285,6 @@ class Eresus_CMS
 		$i18n = Eresus_i18n::getInstance();
 		$locale = Eresus_Config::get('eresus.cms.locale', 'ru_RU');
 		$i18n->setLocale($locale);
-		$this->container['i18n'] = $i18n;
 		Eresus_Template::setGlobalValue('i18n', $i18n);
 	}
 	//-----------------------------------------------------------------------------
@@ -348,53 +337,6 @@ class Eresus_CMS
 		}
 
 		Doctrine_Core::loadModels(dirname(__FILE__) . '/Model');
-
-		$this->container['orm'] = new Eresus_DB_ORM;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализирует сайт
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 * @uses Eresus_DB_ORM::getTable()
-	 * @uses Eresus_Template::setGlobalValue() для установки глобальной переменной "site"
-	 */
-	private function initSite()
-	{
-		$req = Eresus_CMS_Request::getInstance();
-/*
-		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($req->getRequestUri(), array(),
-			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . Eresus_WebServer::getInstance()->getPrefix();
-
-
- 		$this->prefix = $prefix;
-		$this->rootURL = Eresus_HTTP_Toolkit::buildURL($message->getRequestUrl(), array(),
-			Eresus_HTTP_Toolkit::URL_STRIP_PATH) . '/' . $prefix;
-
-		$host = preg_replace('/^www\./i', '', $req->getHost());
-
-		$docRoot = Eresus_WebServer::getInstance()->getDocumentRoot();
-		$root = $this->getRootDir();
-		var_dump($root);die;
-		$root = substr($root, strlen($docRoot));
-
-		$site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->
-			findOneByDql('host IN (?, "") AND (root IN (?, "")) ORDER BY host DESC, root DESC', $host,
-			$root);
-		if (!$site)
-		{
-			throw new DomainException('No default site found in database');
-		}
-*/
-		$site = Eresus_DB_ORM::getTable('Eresus_Model_Site')->find(1);
-
-		//$site->setHost($req->getHost()); // не используем $host, чтобы не потерять "www."
-		$site->root = $req->getRootPrefix();
-		$this->container['site'] = $site;
-		Eresus_Template::setGlobalValue('site', $site);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -425,13 +367,14 @@ class Eresus_CMS
 	 *
 	 * @return void
 	 *
+	 * @uses Eresus_Config::set()
 	 * @since 2.16
 	 */
 	private function initTemplateEngine()
 	{
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
-		Eresus_Template::setGlobalValue('cms', new Eresus_Helper_ArrayAccessDecorator($this));
+		Eresus_Template::setGlobalValue('site', $this->getSite());
 	}
 	//-----------------------------------------------------------------------------
 

@@ -1,43 +1,46 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
- * @version ${product.version}
+ * Модульные тесты
  *
- * PhpUnit Tests
- *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
  * $Id$
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
-require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
 require_once dirname(__FILE__) . '/../../../main/core/Config.php';
-require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
-require_once dirname(__FILE__) . '/../../../main/core/Auth.php';
-require_once dirname(__FILE__) . '/../../../main/core/Template.php';
+require_once dirname(__FILE__) . '/../../../main/core/Kernel.php';
+require_once dirname(__FILE__) . '/../../../main/core/CMS/Request.php';
+require_once dirname(__FILE__) . '/../../../main/core/HTTP/Request.php';
 require_once dirname(__FILE__) . '/../../../main/core/URI.php';
+require_once dirname(__FILE__) . '/../../../main/core/WebServer.php';
 require_once dirname(__FILE__) . '/../../../main/core/DB/ORM.php';
+#require_once dirname(__FILE__) . '/../../../main/core/Auth.php';
+#require_once dirname(__FILE__) . '/../../../main/core/Template.php';
+require_once dirname(__FILE__) . '/../../../main/core/CMS.php';
 
 require_once 'vfsStream/vfsStream.php';
 $vfsStream = new ReflectionClass('vfsStream');
@@ -45,7 +48,7 @@ $dir = dirname($vfsStream->getFileName());
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToBlacklist($dir);
 
 /**
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
  */
 class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
@@ -89,13 +92,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getRootDir()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
 		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('fake'))->
 			disableOriginalConstructor()->getMock();
+
+		$this->assertEquals(TESTS_SRC_ROOT, $mock->getRootDir());
 
 		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
 		$p_rootDir->setAccessible(true);
@@ -106,15 +106,103 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_CMS::getSite
+	 */
+	public function test_getSite()
+	{
+		$mock = $this->getMockBuilder('Eresus_CMS')->setMethods(array('fake'))->
+			disableOriginalConstructor()->getMock();
+
+		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir->setAccessible(true);
+		$p_rootDir->setValue($mock, '/home/example.org');
+
+		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
+		$p_app->setAccessible(true);
+		$p_app->setValue('Eresus_Kernel', $mock);
+
+		Doctrine_Core::setMock(null);
+		$this->assertInstanceOf('UniversalStub', $mock->getSite());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS::initConf
+	 */
+	public function test_initConf()
+	{
+		if (extension_loaded('suhosin') &&
+			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
+		{
+			$this->markTestSkipped(__METHOD__ .
+				' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
+		}
+
+		$initConf = new ReflectionMethod('Eresus_CMS', 'initConf');
+		$initConf->setAccessible(true);
+
+		$rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$rootDir->setAccessible(true);
+
+		$cms = new Eresus_CMS();
+
+		vfsStreamWrapper::register();
+		$file = new vfsStreamFile('main.php');
+		$file->setContent("<?php\nEresus_Config::set('initConf_1', 'valid');\n");
+		$dir = new vfsStreamDirectory('cfg');
+		$dir->addChild($file);
+		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
+		vfsStreamWrapper::getRoot()->addChild($dir);
+		$rootDir->setValue($cms, vfsStream::url('htdocs'));
+
+		$initConf->invoke($cms);
+		$this->assertEquals('valid', Eresus_Config::get('initConf_1'));
+
+		$file->setContent("<?\nEresus_Config::set('initConf_2', 'valid');\n");
+		$initConf->invoke($cms);
+		$this->assertEquals('valid', Eresus_Config::get('initConf_2'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS::initConf
+	 * @expectedException DomainException
+	 */
+	public function test_initConf_errors()
+	{
+		if (extension_loaded('suhosin') &&
+			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
+		{
+			$this->markTestSkipped(__METHOD__ .
+				' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
+		}
+
+		$initConf = new ReflectionMethod('Eresus_CMS', 'initConf');
+		$initConf->setAccessible(true);
+
+		$rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$rootDir->setAccessible(true);
+
+		$cms = new Eresus_CMS();
+
+		vfsStreamWrapper::register();
+		$file = new vfsStreamFile('main.php');
+		$file->setContent("<?php\nabc\n");
+		$dir = new vfsStreamDirectory('cfg');
+		$dir->addChild($file);
+		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
+		vfsStreamWrapper::getRoot()->addChild($dir);
+		$rootDir->setValue($cms, vfsStream::url('htdocs'));
+
+		$initConf->invoke($cms);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers Eresus_CMS::initDB
 	 */
 	public function test_initDB()
 	{
-		if (version_compare(PHP_VERSION, '5.3.2', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3.2 required');
-		}
-
 		if (extension_loaded('suhosin') &&
 			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
 		{
@@ -153,6 +241,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		vfsStreamWrapper::getRoot()->addChild($dir);
 
 		Eresus_Config::set('eresus.cms.dsn', 'null://');
+		Eresus_Config::set('eresus.cms.dsn.prefix', 'prefix_');
 
 		$rootDir->setValue($cms, vfsStream::url('htdocs'));
 		$initDB->invoke($cms);
@@ -160,45 +249,37 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_CMS::initSite
+	 * @covers Eresus_CMS::initDB
+	 * @expectedException DomainException
 	 */
-	public function test_initSite()
+	public function test_initDB_no_dsn()
 	{
-		if (version_compare(PHP_VERSION, '5.3.2', '<'))
+		if (extension_loaded('suhosin') &&
+			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
 		{
-			$this->markTestSkipped('PHP 5.3.2 required');
+			$this->markTestSkipped(__METHOD__ .
+				' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
 		}
-		return;
 
-		$initSite = new ReflectionMethod('Eresus_CMS', 'initSite');
-		$initSite->setAccessible(true);
+		$initDB = new ReflectionMethod('Eresus_CMS', 'initDB');
+		$initDB->setAccessible(true);
 
-		$p_container = new ReflectionProperty('Eresus_CMS', 'container');
-		$p_container->setAccessible(true);
-
-		$request = $this->getMock('stdClass', array('getHost', 'getRequestUri'));
-		$request->expects($this->any())->method('getHost')->will($this->returnValue('example.org'));
-		$request->expects($this->any())->method('getRequestUri')->
-			will($this->returnValue('http://example.org/site_root/some_path/file.ext'));
-
-		$site = $this->getMock('stdClass', array('setHost', 'setRoot'));
-		$site->expects($this->once())->method('setHost')->with('example.org');
-		$site->expects($this->once())->method('setRoot')->with('/site_root');
-
-		$dbTable = $this->getMock('stdClass', array('findOneByDql'));
-		$dbTable->expects($this->once())->method('findOneByDql')->will($this->returnValue($site));
-
-		$orm = $this->getMock('stdClass', array('getTable'));
-		$orm->expects($this->once())->method('getTable')->will($this->returnValue($dbTable));
-
-		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$p_app->setAccessible(true);
+		$rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$rootDir->setAccessible(true);
 
 		$cms = new Eresus_CMS();
-		$p_app->setValue('Eresus_Kernel', $cms);
-		$p_container->setValue($cms, array('request' => $request, 'orm' => $orm));
 
-		$initSite->invoke($cms);
+		vfsStreamWrapper::register();
+		$file = new vfsStreamFile('Doctrine.php');
+		$dir = new vfsStreamDirectory('core');
+		$dir->addChild($file);
+		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
+		vfsStreamWrapper::getRoot()->addChild($dir);
+
+		Eresus_Config::drop('eresus.cms.dsn');
+
+		$rootDir->setValue($cms, vfsStream::url('htdocs'));
+		$initDB->invoke($cms);
 	}
 	//-----------------------------------------------------------------------------
 
