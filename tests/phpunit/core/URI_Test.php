@@ -298,5 +298,21 @@ class Eresus_URI_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 *
+	 */
+	public function test_case1()
+	{
+		$uri = new Eresus_URI('http://example.org/some/path');
+		$this->assertEquals('http://example.org/some/path', strval($uri));
+
+		$uri->getQuery()->set('a', 1);
+		$this->assertEquals('http://example.org/some/path?a=1', strval($uri));
+
+		$uri->getQuery()->set('b', 2);
+		$this->assertEquals('http://example.org/some/path?a=1&b=2', strval($uri));
+	}
+	//-----------------------------------------------------------------------------
+
 	/* */
 }

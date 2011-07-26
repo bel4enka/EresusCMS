@@ -330,7 +330,11 @@ class Eresus_URI
 	 */
 	public function getQuery()
 	{
-		return isset($this->uri['query']) ? $this->uri['query'] : new Eresus_URI_Query();
+		if (!isset($this->uri['query']))
+		{
+			$this->uri['query'] = new Eresus_URI_Query();
+		}
+		return $this->uri['query'];
 	}
 	//-----------------------------------------------------------------------------
 
