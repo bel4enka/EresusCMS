@@ -179,7 +179,8 @@ class Eresus_URI_Test extends PHPUnit_Framework_TestCase
 		$test = new Eresus_URI();
 
 		$test->setQuery('a=b&c=d');
-		$this->assertEquals('a=b&c=d', $test->getQuery());
+		$this->assertEquals('b', $test->getQuery()->get('a'));
+		$this->assertEquals('d', $test->getQuery()->get('c'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -217,7 +218,7 @@ class Eresus_URI_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('user:pass', $uri->getUserinfo());
 		$this->assertEquals(80, $uri->getPort());
 		$this->assertEquals('/', $uri->getPath());
-		$this->assertEquals('key=value', $uri->getQuery());
+		$this->assertEquals('key=value', strval($uri->getQuery()));
 		$this->assertEquals('foo', $uri->getFragment());
 	}
 	//-----------------------------------------------------------------------------
@@ -235,7 +236,7 @@ class Eresus_URI_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('some$info', $uri->getUserinfo());
 		$this->assertEquals(123, $uri->getPort());
 		$this->assertEquals('/some/path', $uri->getPath());
-		$this->assertEquals('a=b&c=d', $uri->getQuery());
+		$this->assertEquals('a=b&c=d', strval($uri->getQuery()));
 		$this->assertEquals('bar', $uri->getFragment());
 	}
 	//-----------------------------------------------------------------------------

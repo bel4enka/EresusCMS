@@ -113,7 +113,7 @@ class Eresus_URI
 	public function __toString()
 	{
 		$scheme = $this->getScheme();
-		$query = $this->getQuery();
+		$query = strval($this->getQuery());
 		$fragment = $this->getFragment();
 		$userinfo = $this->getUserinfo();
 		$port = $this->getPort();
@@ -303,7 +303,7 @@ class Eresus_URI
 	/**
 	 * Устанавливает запрос
 	 *
-	 * @param string $query  запрос
+	 * @param Eresus_URI_Query|string $query  запрос
 	 *
 	 * @return void
 	 *
@@ -312,7 +312,10 @@ class Eresus_URI
 	 */
 	public function setQuery($query)
 	{
-		$query = strval($query);
+		if (is_string($query))
+		{
+			$query = new Eresus_URI_Query($query);
+		}
 		$this->uri['query'] = $query;
 	}
 	//-----------------------------------------------------------------------------
@@ -320,14 +323,14 @@ class Eresus_URI
 	/**
 	 * Возвращает запрос
 	 *
-	 * @return string|null
+	 * @return Eresus_URI_Query
 	 *
 	 * @since 2.16
 	 * @see setQuery()
 	 */
 	public function getQuery()
 	{
-		return isset($this->uri['query']) ? $this->uri['query'] : null;
+		return isset($this->uri['query']) ? $this->uri['query'] : new Eresus_URI_Query();
 	}
 	//-----------------------------------------------------------------------------
 
