@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Служба списков контроля доступа
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Service
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,22 +33,22 @@
 /**
  * Служба списков контроля доступа
  *
- * @package Service
+ * @package Eresus
  * @since 2.16
  */
-class Eresus_Service_ACL
+class Eresus_ACL
 {
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var Eresus_Service_ACL
+	 * @var Eresus_ACL
 	 */
 	private static $instance = null;
 
 	/**
 	 * Возвращает экземпляр службы
 	 *
-	 * @return Eresus_Service_ACL
+	 * @return Eresus_ACL
 	 *
 	 * @since 2.16
 	 */
@@ -64,33 +63,32 @@ class Eresus_Service_ACL
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Проверяет, наличие у пользователя указанной роли
+	 * Проверяет, наличие у пользователя прав на объект
 	 *
-	 * @param string $role
+	 * Переходный вариант от старой системы прав к ACL.
+	 *
+	 * @param string $permission  право ('ADMIN', 'EDIT', 'VIEW')
+	 * @param mixed  $object      объект (пока что всегда должен быть null)
 	 *
 	 * @return bool
 	 *
 	 * @since 2.16
 	 */
-	public function isGranted($role)
+	public function isGranted($permission, $object = null)
 	{
 		$user = Eresus_Auth::getInstance()->getUser();
 		if (is_null($user) || is_null($user->access) || $user->access < 1)
 		{
 			return false;
 		}
-		switch ($role)
+		switch ($permission)
 		{
-			case 'ROOT':
-				return $user->access == 1;
 			case 'ADMIN':
 				return $user->access <= 2;
-			case 'EDITOR':
+			case 'EDIT':
 				return $user->access <= 3;
-			case 'USER':
+			case 'VIEW':
 				return $user->access <= 4;
-			case 'GUEST':
-				return $user->access <= 5;
 		}
 		return false;
 	}
