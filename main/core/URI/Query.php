@@ -31,7 +31,7 @@
  */
 
 /**
- * Строка запроса
+ * Строка запроса для {@link Eresus_URI}
  *
  * @package Eresus
  * @since 2.16

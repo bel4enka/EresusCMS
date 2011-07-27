@@ -307,8 +307,9 @@ class Eresus_URI
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
 	 * @see getQuery()
+	 * @uses Eresus_URI_Query
+	 * @since 2.16
 	 */
 	public function setQuery($query)
 	{
@@ -327,6 +328,7 @@ class Eresus_URI
 	 *
 	 * @since 2.16
 	 * @see setQuery()
+	 * @uses Eresus_URI_Query
 	 */
 	public function getQuery()
 	{
