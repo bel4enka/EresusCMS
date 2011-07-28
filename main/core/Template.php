@@ -66,7 +66,7 @@ class Eresus_Template
 	 * Объект Dwoo
 	 * @var Dwoo
 	 */
-	protected $dwoo;
+	protected static $dwoo;
 
 	/**
 	 * Файл шаблона
@@ -145,12 +145,14 @@ class Eresus_Template
 	 */
 	public function __construct()
 	{
-		$compileDir = $this->detectCompileDir();
-		$this->dwoo = new Dwoo($compileDir);
-
-		if (Eresus_Config::get('core.template.charset'))
+		if (!self::$dwoo)
 		{
-			$this->dwoo->setCharset(Eresus_Config::get('core.template.charset'));
+			$compileDir = $this->detectCompileDir();
+			self::$dwoo = new Dwoo($compileDir);
+			if (Eresus_Config::get('core.template.charset'))
+			{
+				self::$dwoo->setCharset(Eresus_Config::get('core.template.charset'));
+			}
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -177,7 +179,7 @@ class Eresus_Template
 
 		try
 		{
-			$result = $this->dwoo->get($this->file, $data);
+			$result = self::$dwoo->get($this->file, $data);
 		}
 		catch (Exception $e)
 		{
