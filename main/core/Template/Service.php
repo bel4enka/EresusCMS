@@ -1,12 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
  * Служба по работе с шаблонами
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красиьников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Service
+ * @package Eresus
  *
  * $Id$
  */
@@ -32,40 +33,22 @@
 /**
  * Служба по работе с шаблонами
  *
- * @package Service
+ * @package Eresus
  * @since 2.16
  */
-class Eresus_Service_Templates
+class Eresus_Template_Service
 {
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var Eresus_Service_Templates
+	 * @var Eresus_Template_Service
 	 */
 	private static $instance = null;
 
 	/**
-	 * Реестр разделов
-	 *
-	 * Хранит объекты всех разделов сайта для ускорения работы с ними
-	 *
-	 * @var array
-	 */
-	private $registry = array();
-
-	/**
-	 * Индекс разделов
-	 *
-	 * Содержит ссылки на разделы по разным признакам
-	 *
-	 * @var array
-	 */
-	private $index = array();
-
-	/**
 	 * Возвращает экземпляр класса
 	 *
-	 * @return Eresus_Service_Templates
+	 * @return Eresus_Template_Service
 	 *
 	 * @since 2.16
 	 */

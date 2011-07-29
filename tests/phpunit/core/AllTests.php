@@ -49,6 +49,7 @@ require_once dirname(__FILE__) . '/Logger_Test.php';
 require_once dirname(__FILE__) . '/Mail_Test.php';
 require_once dirname(__FILE__) . '/Model/AllTests.php';
 require_once dirname(__FILE__) . '/Service/AllTests.php';
+require_once dirname(__FILE__) . '/Template/AllTests.php';
 require_once dirname(__FILE__) . '/Template_Test.php';
 require_once dirname(__FILE__) . '/UI/AllTests.php';
 require_once dirname(__FILE__) . '/URI/AllTests.php';
@@ -78,6 +79,7 @@ class Core_AllTests
 		$suite->addTestSuite('Eresus_Mail_Test');
 		$suite->addTest(      Eresus_Model_AllTests::suite());
 		$suite->addTest(      Eresus_Service_AllTests::suite());
+		$suite->addTest(      Eresus_Template_AllTests::suite());
 		$suite->addTestSuite('Eresus_Template_Test');
 		$suite->addTest(      Eresus_UI_AllTests::suite());
 		$suite->addTest(      Eresus_URI_AllTests::suite());
