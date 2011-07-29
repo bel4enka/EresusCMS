@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Шаблон
  *
- * @copyright 2004, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Template
+ * @package Eresus
  *
  * $Id$
  */
@@ -46,19 +45,17 @@ if (!class_exists('Dwoo', false))
 /**
  * Шаблон
  *
+ * <b>{@link http://wiki.dwoo.org/index.php/Main_Page Синтаксис шаблонов}</b>
+ *
  * <b>Настройка</b>
+ *
  * Templte использует {@link Eresus_Config::get()} для чтения конфигурации:
  *
- * <b>core.template.templateDir</b>
- * Корневая директория шаблонов
+ * - <b>core.template.templateDir</b> — Корневая директория шаблонов
+ * - <b>core.template.compileDir</b> — Директория для размещения скомпилированных шаблонов
+ * - <b>core.template.charset</b> — Кодировка шаблонов
  *
- * <b>core.template.compileDir</b>
- * Директория для размещения скомпилированных шаблонов
- *
- * <b>core.template.charset</b>
- * Кодировка шаблонов
- *
- * @package Template
+ * @package Eresus
  */
 class Eresus_Template
 {
