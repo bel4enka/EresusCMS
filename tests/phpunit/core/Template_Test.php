@@ -30,7 +30,9 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../main/core/Template.php';
+require_once TESTS_SRC_ROOT . '/core/Config.php';
+require_once TESTS_SRC_ROOT . '/core/Logger.php';
+require_once TESTS_SRC_ROOT . '/core/Template.php';
 
 class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 {
@@ -42,6 +44,8 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		$this->error_log = ini_get('error_log');
+		$TMP = isset($_ENV['TMP']) ? $_ENV['TMP'] : '/tmp';
+		ini_set('error_log', tempnam($TMP, 'eresus-core-'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -51,6 +55,70 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		ini_set('error_log', $this->error_log);
+		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
+		$p_dwoo->setAccessible(true);
+		$p_dwoo->setValue('Eresus_Template', null);
+		Eresus_Config::drop('core.template.templateDir');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Template::__construct
+	 */
+	public function test_construct()
+	{
+		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
+		$p_dwoo->setAccessible(true);
+		$p_dwoo->setValue('Eresus_Template', null);
+		Eresus_Config::set('core.template.charset', 'windows-1251');
+		$tmpl = new Eresus_Template();
+		$this->assertInstanceOf('Dwoo', $p_dwoo->getValue('Eresus_Template'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Template::detectTemplateDir
+	 */
+	public function test_detectTemplateDir()
+	{
+		$m_detectTemplateDir = new ReflectionMethod('Eresus_Template', 'detectTemplateDir');
+		$m_detectTemplateDir->setAccessible(true);
+		Eresus_Config::set('core.template.templateDir', '/path/to/templates');
+		$tmpl = new Eresus_Template();
+		$this->assertEquals('/path/to/templates',  $m_detectTemplateDir->invoke($tmpl));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Template::detectCompileDir
+	 */
+	public function test_detectCompileDir()
+	{
+		$m_detectCompileDir = new ReflectionMethod('Eresus_Template', 'detectCompileDir');
+		$m_detectCompileDir->setAccessible(true);
+		Eresus_Config::set('core.template.compileDir', '/path/to/cache');
+		$tmpl = new Eresus_Template();
+		$this->assertEquals('/path/to/cache',  $m_detectCompileDir->invoke($tmpl));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Template::loadFromFile
+	 */
+	public function test_loadFromFile()
+	{
+		$m_loadFromFile = new ReflectionMethod('Eresus_Template', 'loadFromFile');
+		$m_loadFromFile->setAccessible(true);
+		$p_file = new ReflectionProperty('Eresus_Template', 'file');
+		$p_file->setAccessible(true);
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT . '/core/templates');
+		$tmpl = new Eresus_Template();
+
+		$m_loadFromFile->invoke($tmpl, 'auth.html');
+		$this->assertInstanceOf('Dwoo_Template_File', $p_file->getValue($tmpl));
+
+		$m_loadFromFile->invoke($tmpl, 'unexistent');
+		$this->assertNull($p_file->getValue($tmpl));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -60,21 +128,38 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_unexistent()
 	{
-		/*$exception = new ErrorException('file not found', 0, E_ERROR, 'some_file', 123);
-		$dwoo = $this->getMockBuilder('stdClass')->setMethods(array('get'))->getMock();
-		$dwoo->expects($this->once())->method('get')->will($this->throwException($exception));
-
-		$test = new Eresus_Template();
-
-		$dwooProp = new ReflectionProperty('Eresus_Template', 'dwoo');
-		$dwooProp->setAccessible(true);
-		$dwooProp->setValue($test, $dwoo);
-
-		ini_set('error_log', false);
-		$this->assertEmpty($test->compile());*/
-
 		$test = new Eresus_Template();
 		$test->compile();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Template::compile
+	 */
+	public function test_compile()
+	{
+		$tmpl = new Eresus_Template();
+
+		$p_file = new ReflectionProperty('Eresus_Template', 'file');
+		$p_file->setAccessible(true);
+		$p_file->setValue($tmpl, true);
+
+		$dwoo = $this->getMock('stdClass', array('get'));
+		$dwoo->expects($this->any())->method('get')->with(true, array('globals' => array()))->
+			will($this->returnValue(true));
+
+		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
+		$p_dwoo->setAccessible(true);
+		$p_dwoo->setValue('Eresus_Template', $dwoo);
+
+		$this->assertTrue($tmpl->compile());
+
+		$dwoo->expects($this->once())->method('get')->with(true, array('globals' => array()));
+
+		$dwoo->expects($this->any())->method('get')->
+			will($this->returnCallback(function(){throw new Exception;}));
+
+		$this->assertEmpty($tmpl->compile());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -93,12 +178,14 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_Template::__construct
+	 * @covers Eresus_Template::fromFile
 	 */
-	public function test_setCharset()
+	public function test_fromFile()
 	{
-		Eresus_Config::set('core.template.charset', 'windows-1251');
-		$test = new Eresus_Template();
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT . '/core/templates');
+
+		$this->assertInstanceOf('Eresus_Template', Eresus_Template::fromFile('auth.html'));
+		$this->assertNull(Eresus_Template::fromFile('unexistent'));
 	}
 	//-----------------------------------------------------------------------------
 
