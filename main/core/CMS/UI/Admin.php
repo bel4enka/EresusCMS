@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Административный интерфейс CMS
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package CMS
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +33,7 @@
 /**
  * Административный интерфейс CMS
  *
- * @package CMS
+ * @package EresusCMS
  * @since 2.16
  */
 class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
@@ -47,21 +46,26 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	private $theme;
 
 	/**
+	 * @uses Eresus_ACL::getInstance()
+	 * @uses Eresus_ACL::isGranted()
 	 * @see Eresus_CMS_UI::process()
 	 */
 	public function process()
 	{
-		if (!Eresus_Service_ACL::getInstance()->isGranted('EDITOR'))
+		if (!Eresus_ACL::getInstance()->isGranted('EDIT'))
 		{
 			return $this->auth();
 		}
 		else
 		{
-			if (Eresus_CMS_Request::getInstance()->getBasePath() == '/admin/logout')
+			$req = Eresus_CMS_Request::getInstance();
+			if ($req->getBasePath() == '/admin/logout')
 			{
 				Eresus_Auth::getInstance()->logout();
-				Eresus_HTTP_Response::redirect($this->get('site')->getRootURL() . '/admin/');
+				Eresus_HTTP_Response::redirect($req->getRootPrefix() . '/admin/');
+				//@codeCoverageIgnoreStart
 			}
+			//@codeCoverageIgnoreEnd
 
 			return $this->main();
 		}
@@ -107,7 +111,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		$doc->setTemplate('page.default', 'core');
 		Eresus_Template::setGlobalValue('document', $doc);
 
-		$ts = Eresus_Service_Templates::getInstance();
+		$ts = Eresus_Template_Service::getInstance();
 		$req = Eresus_CMS_Request::getInstance();
 
 		$controllerName = $req->getParam();
@@ -158,7 +162,9 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 					Eresus_Auth::getInstance()->setCookies();
 				}
 				Eresus_HTTP_Response::redirect($req->getHeader('Referer'));
+				//@codeCoverageIgnoreStart
 			}
+			//@codeCoverageIgnoreEnd
 			$html = $this->getAuthScreen(i18n('Invalid username or password', 'admin.auth'));
 		}
 		else
@@ -185,7 +191,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 			'autologin' => $req->getPost()->get('autologin'),
 			'error' => $errorMessage
 		);
-		$ts = Eresus_Service_Templates::getInstance();
+		$ts = Eresus_Template_Service::getInstance();
 		$tmpl = $ts->get('auth', 'core');
 		$html = $tmpl->compile($data);
 		return $html;

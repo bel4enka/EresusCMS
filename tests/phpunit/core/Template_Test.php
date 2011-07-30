@@ -46,6 +46,12 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 		$this->error_log = ini_get('error_log');
 		$TMP = isset($_ENV['TMP']) ? $_ENV['TMP'] : '/tmp';
 		ini_set('error_log', tempnam($TMP, 'eresus-core-'));
+		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
+		$p_dwoo->setAccessible(true);
+		$p_dwoo->setValue('Eresus_Template', null);
+		$p_globals = new ReflectionProperty('Eresus_Template', 'globals');
+		$p_globals->setAccessible(true);
+		$p_globals->setValue('Eresus_Template', array());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -58,6 +64,9 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
 		$p_dwoo->setAccessible(true);
 		$p_dwoo->setValue('Eresus_Template', null);
+		$p_globals = new ReflectionProperty('Eresus_Template', 'globals');
+		$p_globals->setAccessible(true);
+		$p_globals->setValue('Eresus_Template', array());
 		Eresus_Config::drop('core.template.templateDir');
 	}
 	//-----------------------------------------------------------------------------
@@ -157,7 +166,7 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 		$dwoo->expects($this->once())->method('get')->with(true, array('globals' => array()));
 
 		$dwoo->expects($this->any())->method('get')->
-			will($this->returnCallback(function(){throw new Exception;}));
+			will($this->returnCallback(function(){throw new Dwoo_Exception;}));
 
 		$this->assertEmpty($tmpl->compile());
 	}

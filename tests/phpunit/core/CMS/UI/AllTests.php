@@ -31,23 +31,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/ContentPlugin_Test.php';
-require_once dirname(__FILE__) . '/Request_Test.php';
-require_once dirname(__FILE__) . '/Plugin_Test.php';
-require_once dirname(__FILE__) . '/UI/AllTests.php';
-require_once dirname(__FILE__) . '/UI_Test.php';
+require_once dirname(__FILE__) . '/Admin_Test.php';
 
-class Eresus_CMS_AllTests
+class Eresus_CMS_UI_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Eresus/CMS');
+		$suite = new PHPUnit_Framework_TestSuite('Eresus/CMS/UI');
 
-		$suite->addTestSuite('Eresus_CMS_ContentPlugin_Test');
-		$suite->addTestSuite('Eresus_CMS_Plugin_Test');
-		$suite->addTestSuite('Eresus_CMS_Request_Test');
-		$suite->addTest(      Eresus_CMS_UI_AllTests::suite());
-		$suite->addTestSuite('Eresus_CMS_UI_Test');
+		$suite->addTestSuite('Eresus_CMS_UI_Admin_Test');
 
 		return $suite;
 	}

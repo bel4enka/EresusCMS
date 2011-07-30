@@ -168,6 +168,7 @@ class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
 class Dwoo extends UniversalStub {}
+class Dwoo_Exception extends Exception {}
 class Dwoo_Template_File extends UniversalStub {}
 class elFinder extends UniversalStub {}
 class ezcMailAddress extends UniversalStub {}

@@ -40,11 +40,25 @@ require_once TESTS_SRC_ROOT . '/core/Template/Service.php';
 class Eresus_Template_Service_Test extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @see PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		$p_instance = new ReflectionProperty('Eresus_Template_Service', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Template_Service', null);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @see PHPUnit_Framework_TestCase::tearDown()
 	 */
 	protected function tearDown()
 	{
 		Eresus_Config::drop('core.template.templateDir');
+		$p_instance = new ReflectionProperty('Eresus_Template_Service', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Template_Service', null);
 	}
 	//-----------------------------------------------------------------------------
 

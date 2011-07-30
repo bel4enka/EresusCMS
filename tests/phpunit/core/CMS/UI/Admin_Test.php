@@ -1,0 +1,306 @@
+<?php
+/**
+ * ${product.title} ${product.version}
+ *
+ * Модульные тесты
+ *
+ * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @license ${license.uri} ${license.name}
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
+ * @package Eresus
+ * @subpackage Tests
+ *
+ * $Id$
+ */
+
+require_once dirname(__FILE__) . '/../../../stubs.php';
+require_once TESTS_SRC_ROOT . '/core/ACL.php';
+require_once TESTS_SRC_ROOT . '/core/Auth.php';
+require_once TESTS_SRC_ROOT . '/core/DB/Record.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/Exception/NotFound.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/UI.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/Request.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/Response.php';
+require_once TESTS_SRC_ROOT . '/core/Config.php';
+require_once TESTS_SRC_ROOT . '/core/HTML/Document.php';
+require_once TESTS_SRC_ROOT . '/core/HTTP/Exception/HeadersSent.php';
+require_once TESTS_SRC_ROOT . '/core/HTTP/Request.php';
+require_once TESTS_SRC_ROOT . '/core/HTTP/Request/Arguments.php';
+require_once TESTS_SRC_ROOT . '/core/HTTP/Response.php';
+require_once TESTS_SRC_ROOT . '/core/i18n.php';
+require_once TESTS_SRC_ROOT . '/core/Kernel.php';
+require_once TESTS_SRC_ROOT . '/core/Logger.php';
+require_once TESTS_SRC_ROOT . '/core/Model/User.php';
+require_once TESTS_SRC_ROOT . '/core/Template.php';
+require_once TESTS_SRC_ROOT . '/core/Template/Service.php';
+require_once TESTS_SRC_ROOT . '/core/UI/Admin/Theme.php';
+require_once TESTS_SRC_ROOT . '/core/URI.php';
+require_once TESTS_SRC_ROOT . '/core/URI/Query.php';
+require_once TESTS_SRC_ROOT . '/core/WebServer.php';
+
+require_once TESTS_SRC_ROOT . '/core/CMS/UI/Admin.php';
+
+/**
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
+{
+	/**
+	 * @see PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		$app = $this->getMock('stdClass', array('getRootDir'));
+
+		$p_instance = new ReflectionProperty('Eresus_Kernel', 'app');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Kernel', $app);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		Eresus_Config::drop('core.template.templateDir');
+		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Auth', null);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::auth
+	 * @covers Eresus_CMS_UI_Admin::getAuthScreen
+	 */
+	public function test_process_authDialog()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+		$ui = new Eresus_CMS_UI_Admin();
+
+		$acl = Eresus_ACL::getInstance();
+		$user = new stdClass;
+		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
+		$p_user->setAccessible(true);
+		$auth = Eresus_Auth::getInstance();
+		$p_user->setValue($auth, $user);
+
+		$user->access = 0;
+
+		$ui->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::auth
+	 * @covers Eresus_CMS_UI_Admin::getAuthScreen
+	 * @expectedException Eresus_HTTP_Exception_HeadersSent
+	 */
+	public function test_process_auth()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+		$ui = new Eresus_CMS_UI_Admin();
+
+		$acl = Eresus_ACL::getInstance();
+		$user = new stdClass;
+		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
+		$p_user->setAccessible(true);
+		$auth = Eresus_Auth::getInstance();
+		$p_user->setValue($auth, $user);
+		$user->access = 0;
+
+		$post = $this->getMock('stdClass', array('get'));
+		$post->expects($this->any())->method('get')->will($this->returnCallback(
+			function ($key)
+			{
+				static $values = array(null, 'user', 'pass', true);
+				return next($values);
+			}
+		));
+
+		$request = $this->getMock('stdClass', array('isPOST', 'getPost', 'getRootPrefix', 'getHeader'));
+		$request->expects($this->any())->method('isPOST')->will($this->returnValue(true));
+		$request->expects($this->any())->method('getPost')->will($this->returnValue($post));
+
+		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_CMS_Request', $request);
+
+		$table = $this->getMock('stdClass', array('findByUsername'));
+
+		$doctrine = $this->getMock('stdClass', array('getTable'));
+		$doctrine->expects($this->any())->method('getTable')->will($this->returnValue($table));
+		Doctrine_Core::setMock($doctrine);
+
+		$Eresus_Auth = $this->getMock('stdClass', array('login', 'getUser', 'setCookies'));
+		$Eresus_Auth->expects($this->any())->method('login')->with('user', 'pass')->
+			will($this->returnValue(Eresus_Auth::SUCCESS));
+		$Eresus_Auth->expects($this->any())->method('getUser')->will($this->returnValue($user));
+		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Auth', $Eresus_Auth);
+
+		$ui->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::auth
+	 * @covers Eresus_CMS_UI_Admin::getAuthScreen
+	 */
+	public function test_process_auth_failed()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+		$ui = new Eresus_CMS_UI_Admin();
+
+		$acl = Eresus_ACL::getInstance();
+		$user = new stdClass;
+		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
+		$p_user->setAccessible(true);
+		$auth = Eresus_Auth::getInstance();
+		$p_user->setValue($auth, $user);
+		$user->access = 0;
+
+		$post = $this->getMock('stdClass', array('get'));
+		$post->expects($this->any())->method('get')->will($this->returnCallback(
+			function ($key)
+			{
+				static $values = array(null, 'user', 'pass', true);
+				return next($values);
+			}
+		));
+
+		$request = $this->getMock('stdClass', array('isPOST', 'getPost', 'getRootPrefix', 'getHeader'));
+		$request->expects($this->any())->method('isPOST')->will($this->returnValue(true));
+		$request->expects($this->any())->method('getPost')->will($this->returnValue($post));
+
+		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_CMS_Request', $request);
+
+		$table = $this->getMock('stdClass', array('findByUsername'));
+
+		$doctrine = $this->getMock('stdClass', array('getTable'));
+		$doctrine->expects($this->any())->method('getTable')->will($this->returnValue($table));
+		Doctrine_Core::setMock($doctrine);
+
+		$Eresus_Auth = $this->getMock('stdClass', array('login', 'getUser', 'setCookies'));
+		$Eresus_Auth->expects($this->any())->method('login')->with('user', 'pass')->
+			will($this->returnValue(Eresus_Auth::BAD_PASSWORD));
+		$Eresus_Auth->expects($this->any())->method('getUser')->will($this->returnValue($user));
+		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Auth', $Eresus_Auth);
+
+		$ui->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::main
+	 */
+	public function test_process_main()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+
+		$Eresus_ACL = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_ACL->expects($this->any())->method('isGranted')->with('EDIT')->
+			will($this->returnValue(true));
+
+		$p_instance = new ReflectionProperty('Eresus_ACL', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_ACL', $Eresus_ACL);
+
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
+		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getParam')->will($this->returnValue(''));
+
+		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_CMS_Request', $request);
+
+		$ui = new Eresus_CMS_UI_Admin();
+		$ui->process();
+
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
+		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getParam')->
+			will($this->returnValue('Test_Controller'));
+		$p_instance->setValue('Eresus_CMS_Request', $request);
+
+		$ui->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @expectedException Eresus_HTTP_Exception_HeadersSent
+	 */
+	public function test_process_logout()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+
+		$Eresus_ACL = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_ACL->expects($this->any())->method('isGranted')->with('EDIT')->
+			will($this->returnValue(true));
+
+		$p_instance = new ReflectionProperty('Eresus_ACL', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_ACL', $Eresus_ACL);
+
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath'));
+		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getBasePath')->will($this->returnValue('/admin/logout'));
+
+		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_CMS_Request', $request);
+
+		$Eresus_Auth = $this->getMock('stdClass', array('logout'));
+		$Eresus_Auth->expects($this->once())->method('logout');
+		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
+		$p_instance->setAccessible(true);
+		$p_instance->setValue('Eresus_Auth', $Eresus_Auth);
+
+		$ui = new Eresus_CMS_UI_Admin();
+		$ui->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/* */
+}
+
+
+class Eresus_Controller_Admin_Test_Controller
+{
+	public function execute()
+	{
+		return 'Content';
+	}
+	//-----------------------------------------------------------------------------
+}

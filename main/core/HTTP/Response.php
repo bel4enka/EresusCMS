@@ -163,10 +163,12 @@ class Eresus_HTTP_Response
 	 */
 	public static function redirect($uri = null, $params = null, $session = false, $status = null)
 	{
+		$file = $line = 'unknown';
 		/* Перед редиректом не должно быть отправленных заголовков */
-		if (headers_sent() || Eresus_Kernel::isCLI())
+		if (headers_sent($file, $line) || Eresus_Kernel::isCLI())
 		{
-			return false;
+			throw new Eresus_HTTP_Exception_HeadersSent('Headers already sent in file ' . $file .
+				' on line ' . $line);
 		}
 
 		$uri = new Eresus_URI($uri);

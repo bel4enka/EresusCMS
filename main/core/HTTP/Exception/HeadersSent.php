@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Исключение "Ресурс не найден"
+ * Исключение "Заголовки уже отправлены"
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -31,11 +31,11 @@
  */
 
 /**
- * Исключение "Ресурс не найден"
+ * Исключение "Заголовки уже отправлены"
  *
  * @package Eresus
  * @since 2.16
  */
-class Eresus_CMS_Exception_NotFound extends DomainException
+class Eresus_HTTP_Exception_HeadersSent extends RuntimeException
 {
 }

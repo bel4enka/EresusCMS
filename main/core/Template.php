@@ -178,7 +178,7 @@ class Eresus_Template
 		{
 			$result = self::$dwoo->get($this->file, $data);
 		}
-		catch (Exception $e)
+		catch (Dwoo_Exception $e)
 		{
 			Eresus_Logger::exception($e);
 			$result = '';

@@ -181,7 +181,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * Обычное использование
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_commonUse_simple()
 	{
@@ -213,7 +213,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * Обычное использование
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_commonUse_begining()
 	{
@@ -251,7 +251,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * Обычное использование
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_commonUse_ending()
 	{
@@ -289,7 +289,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * Обычное использование
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_commonUse_middle()
 	{
@@ -330,7 +330,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_size2()
 	{
@@ -368,7 +368,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_size2_beginning()
 	{
@@ -406,7 +406,7 @@ class Eresus_UI_Pagination_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_size2_current3()
 	{

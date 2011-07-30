@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Документ HTML
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package HTML
+ * @package Eresus
  *
  * $Id$
  */
@@ -35,7 +34,10 @@
 /**
  * Документ HTML
  *
- * @package HTML
+ * Этот класс предназначен для создания документов HTML.
+ *
+ * @package Eresus
+ * @since 2.16
  */
 class Eresus_HTML_Document
 {
@@ -43,6 +45,8 @@ class Eresus_HTML_Document
 	 * Шаблон документа
 	 *
 	 * @var array
+	 * @see setTemplate()
+	 * @since 2.16
 	 */
 	private $template;
 
@@ -50,24 +54,38 @@ class Eresus_HTML_Document
 	 * Переменные для шаблона
 	 *
 	 * @var array
+	 * @see setVar()
+	 * @since 2.16
 	 */
 	private $vars = array();
 
 	/**
-	 * Список подключаемых файлов CSS
+	 * Список подключаемых файлов стилей
 	 *
 	 * @var array
+	 * @see linkStylesheet()
+	 * @since 2.16
 	 */
-	private $css = array();
+	private $stylesheets = array();
 
 	/**
-	 * Устанавлвиает шаблон документа
+	 * Список подключаемых скриптов
 	 *
-	 * @param string $template
-	 * @param string $module
+	 * @var array
+	 * @see linkScript()
+	 * @since 2.16
+	 */
+	private $scripts = array();
+
+	/**
+	 * Устанавливает шаблон документа
+	 *
+	 * @param string $template  имя шаблона
+	 * @param string $module    модуль шаблона
 	 *
 	 * @return void
 	 *
+	 * @see Eresus_Template_Service::get()
 	 * @since 2.16
 	 */
 	public function setTemplate($template, $module = null)
@@ -79,8 +97,8 @@ class Eresus_HTML_Document
 	/**
 	 * Устанавливает переменную для подстановки в шаблон
 	 *
-	 * @param string $name
-	 * @param mixed  $value
+	 * @param string $name   имя переменной
+	 * @param mixed  $value  значение
 	 *
 	 * @return void
 	 *
@@ -93,41 +111,36 @@ class Eresus_HTML_Document
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Подключает к документу лист стилей CSS
+	 * Подключает к документу лист стилей
 	 *
-	 * @param string $url
-	 * @param string $media
+	 * @param string $url    адрес листа стилей
+	 * @param string $media  тип устройства
 	 *
-	 * @return string
+	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	public function linkCSS($url, $media = '')
+	public function linkStylesheet($url, $media = '')
 	{
-		//$this->css[$url] = $media;
-		$req = Eresus_CMS_Request::getInstance();
-		$html .= '<link rel="stylesheet" href="' . $req->getRootPrefix() . '/' . $url . '"' .
-			($media ? ' media="' . $media . '"' : '') .'>';
-		return $html;
+		$this->stylesheets[$url] = array('media' => $media);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Подключает к документу скрипт JavaScript
+	 * Подключает к документу скрипт
 	 *
-	 * @param string $url
+	 * @param string $url       адрес скрипта
+	 * @param string $attr,...  атрибуты: defer, async
 	 *
-	 * @return string
+	 * @return void
 	 *
 	 * @since 2.16
 	 */
-	public function linkJavaScript($url)
+	public function linkScript($url)
 	{
-		//$this->css[$url] = $media;
-		$req = Eresus_CMS_Request::getInstance();
-		$html .= '<script src="' . $req->getRootPrefix() . '/' . $url .
-			'" type="text/javascript"></script>';
-		return $html;
+		$attrs = func_get_args();
+		array_shift($attrs);
+		$this->scripts[$url] = $attrs;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -140,24 +153,73 @@ class Eresus_HTML_Document
 	 */
 	public function compile()
 	{
-		$vars = $this->vars;
-
-		$ts = Eresus_Service_Templates::getInstance();
+		$ts = Eresus_Template_Service::getInstance();
 		$tmpl = $ts->get($this->template[0], $this->template[1]);
-		$html = $tmpl->compile($vars);
+		$html = $tmpl->compile($this->vars);
+
+		$styles = $this->compileStylesheets();
+		if ($styles)
+		{
+			$html = str_replace('</head>', $styles . '</head>', $html);
+		}
+
+		$scripts = $this->compileScripts();
+		if ($scripts)
+		{
+			$html = str_replace('</head>', $scripts . '</head>', $html);
+		}
+
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает разметку для подключения файлов CSS
+	 * Возвращает разметку для подключения файлов стилей
 	 *
 	 * @return string
 	 *
 	 * @since 2.16
 	 */
-	private function compileCSS()
+	private function compileStylesheets()
 	{
+		$html = '';
+		if (count($this->stylesheets))
+		{
+			//$req = Eresus_CMS_Request::getInstance(); $req->getRootPrefix()
+			foreach ($this->stylesheets as $url => $params)
+			{
+				// TODO Учесть разметку XHTML
+				$html .= '<link rel="stylesheet" href="' . $url . '"' .
+					($params['media'] ? ' media="' . $params['media'] . '"' : '') . ">\n";
+			}
+		}
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает разметку для подключения файлов скриптов
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	private function compileScripts()
+	{
+		$html = '';
+		if (count($this->scripts))
+		{
+			//$req = Eresus_CMS_Request::getInstance(); $req->getRootPrefix()
+			foreach ($this->scripts as $url => $params)
+			{
+				// TODO Учесть разметку XHTML
+				$html .= '<script src="' . $url . '"' .
+					(in_array('async', $params) ? ' async' : '') .
+					(in_array('defer', $params) ? ' defer' : '') .
+					"></script>\n";
+			}
+		}
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 }
