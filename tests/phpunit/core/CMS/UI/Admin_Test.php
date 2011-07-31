@@ -34,6 +34,7 @@ require_once dirname(__FILE__) . '/../../../stubs.php';
 require_once TESTS_SRC_ROOT . '/core/ACL.php';
 require_once TESTS_SRC_ROOT . '/core/Auth.php';
 require_once TESTS_SRC_ROOT . '/core/DB/Record.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/Exception/Forbidden.php';
 require_once TESTS_SRC_ROOT . '/core/CMS/Exception/NotFound.php';
 require_once TESTS_SRC_ROOT . '/core/CMS/UI.php';
 require_once TESTS_SRC_ROOT . '/core/CMS/Request.php';
@@ -254,6 +255,15 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$p_instance->setValue('Eresus_CMS_Request', $request);
 
 		$ui->process();
+
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
+		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getParam')->
+			will($this->returnValue('Test_Controller_Forbidden'));
+		$p_instance->setValue('Eresus_CMS_Request', $request);
+
+		$ui->process();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -301,6 +311,15 @@ class Eresus_Controller_Admin_Test_Controller
 	public function execute()
 	{
 		return 'Content';
+	}
+	//-----------------------------------------------------------------------------
+}
+
+class Eresus_Controller_Admin_Test_Controller_Forbidden
+{
+	public function execute()
+	{
+		throw new Eresus_CMS_Exception_Forbidden;
 	}
 	//-----------------------------------------------------------------------------
 }

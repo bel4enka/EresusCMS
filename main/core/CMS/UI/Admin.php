@@ -69,29 +69,6 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 
 			return $this->main();
 		}
-/*
-		$request = Eresus_CMS_Request::getInstance();
-
-		try
-		{
-			$this->section = $router->findSection($request);
-			$this->module = $this->section->getModule();
-			$response = new Eresus_CMS_Response($this->module->clientRenderContent($this->section));
-		}
-		catch (Eresus_CMS_Exception_Forbidden $e)
-		{
-			$tmpl = Eresus_Service_Templates::getInstance()->get('errors/403');
-			$html = $tmpl ? $tmpl->compile() : 'Access denied';
-			$response = new Eresus_CMS_Response($html, Eresus_CMS_Response::FORBIDDEN);
-		}
-		catch (Eresus_CMS_Exception_NotFound $e)
-		{
-			$tmpl = Eresus_Service_Templates::getInstance()->get('errors/404');
-			$html = $tmpl ? $tmpl->compile() : 'Not Found';
-			$response = new Eresus_CMS_Response($html, Eresus_CMS_Response::NOT_FOUND);
-		}
-
-		return $response;*/
 	}
 	//-----------------------------------------------------------------------------
 
@@ -126,13 +103,21 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 
 			$controller = new $controllerClass;
 			$contents = $controller->execute($doc);
+			$code = Eresus_CMS_Response::OK;
+		}
+		catch (Eresus_CMS_Exception_Forbidden $e)
+		{
+			$tmpl = $ts->get('errors/Forbidden', 'core');
+			$doc->setVar('content', $tmpl->compile(array('error' => $e)));
+			$code = Eresus_CMS_Response::FORBIDDEN;
 		}
 		catch (Eresus_CMS_Exception_NotFound $e)
 		{
 			$tmpl = $ts->get('errors/NotFound', 'core');
 			$doc->setVar('content', $tmpl->compile(array('error' => $e)));
+			$code = Eresus_CMS_Response::NOT_FOUND;
 		}
-		return new Eresus_CMS_Response($doc->compile());
+		return new Eresus_CMS_Response($doc->compile(), $code);
 	}
 	//-----------------------------------------------------------------------------
 
