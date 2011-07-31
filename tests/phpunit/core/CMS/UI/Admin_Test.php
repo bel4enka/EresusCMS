@@ -238,32 +238,35 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
-		$request->expects($this->any())->method('getParam')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getParam')->will($this->returnValue(false));
 
 		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
 		$p_instance->setAccessible(true);
 		$p_instance->setValue('Eresus_CMS_Request', $request);
 
 		$ui = new Eresus_CMS_UI_Admin();
-		$ui->process();
+		$response = $ui->process();
+		$this->assertEquals(Eresus_CMS_Response::NOT_FOUND, $response->getCode());
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getParam')->
-			will($this->returnValue('Test_Controller'));
+			will($this->returnValue('test_ok'));
 		$p_instance->setValue('Eresus_CMS_Request', $request);
 
-		$ui->process();
+		$response = $ui->process();
+		$this->assertEquals(Eresus_CMS_Response::OK, $response->getCode());
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getParam')->
-			will($this->returnValue('Test_Controller_Forbidden'));
+			will($this->returnValue('test_forbidden'));
 		$p_instance->setValue('Eresus_CMS_Request', $request);
 
-		$ui->process();
+		$response = $ui->process();
+		$this->assertEquals(Eresus_CMS_Response::FORBIDDEN, $response->getCode());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -306,7 +309,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 }
 
 
-class Eresus_Controller_Admin_Test_Controller
+class Eresus_Admin_Controller_Test_OK
 {
 	public function execute()
 	{
@@ -315,7 +318,7 @@ class Eresus_Controller_Admin_Test_Controller
 	//-----------------------------------------------------------------------------
 }
 
-class Eresus_Controller_Admin_Test_Controller_Forbidden
+class Eresus_Admin_Controller_Test_Forbidden
 {
 	public function execute()
 	{

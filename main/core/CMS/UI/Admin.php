@@ -92,7 +92,11 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		$req = Eresus_CMS_Request::getInstance();
 
 		$controllerName = $req->getParam();
-		$controllerClass = 'Eresus_Controller_Admin_' . $controllerName;
+		if ($controllerName === false)
+		{
+			$controllerName = 'Dashboard';
+		}
+		$controllerClass = 'Eresus_Admin_Controller_' . $controllerName;
 
 		try
 		{
