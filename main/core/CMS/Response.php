@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Ответ CMS
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package CMS
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +33,7 @@
 /**
  * Ответ CMS
  *
- * @package CMS
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_CMS_Response
@@ -88,6 +87,19 @@ class Eresus_CMS_Response
 	{
 		$this->body = $body;
 		$this->code = $code;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает код результата
+	 *
+	 * @return int
+	 *
+	 * @since 2.16
+	 */
+	public function getCode()
+	{
+		return $this->code;
 	}
 	//-----------------------------------------------------------------------------
 
