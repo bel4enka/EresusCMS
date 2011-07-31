@@ -108,6 +108,10 @@ class Eresus_CMS_Response
 	 *
 	 * @return void
 	 *
+	 * @uses Eresus_HTTP_Response
+	 * @uses Eresus_HTTP_Response::setStatus()
+	 * @uses Eresus_HTTP_Response::setBody()
+	 * @uses Eresus_HTTP_Response::send()
 	 * @since 2.16
 	 */
 	public function send()

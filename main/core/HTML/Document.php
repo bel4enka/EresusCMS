@@ -185,9 +185,15 @@ class Eresus_HTML_Document
 		$html = '';
 		if (count($this->stylesheets))
 		{
-			//$req = Eresus_CMS_Request::getInstance(); $req->getRootPrefix()
+			$req = Eresus_CMS_Request::getInstance();
 			foreach ($this->stylesheets as $url => $params)
 			{
+				$uri = new Eresus_URI($url);
+				if ($uri->getHost() === null)
+				{
+					$uri->setPath($req->getRootPrefix() . $uri->getPath());
+					$url = strval($uri);
+				}
 				// TODO Учесть разметку XHTML
 				$html .= '<link rel="stylesheet" href="' . $url . '"' .
 					($params['media'] ? ' media="' . $params['media'] . '"' : '') . ">\n";
@@ -209,9 +215,15 @@ class Eresus_HTML_Document
 		$html = '';
 		if (count($this->scripts))
 		{
-			//$req = Eresus_CMS_Request::getInstance(); $req->getRootPrefix()
+			$req = Eresus_CMS_Request::getInstance();
 			foreach ($this->scripts as $url => $params)
 			{
+				$uri = new Eresus_URI($url);
+				if ($uri->getHost() === null)
+				{
+					$uri->setPath($req->getRootPrefix() . $uri->getPath());
+					$url = strval($uri);
+				}
 				// TODO Учесть разметку XHTML
 				$html .= '<script src="' . $url . '"' .
 					(in_array('async', $params) ? ' async' : '') .

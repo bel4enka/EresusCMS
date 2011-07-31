@@ -32,6 +32,11 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/Request.php';
+require_once TESTS_SRC_ROOT . '/core/HTTP/Request.php';
+require_once TESTS_SRC_ROOT . '/core/Kernel.php';
+require_once TESTS_SRC_ROOT . '/core/URI.php';
+require_once TESTS_SRC_ROOT . '/core/WebServer.php';
 require_once TESTS_SRC_ROOT . '/core/HTML/Document.php';
 
 /**
@@ -115,16 +120,20 @@ class Eresus_HTML_Document_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_compileStylesheets()
 	{
+		$req = $this->getMock('stdClass', array('getRootPrefix'));
+		$req->expects($this->any())->method('getRootPrefix')->will($this->returnValue('/prefix'));
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $req);
+
 		$doc = new Eresus_HTML_Document();
-		$doc->linkStylesheet('default.css');
-		$doc->linkStylesheet('print.css', 'print');
+		$doc->linkStylesheet('/default.css');
+		$doc->linkStylesheet('http://example.org/print.css', 'print');
 
 		$m_compileStylesheets = new ReflectionMethod('Eresus_HTML_Document', 'compileStylesheets');
 		$m_compileStylesheets->setAccessible(true);
 
 		$this->assertEquals(
-			'<link rel="stylesheet" href="default.css">' . "\n" .
-			'<link rel="stylesheet" href="print.css" media="print">' . "\n",
+			'<link rel="stylesheet" href="/prefix/default.css">' . "\n" .
+			'<link rel="stylesheet" href="http://example.org/print.css" media="print">' . "\n",
 			$m_compileStylesheets->invoke($doc));
 	}
 	//-----------------------------------------------------------------------------
@@ -134,20 +143,24 @@ class Eresus_HTML_Document_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_compileScripts()
 	{
+		$req = $this->getMock('stdClass', array('getRootPrefix'));
+		$req->expects($this->any())->method('getRootPrefix')->will($this->returnValue('/prefix'));
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $req);
+
 		$doc = new Eresus_HTML_Document();
-		$doc->linkScript('1.js');
-		$doc->linkScript('2.js', 'async');
-		$doc->linkScript('3.js', 'defer');
-		$doc->linkScript('4.js', 'async', 'defer');
+		$doc->linkScript('http://example.org/1.js');
+		$doc->linkScript('/2.js', 'async');
+		$doc->linkScript('/path/3.js', 'defer');
+		$doc->linkScript('/4.js', 'async', 'defer');
 
 		$m_compileScripts = new ReflectionMethod('Eresus_HTML_Document', 'compileScripts');
 		$m_compileScripts->setAccessible(true);
 
 		$this->assertEquals(
-			'<script src="1.js"></script>' . "\n" .
-			'<script src="2.js" async></script>' . "\n" .
-			'<script src="3.js" defer></script>' . "\n" .
-			'<script src="4.js" async defer></script>' . "\n",
+			'<script src="http://example.org/1.js"></script>' . "\n" .
+			'<script src="/prefix/2.js" async></script>' . "\n" .
+			'<script src="/prefix/path/3.js" defer></script>' . "\n" .
+			'<script src="/prefix/4.js" async defer></script>' . "\n",
 			$m_compileScripts->invoke($doc));
 	}
 	//-----------------------------------------------------------------------------

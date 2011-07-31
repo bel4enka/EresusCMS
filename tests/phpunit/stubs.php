@@ -152,6 +152,35 @@ class MockFacade
 }
 
 
+/**
+ * Вспомогательный инструментарий для тестов
+ *
+ * @package Eresus
+ * @subpackage Tests
+ * @since 2.16
+ */
+class Eresus_Tests
+{
+	/**
+	 * Устанавливает статическое приватное свойство класса
+	 *
+	 * @param string $className
+	 * @param mixed  $value
+	 * @param string $propertyName
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public static function setStatic($className, $value, $propertyName = 'instance')
+	{
+		$property = new ReflectionProperty($className, $propertyName);
+		$property->setAccessible(true);
+		$property->setValue($className, $value);
+	}
+	//-----------------------------------------------------------------------------
+}
+
 
 class Doctrine extends MockFacade {}
 class Doctrine_Core extends MockFacade
