@@ -31,7 +31,8 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
-require_once dirname(__FILE__) . '/../../../../main/core/CMS/UI.php';
+require_once TESTS_SRC_ROOT . '/core/HTML/Document.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/UI.php';
 
 /**
  * @package Eresus
@@ -61,11 +62,14 @@ class Eresus_CMS_UI_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers Eresus_CMS_UI::getInstance
+	 * @covers Eresus_CMS_UI::__construct
+	 * @covers Eresus_CMS_UI::getDocument
 	 */
 	public function test_getInstance()
 	{
 		$inst = Eresus_CMS_UI::getInstance('Eresus_CMS_UI_Test_UI');
 		$this->assertInstanceOf('Eresus_CMS_UI', $inst);
+		$this->assertInstanceOf('Eresus_HTML_Document', $inst->getDocument());
 	}
 	//-----------------------------------------------------------------------------
 

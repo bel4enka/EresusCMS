@@ -46,6 +46,19 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	private $theme;
 
 	/**
+	 * Возвращает тему оформления
+	 *
+	 * @return Eresus_UI_Admin_Theme
+	 *
+	 * @since 2.16
+	 */
+	public function getTheme()
+	{
+		return $this->theme;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @uses Eresus_ACL::getInstance()
 	 * @uses Eresus_ACL::isGranted()
 	 * @see Eresus_CMS_UI::process()
@@ -84,9 +97,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		$this->theme = new Eresus_UI_Admin_Theme();
 		Eresus_Template::setGlobalValue('theme', $this->theme);
 
-		$doc = new Eresus_HTML_Document();
-		$doc->setTemplate('page.default', 'core');
-		Eresus_Template::setGlobalValue('document', $doc);
+		$this->document->setTemplate('page.default', 'core');
 
 		$ts = Eresus_Template_Service::getInstance();
 		$req = Eresus_CMS_Request::getInstance();
@@ -106,22 +117,22 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 			}
 
 			$controller = new $controllerClass;
-			$contents = $controller->execute($doc);
+			$contents = $controller->execute($this->document);
 			$code = Eresus_CMS_Response::OK;
 		}
 		catch (Eresus_CMS_Exception_Forbidden $e)
 		{
 			$tmpl = $ts->get('errors/Forbidden', 'core');
-			$doc->setVar('content', $tmpl->compile(array('error' => $e)));
+			$this->document->setVar('content', $tmpl->compile(array('error' => $e)));
 			$code = Eresus_CMS_Response::FORBIDDEN;
 		}
 		catch (Eresus_CMS_Exception_NotFound $e)
 		{
 			$tmpl = $ts->get('errors/NotFound', 'core');
-			$doc->setVar('content', $tmpl->compile(array('error' => $e)));
+			$this->document->setVar('content', $tmpl->compile(array('error' => $e)));
 			$code = Eresus_CMS_Response::NOT_FOUND;
 		}
-		return new Eresus_CMS_Response($doc->compile(), $code);
+		return new Eresus_CMS_Response($this->document->compile(), $code);
 	}
 	//-----------------------------------------------------------------------------
 

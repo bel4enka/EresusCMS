@@ -375,6 +375,12 @@ class Eresus_CMS
 		Eresus_Config::set('core.template.templateDir', $this->getRootDir());
 		Eresus_Config::set('core.template.compileDir', $this->getRootDir() . '/var/cache/templates');
 		Eresus_Template::setGlobalValue('site', $this->getSite());
+		Eresus_Template::setGlobalValue('cms',
+			array(
+				'name' => 'Eresus CMS',
+				'version' => $this->getVersion()
+			)
+		);
 	}
 	//-----------------------------------------------------------------------------
 

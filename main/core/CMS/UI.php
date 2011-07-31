@@ -46,6 +46,14 @@ abstract class Eresus_CMS_UI
 	private static $instance;
 
 	/**
+	 * Создаваемый документ
+	 *
+	 * @var Eresus_HTML_Document
+	 * @since 2.16
+	 */
+	protected $document;
+
+	/**
 	 * Возвращает, при необходимости создавая, объект интерфейса
 	 *
 	 * @param string $className имя класса, потомка Eresus_CMS_UI
@@ -76,6 +84,21 @@ abstract class Eresus_CMS_UI
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Конструктор
+	 *
+	 * @return Eresus_CMS_UI
+	 *
+	 * @uses Eresus_HTML_Document
+	 * @since 2.16
+	 */
+	public function __construct()
+	{
+		$this->document = new Eresus_HTML_Document();
+		Eresus_Template::setGlobalValue('document', $this->document);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Обрабатывает запрос и возвращает ответ
 	 *
 	 * @return Eresus_CMS_Response
@@ -83,5 +106,18 @@ abstract class Eresus_CMS_UI
 	 * @since 2.16
 	 */
 	abstract public function process();
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает создаваемый документ
+	 *
+	 * @return Eresus_HTML_Document
+	 *
+	 * @since 2.16
+	 */
+	public function getDocument()
+	{
+		return $this->document;
+	}
 	//-----------------------------------------------------------------------------
 }

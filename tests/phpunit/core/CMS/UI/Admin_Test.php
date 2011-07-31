@@ -85,6 +85,19 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_CMS_UI_Admin::getTheme
+	 */
+	public function test_getTheme()
+	{
+		$ui = new Eresus_CMS_UI_Admin();
+		$p_theme = new ReflectionProperty('Eresus_CMS_UI_Admin', 'theme');
+		$p_theme->setAccessible(true);
+		$p_theme->setValue($ui, 'theme');
+		$this->assertEquals('theme', $ui->getTheme());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers Eresus_CMS_UI_Admin::process
 	 * @covers Eresus_CMS_UI_Admin::auth
 	 * @covers Eresus_CMS_UI_Admin::getAuthScreen

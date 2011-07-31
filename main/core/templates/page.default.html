@@ -4,83 +4,81 @@
 <head>
 	<meta charset="utf-8">
 	<title>{$globals.site->name} &ndash; {$globals.document->title}</title>
-	{$globals.document->linkCSS($globals.theme->getResource('theme.css'))}
-	{$globals.document->linkJavaScript('/core/jquery/jquery.min.js')}
-	{$globals.document->linkJavaScript('/core/jquery/jquery.cookie.js')}
-	{$globals.document->linkJavaScript('/core/jquery/jquery-ui.min.js')}
-	{$globals.document->linkJavaScript('/core/jquery/jquery.FormNavigate.js')}
-	{$globals.document->linkJavaScript('/admin/admin.js')}
+	{strip}
+	{stylesheet $globals.theme->getResource('theme.css')}
+	{script '/core/jquery/jquery.min.js'}
+	{script '/core/jquery/jquery.cookie.js'}
+	{script '/core/jquery/jquery-ui.min.js'}
+	{script '/core/jquery/jquery.FormNavigate.js'}
+	{script '/admin/admin.js'}
+	{script '/admin/themes/default/theme.js'}
+	{script '/core/functions.js'}
+	{/strip}
 </head>
-<body>
+<body class="ui-widget cms-page">
 
-	<div class="ui-widget cms-page">
-	
-		<div class="ui-widget-header cms-page-header">
-			
-			<div class="cms-logo">
-				<a href="admin.php?mod=about">
-					<img src="{$siteRoot}/admin/themes/default/img/logo.png" alt="{$cms.name} {$cms.version}"
-						width="150" height="30" />
-				</a>
-			</div>
-
-			<h1>{$siteName}</h1>
-			CMS {$cms.name} {$cms.version}
-			
-		</div>
-	
-		<div class="cms-sidebar">
-
-			<div class="box ui-widget ui-widget-content">
-				<div class="header">{i18n('admContent')}</div>
-				<div class="content menu menu-content">
-					<ul>
-						{$sectionMenu}
-					</ul>
-				</div>
-			</div>
-
-			<div class="box ui-widget ui-widget-content menu">
-				{$controlMenu}
-			</div>
-
-			<div class="box ui-widget ui-widget-content">
-				<div class="content user-box">
-					<div>{$user.fullname}</div>
-					<a href="{$siteRoot}/admin.php?mod=users&amp;id={$user.id}">
-						{i18n('admUsersChangePassword')}
-					</a>
-					<form action="{$siteRoot}/admin/logout/" method="post">
-						<div class="ui-button-box">
-							<button type="submit">{i18n('strExit')}</button>
-						</div>
-					</form>
-				</div>
-			</div>
-
-		</div>
-
-		<div class="cms-content" id="content">
-			<noscript>
-				<div class="ui-state-error ui-panel">
-					В вашем браузере не работает JavaScript. Без JavaScript работа с панелью управления
-					сайтом невозможна, и может привести к потере информации!
-				</div>
-			</noscript>
-			{if $Eresus->conf.debug.enable}
-			<div class="ui-state-error ui-panel">
-				Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
-				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
-			</div>
-			{/if}
-			{$content}
-		</div>
+	<header class="cms-page-header">
 		
+		<div class="cms-logo">
+			<a href="{local '/admin/about/'}">
+				<img src="{theme 'img/logo.png'}" alt="{$globals.cms.name} {$globals.cms.version}"
+					width="150" height="30">
+			</a>
+		</div>
+
+		<hgroup>
+			<h1>{$globals.site->name}</h1>
+			<h2>{$globals.cms.name} {$globals.cms.version}</h2>
+		</hgroup>
+		
+	</header>
+
+	<div class="cms-sidebar">
+
+		<div class="box ui-widget ui-widget-content">
+			<div class="header">{i18n('admContent')}</div>
+			<div class="content menu menu-content">
+				<ul>
+					{$sectionMenu}
+				</ul>
+			</div>
+		</div>
+
+		<div class="box ui-widget ui-widget-content menu">
+			{$controlMenu}
+		</div>
+
+		<div class="box ui-widget ui-widget-content">
+			<div class="content user-box">
+				<div>{$user.fullname}</div>
+				<a href="{$siteRoot}/admin.php?mod=users&amp;id={$user.id}">
+					{i18n('admUsersChangePassword')}
+				</a>
+				<form action="{$siteRoot}/admin/logout/" method="post">
+					<div class="ui-button-box">
+						<button type="submit">{i18n('strExit')}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 	</div>
 
-	<script src="{$siteRoot}/admin/themes/default/theme.js" type="text/javascript"></script>
-	<script src="{$siteRoot}/core/functions.js" type="text/javascript"></script>
-	{$body}
-
+	<div class="cms-content" id="content">
+		<noscript>
+			<div class="ui-state-error ui-panel">
+				В вашем браузере не работает JavaScript. Без JavaScript работа с панелью управления
+				сайтом невозможна, и может привести к потере информации!
+			</div>
+		</noscript>
+		{if $Eresus->conf.debug.enable}
+		<div class="ui-state-error ui-panel">
+			Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
+			Отключить режим отладки можно в файле <code>cfg/main.php</code>.
+		</div>
+		{/if}
+		{$content}
+	</div>
+		
 </body>
 </html>

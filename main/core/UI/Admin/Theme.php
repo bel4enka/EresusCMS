@@ -1,12 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Тема оформления административного интерфейса
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
+ * @package Eresus
  *
  * $Id$
  */
@@ -40,7 +41,7 @@
  * Автор темы может создать потомка этого класса, размещённого в файле theme.php в корне темы.
  * В этом случае его класс будет использован вместо стандартного.
  *
- * @package UI
+ * @package Eresus
  */
 class Eresus_UI_Admin_Theme
 {
@@ -49,7 +50,7 @@ class Eresus_UI_Admin_Theme
 	 *
 	 * @var string
 	 */
-	protected $prefix = 'admin/themes';
+	protected $prefix = '/admin/themes';
 
 	/**
 	 * Внутреннее имя темы
