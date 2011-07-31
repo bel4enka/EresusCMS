@@ -33,7 +33,7 @@
 /**
  * Административный интерфейс CMS
  *
- * @package EresusCMS
+ * @package Eresus
  * @since 2.16
  */
 class Eresus_CMS_UI_Admin extends Eresus_CMS_UI

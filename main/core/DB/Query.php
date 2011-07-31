@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package DB
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +34,7 @@
 /**
  * Запрос к БД
  *
- * @package DB
+ * @package Eresus
  * @since 2.16
  */
 // @codeCoverageIgnoreStart
