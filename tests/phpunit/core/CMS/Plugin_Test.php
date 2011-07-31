@@ -46,9 +46,7 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
-		$app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$app->setAccessible(true);
-		$app->setValue('Eresus_Kernel', null);
+		Eresus_Tests::setStatic('Eresus_Kernel', null, 'app');
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -59,9 +57,7 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
@@ -83,9 +79,7 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
@@ -107,9 +101,7 @@ class Eresus_CMS_Plugin_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue('/home/exmaple.org'));
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';

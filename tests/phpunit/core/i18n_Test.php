@@ -82,9 +82,7 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 	public function test_getInstance()
 	{
 		$app = $this->getMock('stdClass', array('getRootDir'));
-		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$p_app->setAccessible(true);
-		$p_app->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 		$test = Eresus_i18n::getInstance();
 	}
 	//-----------------------------------------------------------------------------
@@ -189,10 +187,7 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 		$i18n = $this->getMockBuilder('Eresus_i18n')->setMethods(array('get'))->
 			disableOriginalConstructor()->getMock();
 		$i18n->expects($this->once())->method('get')->with('phrase', 'context');
-
-		$p_instance = new ReflectionProperty('Eresus_i18n', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_i18n', $i18n);
+		Eresus_Tests::setStatic('Eresus_i18n', $i18n);
 
 		i18n('phrase', 'context');
 	}

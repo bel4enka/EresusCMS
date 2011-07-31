@@ -72,9 +72,7 @@ class Eresus_CMS_Request_Test extends PHPUnit_Framework_TestCase
 	public function test_getInstance()
 	{
 		$app = $this->getMock('stdClass', array('getRootDir'));
-		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$p_app->setAccessible(true);
-		$p_app->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 		$req = Eresus_CMS_Request::getInstance();
 	}
 	//-----------------------------------------------------------------------------

@@ -59,9 +59,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
-		$app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$app->setAccessible(true);
-		$app->setValue('Eresus_Kernel', null);
+		Eresus_Tests::setStatic('Eresus_Kernel', null, 'app');
 		Eresus_Config::drop('eresus.cms.dsn');
 
 		$autoloaders = spl_autoload_functions();
@@ -117,9 +115,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$p_rootDir->setAccessible(true);
 		$p_rootDir->setValue($mock, '/home/example.org');
 
-		$p_app = new ReflectionProperty('Eresus_Kernel', 'app');
-		$p_app->setAccessible(true);
-		$p_app->setValue('Eresus_Kernel', $mock);
+		Eresus_Tests::setStatic('Eresus_Kernel', $mock, 'app');
 
 		Doctrine_Core::setMock(null);
 		$this->assertInstanceOf('UniversalStub', $mock->getSite());

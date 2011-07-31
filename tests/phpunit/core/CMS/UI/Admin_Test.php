@@ -70,10 +70,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		$app = $this->getMock('stdClass', array('getRootDir'));
-
-		$p_instance = new ReflectionProperty('Eresus_Kernel', 'app');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -83,9 +80,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		Eresus_Config::drop('core.template.templateDir');
-		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Auth', null);
+		Eresus_Tests::setStatic('Eresus_Kernel', null, 'app');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -143,10 +138,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request = $this->getMock('stdClass', array('isPOST', 'getPost', 'getRootPrefix', 'getHeader'));
 		$request->expects($this->any())->method('isPOST')->will($this->returnValue(true));
 		$request->expects($this->any())->method('getPost')->will($this->returnValue($post));
-
-		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_CMS_Request', $request);
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$table = $this->getMock('stdClass', array('findByUsername'));
 
@@ -158,9 +150,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$Eresus_Auth->expects($this->any())->method('login')->with('user', 'pass')->
 			will($this->returnValue(Eresus_Auth::SUCCESS));
 		$Eresus_Auth->expects($this->any())->method('getUser')->will($this->returnValue($user));
-		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Auth', $Eresus_Auth);
+		Eresus_Tests::setStatic('Eresus_Auth', $Eresus_Auth);
 
 		$ui->process();
 	}
@@ -196,10 +186,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request = $this->getMock('stdClass', array('isPOST', 'getPost', 'getRootPrefix', 'getHeader'));
 		$request->expects($this->any())->method('isPOST')->will($this->returnValue(true));
 		$request->expects($this->any())->method('getPost')->will($this->returnValue($post));
-
-		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_CMS_Request', $request);
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$table = $this->getMock('stdClass', array('findByUsername'));
 
@@ -211,9 +198,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$Eresus_Auth->expects($this->any())->method('login')->with('user', 'pass')->
 			will($this->returnValue(Eresus_Auth::BAD_PASSWORD));
 		$Eresus_Auth->expects($this->any())->method('getUser')->will($this->returnValue($user));
-		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Auth', $Eresus_Auth);
+		Eresus_Tests::setStatic('Eresus_Auth', $Eresus_Auth);
 
 		$ui->process();
 	}
@@ -230,19 +215,13 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$Eresus_ACL = $this->getMock('stdClass', array('isGranted'));
 		$Eresus_ACL->expects($this->any())->method('isGranted')->with('EDIT')->
 			will($this->returnValue(true));
-
-		$p_instance = new ReflectionProperty('Eresus_ACL', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_ACL', $Eresus_ACL);
+		Eresus_Tests::setStatic('Eresus_ACL', $Eresus_ACL);
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getParam')->will($this->returnValue(false));
-
-		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_CMS_Request', $request);
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$ui = new Eresus_CMS_UI_Admin();
 		$response = $ui->process();
@@ -253,7 +232,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getParam')->
 			will($this->returnValue('test_ok'));
-		$p_instance->setValue('Eresus_CMS_Request', $request);
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::OK, $response->getCode());
@@ -263,7 +242,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getParam')->
 			will($this->returnValue('test_forbidden'));
-		$p_instance->setValue('Eresus_CMS_Request', $request);
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::FORBIDDEN, $response->getCode());
@@ -281,24 +260,17 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$Eresus_ACL = $this->getMock('stdClass', array('isGranted'));
 		$Eresus_ACL->expects($this->any())->method('isGranted')->with('EDIT')->
 			will($this->returnValue(true));
-
-		$p_instance = new ReflectionProperty('Eresus_ACL', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_ACL', $Eresus_ACL);
+		Eresus_Tests::setStatic('Eresus_ACL', $Eresus_ACL);
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue('/admin/logout'));
 
-		$p_instance = new ReflectionProperty('Eresus_CMS_Request', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_CMS_Request', $request);
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$Eresus_Auth = $this->getMock('stdClass', array('logout'));
 		$Eresus_Auth->expects($this->once())->method('logout');
-		$p_instance = new ReflectionProperty('Eresus_Auth', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Auth', $Eresus_Auth);
+		Eresus_Tests::setStatic('Eresus_Auth', $Eresus_Auth);
 
 		$ui = new Eresus_CMS_UI_Admin();
 		$ui->process();

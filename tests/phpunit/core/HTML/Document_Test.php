@@ -182,10 +182,7 @@ class Eresus_HTML_Document_Test extends PHPUnit_Framework_TestCase
 		$ts = $this->getMock('stdClass', array('get'));
 		$ts->expects($this->once())->method('get')->with('template', 'module')->
 			will($this->returnValue($tmpl));
-
-		$p_instance = new ReflectionProperty('Eresus_Template_Service', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Template_Service', $ts);
+		Eresus_Tests::setStatic('Eresus_Template_Service', $ts);
 
 		$this->assertEquals(
 			'<html><head><link rel="stylesheet" href="styles.css" media="print">' . "\n" .

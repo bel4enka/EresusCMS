@@ -196,10 +196,7 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
-
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
@@ -245,10 +242,7 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
-
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
@@ -297,10 +291,7 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
-
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$htdocs->addChild(new vfsStreamDirectory('admin'));
 		$htdocs->getChild('admin')->addChild(new vfsStreamDirectory('controllers'));
@@ -348,10 +339,7 @@ class Eresus_Service_Admin_Router_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getRootDir'));
 		$app->expects($this->once())->method('getRootDir')->
 			will($this->returnValue(vfsStream::url('htdocs')));
-
-		$appProp = new ReflectionProperty('Eresus_Kernel', 'app');
-		$appProp->setAccessible(true);
-		$appProp->setValue('Eresus_Kernel', $app);
+		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$htdocs->addChild(new vfsStreamDirectory('core'));
 		$htdocs->getChild('core')->addChild(new vfsStreamDirectory('Controller'));

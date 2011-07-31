@@ -50,9 +50,7 @@ class Eresus_WebServer_Test extends PHPUnit_Framework_TestCase
 		{
 			$this->markTestSkipped('PHP 5.3 required');
 		}
-		$instnce = new ReflectionProperty('Eresus_WebServer', 'instance');
-		$instnce->setAccessible(true);
-		$instnce->setValue('Eresus_WebServer', null);
+		Eresus_Tests::setStatic('Eresus_WebServer', null);
 
 		$dir = dirname(__FILE__);
 		$_SERVER['DOCUMENT_ROOT'] = $dir;

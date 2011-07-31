@@ -46,12 +46,8 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 		$this->error_log = ini_get('error_log');
 		$TMP = isset($_ENV['TMP']) ? $_ENV['TMP'] : '/tmp';
 		ini_set('error_log', tempnam($TMP, 'eresus-core-'));
-		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
-		$p_dwoo->setAccessible(true);
-		$p_dwoo->setValue('Eresus_Template', null);
-		$p_globals = new ReflectionProperty('Eresus_Template', 'globals');
-		$p_globals->setAccessible(true);
-		$p_globals->setValue('Eresus_Template', array());
+		Eresus_Tests::setStatic('Eresus_Template', null, 'dwoo');
+		Eresus_Tests::setStatic('Eresus_Template', array(), 'globals');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -61,12 +57,8 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		ini_set('error_log', $this->error_log);
-		$p_dwoo = new ReflectionProperty('Eresus_Template', 'dwoo');
-		$p_dwoo->setAccessible(true);
-		$p_dwoo->setValue('Eresus_Template', null);
-		$p_globals = new ReflectionProperty('Eresus_Template', 'globals');
-		$p_globals->setAccessible(true);
-		$p_globals->setValue('Eresus_Template', array());
+		Eresus_Tests::setStatic('Eresus_Template', null, 'dwoo');
+		Eresus_Tests::setStatic('Eresus_Template', array(), 'globals');
 		Eresus_Config::drop('core.template.templateDir');
 	}
 	//-----------------------------------------------------------------------------

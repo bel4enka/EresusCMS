@@ -44,9 +44,7 @@ class Eresus_Template_Service_Test extends PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
-		$p_instance = new ReflectionProperty('Eresus_Template_Service', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Template_Service', null);
+		Eresus_Tests::setStatic('Eresus_Template_Service', null);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -56,9 +54,7 @@ class Eresus_Template_Service_Test extends PHPUnit_Framework_TestCase
 	protected function tearDown()
 	{
 		Eresus_Config::drop('core.template.templateDir');
-		$p_instance = new ReflectionProperty('Eresus_Template_Service', 'instance');
-		$p_instance->setAccessible(true);
-		$p_instance->setValue('Eresus_Template_Service', null);
+		Eresus_Tests::setStatic('Eresus_Template_Service', null);
 	}
 	//-----------------------------------------------------------------------------
 
