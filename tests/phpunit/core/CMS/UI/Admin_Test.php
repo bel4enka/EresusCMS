@@ -230,30 +230,30 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 			will($this->returnValue(true));
 		Eresus_Tests::setStatic('Eresus_ACL', $Eresus_ACL);
 
-		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
-		$request->expects($this->any())->method('getParam')->will($this->returnValue(false));
+		$request->expects($this->any())->method('getNextParam')->will($this->returnValue(false));
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$ui = new Eresus_CMS_UI_Admin();
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::NOT_FOUND, $response->getCode());
 
-		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
-		$request->expects($this->any())->method('getParam')->
+		$request->expects($this->any())->method('getNextParam')->
 			will($this->returnValue('test_ok'));
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::OK, $response->getCode());
 
-		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getParam'));
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
-		$request->expects($this->any())->method('getParam')->
+		$request->expects($this->any())->method('getNextParam')->
 			will($this->returnValue('test_forbidden'));
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 

@@ -102,7 +102,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		$ts = Eresus_Template_Service::getInstance();
 		$req = Eresus_CMS_Request::getInstance();
 
-		$controllerName = $req->getParam();
+		$controllerName = $req->getNextParam();
 		if ($controllerName === false)
 		{
 			$controllerName = 'Dashboard';
@@ -111,13 +111,14 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 
 		try
 		{
-			if (!Eresus_Kernel::classExists($controllerClass))
+			if (!class_exists($controllerClass))
 			{
 				throw new Eresus_CMS_Exception_NotFound;
 			}
 
 			$controller = new $controllerClass;
 			$contents = $controller->execute($this->document);
+			$this->document->setVar('content', $contents);
 			$code = Eresus_CMS_Response::OK;
 		}
 		catch (Eresus_CMS_Exception_Forbidden $e)
