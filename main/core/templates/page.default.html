@@ -35,14 +35,14 @@
 
 	<div class="cms-sidebar">
 
-		<div class="box ui-widget ui-widget-content">
-			<div class="header">{i18n('admContent')}</div>
-			<div class="content menu menu-content">
+		<nav class="ui-widget ui-widget-box ui-widget-content">
+			<h1>{i18n('Content', 'admin')}</h1>
+			<div class="ui-menu-content">
 				<ul>
 					{$sectionMenu}
 				</ul>
 			</div>
-		</div>
+		</nav>
 
 		<div class="box ui-widget ui-widget-content menu">
 			{$controlMenu}

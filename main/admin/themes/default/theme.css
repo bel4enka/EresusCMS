@@ -221,12 +221,9 @@ textarea
 /**
  * Бокс
  *
- * Бокс - это самостоятельный блок, содержимое которого не зависит от своего окружения бокса.
- *
- * @applicable div
- * @children .title, .content
+ * Бокс - это самостоятельный блок, содержимое которого не зависит от окружения бокса.
  */
-.box
+.ui-widget-box
 {
 	border: solid 1px #999;
 	margin-bottom: .2em;
@@ -247,9 +244,9 @@ textarea
 	/**
 	 * Заголовок бокса
 	 */
-	.box .header
+	.ui-widget-box .h1
 	{
-		background: #007acc url(img/box-header.png) repeat-x;
+		background: #007acc;
 		border: solid 1px;
 		border-color: #08d #05a #05a #06b;
 		color: #fff;
