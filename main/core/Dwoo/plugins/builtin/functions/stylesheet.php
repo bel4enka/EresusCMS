@@ -26,7 +26,7 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Template
+ * @subpackage Dwoo
  *
  * $Id: Admin.php 1761 2011-07-31 06:47:24Z mk $
  */
