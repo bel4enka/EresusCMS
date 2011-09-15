@@ -85,10 +85,20 @@ $dataFiles = $filesRoot.'data/';
 $type = isset($_REQUEST['type'])?$_REQUEST['type']:'text/plain';
 $file = isset($_REQUEST['file'])?$_REQUEST['file']:'';
 
-if (empty($file)) HttpError(404);
-if (!preg_match('/\.(js|css|html)$/i',$file)) HttpError(403);
-$filename = AddSlashes($filesRoot.$file);
-if (is_file($filename)) {
+if (empty($file))
+{
+	HttpError(404);
+}
+
+if (!preg_match('/\.(js|css|html)$/i',$file))
+{
+	HttpError(403);
+}
+
+$filename = addslashes($filesRoot . $file);
+
+if (is_file($filename))
+{
 	ob_start('ContentLength');
 	ob_start('ob_gzhandler');
 	header('Content-type: '.$type.(isset($_GET['charset'])?'; charset='.$_GET['charset']:''));
@@ -112,4 +122,8 @@ if (is_file($filename)) {
 	), $text);
 	echo $text;
 	ob_end_flush();
-} else NotFound();
+}
+else
+{
+	HttpError(404);
+}
