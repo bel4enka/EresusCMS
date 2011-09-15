@@ -1,4 +1,4 @@
-#Mon Sep 06 14:36:02 MSD 2010
+#Thu Sep 15 13:24:03 MSK 2011
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
@@ -29,7 +29,6 @@ encoding//main/core/kernel-legacy.php=windows-1251
 encoding//main/core/languages.php=windows-1251
 encoding//main/core/lib/accounts.php=windows-1251
 encoding//main/core/lib/admin/lists.php=windows-1251
-encoding//main/core/lib/debug.php=windows-1251
 encoding//main/core/lib/forms.php=windows-1251
 encoding//main/core/lib/glib.php=windows-1251
 encoding//main/core/lib/templates.php=windows-1251

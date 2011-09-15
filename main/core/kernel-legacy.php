@@ -1324,8 +1324,6 @@ class Eresus
 		$this->init_session();
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__).DIRECTORY_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
-		# Если установлен флаг отладки, подключаем отладочную библиотеку
-		if ($this->conf['debug']) useLib('debug');
 		# Читаем настройки
 		$this->init_settings();
 		# Первичный разбор запроса
