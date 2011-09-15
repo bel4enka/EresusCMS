@@ -27,12 +27,12 @@
 						<tr>
 							<td>
 								<label>Заголовок сайта</label><br />
-								<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle}</textarea>
+								<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle|escape}</textarea>
 							</td>
 							<td class="ui-minor">
 								Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
 								текст подставлялся в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
-								<a href="admin.php?mod=templates">шаблоны страниц</a>.
+								<a href="admin.php?mod=themes">шаблоны страниц</a>.
 							</td>
 						</tr>
 						<tr>
@@ -75,23 +75,23 @@
 						<tr>
 							<td>
 								<label>Ключевые слова</label><br />
-								<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords}</textarea>
+								<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords|escape}</textarea>
 							</td>
 							<td class="ui-minor">
 								Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
 								Чтобы эти слова подставлялись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
-								в нужные <a href="admin.php?mod=templates">шаблоны страниц</a>.
+								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label>Описание</label><br />
-								<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription}</textarea>
+								<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription|escape}</textarea>
 							</td>
 							<td class="ui-minor">
 								Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
 								Чтобы этот текст подставлялся в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
-								в нужные <a href="admin.php?mod=templates">шаблоны страниц</a>.
+								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
 							</td>
 						</tr>
 					</table>
@@ -194,10 +194,13 @@
 			</fc:tabs>
 
 		</fc:tabwidget>
+		
 	</div>
+
 	<div class="ui-button-box">
 		<button type="submit">Сохранить</button>
 	</div>
+	
 	<script type="text/javascript">//<![CDATA[
 		$(document).ready(function () {
 
