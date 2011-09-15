@@ -230,6 +230,13 @@ function mceInit(data, textStatus, xhr)
 		fix_nesting: true,
 
 		/*
+		 * This option enables you to make sure that any non block elements or text nodes are wrapped in
+		 * block elements. For example <strong>something</strong> will result in output like:
+		 * <p><strong>something</strong></p>. This option is enabled by default as of 3.0a1.
+		 */
+		forced_root_block: '',
+
+		/*
 		 * If this option is set to true, all URLs returned from the MCFileManager will be relative from
 		 * the specified document_base_url. If it's set to false all URLs will be converted to absolute
 		 * URLs.
@@ -250,6 +257,12 @@ function mceInit(data, textStatus, xhr)
 		 */
 		remove_script_host: false,
 
+		/*
+		 * This option enables or disables the element cleanup functionality. If you set this option to
+		 * false, all element cleanup will be skipped but other cleanup functionality such as URL
+		 * conversion will still be executed.
+		 */
+		verify_html: false,
 
 		style_formats : siteStyles,
 
