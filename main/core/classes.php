@@ -59,7 +59,7 @@ class Plugins
 	{
 		global $Eresus;
 
-		$items = $Eresus->db->select('`plugins`');
+		$items = $Eresus->db->select('plugins');
 		if (count($items))
 		{
 			foreach($items as $item)
