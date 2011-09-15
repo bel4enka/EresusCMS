@@ -66,6 +66,10 @@ class TThemes
 	public $stdTemplates = array(
 		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
 		'PageSelector' => array('caption' => admTemplPageSelector, 'hint' => admTemplPageSelectorLabel),
+		'pagination' => array('caption' => 'Новый переключатель страниц',
+			'hint' => '<a href="http://wiki.dwoo.org/">Синтаксис</a>.
+			Переменная $pagination содержит массив страниц. У каждой страницы есть свойства: title &mdash;
+			номер страницы; url &mdash; адрес страницы; current &mdash; true, это это текущая страница.'),
 		'400' => array('caption' => 'HTTP 400 - Bad Request'),
 		'401' => array('caption' => 'HTTP 401 - Unauthorized'),
 		'402' => array('caption' => 'HTTP 402 - Payment Required'),
@@ -337,13 +341,16 @@ class TThemes
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title.admTDiv.admEdit,
+			'caption' => $page->title . admTDiv . admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'_name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.tmpl ('.$this->stdTemplates[$item['name']]['caption'].')', 'disabled' => true, 'value'=>$item['name']),
+				array('type'=>'edit','name'=>'_name','label' => admThemesFilenameLabel,
+					'width' => '200px', 'comment' => '.tmpl (' .
+					$this->stdTemplates[$item['name']]['caption'].')',
+					'disabled' => true, 'value'=>$item['name']),
 				array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
