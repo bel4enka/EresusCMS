@@ -1,4 +1,4 @@
-#Thu Sep 15 14:05:53 MSK 2011
+#Thu Sep 15 14:57:03 MSK 2011
 eclipse.preferences.version=1
 encoding//SDK/eresus-connector.php=windows-1251
 encoding//SDK/plugin_template.php=windows-1251
@@ -10,7 +10,6 @@ encoding//lang/ru.php=windows-1251
 encoding//main/admin/themes/default/PluginManager/add-dialog.html=windows-1251
 encoding//main/admin/themes/default/SiteSettings/form.html=windows-1251
 encoding//main/admin/themes/default/misc/about.html=windows-1251
-encoding//main/admin/themes/default/page.default.html=UTF-8
 encoding//main/cfg/main.template.php=windows-1251
 encoding//main/cfg/settings.php=windows-1251
 encoding//main/core/admin.php=windows-1251
