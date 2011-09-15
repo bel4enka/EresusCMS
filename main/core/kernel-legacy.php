@@ -146,22 +146,6 @@ function UserRights($level)
 	return ((($Eresus->user['auth']) && ($Eresus->user['access'] <= $level) && ($Eresus->user['access'] != 0)) || ($level == GUEST));
 }
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-function resetLastVisitTime($time='', $expand=false)
-{
-	global $Eresus;
-
-	if ($Eresus->user['auth']) {
-		$item = $Eresus->db->selectItem('users', "`id`='".$Eresus->user['id']."'");
-		if (empty($time)) $item['lastVisit'] = gettime(); else {
-			if ($expand) $time = substr($time,0,4).'-'.substr($time,4,2).'-'.substr($time,6,2).' '.substr($time,8,2).':'.substr($time,10,2);
-			$item['lastVisit'] = $time;
-		}
-		$Eresus->db->updateItem('users', $item,"`id`='".$item['id']."'");
-		$Eresus->user['lastVisit'] = $item['lastVisit'];
-	}
-}
-//------------------------------------------------------------------------------
 
 /**
  * Подключение библиотеки
