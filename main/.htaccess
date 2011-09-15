@@ -35,7 +35,7 @@ Options -Indexes +FollowSymLinks
 # Отключаем установку кодировки по умолчанию
 AddDefaultCharset Off
 
-<IfModule charset_module>
+<IfModule mod_charset.>
 	CharsetDisable On
 </IfModule>
 
@@ -65,11 +65,10 @@ AddDefaultCharset Off
 	RewriteRule ^(robots.txt|favicon.[^\.]+|core/gziph.php.*)$ - [last]
 
 	# Все остальные запросы должны перехватываться запускающим скриптом
-	RewriteCond -f index.php
 	RewriteRule .* index.php
 </IfModule>
 
 # Если mod_rewrite не сработал (модуль не подключен, нет нужного файла), то...
 <IfModule mod_dir.c>
-	DirectoryIndex index.php index.html index.htm
+	DirectoryIndex index.htm
 </IfModule>
