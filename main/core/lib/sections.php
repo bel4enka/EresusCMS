@@ -406,9 +406,13 @@ class Sections
 		/* Удаляем подразделы */
 		for ($i = 0; $i < count($children); $i++)
 		{
-			$result = $this->delete($children[$i]['id']);
-			if (!$result)
+			try
 			{
+				$this->delete($children[$i]['id']);
+			}
+			catch (DBQueryException $e)
+			{
+				$result = false;
 				break;
 			}
 		}
@@ -424,7 +428,7 @@ class Sections
 					$plugin->onSectionDelete($id);
 				}
 			}
-			$result = $Eresus->db->delete($this->table, "`id`=$id");
+			$Eresus->db->delete($this->table, "`id`=$id");
 		}
 		return $result;
 	}
