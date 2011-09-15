@@ -295,7 +295,7 @@ class TClientUI extends WebPage
 		$this->access = GUEST;
 		$this->visible = true;
 		$this->type = 'default';
-		if (file_exists(filesRoot.'templates/std/'.$code.'.tmpl')) {
+		if (file_exists(filesRoot.'templates/std/'.$code.'.html')) {
 			$this->template = 'std/'.$code;
 			$this->content = '';
 		} else {
