@@ -237,6 +237,13 @@ function mceInit(data, textStatus, xhr)
 		relative_urls: false,
 
 		/*
+		 * This option enables you to control whether TinyMCE is to be clever and restore URLs to their
+		 * original values. URLs are automatically converted (messed up) by default because the built-in
+		 * browser logic works this way.
+		 */
+		convert_urls : false,
+
+		/*
 		 * If this option is enabled the protocol and host part of the URLs returned from the
 		 * MCFileManager will be removed. This option is only used if the relative_urls option is set to
 		 * false.
