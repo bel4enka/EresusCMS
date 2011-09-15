@@ -307,9 +307,10 @@ class Plugins
 						),
 						$template
 					);
-					$result = str_replace('$(items)', $items, $page->content);
 				}
+				$result = str_replace('$(items)', $items, $page->content);
 			break;
+
 			case 'url':
 				HTTP::redirect($page->replaceMacros($page->content));
 			break;
