@@ -69,7 +69,7 @@ class TContent
 						{
 							$original = $item['content'];
 							$item['content'] = arg('content', 'dbsafe');
-							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
+							$Eresus->sections->update($item);
 							HTTP::redirect(arg('submitURL'));
 						}
 						else
@@ -93,7 +93,7 @@ class TContent
 						{
 							$original = $item['content'];
 							$item['content'] = arg('url', 'dbsafe');
-							$Eresus->db->updateItem('pages', $item, "`id`='".$item['id']."'");
+							$Eresus->sections->update($item);
 							HTTP::redirect(arg('submitURL'));
 						}
 						else
