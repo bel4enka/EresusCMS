@@ -276,10 +276,16 @@ class Plugins
 
 				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
 				if (empty($page->content)) $page->content = '$(items)';
-				$template = loadTemplate('std/SectionListItem');
-				if ($template === false) $template['html'] = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
+				useLib('templates');
+				$templates = new Templates();
+				$template = $templates->get('SectionListItem', 'std');
+				if (false === $template)
+				{
+					$template = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
+				}
 				$items = '';
-				foreach($subitems as $item) {
+				foreach ($subitems as $item)
+				{
 					$items .= str_replace(
 						array(
 							'$(id)',
@@ -299,7 +305,7 @@ class Plugins
 							$item['hint'],
 							$Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
 						),
-						$template['html']
+						$template
 					);
 					$result = str_replace('$(items)', $items, $page->content);
 				}

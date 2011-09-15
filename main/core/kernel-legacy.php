@@ -625,38 +625,7 @@ function upload($name, $filename, $overwrite = true)
 	return $result;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# TODO: Удалить как устаревшую
-/**
- * @deprecated
- */
-function loadTemplate($name)
-# Считывает указанный шаблон
-{
-	$filename = filesRoot.'templates/'.$name.(strpos($name, '.html')===false?'.html':'');
-	if (file_exists($filename)) {
-		$result['html'] = file_get_contents($filename);
-		preg_match('/<!--(.*?)-->/', $result['html'], $result['description']);
-		$result['description'] = trim($result['description'][1]);
-		$result['html'] = trim(substr($result['html'], strpos($result['html'], "\n")));
-	} else $result = false;
-	return $result;
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# TODO: Удалить как устаревшую
-/**
- * @deprecated
- */
-function saveTemplate($name, $template)
-# Сохраняет указанный шаблон
-{
-	$file = "<!-- ".$template['description']." -->\r\n\r\n".$template['html'];
-	$fp = fopen(filesRoot.'templates/'.$name.(strpos($name, '.tmpl')===false?'.html':''), 'w');
-	fwrite($fp, $file);
-	fclose($fp);
-}
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function HttpAnswer($answer)
 {
 	Header('Content-type: text/html; charset='.CHARSET);
