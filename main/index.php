@@ -43,15 +43,29 @@ ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
  */
 define('ERESUS_LOG_LEVEL' , ${log.level});
 
+ini_set('track_errors', true);
 /**
  * Подключение Eresus Core
  */
 include_once 'core/framework/core/eresus-core.compiled.php';
 
-/**
- * Подключение главного приложения
- */
-include_once 'core/main.php';
+if ($php_errormsg)
+{
+	die($php_errormsg);
+}
+ini_set('track_errors', false);
+
+try
+{
+	/**
+	 * Подключение главного приложения
+	 */
+	include_once 'core/main.php';
+}
+catch (Exception $e)
+{
+	die('Can not include file "core/main.php". Is it present and accessible?');
+}
 
 /*
  * Запуск CMS
