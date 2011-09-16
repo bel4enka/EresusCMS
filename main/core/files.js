@@ -35,27 +35,25 @@ function filesInit(root, panel)
 {
 	httpRoot = root;
 	slctPanel = panel;
-	var obj = document.getElementById(panel+'Panel');
-	if (obj) rowSelect(iBrowser['Engine']=='IE'?obj.children[0].children[2]:obj.childNodes[1].childNodes[4]);
+	var obj = $('#' + panel + 'Panel');
+	if (obj.length)
+	{
+		rowSelect($('tr', obj).eq(2));
+	}
 }
 
 function setPanel(url)
 {
 	url = url.toString();
-	if (url.indexOf('&sp=') != -1) url = url.replace(/sp=([lr])/,'sp='+slctPanel);
-	else url += '&sp='+slctPanel;
+	if (url.indexOf('&sp=') != -1)
+	{
+		url = url.replace(/sp=([lr])/,'sp='+slctPanel);
+	}
+	else
+	{
+		url += '&sp='+slctPanel;
+	}
 	return url;
-}
-
-function buttonOver(objButton)
-{
-	objButton.bgColor='dddddd';
-	objButton.style.border = 'solid 1px #777';
-}
-
-function buttonOut(objButton){
-	objButton.bgColor='silver';
-	objButton.style.border = 'solid 1px silver';
 }
 
 function keyboardEvents()
@@ -65,24 +63,29 @@ function keyboardEvents()
 
 function getCurrentFolder()
 {
-	var folder = objRowSel.parentNode.childNodes[0].childNodes[0].innerHTML.substr(2);
-	//if (folder.length) folder += '/';
+	var folder = $('tr', objRowSel.closest('table')).eq(0).text().substr(2);
 	return folder;
 }
 
+
+/**
+ *
+ * @param {jQuery} objRow
+ */
 function rowSelect(objRow)
 {
-	if (objRowSel != null) {
-		objRowSel.bgColor ='#ffffff';
-		objRowSel.style.color = '#000050';
+	if (objRowSel != null)
+	{
+		objRowSel.css('background-color', 'white');
+		objRowSel.css('color', '#000050');
 	}
-	objRow.bgColor ='#4682B4';
-	objRow.style.color = 'white';
+	objRow.css('background-color', '#4682b4');
+	objRow.css('color', 'white');
 	objRowSel = objRow;
-	var objStatus = document.getElementById('SelFileName');
-	objStatus.value = httpRoot+getCurrentFolder()+objRowSel.childNodes[1].innerHTML;
-	slctPanel = objRowSel.parentNode.parentNode.id.substr(0,1);
-	document.upload.action = document.upload.action.replace(/sp=\w/, 'sp='+slctPanel);
+	var objStatus = $('#SelFileName');
+	objStatus.val(httpRoot + getCurrentFolder() + $('td', objRowSel).eq(1).text());
+	slctPanel = objRowSel.closest('table').attr('id').substr(0,1);
+	document.upload.action = document.upload.action.replace(/sp=\w/, 'sp=' + slctPanel);
 }
 
 function Copy(strControlName)
@@ -115,26 +118,33 @@ function filesMkDir()
 
 function filesRename()
 {
-	if (objRowSel != null) {
-		var filename = objRowSel.childNodes[1].innerHTML;
-		if (filename.substr(-2) != '..') {
+	if (objRowSel != null)
+	{
+		var filename = $('td', objRowSel).eq(1).text();
+		if (filename.substr(-2) != '..')
+		{
 			var newname = prompt('Переименовать',filename);
 			if (newname != undefined && newname.length && newname != filename)
+			{
 				window.location = setPanel(window.location)+'&rename='+filename+'&newname='+newname;
+			}
 		}
 	}
 }
 
 function filesChmod()
 {
-	if (objRowSel != null) {
-		var filename = objRowSel.childNodes[1].innerHTML;
-		if (filename.substr(-2) != '..') {
-			var perms = objRowSel.childNodes[4].innerHTML;
+	if (objRowSel != null)
+	{
+		var filename = $('td', objRowSel).eq(0).text();
+		if (filename.substr(-2) != '..')
+		{
+			var perms = $('td', objRowSel).eq(4).text();
 			var a = new Array(perms.substr(0, 3), perms.substr(3, 3), perms.substr(6, 3));
 			perms = '0';
 			var value;
-			for (var i=0; i < 3; i++) {
+			for (var i=0; i < 3; i++)
+			{
 				value = 0;
 				if (a[i].substr(0, 1) == 'r') value += 4;
 				if (a[i].substr(1, 1) == 'w') value += 2;
@@ -143,21 +153,36 @@ function filesChmod()
 			}
 			var newperms = prompt('Установить права', perms);
 			if (newperms != undefined && newperms.length && newperms != perms)
+			{
 				window.location = setPanel(window.location)+'&chmod='+filename+'&perms='+newperms;
+			}
 		}
 	}
 }
 
 function filesCopy()
 {
-	if (objRowSel != null) {
-		var filename = objRowSel.childNodes[1].innerHTML;
-		if (filename.substr(-2) != '..') {
-			var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
-			obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
-			for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename)
-				if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
-				else return;
+	if (objRowSel != null)
+	{
+		var filename = $('td', objRowSel).eq(1).text();
+		if (filename.substr(-2) != '..')
+		{
+			var obj = $('#' + (slctPanel=='l'?'r':'l')+'Panel');
+			obj = $('tr', obj);
+			for (var i = 2; i < obj.length; i++)
+			{
+				if ($('td', obj.eq(i)).eq(1).text() == filename)
+				{
+					if (confirm('Файл "'+filename+'" уже существует. Переписать?'))
+					{
+						break;
+					}
+					else
+					{
+						return;
+					}
+				}
+			}
 			window.location = setPanel(window.location)+'&copyfile='+filename;
 		}
 	}
@@ -166,13 +191,25 @@ function filesCopy()
 function filesMove()
 {
 	if (objRowSel != null) {
-		var filename = objRowSel.childNodes[1].innerHTML;
-		if (filename.substr(-2) != '..') {
-			var obj = document.getElementById((slctPanel=='l'?'r':'l')+'Panel');
-			obj = (iBrowser['Engine']=='IE')?obj.children[0].children:obj.childNodes[1].childNodes;
-			for (var i=4; i < obj.length; i+=2) if (obj[i].childNodes[1].innerHTML == filename)
-				if (confirm('Файл "'+filename+'" уже существует. Переписать?')) break;
-				else return;
+		var filename = $('td', objRowSel).eq(1).text();
+		if (filename.substr(-2) != '..')
+		{
+			var obj = $('#' + (slctPanel=='l'?'r':'l')+'Panel');
+			obj = $('tr', obj);
+			for (var i = 2; i < obj.length; i++)
+			{
+				if ($('td', obj.eq(i)).eq(1).text() == filename)
+				{
+					if (confirm('Файл "'+filename+'" уже существует. Переписать?'))
+					{
+						break;
+					}
+					else
+					{
+						return;
+					}
+				}
+			}
 			window.location = setPanel(window.location)+'&movefile='+filename;
 		}
 	}
@@ -180,9 +217,11 @@ function filesMove()
 
 function filesDelete()
 {
-	if (objRowSel != null) {
-		var filename = objRowSel.childNodes[1].innerHTML;
-		if ((filename.substr(-2) != '..') && confirm('Подтверждаете удаление "'+filename+'"?')) {
+	if (objRowSel != null)
+	{
+		var filename = $('td', objRowSel).eq(1).text();
+		if ((filename.substr(-2) != '..') && confirm('Подтверждаете удаление "'+filename+'"?'))
+		{
 			window.location = setPanel(window.location)+'&delete='+filename;
 		}
 	}

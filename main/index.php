@@ -49,7 +49,7 @@ ini_set('track_errors', true);
  */
 include_once 'core/framework/core/eresus-core.compiled.php';
 
-if ($php_errormsg)
+if (@$php_errormsg)
 {
 	die($php_errormsg);
 }

@@ -126,20 +126,40 @@ div.admListHint {border: solid 1px #007acc; background-color: white; padding: 2p
 
 /* File manager */
 
-#fileManager {
+#fileManager 
+{
 	background-color: white;
 	border-collapse: collapse;
 	border-style: none;
 	border-spacing: 0;
 	width: 100%;
 }
-#fileManager td {
+#fileManager td
+{
 	padding: 0;
 }
-td.filesMenu {
+
+td.filesMenu
+{
 	background-color: silver; border-style: solid; border-width: 1px; border-color: #ddd #555 #555 #ddd;
 }
-.filesMenu td {padding: 2px 5px; color: black; width: 5em; text-align: center; border: solid 1px silver; cursor : default;}
+
+#fileManager .filesMenu td
+{
+	border: solid 1px silver;
+	color: black;
+	cursor : default;
+	padding: 0 5px;
+	text-align: center;
+	width: 5em;
+}
+
+	#fileManager .filesMenu td:hover
+	{
+		background-color: #ddd;
+		border: solid 1px #777;
+	}
+
 td.filesPanel {
 	border-style: solid;
 	border-width: 0px 1px;

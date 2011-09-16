@@ -133,7 +133,13 @@ class TFiles
 		$result =
 			"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
 			"<tr>";
-		foreach($menu as $item) if ($item['active']) $result .= "<td onMouseOver=\"buttonOver(this)\" onMouseOut=\"buttonOut(this)\" onClick=\"".$item['action']."\">".$item['caption']."</td>\n";
+		foreach ($menu as $item)
+		{
+			if ($item['active'])
+			{
+				$result .= "<td onclick=\"".$item['action']."\">".$item['caption']."</td>\n";
+			}
+		}
 		$result .=
 			"</tr>".
 			"</table>";
@@ -220,7 +226,7 @@ class TFiles
 			"<tr class=\"filesListPath\"><th colspan=\"5\">./".((empty($path)) ? '' : $path)."</th></tr>\n".
 			"<tr class=\"filesListHdr\"><th>&nbsp;</th><th>Имя файла</th><th>Размер</th><th>Время</th><th>Доступ</th><th>Владелец</th><th style=\"width: 100%\">&nbsp;</th></tr>\n";
 		for ($i = 0; $i < count($items);  $i++) {
-			$result .= "<tr onClick=\"rowSelect(this)\" onDblClick=\"";
+			$result .= '<tr onclick="rowSelect($(this))" ondblclick="';
 			switch ($items[$i]['action']) {
 				case 'cd': $result .= "javascript:filesCD('".$this->url(array($side.'f'=>$items[$i]['link']))."')"; break;
 				case 'new': $result .= "window.open('".$items[$i]['link']."');"; break;
@@ -308,7 +314,7 @@ class TFiles
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
 		if (file_exists($filename))
 		{
-			@chmod($filename, octdec(arg('perms', '/\D/')));
+			chmod($filename, octdec(arg('perms', '/\D/')));
 		}
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
