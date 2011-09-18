@@ -7,7 +7,7 @@
  * @version ${product.version}
  * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красиьников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
