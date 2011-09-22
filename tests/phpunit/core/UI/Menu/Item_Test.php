@@ -31,6 +31,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../../stubs.php';
+require_once TESTS_SRC_ROOT . '/core/CMS/Request.php';
 require_once TESTS_SRC_ROOT . '/core/UI/Menu/Item.php';
 
 /**
@@ -55,8 +56,8 @@ class Eresus_UI_Menu_Item_Test extends PHPUnit_Framework_TestCase
 	public function test_xetPath()
 	{
 		$item = new Eresus_UI_Menu_Item();
-		$item->setPath('a/b/c');
-		$this->assertEquals('a/b/c', $item->getPath());
+		$item->setPath('/foo/bar');
+		$this->assertEquals('/foo/bar', $item->getPath());
 	}
 	//-----------------------------------------------------------------------------
 

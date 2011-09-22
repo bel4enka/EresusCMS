@@ -36,15 +36,8 @@
  *
  * @package Eresus
  */
-class Eresus_UI_Menu_Admin
+class Eresus_UI_Menu_Admin extends Eresus_UI_Menu
 {
-	/**
-	 * Пункты меню
-	 *
-	 * @var array
-	 */
-	private $items = array();
-
 	/**
 	 * Добавляет новый пункт в меню
 	 *
@@ -73,39 +66,8 @@ class Eresus_UI_Menu_Admin
 		}
 		if (Eresus_Security::getInstance()->isGranted($item->access))
 		{
-			$this->items []= $item;
+			parent::addItem($item);
 		}
-	}
-	//-----------------------------------------------------------------------------
-
-
-	/**
-	 * Возвращает отрисованное меню
-	 *
-	 * @param string $templateName  имя файла шаблона
-	 *
-	 * @return string  HTML
-	 *
-	 * @since 2.16
-	 */
-	public function render($templateName)
-	{
-		$ts = Eresus_Template_Service::getInstance();
-		$tmpl = $ts->get('menus/' . $templateName, 'core');
-		return $tmpl->compile(array('menu' => $this));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает пункты меню
-	 *
-	 * @return array
-	 *
-	 * @since 2.20
-	 */
-	public function getItems()
-	{
-		return $this->items;
 	}
 	//-----------------------------------------------------------------------------
 }

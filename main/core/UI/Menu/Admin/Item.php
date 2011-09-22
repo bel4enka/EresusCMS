@@ -38,27 +38,50 @@
  */
 class Eresus_UI_Menu_Admin_Item extends Eresus_UI_Menu_Item
 {
+	/**
+	 * Требуемый доступ
+	 *
+	 * @var string
+	 */
 	private $access;
 
 	/**
-	 * Возвращает URL пункта
+	 * Устанавливает адрес
 	 *
-	 * @return string
+	 * @param string $path  полный путь от корня сайта, включая начальный слэш
+	 *
+	 * @return void
 	 *
 	 * @since 2.20
 	 */
-	public function getURL()
+	public function setPath($path)
 	{
-		return Eresus_CMS_Request::getInstance()->getRootPrefix() . '/admin' . $this->path;
+		parent::setPath('/admin' . $path);
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Устанавливает уровень доступа
+	 *
+	 * @param string $access
+	 *
+	 * @return void
+	 *
+	 * @since 2.20
+	 */
 	public function setAccess($access)
 	{
 		$this->access = $access;
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Возвращает уровень доступа
+	 *
+	 * @return string
+	 *
+	 * @since 2.20
+	 */
 	public function getAccess()
 	{
 		return $this->access;

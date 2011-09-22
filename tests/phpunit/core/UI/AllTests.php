@@ -33,6 +33,7 @@
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/Menu/AllTests.php';
+require_once dirname(__FILE__) . '/Menu_Test.php';
 require_once dirname(__FILE__) . '/Pagination_Test.php';
 
 class Eresus_UI_AllTests
@@ -42,6 +43,7 @@ class Eresus_UI_AllTests
 		$suite = new PHPUnit_Framework_TestSuite('core/UI');
 
 		$suite->addTest(      Eresus_UI_Menu_AllTests::suite());
+		$suite->addTestSuite('Eresus_UI_Menu_Test');
 		$suite->addTestSuite('Eresus_UI_Pagination_Test');
 		return $suite;
 	}

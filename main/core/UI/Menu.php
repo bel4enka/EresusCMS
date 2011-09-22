@@ -51,18 +51,28 @@ class Eresus_UI_Menu
 	/**
 	 * Добавляет новый пункт в меню
 	 *
-	 * @param Eresus_UI_Menu_Item $item
+	 * @param mixed $item  объект {@link Eresus_UI_Menu_Item} или массив с такими же элементами
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.20
 	 */
-	public function addItem($access, $path, $caption)
+	public function addItem($item)
 	{
-		$item = new Eresus_UI_Menu_Admin_Item();
-		$item->setPath($path);
-		$item->setAccess($access);
-		$item->setCaption($caption);
+		if (is_array($item))
+		{
+			$tmp = new Eresus_UI_Menu_Item();
+			$tmp->setPath(@$item['path']);
+			$tmp->setCaption(@$item['caption']);
+			$tmp->setHint(@$item['hint']);
+			$item = $tmp;
+		}
+		elseif (!($item instanceof Eresus_UI_Menu_Item))
+		{
+			throw new InvalidArgumentException('Argument 1 passed to ' . __METHOD__ .
+				' must be an instance of Eresus_UI_Menu_Item or an array, ' . gettype($item) .
+				' given');
+		}
 		$this->items []= $item;
 	}
 	//-----------------------------------------------------------------------------
@@ -71,14 +81,30 @@ class Eresus_UI_Menu
 	 * Возвращает отрисованное меню
 	 *
 	 * @param string $templateName  имя файла шаблона
+	 * @param string $module        имя модуля
 	 *
 	 * @return string  HTML
 	 *
-	 * @since 2.16
+	 * @since 2.20
 	 */
-	public function render($templateName)
+	public function render($templateName, $module = 'core')
 	{
-		return 'MENU';
+		$ts = Eresus_Template_Service::getInstance();
+		$tmpl = $ts->get($templateName, $module);
+		return $tmpl->compile(array('menu' => $this));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает пункты меню
+	 *
+	 * @return array
+	 *
+	 * @since 2.20
+	 */
+	public function getItems()
+	{
+		return $this->items;
 	}
 	//-----------------------------------------------------------------------------
 }

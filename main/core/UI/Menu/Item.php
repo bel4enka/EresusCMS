@@ -90,7 +90,7 @@ class Eresus_UI_Menu_Item
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.20
 	 */
 	public function setPath($path)
 	{

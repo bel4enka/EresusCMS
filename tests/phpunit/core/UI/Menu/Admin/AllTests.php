@@ -32,19 +32,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Admin/AllTests.php';
-require_once dirname(__FILE__) . '/Admin_Test.php';
 require_once dirname(__FILE__) . '/Item_Test.php';
 
-class Eresus_UI_Menu_AllTests
+class Eresus_UI_Menu_Admin_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/UI/Menu');
+		$suite = new PHPUnit_Framework_TestSuite('core/UI/Menu/Admin');
 
-		$suite->addTest(      Eresus_UI_Menu_Admin_AllTests::suite());
-		$suite->addTestSuite('Eresus_UI_Menu_Admin_Test');
-		$suite->addTestSuite('Eresus_UI_Menu_Item_Test');
+		$suite->addTestSuite('Eresus_UI_Menu_Admin_Item_Test');
 		return $suite;
 	}
 }

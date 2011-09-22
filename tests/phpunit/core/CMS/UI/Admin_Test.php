@@ -52,6 +52,7 @@ require_once TESTS_SRC_ROOT . '/core/Security.php';
 require_once TESTS_SRC_ROOT . '/core/Template.php';
 require_once TESTS_SRC_ROOT . '/core/Template/Service.php';
 require_once TESTS_SRC_ROOT . '/core/UI/Admin/Theme.php';
+require_once TESTS_SRC_ROOT . '/core/UI/Menu.php';
 require_once TESTS_SRC_ROOT . '/core/UI/Menu/Admin.php';
 require_once TESTS_SRC_ROOT . '/core/UI/Menu/Item.php';
 require_once TESTS_SRC_ROOT . '/core/UI/Menu/Admin/Item.php';
