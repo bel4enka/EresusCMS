@@ -27,22 +27,20 @@
  * @package Eresus
  * @subpackage Tests
  *
- * $Id$
+ * $Id: AllTests.php 1805 2011-09-18 18:06:16Z mk $
  */
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Menu/AllTests.php';
-require_once dirname(__FILE__) . '/Pagination_Test.php';
+require_once dirname(__FILE__) . '/Item_Test.php';
 
-class Eresus_UI_AllTests
+class Eresus_UI_Menu_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/UI');
+		$suite = new PHPUnit_Framework_TestSuite('core/UI/Menu');
 
-		$suite->addTest(      Eresus_UI_Menu_AllTests::suite());
-		$suite->addTestSuite('Eresus_UI_Pagination_Test');
+		$suite->addTestSuite('Eresus_UI_Menu_Item_Test');
 		return $suite;
 	}
 }

@@ -108,7 +108,7 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 
 		$this->menus = new ArrayObject();
 		$this->document->setVar('menus', $this->menus);
-		//$this->menus['main'] = $this->createMainMenu();
+		$this->menus['main'] = $this->createMainMenu();
 
 		$ts = Eresus_Template_Service::getInstance();
 		$req = Eresus_CMS_Request::getInstance();

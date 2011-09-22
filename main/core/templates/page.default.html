@@ -38,25 +38,26 @@
 		<nav class="ui-widget ui-widget-box ui-widget-content">
 			<h1>{i18n('Content', 'admin')}</h1>
 			<div class="ui-menu-content">
-				<ul>
-					{$sectionMenu}
-				</ul>
+				{$sectionMenu}
 			</div>
 		</nav>
 
-		<div class="box ui-widget ui-widget-content menu">
-			{$controlMenu}
-		</div>
+		<nav class="ui-widget ui-widget-box ui-widget-content">
+			<h1>{i18n('Controls', 'admin')}</h1>
+			<div class="ui-menu-content">
+				{$menus.main->render('main')}
+			</div>
+		</nav>
 
 		<div class="box ui-widget ui-widget-content">
 			<div class="content user-box">
 				<div>{$user.fullname}</div>
 				<a href="{$siteRoot}/admin.php?mod=users&amp;id={$user.id}">
-					{i18n('admUsersChangePassword')}
+					{i18n('Change password', 'admin')}
 				</a>
 				<form action="{$siteRoot}/admin/logout/" method="post">
 					<div class="ui-button-box">
-						<button type="submit">{i18n('strExit')}</button>
+						<button type="submit">{i18n('Exit', 'admin')}</button>
 					</div>
 				</form>
 			</div>

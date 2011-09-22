@@ -1,10 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * Меню
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -25,24 +26,60 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Menu/AllTests.php';
-require_once dirname(__FILE__) . '/Pagination_Test.php';
-
-class Eresus_UI_AllTests
+/**
+ * Меню
+ *
+ * Меню представляет собой контейнер пунктов ({@link Eresus_UI_Menu_Item}). Пункты можно добавлять
+ * в меню при помощи {@link addItem()}. Отрисовка меню производится вызовом {@link render()}.
+ *
+ * @package Eresus
+ */
+class Eresus_UI_Menu
 {
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite('core/UI');
+	/**
+	 * Пункты меню
+	 *
+	 * @var array
+	 */
+	private $items = array();
 
-		$suite->addTest(      Eresus_UI_Menu_AllTests::suite());
-		$suite->addTestSuite('Eresus_UI_Pagination_Test');
-		return $suite;
+	/**
+	 * Добавляет новый пункт в меню
+	 *
+	 * @param Eresus_UI_Menu_Item $item
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function addItem($access, $path, $caption)
+	{
+		$item = new Eresus_UI_Menu_Admin_Item();
+		$item->setPath($path);
+		$item->setAccess($access);
+		$item->setCaption($caption);
+		$this->items []= $item;
 	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает отрисованное меню
+	 *
+	 * @param string $templateName  имя файла шаблона
+	 *
+	 * @return string  HTML
+	 *
+	 * @since 2.16
+	 */
+	public function render($templateName)
+	{
+		return 'MENU';
+	}
+	//-----------------------------------------------------------------------------
 }
+

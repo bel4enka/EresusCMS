@@ -1,10 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * Настройки сайта
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -25,24 +26,21 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-
-require_once dirname(__FILE__) . '/Menu/AllTests.php';
-require_once dirname(__FILE__) . '/Pagination_Test.php';
-
-class Eresus_UI_AllTests
+/**
+ * Настройки сайта
+ *
+ * @package Eresus
+ * @since 2.16
+ */
+class Eresus_Admin_Controller_Settings
 {
-	public static function suite()
+	public function execute()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core/UI');
-
-		$suite->addTest(      Eresus_UI_Menu_AllTests::suite());
-		$suite->addTestSuite('Eresus_UI_Pagination_Test');
-		return $suite;
+		return 'Settings';
 	}
+	//-----------------------------------------------------------------------------
 }

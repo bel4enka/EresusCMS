@@ -1,0 +1,10 @@
+{if count($menu->getItems())}
+<ul>
+	{foreach $menu->getItems() item}
+	<li{if $item->opened} class="ui-state-opened"{/if}>
+		<a href="{$item->url}"{if $item->hint}title="{$item->hint}"{/if}>{$item->caption}</a>
+		{if $item->subitems}{$menu->submenu($item->subitems)}{/if}
+	</li>	
+	{/foreach}
+</ul>
+{/if}

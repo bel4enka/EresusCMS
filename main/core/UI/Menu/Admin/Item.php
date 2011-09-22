@@ -1,10 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * Пункт меню АИ
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -25,24 +26,42 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
- * $Id$
+ * $Id: URI.php 1746 2011-07-27 06:53:41Z mk $
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Menu/AllTests.php';
-require_once dirname(__FILE__) . '/Pagination_Test.php';
-
-class Eresus_UI_AllTests
+/**
+ * Пункт меню АИ
+ *
+ * @package Eresus
+ */
+class Eresus_UI_Menu_Admin_Item extends Eresus_UI_Menu_Item
 {
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite('core/UI');
+	private $access;
 
-		$suite->addTest(      Eresus_UI_Menu_AllTests::suite());
-		$suite->addTestSuite('Eresus_UI_Pagination_Test');
-		return $suite;
+	/**
+	 * Возвращает URL пункта
+	 *
+	 * @return string
+	 *
+	 * @since 2.20
+	 */
+	public function getURL()
+	{
+		return Eresus_CMS_Request::getInstance()->getRootPrefix() . '/admin' . $this->path;
 	}
+	//-----------------------------------------------------------------------------
+
+	public function setAccess($access)
+	{
+		$this->access = $access;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function getAccess()
+	{
+		return $this->access;
+	}
+	//-----------------------------------------------------------------------------
 }

@@ -329,11 +329,6 @@ table.ui-grid.ui-hlines
 	}
 
 
-/* Interaction Cues
-----------------------------------*/
-.ui-state-disabled { cursor: default !important; }
-
-
 /* Icons
 ----------------------------------*/
 
@@ -364,23 +359,35 @@ table.ui-grid.ui-hlines
 }
 
 
-/*** Состояния взаимодействия ***/
+/**
+ * Состояния взаимодействия
+ *
+ * @section ui.states
+ *
+ *********************************************************/
 
-/* Состояние по умолчанию */
+/**
+ * Элемент по умолчанию среди ряда других.
+ * Например, основная кнопка в диалоге.
+ */
 .ui-state-default,
 .ui-widget-content .ui-state-default
 {
 	font-weight: bold;
 	color: #005;
 }
-.ui-state-default a,
-.ui-state-default a:link,
-.ui-state-default a:visited
-{
-	color: #1d5987;
-	text-decoration: none;
-	outline: none;
-}
+	.ui-state-default a,
+	.ui-state-default a:link,
+	.ui-state-default a:visited
+	{
+		color: #1d5987;
+		text-decoration: none;
+		outline: none;
+	}
+
+/**
+ *
+ */
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,
 .ui-state-focus,
@@ -389,8 +396,18 @@ table.ui-grid.ui-hlines
 	font-weight: bold;
 	color: #1d5987;
 }
-.ui-state-hover a, .ui-state-hover a:hover { color: #1d5987; text-decoration: none; outline: none; }
-/* Активный */
+	
+	.ui-state-hover a,
+	.ui-state-hover a:hover
+	{
+		color: #1d5987;
+		outline: none;
+		text-decoration: none;
+	}
+
+/**
+ * Элемент сейчас активен
+ */
 .ui-state-active,
 .ui-widget-content .ui-state-active
 {
@@ -400,7 +417,9 @@ table.ui-grid.ui-hlines
 	color: #07c;
 	outline: none;
 }
-	/* Ссылка на активном элементе  */
+	/**
+	 * Ссылка на активном элементе
+	 */
 	.ui-state-active a,
 	.ui-state-active a:link,
 	.ui-state-active a:visited
@@ -410,20 +429,36 @@ table.ui-grid.ui-hlines
 		text-decoration: none;
 	}
 
-/* Interaction Cues
-----------------------------------*/
 .ui-state-highlight, .ui-widget-content .ui-state-highlight {border: 1px solid #007acc; background: #e4eefb url(images/ui-bg_flat_55_e4eefb_40x100.png) 50% 50% repeat-x; color: #363636; }
 .ui-state-highlight a, .ui-widget-content .ui-state-highlight a { color: #363636; }
 .ui-state-error, .ui-widget-content .ui-state-error {border: 1px solid #cd0a0a; background: #fef1ec url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x; color: #cd0a0a; }
 .ui-state-error a, .ui-widget-content .ui-state-error a { color: #cd0a0a; }
 .ui-state-error-text, .ui-widget-content .ui-state-error-text { color: #cd0a0a; }
+
+/**
+ * Элемент недоступен (отключен)
+ */
+.ui-state-disabled
 .ui-state-disabled,
 .ui-widget-content .ui-state-disabled
 {
-	opacity: .35;
-	/*filter:Alpha(Opacity=35);*/
 	background-image: none;
+	cursor: default !important;
+	opacity: .35;
 }
+
+/**
+ * Элемент открыт
+ * Например, открытым является пункт меню, если выбран он или его подпункт
+ */
+.ui-state-opened
+{
+	
+}
+
+
+
+
 .ui-priority-primary, .ui-widget-content .ui-priority-primary { font-weight: bold; }
 .ui-priority-secondary,
 .ui-widget-content .ui-priority-secondary
