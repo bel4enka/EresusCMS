@@ -63,38 +63,6 @@ class Eresus_ACL
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Проверяет, наличие у пользователя прав на объект
-	 *
-	 * Переходный вариант от старой системы прав к ACL.
-	 *
-	 * @param string $permission  право ('ADMIN', 'EDIT', 'VIEW')
-	 * @param mixed  $object      объект (пока что всегда должен быть null)
-	 *
-	 * @return bool
-	 *
-	 * @since 2.16
-	 */
-	public function isGranted($permission, $object = null)
-	{
-		$user = Eresus_Auth::getInstance()->getUser();
-		if (is_null($user) || is_null($user->access) || $user->access < 1)
-		{
-			return false;
-		}
-		switch ($permission)
-		{
-			case 'ADMIN':
-				return $user->access <= 2;
-			case 'EDIT':
-				return $user->access <= 3;
-			case 'VIEW':
-				return $user->access <= 4;
-		}
-		return false;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Скрываем конструктор
 	 *
 	 * @return void

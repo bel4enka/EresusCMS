@@ -31,8 +31,8 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../main/core/Auth.php';
-require_once dirname(__FILE__) . '/../../../main/core/ACL.php';
+require_once TESTS_SRC_ROOT . '/core/Auth.php';
+require_once TESTS_SRC_ROOT . '/core/ACL.php';
 
 /**
  * @package Eresus
@@ -46,62 +46,6 @@ class Eresus_ACL_Test extends PHPUnit_Framework_TestCase
 	public function test_getInstance()
 	{
 		$this->assertInstanceOf('Eresus_ACL', Eresus_ACL::getInstance());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_ACL::isGranted
-	 */
-	public function test_isGranted()
-	{
-		$acl = Eresus_ACL::getInstance();
-
-		$this->assertFalse($acl->isGranted('VIEW'));
-
-		$user = new stdClass;
-
-		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
-		$p_user->setAccessible(true);
-		$auth = Eresus_Auth::getInstance();
-		$p_user->setValue($auth, $user);
-
-		$user->access = null;
-		$this->assertFalse($acl->isGranted('VIEW'));
-
-		$user->access = 0;
-		$this->assertFalse($acl->isGranted('VIEW'));
-
-		//ROOT
-		$user->access = 1;
-		$this->assertFalse($acl->isGranted('unknown'));
-		$this->assertTrue($acl->isGranted('ADMIN'));
-		$this->assertTrue($acl->isGranted('EDIT'));
-		$this->assertTrue($acl->isGranted('VIEW'));
-
-		//ADMIN
-		$user->access = 2;
-		$this->assertTrue($acl->isGranted('ADMIN'));
-		$this->assertTrue($acl->isGranted('EDIT'));
-		$this->assertTrue($acl->isGranted('VIEW'));
-
-		//EDITOR
-		$user->access = 3;
-		$this->assertFalse($acl->isGranted('ADMIN'));
-		$this->assertTrue($acl->isGranted('EDIT'));
-		$this->assertTrue($acl->isGranted('VIEW'));
-
-		//USER
-		$user->access = 4;
-		$this->assertFalse($acl->isGranted('ADMIN'));
-		$this->assertFalse($acl->isGranted('EDIT'));
-		$this->assertTrue($acl->isGranted('VIEW'));
-
-		//GUEST
-		$user->access = 5;
-		$this->assertFalse($acl->isGranted('ADMIN'));
-		$this->assertFalse($acl->isGranted('EDIT'));
-		$this->assertFalse($acl->isGranted('VIEW'));
-
 	}
 	//-----------------------------------------------------------------------------
 
