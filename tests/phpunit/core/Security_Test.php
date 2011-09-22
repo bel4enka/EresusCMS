@@ -94,30 +94,35 @@ class Eresus_Security_Test extends PHPUnit_Framework_TestCase
 		//ROOT
 		$user->access = 1;
 		$this->assertFalse($sec->isGranted('unknown'));
+		$this->assertTrue($sec->isGranted('ROLE_ROOT'));
 		$this->assertTrue($sec->isGranted('ROLE_ADMIN'));
 		$this->assertTrue($sec->isGranted('ROLE_EDITOR'));
 		$this->assertTrue($sec->isGranted('ROLE_MEMBER'));
 
 		//ADMIN
 		$user->access = 2;
+		$this->assertFalse($sec->isGranted('ROLE_ROOT'));
 		$this->assertTrue($sec->isGranted('ROLE_ADMIN'));
 		$this->assertTrue($sec->isGranted('ROLE_EDITOR'));
 		$this->assertTrue($sec->isGranted('ROLE_MEMBER'));
 
 		//EDITOR
 		$user->access = 3;
+		$this->assertFalse($sec->isGranted('ROLE_ROOT'));
 		$this->assertFalse($sec->isGranted('ROLE_ADMIN'));
 		$this->assertTrue($sec->isGranted('ROLE_EDITOR'));
 		$this->assertTrue($sec->isGranted('ROLE_MEMBER'));
 
-		//USER
+		//MEMBER
 		$user->access = 4;
+		$this->assertFalse($sec->isGranted('ROLE_ROOT'));
 		$this->assertFalse($sec->isGranted('ROLE_ADMIN'));
 		$this->assertFalse($sec->isGranted('ROLE_EDITOR'));
 		$this->assertTrue($sec->isGranted('ROLE_MEMBER'));
 
 		//GUEST
 		$user->access = 5;
+		$this->assertFalse($sec->isGranted('ROLE_ROOT'));
 		$this->assertFalse($sec->isGranted('ROLE_ADMIN'));
 		$this->assertFalse($sec->isGranted('ROLE_EDITOR'));
 		$this->assertFalse($sec->isGranted('ROLE_MEMBER'));
