@@ -46,6 +46,13 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	private $theme;
 
 	/**
+	 * Меню АИ
+	 *
+	 * @var ArrayObject
+	 */
+	private $menus;
+
+	/**
 	 * Возвращает тему оформления
 	 *
 	 * @return Eresus_UI_Admin_Theme
@@ -59,13 +66,13 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @uses Eresus_ACL::getInstance()
-	 * @uses Eresus_ACL::isGranted()
+	 * @uses Eresus_Security::getInstance()
+	 * @uses Eresus_Security::isGranted()
 	 * @see Eresus_CMS_UI::process()
 	 */
 	public function process()
 	{
-		if (!Eresus_ACL::getInstance()->isGranted('EDIT'))
+		if (!Eresus_Security::getInstance()->isGranted('ROLE_EDITOR'))
 		{
 			return $this->auth();
 		}
@@ -98,6 +105,10 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		Eresus_Template::setGlobalValue('theme', $this->theme);
 
 		$this->document->setTemplate('page.default', 'core');
+
+		$this->menus = new ArrayObject();
+		$this->document->setVar('menus', $this->menus);
+		//$this->menus['main'] = $this->createMainMenu();
 
 		$ts = Eresus_Template_Service::getInstance();
 		$req = Eresus_CMS_Request::getInstance();
@@ -199,4 +210,53 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Возвращает главное меню
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function createMainMenu()
+	{
+		$menu = new Eresus_UI_Menu_Admin();
+		$menu->addItem(array(
+			'access' => 'ROLE_ADMIN',
+			'path' => '/tree/',
+			'caption' => 'Site sections',
+			'hint' => 'Manage site sections',
+		));
+		$menu->addItem(array(
+			'access' => 'ROLE_EDITOR',
+			'path' => '/fm/',
+			'caption' => 'File manager',
+			'hint' => 'Upload and manage files',
+		));
+		$menu->addItem(array(
+			'access' => 'ROLE_ADMIN',
+			'path' => '/plugins/',
+			'caption' => 'Plugins',
+			'hint' => 'Install and configure plugins',
+		));
+		$menu->addItem(array(
+			'access' => 'ROLE_ADMIN',
+			'path' => '/style/',
+			'caption' => 'Appearance',
+			'hint' => 'Manage templates and styles',
+		));
+		$menu->addItem(array(
+			'access' => 'ROLE_ADMIN',
+			'path' => '/users/',
+			'caption' => 'Users',
+			'hint' => 'Manage user account',
+		));
+		$menu->addItem(array(
+			'access' => 'ROLE_ADMIN',
+			'path' => '/settings/',
+			'caption' => 'Settings',
+			'hint' => 'Site global settings',
+		));
+		return $menu;
+	}
+	//-----------------------------------------------------------------------------
 }
