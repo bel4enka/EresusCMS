@@ -31,7 +31,6 @@
  */
 
 require_once dirname(__FILE__) . '/../../../stubs.php';
-require_once TESTS_SRC_ROOT . '/core/ACL.php';
 require_once TESTS_SRC_ROOT . '/core/Auth.php';
 require_once TESTS_SRC_ROOT . '/core/DB/Record.php';
 require_once TESTS_SRC_ROOT . '/core/CMS/Exception/Forbidden.php';
@@ -49,9 +48,13 @@ require_once TESTS_SRC_ROOT . '/core/i18n.php';
 require_once TESTS_SRC_ROOT . '/core/Kernel.php';
 require_once TESTS_SRC_ROOT . '/core/Logger.php';
 require_once TESTS_SRC_ROOT . '/core/Model/User.php';
+require_once TESTS_SRC_ROOT . '/core/Security.php';
 require_once TESTS_SRC_ROOT . '/core/Template.php';
 require_once TESTS_SRC_ROOT . '/core/Template/Service.php';
 require_once TESTS_SRC_ROOT . '/core/UI/Admin/Theme.php';
+require_once TESTS_SRC_ROOT . '/core/UI/Menu/Admin.php';
+require_once TESTS_SRC_ROOT . '/core/UI/Menu/Item.php';
+require_once TESTS_SRC_ROOT . '/core/UI/Menu/Admin/Item.php';
 require_once TESTS_SRC_ROOT . '/core/URI.php';
 require_once TESTS_SRC_ROOT . '/core/URI/Query.php';
 require_once TESTS_SRC_ROOT . '/core/WebServer.php';
@@ -107,7 +110,6 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$ui = new Eresus_CMS_UI_Admin();
 
-		$acl = Eresus_ACL::getInstance();
 		$user = new stdClass;
 		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
 		$p_user->setAccessible(true);
@@ -131,7 +133,6 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$ui = new Eresus_CMS_UI_Admin();
 
-		$acl = Eresus_ACL::getInstance();
 		$user = new stdClass;
 		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
 		$p_user->setAccessible(true);
@@ -179,7 +180,6 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 		$ui = new Eresus_CMS_UI_Admin();
 
-		$acl = Eresus_ACL::getInstance();
 		$user = new stdClass;
 		$p_user = new ReflectionProperty('Eresus_Auth', 'user');
 		$p_user->setAccessible(true);
@@ -225,10 +225,10 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 	{
 		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 
-		$Eresus_ACL = $this->getMock('stdClass', array('isGranted'));
-		$Eresus_ACL->expects($this->any())->method('isGranted')->with('EDIT')->
+		$Eresus_Security = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_Security->expects($this->any())->method('isGranted')->
 			will($this->returnValue(true));
-		Eresus_Tests::setStatic('Eresus_ACL', $Eresus_ACL);
+		Eresus_Tests::setStatic('Eresus_Security', $Eresus_Security);
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
@@ -270,14 +270,15 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 	{
 		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 
-		$Eresus_ACL = $this->getMock('stdClass', array('isGranted'));
-		$Eresus_ACL->expects($this->any())->method('isGranted')->with('EDIT')->
+		$Eresus_Security = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_Security->expects($this->any())->method('isGranted')->with('ROLE_EDITOR')->
 			will($this->returnValue(true));
-		Eresus_Tests::setStatic('Eresus_ACL', $Eresus_ACL);
+		Eresus_Tests::setStatic('Eresus_Security', $Eresus_Security);
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
-		$request->expects($this->any())->method('getBasePath')->will($this->returnValue('/admin/logout'));
+		$request->expects($this->any())->method('getBasePath')->
+			will($this->returnValue('/admin/logout'));
 
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
