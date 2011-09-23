@@ -39,59 +39,7 @@
 	
 	<!-- Секция содержит информацию о сторонних разработках -->
 	<uses>
-		<item
-			title="eZ Components"
-			url="http://ezcomponents.org/"
-			logo="admin/logos/ezcomponents.png"
-		>
-			Библиотека компонентов для PHP.
-		</item>
-
-		<item
-			title="jQuery"
-			url="http://jquery.com/"
-			logo="admin/logos/jquery.png"
-		>
-			Библиотека JavaScript, фокусирующаяся на взаимодействии JavaScript и HTML. Библиотека jQuery
-			помогает легко получать доступ к любому элементу DOM, обращаться к атрибутам и содержимому
-			элементов DOM, манипулировать ими. Также библиотека jQuery предоставляет удобный API по
-			работе с Ajax.
-		</item>
-
-		<item
-			title="jQuery UI"
-			url="http://jqueryui.com/"
-			logo="admin/logos/jqueryui.png"
-		>
-			Библиотека JavaScript динамических элементов интерфейса.
-		</item>
-
-		<item
-			title="Dwoo"
-			url="http://dwoo.org/"
-			logo="admin/logos/dwoo.gif"
-		>
-			Шаблонизатор для PHP5.
-		</item>
-		
-		<item
-			title="TinyMCE"
-			url="http://tinymce.moxiecode.com/"
-			logo="admin/logos/tinymce.png"
-		>
-			Визуальный редактор HTML.
-		</item>
-		
-		<item
-			title="elFinder"
-			url="http://elrte.org/ru/elfinder/"
-			logo="admin/logos/elfinder.png"
-		>
-			Файловый менеджер для веб-приложений, написанный на JavaScript с использованием jQuery UI. 
-			На его создание авторов вдохновила простота и удобство программы Finder.app в операционной 
-			системе	Mac OS X.
-		</item>
-		
+		<item></item>
 	</uses>
 	
 </about>

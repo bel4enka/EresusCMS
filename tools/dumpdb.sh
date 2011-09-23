@@ -2,7 +2,7 @@
 #
 # Script dumps MySQL database
 #
-# @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+# @author Mikhail Krasilnikov <mk@procreat.ru>
 #
 # $Id$
 #

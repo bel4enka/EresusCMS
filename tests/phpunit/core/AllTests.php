@@ -1,98 +1,56 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * @version ${product.version}
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * PhpUnit Tests
+ *
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
- * Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
- * <http://www.gnu.org/licenses/>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package Eresus
+ * @package EresusCMS
  * @subpackage Tests
+ * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+if (class_exists('PHP_CodeCoverage_Filter', false))
+{
+	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+}
+else
+{
+	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
+}
 
-require_once dirname(__FILE__) . '/ACL_Test.php';
-require_once dirname(__FILE__) . '/Auth_Test.php';
-require_once dirname(__FILE__) . '/CMS/AllTests.php';
-require_once dirname(__FILE__) . '/CMS_Test.php';
-require_once dirname(__FILE__) . '/Config_Test.php';
-require_once dirname(__FILE__) . '/Controller/AllTests.php';
-require_once dirname(__FILE__) . '/DB/AllTests.php';
-require_once dirname(__FILE__) . '/EresusFormTest.php';
-require_once dirname(__FILE__) . '/Event/AllTests.php';
-require_once dirname(__FILE__) . '/Event_Test.php';
-require_once dirname(__FILE__) . '/Helper/AllTests.php';
-require_once dirname(__FILE__) . '/HTML/AllTests.php';
-require_once dirname(__FILE__) . '/HTTP/AllTests.php';
-require_once dirname(__FILE__) . '/i18n_Test.php';
-require_once dirname(__FILE__) . '/Kernel/AllTests.php';
-require_once dirname(__FILE__) . '/Kernel_Test.php';
-require_once dirname(__FILE__) . '/Logger_Test.php';
-require_once dirname(__FILE__) . '/Mail_Test.php';
-require_once dirname(__FILE__) . '/Model/AllTests.php';
-require_once dirname(__FILE__) . '/Security_Test.php';
-require_once dirname(__FILE__) . '/Service/AllTests.php';
-require_once dirname(__FILE__) . '/Template/AllTests.php';
-require_once dirname(__FILE__) . '/Template_Test.php';
-require_once dirname(__FILE__) . '/UI/AllTests.php';
-require_once dirname(__FILE__) . '/URI/AllTests.php';
-require_once dirname(__FILE__) . '/URI_Test.php';
-require_once dirname(__FILE__) . '/WebServer_Test.php';
+require_once dirname(__FILE__) . '/EresusCMSTest.php';
+
+require_once dirname(__FILE__) . '/classes/AllTests.php';
 
 class Core_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('Core tests');
+		$suite = new PHPUnit_Framework_TestSuite('core');
 
-		$suite->addTestSuite('Eresus_ACL_Test');
-		$suite->addTestSuite('Eresus_Auth_Test');
-		$suite->addTest(      Eresus_CMS_AllTests::suite());
-		$suite->addTestSuite('Eresus_CMS_Test');
-		$suite->addTestSuite('Eresus_Config_Test');
-		$suite->addTest(      Eresus_Controller_AllTests::suite());
-		$suite->addTest(      Eresus_DB_AllTests::suite());
-		$suite->addTest(      Eresus_Event_AllTests::suite());
-		$suite->addTestSuite('Eresus_Event_Test');
-		$suite->addTestSuite('EresusFormTest');
-		$suite->addTest(      Core_Helper_AllTests::suite());
-		$suite->addTest(      Eresus_HTML_AllTests::suite());
-		$suite->addTest(      Eresus_HTTP_AllTests::suite());
-		$suite->addTestSuite('Eresus_i18n_Test');
-		$suite->addTest(      Eresus_Kernel_AllTests::suite());
-		$suite->addTestSuite('Eresus_Kernel_Test');
-		$suite->addTestSuite('Eresus_Logger_Test');
-		$suite->addTestSuite('Eresus_Mail_Test');
-		$suite->addTest(      Eresus_Model_AllTests::suite());
-		$suite->addTestSuite('Eresus_Security_Test');
-		$suite->addTest(      Eresus_Service_AllTests::suite());
-		$suite->addTest(      Eresus_Template_AllTests::suite());
-		$suite->addTestSuite('Eresus_Template_Test');
-		$suite->addTest(      Eresus_UI_AllTests::suite());
-		$suite->addTest(      Eresus_URI_AllTests::suite());
-		$suite->addTestSuite('Eresus_URI_Test');
-		$suite->addTestSuite('Eresus_WebServer_Test');
+		$suite->addTestSuite('EresusCMSTest');
+
+		$suite->addTest(Core_Classes_AllTests::suite());
 
 		return $suite;
 	}

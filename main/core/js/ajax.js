@@ -6,7 +6,7 @@
  *
  * @version 0.0.1
  *
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
 
 /**

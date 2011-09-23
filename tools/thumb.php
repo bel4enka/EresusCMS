@@ -4,7 +4,7 @@
 *
 * Создаёт миниатюру
 *
- * @author   Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author   Mikhail Krasilnikov <mk@procreat.ru>
  * @version  0.0.1
 *
 * @param  string   file    Имя исходного файла относительно /data

@@ -24,40 +24,21 @@
  *
  * @package EresusCMS
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/stubs.php';
-
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-
-$root = realpath(dirname(__FILE__) . '/../..');
-
-/*
- * На некоторых системах некоторые файлы (содержащие абстрактные классы?) включаются не в том
- * порядке, что приводит к ошибкам. Добавление этих файлов в начало белого списка решает проблему.
- */
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/DataProvider.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/Mutator.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/UI/Admin/List/ItemControl.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/CMS/Mode.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/core/CMS/UI.php');
-
-PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/core');
-PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist($root . '/main/admin');
-
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/editarea/eresus-connector.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/tinymce/eresus-connector.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhitelist($root . '/main/ext-3rd/elfinder/eresus-connector.php');
-
-PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/errors.html.php');
-PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/fatal.html.php');
-PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhitelist($root . '/main/core/gziph.php');
+if (class_exists('PHP_CodeCoverage_Filter', false))
+{
+	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+}
+else
+{
+	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
+}
 
 require_once dirname(__FILE__) . '/core/AllTests.php';
-require_once dirname(__FILE__) . '/ext-3rd/AllTests.php';
 
 class AllTests
 {
@@ -66,7 +47,6 @@ class AllTests
 		$suite = new PHPUnit_Framework_TestSuite('All Tests');
 
 		$suite->addTest(Core_AllTests::suite());
-		$suite->addTest(Ext3rd_AllTests::suite());
 
 		return $suite;
 	}

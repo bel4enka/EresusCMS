@@ -1,13 +1,15 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
- * Запускающий скрипт для режима Web
+ * ${product.description}
  *
- * @version ${product.version}
- * @copyright ${product.copyright}
+ * Запускающий скрипт
+ *
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -25,13 +27,10 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Kernel
+ * @package EresusCMS
  *
  * $Id$
  */
-
-// Временно включаем вывод ошибок, пока не инициализированы средства журанлирования
-ini_set('display_errors', true);
 
 /*
  * Установка имени файла журнала
@@ -39,46 +38,36 @@ ini_set('display_errors', true);
  */
 ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
 
+/**
+ * Уровень детализации журнала
+ */
+define('ERESUS_LOG_LEVEL' , ${log.level});
+
 ini_set('track_errors', true);
 /**
- * Подключение ядра
+ * Подключение Eresus Core
  */
-include_once 'core/Kernel.php';
+include_once 'core/framework/core/eresus-core.compiled.php';
 
-Eresus_Kernel::init();
-
-if (isset($php_errormsg))
+if (@$php_errormsg)
 {
 	die($php_errormsg);
 }
 ini_set('track_errors', false);
-
-/*
- * Если есть файл install.php, запускаем инсталлятор, а не CMS
- */
-if (is_file('install.php'))
-{
-	$fileName = 'install.php';
-	$appName = 'Installer';
-}
-else
-{
-	$fileName = 'core/CMS.php';
-	$appName = 'Eresus_CMS';
-}
-
 
 try
 {
 	/**
 	 * Подключение главного приложения
 	 */
-	include_once $fileName;
+	include_once 'core/main.php';
 }
 catch (Exception $e)
 {
-	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
+	die('Can not include file "core/main.php". Is it present and accessible?');
 }
 
-// Запуск приложения
-Eresus_Kernel::exec($appName);
+/*
+ * Запуск CMS
+ */
+Core::exec('EresusCMS');

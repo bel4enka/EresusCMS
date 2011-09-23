@@ -1,0 +1,57 @@
+<?php
+	require_once 'PHPUnit/Framework.php';
+
+class ClientUITest extends PHPUnit_Framework_TestCase {
+	static private $ClassName = 'TClientUI';
+	protected $fixture;
+	function setUp()
+	{
+		global $Eresus;
+
+		if (class_exists(self::$ClassName)) {
+			$this->fixture = new TClientUI();
+		}
+	}
+	//-----------------------------------------------------------------------------
+	function tearDown()
+	{
+		unset($this->fixture);
+	}
+	//-----------------------------------------------------------------------------
+	function testClass_presense()
+	{
+		$this->assertTrue(class_exists(self::$ClassName), 'Class does not exsists');
+	}
+	//-----------------------------------------------------------------------------
+ /**
+	* Test for bug #0000151
+	*	http://eresus.ru/tracker/view.php?id=0000151
+	*/
+	function testMethod_loadPage_MainNotFirst()
+	{
+		global $Eresus;
+
+		$Eresus->request['params'] = array('services');
+		$test = $this->fixture->loadPage();
+
+		$this->assertEquals(3, intval($test['id']), "loadPage can't find sections after 'main' one");
+	}
+	//-----------------------------------------------------------------------------
+ /**
+	* Test for bug #0000165
+	*	http://eresus.ru/tracker/view.php?id=0000165
+	*/
+	function testMethod_loadPage_ChildOfMain()
+	{
+		global $Eresus;
+
+		$Eresus->request['params'] = array('main', 'main_child');
+		$test = $this->fixture->loadPage();
+
+		$this->assertEquals(22, intval($test['id']), 'loadPage can\'t find child section of a root one');
+	}
+	//-----------------------------------------------------------------------------
+	/**/
+}
+
+?>

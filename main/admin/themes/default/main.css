@@ -6,9 +6,7 @@
  * @copyright 2004, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
- *
- * @deprecated используйте theme.css
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +24,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * $Id$
+ * $Id: main.css 964 2010-07-05 12:49:42Z mk $
  */
 
 
@@ -72,16 +70,14 @@ table.slim {border-collapse: collapse; border-spacing: 0;}
 table.admWindow
 {
 	background-color: #eee;
+	font-size: 8pt;
+	font-weight: bold;
 	border: solid 1px #aaa;
+	margin: 0px;
 	line-height: 1.3em;
-	margin: 0;
 }
 .admWindow th {background: #007acc url('img/hbg.gif') repeat-x; color: white;  border: solid 1px #aaa;}
-.admWindow td 
-{
-	color: #000;
-	vertical-align: top; 
-}
+.admWindow td {vertical-align: top; font-size: 8pt; color: #000; font-weight: normal;}
 .admWindow h1 {font-size: 12pt; margin: 2px; color: #007acc;}
 .admWindow h2 {font-size: 10pt; margin: 2px}
 
@@ -130,20 +126,40 @@ div.admListHint {border: solid 1px #007acc; background-color: white; padding: 2p
 
 /* File manager */
 
-#fileManager {
+#fileManager 
+{
 	background-color: white;
 	border-collapse: collapse;
 	border-style: none;
 	border-spacing: 0;
 	width: 100%;
 }
-#fileManager td {
+#fileManager td
+{
 	padding: 0;
 }
-td.filesMenu {
+
+td.filesMenu
+{
 	background-color: silver; border-style: solid; border-width: 1px; border-color: #ddd #555 #555 #ddd;
 }
-.filesMenu td {padding: 2px 5px; color: black; width: 5em; text-align: center; border: solid 1px silver; cursor : default;}
+
+#fileManager .filesMenu td
+{
+	border: solid 1px silver;
+	color: black;
+	cursor : default;
+	padding: 0 5px;
+	text-align: center;
+	width: 5em;
+}
+
+	#fileManager .filesMenu td:hover
+	{
+		background-color: #ddd;
+		border: solid 1px #777;
+	}
+
 td.filesPanel {
 	border-style: solid;
 	border-width: 0px 1px;

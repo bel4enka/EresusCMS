@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Eresus CMS
+ Eresus 2
 
  Файл сборки проекта
 
@@ -26,61 +26,12 @@
 		<include name="**/*Test.php" />
 	</fileset>
 
+
 	<!-- 3rd party: EditArea -->
 	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
-
-	<!-- 3rd party: Doctrine -->
-	<fileset dir="3rdparty/doctrine/lib" id="files.3rd.doctrine">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party: Dwoo -->
-	<fileset dir="3rdparty/dwoo" id="files.3rd.dwoo">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- Tools files -->
-	<fileset dir="." id="tools_files">
-		<include name="tools/**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party: jQuery -->
-	<fileset dir="3rdparty/jquery" id="files.3rd.jquery">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party: elFinder -->
-	<fileset dir="3rdparty/elfinder" id="files.3rd.elfinder">
-		<include name="connectors/php/**" />
-		<include name="css/**" />
-		<include name="images/**" />
-		<include name="js/**" />
-		<exclude name="js/i18n/*" />
-		<exclude name="js/jquery*" />
-		<exclude name=".svn" />
-		<exclude name=".gitignore" />
-	</fileset>
-
-	<!-- 3rd party: Tiny MCE -->
-	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-
-	<!-- SDK files -->
-	<fileset dir="." id="SDK_files">
-		<include name="SDK/**" />
-		<exclude name=".svn" />
-	</fileset>
-
 
 	<property file="build.properties" />
 	<php function="date" returnProperty="builddate">
@@ -152,35 +103,6 @@
 
 	<!--
 	=====================================================================
-		Создание документации
-	=====================================================================
-  -->
-  <target name="docs" description="Generates API documentation">
-
-		<delete dir="${docs.dir}" includeemptydirs="true" failonerror="true" />
-
-		<phpdoc
-			title="Eresus CMS API"
-			destdir="${docs.dir}"
-			sourcecode="no"
-			parseprivate="false"
-			output="${docs.converter}">
-			<fileset dir=".">
-				<include name="main/core/**/*.php" />
-				<include name="main/3rd-ext/**/*.php" />
-				<include name="3rdparty/doctrine/lib/**/*.php" />
-			</fileset>
-			<projdocfileset dir=".">
-				<include name="README" />
-				<include name="INSTALL" />
-				<include name="CHANGELOG" />
-			</projdocfileset>
-		</phpdoc>
-
-  </target>
-
-	<!--
-	=====================================================================
 		Сборка проекта
 	=====================================================================
 	-->
@@ -193,19 +115,31 @@
 			    <expandproperties />
 		  </filterchain>
 		</copy>
-		
-		<!-- Doctrine -->
-		<echo msg="Copying Doctrine..." level="info" />
-		<copy todir="${build.dir}/core">
-			<fileset refid="files.3rd.doctrine" />
+
+			<!-- Обработка файлов CSS темы default -->
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/typography.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/layout.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/filemanager.css" />
+
+		<!-- Eresus Core -->
+		<echo msg="Copying Eresus Core..." level="info" />
+		<copy todir="${build.dir}/core/framework">
+			<fileset refid="files.framework" />
 			<filterchain>
 				<expandproperties />
 			</filterchain>
 		</copy>
 
-		<!-- Dwoo -->
-		<copy todir="${build.dir}/core/Dwoo">
-			<fileset refid="files.3rd.dwoo" />
+		<copy todir="${build.dir}/core/lib">
+			<fileset refid="libs_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
 
 		<!-- jQuery -->
@@ -213,28 +147,20 @@
 			<fileset refid="files.3rd.jquery" />
 		</copy>
 
-		<!-- elFinder -->
-		<!-- exec command="make all COMPRESSOR='java -jar ../../yuicompressor-2.4.2.jar - -charset utf8 -o'"
-			dir="3rdparty/elfinder/src" / -->
-		<copy todir="${build.dir}/ext-3rd/elfinder">
-			<fileset refid="files.3rd.elfinder" />
+		<copy todir="${build.dir}/">
+			<fileset refid="l10n_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
 		</copy>
-		<!-- exec command="make distclean" dir="3rdparty/elfinder/src" / -->
-		<patch 
-			patchfile="${project.basedir}/3rdparty/patches/elfinder/elFinder.class.php.patch" 
-			dir="${build.dir}" 
-			strip="0" 
-		/>
-		<patch 
-			patchfile="${project.basedir}/3rdparty/patches/elfinder/elfinder.full.js.patch" 
-			dir="${build.dir}" 
-			strip="0" 
-		/>
-		<patch 
-			patchfile="${project.basedir}/3rdparty/patches/elfinder/elfinder.css.patch" 
-			dir="${build.dir}" 
-			strip="0" 
-		/>
+
+		<mkdir dir="${build.dir}/distrib" />
+		<copy todir="${build.dir}/distrib">
+			<fileset refid="db_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
 
 		<!-- Tiny MCE -->
 		<copy todir="${build.dir}/ext-3rd/tinymce">
@@ -246,7 +172,6 @@
 			<fileset refid="files.3rd.editarea" />
 		</copy>
 
-		<mkdir dir="${build.dir}/distrib" />
 		<copy todir="${build.dir}/distrib">
 			<fileset refid="tools_files" />
 			<filterchain>
@@ -270,5 +195,57 @@
 		</copy>
 
 	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - -->
+
+	<!-- Framework files -->
+	<fileset dir="framework" id="files.framework">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- libs files -->
+	<fileset dir="lib" id="libs_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- DB templates -->
+	<fileset dir="db" id="db_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- l10n files -->
+	<fileset dir="." id="l10n_files">
+		<include name="lang/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Tools files -->
+	<fileset dir="." id="tools_files">
+		<include name="tools/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party: jQuery -->
+	<fileset dir="3rdparty/jquery" id="files.3rd.jquery">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party: Tiny MCE -->
+	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+
+	<!-- SDK files -->
+	<fileset dir="." id="SDK_files">
+		<include name="SDK/**" />
+		<exclude name=".svn" />
+	</fileset>
+
 
 </project>

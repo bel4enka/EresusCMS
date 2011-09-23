@@ -9,7 +9,7 @@
  * @copyright 2004, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -27,7 +27,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
+ * @package EresusCMS
  *
  * $Id$
  */
@@ -111,7 +111,7 @@
  * - tabs
  *
  * Что делает тег:
- * 1. Создаёт "div" с таким же идентификатором и классом "ui-tabs"
+ * 1. Создаёт "div" с таким же идентификатором и классом "tab-widget"
  * 2. Вставляет JS-код для инициализации плагина jQuery
  *
  * <b>tabcontrol</b>
@@ -365,7 +365,7 @@
  *
  * @see Template
  *
- * @package UI
+ * @package EresusCMS
  */
 class EresusForm
 {
@@ -549,7 +549,7 @@ class EresusForm
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'async');
+		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'defer', 'async');
 
 		$html = $this->parseExtended();
 		$html = $this->fromUTF($html);
@@ -688,7 +688,7 @@ class EresusForm
 
 		$id = $this->xml->firstChild->nextSibling->getAttribute('id');
 		// инициализация объекта формы
-		$scriptContents = "\n\$(document).ready(function ()\n{\nwindow.$id = new EresusForm('$id');\n";
+		$scriptContents = "\n\$(document).ready(function () {window.$id = new EresusForm('$id');\n";
 
 		/*
 		 * Если в сессии установлен флаг isInvalid, вызываем перепроверку формы
@@ -708,7 +708,9 @@ class EresusForm
 			}
 		}
 		$scriptContents .= "});";
-		$GLOBALS['page']->addScripts($scriptContents, 'defer');
+		$script = $this->xml->createElement('script', $scriptContents);
+		$script->setAttribute('type', 'text/javascript');
+		$this->xml->firstChild->nextSibling->appendChild($script);
 
 		$this->xml->formatOutput = true;
 		$html = $this->xml->saveXML($this->xml->firstChild->nextSibling); # This exclude xml declaration
@@ -838,7 +840,7 @@ class EresusForm
 		}
 		else
 		{
-			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
+			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -888,7 +890,7 @@ class EresusForm
 			$tabDiv->appendChild($child->cloneNode(true));
 		}
 		$tabDiv->setAttribute('id', $id);
-		$tabDiv->setAttribute('class', 'ui-tabs');
+		$tabDiv->setAttribute('class', 'tab-widget');
 		$parent->replaceChild($tabDiv, $node);
 
 		$tabControls = $tabDiv->getElementsByTagNameNS(self::NS, 'tabcontrol');
@@ -1064,7 +1066,7 @@ class EresusForm
 		}
 		else
 		{
-			Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm attribute "%s"', $attr->name);
+			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm attribute "%s"', $attr->name);
 		}
 
 		$node->removeAttributeNode($attr);
@@ -1232,7 +1234,7 @@ class EresusForm
 	/**
 	 * Обработка тега fc:attach
 	 *
-	 * Дает клиенту комманду проверить элементы при загрузке страницы???
+	 * Дает клиенту комманду проверить элементы при загрузке страницы
 	 *
 	 * Пример использования тега:
 	 * <code>
@@ -1244,7 +1246,7 @@ class EresusForm
 	protected function validateAttach($node)
 	{
 		$to = $node->getAttribute('to');
-		$this->invalidValue($to, 'required'); // проверить (и пометить, если нужно) это поле
+		$this->invalidValue($to, 'required'); // провеирть (и пометить, если нужно) это поле
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1355,7 +1357,7 @@ class EresusForm
 	 */
 	protected function loadXML()
 	{
-		$tmpl = Eresus_Template::fromFile($this->template);
+		$tmpl = new Template($this->template);
 		$html = $tmpl->compile($this->values);
 
 		$imp = new DOMImplementation;

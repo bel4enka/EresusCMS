@@ -8,7 +8,7 @@
  * @copyright 2004, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
+ * @package Eresus2
  *
  * $Id$
  */

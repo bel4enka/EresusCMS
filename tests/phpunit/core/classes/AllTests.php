@@ -24,13 +24,26 @@
  *
  * @package EresusCMS
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+if (class_exists('PHP_CodeCoverage_Filter', false))
+{
+	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+}
+else
+{
+	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
+}
 
+require_once dirname(__FILE__) . '/helpers/AllTests.php';
+
+require_once dirname(__FILE__) . '/HtmlElementTest.php';
+require_once dirname(__FILE__) . '/HtmlScriptElementTest.php';
+require_once dirname(__FILE__) . '/WebPageTest.php';
+require_once dirname(__FILE__) . '/PluginTest.php';
 
 class Core_Classes_AllTests
 {
@@ -38,6 +51,12 @@ class Core_Classes_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core/classes');
 
+		$suite->addTest(Core_Classes_Helpers_AllTests::suite());
+
+		$suite->addTestSuite('HtmlElementTest');
+		$suite->addTestSuite('HtmlScriptElementTest');
+		$suite->addTestSuite('WebPageTest');
+		$suite->addTestSuite('PluginTest');
 
 		return $suite;
 	}

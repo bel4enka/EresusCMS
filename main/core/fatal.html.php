@@ -25,66 +25,18 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package UI
+ * @package EresusCMS
  *
  * $Id$
  */
-
-$messages = array(
-	'en' => array(
-		'header' => 'Error occured!',
-		'location' => 'Error location',
-		'stack' => 'Call stack',
-		'additional' => 'Additional info',
-		'production' => 'Site currently unavailable. We apologize.',
-),
-	'ru' => array(
-		'header' => 'Сбой на сайте!',
-		'location' => 'Место возникновения ошибки',
-		'stack' => 'Стек вызовов',
-		'additional' => 'Дополнительные сведения',
-		'production' => 'Сайт временно недоступен. Приносим свои извинения.',
-	),
-);
-
-
-$local = $messages['ru'];
-if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-{
-	$hal = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-	$langs = array();
-	foreach ($hal as $value)
-	{
-		list($code, $priority) = explode(';', $value);
-		if (@$priority)
-		{
-			$priority = substr($priority, 2);
-		}
-		else
-		{
-			$priority = 1;
-		}
-		$langs[$code] = $priority;
-	}
-	arsort($langs);
-	$langs = array_keys($langs);
-	foreach ($langs as $lang)
-	{
-		if (isset($messages[$lang]))
-		{
-			$local = $messages[$lang];
-			break;
-		}
-	}
-}
-
 ?>
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+     "http://www.w3.org/TR/html4/strict.dtd">
 
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title><?php echo $local['header'];?></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Ошибка!</title>
     <style type="text/css">
     	html,
     	body
@@ -98,7 +50,7 @@ if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 			{
     		-moz-box-shadow: 0 2px 4px #000;
     		-webkit-box-shadow: 0 2px 4px #000;
-				background: #a00;
+				background-color: #a00;
 				box-shadow: 0 2px 4px #000;
 				color: #fff;
 				margin: 0;
@@ -146,53 +98,47 @@ if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
     </style>
   </head>
 <body>
-	<h1><?php echo $local['header'];?></h1>
+	<h1>На сайте произошла ошибка!</h1>
 	<div class="report">
-<?php
-if (isset($error))
-{
-	echo '<h2>' . get_class($error) . '</h2>';
-	if (class_exists('Eresus_Config', false) && Eresus_Config::get('eresus.cms.debug', false))
-	{
-		?>
-		<div class="message"><?php echo $error->getMessage();?></div>
-		<h3><?php echo $local['location'];?></h3>
-		<div class="location">
-			<?php echo $error->getFile();?>:
-			<?php echo $error->getLine();?>
-		</div>
-		<div class="code">
 		<?php
-		$lines = file($error->getFile());
-		$firstLine = $error->getLine() > 5 ? $error->getLine() - 5 : 0;
-		$lastLine = $error->getLine() + 4 < count($lines) ? $error->getLine() + 4 : count($lines);
-		for ($i = $firstLine; $i < $lastLine; $i++)
-		{
-			$s = highlight_string('<?php' . $lines[$i], true);
-			$s = preg_replace('/&lt;\?php/', '', $s, 1);
-			if ($i == $error->getLine() - 1)
+			if (isset($error))
 			{
-				$s = preg_replace('/(<\w+)/', '$1 class="error-line"', $s);
+				echo '<h2>' . get_class($error) . '</h2>';
+				if (defined('ERESUS_CMS_DEBUG'))
+				{
+					?>
+					<div class="message"><?php echo $error->getMessage();?></div>
+					<h3>Место возникновения ошибки</h3>
+					<div class="location"><?php echo $error->getFile();?>: <?php echo $error->getLine();?></div>
+					<div class="code">
+					<?php
+						$lines = file($error->getFile());
+						$firstLine = $error->getLine() > 5 ? $error->getLine() - 5 : 0;
+						$lastLine = $error->getLine() + 4 < count($lines) ? $error->getLine() + 4 : count($lines);
+						for ($i = $firstLine; $i < $lastLine; $i++)
+						{
+							$s = highlight_string('<?php' . $lines[$i], true);
+							$s = preg_replace('/&lt;\?php/', '', $s, 1);
+							if ($i == $error->getLine() - 1)
+							{
+								$s = preg_replace('/(<\w+)/', '$1 class="error-line"', $s);
+							}
+							echo $s;
+						}
+					?>
+					</div>
+					<h3>Стек вызовов</h3>
+					<pre class="trace"><?php echo $error->getTraceAsString();?></pre>
+					<h3>Другая информация</h3>
+					<?php
+				}
+				elseif ($error instanceof DomainException)
+				{
+					echo '<p>' . $error->getMessage() . '</p>';
+				}
 			}
-			echo $s;
-		}
 		?>
-		</div>
-		<h3><?php echo $local['stack'];?></h3>
-		<pre class="trace"><?php echo $error->getTraceAsString();?></pre>
-		<h3><?php echo $local['additional'];?></h3>
-		<?php
-	}
-	elseif ($error instanceof DomainException)
-	{
-		echo '<p>' . $error->getMessage() . '</p>';
-	}
-}
-else
-{
-	echo '<p>' . $local['production'] . '</p>';
-}
-?>
+		<p>Дополнительная информация об ошибке доступна в журнале <code>var/log/eresus.log</code></p>
 	</div>
 </body>
 </html>
