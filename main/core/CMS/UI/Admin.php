@@ -39,6 +39,16 @@
 class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 {
 	/**
+	 * Маршруты (корневые) АИ
+	 *
+	 * @var array
+	 */
+	private $routes = array(
+		false => 'Dashboard',
+		'settings' => 'Settings',
+	);
+
+	/**
 	 * Тема оформления
 	 *
 	 * @var Eresus_UI_Admin_Theme
@@ -113,18 +123,21 @@ class Eresus_CMS_UI_Admin extends Eresus_CMS_UI
 		$ts = Eresus_Template_Service::getInstance();
 		$req = Eresus_CMS_Request::getInstance();
 
-		$controllerName = $req->getNextParam();
-		if ($controllerName === false)
-		{
-			$controllerName = 'Dashboard';
-		}
-		$controllerClass = 'Eresus_Admin_Controller_' . $controllerName;
-
 		try
 		{
-			if (!class_exists($controllerClass))
+			$path = $req->getNextParam();
+			if (isset($this->routes[$path]))
+			{
+				$controllerClass = 'Eresus_Admin_Controller_' . $this->routes[$path];
+			}
+			else
 			{
 				throw new Eresus_CMS_Exception_NotFound;
+			}
+
+			if (!class_exists($controllerClass))
+			{
+				throw new LogicException("Class $controllerClass not found");
 			}
 
 			$controller = new $controllerClass;

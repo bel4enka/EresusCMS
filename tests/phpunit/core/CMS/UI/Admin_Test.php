@@ -222,7 +222,7 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 	 * @covers Eresus_CMS_UI_Admin::process
 	 * @covers Eresus_CMS_UI_Admin::main
 	 */
-	public function test_process_main()
+	public function test_process_main_notfound_path()
 	{
 		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
 
@@ -234,12 +234,57 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
 		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
-		$request->expects($this->any())->method('getNextParam')->will($this->returnValue(false));
+		$request->expects($this->any())->method('getNextParam')->will($this->returnValue('invalid'));
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
 		$ui = new Eresus_CMS_UI_Admin();
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::NOT_FOUND, $response->getCode());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::main
+	 * @expectedException LogicException
+	 */
+	public function test_process_main_notfound_class()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+
+		$Eresus_Security = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_Security->expects($this->any())->method('isGranted')->
+			will($this->returnValue(true));
+		Eresus_Tests::setStatic('Eresus_Security', $Eresus_Security);
+
+		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
+		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getBasePath')->will($this->returnValue(''));
+		$request->expects($this->any())->method('getNextParam')->will($this->returnValue('invalid'));
+		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
+
+		$ui = new Eresus_CMS_UI_Admin();
+
+		$p_routes = new ReflectionProperty('Eresus_CMS_UI_Admin', 'routes');
+		$p_routes->setAccessible(true);
+		$p_routes->setValue($ui, array('invalid' => 'Invalid'));
+
+		$response = $ui->process();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::main
+	 */
+	public function test_process_main_ok()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+
+		$Eresus_Security = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_Security->expects($this->any())->method('isGranted')->
+			will($this->returnValue(true));
+		Eresus_Tests::setStatic('Eresus_Security', $Eresus_Security);
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
@@ -248,8 +293,29 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 			will($this->returnValue('test_ok'));
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
 
+		$ui = new Eresus_CMS_UI_Admin();
+
+		$p_routes = new ReflectionProperty('Eresus_CMS_UI_Admin', 'routes');
+		$p_routes->setAccessible(true);
+		$p_routes->setValue($ui, array('test_ok' => 'Test_OK'));
+
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::OK, $response->getCode());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_CMS_UI_Admin::process
+	 * @covers Eresus_CMS_UI_Admin::main
+	 */
+	public function test_process_main_forbidden()
+	{
+		Eresus_Config::set('core.template.templateDir', TESTS_SRC_ROOT);
+
+		$Eresus_Security = $this->getMock('stdClass', array('isGranted'));
+		$Eresus_Security->expects($this->any())->method('isGranted')->
+			will($this->returnValue(true));
+		Eresus_Tests::setStatic('Eresus_Security', $Eresus_Security);
 
 		$request = $this->getMock('stdClass', array('getRootPrefix', 'getBasePath', 'getNextParam'));
 		$request->expects($this->any())->method('getRootPrefix')->will($this->returnValue(''));
@@ -257,6 +323,12 @@ class Eresus_CMS_UI_Admin_Test extends PHPUnit_Framework_TestCase
 		$request->expects($this->any())->method('getNextParam')->
 			will($this->returnValue('test_forbidden'));
 		Eresus_Tests::setStatic('Eresus_CMS_Request', $request);
+
+		$ui = new Eresus_CMS_UI_Admin();
+
+		$p_routes = new ReflectionProperty('Eresus_CMS_UI_Admin', 'routes');
+		$p_routes->setAccessible(true);
+		$p_routes->setValue($ui, array('test_forbidden' => 'Test_Forbidden'));
 
 		$response = $ui->process();
 		$this->assertEquals(Eresus_CMS_Response::FORBIDDEN, $response->getCode());
