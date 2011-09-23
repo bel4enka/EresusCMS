@@ -165,11 +165,19 @@
 		<!-- Tiny MCE -->
 		<copy todir="${build.dir}/ext-3rd/tinymce">
 			<fileset refid="files.3rd.tiny_mce" />
+			<fileset dir="ext-3rd/tinymce">
+				<include name="**/*" />
+				<exclude name=".svn" />
+			</fileset>
 		</copy>
 
 		<!-- EditArea -->
 		<copy todir="${build.dir}/ext-3rd/editarea">
 			<fileset refid="files.3rd.editarea" />
+			<fileset dir="ext-3rd/editarea">
+				<include name="**/*" />
+				<exclude name=".svn" />
+			</fileset>
 		</copy>
 
 		<copy todir="${build.dir}/distrib">
