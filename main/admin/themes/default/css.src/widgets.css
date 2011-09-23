@@ -949,3 +949,10 @@ table.ui-grid.ui-hlines
 			margin-left: 2em;
 		}
 
+/**
+ * Визуальный редактор
+ */
+.tinymce_default
+{
+	width: 99%;
+}

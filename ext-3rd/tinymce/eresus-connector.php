@@ -35,10 +35,18 @@
 /**
  * Класс-коннектор
  *
- * @package Eresus2
+ * @package Eresus
  */
 class TinyMCEConnector extends EresusExtensionConnector
 {
+	/**
+	 * Признак того, что скрипты уже установлены
+	 *
+	 * @var bool
+	 * @since 2.16
+	 */
+	private static $scriptsInstalled = false;
+
 	/**
 	 *
 	 * @param Form  $form
@@ -53,10 +61,43 @@ class TinyMCEConnector extends EresusExtensionConnector
 		$preset = isset($field['preset']) ? $field['preset'] : 'default';
 		$result = "\t\t".'<tr><td colspan="2">'.$field['label'].'<br /><textarea name="wyswyg_'.$field['name'].'" class="tinymce_'.$preset.'" cols="80" rows="25" style="width: 100%; height: '.$field['height'].';">'.str_replace('$(httpRoot)', $Eresus->root, EncodeHTML($value)).'</textarea></td></tr>'."\n";
 
-		$page->linkScripts($this->root.'tiny_mce.js');
-		$page->linkScripts($this->root.'presets/'.$preset.'.js');
+		if (!self::$scriptsInstalled)
+		{
+			$page->linkScripts($this->root.'tiny_mce.js');
+			$page->linkScripts($this->root.'presets/'.$preset.'.js');
+			self::$scriptsInstalled = true;
+		}
 
 		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает разметку редактора
+	 *
+	 * @param array $field
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	public function getWYSIWYG(array $field)
+	{
+		$value = isset($field['value']) ? $field['value'] : '';
+		$preset = isset($field['preset']) ? $field['preset'] : 'default';
+		$html = '<textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
+			'" cols="80" rows="25" style="height: ' . $field['height'] . ';">' .
+			str_replace('$(httpRoot)', $GLOBALS['Eresus']->root, EncodeHTML($value)) . '</textarea>';
+
+		if (!self::$scriptsInstalled)
+		{
+			$html .=
+				'<script type="text/javascript" src="' . $this->root . 'tiny_mce.js"></script>' .
+				'<script type="text/javascript" src="' . $this->root . 'presets/' . $preset .
+				'.js"></script>';
+			self::$scriptsInstalled = true;
+		}
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 }
