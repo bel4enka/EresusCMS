@@ -197,7 +197,6 @@ class TPlgMgr
 					preg_match('/\$title\s*=\s*(\'|")(.+)\1/', $s, $title);
 					preg_match('/\$description\s*=\s*(\'|")(.+)\1/', $s, $description);
 
-					// FIXME: Совместимость с версиями до 2.10b2. Надо сделать проверку на наличие $kernel
 					if (count($version) && count($title) && count($description))
 					{
 						$plugin['title'] = $title[2];
@@ -209,23 +208,15 @@ class TPlgMgr
 						$invalid = admPluginsNotRequiredFields;
 					}
 
-					/* PHP < 5.3 не понимает "rc", только "RC", но остальные буквы должны быть только
-					 * в нижнем регистре
-					 */
-					if (isset($kernel[2]))
-					{
-						$plugin['kernel'] =  str_replace('rc','RC', $kernel[2]);
-					}
-					else
-					{
-						$plugin['kernel'] =  str_replace('rc','RC', $kernel);
-					}
+					// FIXME: Совместимость с версиями до 2.10b2. Надо сделать проверку на наличие $kernel
+					$plugin['kernel'] = isset($kernel[2]) ? $kernel[2] : '2.00';
 
-					$kernelVersion = str_replace('rc','RC', CMSVERSION);
-					if (
-						isset($plugin['kernel']) &&
-						version_compare($plugin['kernel'], $kernelVersion, '>')
-					)
+					/*
+					 * Удаляем все буквы, и сравниваем только цифры
+					 */
+					$plugin['kernel'] = preg_replace('/[^\d\.]/', '', $plugin['kernel']);
+					$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
+					if (version_compare($plugin['kernel'], $kernelVersion, '>'))
 					{
 						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
 						$plugin['errors'] []= sprintf($msg, $plugin['kernel']);
