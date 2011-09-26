@@ -754,8 +754,8 @@ class TAdminUI extends WebPage
 			else
 			{
 				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
-				$msg = I18n::getInstance()->getText('Unexpected error! See log for more info.', __CLASS__);
-				$result .= ErrorBox($msg);
+				$msg = I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
+				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
 		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
