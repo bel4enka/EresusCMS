@@ -192,7 +192,7 @@ class TPlgMgr
 					$s = $s[1];
 
 					/* Ищем нужные свойства */
-					preg_match('/\$kernel\s*=\s*(\'|")(.+)\1/', $s, $kernel);
+					preg_match('/\$kernel\s*=\s*(\'|")(\d\.\d\d)/', $s, $kernel);
 					preg_match('/\$version\s*=\s*(\'|")(.+)\1/', $s, $version);
 					preg_match('/\$title\s*=\s*(\'|")(.+)\1/', $s, $title);
 					preg_match('/\$description\s*=\s*(\'|")(.+)\1/', $s, $description);
@@ -208,13 +208,11 @@ class TPlgMgr
 						$invalid = admPluginsNotRequiredFields;
 					}
 
-					// FIXME: Совместимость с версиями до 2.10b2. Надо сделать проверку на наличие $kernel
 					$plugin['kernel'] = isset($kernel[2]) ? $kernel[2] : '2.00';
 
 					/*
-					 * Удаляем все буквы, и сравниваем только цифры
+					 * Удаляем из версии все буквы, и сравниваем только цифры
 					 */
-					$plugin['kernel'] = preg_replace('/[^\d\.]/', '', $plugin['kernel']);
 					$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
 					if (version_compare($plugin['kernel'], $kernelVersion, '>'))
 					{
