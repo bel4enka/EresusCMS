@@ -96,7 +96,7 @@ class Plugins
 			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
 			$code = str_replace('__FILE__', "'$filename'", $code);
 			ini_set('track_errors', true);
-			@$valid = eval($code) !== false;
+			$valid = eval($code) !== false;
 			ini_set('track_errors', false);
 			if (!$valid)
 			{
