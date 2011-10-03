@@ -1,14 +1,15 @@
 <?php
 /**
- * Название плагина
+ * [Краткое название плагина]
  *
- * Описание плагниа
+ * [Описание плагина (допустимо несколько строк)]
  *
  * @version ${product.version}
  *
- * @copyright год, владелец, адреc
+ * @copyright [год], [владелец], [адрес, если нужен]
  * @license http://www.gnu.org/licenses/gpl.txt	GPL License 3
- * @author Автор <E-mail>
+ * @author [Автор1 <E-mail автора1>]
+ * @author [АвторN <E-mail автораN>]
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +27,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package MyPlugin
+ * @package [Имя пакета]
  *
  * $Id$
  */
@@ -34,7 +35,7 @@
 /**
  * Основной класс плагина
  *
- * @package MyPlugin
+ * @package [Имя пакета]
  */
 class MyPlugin extends Plugin
 {
@@ -48,7 +49,7 @@ class MyPlugin extends Plugin
 	 * Требуемая версия ядра
 	 * @var string
 	 */
-	public $kernel = '2.14';
+	public $kernel = '2.xx';
 
 	/**
 	 * Название плагина
@@ -83,4 +84,25 @@ class MyPlugin extends Plugin
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Диалог настроек плагина
+	 *
+	 * @return string  Форма настроек
+	 */
+	public function settings()
+	{
+		$form = array(
+			'name' => 'SettingsForm',
+			'caption' => $this->title . ' ' . $this->version,
+			'width' => '500px',
+			'fields' => array (
+				array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
+				// Необходимые поля формы
+			),
+			'buttons' => array('ok', 'apply', 'cancel'),
+		);
+		$html = $GLOBALS['page']->renderForm($form, $this->settings);
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
 }
