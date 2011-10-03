@@ -162,7 +162,7 @@ class TPlgMgr
 		/*
 		 * —оставл€ем список установленных плагинов
 		 */
-		$items = $Eresus->db->select('`plugins`', '', "`name`");
+		$items = $Eresus->db->select('plugins', '', 'name');
 		$installed = array();
 		foreach ($items as $item)
 		{
