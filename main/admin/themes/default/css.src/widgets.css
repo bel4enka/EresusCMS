@@ -928,15 +928,10 @@ table.ui-grid.ui-hlines
 	 	/**
 	 	 * Блок плагина
 	 	 */
-		#plugin-manager-add-dlg .plugin-list label
+		#plugin-manager-add-dlg .plugin-list .plugin-list__plugin
 		{
-			background-color: #fff;
-			cursor: pointer;
+			background: #fff;
 		}
-			#plugin-manager-add-dlg .plugin-list label:hover
-			{
-				background-color: #cfc;
-			}
 
 		#plugin-manager-add-dlg .plugin-list input[type=checkbox]
 		{
