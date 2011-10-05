@@ -16,15 +16,15 @@
 			</div>
 
 			<div class="plugin-list">
-				{foreach $plugins plugin}
+				{foreach $plugins item}
 				<div class="plugin-list__plugin block box">
-					{if !$plugin.errors}<input type="checkbox" name="files[{$plugin.name}]" value="1" checked="checked" />{/if}
+					{if !$item.errors}<input type="checkbox" name="files[{$item.info->name}]" value="1" checked="checked" />{/if}
 					<div class="block info">
-						<strong>{$plugin.title} {$plugin.version}</strong><br />
-						{$plugin.description}
-						{if $plugin.errors}
+						<strong>{$item.info->title} {$item.info->version}</strong><br />
+						{$item.info->description}
+						{if $item.errors}
 						<ul class="error-text">
-						{foreach $plugin.errors error}<li>{$error}</li>{/foreach}
+						{foreach $item.errors error}<li>{$error}</li>{/foreach}
 						</ul>
 						{/if}
 					</div>

@@ -150,22 +150,20 @@ class TPlgMgr
 
 		$data = array();
 
-		/*
-		 * Составляем список доступных плагинов
-		 */
+		/* Составляем список доступных плагинов */
 		$files = glob($Eresus->froot . 'ext/*.php');
-		if ($files === false)
+		if (false === $files)
 		{
 			$files = array();
 		}
 
-		/*
-		 * Составляем список установленных плагинов
-		 */
-		$items = $Eresus->db->select('plugins', '', 'name');
+		/* Составляем списки доступынх и установленных плагинов */
+		$items = $Eresus->db->select('plugins', '', 'name, version');
+		$available = array();
 		$installed = array();
 		foreach ($items as $item)
 		{
+			$available[$item['name']] = $item['version'];
 			$installed []= $Eresus->froot . 'ext/' . $item['name'] . '.php';
 		}
 
@@ -176,60 +174,71 @@ class TPlgMgr
 		 * Собираем информацию о неустановленных плагинах
 		 */
 		$data['plugins'] = array();
+		$features = array();
 		if (count($files))
 		{
 			foreach ($files as $file)
 			{
-				$plugin = array('errors' => array());
-				// Считываем исходник
-				$s = file_get_contents($file);
-				// Имя плагина должно совпадать с именем файла
-				$plugin['name'] = basename($file, '.php');
-				// Если нет класса "ИмяПлагина" или "TИмяПлагина" (старая форма) - это не файла плагина
-				if (preg_match('/class\s+T?' . $plugin['name'] . '\s.*?{(.*?)({|})/is',	$s, $s))
+				$errors = array();
+				try
 				{
-					// $s теперь содержит исходник плагина
-					$s = $s[1];
-
-					/* Ищем нужные свойства */
-					preg_match('/\$kernel\s*=\s*(\'|")(\d\.\d\d)/', $s, $kernel);
-					preg_match('/\$version\s*=\s*(\'|")(.+)\1/', $s, $version);
-					preg_match('/\$title\s*=\s*(\'|")(.+)\1/', $s, $title);
-					preg_match('/\$description\s*=\s*(\'|")(.+)\1/', $s, $description);
-
-					if (count($version) && count($title) && count($description))
-					{
-						$plugin['title'] = $title[2];
-						$plugin['version'] = $version[2];
-						$plugin['description'] = $description[2];
-					}
-					else
-					{
-						$invalid = admPluginsNotRequiredFields;
-					}
-
-					$plugin['kernel'] = isset($kernel[2]) ? $kernel[2] : '2.00';
-
-					/*
-					 * Удаляем из версии все буквы, и сравниваем только цифры
-					 */
+					$info = Eresus_PluginInfo::loadFromFile($file);
+					// Удаляем из версии ядра все буквы, чтобы сравнивать только цифры
 					$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
-					if (version_compare($plugin['kernel'], $kernelVersion, '>'))
+					$required = $info->getRequiredKernel();
+					if (
+						version_compare($kernelVersion, $required[0], '<')/* ||
+						version_compare($kernelVersion, $required[1], '>')*/
+					)
 					{
 						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
-						$plugin['errors'] []= sprintf($msg, $plugin['kernel']);
+						$errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
+					}
+					/*}
+					else
+					{
+						$msg =  I18n::getInstance()->getText('Class "%s" not found in plugin file', $this);
+						$info['errors'] []= sprintf($msg, $info['name']);
+					}*/
+				}
+				catch (RuntimeException $e)
+				{
+					$errors []= $e->getMessage();
+					$info = new stdClass();
+					$info->title = $info->name = basename($file, '.php');
+					$info->version = '';
+				}
+				$available[$info->name] = $info->version;
+				$data['plugins'][$info->title] = array('info' => $info, 'errors' => $errors);
+			}
+		}
+
+
+		foreach ($data['plugins'] as &$item)
+		{
+			if ($item['info'] instanceof Eresus_PluginInfo)
+			{
+				$required = $item['info']->getRequiredPlugins();
+				foreach ($required as $plugin)
+				{
+					list ($name, $minVer, $maxVer) = $plugin;
+					if (
+						!isset($available[$name]) ||
+						($minVer && version_compare($available[$name], $minVer, '<')) ||
+						($maxVer && version_compare($available[$name], $maxVer, '>'))
+					)
+					{
+						{
+							$msg = I18n::getInstance()->getText('Requires plugin: %s', $this);
+							$item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
+						}
 					}
 				}
-				else
-				{
-					$msg =  I18n::getInstance()->getText('Class "%s" not found in plugin file', $this);
-					$plugin['errors'] []= sprintf($msg, $plugin['name']);
-				}
-				$data['plugins'][$plugin['title']] = $plugin;
 			}
 		}
 
 		ksort($data['plugins']);
+
 		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
 

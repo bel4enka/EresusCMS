@@ -300,7 +300,6 @@ define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эн
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
 define('admPluginsInvalidVersion', 'Требуется ядро %s или выше.');
-define('admPluginsNotRequiredFields', 'Отсутствует одно или более из свойств: version, title, description');
 define('admPluginsAdded', 'Подключен новый плагин');
 define('admPluginTopicTable', 'Таблица топиков');
 

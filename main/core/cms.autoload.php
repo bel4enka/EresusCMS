@@ -26,13 +26,14 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus2
+ * @package Eresus
  *
  * $Id$
  */
 
 return array(
 	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
+	'Eresus_PluginInfo' => 'core/classes/PluginInfo.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',

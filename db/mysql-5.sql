@@ -47,6 +47,7 @@ CREATE TABLE `plugins` (
   `title` varchar(64) default '',
   `version` varchar(16) default '',
   `description` varchar(255) default '',
+  `info` text,
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
   KEY `content` (`content`)

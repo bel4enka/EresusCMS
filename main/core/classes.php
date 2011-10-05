@@ -48,25 +48,36 @@ class EresusSourceParseException extends EresusRuntimeException {};
  */
 class Plugins
 {
-	var $list = array(); # Список всех плагинов
-	var $items = array(); # Массив плагинов
-	var $events = array(); # Таблица обработчиков событий
+	/**
+	 * Список всех плагинов
+	 *
+	 * @var array
+	 * @todo сделать private
+	 */
+	public $list = array();
+
+	/**
+	 * Массив плагинов
+	 *
+	 * @var array
+	 * @todo сделать private
+	 */
+	public $items = array();
+
+	/**
+	 * Таблица обработчиков событий
+	 *
+	 * @var array
+	 * @todo сделать private
+	 */
+	public $events = array();
 
 	/**
 	 * Конструктор
 	 */
-	function __construct()
+	public function __construct()
 	{
-		global $Eresus;
-
-		$items = $Eresus->db->select('plugins');
-		if (count($items))
-		{
-			foreach($items as $item)
-			{
-				$this->list[$item['name']] = $item;
-			}
-		}
+		$this->loadActive();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -88,9 +99,10 @@ class Plugins
 		$filename = filesRoot.'ext/'.$name.'.php';
 		if (FS::exists($filename))
 		{
+			$info = Eresus_PluginInfo::loadFromFile($filename);
 			/*
 			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
-			 * ошибок. Хотя и не факт, что это не сработает.
+			 * ошибок. Хотя и не факт, что это сработает.
 			 */
 			$code = file_get_contents($filename);
 			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
@@ -105,16 +117,24 @@ class Plugins
 				);
 			}
 
-			$ClassName = $name;
-			if (!class_exists($ClassName, false) && class_exists('T'.$ClassName, false))
-				$ClassName = 'T'.$ClassName; # FIXME: Обратная совместимость с версиями до 2.10b2
-			if (class_exists($ClassName, false))
+			$className = $name;
+			if (!class_exists($className, false) && class_exists('T' . $className, false))
 			{
-				$this->items[$name] = new $ClassName();
-				$this->items[$name]->install();
-				$Eresus->db->insert('plugins', $this->items[$name]->__item());
+				$className = 'T' . $className; // FIXME: Обратная совместимость с версиями до 2.10b2
 			}
-				else FatalError(sprintf(errClassNotFound, $ClassName));
+
+			if (class_exists($className, false))
+			{
+				$this->items[$name] = new $className();
+				$this->items[$name]->install();
+				$item = $this->items[$name]->__item();
+				$item['info'] = serialize($info);
+				$Eresus->db->insert('plugins', $item);
+			}
+			else
+			{
+				FatalError(sprintf(errClassNotFound, $ClassName));
+			}
 		}
 		else
 		{
@@ -155,48 +175,10 @@ class Plugins
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * Производит предварительную загрузку плагинов
-	 *
-	 * @param array $include [deprecated]
-	 * @param array $exclude [deprecated]
-	 * @return void
-	 */
-	function preload($include = null, $exclude = null)
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		if (!is_null($exclude))
-		{
-			eresus_log(__METHOD__, LOG_NOTICE, '$exclude argument is deprecated');
-		}
-
-		if (!is_null($include))
-		{
-			eresus_log(__METHOD__, LOG_NOTICE, '$include argument is deprecated');
-		}
-
-		if (count($this->list))
-		{
-			eresus_log(__METHOD__, LOG_DEBUG, 'Preloading plugins...');
-			foreach($this->list as $item)
-			{
-				if ($item['active'])
-				{
-					$this->load($item['name']);
-				}
-			}
-		}
-		else
-		{
-			eresus_log(__METHOD__, LOG_DEBUG, 'Nothing to preload');
-		}
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-	/**
 	 * Загружает плагин и возвращает его экземпляр
 	 *
 	 * @param string $name  Имя плагина
+	 *
 	 * @return Plugin|TPlugin|false  Экземпляр плагина или FASLE если не удалось загрузить плагин
 	 */
 	public function load($name)
@@ -386,8 +368,62 @@ class Plugins
 				$this->items[$plugin]->ajaxOnRequest();
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Загружает активные плагины
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function loadActive()
+	{
+		$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
+		if ($items)
+		{
+			foreach ($items as &$item)
+			{
+				$item['info'] = unserialize($item['info']);
+				$this->list[$item['name']] = $item;
+			}
+
+			/* Проверяем зависимости */
+			do
+			{
+				$success = true;
+				foreach ($this->list as $plugin => $item)
+				{
+					foreach ($item['info']->getRequiredPlugins() as $required)
+					{
+						list ($name, $minVer, $maxVer) = $required;
+						if (
+							!isset($this->list[$name]) ||
+							($minVer && version_compare($this->list[$name]['info']->version, $minVer, '<')) ||
+							($maxVer && version_compare($this->list[$name]['info']->version, $maxVer, '>'))
+						)
+						{
+							$msg = 'Plugin "%s" requires plugin %s';
+							$requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
+							eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
+							/*$msg = I18n::getInstance()->getText($msg, $this);
+							ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
+							unset($this->list[$plugin]);
+							$success = false;
+						}
+					}
+				}
+			}
+			while (!$success);
+
+			/* Загружаем плагины */
+			foreach ($this->list as $item)
+			{
+				$this->load($item['name']);
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
 *

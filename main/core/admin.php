@@ -197,9 +197,6 @@ class TAdminUI extends WebPage
 
 		$this->sub--;
 
-		// Загружаем плагины
-		$Eresus->plugins->preload(array('admin'));
-
 		/* Создаем меню */
 		$this->menu = array(
 			array(

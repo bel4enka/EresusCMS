@@ -215,7 +215,6 @@ class TClientUI extends WebPage
 	{
 		global $Eresus;
 
-		$Eresus->plugins->preload(array('client'),array('ondemand'));
 		$Eresus->plugins->clientOnStart();
 
 		$item = $this->loadPage();
