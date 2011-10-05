@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * $Id: main.php 923 2010-06-10 13:12:43Z mk $
  */
@@ -34,7 +34,7 @@
 /**
  * Компонент "Файловый менеджер"
  *
- * @package EresusCMS
+ * @package Eresus
  */
 class AdminFileManager extends EresusAdminComponent
 {
@@ -129,7 +129,7 @@ class AdminFileManager extends EresusAdminComponent
  * @property-read string $name
  * @property-read string $icon
  *
- * @package EresusCMS
+ * @package Eresus
  */
 class AdminFileManagerObject
 {

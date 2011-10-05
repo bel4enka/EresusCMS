@@ -25,7 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * $Id$
  *
@@ -48,7 +48,7 @@ define('SECTIONS_VISIBLE', 0x0002);
 /**
  * Работа с разделами сайта
  *
- * @package EresusCMS
+ * @package Eresus
  */
 class Sections
 {

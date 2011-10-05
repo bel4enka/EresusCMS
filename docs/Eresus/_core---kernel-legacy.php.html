@@ -1,0 +1,1337 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page kernel-legacy.php</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name"><img src="../media/images/Page_logo.png" alt="File" style="vertical-align: middle">/core/kernel-legacy.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-classes">Classes</a>
+			|									<a href="#sec-constants">Constants</a>
+			|									<a href="#sec-functions">Functions</a>
+			</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">${product.title} ${product.version}</p>
+<p class="description"><p>${product.description}</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> <p>Mikhail Krasilnikov &lt;<a href="mailto:mk@procreat.ru">mk@procreat.ru</a>&gt;</p><p>������ ��������� �������� ��������� ����������� ������������. ��  ������ �������������� �� �/��� �������������� � ������������ �  ��������� ������ 3 ���� (�� ������ ������) � ��������� ����� �������  ������ ����������� ������������ �������� GNU, �������������� Free  Software Foundation.</p><p>�� �������������� ��� ��������� � ������� �� ��, ��� ��� ����� ���  ��������, ������ �� ������������� �� ��� ������� ��������, � ���  ����� �������� ��������� ��������� ��� ������� � ����������� ���  ������������� � ���������� �����. ��� ��������� ����� ���������  ���������� ������������ �� ����������� ������������ ��������� GNU.</p><p>�� ������ ���� �������� ����� ����������� ������������ ��������  GNU � ���� ����������. ���� �� �� �� ��������, �������� �������� ��  &lt;http://www.gnu.org/licenses/&gt;</p></li>
+				<li><span class="field">copyright:</span> 2004, ProCreat Systems, http://procreat.ru/</li>
+				<li><span class="field">copyright:</span> 2007, Eresus Project, http://eresus.ru/</li>
+				<li><span class="field">license:</span> ${license.uri}</li>
+			</ul>
+		
+			</div>
+</div>
+		
+	<a name="sec-classes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Classes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Classes</span>
+			|										<a href="#sec-constants">Constants</a>
+				|													<a href="#sec-functions">Functions</a>
+					</div>
+		<div class="info-box-body">	
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
+						<img src="../media/images/Class.png"
+								 alt=" class"
+								 title=" class"/>
+						<a href="../Eresus/Eresus.html">Eresus</a>
+					</td>
+					<td>
+											�������� ����� ����������
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	
+	<a name="sec-constants"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-classes">Classes</a>
+				|									<span class="disabled">Constants</span>
+			|										<a href="#sec-functions">Functions</a>
+					</div>
+		<div class="info-box-body">	
+			<a name="defineADMIN"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">ADMIN</span> = 2
+			(line <span class="line-number">46</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineCMSLINK"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">CMSLINK</span> = 'http://eresus.ru/'
+			(line <span class="line-number">39</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineCMSNAME"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">CMSNAME</span> = 'Eresus'
+			(line <span class="line-number">37</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">�������� �������</p>
+	
+		
+</div>
+<a name="defineCMSVERSION"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">CMSVERSION</span> = '${product.version}'
+			(line <span class="line-number">38</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineEDITOR"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">EDITOR</span> = 3
+			(line <span class="line-number">47</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineGUEST"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">GUEST</span> = 5
+			(line <span class="line-number">49</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineKERNELDATE"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">KERNELDATE</span> = '${builddate}'
+			(line <span class="line-number">42</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineKERNELNAME"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">KERNELNAME</span> = 'ERESUS'
+			(line <span class="line-number">41</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineROOT"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">ROOT</span> = 1
+			(line <span class="line-number">45</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+<a name="defineUSER"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">USER</span> = 4
+			(line <span class="line-number">48</span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+		
+</div>
+		</div>
+	</div>
+	
+	
+	<a name="sec-functions"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Functions</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-classes">Classes</a>
+				|													<a href="#sec-constants">Constants</a>
+				|									<span class="disabled">Functions</span>
+		</div>
+		<div class="info-box-body">	
+			<a name="functionarg" id="functionarg"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">arg</span> (line <span class="line-number">440</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">���������� �������� ��������� �������</p>
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			arg
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$arg</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$filter</span> = <span class="var-default">null</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$arg</span><span class="var-description">: ��� ���������</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$filter</span><span class="var-description">: ������ �� ��������</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionarray2text" id="functionarray2text"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">array2text</span> (line <span class="line-number">373</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">�������� ����� �� �������</p>
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			array2text
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$items</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$assoc</span> = <span class="var-default">false</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$assoc[optional]</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$assoc[optional]</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$items</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$assoc</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiondbReorderItems" id="functiondbReorderItems"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">dbReorderItems</span> (line <span class="line-number">510</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">�������������� ���������</p>
+	<ul class="tags">
+				<li><span class="field">deprecated:</span> </li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			dbReorderItems
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$table</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$condition</span> = <span class="var-default">&#039;&#039;</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span> = <span class="var-default">&#039;id&#039;</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$table</span><span class="var-description">: �������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$condition</span><span class="var-description">: �������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$id</span><span class="var-description">: ��� ��������� ����</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiondbShiftItems" id="functiondbShiftItems"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">dbShiftItems</span> (line <span class="line-number">527</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">����� ������� ���������</p>
+	<ul class="tags">
+				<li><span class="field">deprecated:</span> </li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			dbShiftItems
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$table</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$condition</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$delta</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$id</span> = <span class="var-default">&#039;id&#039;</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$table</span><span class="var-description">: �������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$condition</span><span class="var-description">: �������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$delta</span><span class="var-description">: �������� ������</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$id</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiondecodeHTML" id="functiondecodeHTML"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">decodeHTML</span> (line <span class="line-number">327</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			decodeHTML
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$text</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$text</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiondecodeOptions" id="functiondecodeOptions"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">decodeOptions</span> (line <span class="line-number">393</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			decodeOptions
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$options</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$defaults</span> = <span class="var-default">array()</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$options</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$defaults</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionencodeHTML" id="functionencodeHTML"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">encodeHTML</span> (line <span class="line-number">312</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">�������� ����������� HTML</p>
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			encodeHTML
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$source</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$source</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionencodeOptions" id="functionencodeOptions"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">encodeOptions</span> (line <span class="line-number">386</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			encodeOptions
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$options</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$options</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionErrorBox" id="functionErrorBox"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">ErrorBox</span> (line <span class="line-number">103</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">����� ��������� � ���������������� ������</p>
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			ErrorBox
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$text</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$caption</span> = <span class="var-default">errError</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$text</span><span class="var-description">: ����� ���������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$caption</span><span class="var-description">: ��������� ���� ���������</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionErrorMessage" id="functionErrorMessage"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">ErrorMessage</span> (line <span class="line-number">125</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			ErrorMessage
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$message</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$message</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionFatalError" id="functionFatalError"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">FatalError</span> (line <span class="line-number">68</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">������� ������� ��������� � ���������������� ������ � ���������� ������ �������.</p>
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			FatalError
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$msg</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$msg</span><span class="var-description">: ����� ���������</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionfiledelete" id="functionfiledelete"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">filedelete</span> (line <span class="line-number">581</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">������� ����</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ��������� ����������</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			filedelete
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filename</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filename</span><span class="var-description">: ��� �����</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionfileread" id="functionfileread"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">fileread</span> (line <span class="line-number">545</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">������ �����</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ���������� ����� ��� false</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			fileread
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filename</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filename</span><span class="var-description">: ��� �����</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionfilewrite" id="functionfilewrite"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">filewrite</span> (line <span class="line-number">564</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">������ � ����</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ��������� ����������</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			filewrite
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filename</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$flags</span> = <span class="var-default">0</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filename</span><span class="var-description">: ��� �����</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$content</span><span class="var-description">: ����������</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$flags</span><span class="var-description">: �����</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionFormatDate" id="functionFormatDate"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">FormatDate</span> (line <span class="line-number">276</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">�������������� ����</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ����������������� ����</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			FormatDate
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$date</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$format</span> = <span class="var-default">DATETIME_NORMAL</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$date</span><span class="var-description">: ���� � ������� YYYY-MM-DD hh:mm:ss</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$format</span><span class="var-description">: ������� �������������� ����</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionFormatSize" id="functionFormatSize"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">FormatSize</span> (line <span class="line-number">699</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			FormatSize
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$size</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$size</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiongettime" id="functiongettime"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">gettime</span> (line <span class="line-number">259</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			gettime
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$format</span> = <span class="var-default">&#039;Y-m-d H:i:s&#039;</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$format</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionHttpAnswer" id="functionHttpAnswer"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">HttpAnswer</span> (line <span class="line-number">629</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			HttpAnswer
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$answer</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$answer</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionimg" id="functionimg"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">img</span> (line <span class="line-number">650</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			img
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$imagename</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$imagename</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionInfoBox" id="functionInfoBox"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">InfoBox</span> (line <span class="line-number">113</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			InfoBox
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$text</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$caption</span> = <span class="var-default">strInformation</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$text</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$caption</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionInfoMessage" id="functionInfoMessage"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">InfoMessage</span> (line <span class="line-number">131</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			InfoMessage
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$message</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$message</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionoption" id="functionoption"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">option</span> (line <span class="line-number">644</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			option
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionreplaceMacros" id="functionreplaceMacros"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">replaceMacros</span> (line <span class="line-number">414</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">������ ��������</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> �����</li>
+				<li><span class="field">see:</span> __propery</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">������������</span>
+		<span class="method-name">
+			replaceMacros
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$template</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$source</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$template</span><span class="var-description">: ������</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$source</span><span class="var-description">: �������� ��� ������</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionrestoreRequest" id="functionrestoreRequest"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">restoreRequest</span> (line <span class="line-number">485</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			restoreRequest
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+<a name="functionsaveRequest" id="functionsaveRequest"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">saveRequest</span> (line <span class="line-number">478</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			saveRequest
+		</span>
+				()
+			</div>
+
+		
+	
+</div>
+<a name="functionsendMail" id="functionsendMail"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">sendMail</span> (line <span class="line-number">198</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			sendMail
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$address</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$subject</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$text</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$html</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$fromName</span> = <span class="var-default">&#039;&#039;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$fromAddr</span> = <span class="var-default">&#039;&#039;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$fromOrg</span> = <span class="var-default">&#039;&#039;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$fromSign</span> = <span class="var-default">&#039;&#039;</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$replyTo</span> = <span class="var-default">&#039;&#039;</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$address</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$subject</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$text</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$html</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$fromName</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$fromAddr</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$fromOrg</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$fromSign</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$replyTo</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionSendXML" id="functionSendXML"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">SendXML</span> (line <span class="line-number">636</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			SendXML
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$data</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functiontext2array" id="functiontext2array"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">text2array</span> (line <span class="line-number">346</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">��������� ����� �� ������ � ���������� ������ �� ���</p>
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			text2array
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$assoc</span> = <span class="var-default">false</span>], <span class="var-type">bool</span>&nbsp;<span class="var-name">$assoc[optional]</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$assoc[optional]</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$assoc</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionTranslit" id="functionTranslit"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">Translit</span> (line <span class="line-number">708</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			Translit
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$s</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$s</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionupload" id="functionupload"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">upload</span> (line <span class="line-number">592</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			upload
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$filename</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$overwrite</span> = <span class="var-default">true</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$filename</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$overwrite</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionuseClass" id="functionuseClass"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">useClass</span> (line <span class="line-number">180</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">���������� �������� ������</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ��������� ����������</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			useClass
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$className</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$className</span><span class="var-description">: ��� ������</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionuseLib" id="functionuseLib"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">useLib</span> (line <span class="line-number">157</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">����������� ����������</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ���������</li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			useLib
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$library</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$libaray</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$libaray</span><span class="var-description">: ��� ����������</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$library</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionUserRights" id="functionUserRights"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">UserRights</span> (line <span class="line-number">141</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			UserRights
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$level</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$level</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="function__clearargs" id="function__clearargs"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">__clearargs</span> (line <span class="line-number">724</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__clearargs
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$args</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="function__isset" id="function__isset"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">__isset</span> (line <span class="line-number">773</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">���������� ����������� �� �������� � ��������</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ��������</li>
+				<li><span class="field">see:</span> <a href="../Eresus/_core---kernel-legacy.php.html#functionreplaceMacros">replaceMacros()</a></li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			__isset
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$object</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$property</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$object</span><span class="var-description">: �������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$property</span><span class="var-description">: ��������</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="function__macroConst" id="function__macroConst"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">__macroConst</span> (line <span class="line-number">52</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__macroConst
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$matches</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$matches</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="function__macroVar" id="function__macroVar"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">__macroVar</span> (line <span class="line-number">56</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__macroVar
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$matches</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$matches</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="function__property" id="function__property"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">__property</span> (line <span class="line-number">791</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">���������� �������� ��������</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> ��������</li>
+				<li><span class="field">see:</span> <a href="../Eresus/_core---kernel-legacy.php.html#functionreplaceMacros">replaceMacros()</a></li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			__property
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$object</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$property</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$object</span><span class="var-description">: �������</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$property</span><span class="var-description">: ��������</span>			</li>
+				</ul>
+		
+	
+</div>
+		</div>
+	</div>
+	
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 05 Oct 2011 18:27:20 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

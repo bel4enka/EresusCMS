@@ -23,7 +23,7 @@
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * $Id$
  */

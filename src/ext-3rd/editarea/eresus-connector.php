@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * $Id: eresus-connector.php 739 2010-02-06 18:43:28Z mk $
  */
@@ -34,7 +34,7 @@
 /**
  * Класс-коннектор
  *
- * @package EresusCMS
+ * @package Eresus
  */
 class EditAreaConnector extends EresusExtensionConnector
 {

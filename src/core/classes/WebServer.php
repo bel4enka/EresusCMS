@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * $Id$
  */
@@ -36,7 +36,7 @@
  *
  * Этот класс - кандидат на перенос в Eresus Core
  *
- * @package EresusCMS
+ * @package Eresus
  * @since 2.15
  */
 class WebServer

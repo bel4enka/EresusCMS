@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * $Id$
  */
@@ -34,7 +34,7 @@
 /**
  * Помощник нумерации
  *
- * @package EresusCMS
+ * @package Eresus
  *
  * @since 2.14
  */
@@ -106,7 +106,7 @@ implements Iterator, Countable
 	 *
 	 * @param int     $total[optional]        Общее количество страниц.
 	 * @param int     $current[optional]      Номер текущей страницы. По умолчанию 1.
-	 * @para, sttring $urlTemplate[optional]  Шаблон URL. Используйте "%d" для подстановки страницы
+	 * @param sttring $urlTemplate[optional]  Шаблон URL. Используйте "%d" для подстановки страницы
 	 *
 	 * @return PaginationHelper
 	 *
