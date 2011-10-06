@@ -320,7 +320,7 @@ class Eresus_PluginInfo
 					break;
 
 					case T_STRING == $id && 'class_name' == $state && trim($text) != '':
-						$info->name = strtolower($text);
+						$info->name = basename($filename, '.php'); //strtolower($text);
 						$state = 'prop_name';
 					break;
 
