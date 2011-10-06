@@ -2,29 +2,33 @@
 /**
  * ${product.title}
  *
+ * Модульные тесты
+ *
  * @version ${product.version}
  *
- * PhpUnit Tests
- *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
- * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
  * $Id$
  */
@@ -38,6 +42,7 @@ else
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
 }
 
+define('TESTS_SRC_DIR', realpath(dirname(__FILE__) . '/../../src'));
 
 define('filesRoot', '/home/exmaple.org/');
 
@@ -45,7 +50,7 @@ define('filesRoot', '/home/exmaple.org/');
 function eresus_log() {}
 
 /**
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
  * @since 2.15
  */

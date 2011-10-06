@@ -29,7 +29,7 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../../../main/core/classes/WebPage.php';
+require_once TESTS_SRC_DIR . '/core/classes/WebPage.php';
 
 /**
  * @package EresusCMS

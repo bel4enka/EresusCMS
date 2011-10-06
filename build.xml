@@ -12,14 +12,14 @@
 	<property file="build.properties" />
 
 	<!-- Основные файлы проекта -->
-	<fileset dir="main" id="files.main">
+	<fileset dir="src" id="files.sources">
 		<include name="**" />
 		<exclude name="**/.svn" />
 		<exclude name="**/*.src" />
 	</fileset>
 
 		<!-- Основные файлы проекта. Только PHP -->
-		<fileset dir="main" id="files.main.php">
+		<fileset dir="src" id="files.sources.php">
 			<include name="**/*.php" />
 		</fileset>
 
@@ -56,6 +56,30 @@
 	<php function="date" returnProperty="builddate">
 	  <param value="Y-m-d"/>
 	</php>
+
+	<!--
+	=====================================================================
+	Модульные тесы
+	=====================================================================
+	-->
+	<target name="tests" description="Run unit tests">
+
+		<phplint>
+			<fileset refid="files.sources.php" />
+		</phplint>
+
+		<mkdir dir="${logs.dir}" />
+		<exec
+			command="phpunit
+				--log-junit ${logs.dir}/phpunit.xml
+				--coverage-clover ${logs.dir}/phpunit.coverage.xml
+				--coverage-html ${phpunit.coverage.html}
+				${project.basedir}/tests/phpunit/AllTests.php"
+			checkreturn="true"
+			logoutput="true"
+		/>
+
+	</target>
 
 	<!--
 	=====================================================================
