@@ -23,6 +23,13 @@
 			<include name="**/*.php" />
 		</fileset>
 
+	<!-- Eresus Framework -->
+	<fileset dir="framework" id="files.framework">
+		<include name="**" />
+		<exclude name="**/.svn" />
+		<exclude name="**/*.src" />
+	</fileset>
+
 	<!-- 3rd party: EditArea -->
 	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
 		<include name="**" />
@@ -41,6 +48,12 @@
 		<exclude name=".svn" />
 	</fileset>
 
+	<!-- SQL dumps -->
+	<fileset dir="db" id="files.db">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<!-- Tools files -->
 	<fileset dir="." id="files.tools">
 		<include name="tools/**" />
@@ -52,10 +65,6 @@
 		<include name="SDK/**" />
 		<exclude name=".svn" />
 	</fileset>
-
-	<php function="date" returnProperty="builddate">
-	  <param value="Y-m-d"/>
-	</php>
 
 	<!--
 	=====================================================================
@@ -80,6 +89,120 @@
 		/>
 
 	</target>
+
+	<!--
+	=====================================================================
+	Поиск плохого кода
+	=====================================================================
+	-->
+	<target name="mess" description="Mess detection">
+
+		<mkdir dir="${logs.dir}" />
+
+		<phpmd rulesets="${phpmd.rulesets}">
+			<formatter
+				type="${phpmd.format}"
+				outfile="${logs.dir}/phpmd.${phpmd.format}"
+			/>
+			<fileset refid="files.sources.php" />
+		</phpmd>
+
+	</target>
+
+	<!--
+	=====================================================================
+	Проверка соблюдения стандартов кодирования
+	=====================================================================
+	-->
+	<target name="checkstyle" description="Check for coding standards">
+	
+		<mkdir dir="${logs.dir}" />
+
+		<if>
+			<equals arg1="${phpcs.format}" arg2="checkstyle" />
+			<then>
+				<property name="phpcs.file.extension" value="xml" />
+			</then>
+			<else>
+				<property name="phpcs.file.extension" value="${phpcs.format}" />
+			</else>
+		</if>
+
+		<phpcodesniffer
+			standard="Eresus"
+			haltonerror="false"
+		>
+			<formatter
+				type="${phpcs.format}"
+				outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
+			/>
+			<fileset refid="files.sources.php" />
+		</phpcodesniffer>
+
+	</target>
+
+	<!--
+	=====================================================================
+		Сборка проекта
+	=====================================================================
+	-->
+	<target name="build" description="Build basic set of modules">
+
+		<!-- Копирование основных файлов -->
+		<copy todir="${build.dir}">
+			<fileset refid="files.sources" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+			<!-- Обработка файлов CSS темы default -->
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/typography.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/layout.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/filemanager.css" />
+			<delete dir="${build.dir}/admin/themes/default/css.src" />
+
+		<!-- Eresus Core -->
+		<echo msg="Copying Eresus Core..." level="info" />
+		<copy todir="${build.dir}/core/framework">
+			<fileset refid="files.framework" />
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+
+		<!-- jQuery -->
+		<copy todir="${build.dir}/core/jquery">
+			<fileset refid="files.3rd.jquery" />
+		</copy>
+
+		<!-- Tiny MCE -->
+		<copy todir="${build.dir}/ext-3rd/tinymce">
+			<fileset refid="files.3rd.tiny_mce" />
+		</copy>
+
+		<!-- EditArea -->
+		<copy todir="${build.dir}/ext-3rd/editarea">
+			<fileset refid="files.3rd.editarea" />
+		</copy>
+
+		<mkdir dir="${build.dir}/distrib" />
+		
+		<copy todir="${build.dir}/distrib">
+			<fileset refid="files.db" />
+			<fileset refid="files.tools" />
+			<fileset refid="files.sdk" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+  </target>
 
 	<!--
 	=====================================================================
@@ -109,109 +232,6 @@
 		</phpdoc>
 
   </target>
-
-	<!--
-	=====================================================================
-		Сборка проекта
-	=====================================================================
-	-->
-	<target name="build" description="Build basic set of modules">
-
-		<!-- Копирование основных файлов -->
-		<copy todir="${build.dir}">
-			<fileset refid="files.main" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-			<!-- Обработка файлов CSS темы default -->
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/typography.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/layout.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/filemanager.css" />
-
-		<!-- Eresus Core -->
-		<echo msg="Copying Eresus Core..." level="info" />
-		<copy todir="${build.dir}/core/framework">
-			<fileset refid="files.framework" />
-			<filterchain>
-				<expandproperties />
-			</filterchain>
-		</copy>
-
-		<copy todir="${build.dir}/core/lib">
-			<fileset refid="libs_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<!-- jQuery -->
-		<copy todir="${build.dir}/core/jquery">
-			<fileset refid="files.3rd.jquery" />
-		</copy>
-
-		<copy todir="${build.dir}/">
-			<fileset refid="l10n_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<mkdir dir="${build.dir}/distrib" />
-		<copy todir="${build.dir}/distrib">
-			<fileset refid="db_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<!-- Tiny MCE -->
-		<copy todir="${build.dir}/ext-3rd/tinymce">
-			<fileset refid="files.3rd.tiny_mce" />
-			<fileset dir="ext-3rd/tinymce">
-				<include name="**/*" />
-				<exclude name=".svn" />
-			</fileset>
-		</copy>
-
-		<!-- EditArea -->
-		<copy todir="${build.dir}/ext-3rd/editarea">
-			<fileset refid="files.3rd.editarea" />
-			<fileset dir="ext-3rd/editarea">
-				<include name="**/*" />
-				<exclude name=".svn" />
-			</fileset>
-		</copy>
-
-		<copy todir="${build.dir}/distrib">
-			<fileset refid="tools_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-  </target>
-
-	<!--
-		Build all
-	-->
-	<target name="all" depends="build" description="Build all modules">
-
-		<mkdir dir="${build.dir}/distrib" />
-		<copy todir="${build.dir}/distrib">
-			<fileset refid="SDK_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-	</target>
 
 	<!--
 	=====================================================================

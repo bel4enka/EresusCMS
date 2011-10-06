@@ -41,7 +41,7 @@ ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
 /**
  * Уровень детализации журнала
  */
-define('ERESUS_LOG_LEVEL' , ${log.level});
+define('ERESUS_LOG_LEVEL' , LOG_ERR);
 
 ini_set('track_errors', true);
 /**
