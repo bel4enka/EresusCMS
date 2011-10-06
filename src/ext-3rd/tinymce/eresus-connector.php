@@ -27,7 +27,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus
+ * @package Eresus2
  *
  * $Id$
  */

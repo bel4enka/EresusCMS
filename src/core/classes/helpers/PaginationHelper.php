@@ -106,7 +106,7 @@ implements Iterator, Countable
 	 *
 	 * @param int     $total[optional]        Общее количество страниц.
 	 * @param int     $current[optional]      Номер текущей страницы. По умолчанию 1.
-	 * @param sttring $urlTemplate[optional]  Шаблон URL. Используйте "%d" для подстановки страницы
+	 * @para, sttring $urlTemplate[optional]  Шаблон URL. Используйте "%d" для подстановки страницы
 	 *
 	 * @return PaginationHelper
 	 *
