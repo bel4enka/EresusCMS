@@ -73,11 +73,57 @@ class Plugins
 	public $events = array();
 
 	/**
-	 * Конструктор
+	 * Загружает активные плагины
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
 	 */
-	public function __construct()
+	public function init()
 	{
-		$this->loadActive();
+		$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
+		if ($items)
+		{
+			foreach ($items as &$item)
+			{
+				$item['info'] = unserialize($item['info']);
+				$this->list[$item['name']] = $item;
+			}
+
+			/* Проверяем зависимости */
+			do
+			{
+				$success = true;
+				foreach ($this->list as $plugin => $item)
+				{
+					foreach ($item['info']->getRequiredPlugins() as $required)
+					{
+						list ($name, $minVer, $maxVer) = $required;
+						if (
+							!isset($this->list[$name]) ||
+							($minVer && version_compare($this->list[$name]['info']->version, $minVer, '<')) ||
+							($maxVer && version_compare($this->list[$name]['info']->version, $maxVer, '>'))
+						)
+						{
+							$msg = 'Plugin "%s" requires plugin %s';
+							$requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
+							eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
+							/*$msg = I18n::getInstance()->getText($msg, $this);
+							ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
+							unset($this->list[$plugin]);
+							$success = false;
+						}
+					}
+				}
+			}
+			while (!$success);
+
+			/* Загружаем плагины */
+			foreach ($this->list as $item)
+			{
+				$this->load($item['name']);
+			}
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -366,61 +412,6 @@ class Plugins
 		if (isset($this->events['ajaxOnRequest']))
 			foreach($this->events['ajaxOnRequest'] as $plugin)
 				$this->items[$plugin]->ajaxOnRequest();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Загружает активные плагины
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
-	 */
-	private function loadActive()
-	{
-		$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
-		if ($items)
-		{
-			foreach ($items as &$item)
-			{
-				$item['info'] = unserialize($item['info']);
-				$this->list[$item['name']] = $item;
-			}
-
-			/* Проверяем зависимости */
-			do
-			{
-				$success = true;
-				foreach ($this->list as $plugin => $item)
-				{
-					foreach ($item['info']->getRequiredPlugins() as $required)
-					{
-						list ($name, $minVer, $maxVer) = $required;
-						if (
-							!isset($this->list[$name]) ||
-							($minVer && version_compare($this->list[$name]['info']->version, $minVer, '<')) ||
-							($maxVer && version_compare($this->list[$name]['info']->version, $maxVer, '>'))
-						)
-						{
-							$msg = 'Plugin "%s" requires plugin %s';
-							$requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
-							eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
-							/*$msg = I18n::getInstance()->getText($msg, $this);
-							ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
-							unset($this->list[$plugin]);
-							$success = false;
-						}
-					}
-				}
-			}
-			while (!$success);
-
-			/* Загружаем плагины */
-			foreach ($this->list as $item)
-			{
-				$this->load($item['name']);
-			}
-		}
 	}
 	//-----------------------------------------------------------------------------
 }

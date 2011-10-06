@@ -1182,6 +1182,7 @@ class Eresus
 	function init_plugins()
 	{
 		$this->plugins = new Plugins;
+		$this->plugins->init();
 	}
 	//------------------------------------------------------------------------------
 	/**
