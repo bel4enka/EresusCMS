@@ -39,4 +39,11 @@ return array(
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
+
+	// Ботобор
+	'Botobor' => 'core/libbotobor/libbotobor.php',
+	'Botobor_Form' => 'core/libbotobor/libbotobor.php',
+	'Botobor_Form_HTML' => 'core/libbotobor/libbotobor.php',
+	'Botobor_Keeper' => 'core/libbotobor/libbotobor.php',
+	'Botobor_MetaData' => 'core/libbotobor/libbotobor.php',
 );

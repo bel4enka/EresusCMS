@@ -30,6 +30,12 @@
 		<exclude name="**/*.src" />
 	</fileset>
 
+	<!-- 3rd party: libbotobor -->
+	<fileset dir="3rdparty/libbotobor/src" id="files.3rd.libbotobor">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<!-- 3rd party: EditArea -->
 	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
 		<include name="**" />
@@ -174,6 +180,11 @@
 			<filterchain>
 				<expandproperties />
 			</filterchain>
+		</copy>
+
+		<!-- Ботобор -->
+		<copy todir="${build.dir}/core/libbotobor">
+			<fileset refid="files.3rd.libbotobor" />
 		</copy>
 
 		<!-- jQuery -->
