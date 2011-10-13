@@ -232,6 +232,8 @@
 			output="${docs.converter}">
 			<fileset dir=".">
 				<include name="src/core/**/*.php" />
+				<include name="framework/core/**/*.php" />
+				<exclude name="framework/core/3rdparty/**" />
 				<include name="src/ext-3rd/**/*.php" />
 				<exclude name="src/ext-3rd/tinymce/plugins/images/**" />
 			</fileset>
