@@ -38,13 +38,139 @@ define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist(TESTS_SRC_DIR);
 
 /**
+ * Универсальная заглушка
+ *
+ * @package [Имя пакета]
+ * @subpackage Tests
+ */
+class UniversalStub implements ArrayAccess
+{
+	public function __get($a)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function __call($a, $b)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetExists($offset)
+	{
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetGet($offset)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetSet($offset, $value)
+	{
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetUnset($offset)
+	{
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function __toString()
+	{
+		return '';
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/**
+ * Фасад к моку для эмуляции статичных методов
+ *
+ * @package [Имя пакета]
+ * @subpackage Tests
+ */
+class MockFacade
+{
+	/**
+	 * Мок
+	 *
+	 * @var object
+	 */
+	private static $mock;
+
+	/**
+	 * Устанавливает мок
+	 *
+	 * @param object $mock
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public static function setMock($mock)
+	{
+		self::$mock = $mock;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Вызывает метод мока
+	 *
+	 * @param string $method
+	 * @param array  $args
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public static function __callstatic($method, $args)
+	{
+		if (self::$mock && method_exists(self::$mock, $method))
+		{
+			return call_user_func_array(array(self::$mock, $method), $args);
+		}
+
+		return new UniversalStub();
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+/**
  * Заглушка для класса Plugin
  *
  * @package [Имя пакета]
  * @subpackage Tests
  */
-class Plugin
-{
-	public function __construct() {}
-	protected function listenEvents() {}
-}
+class Plugin extends UniversalStub {}
+
+/**
+ * Заглушка для класса DB
+ *
+ * @package [Имя пакета]
+ * @subpackage Tests
+ */
+class DB extends MockFacade {}
+
+/**
+ * Заглушка для класса ezcQuery
+ *
+ * @package [Имя пакета]
+ * @subpackage Tests
+ */
+class ezcQuery extends UniversalStub {}
+
+/**
+ * Заглушка для класса ezcQuerySelect
+ *
+ * @package [Имя пакета]
+ * @subpackage Tests
+ */
+class ezcQuerySelect extends ezcQuery {}
