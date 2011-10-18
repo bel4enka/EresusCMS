@@ -405,8 +405,8 @@ class WebPage
 		{
 			switch (strtolower($arg))
 			{
-				case 'emca':
-				case 'text/emcascript':
+				case 'ecma':
+				case 'text/ecmascript':
 					$script->setAttribute('type', 'text/ecmascript');
 				break;
 
