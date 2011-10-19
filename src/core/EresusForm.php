@@ -1087,7 +1087,7 @@ class EresusForm
 	{
 		$id = $node->getAttribute('id');
 		$passwordId = $attr->value;
-		$this->js []= "addValidator('password', '$id', '$passwordId');";
+		$this->js []= "addValidator('password', '#$id', '$passwordId');";
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1103,7 +1103,7 @@ class EresusForm
 		$pattern = $attr->value;
 		/* Для Dwoo нужно экранировать фигурные скобки. Почему-то они передаются и сюда */
 		$pattern = str_replace(array('\{', '\}'), array('{', '}'), $pattern);
-		$this->js []= "addValidator('regexp', '$id', $pattern);";
+		$this->js []= "addValidator('regexp', '#$id', $pattern);";
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1119,7 +1119,7 @@ class EresusForm
 		$pattern = $attr->value;
 		/* Для Dwoo нужно экранировать фигурные скобки. Почему-то они передаются и сюда */
 		$pattern = str_replace(array('\{', '\}'), array('{', '}'), $pattern);
-		$this->js []= "addValidator('email', '$id');";
+		$this->js []= "addValidator('email', '#$id');";
 	}
 	//-----------------------------------------------------------------------------
 
