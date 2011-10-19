@@ -439,13 +439,6 @@ class EresusForm
 	protected $messages = array();
 
 	/**
-	 * Запрос
-	 *
-	 * @var HttpRequest
-	 */
-	protected $request;
-
-	/**
 	 * XML-данные формы
 	 *
 	 * @var DOMDocument
@@ -505,13 +498,10 @@ class EresusForm
 		{
 			$this->charset = strtoupper($charset);
 		}
-		/*		if ($this->mode == self::PROCESS) {
-
-			$this->request = HTTP::request();
-
+		if (self::PROCESS == $this->mode)
+		{
 			$this->validate();
-
-		}*/
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1270,7 +1260,7 @@ class EresusForm
 	{
 		if (! isset($this->values[$name]))
 		{
-			$this->values[$name] = $this->request->arg($name);
+			$this->values[$name] = arg($name);
 		}
 
 		return $this->values[$name];
