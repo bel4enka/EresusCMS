@@ -512,11 +512,50 @@ class WebPage
 	//------------------------------------------------------------------------------
 
 	/**
+	 * Подключает библиотеку JavaScript
+	 *
+	 * При множественном вызове метода, библиотека будет подключена только один раз.
+	 *
+	 * Доступные библиотеки и их аргументы:
+	 *
+	 * - jquery — jQuery
+	 *   - ui — jQuery UI
+	 *   - cookie — jQuery.Cookie
+	 *
+	 * @param string $library     имя библиотеки
+	 * @param string $arg1…$argN  дополнительные аргументы
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public function linkJsLib($library)
+	{
+		$args = func_get_args();
+		array_shift($args);
+		switch ($library)
+		{
+			case 'jquery':
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js', 'async');
+				if (in_array('cookie', $args))
+				{
+					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.cookie.js');
+				}
+						if (in_array('ui', $args))
+				{
+					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery-ui.min.js');
+				}
+			break;
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Отрисовка секции <head>
 	 *
 	 * @return string  Отрисованная секция <head>
 	 */
-	protected function renderHeadSection()
+	public function renderHeadSection()
 	{
 		$result = array();
 		/* <meta> теги */
