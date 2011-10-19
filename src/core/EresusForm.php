@@ -542,14 +542,12 @@ class EresusForm
 	 */
 	public function compile()
 	{
-		global $Eresus, $page;
-
 		$this->loadXML();
 		$this->id = $this->xml->firstChild->nextSibling->getAttribute('id');
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$page->linkScripts($Eresus->root . 'core/EresusForm.js', 'defer', 'async');
+		$GLOBALS['page']->linkScripts($GLOBALS['Eresus']->root . 'core/EresusForm.js', 'async');
 
 		$html = $this->parseExtended();
 		$html = $this->fromUTF($html);
