@@ -44,7 +44,7 @@ window.EresusFormRegistry = new Array();
 /**
  * Конструктор объекта EresusForm
  *
- * @param String id  Идентификатор формы
+ * @param {String} id  Идентификатор формы
  */
 function EresusForm(id)
 {
@@ -119,6 +119,8 @@ function EresusForm(id)
 
 	/**
 	 * Метод отправляет данные формы черех XmlHttpRequest
+	 *
+	 * @returns Boolean
 	 */
 	this.sendData = function ()
 	{
@@ -136,7 +138,7 @@ function EresusForm(id)
 	/**
 	 * Проверяет корректность введенных в форму данных
 	 *
-	 * @return bool
+	 * @return Boolean
 	 */
 	this.check = function ()
 	{
@@ -156,7 +158,7 @@ function EresusForm(id)
 	/**
 	 * Обработчик отправки формы
 	 *
-	 * @param Event e  Событие отправки формы
+	 * @param {Event} e  Событие отправки формы
 	 *
 	 * @return bool
 	 */
@@ -169,9 +171,9 @@ function EresusForm(id)
 	/**
 	 * Проверка полей ввода
 	 *
-	 * @param Bool showMessages [optional]  Показывать ли сообщения об ошибках. По умолчанию - нет.
+	 * @param {Boolean} showMessages  Показывать ли сообщения об ошибках. По умолчанию - нет.
 	 *
-	 * @return Bool
+	 * @return Boolean
 	 */
 	this.validate = function ()
 	{
@@ -209,7 +211,7 @@ function EresusForm(id)
 	/**
 	 * Добавление валидатора
 	 *
-	 * @param String type                Тип валидатора:
+	 * @param {String} type              Тип валидатора:
 	 *                                    - 'required' - обязательное поле
 	 *                                    - 'password' - сравнение с полем пароля
 	 *                                    - 'regexp'   - сравнение с регулярным выражением
@@ -247,7 +249,7 @@ function EresusForm(id)
 	/**
 	 * Удаление валидатора
 	 *
-	 * @param String type                Тип валидатора:
+	 * @param {String} type              Тип валидатора:
 	 *                                    - 'required' - обязательное поле
 	 *                                    - 'required4input' - обязателен выбор радиокнопки
 	 *                                    - 'password' - сравнение с полем пароля
@@ -276,7 +278,7 @@ function EresusForm(id)
 	/**
 	 * Инициализация виджета вкладок
 	 *
-	 * @param String id  Идентификатор виджета
+	 * @param {String} id  Идентификатор виджета
 	 */
 	this.initTabWidget = function(id)
 	{
@@ -289,7 +291,7 @@ function EresusForm(id)
 	/**
 	 * Добавить сообщение формы
 	 *
-	 * @param String msg  Текст сообщения
+	 * @param {String} msg  Текст сообщения
 	 */
 	this.addFormMessage = function(msg)
 	{
@@ -350,8 +352,8 @@ function EresusForm(id)
 	/**
 	 * Добавить сообщение вкладки
 	 *
-	 * @param String  msg      Текст сообщения
-	 * @param String  tabName  Имя вкладки
+	 * @param {String}  msg      Текст сообщения
+	 * @param {String}  tabName  Имя вкладки
 	 */
 	this.addTabMessage = function(msg, tabName)
 	{
@@ -370,8 +372,8 @@ function EresusForm(id)
 	/**
 	 * Добавить сообщение вкладки
 	 *
-	 * @param String  msg Текст сообщения
-	 * @param DOMNode|String Node Узел
+	 * @param {String}         msg   Текст сообщения
+	 * @param {DOMNode|String} Node  Узел
 	 */
 	this.addTabMessageByNode = function(msg, Node)
 	{
@@ -394,7 +396,7 @@ function EresusForm(id)
 	/**
 	 * Получение имени вкладки по узлу внутри неё
 	 *
-	 * @param DOMNode|String Node  Узел
+	 * @param {DOMNode|String} Node  Узел
 	 * @return String
 	 */
 	this.getTabNameByNode = function(Node)
@@ -409,7 +411,7 @@ function EresusForm(id)
 	 * //TODO эта функция аналогична getTabNameByNode
 	 * и отличается только тем, что getTabNameByNode у меня не работала (ghost)
 	 *
-	 * @param DOMNode|String Node  Узел
+	 * @param {DOMNode|String} Node  Узел
 	 * @return String
 	 */
 	this.getTabIdByNode = function(Node)
@@ -432,7 +434,7 @@ function EresusForm(id)
 	/**
 	 * Получение элемента label по связанному с ней полю
 	 *
-	 * @param jQuery|Element Node  Узел
+	 * @param {jQuery|Element} Node  Узел
 	 * @return jQuery
 	 */
 	this.getLabelByField = function(Node)
@@ -445,7 +447,7 @@ function EresusForm(id)
 	/**
 	 * Получение элемента label по связанному с ней по атрибуту name (для радиокнопок)
 	 *
-	 * @param jQuery|Element Node  Узел
+	 * @param {jQuery|Element} Node  Узел
 	 * @return jQuery
 	 */
 	this.getLabelByFieldByName = function(Node)
@@ -462,9 +464,9 @@ function EresusForm(id)
 /**
  * Конструктор объекта RequiredValidator
  *
- * @param FormComopent form      Компонент формы
- * @param String       selector  Селектор элемента
- * @param String       message   Сообщение
+ * @param {EresusForm} form      Компонент формы
+ * @param {String}     selector  Селектор элемента
+ * @param {String}     message   Сообщение
  *
  * @author mekras
  */
@@ -511,7 +513,7 @@ function RequiredValidator(form, selector, message)
 	/**
 	 * Инициация проверки
 	 *
-	 * @param bool showMessages  Флаг, определяющий следует ли выводить сообщения об ошибках
+	 * @param {Boolean} showMessages  Флаг, определяющий следует ли выводить сообщения об ошибках
 	 * @return bool
 	 */
 	this.validate = function (showMessages)
@@ -572,8 +574,8 @@ function RequiredValidator(form, selector, message)
 	/**
 	 * Проверка одного элемента
 	 *
-	 * @param DOMNode Node
-	 * @return bool
+	 * @param {DOMNode} Node
+	 * @return Boolean
 	 */
 	this.validateElement = function (Node)
 	{
@@ -625,7 +627,7 @@ function RequiredValidator(form, selector, message)
 	/**
 	 * Пометить элемент как неправилный
 	 *
-	 * @param DOMNode|String Node
+	 * @param {DOMNode|String} Node
 	 */
 	this.markInvalid = function (Node)
 	{
@@ -677,9 +679,9 @@ function RequiredValidator(form, selector, message)
 /**
  * Конструктор объекта PasswordValidator
  *
- * @param FormComopent form      Компонент формы
- * @param String       id        Идентификатор элемента формы
- * @param String       password  Идентификатор элемента с паролем
+ * @param {EresusForm} form      Компонент формы
+ * @param {String}     id        Идентификатор элемента формы
+ * @param {String}     password  Идентификатор элемента с паролем
  *
  * @author mekras
  */
@@ -704,8 +706,8 @@ function PasswordValidator(form, id, password)
 	/**
 	 * Проверка элемента формы
 	 *
-	 * @param bool showMessages Флаг, определяющий следует ли выводить сообщения об ошибках
-	 * @return bool
+	 * @param {Boolean} showMessages Флаг, определяющий следует ли выводить сообщения об ошибках
+	 * @return Boolean
 	 */
 	this.validate = function ()
 	{
@@ -736,9 +738,9 @@ function PasswordValidator(form, id, password)
 /**
  * Конструктор объекта RegExpValidator
  *
- * @param FormComopent form      Компонент формы
- * @param String       id        Идентификатор элемента
- * @param String       pattern   Выражение
+ * @param {EresusForm} form      Компонент формы
+ * @param {String}     id        Идентификатор элемента
+ * @param {String}     pattern   Выражение
  *
  * @author mekras
  */
@@ -765,8 +767,8 @@ function RegExpValidator(form, id, pattern)
 	/**
 	 * Инициация проверки
 	 *
-	 * @param bool showMessages Флаг, определяющий следует ли выводить сообщения об ошибках
-	 * @return bool
+	 * @param {Boolean} showMessages Флаг, определяющий следует ли выводить сообщения об ошибках
+	 * @return Boolean
 	 */
 	this.validate = function (showMessages)
 	{
@@ -802,7 +804,7 @@ function RegExpValidator(form, id, pattern)
 	/**
 	 * Пометить элемент как неправилный
 	 *
-	 * @param DOMNode|String Node
+	 * @param {DOMNode|String} Node
 	 */
 	this.markInvalid = function (Node)
 	{
@@ -828,9 +830,9 @@ function RegExpValidator(form, id, pattern)
 /**
  * Конструктор объекта EmailValidator
  *
- * @param FormComopent form      Компонент формы
- * @param String       id        Идентификатор элемента
- * @param String       message   Сообщение
+ * @param {EresusForm} form      Компонент формы
+ * @param {String}     id        Идентификатор элемента
+ * @param {String}     message   Сообщение
  *
  * @author mekras
  */
@@ -858,13 +860,13 @@ function EmailValidator(form, id, message)
 	 * Шаблон проверки
 	 * @var RegExp
 	 */
-	this.pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+	this.pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
 	/**
 	 * Инициация проверки
 	 *
-	 * @param bool showMessages Флаг, определяющий следует ли выводить сообщения об ошибках
-	 * @return bool
+	 * @param {Boolean} showMessages Флаг, определяющий следует ли выводить сообщения об ошибках
+	 * @return Boolean
 	 */
 	this.validate = function (showMessages)
 	{
@@ -900,7 +902,7 @@ function EmailValidator(form, id, message)
 	/**
 	 * Пометить элемент как неправилный
 	 *
-	 * @param DOMNode|String Node
+	 * @param {DOMNode|String} Node
 	 */
 	this.markInvalid = function (Node)
 	{
@@ -930,8 +932,8 @@ function EmailValidator(form, id, message)
  * заполнения форм. Функция должна возвращать true если форма заполнена
  * правильно и false в противном случае.
  *
- * @param FormComopent form      Компонент формы
- * @param Callback     callback  Callback-функция проверки
+ * @param {EresusForm} form      Компонент формы
+ * @param {Callback}   callback  Callback-функция проверки
  *
  * @author mekras
  */
