@@ -520,6 +520,7 @@ class WebPage
 	 *
 	 * - jquery — {@link http://jquery.com/ jQuery}
 	 * - modernizr — {@link http://modernizr.com/ Modernizr}
+	 * - webshims — {@link http://afarkas.github.com/webshim/demos/ Webshims}
 	 *
 	 * Аргументы для библиотеки jquery:
 	 *
@@ -553,6 +554,13 @@ class WebPage
 
 			case 'modernizr':
 				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/modernizr/modernizr.min.js');
+			break;
+
+			case 'webshims':
+				$this->linkJsLib('jquery');
+				$this->linkJsLib('modernizr');
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/polyfiller.js');
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/custom.js');
 			break;
 		}
 	}
