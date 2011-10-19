@@ -518,7 +518,8 @@ class WebPage
 	 *
 	 * Доступные библиотеки:
 	 *
-	 * - jquery — jQuery
+	 * - jquery — {@link http://jquery.com/ jQuery}
+	 * - modernizr — {@link http://modernizr.com/ Modernizr}
 	 *
 	 * Аргументы для библиотеки jquery:
 	 *
@@ -539,7 +540,7 @@ class WebPage
 		switch ($library)
 		{
 			case 'jquery':
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js', 'async');
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js');
 				if (in_array('cookie', $args))
 				{
 					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.cookie.js');
@@ -548,6 +549,10 @@ class WebPage
 				{
 					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery-ui.min.js');
 				}
+			break;
+
+			case 'modernizr':
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/modernizr/modernizr.min.js');
 			break;
 		}
 	}

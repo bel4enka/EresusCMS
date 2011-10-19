@@ -48,6 +48,12 @@
 		<exclude name=".svn" />
 	</fileset>
 
+	<!-- 3rd party: Modernizr -->
+	<fileset dir="3rdparty/modernizr" id="files.3rd.modernizr">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<!-- 3rd party: Tiny MCE -->
 	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
 		<include name="**" />
@@ -190,6 +196,11 @@
 		<!-- jQuery -->
 		<copy todir="${build.dir}/core/jquery">
 			<fileset refid="files.3rd.jquery" />
+		</copy>
+
+		<!-- jQuery -->
+		<copy todir="${build.dir}/core/js/modernizr">
+			<fileset refid="files.3rd.modernizr" />
 		</copy>
 
 		<!-- Tiny MCE -->
