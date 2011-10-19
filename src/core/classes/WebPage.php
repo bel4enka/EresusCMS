@@ -516,11 +516,14 @@ class WebPage
 	 *
 	 * При множественном вызове метода, библиотека будет подключена только один раз.
 	 *
-	 * Доступные библиотеки и их аргументы:
+	 * Доступные библиотеки:
 	 *
 	 * - jquery — jQuery
-	 *   - ui — jQuery UI
-	 *   - cookie — jQuery.Cookie
+	 *
+	 * Аргументы для библиотеки jquery:
+	 *
+	 * - ui — jQuery UI
+	 * - cookie — jQuery.Cookie
 	 *
 	 * @param string $library     имя библиотеки
 	 * @param string $arg1…$argN  дополнительные аргументы
