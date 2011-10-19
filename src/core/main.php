@@ -71,6 +71,10 @@ class EresusCMS extends EresusApplication
 
 			/* Подключение старого ядра */
 			include_once 'kernel-legacy.php';
+
+			/**
+			 * @global Eresus Eresus
+			 */
 			$GLOBALS['Eresus'] = new Eresus;
 			$this->initConf();
 			if ($GLOBALS['Eresus']->conf['debug']['enable'])

@@ -11,10 +11,9 @@
 				siteRoot: "{$siteRoot}"
 		};
 	//]]></script>
-	<script src="{$siteRoot}/core/jquery/jquery.min.js" type="text/javascript"></script>
-	<script src="{$siteRoot}/core/jquery/jquery.cookie.js" type="text/javascript"></script>
-	<script src="{$siteRoot}/core/jquery/jquery-ui.min.js" type="text/javascript"></script>
-	{$head}
+	{jslib jquery ui cookie}
+	{* renderHeadSection надо обязательно вызывать после всех jslib *}
+	{$page->renderHeadSection()}
 </head>
 <body>
 

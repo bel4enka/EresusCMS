@@ -971,7 +971,6 @@ class TAdminUI extends WebPage
 		$data['page'] = $this;
 		$data['content'] = $this->renderContent();
 		$data['siteName'] = option('siteName');
-		$data['head'] = $this->renderHeadSection();
 		$data['body'] = $this->renderBodySection();
 		$data['cms'] = array(
 			'name' => CMSNAME,
