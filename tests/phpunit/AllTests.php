@@ -22,21 +22,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
  * $Id$
  */
 
-if (class_exists('PHP_CodeCoverage_Filter', false))
-{
-	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-}
-else
-{
-	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
-}
+require_once 'stubs.php';
+
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/kernel-legacy.php');
+PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/lib/accounts.php');
+PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhiteList(TESTS_SRC_DIR);
+
+PHP_CodeCoverage_Filter::getInstance()->removeDirectoryFromWhiteList(TESTS_SRC_DIR . '/cfg');
+PHP_CodeCoverage_Filter::getInstance()->removeDirectoryFromWhiteList(TESTS_SRC_DIR . '/ext-3rd');
+PHP_CodeCoverage_Filter::getInstance()->removeDirectoryFromWhiteList(TESTS_SRC_DIR . '/lang');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhiteList(TESTS_SRC_DIR .
+	'/core/errors.html.php');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhiteList(TESTS_SRC_DIR .
+	'/core/fatal.html.php');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhiteList(TESTS_SRC_DIR .
+	'/core/gziph.php');
+PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhiteList(TESTS_SRC_DIR .
+	'/index.php');
 
 require_once dirname(__FILE__) . '/core/AllTests.php';
 

@@ -33,14 +33,7 @@
  * $Id$
  */
 
-if (class_exists('PHP_CodeCoverage_Filter', false))
-{
-	PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-}
-else
-{
-	PHPUnit_Util_Filter::addFileToFilter(__FILE__);
-}
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 define('TESTS_SRC_DIR', realpath(dirname(__FILE__) . '/../../src'));
 
