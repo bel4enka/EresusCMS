@@ -237,15 +237,12 @@ class TAdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 *
+	 * Подставляет значения макросов
 	 * @param $text
 	 * @return unknown_type
 	 */
 	function replaceMacros($text)
-	# Подставляет значения макросов
 	{
-		global $Eresus;
-
 		$result = str_replace(
 			array(
 				'$(httpHost)',
@@ -281,7 +278,7 @@ class TAdminUI extends WebPage
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function url($args = null, $clear = false)
 	{
-		global $Eresus, $locale;
+		global $Eresus;
 
 		$basics = array('mod','section','id','sort','desc','pg');
 		$result = '';
@@ -494,8 +491,6 @@ class TAdminUI extends WebPage
 
 	function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
 	{
-		global $Eresus;
-
 		$prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
 		if ($itemsCount > $itemsPerPage) {
 			$result = '<div class="admListPages">'.strPages;
@@ -573,7 +568,6 @@ class TAdminUI extends WebPage
 		$url_edit = $this->url(array($prefix.'id'=>"%s"));
 		$url_position = $this->url(array($prefix."%s"=>"%s"));
 		$url_toggle = $this->url(array($prefix.'toggle'=>"%s"));
-		$columnCount = count($table['columns'])+1;
 		if (count($items)) foreach($items as $item) {
 			$result .= '<tr><td class="ctrl">';
 
@@ -755,21 +749,29 @@ class TAdminUI extends WebPage
 				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
-		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
+		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information']))
+		{
 			$messages = '';
-			foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
+			foreach ($Eresus->session['msg']['information'] as $message)
+			{
+				$messages .= InfoBox($message);
+			}
 			$result = $messages.$result;
 			$Eresus->session['msg']['information'] = array();
 		}
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
+		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
+		{
 			$messages = '';
-			foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message);
+			foreach ($Eresus->session['msg']['errors'] as $message)
+			{
+				$messages .= ErrorBox($message);
+			}
 			$result = $messages.$result;
 			$Eresus->session['msg']['errors'] = array();
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовывает ветку меню
@@ -785,26 +787,32 @@ class TAdminUI extends WebPage
 		$theme = $this->getUITheme();
 
 		$result = '';
-		$ie = preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']);
 		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
 
 		if (count($items))
-			foreach($items as $item)
+		{
+			foreach ($items as $item)
 			{
 				if (empty($item['caption']))
+				{
 					$item['caption'] = admNA;
+				}
 
 				if (
 					isset($Eresus->request['arg']['section']) &&
 					$item['id'] == arg('section')
 				)
+				{
 					$this->title = $item['caption']; # title - массив?
+				}
 
 				$sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
 				$current = (arg('mod') == 'content') && (arg('section') == $item['id']);
 
 				if ($current)
+				{
 					$opened = $level;
+				}
 
 				// Альтернативный текст
 				$alt = '[&nbsp;]';
@@ -845,12 +853,17 @@ class TAdminUI extends WebPage
 
 				$result .=
 					'<li' . ($classes ? ' class="' . $classes . '"' : '') . '>' .
-						'<img src="' . httpRoot . $theme->getImage('dot.gif') . '" alt="' . $alt . '" title="' . $title . '" /> ' .
-						'<a href="'.httpRoot.'admin.php?mod=content&amp;section='.$item['id'].'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
+						'<img src="' . httpRoot . $theme->getImage('dot.gif') . '" alt="' . $alt . '" title="' .
+						$title . '" /> ' .
+						'<a href="' . httpRoot . 'admin.php?mod=content&amp;section=' . $item['id'] .
+						'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
 
 				if (!empty($sub))
+				{
 					$result .= '<ul style="display: '.$display.';">'.$sub.'</ul>';
+				}
 			}
+		}
 
 		return $result;
 	}
@@ -869,25 +882,60 @@ class TAdminUI extends WebPage
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)
+		{
 			if (UserRights($this->extmenu[$section]['access']))
 			{
-				$menu .= '<div class="header">'.$this->extmenu[$section]['caption'].'</div><div class="content">';
-				foreach ($this->extmenu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->extmenu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
-					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
-					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+				$menu .= '<div class="header">' . $this->extmenu[$section]['caption'] .
+					'</div><div class="content">';
+				foreach ($this->extmenu[$section]['items'] as $item)
+				{
+					if (
+						UserRights(
+							isset($item['access']) ? $item['access'] : $this->extmenu[$section]['access']
+						) &&
+						(!(isset($item['disabled']) && $item['disabled']))
+					)
+					{
+						if ($item['link'] == arg('mod'))
+						{
+							$this->title = $item['caption'];
+						}
+						$menu .= '<div ' . ($item['link'] == arg('mod') ? 'class="selected"' : '') .
+							"><a href=\"" . httpRoot . "admin.php?mod=" . $item['link'] . "\" title=\"" .
+							$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
+					}
 				}
 				$menu .= "</div>\n";
 			}
+		}
 
 		for ($section = 0; $section < count($this->menu); $section++)
-			if (UserRights($this->menu[$section]['access'])) {
-				$menu .= '<div class="header">'.$this->menu[$section]['caption'].'</div><div class="content">';
-				foreach ($this->menu[$section]['items'] as $item) if (UserRights(isset($item['access'])?$item['access']:$this->menu[$section]['access'])&&(!(isset($item['disabled']) && $item['disabled']))) {
-					if ($item['link'] == arg('mod')) $this->title = $item['caption'];
-					$menu .= '<div '.($item['link'] == arg('mod')?'class="selected"':'')."><a href=\"".httpRoot."admin.php?mod=".$item['link']."\" title=\"".$item['hint']."\">".$item['caption']."</a></div>\n";
+		{
+			if (UserRights($this->menu[$section]['access']))
+			{
+				$menu .= '<div class="header">' . $this->menu[$section]['caption'] .
+					'</div><div class="content">';
+				foreach ($this->menu[$section]['items'] as $item)
+				{
+					if (
+						UserRights(
+							isset($item['access']) ? $item['access'] : $this->menu[$section]['access']
+						) &&
+						(!(isset($item['disabled']) && $item['disabled']))
+					)
+					{
+						if ($item['link'] == arg('mod'))
+						{
+							$this->title = $item['caption'];
+						}
+						$menu .= '<div '.($item['link'] == arg('mod') ?'class="selected"':'') .
+							"><a href=\"" . httpRoot . "admin.php?mod=" . $item['link'] . "\" title=\"" .
+							$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
+					}
 				}
 				$menu .= "</div>\n";
 			}
+		}
 
 		return $menu;
 	}
@@ -963,7 +1011,7 @@ class TAdminUI extends WebPage
 	 */
 	private function renderUI()
 	{
-		global $locale, $Eresus;
+		global $Eresus;
 
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		$data = array();
