@@ -506,7 +506,7 @@ class TClientUI extends WebPage
 				}
 				return result;
 			}
-		", 'defer');
+		", 'body');
 		#if (!empty($validator)) $this->scripts .= "function ".$form['name']."Submit(strForm)\n{\nvar result = true;\n".$validator.";\nreturn result;\n}\n\n";
 		$result .=
 			"<div style=\"width: ".$form['width']."\" class=\"form\">\n".
