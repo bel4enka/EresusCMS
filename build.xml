@@ -154,7 +154,10 @@
 				type="${phpcs.format}"
 				outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
 			/>
-			<fileset refid="files.sources.php" />
+			<fileset dir="src">
+				<include name="**/*.php" />
+				<exclude name="ext-3rd/**" />
+			</fileset>
 		</phpcodesniffer>
 
 	</target>
