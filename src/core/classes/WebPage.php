@@ -453,7 +453,7 @@ class WebPage
 	 * - vbscript, text/vbscript
 	 *
 	 * <b>Параметры загрузки скриптов</b>
-	 * - head - вставить в секцию <head> (политика по умолчанию)
+	 * - head - вставить в секцию <head> (по умолчанию)
 	 * - body - вставить в секцию <body>
 	 *
 	 * @param string $code                    Код скрипта
@@ -468,14 +468,14 @@ class WebPage
 		array_shift($args);
 
 		// По умолчанию помещаем скрипты в <head>
-		$defer = false;
+		$body = false;
 
 		foreach ($args as $arg)
 		{
 			switch (strtolower($arg))
 			{
-				case 'emca':
-				case 'text/emcascript':
+				case 'ecma':
+				case 'text/ecmascript':
 					$script->setAttribute('type', 'text/ecmascript');
 				break;
 
@@ -494,13 +494,13 @@ class WebPage
 					$script->setAttribute('type', 'text/vbscript');
 				break;
 
-				case 'defer':
-					$defer = true;
+				case 'body':
+					$body = true;
 				break;
 			}
 		}
 
-		if ($defer)
+		if ($body)
 		{
 			$this->body['scripts'][] = $script;
 		}
