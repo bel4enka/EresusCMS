@@ -33,9 +33,9 @@
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 
-define('TESTS_SRC_DIR', realpath(dirname(__FILE__) . '/../../src'));
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 define('filesRoot', '/home/exmaple.org/');
 

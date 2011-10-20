@@ -33,23 +33,42 @@
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+require_once __DIR__ . '/../bootstrap.php';
 
-require_once dirname(__FILE__) . '/EresusCMSTest.php';
-require_once __DIR__ . '/Functions_Test.php';
-require_once dirname(__FILE__) . '/classes/AllTests.php';
+require_once TESTS_SRC_DIR . '/core/kernel-legacy.php';
 
-class Core_AllTests
+
+class Functions_Test extends PHPUnit_Framework_TestCase
 {
-	public static function suite()
+	/**
+	 *
+	 */
+	public function test_macroConst()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core');
-
-		$suite->addTestSuite('EresusCMSTest');
-		$suite->addTestSuite('Functions_Test');
-
-		$suite->addTest(Core_Classes_AllTests::suite());
-
-		return $suite;
+		define('Functions_Test_Foo', 'bar');
+		$this->assertEquals('bar', __macroConst(array(null, 'Functions_Test_Foo')));
 	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function test_macroVar()
+	{
+		$GLOBALS['Functions_Test_Foo'] = 'bar';
+		$this->assertEquals('bar', __macroVar(array(null, null, 'Functions_Test_Foo')));
+		$this->assertEquals('barbaz', __macroVar(array(null, null, 'Functions_Test_Foo', '."baz"')));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 */
+	public function test_FormatDate()
+	{
+		$this->assertEquals('14:45, 15 февраля 1987',
+			iconv('cp1251', 'utf-8', FormatDate('1987-02-15 14:45:12')));
+		$this->assertEquals('Дата и время неизвестны', iconv('cp1251', 'utf-8', FormatDate('')));
+	}
+	//-----------------------------------------------------------------------------
 }
