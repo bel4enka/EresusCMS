@@ -72,6 +72,7 @@ class TClientUI extends WebPage
 	var $topic = false;
 
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Конструктор
 	 *
@@ -81,15 +82,15 @@ class TClientUI extends WebPage
 	{
 	}
 	//------------------------------------------------------------------------------
-	# ВНУТРЕННИЕ ФУНКЦИИ
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function replaceMacros($text)
-	# Подставляет значения макросов
-	{
-		global $Eresus;
 
+	# Подставляет значения макросов
+	function replaceMacros($text)
+	{
 		$section = $this->section;
-		if (siteTitleReverse) $section = array_reverse($section);
+		if (siteTitleReverse)
+		{
+			$section = array_reverse($section);
+		}
 		$section = strip_tags(implode($section, option('siteTitleDivider')));
 
 		$result = str_replace(
@@ -148,84 +149,119 @@ class TClientUI extends WebPage
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Отрисовка переключателя страниц
-	*
-	* @param int     $total      Общее количество страниц
-	* @param int     $current    Номер текущей страницы
-	* @param string  $url        Шаблон адреса для перехода к подстранице.
-	* @param array   $templates  Шаблоны оформления
-	* @return string
-	*/
+
+	/**
+	 * Отрисовка переключателя страниц
+	 *
+	 * @param int     $total      Общее количество страниц
+	 * @param int     $current    Номер текущей страницы
+	 * @param string  $url        Шаблон адреса для перехода к подстранице.
+	 * @param array   $templates  Шаблоны оформления
+	 * @return string
+	 */
 	function pageSelector($total, $current, $url = null, $templates = null)
 	{
-		if (is_null($url)) $url = $this->url().'p%d/';
+		if (is_null($url))
+		{
+			$url = $this->url().'p%d/';
+		}
 		useLib('templates');
 		$Templates = new Templates();
 		$defaults = explode('---', $Templates->get('PageSelector', 'std'));
-		if (!is_array($templates)) $templates = array();
-		for ($i=0; $i < 5; $i++) if (!isset($templates[$i])) $templates[$i] = $defaults[$i];
+		if (!is_array($templates))
+		{
+			$templates = array();
+		}
+		for ($i=0; $i < 5; $i++)
+		{
+			if (!isset($templates[$i]))
+			{
+				$templates[$i] = $defaults[$i];
+			}
+		}
 		$result = parent::pageSelector($total, $current, $url, $templates);
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
-	* Производит разбор URL и загрузку соответствующего раздела
-	*
-	* @access  private
-	*
-	* @return  array|bool  Описание загруженного раздела или false если он не найден
-	*/
+	 * Производит разбор URL и загрузку соответствующего раздела
+	 *
+	 * @access  private
+	 *
+	 * @return  array|bool  Описание загруженного раздела или false если он не найден
+	 */
 	function loadPage()
 	{
 		global $Eresus;
 
 		$result = false;
 		$main_fake = false;
-		if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main') {
+		if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main')
+		{
 			array_unshift($Eresus->request['params'], 'main');
 			$main_fake = true;
 		}
 		reset($Eresus->request['params']);
 		$item['id'] = 0;
 		$url = '';
-		do {
-			$items = $Eresus->sections->children($item['id'], $Eresus->user['auth']?$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
+		do
+		{
+			$items = $Eresus->sections->children($item['id'], $Eresus->user['auth'] ?
+				$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
 			$item = false;
-			for($i=0; $i<count($items); $i++) if ($items[$i]['name'] == current($Eresus->request['params'])) {
-				$result = $item = $items[$i];
-				if ($item['id'] != 1 || !$main_fake) $url .= $item['name'].'/';
-				$Eresus->plugins->clientOnURLSplit($item, $url);
-				$this->section[] = $item['title'];
-				next($Eresus->request['params']);
-				array_shift($Eresus->request['params']);
-				break;
+			for ($i=0; $i<count($items); $i++)
+			{
+				if ($items[$i]['name'] == current($Eresus->request['params']))
+				{
+					$result = $item = $items[$i];
+					if ($item['id'] != 1 || !$main_fake)
+					{
+						$url .= $item['name'].'/';
+					}
+					$Eresus->plugins->clientOnURLSplit($item, $url);
+					$this->section[] = $item['title'];
+					next($Eresus->request['params']);
+					array_shift($Eresus->request['params']);
+					break;
+				}
 			}
-			if ($item && $item['id'] == 1 && $main_fake) $item['id'] = 0;
-		} while ($item && current($Eresus->request['params']));
+			if ($item && $item['id'] == 1 && $main_fake)
+			{
+				$item['id'] = 0;
+			}
+		}
+		while ($item && current($Eresus->request['params']));
 		$Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
-		if ($result) $result = $Eresus->sections->get($result['id']);
+		if ($result)
+		{
+			$result = $Eresus->sections->get($result['id']);
+		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	# ОБЩИЕ ФУНКЦИИ
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function init()
+	//-----------------------------------------------------------------------------
+
 	# Проводит инициализацию страницы
+	function init()
 	{
 		global $Eresus;
 
 		$Eresus->plugins->clientOnStart();
 
 		$item = $this->loadPage();
-		if ($item) {
+		if ($item)
+		{
 			if (count($Eresus->request['params']))
 			{
 				if (preg_match('/p[\d]+/i', $Eresus->request['params'][0]))
+				{
 					$this->subpage = substr(array_shift($Eresus->request['params']), 1);
+				}
 
 				if (count($Eresus->request['params']))
+				{
 					$this->topic = array_shift($Eresus->request['params']);
+				}
 			}
 			$this->dbItem = $item;
 			$this->id = $item['id'];
@@ -246,19 +282,28 @@ class TClientUI extends WebPage
 			$this->scripts = '';
 			$this->styles = '';
 			$this->options = $item['options'];
-		} else $this->httpError(404);
+		}
+		else
+		{
+			$this->httpError(404);
+		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function Error404()
 	{
 		$this->httpError(404);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function httpError($code)
 	{
-	global $KERNEL;
+		global $KERNEL;
 
-		if (isset($KERNEL['ERROR'])) return;
+		if (isset($KERNEL['ERROR']))
+		{
+			return;
+		}
 		$ERROR = array(
 			'400' => array('response' => 'Bad Request'),
 			'401' => array('response' => 'Unauthorized'),
@@ -282,8 +327,14 @@ class TClientUI extends WebPage
 
 		Header($_SERVER['SERVER_PROTOCOL'].' '.$code.' '.$ERROR[$code]['response']);
 
-		if (defined('HTTP_CODE_'.$code)) $message = constant('HTTP_CODE_'.$code);
-		else $message = $ERROR[$code]['response'];
+		if (defined('HTTP_CODE_'.$code))
+		{
+			$message = constant('HTTP_CODE_'.$code);
+		}
+		else
+		{
+			$message = $ERROR[$code]['response'];
+		}
 
 		$this->section = array(siteTitle, $message);
 		$this->title = $message;
@@ -294,10 +345,13 @@ class TClientUI extends WebPage
 		$this->access = GUEST;
 		$this->visible = true;
 		$this->type = 'default';
-		if (file_exists(filesRoot.'templates/std/'.$code.'.html')) {
+		if (file_exists(filesRoot.'templates/std/'.$code.'.html'))
+		{
 			$this->template = 'std/'.$code;
 			$this->content = '';
-		} else {
+		}
+		else
+		{
 			$this->template = 'default';
 			$this->content = '<h1>HTTP ERROR '.$code.': '.$message.'</h1>';
 		}
@@ -305,16 +359,24 @@ class TClientUI extends WebPage
 		$this->render();
 		exit;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отправляет созданную страницу пользователю.
+	 */
 	function render()
-	# Отправляет созданную страницу пользователю.
 	{
 		global $Eresus, $KERNEL;
 
-		if (arg('HTTP_ERROR')) $this->httpError(arg('HTTP_ERROR', 'int'));
+		if (arg('HTTP_ERROR'))
+		{
+			$this->httpError(arg('HTTP_ERROR', 'int'));
+		}
 		# Отрисовываем контент
 		$content = $Eresus->plugins->clientRenderContent();
-		#$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 2), substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2), substr($this->updated, 0, 4));
+		#$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 29),
+		// substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2),
+		//substr($this->updated, 0, 4));
 		#if ($this->updated < 0) $this->updated = 0;
 		#$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
 		#$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
@@ -323,49 +385,94 @@ class TClientUI extends WebPage
 		$this->template = $templates->get($this->template);
 		$content = $Eresus->plugins->clientOnContentRender($content);
 
-		if (isset($Eresus->session['msg']['information']) && count($Eresus->session['msg']['information'])) {
+		if (
+			isset($Eresus->session['msg']['information']) &&
+			count($Eresus->session['msg']['information'])
+		)
+		{
 			$messages = '';
-			foreach($Eresus->session['msg']['information'] as $message) $messages .= InfoBox($message);
+			foreach ($Eresus->session['msg']['information'] as $message)
+			{
+				$messages .= InfoBox($message);
+			}
 			$content = $messages.$content;
 			$Eresus->session['msg']['information'] = array();
 		}
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors'])) {
+		if (
+			isset($Eresus->session['msg']['errors']) &&
+			count($Eresus->session['msg']['errors'])
+		)
+		{
 			$messages = '';
-			foreach($Eresus->session['msg']['errors'] as $message) $messages .= ErrorBox($message);
+			foreach ($Eresus->session['msg']['errors'] as $message)
+			{
+				$messages .= ErrorBox($message);
+			}
 			$content = $messages.$content;
 			$Eresus->session['msg']['errors'] = array();
 		}
 		$result = str_replace('$(Content)', $content, $this->template);
 
 		# FIX: Обратная совместимость
-		if (!empty($this->styles))	$this->addStyles($this->styles);
+		if (!empty($this->styles))
+		{
+			$this->addStyles($this->styles);
+		}
 
 		$result = $Eresus->plugins->clientOnPageRender($result);
 
 		// FIXME: Обратная совместимость
-		if (!empty($this->scripts))	$this->addScripts($this->scripts);
+		if (!empty($this->scripts))
+		{
+			$this->addScripts($this->scripts);
+		}
 
 		$result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
 
 		# Замена макросов
 		$result = $this->replaceMacros($result);
 
-		if (count($this->headers)) foreach ($this->headers as $header) Header($header);
+		if (count($this->headers))
+		{
+			foreach ($this->headers as $header)
+			{
+				header($header);
+			}
+		}
 
 		$result = $Eresus->plugins->clientBeforeSend($result);
-		if (!$Eresus->conf['debug']['enable']) ob_start('ob_gzhandler');
+		if (!$Eresus->conf['debug']['enable'])
+		{
+			ob_start('ob_gzhandler');
+		}
 		echo $result;
-		if (!$Eresus->conf['debug']['enable']) ob_end_flush();
+		if (!$Eresus->conf['debug']['enable'])
+		{
+			ob_end_flush();
+		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function pages($pagesCount, $itemsPerPage, $reverse = false)
-	# Выводит список подстраниц для навигации по ним
-	{
-	global $Eresus;
+	//-----------------------------------------------------------------------------
 
-		if ($pagesCount>1) {
+	/**
+	 * Выводит список подстраниц для навигации по ним
+	 *
+	 * @param int  $pagesCount
+	 * @param int  $itemsPerPage
+	 * @param bool $reverse
+	 *
+	 * @return string
+	 */
+	function pages($pagesCount, $itemsPerPage, $reverse = false)
+	{
+		global $Eresus;
+
+		if ($pagesCount>1)
+		{
 			$at_once = option('clientPagesAtOnce');
-			if (!$at_once) $at_once = 10;
+			if (!$at_once)
+			{
+				$at_once = 10;
+			}
 
 			$side_left = '';
 			$side_right = '';
@@ -376,31 +483,78 @@ class TClientUI extends WebPage
 			$for_delta = $reverse ? -1 : 1;
 
 			# Если количество страниц превышает AT_ONCE
-			if ($pagesCount > $at_once) {
-				if ($reverse) { # Если установлен обратный порядок страниц
-					if ($this->subpage < ($pagesCount - (integer)($at_once / 2))) $for_from = ($this->subpage + (integer)($at_once / 2));
-					if ($this->subpage < (integer)($at_once / 2)) $for_from = $at_once;
+			if ($pagesCount > $at_once)
+			{
+				# Если установлен обратный порядок страниц
+				if ($reverse)
+				{
+					if ($this->subpage < ($pagesCount - (integer) ($at_once / 2)))
+					{
+						$for_from = ($this->subpage + (integer) ($at_once / 2));
+					}
+					if ($this->subpage < (integer) ($at_once / 2))
+					{
+						$for_from = $at_once;
+					}
 					$for_to = $for_from - $at_once;
-					if ($for_to < 0) {$for_from += abs($for_to); $for_to = 0;}
-					if ($for_from != $pagesCount) $side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage."\">&nbsp;&laquo;&nbsp;</a>";
-					if ($for_to != 0) $side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage."\">&nbsp;&raquo;&nbsp;</a>";
-				} else { # Если установлен прямой порядок страниц
-					if ($this->subpage > (integer)($at_once / 2)) $for_from = $this->subpage - (integer)($at_once / 2);
-					if ($pagesCount - $this->subpage < (integer)($at_once / 2) + (($at_once % 2)>0)) $for_from = $pagesCount - $at_once+1;
+					if ($for_to < 0)
+					{
+						$for_from += abs($for_to);
+						$for_to = 0;
+					}
+					if ($for_from != $pagesCount)
+					{
+						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage.
+							"\">&nbsp;&laquo;&nbsp;</a>";
+					}
+					if ($for_to != 0)
+					{
+						$side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage.
+							"\">&nbsp;&raquo;&nbsp;</a>";
+					}
+				}
+				# Если установлен прямой порядок страниц
+				else
+				{
+					if ($this->subpage > (integer) ($at_once / 2))
+					{
+						$for_from = $this->subpage - (integer) ($at_once / 2);
+					}
+					if ($pagesCount - $this->subpage < (integer) ($at_once / 2) + (($at_once % 2)>0))
+					{
+						$for_from = $pagesCount - $at_once+1;
+					}
 					$for_to = $for_from + $at_once;
-					if ($for_from != 1) $side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage."\">&nbsp;&laquo;&nbsp;</a>";
-					if ($for_to < $pagesCount) $side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
+					if ($for_from != 1)
+					{
+						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage.
+							"\">&nbsp;&laquo;&nbsp;</a>";
+					}
+					if ($for_to < $pagesCount)
+					{
+						$side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".
+							strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
+					}
 				}
 			}
 			$result = '<div class="pages">'.strPages;
 			$result .= $side_left;
 			for ($i = $for_from; $i != $for_to; $i += $for_delta)
-				if ($i == $this->subpage) $result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
-					else $result .= '<a href="'.$Eresus->request['path'].($i==$default?'':'p'.$i.'/').'">&nbsp;'.$i.'&nbsp;</a>';
+			{
+				if ($i == $this->subpage)
+				{
+					$result .= '<span class="selected">&nbsp;'.$i.'&nbsp;</span>';
+				}
+				else
+				{
+					$result .= '<a href="'.$Eresus->request['path'].($i==$default?'':'p'.$i.'/').
+						'">&nbsp;'.$i.'&nbsp;</a>';
+				}
+			}
 			$result .= $side_right;
 			$result .= "</div>\n";
 			return $result;
 		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
 }
