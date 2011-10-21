@@ -362,11 +362,10 @@ class Plugins
 		if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function clientOnTopicRender($text, $topic = null, $buttonBack = true)
+	function clientOnTopicRender($text, $topic = null)
 	{
-	global $page;
+		global $page;
 		if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
-		if ($buttonBack) $text .= '<br /><br />'.$page->buttonBack();
 		return $text;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#

@@ -529,23 +529,4 @@ class TClientUI extends WebPage
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function buttonAddItem($caption = '', $value = '')
-	{
-		global $Eresus;
-		return '<form class="contentButton" action="'.$Eresus->request['url'].'" method="get"><div><input type="hidden" name="action" value="'.(empty($value)?'add':$value).'"><input type="submit" value="'.(empty($caption) ? strAdd : $caption).'" class="contentButton" /></div></form>';
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function buttonBack($caption = '', $url='')
-	{
-		return '<form class="contentButton" action="" method="get"><div><input type="button" value="'.(empty($caption) ? strReturn : $caption).'" class="contentButton" onclick="'.(empty($url)?'javascript:history.back();':"window.location='".$url."'").'" /></div></form>';
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function button($caption, $url, $name='', $value='')
-	{
-		$result = '<form class="contentButton" action="'.$url.'" method="get"><div>';
-		if (!empty($name)) $result .= '<input type="hidden" name="'.$name.'" value="'.$value.'" />';
-		$result .= '<input type="submit" value="'.$caption.'" class="contentButton" onclick="window.location=\''.$url.'\'" /></div></form>';
-		return $result;
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
