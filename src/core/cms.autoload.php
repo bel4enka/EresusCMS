@@ -33,6 +33,8 @@
 
 return array(
 	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
+	'Eresus_Feed_Writer' => 'core/Feed/Writer.php',
+	'Eresus_Feed_Writer_Item' => 'core/Feed/Writer/Item.php',
 	'Eresus_PluginInfo' => 'core/classes/PluginInfo.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
