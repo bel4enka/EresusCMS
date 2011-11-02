@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Eresus 2
+ Eresus CMS
 
  Файл сборки проекта
 
@@ -9,23 +9,32 @@
  -->
 <project name="eresus-cms" default="build" basedir="./">
 
+	<property file="build.properties" />
+
 	<!-- Основные файлы проекта -->
-	<fileset dir="main" id="files.main">
+	<fileset dir="src" id="files.sources">
 		<include name="**" />
 		<exclude name="**/.svn" />
 		<exclude name="**/*.src" />
 	</fileset>
 
 		<!-- Основные файлы проекта. Только PHP -->
-		<fileset dir="main" id="files.main.php">
+		<fileset dir="src" id="files.sources.php">
 			<include name="**/*.php" />
 		</fileset>
 
-	<!-- Модульные тесты -->
-	<fileset dir="tests/phpunit" id="files.tests.phpunit">
-		<include name="**/*Test.php" />
+	<!-- Eresus Framework -->
+	<fileset dir="framework" id="files.framework">
+		<include name="**" />
+		<exclude name="**/.svn" />
+		<exclude name="**/*.src" />
 	</fileset>
 
+	<!-- 3rd party: libbotobor -->
+	<fileset dir="3rdparty/libbotobor/src" id="files.3rd.libbotobor">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
 
 	<!-- 3rd party: EditArea -->
 	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
@@ -33,71 +42,123 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<property file="build.properties" />
-	<php function="date" returnProperty="builddate">
-	  <param value="Y-m-d"/>
-	</php>
+	<!-- 3rd party: jQuery -->
+	<fileset dir="3rdparty/jquery" id="files.3rd.jquery">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party: Modernizr -->
+	<fileset dir="3rdparty/modernizr" id="files.3rd.modernizr">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party: Webshims -->
+	<fileset dir="3rdparty/webshims" id="files.3rd.webshims">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party: Tiny MCE -->
+	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- SQL dumps -->
+	<fileset dir="db" id="files.db">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Tools files -->
+	<fileset dir="." id="files.tools">
+		<include name="tools/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- SDK files -->
+	<fileset dir="." id="files.sdk">
+		<include name="SDK/**" />
+		<exclude name=".svn" />
+	</fileset>
 
 	<!--
 	=====================================================================
-		Подготовка к сборке
+	Модульные тесы
 	=====================================================================
-  -->
+	-->
+	<target name="tests" description="Run unit tests">
 
-	<target name="prepare" description="Prepare for build">
+		<phplint>
+			<fileset refid="files.sources.php" />
+		</phplint>
 
-		<delete dir="${build.dir}" includeemptydirs="true" />
-		<mkdir dir="${build.dir}" />
+		<mkdir dir="${logs.dir}" />
+		<exec
+			command="phpunit
+				--log-junit ${logs.dir}/phpunit.xml
+				--coverage-clover ${logs.dir}/phpunit.coverage.xml
+				--coverage-html ${phpunit.coverage.html}
+				${project.basedir}/tests/phpunit/AllTests.php"
+			checkreturn="true"
+			logoutput="true"
+		/>
+
+	</target>
+
+	<!--
+	=====================================================================
+	Поиск плохого кода
+	=====================================================================
+	-->
+	<target name="mess" description="Mess detection">
 
 		<mkdir dir="${logs.dir}" />
 
-		<!--
-			PHPUnit
-		-->
+		<phpmd rulesets="${phpmd.rulesets}">
+			<formatter
+				type="${phpmd.format}"
+				outfile="${logs.dir}/phpmd.${phpmd.format}"
+			/>
+			<fileset refid="files.sources.php" />
+		</phpmd>
+
+	</target>
+
+	<!--
+	=====================================================================
+	Проверка соблюдения стандартов кодирования
+	=====================================================================
+	-->
+	<target name="checkstyle" description="Check for coding standards">
+	
+		<mkdir dir="${logs.dir}" />
+
 		<if>
-			<istrue value="${phpunit}" />
+			<equals arg1="${phpcs.format}" arg2="checkstyle" />
 			<then>
-			
-				<mkdir dir="${phpunit.coverage.temp}" />
-
-				<exec
-					command="phpunit --log-junit ${logs.dir}/phpunit.xml --coverage-clover ${logs.dir}/phpunit.coverage.xml --coverage-html ${phpunit.coverage.html} ${project.basedir}/tests/phpunit/AllTests.php"
-					checkreturn="true"
-					logoutput="true"
-				/> 
-
+				<property name="phpcs.file.extension" value="xml" />
 			</then>
+			<else>
+				<property name="phpcs.file.extension" value="${phpcs.format}" />
+			</else>
 		</if>
-		
-		<!--
-			PHP_CodeSniffer
-		-->
-		<if>
-			<istrue value="${phpcs}" />
-			<then>
 
-				<if>
-					<equals arg1="${phpcs.format}" arg2="checkstyle" />
-					<then>
-						<property name="phpcs.file.extension" value="xml" />
-					</then>
-					<else>
-						<property name="phpcs.file.extension" value="${phpcs.format}" />
-					</else>
-				</if>
-
-				<phpcodesniffer
-					standard="Eresus"
-					haltonerror="false"
-				>
-					<formatter
-						type="${phpcs.format}"
-						outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
-					/>
-					<fileset refid="files.main.php" />
-				</phpcodesniffer>
-			</then>
-		</if>
+		<phpcodesniffer
+			standard="Eresus"
+			haltonerror="false"
+		>
+			<formatter
+				type="${phpcs.format}"
+				outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
+			/>
+			<fileset dir="src">
+				<include name="**/*.php" />
+				<exclude name="ext-3rd/**" />
+			</fileset>
+		</phpcodesniffer>
 
 	</target>
 
@@ -106,11 +167,11 @@
 		Сборка проекта
 	=====================================================================
 	-->
-	<target name="build" depends="prepare" description="Build basic set of modules">
+	<target name="build" description="Build basic set of modules">
 
 		<!-- Копирование основных файлов -->
 		<copy todir="${build.dir}">
-			<fileset refid="files.main" />
+			<fileset refid="files.sources" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
@@ -125,6 +186,7 @@
 				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
 			<append destFile="${build.dir}/admin/themes/default/theme.css"
 				file="${build.dir}/admin/themes/default/css.src/filemanager.css" />
+			<delete dir="${build.dir}/admin/themes/default/css.src" />
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
@@ -135,11 +197,9 @@
 			</filterchain>
 		</copy>
 
-		<copy todir="${build.dir}/core/lib">
-			<fileset refid="libs_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
+		<!-- Ботобор -->
+		<copy todir="${build.dir}/core/libbotobor">
+			<fileset refid="files.3rd.libbotobor" />
 		</copy>
 
 		<!-- jQuery -->
@@ -147,26 +207,14 @@
 			<fileset refid="files.3rd.jquery" />
 		</copy>
 
-		<copy todir="${build.dir}/">
-			<fileset refid="l10n_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
+		<!-- Modernizr -->
+		<copy todir="${build.dir}/core/js/modernizr">
+			<fileset refid="files.3rd.modernizr" />
 		</copy>
 
-		<mkdir dir="${build.dir}/distrib" />
-		<copy todir="${build.dir}/distrib">
-			<fileset refid="db_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
-
-		<copy todir="${build.dir}">
-			<fileset refid="files.3rd-ext" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
+		<!-- Webshims -->
+		<copy todir="${build.dir}/core/js/webshims">
+			<fileset refid="files.3rd.webshims" />
 		</copy>
 
 		<!-- Tiny MCE -->
@@ -179,8 +227,12 @@
 			<fileset refid="files.3rd.editarea" />
 		</copy>
 
+		<mkdir dir="${build.dir}/distrib" />
+		
 		<copy todir="${build.dir}/distrib">
-			<fileset refid="tools_files" />
+			<fileset refid="files.db" />
+			<fileset refid="files.tools" />
+			<fileset refid="files.sdk" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
@@ -189,76 +241,50 @@
   </target>
 
 	<!--
-		Build all
-	-->
-	<target name="all" depends="build" description="Build all modules">
+	=====================================================================
+		Создание документации
+	=====================================================================
+  -->
+  <target name="docs" description="Generate API documentation">
 
-		<mkdir dir="${build.dir}/distrib" />
-		<copy todir="${build.dir}/distrib">
-			<fileset refid="SDK_files" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
-		</copy>
+		<delete dir="${docs.dir}" includeemptydirs="true" failonerror="true" />
+
+		<phpdoc
+			title="Eresus ${product.version} API"
+			destdir="${docs.dir}"
+			sourcecode="no"
+			parseprivate="false"
+			output="${docs.converter}">
+			<fileset dir=".">
+				<include name="src/core/**/*.php" />
+				<include name="framework/core/**/*.php" />
+				<exclude name="framework/core/3rdparty/**" />
+				<include name="src/ext-3rd/**/*.php" />
+				<exclude name="src/ext-3rd/tinymce/plugins/images/**" />
+			</fileset>
+			<projdocfileset dir=".">
+				<include name="README" />
+				<include name="INSTALL" />
+				<include name="CHANGELOG" />
+			</projdocfileset>
+		</phpdoc>
+
+  </target>
+
+	<!--
+	=====================================================================
+	Очистка сборки от всех созданных файлов
+	=====================================================================
+	-->
+
+	<target name="clean" description="Clean up build">
+
+		<delete dir="${distr.dir}" includeemptydirs="true" />
+		<delete dir="${build.dir}" includeemptydirs="true" />
+		<delete dir="${docs.dir}" includeemptydirs="true" />
+		<delete dir="${logs.dir}" includeemptydirs="true" />
+		<delete dir="${phpunit.coverage.html}" includeemptydirs="true" />
 
 	</target>
-
-	<!-- - - - - - - - - - - - - - - - - - - - - -->
-
-	<!-- Framework files -->
-	<fileset dir="framework" id="files.framework">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- libs files -->
-	<fileset dir="lib" id="libs_files">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- DB templates -->
-	<fileset dir="db" id="db_files">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- l10n files -->
-	<fileset dir="." id="l10n_files">
-		<include name="lang/**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- Tools files -->
-	<fileset dir="." id="tools_files">
-		<include name="tools/**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party extensions -->
-	<fileset dir="." id="files.3rd-ext">
-		<include name="ext-3rd/**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party: jQuery -->
-	<fileset dir="3rdparty/jquery" id="files.3rd.jquery">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party: Tiny MCE -->
-	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-
-	<!-- SDK files -->
-	<fileset dir="." id="SDK_files">
-		<include name="SDK/**" />
-		<exclude name=".svn" />
-	</fileset>
-
 
 </project>

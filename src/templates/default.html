@@ -1,0 +1,45 @@
+<!-- Основной шаблон страниц -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+  <title>$(sectionTitle) &ndash; $(siteTitle)</title>
+  <meta name="keywords" content="$(siteKeywords)" />
+  <meta name="description" content="$(siteDescription)" />
+  <link rel="StyleSheet" href="$(styleRoot)default.css" type="text/css" />
+</head>
+
+<body>
+
+	<div class="page-layout">
+
+		<div class="page-header">
+			<div>
+				<a href="$(httpRoot)" title="Перейти на главную страницу"><img src="$(styleRoot)example-logo.png" alt="Eresus CMS" /></a>
+			</div>
+			<div>
+				Eresus CMS $(const:CMSVERSION) успешно установлена
+			</div>
+		</div>
+
+		<div class="main-menu">
+			<a href="$(httpRoot)admin/">Управление сайтом</a> -
+			<a href="http://docs.eresus.ru/eresus2/">Документация</a> -
+			<a href="http://docs.eresus.ru/eresus2-ext/">Модули расширения</a>
+		</div>
+
+	  <div id="Content">$(Content)</div>
+
+	</div>
+
+  <div class="page-footer">
+		<div class="copyright">&copy; 2004, Eresus Project</div>
+  </div>
+
+</body>
+
+</html>

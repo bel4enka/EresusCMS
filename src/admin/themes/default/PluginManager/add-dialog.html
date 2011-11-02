@@ -1,0 +1,57 @@
+<div class="box ui-widget-content" id="plugin-manager-add-dlg" style="width: 600px">
+	<div class="header">Доступные модули расширения</div>
+	<div class="content">
+
+		<div class="block controls">
+			<a href="#" class="pseudo" onclick="return pluginManagerCheckAll()">Отметить все</a>
+			/
+			<a href="#" class="pseudo" onclick="return pluginManagerUncheckAll()">Снять все отметки </a>
+		</div>
+
+		<form action="admin.php" method="post">
+
+			<div class="hidden">
+				<input type="hidden" name="mod" value="plgmgr" />
+				<input type="hidden" name="action" value="insert" />
+			</div>
+
+			<div class="plugin-list">
+				{foreach $plugins item}
+				<div class="plugin-list__plugin block box">
+					{if !$item.errors}<input type="checkbox" name="files[{$item.info->name}]" value="1" checked="checked" />{/if}
+					<div class="block info">
+						<strong>{$item.info->title} {$item.info->version}</strong><br />
+						{$item.info->description}
+						{if $item.errors}
+						<ul class="error-text">
+						{foreach $item.errors error}<li>{$error}</li>{/foreach}
+						</ul>
+						{/if}
+					</div>
+				</div>
+				{/foreach}
+			</div>
+
+			<div class="ui-button-box">
+				<button type="submit">Добавить</button>
+				<button type="button" class="cancel" onclick="history.back();">Отменить</button>
+			</div>
+
+		</form>
+
+	</div>
+</div>
+
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+	function pluginManagerCheckAll()
+	{
+		jQuery("#plugin-manager-add-dlg input").attr("checked", "checked");
+		return false;
+	}
+
+	function pluginManagerUncheckAll()
+	{
+		jQuery("#plugin-manager-add-dlg input").removeAttr("checked");
+		return false;
+	}
+//--><!]]></script>
