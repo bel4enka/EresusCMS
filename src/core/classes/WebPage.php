@@ -378,9 +378,12 @@ class WebPage
 	 * <b>Параметры загрузки скриптов</b>
 	 * - async
 	 * - defer
+	 * - top
 	 *
 	 * Если скрипту передан параметр defer, то скрипт будет подключён в конце документа, перед
 	 * </body>, в противном случае он будет подключён в <head>.
+	 *
+	 * Если передан аргумент «top», то скрипт будет подключен в самом начале блока скриптов.
 	 *
 	 * @param string $url                     URL скрипта
 	 * @param string $ar1...$argN [optional]  Дополнительные параметры
@@ -400,6 +403,8 @@ class WebPage
 		$args = func_get_args();
 		// Отбрасываем $url
 		array_shift($args);
+
+		$top = false;
 
 		foreach ($args as $arg)
 		{
@@ -429,6 +434,10 @@ class WebPage
 				case 'defer':
 					$script->setAttribute($arg);
 				break;
+
+				case 'top':
+					$top = true;
+				break;
 			}
 		}
 
@@ -438,7 +447,14 @@ class WebPage
 		}
 		else
 		{
-			$this->head['scripts'][] = $script;
+			if ($top)
+			{
+				array_unshift($this->head['scripts'], $script);
+			}
+			else
+			{
+				$this->head['scripts'][] = $script;
+			}
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -541,26 +557,26 @@ class WebPage
 		switch ($library)
 		{
 			case 'jquery':
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js');
+				if (in_array('ui', $args))
+				{
+					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery-ui.min.js', 'top');
+				}
 				if (in_array('cookie', $args))
 				{
-					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.cookie.js');
+					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.cookie.js', 'top');
 				}
-						if (in_array('ui', $args))
-				{
-					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery-ui.min.js');
-				}
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js', 'top');
 			break;
 
 			case 'modernizr':
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/modernizr/modernizr.min.js');
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/modernizr/modernizr.min.js', 'top');
 			break;
 
 			case 'webshims':
-				$this->linkJsLib('jquery');
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/custom.js', 'top');
+				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/polyfiller.js', 'top');
 				$this->linkJsLib('modernizr');
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/polyfiller.js');
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/custom.js');
+				$this->linkJsLib('jquery');
 			break;
 		}
 	}
