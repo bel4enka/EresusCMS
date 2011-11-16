@@ -261,7 +261,7 @@ class Eresus_PluginInfo
 
 		$info->uid = strval($xml['uid']);
 
-		if ($xml->requires->count() > 0)
+		if (count($xml->requires->children()) > 0)
 		{
 			foreach ($xml->requires as $requires)
 			{
