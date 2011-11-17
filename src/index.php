@@ -1,15 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Запускающий скрипт для режима Web
  *
- * Запускающий скрипт
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -32,6 +30,9 @@
  * $Id$
  */
 
+// Временно включаем вывод ошибок, пока не инициализированы средства журанлирования
+ini_set('display_errors', true);
+
 /*
  * Установка имени файла журнала
  * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
@@ -45,29 +46,50 @@ define('ERESUS_LOG_LEVEL' , LOG_ERR);
 
 ini_set('track_errors', true);
 /**
+ * Подключение ядра
+ */
+include_once 'core/Kernel.php';
+
+Eresus_Kernel::init();
+
+/**
  * Подключение Eresus Core
  */
 include_once 'core/framework/core/eresus-core.compiled.php';
 
-if (@$php_errormsg)
+if (isset($php_errormsg))
 {
 	die($php_errormsg);
 }
 ini_set('track_errors', false);
+
+/*
+ * Если есть файл install.php, запускаем инсталлятор, а не CMS
+ * Это код для будущих версий
+ */
+if (is_file('install.php'))
+{
+	$fileName = 'install.php';
+	$appName = 'Installer';
+}
+else
+{
+	$fileName = 'core/main.php'; // TODO Заменить на CMS.php
+	$appName = 'EresusCMS'; // TODO Заменить на Eresus_CMS
+}
+
 
 try
 {
 	/**
 	 * Подключение главного приложения
 	 */
-	include_once 'core/main.php';
+	include_once $fileName;
 }
 catch (Exception $e)
 {
-	die('Can not include file "core/main.php". Is it present and accessible?');
+	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
 }
 
-/*
- * Запуск CMS
- */
-Core::exec('EresusCMS');
+// Запуск приложения
+Eresus_Kernel::exec($appName);

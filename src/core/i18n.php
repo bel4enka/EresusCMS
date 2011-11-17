@@ -68,7 +68,7 @@ class I18n
 	static public function getInstance()
 	{
 		if (!self::$instance)
-			self::$instance = new I18n(Core::app()->getFsRoot() . '/lang');
+			self::$instance = new I18n(Eresus_Kernel::app()->getFsRoot() . '/lang');
 
 		return self::$instance;
 	}

@@ -37,6 +37,7 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once dirname(__FILE__) . '/EresusCMSTest.php';
 require_once __DIR__ . '/Functions_Test.php';
+require_once __DIR__ . '/Kernel_Test.php';
 require_once dirname(__FILE__) . '/classes/AllTests.php';
 
 class Core_AllTests
@@ -47,6 +48,7 @@ class Core_AllTests
 
 		$suite->addTestSuite('EresusCMSTest');
 		$suite->addTestSuite('Functions_Test');
+		$suite->addTestSuite('Eresus_Kernel_Test');
 
 		$suite->addTest(Core_Classes_AllTests::suite());
 

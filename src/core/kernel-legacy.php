@@ -1251,7 +1251,7 @@ class Eresus
 		 */
 		global $Eresus;
 
-		$filename = Core::app()->getFsRoot() . '/cfg/main.php';
+		$filename = Eresus_Kernel::app()->getFsRoot() . '/cfg/main.php';
 		$nativeFilename = FS::nativeForm($filename);
 		if (FS::isFile($filename))
 		{
@@ -1294,7 +1294,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = FS::nativeForm(Core::app()->getFsRoot() . '/');
+			$this->froot = FS::nativeForm(Eresus_Kernel::app()->getFsRoot() . '/');
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
