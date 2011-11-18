@@ -46,7 +46,7 @@ class Core_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('core');
 
-		$suite->addTestSuite('EresusCMSTest');
+		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('Functions_Test');
 		$suite->addTestSuite('Eresus_Kernel_Test');
 

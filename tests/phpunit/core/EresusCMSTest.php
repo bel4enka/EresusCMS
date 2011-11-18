@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package EresusCMS
+ * @package Eresus_CMS
  * @subpackage Tests
  * @author Mikhail Krasilnikov <mk@eresus.ru>
  *
@@ -30,17 +30,17 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once TESTS_SRC_DIR . '/core/main.php';
+require_once TESTS_SRC_DIR . '/core/CMS.php';
 require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 
 /**
- * @package EresusCMS
+ * @package Eresus_CMS
  * @subpackage Tests
  */
-class EresusCMSTest extends PHPUnit_Framework_TestCase
+class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers EresusCMS::detectWebRoot
+	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot()
 	{
@@ -55,16 +55,16 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new EresusCMS;
+		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
 		$obj->fsRoot = '/home/user/public_html';
 		$httpRequest = new HttpRequest();
 
-		$request = new ReflectionProperty('EresusCMS', 'request');
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
 
-		$detectWebRoot = new ReflectionMethod('EresusCMS', 'detectWebRoot');
+		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
@@ -73,7 +73,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::detectWebRoot
+	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot_notRoot()
 	{
@@ -88,16 +88,16 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new EresusCMS;
+		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
 		$obj->fsRoot = '/home/user/public_html/example.org';
 		$httpRequest = new HttpRequest();
 
-		$request = new ReflectionProperty('EresusCMS', 'request');
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
 
-		$detectWebRoot = new ReflectionMethod('EresusCMS', 'detectWebRoot');
+		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
@@ -106,7 +106,7 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers EresusCMS::detectWebRoot
+	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot_windows()
 	{
@@ -121,16 +121,16 @@ class EresusCMSTest extends PHPUnit_Framework_TestCase
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
 
-		$obj = new EresusCMS;
+		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
 		$obj->fsRoot = FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org');
 		$httpRequest = new HttpRequest();
 
-		$request = new ReflectionProperty('EresusCMS', 'request');
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
 
-		$detectWebRoot = new ReflectionMethod('EresusCMS', 'detectWebRoot');
+		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
