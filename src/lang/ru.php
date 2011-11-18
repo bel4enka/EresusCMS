@@ -1,28 +1,28 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Р СѓСЃСЃРєРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author РњРёС…Р°РёР» РљСЂР°СЃРёР»СЊРЅРёРєРѕРІ <mihalych@vsepofigu.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 3 Р»РёР±Рѕ (РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ) СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹Р»Рё РїРѕР»СѓС‡РёС‚СЊ РєРѕРїРёСЋ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё
+ * GNU СЃ СЌС‚РѕР№ РїСЂРѕРіСЂР°РјРјРѕР№. Р•СЃР»Рё Р’С‹ РµРµ РЅРµ РїРѕР»СѓС‡РёР»Рё, СЃРјРѕС‚СЂРёС‚Рµ РґРѕРєСѓРјРµРЅС‚ РЅР°
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
@@ -31,43 +31,43 @@
  */
 
 /**
- * Кодировка документов
+ * РљРѕРґРёСЂРѕРІРєР° РґРѕРєСѓРјРµРЅС‚РѕРІ
  */
-define('LOCALE_CHARSET', 'CP1251');
+define('LOCALE_CHARSET', 'UTF-8');
 setlocale(LC_ALL, 'ru_RU.'.LOCALE_CHARSET);
-define('CHARSET','windows-1251');
+define('CHARSET','UTF-8');
 
-/* Таблица транслитерации */
+/* РўР°Р±Р»РёС†Р° С‚СЂР°РЅСЃР»РёС‚РµСЂР°С†РёРё */
 $GLOBALS['translit_table'] = array(
-	'а'=> 'a', 'б'=> 'b', 'в'=> 'v', 'г'=> 'g', 'д'=> 'd', 'е'=> 'e', 'ё'=> 'yo', 'ж'=> 'zh', 'з'=> 'z', 'и'=> 'i', 'й'=> 'y', 'к'=> 'k', 'л'=> 'l', 'м'=> 'm', 'н'=> 'n', 'о'=> 'o', 'п'=> 'p', 'р'=> 'r', 'с'=> 's', 'т'=> 't', 'у'=> 'u', 'ф'=> 'f', 'х'=> 'h', 'ц'=> 'tc', 'ч'=> 'ch', 'ш'=> 'sh', 'щ'=> 'sch', 'ь'=> '', 'ы'=> 'y', 'ъ'=> '', 'э'=> 'e', 'ю'=> 'yu', 'я'=> 'ya',
-	'А'=> 'a', 'Б'=> 'b', 'В'=> 'v', 'Г'=> 'g', 'Д'=> 'd', 'Е'=> 'e', 'Ё'=> 'yo', 'Ж'=> 'zh', 'З'=> 'z', 'И'=> 'i', 'Й'=> 'y', 'К'=> 'k', 'Л'=> 'l', 'М'=> 'm', 'Н'=> 'n', 'О'=> 'o', 'П'=> 'p', 'Р'=> 'r', 'С'=> 's', 'Т'=> 't', 'У'=> 'u', 'Ф'=> 'f', 'Х'=> 'h', 'Ц'=> 'tc', 'Ч'=> 'ch', 'Ш'=> 'sh', 'Щ'=> 'sch', 'Ь'=> '', 'Ы'=> 'y', 'Ъ'=> '', 'Э'=> 'e', 'Ю'=> 'yu', 'Я'=> 'ya'
+	'Р°'=> 'a', 'Р±'=> 'b', 'РІ'=> 'v', 'Рі'=> 'g', 'Рґ'=> 'd', 'Рµ'=> 'e', 'С‘'=> 'yo', 'Р¶'=> 'zh', 'Р·'=> 'z', 'Рё'=> 'i', 'Р№'=> 'y', 'Рє'=> 'k', 'Р»'=> 'l', 'Рј'=> 'm', 'РЅ'=> 'n', 'Рѕ'=> 'o', 'Рї'=> 'p', 'СЂ'=> 'r', 'СЃ'=> 's', 'С‚'=> 't', 'Сѓ'=> 'u', 'С„'=> 'f', 'С…'=> 'h', 'С†'=> 'tc', 'С‡'=> 'ch', 'С€'=> 'sh', 'С‰'=> 'sch', 'СЊ'=> '', 'С‹'=> 'y', 'СЉ'=> '', 'СЌ'=> 'e', 'СЋ'=> 'yu', 'СЏ'=> 'ya',
+	'Рђ'=> 'a', 'Р‘'=> 'b', 'Р’'=> 'v', 'Р“'=> 'g', 'Р”'=> 'd', 'Р•'=> 'e', 'РЃ'=> 'yo', 'Р–'=> 'zh', 'Р—'=> 'z', 'Р'=> 'i', 'Р™'=> 'y', 'Рљ'=> 'k', 'Р›'=> 'l', 'Рњ'=> 'm', 'Рќ'=> 'n', 'Рћ'=> 'o', 'Рџ'=> 'p', 'Р '=> 'r', 'РЎ'=> 's', 'Рў'=> 't', 'РЈ'=> 'u', 'Р¤'=> 'f', 'РҐ'=> 'h', 'Р¦'=> 'tc', 'Р§'=> 'ch', 'РЁ'=> 'sh', 'Р©'=> 'sch', 'Р¬'=> '', 'Р«'=> 'y', 'РЄ'=> '', 'Р­'=> 'e', 'Р®'=> 'yu', 'РЇ'=> 'ya'
 );
 
-/* ДАТА И ВРЕМЯ */
+/* Р”РђРўРђ Р Р’Р Р•РњРЇ */
 define('MONTH_00', '00');
-define('MONTH_01', 'января');
-define('MONTH_02', 'февраля');
-define('MONTH_03', 'марта');
-define('MONTH_04', 'апреля');
-define('MONTH_05', 'мая');
-define('MONTH_06', 'июня');
-define('MONTH_07', 'июля');
-define('MONTH_08', 'августа');
-define('MONTH_09', 'сентября');
-define('MONTH_10', 'октября');
-define('MONTH_11', 'ноября');
-define('MONTH_12', 'декабря');
-/* Символы форматировния даты/времени
-* Y - год, четыре цифры (2004)
-* y - год, две цифры (04)
-* M - месяц по имени (мая)
-* m - месяц две цифры (05)
-* D - день без лидирующего нуля (7)
-* d - день, две цифры (07)
-* H - часы без лидирующего нуля (7)
-* h - часы (07)
-* i - минуты (05)
-* s - секунды (05)
+define('MONTH_01', 'СЏРЅРІР°СЂСЏ');
+define('MONTH_02', 'С„РµРІСЂР°Р»СЏ');
+define('MONTH_03', 'РјР°СЂС‚Р°');
+define('MONTH_04', 'Р°РїСЂРµР»СЏ');
+define('MONTH_05', 'РјР°СЏ');
+define('MONTH_06', 'РёСЋРЅСЏ');
+define('MONTH_07', 'РёСЋР»СЏ');
+define('MONTH_08', 'Р°РІРіСѓСЃС‚Р°');
+define('MONTH_09', 'СЃРµРЅС‚СЏР±СЂСЏ');
+define('MONTH_10', 'РѕРєС‚СЏР±СЂСЏ');
+define('MONTH_11', 'РЅРѕСЏР±СЂСЏ');
+define('MONTH_12', 'РґРµРєР°Р±СЂСЏ');
+/* РЎРёРјРІРѕР»С‹ С„РѕСЂРјР°С‚РёСЂРѕРІРЅРёСЏ РґР°С‚С‹/РІСЂРµРјРµРЅРё
+* Y - РіРѕРґ, С‡РµС‚С‹СЂРµ С†РёС„СЂС‹ (2004)
+* y - РіРѕРґ, РґРІРµ С†РёС„СЂС‹ (04)
+* M - РјРµСЃСЏС† РїРѕ РёРјРµРЅРё (РјР°СЏ)
+* m - РјРµСЃСЏС† РґРІРµ С†РёС„СЂС‹ (05)
+* D - РґРµРЅСЊ Р±РµР· Р»РёРґРёСЂСѓСЋС‰РµРіРѕ РЅСѓР»СЏ (7)
+* d - РґРµРЅСЊ, РґРІРµ С†РёС„СЂС‹ (07)
+* H - С‡Р°СЃС‹ Р±РµР· Р»РёРґРёСЂСѓСЋС‰РµРіРѕ РЅСѓР»СЏ (7)
+* h - С‡Р°СЃС‹ (07)
+* i - РјРёРЅСѓС‚С‹ (05)
+* s - СЃРµРєСѓРЅРґС‹ (05)
 */
 define('TIME_LONG', 'h:i:s');
 define('TIME_SHORT', 'H:i');
@@ -79,285 +79,285 @@ define('DATETIME_LONG', TIME_LONG.', '.DATE_LONG);
 define('DATETIME_SHORT', TIME_SHORT.', '.DATE_SHORT);
 define('DATETIME_NORMAL', TIME_SHORT.', '.DATE_LONG);
 
-define('DATETIME_UNKNOWN', 'Дата и время неизвестны');
+define('DATETIME_UNKNOWN', 'Р”Р°С‚Р° Рё РІСЂРµРјСЏ РЅРµРёР·РІРµСЃС‚РЅС‹');
 
-define('ACCESSLEVEL0', 'Неизвестный');
-define('ACCESSLEVEL1', 'Главный администратор');
-define('ACCESSLEVEL2', 'Администратор');
-define('ACCESSLEVEL3', 'Редактор');
-define('ACCESSLEVEL4', 'Пользователь');
-define('ACCESSLEVEL5', 'Гость');
+define('ACCESSLEVEL0', 'РќРµРёР·РІРµСЃС‚РЅС‹Р№');
+define('ACCESSLEVEL1', 'Р“Р»Р°РІРЅС‹Р№ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ');
+define('ACCESSLEVEL2', 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ');
+define('ACCESSLEVEL3', 'Р РµРґР°РєС‚РѕСЂ');
+define('ACCESSLEVEL4', 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ');
+define('ACCESSLEVEL5', 'Р“РѕСЃС‚СЊ');
 
-define('RESTRICTION0', 'нет ограничений');
-define('RESTRICTION1', 'Предмодерация');
-define('RESTRICTION2', 'Только чтение');
-define('strNoRestrictions', 'нет ограничений');
-define('strPredModeration', 'Предмодерация');
-define('strReadOnly', 'Только чтение');
+define('RESTRICTION0', 'РЅРµС‚ РѕРіСЂР°РЅРёС‡РµРЅРёР№');
+define('RESTRICTION1', 'РџСЂРµРґРјРѕРґРµСЂР°С†РёСЏ');
+define('RESTRICTION2', 'РўРѕР»СЊРєРѕ С‡С‚РµРЅРёРµ');
+define('strNoRestrictions', 'РЅРµС‚ РѕРіСЂР°РЅРёС‡РµРЅРёР№');
+define('strPredModeration', 'РџСЂРµРґРјРѕРґРµСЂР°С†РёСЏ');
+define('strReadOnly', 'РўРѕР»СЊРєРѕ С‡С‚РµРЅРёРµ');
 
-/* ОШИБКИ */
+/* РћРЁРР‘РљР */
 
-# Общие
-define('errNotice', 'Замечание');
-define('errWarning', 'Предупреждение');
-define('errError', 'Ошибка');
-define('errUnknownError', 'Неизвестная ошибка');
-define('errUnknownAction', 'Неизвестное действие');
-define('errUnknownFile', 'Неизвестный файл');
-define('errUnknownLine', 'Неизвестная строка');
-# Внутренние
-define('errInternalError', 'Внутренняя ошибка');
-define('errNoMainPage', 'В списке страниц не найдена корневая страница с именем "main"');
-define('errContentPluginNotFound', 'Не найдено модуля поддержки типа контента "%s"');
-define('errClassNotFound', 'Класс "%s" не найден.');
-define('errMethodNotFound', 'Метод "%s" не найден в классе "%s".');
-# Файловые
-define('errFileNotFound', 'Файл не найден');
-define('errFileOpening', 'Открытие файла "%s"');
-define('errFileWriteError', 'Ошибка записи в файл');
-define('errFileWriting', 'Запись в файл "%s"');
-define('errFileWrite', 'Не удается записать в файл "%s"');
-define('errFileCopy', 'Не удается скопировать файл "%s" в "%s"');
-define('errFileMove', 'Не удается переместить файл "%s" в "%s"');
-define('errLibNotFound', 'Не найдена библиотека "%s"');
-define('errTemplateNotFound', 'Шаблон "%s" не найден');
-# Загрузка файлов
-define('errUploadSizeINI', 'Размер файла "%s" превышает максимально допустимый размер '.ini_get('upload_max_filesize').'.');
-define('errUploadSizeFORM', 'Размер файла "%s" превышает максимально допустимый размер указанный в форме.');
-define('errUploadPartial', 'Файл "%s" получен только частично.');
-define('errUploadNoFile', 'Файл "%s" не был загружен.');
+# РћР±С‰РёРµ
+define('errNotice', 'Р—Р°РјРµС‡Р°РЅРёРµ');
+define('errWarning', 'РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ');
+define('errError', 'РћС€РёР±РєР°');
+define('errUnknownError', 'РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°');
+define('errUnknownAction', 'РќРµРёР·РІРµСЃС‚РЅРѕРµ РґРµР№СЃС‚РІРёРµ');
+define('errUnknownFile', 'РќРµРёР·РІРµСЃС‚РЅС‹Р№ С„Р°Р№Р»');
+define('errUnknownLine', 'РќРµРёР·РІРµСЃС‚РЅР°СЏ СЃС‚СЂРѕРєР°');
+# Р’РЅСѓС‚СЂРµРЅРЅРёРµ
+define('errInternalError', 'Р’РЅСѓС‚СЂРµРЅРЅСЏСЏ РѕС€РёР±РєР°');
+define('errNoMainPage', 'Р’ СЃРїРёСЃРєРµ СЃС‚СЂР°РЅРёС† РЅРµ РЅР°Р№РґРµРЅР° РєРѕСЂРЅРµРІР°СЏ СЃС‚СЂР°РЅРёС†Р° СЃ РёРјРµРЅРµРј "main"');
+define('errContentPluginNotFound', 'РќРµ РЅР°Р№РґРµРЅРѕ РјРѕРґСѓР»СЏ РїРѕРґРґРµСЂР¶РєРё С‚РёРїР° РєРѕРЅС‚РµРЅС‚Р° "%s"');
+define('errClassNotFound', 'РљР»Р°СЃСЃ "%s" РЅРµ РЅР°Р№РґРµРЅ.');
+define('errMethodNotFound', 'РњРµС‚РѕРґ "%s" РЅРµ РЅР°Р№РґРµРЅ РІ РєР»Р°СЃСЃРµ "%s".');
+# Р¤Р°Р№Р»РѕРІС‹Рµ
+define('errFileNotFound', 'Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ');
+define('errFileOpening', 'РћС‚РєСЂС‹С‚РёРµ С„Р°Р№Р»Р° "%s"');
+define('errFileWriteError', 'РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ С„Р°Р№Р»');
+define('errFileWriting', 'Р—Р°РїРёСЃСЊ РІ С„Р°Р№Р» "%s"');
+define('errFileWrite', 'РќРµ СѓРґР°РµС‚СЃСЏ Р·Р°РїРёСЃР°С‚СЊ РІ С„Р°Р№Р» "%s"');
+define('errFileCopy', 'РќРµ СѓРґР°РµС‚СЃСЏ СЃРєРѕРїРёСЂРѕРІР°С‚СЊ С„Р°Р№Р» "%s" РІ "%s"');
+define('errFileMove', 'РќРµ СѓРґР°РµС‚СЃСЏ РїРµСЂРµРјРµСЃС‚РёС‚СЊ С„Р°Р№Р» "%s" РІ "%s"');
+define('errLibNotFound', 'РќРµ РЅР°Р№РґРµРЅР° Р±РёР±Р»РёРѕС‚РµРєР° "%s"');
+define('errTemplateNotFound', 'РЁР°Р±Р»РѕРЅ "%s" РЅРµ РЅР°Р№РґРµРЅ');
+# Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»РѕРІ
+define('errUploadSizeINI', 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° "%s" РїСЂРµРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕ РґРѕРїСѓСЃС‚РёРјС‹Р№ СЂР°Р·РјРµСЂ '.ini_get('upload_max_filesize').'.');
+define('errUploadSizeFORM', 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° "%s" РїСЂРµРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕ РґРѕРїСѓСЃС‚РёРјС‹Р№ СЂР°Р·РјРµСЂ СѓРєР°Р·Р°РЅРЅС‹Р№ РІ С„РѕСЂРјРµ.');
+define('errUploadPartial', 'Р¤Р°Р№Р» "%s" РїРѕР»СѓС‡РµРЅ С‚РѕР»СЊРєРѕ С‡Р°СЃС‚РёС‡РЅРѕ.');
+define('errUploadNoFile', 'Р¤Р°Р№Р» "%s" РЅРµ Р±С‹Р» Р·Р°РіСЂСѓР¶РµРЅ.');
 
-define('errInvalidPassword', 'Неверное имя пользователя или пароль');
+define('errInvalidPassword', 'РќРµРІРµСЂРЅРѕРµ РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РїР°СЂРѕР»СЊ');
 define('errAccountNotActive', errInvalidPassword);
 define('errAccountNotExists', errInvalidPassword);
-define('errTooEarlyRelogin',"Перед попыткой повторного логина должно пройти не менее %s секунд!");
-# Формы
-define('errFormUnknownType', 'Неизвестный тип поля "%s" в форме "%s"');
-define('errFormFieldHasNoName', 'Не указано имя для поля типа "%s" в форме "%s"');
-define('errFormHasNoName', 'Не указано имя формы');
-define('errFormPatternError', 'Введенное значение в поле "%s" не соответствует требуемому формату "%s"');
-define('errFormBadConfirm', 'Пароль и подтверждение не совпадают!');
-define('errAccessDenied', 'Доступ к данному разделу запрещен!');
-define('errNonexistedDomain', 'Несуществующий домен: "%s"');
+define('errTooEarlyRelogin',"РџРµСЂРµРґ РїРѕРїС‹С‚РєРѕР№ РїРѕРІС‚РѕСЂРЅРѕРіРѕ Р»РѕРіРёРЅР° РґРѕР»Р¶РЅРѕ РїСЂРѕР№С‚Рё РЅРµ РјРµРЅРµРµ %s СЃРµРєСѓРЅРґ!");
+# Р¤РѕСЂРјС‹
+define('errFormUnknownType', 'РќРµРёР·РІРµСЃС‚РЅС‹Р№ С‚РёРї РїРѕР»СЏ "%s" РІ С„РѕСЂРјРµ "%s"');
+define('errFormFieldHasNoName', 'РќРµ СѓРєР°Р·Р°РЅРѕ РёРјСЏ РґР»СЏ РїРѕР»СЏ С‚РёРїР° "%s" РІ С„РѕСЂРјРµ "%s"');
+define('errFormHasNoName', 'РќРµ СѓРєР°Р·Р°РЅРѕ РёРјСЏ С„РѕСЂРјС‹');
+define('errFormPatternError', 'Р’РІРµРґРµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РІ РїРѕР»Рµ "%s" РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ С‚СЂРµР±СѓРµРјРѕРјСѓ С„РѕСЂРјР°С‚Сѓ "%s"');
+define('errFormBadConfirm', 'РџР°СЂРѕР»СЊ Рё РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РЅРµ СЃРѕРІРїР°РґР°СЋС‚!');
+define('errAccessDenied', 'Р”РѕСЃС‚СѓРї Рє РґР°РЅРЅРѕРјСѓ СЂР°Р·РґРµР»Сѓ Р·Р°РїСЂРµС‰РµРЅ!');
+define('errNonexistedDomain', 'РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ РґРѕРјРµРЅ: "%s"');
 
-# Разделы
-define('errContentType', 'Неверный тип контента "%s"');
+# Р Р°Р·РґРµР»С‹
+define('errContentType', 'РќРµРІРµСЂРЅС‹Р№ С‚РёРї РєРѕРЅС‚РµРЅС‚Р° "%s"');
 
-define('errItemWithSameName', 'Элемент с именем "%s" уже существует.');
+define('errItemWithSameName', 'Р­Р»РµРјРµРЅС‚ СЃ РёРјРµРЅРµРј "%s" СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.');
 
-/* Описание ответов HTTP */
-define('HTTP_CODE_403', 'Доступ к запрошенному ресурсу запрещен');
-define('HTTP_CODE_404', 'Запрошенная страница не найдена');
+/* РћРїРёСЃР°РЅРёРµ РѕС‚РІРµС‚РѕРІ HTTP */
+define('HTTP_CODE_403', 'Р”РѕСЃС‚СѓРї Рє Р·Р°РїСЂРѕС€РµРЅРЅРѕРјСѓ СЂРµСЃСѓСЂСЃСѓ Р·Р°РїСЂРµС‰РµРЅ');
+define('HTTP_CODE_404', 'Р—Р°РїСЂРѕС€РµРЅРЅР°СЏ СЃС‚СЂР°РЅРёС†Р° РЅРµ РЅР°Р№РґРµРЅР°');
 
-/* СТАНДАРТНЫЕ */
+/* РЎРўРђРќР”РђР РўРќР«Р• */
 define('strOk', 'OK');
-define('strApply', 'Применить');
-define('strCancel', 'Отменить');
-define('strReset', 'Вернуть');
-define('strAdd', 'Добавить');
-define('strEdit', 'Изменить');
-define('strDelete', 'Удалить');
-define('strMove', 'Переместить');
-define('strReturn', 'Вернуться');
-define('strProperties', 'Свойства');
-define('strYes', 'Да');
-define('strNo', 'Нет');
-define('strExit', 'Выход');
+define('strApply', 'РџСЂРёРјРµРЅРёС‚СЊ');
+define('strCancel', 'РћС‚РјРµРЅРёС‚СЊ');
+define('strReset', 'Р’РµСЂРЅСѓС‚СЊ');
+define('strAdd', 'Р”РѕР±Р°РІРёС‚СЊ');
+define('strEdit', 'РР·РјРµРЅРёС‚СЊ');
+define('strDelete', 'РЈРґР°Р»РёС‚СЊ');
+define('strMove', 'РџРµСЂРµРјРµСЃС‚РёС‚СЊ');
+define('strReturn', 'Р’РµСЂРЅСѓС‚СЊСЃСЏ');
+define('strProperties', 'РЎРІРѕР№СЃС‚РІР°');
+define('strYes', 'Р”Р°');
+define('strNo', 'РќРµС‚');
+define('strExit', 'Р’С‹С…РѕРґ');
 
-/* ОПОВЕЩЕНИЯ */
-define('strNotification', "Оповещение");
-define('strNotifyTemplate', "%s (%s)<br />Раздел: <a href=\"%s\">%s</a><br /><hr>%s<hr>");
+/* РћРџРћР’Р•Р©Р•РќРРЇ */
+define('strNotification', "РћРїРѕРІРµС‰РµРЅРёРµ");
+define('strNotifyTemplate', "%s (%s)<br />Р Р°Р·РґРµР»: <a href=\"%s\">%s</a><br /><hr>%s<hr>");
 
-/* Управление страницами */
-define('strPages', 'Страницы: ');
-define('strPrevPage', 'Предыдущая страница');
-define('strNextPage', 'Следующая страница');
-define('strFirstPage', 'Первая страница');
-define('strLastPage', 'Последняя страница');
-/* Разное */
-define('strMainMenu', 'Навигация');
-define('strAuthorisation', 'Авторизация');
-define('strLogin', 'Логин');
-define('strRegistration', 'Регистрация');
-define('strRemind', 'Напомнить');
-define('strPassword', 'Пароль');
-define('strAutoLogin', 'Запомнить');
-define('strEnterSite', 'Войти');
-define('strExitSite', 'Выйти');
-define('strLastVisit', 'Последний визит');
-define('strURL', 'Адрес');
-define('strViewTopic', 'Показать полностью');
-define('strInformation', 'Информация');
+/* РЈРїСЂР°РІР»РµРЅРёРµ СЃС‚СЂР°РЅРёС†Р°РјРё */
+define('strPages', 'РЎС‚СЂР°РЅРёС†С‹: ');
+define('strPrevPage', 'РџСЂРµРґС‹РґСѓС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°');
+define('strNextPage', 'РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°');
+define('strFirstPage', 'РџРµСЂРІР°СЏ СЃС‚СЂР°РЅРёС†Р°');
+define('strLastPage', 'РџРѕСЃР»РµРґРЅСЏСЏ СЃС‚СЂР°РЅРёС†Р°');
+/* Р Р°Р·РЅРѕРµ */
+define('strMainMenu', 'РќР°РІРёРіР°С†РёСЏ');
+define('strAuthorisation', 'РђРІС‚РѕСЂРёР·Р°С†РёСЏ');
+define('strLogin', 'Р›РѕРіРёРЅ');
+define('strRegistration', 'Р РµРіРёСЃС‚СЂР°С†РёСЏ');
+define('strRemind', 'РќР°РїРѕРјРЅРёС‚СЊ');
+define('strPassword', 'РџР°СЂРѕР»СЊ');
+define('strAutoLogin', 'Р—Р°РїРѕРјРЅРёС‚СЊ');
+define('strEnterSite', 'Р’РѕР№С‚Рё');
+define('strExitSite', 'Р’С‹Р№С‚Рё');
+define('strLastVisit', 'РџРѕСЃР»РµРґРЅРёР№ РІРёР·РёС‚');
+define('strURL', 'РђРґСЂРµСЃ');
+define('strViewTopic', 'РџРѕРєР°Р·Р°С‚СЊ РїРѕР»РЅРѕСЃС‚СЊСЋ');
+define('strInformation', 'РРЅС„РѕСЂРјР°С†РёСЏ');
 
 
-/***************** АДМИНИСТРИРОВАНИЕ *******************/
+/***************** РђР”РњРРќРРЎРўР РР РћР’РђРќРР• *******************/
 define('admTDiv', ' - ');
 
-define('admAdd', 'Добавить');
-define('admAdded', 'Добавлено');
-define('admDelete', 'Удалить');
-define('admDeleted', 'Удалено');
-define('admEdit', 'Изменить');
-define('admActivate', 'Включить');
-define('admActivated', 'Активировано');
-define('admDeactivate', 'Отключить');
-define('admDeactivated', 'Деактивировано');
-define('admSortPosition', 'По порядку');
-define('admSortAscending', 'По возрастанию');
-define('admSortDescending', 'По убыванию');
-define('admUp', 'Вверх');
-define('admDown', 'Вниз');
-define('admUpdated', 'Изменено');
+define('admAdd', 'Р”РѕР±Р°РІРёС‚СЊ');
+define('admAdded', 'Р”РѕР±Р°РІР»РµРЅРѕ');
+define('admDelete', 'РЈРґР°Р»РёС‚СЊ');
+define('admDeleted', 'РЈРґР°Р»РµРЅРѕ');
+define('admEdit', 'РР·РјРµРЅРёС‚СЊ');
+define('admActivate', 'Р’РєР»СЋС‡РёС‚СЊ');
+define('admActivated', 'РђРєС‚РёРІРёСЂРѕРІР°РЅРѕ');
+define('admDeactivate', 'РћС‚РєР»СЋС‡РёС‚СЊ');
+define('admDeactivated', 'Р”РµР°РєС‚РёРІРёСЂРѕРІР°РЅРѕ');
+define('admSortPosition', 'РџРѕ РїРѕСЂСЏРґРєСѓ');
+define('admSortAscending', 'РџРѕ РІРѕР·СЂР°СЃС‚Р°РЅРёСЋ');
+define('admSortDescending', 'РџРѕ СѓР±С‹РІР°РЅРёСЋ');
+define('admUp', 'Р’РІРµСЂС…');
+define('admDown', 'Р’РЅРёР·');
+define('admUpdated', 'РР·РјРµРЅРµРЅРѕ');
 
-define('admNA', '(не задано)');
-define('admPlugin', 'Плагин');
-define('admPlugins', 'Модули расширения');
-define('admSettings', 'Настройки');
-define('admContent', 'Контент');
-define('admControls', 'Управление');
-define('admConfiguration', 'Конфигурация');
-define('admStructure', 'Разделы сайта');
-define('admUsers', 'Пользователи');
-define('admThemes', 'Оформление');
-define('admExtensions', 'Расширения');
-define('admLanguages', 'Языки');
-define('admFileManager', 'Файловый менеджер');
-define('admDescription', 'Описание');
-define('admVersion', 'Версия');
-define('admType', 'Тип');
-define('admAccessLevel', 'Уровень доступа');
-define('admPosition', 'Позиция');
-define('admChanges', 'Изменения');
-/* Меню администратора */
-define('admStructureHint', 'Управление структурой сайта, меню и страницами');
-define('admPluginsHint', 'Управление модулями расширения');
-define('admUsersHint', 'Управление пользователями');
-define('admThemesHint', 'Управление шаблонами страниц и стилями');
-define('admConfigurationHint', 'Конфигурация сайта');
-define('admLanguagesHint', 'Управление языковыми параметрами');
-define('admFileManagerHint', 'Управление файлами');
-/* Конфигурация */
-define('admSettingsMain', 'Основное');
-define('admSettingsMail', 'Почта');
-define('admSettingsFiles', 'Файлы');
-define('admSettingsOther', 'Прочее');
+define('admNA', '(РЅРµ Р·Р°РґР°РЅРѕ)');
+define('admPlugin', 'РџР»Р°РіРёРЅ');
+define('admPlugins', 'РњРѕРґСѓР»Рё СЂР°СЃС€РёСЂРµРЅРёСЏ');
+define('admSettings', 'РќР°СЃС‚СЂРѕР№РєРё');
+define('admContent', 'РљРѕРЅС‚РµРЅС‚');
+define('admControls', 'РЈРїСЂР°РІР»РµРЅРёРµ');
+define('admConfiguration', 'РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ');
+define('admStructure', 'Р Р°Р·РґРµР»С‹ СЃР°Р№С‚Р°');
+define('admUsers', 'РџРѕР»СЊР·РѕРІР°С‚РµР»Рё');
+define('admThemes', 'РћС„РѕСЂРјР»РµРЅРёРµ');
+define('admExtensions', 'Р Р°СЃС€РёСЂРµРЅРёСЏ');
+define('admLanguages', 'РЇР·С‹РєРё');
+define('admFileManager', 'Р¤Р°Р№Р»РѕРІС‹Р№ РјРµРЅРµРґР¶РµСЂ');
+define('admDescription', 'РћРїРёСЃР°РЅРёРµ');
+define('admVersion', 'Р’РµСЂСЃРёСЏ');
+define('admType', 'РўРёРї');
+define('admAccessLevel', 'РЈСЂРѕРІРµРЅСЊ РґРѕСЃС‚СѓРїР°');
+define('admPosition', 'РџРѕР·РёС†РёСЏ');
+define('admChanges', 'РР·РјРµРЅРµРЅРёСЏ');
+/* РњРµРЅСЋ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° */
+define('admStructureHint', 'РЈРїСЂР°РІР»РµРЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂРѕР№ СЃР°Р№С‚Р°, РјРµРЅСЋ Рё СЃС‚СЂР°РЅРёС†Р°РјРё');
+define('admPluginsHint', 'РЈРїСЂР°РІР»РµРЅРёРµ РјРѕРґСѓР»СЏРјРё СЂР°СЃС€РёСЂРµРЅРёСЏ');
+define('admUsersHint', 'РЈРїСЂР°РІР»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРјРё');
+define('admThemesHint', 'РЈРїСЂР°РІР»РµРЅРёРµ С€Р°Р±Р»РѕРЅР°РјРё СЃС‚СЂР°РЅРёС† Рё СЃС‚РёР»СЏРјРё');
+define('admConfigurationHint', 'РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ СЃР°Р№С‚Р°');
+define('admLanguagesHint', 'РЈРїСЂР°РІР»РµРЅРёРµ СЏР·С‹РєРѕРІС‹РјРё РїР°СЂР°РјРµС‚СЂР°РјРё');
+define('admFileManagerHint', 'РЈРїСЂР°РІР»РµРЅРёРµ С„Р°Р№Р»Р°РјРё');
+/* РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ */
+define('admSettingsMain', 'РћСЃРЅРѕРІРЅРѕРµ');
+define('admSettingsMail', 'РџРѕС‡С‚Р°');
+define('admSettingsFiles', 'Р¤Р°Р№Р»С‹');
+define('admSettingsOther', 'РџСЂРѕС‡РµРµ');
 
-define('admConfigMailSettings', 'Настройки почты');
-define('admConfigNotifications', 'Оповещения');
-define('admConfigPostInformation', 'Информация о постах');
-define('admConfigSecurity', 'Безопасность');
-define('admConfigSiteName', 'Название сайта');
-define('admConfigSiteTitle', 'Заголовок сайта');
-define('admConfigTitleReverse', 'Выводить в обратном порядке');
-define('admConfigTitleDivider', 'Разделитель');
-define('admConfigSiteKeywords', 'Ключевые слова');
-define('admConfigSiteDescription', 'Описание сайта');
-define('admConfigMailFromAddr', 'Адрес отправителя');
-define('admConfigMailFromName', 'Имя отправителя');
-define('admConfigMailFromOrg', 'Организация отправителя');
-define('admConfigMailReplyTo', 'Обратный адрес');
-define('admConfigMailCharset', 'Кодировка письма');
-define('admConfigMailSign', 'Подпись под письмом');
-define('admConfigSendNotifyTo', 'Оповещать');
-define('admConfigPostsShowInfo', 'Показывать информацию о постах');
-define('admConfigPostsDateFormat', 'Формат даты');
-define('admConfigPostsShowIP', 'Показывать IP-адреса авторов (администраторам и редакторам)');
-define('admConfigPostsResolveIP', 'Определять имена хостов');
-define('admConfigAccessPolicy', 'Для неавторизованных');
-define('admConfigSiteNameHint', 'Короткое название сайта. Будет доступно через макрос $(siteName)');
-define('admConfigSiteTitleHint', 'Заголовок страниц. Будет доступен через макрос $(siteTitle)');
-define('admConfigTitleDividerHint', 'Разделитель элементов заголовка сайта');
-define('admConfigKeywordsHint', 'Список глобальных ключевых слов. Будет доступен через макрос $(siteKeywords)');
-define('admConfigDescriptionHint', 'Описание сайта (META-тэг). Будет доступно через макрос $(siteDescription)');
-define('admConfigMailFromAddrHint', 'От: имя <АДРЕС> (оргнизация)');
-define('admConfigMailFromNameHint', 'От: ИМЯ <адрес> (оргнизация)');
-define('admConfigMailFromOrgHint', 'От: имя <адрес> (ОРГАНИЗАЦИЯ)');
-define('admConfigSendNotifyToHint', 'Адреса для рассылки административных сообщений');
-define('admConfigFiles', 'Файловые операции');
-define('admConfigFilesOwnerSetOnUpload', 'Устанавливать владельца загружаемых файлов (только для суперпользователя)');
-define('admConfigFilesOwnerDefault', 'Владелец');
-define('admConfigFilesModeSetOnUpload', 'Устанавливать атрибуты на загружаемые файлы');
-define('admConfigFilesModeDefault', 'Атрибуты');
-define('admConfigTranslitNames', 'Транслитерировать имена загружаемых файлов');
-define('admConfigStructure', 'Структура сайта');
-define('admConfigDefaultContentType', 'Тип контента по умолчанию');
-define('admConfigDefaultPageTamplate', 'Шаблон страницы по умолчанию');
-define('admConfigClientPagesAtOnce', 'Показывать');
-define('admConfigClientPagesAtOnceComment', 'элементов в переключателе страниц');
+define('admConfigMailSettings', 'РќР°СЃС‚СЂРѕР№РєРё РїРѕС‡С‚С‹');
+define('admConfigNotifications', 'РћРїРѕРІРµС‰РµРЅРёСЏ');
+define('admConfigPostInformation', 'РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕСЃС‚Р°С…');
+define('admConfigSecurity', 'Р‘РµР·РѕРїР°СЃРЅРѕСЃС‚СЊ');
+define('admConfigSiteName', 'РќР°Р·РІР°РЅРёРµ СЃР°Р№С‚Р°');
+define('admConfigSiteTitle', 'Р—Р°РіРѕР»РѕРІРѕРє СЃР°Р№С‚Р°');
+define('admConfigTitleReverse', 'Р’С‹РІРѕРґРёС‚СЊ РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ');
+define('admConfigTitleDivider', 'Р Р°Р·РґРµР»РёС‚РµР»СЊ');
+define('admConfigSiteKeywords', 'РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°');
+define('admConfigSiteDescription', 'РћРїРёСЃР°РЅРёРµ СЃР°Р№С‚Р°');
+define('admConfigMailFromAddr', 'РђРґСЂРµСЃ РѕС‚РїСЂР°РІРёС‚РµР»СЏ');
+define('admConfigMailFromName', 'РРјСЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ');
+define('admConfigMailFromOrg', 'РћСЂРіР°РЅРёР·Р°С†РёСЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ');
+define('admConfigMailReplyTo', 'РћР±СЂР°С‚РЅС‹Р№ Р°РґСЂРµСЃ');
+define('admConfigMailCharset', 'РљРѕРґРёСЂРѕРІРєР° РїРёСЃСЊРјР°');
+define('admConfigMailSign', 'РџРѕРґРїРёСЃСЊ РїРѕРґ РїРёСЃСЊРјРѕРј');
+define('admConfigSendNotifyTo', 'РћРїРѕРІРµС‰Р°С‚СЊ');
+define('admConfigPostsShowInfo', 'РџРѕРєР°Р·С‹РІР°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕСЃС‚Р°С…');
+define('admConfigPostsDateFormat', 'Р¤РѕСЂРјР°С‚ РґР°С‚С‹');
+define('admConfigPostsShowIP', 'РџРѕРєР°Р·С‹РІР°С‚СЊ IP-Р°РґСЂРµСЃР° Р°РІС‚РѕСЂРѕРІ (Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°Рј Рё СЂРµРґР°РєС‚РѕСЂР°Рј)');
+define('admConfigPostsResolveIP', 'РћРїСЂРµРґРµР»СЏС‚СЊ РёРјРµРЅР° С…РѕСЃС‚РѕРІ');
+define('admConfigAccessPolicy', 'Р”Р»СЏ РЅРµР°РІС‚РѕСЂРёР·РѕРІР°РЅРЅС‹С…');
+define('admConfigSiteNameHint', 'РљРѕСЂРѕС‚РєРѕРµ РЅР°Р·РІР°РЅРёРµ СЃР°Р№С‚Р°. Р‘СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ С‡РµСЂРµР· РјР°РєСЂРѕСЃ $(siteName)');
+define('admConfigSiteTitleHint', 'Р—Р°РіРѕР»РѕРІРѕРє СЃС‚СЂР°РЅРёС†. Р‘СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ С‡РµСЂРµР· РјР°РєСЂРѕСЃ $(siteTitle)');
+define('admConfigTitleDividerHint', 'Р Р°Р·РґРµР»РёС‚РµР»СЊ СЌР»РµРјРµРЅС‚РѕРІ Р·Р°РіРѕР»РѕРІРєР° СЃР°Р№С‚Р°');
+define('admConfigKeywordsHint', 'РЎРїРёСЃРѕРє РіР»РѕР±Р°Р»СЊРЅС‹С… РєР»СЋС‡РµРІС‹С… СЃР»РѕРІ. Р‘СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ С‡РµСЂРµР· РјР°РєСЂРѕСЃ $(siteKeywords)');
+define('admConfigDescriptionHint', 'РћРїРёСЃР°РЅРёРµ СЃР°Р№С‚Р° (META-С‚СЌРі). Р‘СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ С‡РµСЂРµР· РјР°РєСЂРѕСЃ $(siteDescription)');
+define('admConfigMailFromAddrHint', 'РћС‚: РёРјСЏ <РђР”Р Р•РЎ> (РѕСЂРіРЅРёР·Р°С†РёСЏ)');
+define('admConfigMailFromNameHint', 'РћС‚: РРњРЇ <Р°РґСЂРµСЃ> (РѕСЂРіРЅРёР·Р°С†РёСЏ)');
+define('admConfigMailFromOrgHint', 'РћС‚: РёРјСЏ <Р°РґСЂРµСЃ> (РћР Р“РђРќРР—РђР¦РРЇ)');
+define('admConfigSendNotifyToHint', 'РђРґСЂРµСЃР° РґР»СЏ СЂР°СЃСЃС‹Р»РєРё Р°РґРјРёРЅРёСЃС‚СЂР°С‚РёРІРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№');
+define('admConfigFiles', 'Р¤Р°Р№Р»РѕРІС‹Рµ РѕРїРµСЂР°С†РёРё');
+define('admConfigFilesOwnerSetOnUpload', 'РЈСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ РІР»Р°РґРµР»СЊС†Р° Р·Р°РіСЂСѓР¶Р°РµРјС‹С… С„Р°Р№Р»РѕРІ (С‚РѕР»СЊРєРѕ РґР»СЏ СЃСѓРїРµСЂРїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)');
+define('admConfigFilesOwnerDefault', 'Р’Р»Р°РґРµР»РµС†');
+define('admConfigFilesModeSetOnUpload', 'РЈСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ Р°С‚СЂРёР±СѓС‚С‹ РЅР° Р·Р°РіСЂСѓР¶Р°РµРјС‹Рµ С„Р°Р№Р»С‹');
+define('admConfigFilesModeDefault', 'РђС‚СЂРёР±СѓС‚С‹');
+define('admConfigTranslitNames', 'РўСЂР°РЅСЃР»РёС‚РµСЂРёСЂРѕРІР°С‚СЊ РёРјРµРЅР° Р·Р°РіСЂСѓР¶Р°РµРјС‹С… С„Р°Р№Р»РѕРІ');
+define('admConfigStructure', 'РЎС‚СЂСѓРєС‚СѓСЂР° СЃР°Р№С‚Р°');
+define('admConfigDefaultContentType', 'РўРёРї РєРѕРЅС‚РµРЅС‚Р° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ');
+define('admConfigDefaultPageTamplate', 'РЁР°Р±Р»РѕРЅ СЃС‚СЂР°РЅРёС†С‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ');
+define('admConfigClientPagesAtOnce', 'РџРѕРєР°Р·С‹РІР°С‚СЊ');
+define('admConfigClientPagesAtOnceComment', 'СЌР»РµРјРµРЅС‚РѕРІ РІ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»Рµ СЃС‚СЂР°РЅРёС†');
 
-/* Оформление */
+/* РћС„РѕСЂРјР»РµРЅРёРµ */
 define('admThemesTabWidth', '180px');
-define('admThemesTemplate', 'Шаблон');
-define('admThemesTemplates', 'Шаблоны страниц');
-define('admThemesFilenameLabel', 'Имя файла');
-define('admThemesDescriptionLabel', 'Описание');
-define('admThemesStyles', 'Файлы стилей');
-define('admThemesStyleLabel', 'Редактирование файла стилей');
-define('admThemesStandard', 'Стандартные шаблоны');
+define('admThemesTemplate', 'РЁР°Р±Р»РѕРЅ');
+define('admThemesTemplates', 'РЁР°Р±Р»РѕРЅС‹ СЃС‚СЂР°РЅРёС†');
+define('admThemesFilenameLabel', 'РРјСЏ С„Р°Р№Р»Р°');
+define('admThemesDescriptionLabel', 'РћРїРёСЃР°РЅРёРµ');
+define('admThemesStyles', 'Р¤Р°Р№Р»С‹ СЃС‚РёР»РµР№');
+define('admThemesStyleLabel', 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С„Р°Р№Р»Р° СЃС‚РёР»РµР№');
+define('admThemesStandard', 'РЎС‚Р°РЅРґР°СЂС‚РЅС‹Рµ С€Р°Р±Р»РѕРЅС‹');
 
-define('admPluginsAdd', 'Добавить плагин');
-define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эндом, <strong>admin</strong> - работает с бэк-эндом, <strong>content</strong> - плагин контента, <strong>ondemand</strong> - загружается только при необходимости");
-define('admPluginsFound', 'Найденные плагины');
-define('admPluginsInvalidFile', 'Файл не является модулем расширения');
-define('admPluginsInvalidVersion', 'Требуется ядро %s или выше.');
-define('admPluginsAdded', 'Подключен новый плагин');
-define('admPluginTopicTable', 'Таблица топиков');
+define('admPluginsAdd', 'Р”РѕР±Р°РІРёС‚СЊ РїР»Р°РіРёРЅ');
+define('admPluginsTableHint', "РўРёРїС‹: <strong>user</strong> - СЂР°Р±РѕС‚Р°РµС‚ СЃ С„СЂРѕРЅС‚-СЌРЅРґРѕРј, <strong>admin</strong> - СЂР°Р±РѕС‚Р°РµС‚ СЃ Р±СЌРє-СЌРЅРґРѕРј, <strong>content</strong> - РїР»Р°РіРёРЅ РєРѕРЅС‚РµРЅС‚Р°, <strong>ondemand</strong> - Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё");
+define('admPluginsFound', 'РќР°Р№РґРµРЅРЅС‹Рµ РїР»Р°РіРёРЅС‹');
+define('admPluginsInvalidFile', 'Р¤Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РјРѕРґСѓР»РµРј СЂР°СЃС€РёСЂРµРЅРёСЏ');
+define('admPluginsInvalidVersion', 'РўСЂРµР±СѓРµС‚СЃСЏ СЏРґСЂРѕ %s РёР»Рё РІС‹С€Рµ.');
+define('admPluginsAdded', 'РџРѕРґРєР»СЋС‡РµРЅ РЅРѕРІС‹Р№ РїР»Р°РіРёРЅ');
+define('admPluginTopicTable', 'РўР°Р±Р»РёС†Р° С‚РѕРїРёРєРѕРІ');
 
-define('admUsersName', 'Имя');
-define('admUsersLogin', 'Логин');
-define('admUsersAccountState', 'Учетная запись активна');
-define('admUsersAccessLevelShort', 'Дост.');
-define('admUsersLoginErrors', 'Ошибок входа');
-define('admUsersLoginErrorsShort', 'Ошиб.');
+define('admUsersName', 'РРјСЏ');
+define('admUsersLogin', 'Р›РѕРіРёРЅ');
+define('admUsersAccountState', 'РЈС‡РµС‚РЅР°СЏ Р·Р°РїРёСЃСЊ Р°РєС‚РёРІРЅР°');
+define('admUsersAccessLevelShort', 'Р”РѕСЃС‚.');
+define('admUsersLoginErrors', 'РћС€РёР±РѕРє РІС…РѕРґР°');
+define('admUsersLoginErrorsShort', 'РћС€РёР±.');
 define('admUsersMail', 'e-mail');
-define('admUsersLastVisit', 'Последний визит');
-define('admUsersLastVisitShort', 'Последний визит');
-define('admUsersPassword', 'Пароль');
-define('admUsersConfirmation', 'Подтверждение');
-define('admUsersChangeUser', 'Изменить учетную запись');
-define('admUsersChangePassword', 'Изменить пароль');
-define('admUsersPasswordChanged', 'Изменен пароль');
-define('admUsersNameInvalid', 'Псевдоним пользователя не может быть пустым.');
-define('admUsersLoginInvalid', 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и символа подчеркивания.');
-define('admUsersLoginExists', 'Пользователь с таким логином уже существует.');
-define('admUsersMailInvalid', 'Неверно указан почтовый адрес.');
-define('admUsersConfirmInvalid', 'Пароль и подтверждение не совпадают.');
-define('admUsersCreate', 'Создать пользователя');
-define('admUsersAdded', 'Добавлена учетная запись');
+define('admUsersLastVisit', 'РџРѕСЃР»РµРґРЅРёР№ РІРёР·РёС‚');
+define('admUsersLastVisitShort', 'РџРѕСЃР»РµРґРЅРёР№ РІРёР·РёС‚');
+define('admUsersPassword', 'РџР°СЂРѕР»СЊ');
+define('admUsersConfirmation', 'РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ');
+define('admUsersChangeUser', 'РР·РјРµРЅРёС‚СЊ СѓС‡РµС‚РЅСѓСЋ Р·Р°РїРёСЃСЊ');
+define('admUsersChangePassword', 'РР·РјРµРЅРёС‚СЊ РїР°СЂРѕР»СЊ');
+define('admUsersPasswordChanged', 'РР·РјРµРЅРµРЅ РїР°СЂРѕР»СЊ');
+define('admUsersNameInvalid', 'РџСЃРµРІРґРѕРЅРёРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј.');
+define('admUsersLoginInvalid', 'Р›РѕРіРёРЅ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј Рё РґРѕР»Р¶РµРЅ СЃРѕСЃС‚РѕСЏС‚СЊ С‚РѕР»СЊРєРѕ РёР· Р±СѓРєРІ a-z, С†РёС„СЂ Рё СЃРёРјРІРѕР»Р° РїРѕРґС‡РµСЂРєРёРІР°РЅРёСЏ.');
+define('admUsersLoginExists', 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРј Р»РѕРіРёРЅРѕРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.');
+define('admUsersMailInvalid', 'РќРµРІРµСЂРЅРѕ СѓРєР°Р·Р°РЅ РїРѕС‡С‚РѕРІС‹Р№ Р°РґСЂРµСЃ.');
+define('admUsersConfirmInvalid', 'РџР°СЂРѕР»СЊ Рё РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РЅРµ СЃРѕРІРїР°РґР°СЋС‚.');
+define('admUsersCreate', 'РЎРѕР·РґР°С‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ');
+define('admUsersAdded', 'Р”РѕР±Р°РІР»РµРЅР° СѓС‡РµС‚РЅР°СЏ Р·Р°РїРёСЃСЊ');
 
-define('admPagesMove', 'Переместить ветку');
-define('admPagesRoot', 'КОРЕНЬ');
-define('admPagesContentDefault', 'По умолчанию');
-define('admPagesContentList', 'Список подразделов');
+define('admPagesMove', 'РџРµСЂРµРјРµСЃС‚РёС‚СЊ РІРµС‚РєСѓ');
+define('admPagesRoot', 'РљРћР Р•РќР¬');
+define('admPagesContentDefault', 'РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ');
+define('admPagesContentList', 'РЎРїРёСЃРѕРє РїРѕРґСЂР°Р·РґРµР»РѕРІ');
 define('admPagesContentURL', 'URL');
-define('admPagesThisURL', 'URL этой страницы');
-define('admPagesID', 'ID страницы');
-define('admPagesName', 'Имя страницы');
-define('admPagesNameInvalid', 'Имя страницы не может быть пустым и может состоять из латинских букв, цифр и символа подчеркивания.');
-define('admPagesTitle', 'Заголовок страницы');
-define('admPagesTitleInvalid', 'Заголовок страницы не может быть пустым');
-define('admPagesCaption', 'Название пункта меню');
-define('admPagesCaptionInvalid', 'Пункт меню не может быть пустым');
-define('admPagesDescription', 'Описание');
-define('admPagesKeywords', 'Ключевые слова');
-define('admPagesHint', 'Подсказка');
-define('admPagesContentType', 'Тип страницы');
-define('admPagesTemplate', 'Шаблон');
-define('admPagesActive', 'Активна');
-define('admPagesVisible', 'Видимая');
-define('admPagesCreated', 'Дата создания');
-define('admPagesUpdated', 'Дата обновления');
-define('admPagesUpdatedAuto', 'Обновить дату изменения автоматически');
-define('admPagesOptions', 'Дополнительные опции');
-define('admPagesContent', 'Контент страницы');
+define('admPagesThisURL', 'URL СЌС‚РѕР№ СЃС‚СЂР°РЅРёС†С‹');
+define('admPagesID', 'ID СЃС‚СЂР°РЅРёС†С‹');
+define('admPagesName', 'РРјСЏ СЃС‚СЂР°РЅРёС†С‹');
+define('admPagesNameInvalid', 'РРјСЏ СЃС‚СЂР°РЅРёС†С‹ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј Рё РјРѕР¶РµС‚ СЃРѕСЃС‚РѕСЏС‚СЊ РёР· Р»Р°С‚РёРЅСЃРєРёС… Р±СѓРєРІ, С†РёС„СЂ Рё СЃРёРјРІРѕР»Р° РїРѕРґС‡РµСЂРєРёРІР°РЅРёСЏ.');
+define('admPagesTitle', 'Р—Р°РіРѕР»РѕРІРѕРє СЃС‚СЂР°РЅРёС†С‹');
+define('admPagesTitleInvalid', 'Р—Р°РіРѕР»РѕРІРѕРє СЃС‚СЂР°РЅРёС†С‹ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
+define('admPagesCaption', 'РќР°Р·РІР°РЅРёРµ РїСѓРЅРєС‚Р° РјРµРЅСЋ');
+define('admPagesCaptionInvalid', 'РџСѓРЅРєС‚ РјРµРЅСЋ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј');
+define('admPagesDescription', 'РћРїРёСЃР°РЅРёРµ');
+define('admPagesKeywords', 'РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°');
+define('admPagesHint', 'РџРѕРґСЃРєР°Р·РєР°');
+define('admPagesContentType', 'РўРёРї СЃС‚СЂР°РЅРёС†С‹');
+define('admPagesTemplate', 'РЁР°Р±Р»РѕРЅ');
+define('admPagesActive', 'РђРєС‚РёРІРЅР°');
+define('admPagesVisible', 'Р’РёРґРёРјР°СЏ');
+define('admPagesCreated', 'Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ');
+define('admPagesUpdated', 'Р”Р°С‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ');
+define('admPagesUpdatedAuto', 'РћР±РЅРѕРІРёС‚СЊ РґР°С‚Сѓ РёР·РјРµРЅРµРЅРёСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё');
+define('admPagesOptions', 'Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РѕРїС†РёРё');
+define('admPagesContent', 'РљРѕРЅС‚РµРЅС‚ СЃС‚СЂР°РЅРёС†С‹');
 
-define('admTemplList', 'Шаблон элемента списка разделов');
-define('admTemplListLabel', 'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
-define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок; <strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание; <strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.');
+define('admTemplList', 'РЁР°Р±Р»РѕРЅ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР° СЂР°Р·РґРµР»РѕРІ');
+define('admTemplListLabel', 'РЁР°Р±Р»РѕРЅ СЃРїРёСЃРєР° СЂР°Р·РґРµР»РѕРІ. РСЃРїРѕР»СЊР·СѓР№С‚Рµ РјР°РєСЂРѕСЃ $(items) РґР»СЏ РІСЃС‚Р°РІРєРё СЃРїРёСЃРєР°. Р”Р»СЏ РёР·РјРµРЅРµРЅРёСЏ РѕС„РѕСЂРјР»РµРЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР° СЃРѕР·РґР°Р№С‚Рµ РёР»Рё РёР·РјРµРЅРёС‚Рµ С€Р°Р±Р»РѕРЅ <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
+define('admTemplListItemLabel', 'РЁР°Р±Р»РѕРЅ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР° СЂР°Р·РґРµР»РѕРІ. РњР°РєСЂРѕСЃС‹ <strong>$(title)</strong> - Р·Р°РіРѕР»РѕРІРѕРє; <strong>$(caption)</strong> - РїСѓРЅРєС‚ РјРµРЅСЋ; <strong>$(description)</strong> - РѕРїРёСЃР°РЅРёРµ; <strong>$(hint)</strong> - РїРѕРґСЃРєР°Р·РєР°; <strong>$(link)</strong> - СЃСЃС‹Р»РєР°.');
 
-define('admTemplPageSelector', 'Шаблон переключателя страниц');
-define('admTemplPageSelectorLabel', 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol><li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li><li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон перехода к первой странице, $(href) - ссылка</li><li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>');
+define('admTemplPageSelector', 'РЁР°Р±Р»РѕРЅ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»СЏ СЃС‚СЂР°РЅРёС†');
+define('admTemplPageSelectorLabel', 'РЁР°Р±Р»РѕРЅ СЃРѕСЃС‚РѕРёС‚ РёР· 5-С… СЃРµРєС†РёР№, СЂР°Р·РґРµР»СЏРµРјС‹С… С‚СЂРѕР№РЅС‹Рј РґРµС„РёСЃРѕРј (---):<ol><li>РџРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ СЃС‚СЂР°РЅРёС†, РјР°РєСЂРѕСЃ $(pages) Р·Р°РґР°С‘С‚ РїРѕР»РѕР¶РµРЅРёРµ РіРµРЅРµСЂРёСЂСѓРµРјРѕРіРѕ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ.</li><li>РЁР°Р±Р»РѕРЅ РѕС‚РґРµР»СЊРЅРѕР№ СЃС‚СЂР°РЅРёС†С‹, $(number) - РЅРѕРјРµСЂ СЃС‚СЂР°РЅРёС†С‹, $(href) - СЃСЃС‹Р»РєР°</li><li>РЁР°Р±Р»РѕРЅ С‚РµРєСѓС‰РµР№ СЃС‚СЂР°РЅРёС†С‹, $(number) - РЅРѕРјРµСЂ СЃС‚СЂР°РЅРёС†С‹, $(href) - СЃСЃС‹Р»РєР°</li><li>РЁР°Р±Р»РѕРЅ РїРµСЂРµС…РѕРґР° Рє РїРµСЂРІРѕР№ СЃС‚СЂР°РЅРёС†Рµ, $(href) - СЃСЃС‹Р»РєР°</li><li>РЁР°Р±Р»РѕРЅ РїРµСЂРµС…РѕРґР° Рє РїРѕСЃР»РµРґРЅРµР№ СЃС‚СЂР°РЅРёС†Рµ, $(href) - СЃСЃС‹Р»РєР°</li></ol>');
 
 define('templPosted', '$(posted)');
 
-define('ERR_PLUGIN_NOT_AVAILABLE', 'Модуль расширения "%s" не установлен или отключен.');
+define('ERR_PLUGIN_NOT_AVAILABLE', 'РњРѕРґСѓР»СЊ СЂР°СЃС€РёСЂРµРЅРёСЏ "%s" РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РёР»Рё РѕС‚РєР»СЋС‡РµРЅ.');
