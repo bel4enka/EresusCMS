@@ -9,20 +9,20 @@
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 3 Р»РёР±Рѕ (РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ) СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹Р»Рё РїРѕР»СѓС‡РёС‚СЊ РєРѕРїРёСЋ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё
+ * GNU СЃ СЌС‚РѕР№ РїСЂРѕРіСЂР°РјРјРѕР№. Р•СЃР»Рё Р’С‹ РµРµ РЅРµ РїРѕР»СѓС‡РёР»Рё, СЃРјРѕС‚СЂРёС‚Рµ РґРѕРєСѓРјРµРЅС‚ РЅР°
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
@@ -36,14 +36,14 @@
 class TSettings
 {
 	/**
-	 * Минимальный требуемый уровнеь доступа
+	 * РњРёРЅРёРјР°Р»СЊРЅС‹Р№ С‚СЂРµР±СѓРµРјС‹Р№ СѓСЂРѕРІРЅРµСЊ РґРѕСЃС‚СѓРїР°
 	 * @var int
 	 */
 	private $access = ADMIN;
 
 	/**
-	 * Создаёт строку параметра для записи в файл
-	 * @param string $name     Имя параметра
+	 * РЎРѕР·РґР°С‘С‚ СЃС‚СЂРѕРєСѓ РїР°СЂР°РјРµС‚СЂР° РґР»СЏ Р·Р°РїРёСЃРё РІ С„Р°Р№Р»
+	 * @param string $name     РРјСЏ РїР°СЂР°РјРµС‚СЂР°
 	 * @param string $type
 	 * @param array  $options
 	 * @return string
@@ -93,7 +93,7 @@ class TSettings
 	//--------------------------------------------------------------------
 
 	/**
-	 * Записывает настройки
+	 * Р—Р°РїРёСЃС‹РІР°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё
 	 * @return void
 	 * @uses HTTP::goback
 	 */
@@ -126,7 +126,7 @@ class TSettings
 	//--------------------------------------------------------------------
 
 	/**
-	 * Возвращает HTML-код раздела
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ HTML-РєРѕРґ СЂР°Р·РґРµР»Р°
 	 * @return string  HTML
 	 * @uses EresusForm
 	 * @uses Templates
@@ -137,25 +137,25 @@ class TSettings
 
 		$template = $page->getUITheme()->getResource('SiteSettings/form.html');
 		$form = new EresusForm($template, LOCALE_CHARSET);
-		/* Основные */
+		/* РћСЃРЅРѕРІРЅС‹Рµ */
 		$form->setValue('siteName', option('siteName'));
 		$form->setValue('siteTitle', option('siteTitle'));
 		$form->setValue('siteTitleReverse', option('siteTitleReverse'));
 		$form->setValue('siteTitleDivider', option('siteTitleDivider'));
 		$form->setValue('siteKeywords', option('siteKeywords'));
 		$form->setValue('siteDescription', option('siteDescription'));
-		/* Почта */
+		/* РџРѕС‡С‚Р° */
 		$form->setValue('mailFromAddr', option('mailFromAddr'));
 		$form->setValue('mailFromName', option('mailFromName'));
 		$form->setValue('mailFromOrg', option('mailFromOrg'));
 		$form->setValue('mailReplyTo', option('mailReplyTo'));
 		$form->setValue('mailFromSign', option('mailFromSign'));
-		/* Файлы */
+		/* Р¤Р°Р№Р»С‹ */
 		$form->setValue('filesModeSetOnUpload', option('filesModeSetOnUpload'));
 		$form->setValue('filesModeDefault', option('filesModeDefault'));
 		$form->setValue('filesTranslitNames', option('filesTranslitNames'));
 
-		/* Создаем список типов контента */
+		/* РЎРѕР·РґР°РµРј СЃРїРёСЃРѕРє С‚РёРїРѕРІ РєРѕРЅС‚РµРЅС‚Р° */
 		$contentTypes = array(
 			array('name' => 'default','caption' => admPagesContentDefault),
 			array('name' => 'list','caption' => admPagesContentList),
@@ -173,7 +173,7 @@ class TSettings
 		$form->setValue('contentTypes', $contentTypes);
 		$form->setValue('contentTypeDefault', option('contentTypeDefault'));
 
-		/* Загружаем список шаблонов */
+		/* Р—Р°РіСЂСѓР¶Р°РµРј СЃРїРёСЃРѕРє С€Р°Р±Р»РѕРЅРѕРІ */
 		useLib('templates');
 		$templates = new Templates();
 		$list = $templates->enum();
@@ -190,7 +190,7 @@ class TSettings
 	//--------------------------------------------------------------------
 
 	/**
-	 * Отрисовка контента
+	 * РћС‚СЂРёСЃРѕРІРєР° РєРѕРЅС‚РµРЅС‚Р°
 	 * @return string
 	 * @uses HTTP::request
 	 */

@@ -9,20 +9,20 @@
  * @license ${license.uri} ${license.name}
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 3 Р»РёР±Рѕ (РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ) СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹Р»Рё РїРѕР»СѓС‡РёС‚СЊ РєРѕРїРёСЋ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё
+ * GNU СЃ СЌС‚РѕР№ РїСЂРѕРіСЂР°РјРјРѕР№. Р•СЃР»Рё Р’С‹ РµРµ РЅРµ РїРѕР»СѓС‡РёР»Рё, СЃРјРѕС‚СЂРёС‚Рµ РґРѕРєСѓРјРµРЅС‚ РЅР°
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
@@ -31,7 +31,7 @@
  */
 
 /**
- * HTML-форма
+ * HTML-С„РѕСЂРјР°
  *
  * @package Eresus
  */
@@ -42,14 +42,14 @@ class Form
 	var $hidden = '';
 	var $onsubmit = '';
 	var $validator = '';
-	var $file = false;    # Признок наличия полей типа file
-	var $html = false;    # Признак наличия WYSIWYG редакторов
+	var $file = false;    # РџСЂРёР·РЅРѕРє РЅР°Р»РёС‡РёСЏ РїРѕР»РµР№ С‚РёРїР° file
+	var $html = false;    # РџСЂРёР·РЅР°Рє РЅР°Р»РёС‡РёСЏ WYSIWYG СЂРµРґР°РєС‚РѕСЂРѕРІ
 	var $options = array();
 	/**
-	* Конструктор
+	* РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 	*
-	* @param  array  $form    Описание формы
-	* @param  array  $values  Значения полей по умолчанию (необязательно)
+	* @param  array  $form    РћРїРёСЃР°РЅРёРµ С„РѕСЂРјС‹
+	* @param  array  $values  Р—РЅР°С‡РµРЅРёСЏ РїРѕР»РµР№ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)
 	*/
 	function __construct($form, $values=array())
 	{
@@ -58,20 +58,20 @@ class Form
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Подготоваливает поле формы для дальнейшей обработки
+	* РџРѕРґРіРѕС‚РѕРІР°Р»РёРІР°РµС‚ РїРѕР»Рµ С„РѕСЂРјС‹ РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РѕР±СЂР°Р±РѕС‚РєРё
 	*
 	* @access  private
 	*
-	* @param  &array  $item  Описание поле
+	* @param  &array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»Рµ
 	*/
 	function field_prep(&$item)
 	{
 		$item['type'] = strtolower($item['type']);
-		# Метка
+		# РњРµС‚РєР°
 		if (!isset($item['label'])) $item['label'] = '';
-		# Подсказка
+		# РџРѕРґСЃРєР°Р·РєР°
 		if (isset($item['hint'])) $item['label'] = '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>';
-		# Маска значения
+		# РњР°СЃРєР° Р·РЅР°С‡РµРЅРёСЏ
 		if (isset($item['pattern']) && isset($item['name']))
 			$this->validator .= "
 				if (!form.".$item['name'].".value.match(".$item['pattern'].")) {
@@ -79,7 +79,7 @@ class Form
 					result = false;
 					form.".$item['name'].".select();
 				} else ";
-		# Значение
+		# Р—РЅР°С‡РµРЅРёРµ
 		$item['value'] = isset($item['value']) ? $item['value']
 			: (isset($item['name']) && isset($this->values[$item['name']]) ? $this->values[$item['name']]
 			: (isset($item['default']) ? $item['default']
@@ -87,26 +87,26 @@ class Form
 		);
 		# ID
 		if (!isset($item['id'])) $item['id'] = '';
-		# Элемент отключен
+		# Р­Р»РµРјРµРЅС‚ РѕС‚РєР»СЋС‡РµРЅ
 		if (!isset($item['disabled'])) $item['disabled'] = '';
-		# Комментарий
+		# РљРѕРјРјРµРЅС‚Р°СЂРёР№
 		$item['comment'] = isset($item['comment']) ? ' '.$item['comment'] : '';
-		# Стили
+		# РЎС‚РёР»Рё
 		$item['style'] = isset($item['style']) ? explode(';', $item['style']) : array();
-		# Классы
+		# РљР»Р°СЃСЃС‹
 		$item['class'] = isset($item['class']) ? explode(' ', $item['class']) : array();
-		# Дополнительно
+		# Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ
 		if (!isset($item['extra'])) $item['extra'] = '';
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Отрисовывает атрибуты элемента
+	* РћС‚СЂРёСЃРѕРІС‹РІР°РµС‚ Р°С‚СЂРёР±СѓС‚С‹ СЌР»РµРјРµРЅС‚Р°
 	*
 	* @access  private
 	*
-	* @param  array  $item  Элемент
+	* @param  array  $item  Р­Р»РµРјРµРЅС‚
 	*
-	* @return  string  Отрисованные атрибуты
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅС‹Рµ Р°С‚СЂРёР±СѓС‚С‹
 	*/
 	function attrs($item)
 	{
@@ -114,22 +114,22 @@ class Form
 		if ($item['id']) $result .= ' id="'.$item['id'].'"';
 		if ($item['disabled']) $result .= ' disabled="disabled"';
 		if (count($item['class'])) $result .= ' class="'.implode(' ', $item['class']).'"';
-		# Ширина
+		# РЁРёСЂРёРЅР°
 		if (isset($item['width'])) $item['style'][] = 'width: '.$item['width'];
-		# Стили
+		# РЎС‚РёР»Рё
 		if (count($item['style'])) $result .= ' style="'.implode(';', $item['style']).'"';
 		$result .= ' '.$item['extra'];
 		return $result;
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Раделитель
+	* Р Р°РґРµР»РёС‚РµР»СЊ
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_divider($item)
 	{
@@ -138,13 +138,13 @@ class Form
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Текст
+	* РўРµРєСЃС‚
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_text($item)
 	{
@@ -153,13 +153,13 @@ class Form
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Подзаголовок
+	* РџРѕРґР·Р°РіРѕР»РѕРІРѕРє
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_header($item)
 	{
@@ -172,9 +172,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_hidden($item)
 	{
@@ -188,9 +188,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_edit($item)
 	{
@@ -204,9 +204,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_password($item)
 	{
@@ -221,9 +221,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_checkbox($item)
 	{
@@ -237,9 +237,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_select($item)
 	{
@@ -259,9 +259,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_listbox($item)
 	{
@@ -281,9 +281,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_memo($item)
 	{
@@ -312,9 +312,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_html($item)
 	{
@@ -338,9 +338,9 @@ class Form
 	*
 	* @access  protected
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_file($item)
 	{
@@ -355,9 +355,9 @@ class Form
 	*
 	* @access  private
 	*
-	* @param  array  $item  Описание поля
+	* @param  array  $item  РћРїРёСЃР°РЅРёРµ РїРѕР»СЏ
 	*
-	* @return  string  Отрисованное поле
+	* @return  string  РћС‚СЂРёСЃРѕРІР°РЅРЅРѕРµ РїРѕР»Рµ
 	*/
 	function render_image($item)
 	{
@@ -369,23 +369,23 @@ class Form
 	}
 	//------------------------------------------------------------------------------
 	/**
-	* Создание HTML-кода
+	* РЎРѕР·РґР°РЅРёРµ HTML-РєРѕРґР°
 	*
 	* @access  public
 	*
-	* @return  string  HTML-код формы
+	* @return  string  HTML-РєРѕРґ С„РѕСЂРјС‹
 	*/
 	function render()
 	{
 		global $page;
 
-		$result = '';     # Выходной код
-		$hidden = '';     # Скрытые поля???
-		$body = '';       # Тело таблицы-формы
+		$result = '';     # Р’С‹С…РѕРґРЅРѕР№ РєРѕРґ
+		$hidden = '';     # РЎРєСЂС‹С‚С‹Рµ РїРѕР»СЏ???
+		$body = '';       # РўРµР»Рѕ С‚Р°Р±Р»РёС†С‹-С„РѕСЂРјС‹
 
 		if (empty($this->form['name'])) $result .= ErrorBox(errFormHasNoName);
 		if (count($this->form['fields'])) foreach($this->form['fields'] as $item) {
-			# Проверяем права доступа к элементу
+			# РџСЂРѕРІРµСЂСЏРµРј РїСЂР°РІР° РґРѕСЃС‚СѓРїР° Рє СЌР»РµРјРµРЅС‚Сѓ
 			if ((!isset($item['access'])) || (UserRights($item['access']))) {
 				$this->field_prep($item);
 				$control = 'render_'.$item['type'];
@@ -409,7 +409,7 @@ class Form
 				}
 			");
 		}
-		# FIXME: sub_id - устаревший элемент
+		# FIXME: sub_id - СѓСЃС‚Р°СЂРµРІС€РёР№ СЌР»РµРјРµРЅС‚
 		$referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
 		$this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
 		$this->hidden = "\t<div class=\"hidden\">\n\t\t{$this->hidden}\n\t</div>";
@@ -442,14 +442,14 @@ class Form
 }
 
 /**
-* Отрисовывает форму на основе массива
+* РћС‚СЂРёСЃРѕРІС‹РІР°РµС‚ С„РѕСЂРјСѓ РЅР° РѕСЃРЅРѕРІРµ РјР°СЃСЃРёРІР°
 *
 * @access  public
 *
-* @param  array  $form    Описание формы
-* @param  array  $values  Значения полей по умолчанию (необязательно)
+* @param  array  $form    РћРїРёСЃР°РЅРёРµ С„РѕСЂРјС‹
+* @param  array  $values  Р—РЅР°С‡РµРЅРёСЏ РїРѕР»РµР№ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)
 *
-* @return  string  HTML-код формы
+* @return  string  HTML-РєРѕРґ С„РѕСЂРјС‹
 */
 function form($form, $values=array())
 {
