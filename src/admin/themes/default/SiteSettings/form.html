@@ -3,10 +3,10 @@
 		<fc:tabwidget id="settingsFormTabs">
 
 			<fc:tabcontrol>
-				<fc:tab name="main">Основные</fc:tab>
-				<fc:tab name="mail">Почта</fc:tab>
-				<fc:tab name="files">Файлы</fc:tab>
-				<fc:tab name="other">Прочее</fc:tab>
+				<fc:tab name="main">РћСЃРЅРѕРІРЅС‹Рµ</fc:tab>
+				<fc:tab name="mail">РџРѕС‡С‚Р°</fc:tab>
+				<fc:tab name="files">Р¤Р°Р№Р»С‹</fc:tab>
+				<fc:tab name="other">РџСЂРѕС‡РµРµ</fc:tab>
 			</fc:tabcontrol>
 
 			<fc:tabs>
@@ -15,83 +15,83 @@
 					<table class="ui-grid ui-hlines">
 						<tr>
 							<td>
-								<label for="settigs-siteName">Название сайта</label><br />
+								<label for="settigs-siteName">РќР°Р·РІР°РЅРёРµ СЃР°Р№С‚Р°</label><br />
 								<input type="text" name="siteName" value="{$siteName|escape}" size="20"
-									id="settigs-siteName" tabindex="1" fc:required="Укажите название сайта" />
+									id="settigs-siteName" tabindex="1" fc:required="РЈРєР°Р¶РёС‚Рµ РЅР°Р·РІР°РЅРёРµ СЃР°Р№С‚Р°" />
 							</td>
 							<td class="ui-minor">
-								Предназначено только для внутреннего использования, и не будет отображаться нигде,
-								кроме панели управления. Желательно чтобы название сайта было коротким.
+								РџСЂРµРґРЅР°Р·РЅР°С‡РµРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РІРЅСѓС‚СЂРµРЅРЅРµРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ, Рё РЅРµ Р±СѓРґРµС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РЅРёРіРґРµ,
+								РєСЂРѕРјРµ РїР°РЅРµР»Рё СѓРїСЂР°РІР»РµРЅРёСЏ. Р–РµР»Р°С‚РµР»СЊРЅРѕ С‡С‚РѕР±С‹ РЅР°Р·РІР°РЅРёРµ СЃР°Р№С‚Р° Р±С‹Р»Рѕ РєРѕСЂРѕС‚РєРёРј.
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label>Заголовок сайта</label><br />
+								<label>Р—Р°РіРѕР»РѕРІРѕРє СЃР°Р№С‚Р°</label><br />
 								<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle|escape}</textarea>
 							</td>
 							<td class="ui-minor">
-								Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
-								текст подставлялся в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
-								<a href="admin.php?mod=themes">шаблоны страниц</a>.
+								РўРµРєСЃС‚ РґР»СЏ С‚РµРіР° &lt;title&gt;, РѕР±С‰РёР№ РґР»СЏ РІСЃРµС… СЃС‚СЂР°РЅРёС†. <em>Р’РЅРёРјР°РЅРёРµ!</em> Р§С‚РѕР±С‹ СЌС‚РѕС‚
+								С‚РµРєСЃС‚ РїРѕРґСЃС‚Р°РІР»СЏР»СЃСЏ РІ Р·Р°РіРѕР»РѕРІРѕРє, РЅР°РґРѕ РІСЃС‚Р°РІРёС‚СЊ РјР°РєСЂРѕСЃ <b>$(siteTitle)</b> РІ РЅСѓР¶РЅС‹Рµ
+								<a href="admin.php?mod=themes">С€Р°Р±Р»РѕРЅС‹ СЃС‚СЂР°РЅРёС†</a>.
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label>
 									<input type="checkbox" name="siteTitleReverse" value="1"{if $siteTitleReverse} checked="checked"{/if} tabindex="3" />
-									Обратный порядок разделов в $(sectionTitle)
+									РћР±СЂР°С‚РЅС‹Р№ РїРѕСЂСЏРґРѕРє СЂР°Р·РґРµР»РѕРІ РІ $(sectionTitle)
 								</label>
 								<div class="ui-minor">
-									<em>Пример:</em> <span id="settings-siteTitleReverse-example">
-										<span class="checked"{if !$siteTitleReverse} style="display: none;"{/if}>Главная - Категория - Товар</span>
-										<span class="unchecked"{if $siteTitleReverse} style="display: none;"{/if}>Товар - Категория - Главная</span>
+									<em>РџСЂРёРјРµСЂ:</em> <span id="settings-siteTitleReverse-example">
+										<span class="checked"{if !$siteTitleReverse} style="display: none;"{/if}>Р“Р»Р°РІРЅР°СЏ - РљР°С‚РµРіРѕСЂРёСЏ - РўРѕРІР°СЂ</span>
+										<span class="unchecked"{if $siteTitleReverse} style="display: none;"{/if}>РўРѕРІР°СЂ - РљР°С‚РµРіРѕСЂРёСЏ - Р“Р»Р°РІРЅР°СЏ</span>
 									</span>
 								</div>
 							</td>
 							<td class="ui-minor">
-								Макрос <b>$(sectionTitle)</b> заменяется на название открытой страницы и списка всех
-								родительских страниц. Этот переключатель определяет в каком порядке будут выводиться
-								их названия: от открытой страницы к корню (по умолчанию) или наоборот.
+								РњР°РєСЂРѕСЃ <b>$(sectionTitle)</b> Р·Р°РјРµРЅСЏРµС‚СЃСЏ РЅР° РЅР°Р·РІР°РЅРёРµ РѕС‚РєСЂС‹С‚РѕР№ СЃС‚СЂР°РЅРёС†С‹ Рё СЃРїРёСЃРєР° РІСЃРµС…
+								СЂРѕРґРёС‚РµР»СЊСЃРєРёС… СЃС‚СЂР°РЅРёС†. Р­С‚РѕС‚ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РєР°РєРѕРј РїРѕСЂСЏРґРєРµ Р±СѓРґСѓС‚ РІС‹РІРѕРґРёС‚СЊСЃСЏ
+								РёС… РЅР°Р·РІР°РЅРёСЏ: РѕС‚ РѕС‚РєСЂС‹С‚РѕР№ СЃС‚СЂР°РЅРёС†С‹ Рє РєРѕСЂРЅСЋ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ) РёР»Рё РЅР°РѕР±РѕСЂРѕС‚.
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label>Разделитель названий разделов в $(sectionTitle):</label><br />
+								<label>Р Р°Р·РґРµР»РёС‚РµР»СЊ РЅР°Р·РІР°РЅРёР№ СЂР°Р·РґРµР»РѕРІ РІ $(sectionTitle):</label><br />
 								<div class="nowrap">
 									<input type="text" name="siteTitleDivider" value="{$siteTitleDivider|escape}"
 										size="4" tabindex="4" />
 									<span class="ui-minor">
-										<em>Пример:</em> <span id="settings-siteTitleDivider-example">
-											Товар<span>{$siteTitleDivider}</span>Категория<span>{$siteTitleDivider}</span>Каталог
+										<em>РџСЂРёРјРµСЂ:</em> <span id="settings-siteTitleDivider-example">
+											РўРѕРІР°СЂ<span>{$siteTitleDivider}</span>РљР°С‚РµРіРѕСЂРёСЏ<span>{$siteTitleDivider}</span>РљР°С‚Р°Р»РѕРі
 										</span>
 									</span>
 								</div>
 							</td>
 							<td class="ui-minor">
-								Этот разделитель используется для объединения названий разделов в макросе
+								Р­С‚РѕС‚ СЂР°Р·РґРµР»РёС‚РµР»СЊ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РѕР±СЉРµРґРёРЅРµРЅРёСЏ РЅР°Р·РІР°РЅРёР№ СЂР°Р·РґРµР»РѕРІ РІ РјР°РєСЂРѕСЃРµ
 								<b>$(sectionTitle)</b>.
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label>Ключевые слова</label><br />
+								<label>РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°</label><br />
 								<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords|escape}</textarea>
 							</td>
 							<td class="ui-minor">
-								Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
-								Чтобы эти слова подставлялись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
-								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+								РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° РґР»СЏ РјРµС‚Р°-С‚РµРіР° <b>keywords</b>, РѕР±С‰РµРіРѕ РґР»СЏ РІСЃРµС… СЃС‚СЂР°РЅРёС†. <em>Р’РЅРёРјР°РЅРёРµ!</em>
+								Р§С‚РѕР±С‹ СЌС‚Рё СЃР»РѕРІР° РїРѕРґСЃС‚Р°РІР»СЏР»РёСЃСЊ РІ РјРµС‚Р°-С‚РµРі, РЅР°РґРѕ РІСЃС‚Р°РІРёС‚СЊ РјР°РєСЂРѕСЃ <b>$(siteKeywords)</b>
+								РІ РЅСѓР¶РЅС‹Рµ <a href="admin.php?mod=themes">С€Р°Р±Р»РѕРЅС‹ СЃС‚СЂР°РЅРёС†</a>.
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label>Описание</label><br />
+								<label>РћРїРёСЃР°РЅРёРµ</label><br />
 								<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription|escape}</textarea>
 							</td>
 							<td class="ui-minor">
-								Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
-								Чтобы этот текст подставлялся в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
-								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+								РўРµРєСЃС‚ РґР»СЏ РјРµС‚Р°-С‚РµРіР° <b>description</b>, РѕР±С‰РµРіРѕ РґР»СЏ РІСЃРµС… СЃС‚СЂР°РЅРёС†. <em>Р’РЅРёРјР°РЅРёРµ!</em>
+								Р§С‚РѕР±С‹ СЌС‚РѕС‚ С‚РµРєСЃС‚ РїРѕРґСЃС‚Р°РІР»СЏР»СЃСЏ РІ РјРµС‚Р°-С‚РµРі, РЅР°РґРѕ РІСЃС‚Р°РІРёС‚СЊ РјР°РєСЂРѕСЃ <b>$(siteDescription)</b>
+								РІ РЅСѓР¶РЅС‹Рµ <a href="admin.php?mod=themes">С€Р°Р±Р»РѕРЅС‹ СЃС‚СЂР°РЅРёС†</a>.
 							</td>
 						</tr>
 					</table>
@@ -99,39 +99,39 @@
 
 				<fc:tab name="mail">
 					<fieldset>
-						<legend>Параметры писем, отсылаемых с сайта</legend>
+						<legend>РџР°СЂР°РјРµС‚СЂС‹ РїРёСЃРµРј, РѕС‚СЃС‹Р»Р°РµРјС‹С… СЃ СЃР°Р№С‚Р°</legend>
 						<table>
 							<tr>
 								<td>
-									<label for="settings-mailFromAddr">Адрес отправителя</label><br />
+									<label for="settings-mailFromAddr">РђРґСЂРµСЃ РѕС‚РїСЂР°РІРёС‚РµР»СЏ</label><br />
 									<input type="text" name="mailFromAddr" value="{$mailFromAddr|escape}" size="20"
 										id="settings-mailFromAddr" tabindex="2" />
-									<div class="ui-minor nowrap">Пример: <em>robot@example.org</em></div>
+									<div class="ui-minor nowrap">РџСЂРёРјРµСЂ: <em>robot@example.org</em></div>
 								</td>
 								<td>
-									<label>Имя отправителя</label><br />
+									<label>РРјСЏ РѕС‚РїСЂР°РІРёС‚РµР»СЏ</label><br />
 									<input type="text" name="mailFromName" value="{$mailFromName|escape}" size="20" tabindex="3" />
-									<div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
+									<div class="ui-minor nowrap">РџСЂРёРјРµСЂ: <em>РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ</em></div>
 								</td>
 								<td style="width: 80%">
-									<label>Организация</label><br />
+									<label>РћСЂРіР°РЅРёР·Р°С†РёСЏ</label><br />
 									<input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="20" tabindex="4" />
-									<div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
+									<div class="ui-minor nowrap">РџСЂРёРјРµСЂ: <em>Р РѕРіР° Рё РєРѕРїС‹С‚Р°</em></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<label>Обратный адрес</label><br />
+									<label>РћР±СЂР°С‚РЅС‹Р№ Р°РґСЂРµСЃ</label><br />
 									<input type="text" name="mailReplyTo" value="{$mailReplyTo|escape}" size="20" tabindex="5" />
 								</td>
 								<td class="ui-minor" colspan="2">
 									<br/>
-									Вы можете указать адрес для ответа, отличный от адреса отправителя.
+									Р’С‹ РјРѕР¶РµС‚Рµ СѓРєР°Р·Р°С‚СЊ Р°РґСЂРµСЃ РґР»СЏ РѕС‚РІРµС‚Р°, РѕС‚Р»РёС‡РЅС‹Р№ РѕС‚ Р°РґСЂРµСЃР° РѕС‚РїСЂР°РІРёС‚РµР»СЏ.
 								</td>
 							</tr>
 							<tr>
 								<td colspan="3">
-									<label>Подпись, добавляемая к тексту письма</label><br />
+									<label>РџРѕРґРїРёСЃСЊ, РґРѕР±Р°РІР»СЏРµРјР°СЏ Рє С‚РµРєСЃС‚Сѓ РїРёСЃСЊРјР°</label><br />
 									<textarea name="mailFromSign" cols="60" rows="4" tabindex="6">{$mailFromSign}</textarea>
 								</td>
 							</tr>
@@ -141,13 +141,13 @@
 
 				<fc:tab name="files">
 					<fieldset>
-						<legend>Загрузка файлов на сайт</legend>
+						<legend>Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»РѕРІ РЅР° СЃР°Р№С‚</legend>
 						<table>
 							<tr>
 								<td>
 									<label>
 										<input type="checkbox" name="filesModeSetOnUpload" value="1"{if $filesModeSetOnUpload} checked="checked"{/if} />
-										Устанавливать на загружаемые файлы права:
+										РЈСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ РЅР° Р·Р°РіСЂСѓР¶Р°РµРјС‹Рµ С„Р°Р№Р»С‹ РїСЂР°РІР°:
 									</label><br />
 								</td>
 								<td>
@@ -162,7 +162,7 @@
 					<table class="ui-grid ui-hlines">
 						<tr>
 							<td>
-								<label>Тип раздела по умолчанию</label><br />
+								<label>РўРёРї СЂР°Р·РґРµР»Р° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ</label><br />
 								<select name="contentTypeDefault">
 									{foreach $contentTypes item}
 									<option value="{$item.name}"{if $contentTypeDefault == $item.name} selected="selected"{/if}>{$item.caption}</option>
@@ -171,12 +171,12 @@
 							</td>
 							<td class="ui-minor">
 								<br />
-								Будет использован для вновь создаваемых разделов.
+								Р‘СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅ РґР»СЏ РІРЅРѕРІСЊ СЃРѕР·РґР°РІР°РµРјС‹С… СЂР°Р·РґРµР»РѕРІ.
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label>Шаблон по умолчанию</label><br />
+								<label>РЁР°Р±Р»РѕРЅ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ</label><br />
 								<select name="pageTemplateDefault">
 									{foreach $templates item}
 									<option value="{$item.name}"{if $pageTemplateDefault == $item.name} selected="selected"{/if}>{$item.caption}</option>
@@ -185,7 +185,7 @@
 							</td>
 							<td class="ui-minor">
 								<br />
-								Будет использован для вновь создаваемых разделов.
+								Р‘СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅ РґР»СЏ РІРЅРѕРІСЊ СЃРѕР·РґР°РІР°РµРјС‹С… СЂР°Р·РґРµР»РѕРІ.
 							</td>
 						</tr>
 					</table>
@@ -198,7 +198,7 @@
 	</div>
 
 	<div class="ui-button-box">
-		<button type="submit">Сохранить</button>
+		<button type="submit">РЎРѕС…СЂР°РЅРёС‚СЊ</button>
 	</div>
 	
 	<script type="text/javascript">//<![CDATA[
