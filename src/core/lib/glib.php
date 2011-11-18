@@ -47,7 +47,8 @@ function imageCreateFromFile($filename)
 		case IMG_WBMP: $result = imageCreateFromWBMP($filename); break;
 		case IMG_XPM:  $result = imageCreateFromXPM($filename); break;
 		default:
-			switch(substr($type['mime'], 6)) {
+			switch (substr($type['mime'], 6))
+			{
 				case 'gif':  $result = imageCreateFromGIF($filename); break;
 				case 'jpeg': $result = imageCreateFromJPEG($filename); break;
 				case 'png':  $result = imageCreateFromPNG($filename); break;

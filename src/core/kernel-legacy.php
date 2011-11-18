@@ -289,7 +289,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	{
 		$sender .= ' (=?'.$charset.'?B?'.base64_encode($fromOrg).'?=)';
 	}
-	if (strpos($sender, '@') === false)
+	if (mb_strpos($sender, '@') === false)
 	{
 		$sender = 'no-reply@'.preg_replace('/^www\./', '', httpHost);
 	}
@@ -397,7 +397,7 @@ function FormatDate($date, $format = DATETIME_NORMAL)
 		for ($i = 0; $i<count($m[0]); $i++)
 		{
 			$format = substr_replace($format, $repl[$m[0][$i][0]], $m[0][$i][1]+$delta, 1);
-			$delta += strlen($repl[$m[0][$i][0]]) - 1;
+			$delta += mb_strlen($repl[$m[0][$i][0]]) - 1;
 		}
 		$result = $format;
 	}
@@ -1044,8 +1044,9 @@ function __clearargs($args)
 							if (!preg_match('/alt=/i', $images[$i][0]))
 							{
 								$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
-								$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
-								$delta += strlen($s) - strlen($images[$i][0]);
+								$value = substr_replace($value, $s, $images[$i][1]+$delta,
+									mb_strlen($images[$i][0]));
+								$delta += mb_strlen($s) - mb_strlen($images[$i][0]);
 							}
 						}
 					}

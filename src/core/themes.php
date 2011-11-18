@@ -500,7 +500,7 @@ class TThemes
 		preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
 		$item['description'] = trim($item['description'][1]);
 		$item['filename'] = substr($item['filename'], 0, strrpos($item['filename'], '.'));
-		$item['html'] = trim(substr($item['html'], strpos($item['html'], "\n")));
+		$item['html'] = trim(mb_substr($item['html'], mb_strpos($item['html'], "\n")));
 		$form = array(
 			'name' => 'editForm',
 			'caption' => $page->title.admTDiv.admEdit,

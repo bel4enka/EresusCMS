@@ -114,6 +114,9 @@ class Eresus_Kernel
 			return;
 		}
 
+		// Устанавливаем кодировку по умолчанию для опрераций mb_*
+		mb_internal_encoding('utf-8');
+
 		/* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
 		@$timezone = date_default_timezone_get();
 		date_default_timezone_set($timezone);

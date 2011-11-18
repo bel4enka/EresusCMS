@@ -53,9 +53,9 @@ class Templates
 		$list = glob("$dir*.html");
 		if ($list) foreach($list as $filename) {
 			$file = file_get_contents($filename);
-			$title = trim(substr($file, 0, strpos($file, "\n")));
+			$title = trim(mb_substr($file, 0, mb_strpos($file, "\n")));
 			if (preg_match('/^<!-- (.+) -->/', $title, $title)) {
-				$file = trim(substr($file, strpos($file, "\n")));
+				$file = trim(mb_substr($file, mb_strpos($file, "\n")));
 				$title = $title[1];
 			} else $title = admNoTitle;
 			$result[basename($filename, '.html')] = $title;
@@ -86,10 +86,13 @@ class Templates
 				$result = array(
 					'name' => $name,
 					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : admNA,
-					'code' => $desc ? trim(substr($result, strpos($result, "\n"))) : $result,
+					'code' => $desc ? trim(mb_substr($result, mb_strpos($result, "\n"))) : $result,
 				);
 			} else {
-				if (preg_match($this->pattern, $result)) $result = trim(substr($result, strpos($result, "\n")));
+				if (preg_match($this->pattern, $result))
+				{
+					$result = trim(mb_substr($result, mb_strpos($result, "\n")));
+				}
 			}
 		} else {
 			if (empty($type) && $name != 'default') $result = $this->get('default', $type);

@@ -803,13 +803,13 @@ class TAdminUI extends WebPage
 									$value = is_null($value)?strNo:strYes;
 								break;
 								case 'length':
-									$value = strlen($value);
+									$value = mb_strlen($value);
 								break;
 							}
 						}
-						if (isset($column['maxlength']) && (strlen($value) > $column['maxlength']))
+						if (isset($column['maxlength']) && (mb_strlen($value) > $column['maxlength']))
 						{
-							$value = substr($value, 0, $column['maxlength']).'...';
+							$value = mb_substr($value, 0, $column['maxlength']).'...';
 						}
 						$style = '';
 						if (isset($column['align']))
@@ -863,12 +863,6 @@ class TAdminUI extends WebPage
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$req = HTTP::request();
-		if (strpos($req->getLocal(), '/admin/fm/') === 0)
-		{
-			$fm = new AdminFileManager();
-			return $fm->renderUI();
-		}
-
 		$result = '';
 		if (arg('mod'))
 		{

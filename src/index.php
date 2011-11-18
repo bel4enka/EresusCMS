@@ -74,8 +74,8 @@ if (is_file('install.php'))
 }
 else
 {
-	$fileName = 'core/main.php'; // TODO Заменить на CMS.php
-	$appName = 'EresusCMS'; // TODO Заменить на Eresus_CMS
+	$fileName = 'core/CMS.php';
+	$appName = 'Eresus_CMS';
 }
 
 

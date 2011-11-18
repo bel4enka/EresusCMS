@@ -35,7 +35,7 @@
  *
  * @package Eresus
  */
-class EresusCMS extends EresusApplication
+class Eresus_CMS extends EresusApplication
 {
 
 	/**
