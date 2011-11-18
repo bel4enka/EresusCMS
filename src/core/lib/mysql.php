@@ -90,8 +90,6 @@ class MySQL
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$dsn = "mysql://$username:$password@$server/$source";
-		if (defined('LOCALE_CHARSET'))
-			$dsn .= '?charset=' . LOCALE_CHARSET;
 
 		try
 		{
