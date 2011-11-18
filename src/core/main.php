@@ -5,9 +5,7 @@
  * Главный модуль
  *
  * @version ${product.version}
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
