@@ -1,15 +1,15 @@
 <?php
-  define('siteName', 'Íîâûé ñàéò');
-  define('siteTitle', 'Íîâûé ñàéò');
+  define('siteName', 'ÐÐ¾Ð²Ñ‹Ð¹ ÑÐ°Ð¹Ñ‚');
+  define('siteTitle', 'ÐÐ¾Ð²Ñ‹Ð¹ ÑÐ°Ð¹Ñ‚');
   define('siteTitleReverse', true);
   define('siteTitleDivider', ' - ');
-  define('siteKeywords', 'êëþ÷åâûå ñëîâà');
-  define('siteDescription', 'îïèñàíèå');
+  define('siteKeywords', 'ÐºÐ»ÑŽÑ‡ÐµÐ²Ñ‹Ðµ ÑÐ»Ð¾Ð²Ð°');
+  define('siteDescription', 'Ð¾Ð¿Ð¸ÑÐ°Ð½Ð¸Ðµ');
   define('mailFromAddr', 'me@example.org');
-  define('mailFromName', 'Èìÿ');
-  define('mailFromOrg', 'Êîìïàíèÿ');
+  define('mailFromName', 'Ð˜Ð¼Ñ');
+  define('mailFromOrg', 'ÐšÐ¾Ð¼Ð¿Ð°Ð½Ð¸Ñ');
   define('mailReplyTo', 'reply-to@example.com');
-  define('mailFromSign', "Ñèñòåìà óïðàâëåíèÿ ñàéòîì.");
+  define('mailFromSign', "Ð¡Ð¸ÑÑ‚ÐµÐ¼Ð° ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ ÑÐ°Ð¹Ñ‚Ð¾Ð¼.");
   define('filesModeSetOnUpload', true);
   define('filesModeDefault', '0666');
   define('filesTranslitNames', true);

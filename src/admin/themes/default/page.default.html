@@ -2,7 +2,7 @@
 
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>{$siteName} - {$page->title}</title>
 	<link rel="StyleSheet" href="{$siteRoot}/admin/themes/default/theme.css" type="text/css">
 	<link rel="StyleSheet" href="{$siteRoot}/admin/themes/default/main.css" type="text/css">
@@ -12,7 +12,7 @@
 		};
 	//]]></script>
 	{jslib jquery ui cookie}
-	{* renderHeadSection надо обязательно вызывать после всех jslib *}
+	{* renderHeadSection РЅР°РґРѕ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РІС‹Р·С‹РІР°С‚СЊ РїРѕСЃР»Рµ РІСЃРµС… jslib *}
 	{$page->renderHeadSection()}
 </head>
 <body>
@@ -66,14 +66,14 @@
 		<div id="content">
 			<noscript>
 				<div class="ui-state-error box">
-					В вашем браузере не работает JavaScript. Без JavaScript работа с панелью управления
-					сайтом невозможна, и может привести к потере информации!
+					Р’ РІР°С€РµРј Р±СЂР°СѓР·РµСЂРµ РЅРµ СЂР°Р±РѕС‚Р°РµС‚ JavaScript. Р‘РµР· JavaScript СЂР°Р±РѕС‚Р° СЃ РїР°РЅРµР»СЊСЋ СѓРїСЂР°РІР»РµРЅРёСЏ
+					СЃР°Р№С‚РѕРј РЅРµРІРѕР·РјРѕР¶РЅР°, Рё РјРѕР¶РµС‚ РїСЂРёРІРµСЃС‚Рё Рє РїРѕС‚РµСЂРµ РёРЅС„РѕСЂРјР°С†РёРё!
 				</div>
 			</noscript>
 			{if $Eresus->conf.debug.enable}
 			<div class="ui-state-error box">
-				Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
-				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
+				Р’РЅРёРјР°РЅРёРµ! Р’РєР»СЋС‡РµРЅ СЂРµР¶РёРј РѕС‚Р»Р°РґРєРё. РќР° РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕРј СЃР°Р№С‚Рµ СЌС‚Рѕ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅРµР±РµР·РѕРїР°СЃРЅРѕ.
+				РћС‚РєР»СЋС‡РёС‚СЊ СЂРµР¶РёРј РѕС‚Р»Р°РґРєРё РјРѕР¶РЅРѕ РІ С„Р°Р№Р»Рµ <code>cfg/main.php</code>.
 			</div>
 			{/if}
 			{$content}
