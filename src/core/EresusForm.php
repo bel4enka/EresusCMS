@@ -1,15 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Веб-форма
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -43,12 +41,6 @@
  * значений, который обрабатывает дополнительные теги и атрибуты.
  *
  * Данные формы отправляются только методом POST.
- *
- * <b>КОДИРОВКИ</b>
- *
- * Внутренней кодировкой форм является UTF-8. Если надо передавать данные и
- * получать HTML в другой кодировке, её следует указать вторым аргументом в
- * конструкторе.
  *
  * <b>ПРАВИЛА СОСТАВЛЕНИЯ ШАБЛОНОВ</b>
  *
@@ -394,12 +386,6 @@ class EresusForm
 	protected $inputs = array('input', 'textarea');
 
 	/**
-	 * Кодировка входных и выходных данных
-	 * @var string
-	 */
-	protected $charset = 'UTF-8';
-
-	/**
 	 * Идентификатор формы
 	 *
 	 * Используется для организации взаимодействия между клиентской
@@ -488,16 +474,11 @@ class EresusForm
 	 * Конструктор
 	 *
 	 * @param string $template            Имя файла шаблона
-	 * @param string $charset [optional]  Кодировка входных и выходных данных
 	 */
-	function __construct($template, $charset = null)
+	function __construct($template)
 	{
 		$this->template = $template;
 
-		if ($charset)
-		{
-			$this->charset = strtoupper($charset);
-		}
 		if (self::PROCESS == $this->mode)
 		{
 			$this->validate();
@@ -540,7 +521,6 @@ class EresusForm
 		$GLOBALS['page']->linkScripts($GLOBALS['Eresus']->root . 'core/EresusForm.js');
 
 		$html = $this->parseExtended();
-		$html = $this->fromUTF($html);
 
 		return $html;
 	}
@@ -560,36 +540,6 @@ class EresusForm
 		$this->values[$name] = $value;
 	}
 	//-----------------------------------------------------------------------------
-
-	/**
-	 * Переводит (если надо) строку во внутреннюю кодировку
-	 * @param string $text
-	 * @return string
-	 */
-	protected function toUTF($text)
-	{
-		if ($this->charset != 'UTF-8')
-		{
-			$text = iconv($this->charset, 'UTF-8', $text);
-		}
-		return $text;
-	}
-	//--------------------------------------------------------------------
-
-	/**
-	 * Переводит (если надо) строку из внутренней кодировки
-	 * @param string $text
-	 * @return string
-	 */
-	protected function fromUTF($text)
-	{
-		if ($this->charset != 'UTF-8')
-		{
-			$text = iconv('UTF-8', $this->charset, $text);
-		}
-		return $text;
-	}
-	//--------------------------------------------------------------------
 
 	/**
 	 * Распаковать данные, полученные из сессии
@@ -796,7 +746,7 @@ class EresusForm
 							break;
 
 							default:
-								$node->setAttribute('value', $this->toUTF($this->values[$name]));
+								$node->setAttribute('value', $this->values[$name]);
 						}
 
 					break;
@@ -1357,7 +1307,6 @@ class EresusForm
 			file_get_contents(dirname(__FILE__) . '/xhtml-special.ent') .
 			"\n]>\n" . $html;
 
-		$html = $this->toUTF($html);
 		$this->xml->loadXML($html);
 		$this->xml->encoding = 'utf-8';
 		$this->xml->normalize();
