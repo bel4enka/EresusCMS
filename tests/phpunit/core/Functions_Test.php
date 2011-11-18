@@ -66,9 +66,8 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_FormatDate()
 	{
-		$this->assertEquals('14:45, 15 февраля 1987',
-			iconv('cp1251', 'utf-8', FormatDate('1987-02-15 14:45:12')));
-		$this->assertEquals('Дата и время неизвестны', iconv('cp1251', 'utf-8', FormatDate('')));
+		$this->assertEquals('14:45, 15 февраля 1987', FormatDate('1987-02-15 14:45:12'));
+		$this->assertEquals('Дата и время неизвестны', FormatDate(''));
 	}
 	//-----------------------------------------------------------------------------
 }
