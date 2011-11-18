@@ -89,7 +89,7 @@ class MySQL
 	public function init($server, $username, $password, $source, $prefix = '')
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$dsn = "mysql://$username:$password@$server/$source";
+		$dsn = "mysql://$username:$password@$server/$source?charset=utf8";
 
 		try
 		{
