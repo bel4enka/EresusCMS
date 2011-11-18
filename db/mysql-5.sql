@@ -3,7 +3,7 @@
 -- $Id$
 -- --------------------------------------------------------
 
-SET NAMES "CP1251";
+SET NAMES "UTF8";
 
 CREATE TABLE `pages` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -33,9 +33,9 @@ CREATE TABLE `pages` (
   KEY `visible` (`visible`),
   KEY `created` (`created`),
   KEY `updated` (`updated`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `pages` VALUES(1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '<h1>Добро пожаловать!</h1>', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `pages` VALUES(1, 'main', 0, 'Р“Р»Р°РІРЅР°СЏ', 'Р“Р»Р°РІРЅР°СЏ', '', 'Р“Р»Р°РІРЅР°СЏ СЃС‚СЂР°РЅРёС†Р°', '', 0, 1, 5, 1, '', 'default', '<h1>Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ!</h1>', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -51,7 +51,7 @@ CREATE TABLE `plugins` (
   PRIMARY KEY  (`name`),
   KEY `active` (`active`),
   KEY `content` (`content`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -70,6 +70,6 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`id`),
   KEY `login` (`login`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `users` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Служба поддержки', 'support@example.org', NULL);
+INSERT INTO `users` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', 0, 0, 1, 'РЎР»СѓР¶Р±Р° РїРѕРґРґРµСЂР¶РєРё', 'support@example.org', NULL);
