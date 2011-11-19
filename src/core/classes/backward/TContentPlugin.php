@@ -30,12 +30,11 @@
  * $Id$
  */
 
-useClass('backward/TPlugin');
 /**
-* Базовый класс для плагинов, предоставляющих тип контента
-*
-* @package Eresus
-*/
+ * Базовый класс для плагинов, предоставляющих тип контента
+ *
+ * @package Eresus
+ */
 class TContentPlugin extends TPlugin
 {
 	/**
