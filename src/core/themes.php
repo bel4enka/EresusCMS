@@ -65,7 +65,13 @@ class TThemes
 	 */
 	public $stdTemplates = array(
 		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
-		'PageSelector' => array('caption' => admTemplPageSelector, 'hint' => admTemplPageSelectorLabel),
+		'PageSelector' => array('caption' => 'Шаблон переключателя страниц',
+			'hint' => 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol>
+				<li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li>
+				<li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li>
+				<li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li>
+				<li>Шаблон перехода к первой странице, $(href) - ссылка</li>
+				<li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>'),
 		'pagination' => array('caption' => 'Новый переключатель страниц',
 			'hint' => '<a href="http://wiki.dwoo.org/">Синтаксис</a>.
 			Переменная $pagination содержит массив страниц. У каждой страницы есть свойства: title &mdash;

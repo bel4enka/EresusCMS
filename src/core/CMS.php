@@ -92,11 +92,13 @@ class Eresus_CMS extends EresusApplication
 			//$this->initDB();
 			//$this->initSession();
 
-			/*
-			 * FIXME Приходится делать этот вызов, чтобы в шаблонах можно было использовать
-			 * функцию i18n.
-			 */
-			Eresus_i18n::getInstance();
+			$i18n = Eresus_i18n::getInstance();
+			if ($locale = Eresus_Config::get('eresus.cms.locale.default'))
+			{
+				$i18n->setLocale($locale);
+				setlocale(LC_ALL, $locale);
+			}
+
 			$GLOBALS['Eresus']->init();
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 

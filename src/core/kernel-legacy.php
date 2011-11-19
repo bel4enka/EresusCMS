@@ -102,8 +102,8 @@ function FatalError($msg)
 			"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
 			"<html>\n".
 			"<head>\n".
-			"  <title>".errError."</title>\n".
-			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\">\n".
+			"  <title>". i18n('Error') . "</title>\n".
+			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n".
 			"</head>\n\n".
 			"<body>\n".
 			"  <div align=\"center\" style=\"font-family: Arial, Helvetica, sans-serif;\">\n".
@@ -111,7 +111,7 @@ function FatalError($msg)
 				"border-color: #e88 #800 #800 #e88; min-width: 500px;\">\n".
 			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
 				"border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; " .
-				"font-weight: bold; text-align: center; font-size: 10pt;\">".errError."</td></tr>\n".
+				"font-weight: bold; text-align: center; font-size: 10pt;\">" . i18n('Error')."</td></tr>\n".
 			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
 				"border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; " .
 				"font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
@@ -135,9 +135,14 @@ function FatalError($msg)
  *
  * @param string $text     Текст сообщения
  * @param string $caption  Заголовок окна сообщения
+ * @deprecated с 2.17
  */
-function ErrorBox($text, $caption=errError)
+function ErrorBox($text, $caption = null)
 {
+	if (is_null($caption))
+	{
+		$caption = i18n('Error');
+	}
 	$result =
 		(empty($caption)?'':"<div class=\"errorBoxCap\">".$caption."</div>\n").
 		"<div class=\"errorBox\">\n".
@@ -281,7 +286,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		$replyTo = $fromAddr;
 	}
 
-	$charset = CHARSET;
+	$charset = 'UTF-8';
 
 	$sender = strlen($fromName) ? "=?".$charset."?B?".base64_encode($fromName)."?= <$fromAddr>" :
 		$fromAddr;
@@ -818,9 +823,19 @@ function upload($name, $filename, $overwrite = true)
 }
 //-----------------------------------------------------------------------------
 
+/**
+ *
+ * @param unknown_type $answer
+ *
+ * @return void
+ *
+ * @since ?.??
+ *
+ * @deprecated с 2.17
+ */
 function HttpAnswer($answer)
 {
-	Header('Content-type: text/html; charset='.CHARSET);
+	Header('Content-type: text/html; charset=UTF-8');
 	echo $answer;
 	exit;
 }
@@ -828,11 +843,13 @@ function HttpAnswer($answer)
 
 /**
  * Отправляет браузеру XML
+ *
+ * @deprecated с 2.17
  */
 function SendXML($data)
 {
 	Header('Content-Type: text/xml');
-	echo '<?xml version="1.0" encoding="'.CHARSET.'"?>'."\n<root>".$data."</root>";
+	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n<root>".$data."</root>";
 	exit;
 }
 //-----------------------------------------------------------------------------
@@ -977,6 +994,9 @@ function FormatSize($size)
 }
 //-----------------------------------------------------------------------------
 
+/**
+ * @deprecated с 2.17
+ */
 function Translit($s) #: String
 {
 	$s = strtr($s, $GLOBALS['translit_table']);

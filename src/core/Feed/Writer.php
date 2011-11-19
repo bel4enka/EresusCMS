@@ -179,10 +179,6 @@ class Eresus_Feed_Writer
 	 */
 	public function setTitle($title)
 	{
-		if (LOCALE_CHARSET != 'UTF-8')
-		{
-			$title = iconv(LOCALE_CHARSET, 'UTF-8', $title);
-		}
 		$this->setChannelElement('title', $title);
 	}
 	//-----------------------------------------------------------------------------
@@ -195,10 +191,6 @@ class Eresus_Feed_Writer
 	 */
 	public function setDescription($desciption)
 	{
-		if (LOCALE_CHARSET != 'UTF-8')
-		{
-			$desciption = iconv(LOCALE_CHARSET, 'UTF-8', $desciption);
-		}
 		$this->setChannelElement('description', $desciption);
 	}
 	//-----------------------------------------------------------------------------
@@ -225,10 +217,6 @@ class Eresus_Feed_Writer
 	 */
 	public function setImage($title, $link, $url)
 	{
-		if (LOCALE_CHARSET != 'UTF-8')
-		{
-			$title = iconv(LOCALE_CHARSET, 'UTF-8', $title);
-		}
 		$this->setChannelElement('image', array('title'=>$title, 'link'=>$link, 'url'=>$url));
 	}
 	//-----------------------------------------------------------------------------

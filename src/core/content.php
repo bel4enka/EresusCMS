@@ -113,7 +113,8 @@ class TContent
 					break;
 
 					default:
-						$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
+						$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox',
+						i18n('Error'));
 					break;
 				}
 			}

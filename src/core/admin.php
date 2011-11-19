@@ -1179,7 +1179,7 @@ class TAdminUI extends WebPage
 		{
 			foreach ($Eresus->session['msg']['errors'] as $message)
 			{
-				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
+				$data['errors'] []= $message;
 			}
 
 			$Eresus->session['msg']['errors'] = array();

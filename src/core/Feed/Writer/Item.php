@@ -112,10 +112,6 @@ class Eresus_Feed_Writer_Item
 	 */
 	public function setDescription($description)
 	{
-		if (LOCALE_CHARSET != 'UTF-8')
-		{
-			$description = iconv(LOCALE_CHARSET, 'UTF-8', $description);
-		}
 		$tag = ($this->version == Eresus_Feed_Writer::ATOM)? 'summary' : 'description';
 		$this->addElement($tag, $description);
 	}
@@ -128,10 +124,6 @@ class Eresus_Feed_Writer_Item
 	 */
 	public function setTitle($title)
 	{
-		if (LOCALE_CHARSET != 'UTF-8')
-		{
-			$title = iconv(LOCALE_CHARSET, 'UTF-8', $title);
-		}
 		$this->addElement('title', $title);
 	}
 	//-----------------------------------------------------------------------------
