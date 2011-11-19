@@ -80,7 +80,12 @@ class TContent
 								'width' => '100%',
 								'fields' => array (
 									array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-									array ('type' => 'html', 'name' => 'content', 'label' => admTemplListLabel, 'height' => '300px', 'value'=>isset($item['content'])?$item['content']:'$(items)'),
+									array ('type' => 'html', 'name' => 'content', 'label' => sprintf(
+										i18n('Шаблон списка разделов. Используйте макрос $(items) для вставки списка.' .
+										' Для изменения оформления элементов списка создайте или измените шаблон ' .
+										'<a href="%sadmin.php?mod=themes&section=std">Шаблон элемента списка разделов' .
+										'</a>', __CLASS__), httpRoot), 'height' => '300px',
+										'value'=>isset($item['content'])?$item['content']:'$(items)'),
 								),
 								'buttons' => array('apply', 'cancel'),
 							);

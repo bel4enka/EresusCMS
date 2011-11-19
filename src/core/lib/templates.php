@@ -96,7 +96,6 @@ class Templates
 			}
 		} else {
 			if (empty($type) && $name != 'default') $result = $this->get('default', $type);
-			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
 			if (!$result) $result = '';
 		}
 		return $result;

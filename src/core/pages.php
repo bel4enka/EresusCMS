@@ -268,10 +268,10 @@ class TPages
 		{
 			$select = $this->selectList($item['id']);
 			array_unshift($select[0], 0);
-			array_unshift($select[1], admPagesRoot);
+			array_unshift($select[1], i18n('КОРЕНЬ', __CLASS__));
 			$form = array(
 				'name' => 'MoveForm',
-				'caption' => admPagesMove,
+				'caption' => i18n('Переместить ветку', __CLASS__),
 				'fields' => array(
 					array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
 					array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
@@ -351,13 +351,13 @@ class TPages
 		/*
 		 * Стандартные типы контента
 		 */
-		$result[0] []= admPagesContentDefault;
+		$result[0] []= i18n('По умолчанию', __CLASS__);
 		$result[1] []= 'default';
 
-		$result[0] []= admPagesContentList;
+		$result[0] []= i18n('Список подразделов', __CLASS__);
 		$result[1] []= 'list';
 
-		$result[0] []= admPagesContentURL;
+		$result[0] []= i18n('URL', __CLASS__);
 		$result[1] []= 'url';
 
 		/*
@@ -417,22 +417,30 @@ class TPages
 			'fields' => array (
 				array ('type' => 'hidden','name'=>'owner','value'=>arg('owner', 'int')),
 				array ('type' => 'hidden','name'=>'action', 'value'=>'insert'),
-				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
-					'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
-				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
-					'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
-				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,'width' => '100%',
-					'maxlength' => '64', 'pattern'=>'/.+/', 'errormsg'=>admPagesCaptionInvalid),
-				array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
-				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,
+				array ('type' => 'edit','name' => 'name','label' => i18n('Имя страницы', __CLASS__),
+					'width' => '150px',	'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i',
+					'errormsg' => i18n('Имя страницы не может быть пустым и может состоять из латинских ' .
+						'букв, цифр и символа подчеркивания.', __CLASS__)),
+				array ('type' => 'edit','name' => 'title','label' => i18n('Заголовок страницы', __CLASS__),
+					'width' => '100%', 'pattern'=>'/.+/',
+					'errormsg' => i18n('Заголовок страницы не может быть пустым', __CLASS__)),
+				array ('type' => 'edit','name' => 'caption',
+					'label' => i18n('Название пункта меню', __CLASS__), 'width' => '100%',
+					'maxlength' => '64', 'pattern'=>'/.+/',
+					'errormsg' => i18n('Пункт меню не может быть пустым', __CLASS__)),
+				array ('type' => 'edit','name' => 'hint','label' => i18n('Подсказка', __CLASS__),
 					'width' => '100%'),
-				array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
-				array ('type' => 'select','name' => 'template','label' => admPagesTemplate,
+				array ('type' => 'edit','name' => 'description','label' => i18n('Описание', __CLASS__),
+					'width' => '100%'),
+				array ('type' => 'edit','name' => 'keywords','label' => i18n('Ключевые слова', __CLASS__),
+					'width' => '100%'),
+				array ('type' => 'select','name' => 'template','label' => i18n('Шаблон', __CLASS__),
 					'items' => $templates[0], 'values' => $templates[1], 'default'=>pageTemplateDefault),
-				array ('type' => 'select','name' => 'type','label' => admPagesContentType,
+				array ('type' => 'select','name' => 'type','label' => i18n('Тип страницы', __CLASS__),
 					'items' => $content[0], 'values' => $content[1], 'default'=>contentTypeDefault),
-				array ('type' => 'checkbox','name' => 'active','label' => admPagesActive, 'default'=>true),
-				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible,
+				array ('type' => 'checkbox','name' => 'active','label' => i18n('Активна', __CLASS__),
+					'default'=>true),
+				array ('type' => 'checkbox','name' => 'visible','label' => i18n('Видимая', __CLASS__),
 					'default'=>true),
 				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
 					'values'=>array(ADMIN,EDITOR,USER,GUEST),
@@ -445,7 +453,8 @@ class TPages
 					'default' => GUEST),
 				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
 					'width' => '4em','maxlength' => '5'),
-				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5')
+				array ('type' => 'memo','name' => 'options',
+					'label' => i18n('Дополнительные опции', __CLASS__), 'height' => '5')
 			),
 			'buttons' => array('ok', 'cancel'),
 		);
@@ -479,23 +488,29 @@ class TPages
 			'width' => '700px',
 			'fields' => array (
 				array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
-				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
-					'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
-				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
-					'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
-				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,
+				array ('type' => 'edit','name' => 'name','label' => i18n('Имя страницы', __CLASS__),
+					'width' => '150px',	'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i',
+					'errormsg' => i18n('Имя страницы не может быть пустым и может состоять из латинских ' .
+						'букв, цифр и символа подчеркивания.', __CLASS__)),
+				array ('type' => 'edit','name' => 'title','label' => i18n('Заголовок страницы', __CLASS__),
+					'width' => '100%', 'pattern'=>'/.+/',
+					'errormsg' => i18n('Заголовок страницы не может быть пустым', __CLASS__)),
+				array ('type' => 'edit','name' => 'caption',
+					'label' => i18n('Название пункта меню', __CLASS__),
 					'width' => '100%','maxlength' => '64', 'pattern'=>'/.+/',
-					'errormsg'=>admPagesCaptionInvalid),
-				array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
-				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,
+					'errormsg' => i18n('Пункт меню не может быть пустым', __CLASS__)),
+				array ('type' => 'edit','name' => 'hint','label' => i18n('Подсказка', __CLASS__),
 					'width' => '100%'),
-				array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
-				array ('type' => 'select','name' => 'template','label' => admPagesTemplate,
+				array ('type' => 'edit','name' => 'description','label' => i18n('Описание', __CLASS__),
+					'width' => '100%'),
+				array ('type' => 'edit','name' => 'keywords','label' => i18n('Ключевые слова', __CLASS__),
+					'width' => '100%'),
+				array ('type' => 'select','name' => 'template','label' => i18n('Шаблон', __CLASS__),
 					'items' => $templates[0], 'values' => $templates[1]),
-				array ('type' => 'select','name' => 'type','label' => admPagesContentType,
+				array ('type' => 'select','name' => 'type','label' => i18n('Тип страницы', __CLASS__),
 					'items' => $content[0], 'values' => $content[1]),
-				array ('type' => 'checkbox','name' => 'active','label' => admPagesActive),
-				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible),
+				array ('type' => 'checkbox','name' => 'active','label' => i18n('Активна', __CLASS__)),
+				array ('type' => 'checkbox','name' => 'visible','label' => i18n('Видимая', __CLASS__)),
 				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
 					'values'=>array(ADMIN,EDITOR,USER,GUEST),
 					'items' => array(
@@ -506,15 +521,16 @@ class TPages
 					)),
 				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
 					'width' => '4em','maxlength' => '5'),
-				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5'),
-				array ('type' => 'edit','name' => 'created','label' => admPagesCreated,'access' => ADMIN,
-					'width' => '10em','maxlength' => '19'),
-				array ('type' => 'edit','name' => 'updated','label' => admPagesUpdated,'access' => ADMIN,
-					'width' => '10em','maxlength' => '19'),
-				array ('type' => 'checkbox','name' => 'updatedAuto','label' => admPagesUpdatedAuto,
-					'default' => true),
+				array ('type' => 'memo','name' => 'options',
+					'label' => i18n('Дополнительные опции', __CLASS__), 'height' => '5'),
+				array ('type' => 'edit', 'name' => 'created', 'label' => i18n('Дата создания', __CLASS__),
+					'access' => ADMIN, 'width' => '10em', 'maxlength' => '19'),
+				array ('type' => 'edit','name' => 'updated', 'label' => i18n('Дата обновления', __CLASS__),
+					'access' => ADMIN, 'width' => '10em','maxlength' => '19'),
+				array ('type' => 'checkbox','name' => 'updatedAuto',
+					'label' => i18n('Обновить дату изменения автоматически', __CLASS__),	'default' => true),
 				array ('type' => 'text',
-					'value'=>admPagesThisURL.': <a href="'.$urlAbs.'">'.$urlAbs.'</a>'),
+					'value'=> i18n('URL этой страницы', __CLASS__).': <a href="'.$urlAbs.'">'.$urlAbs.'</a>'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
@@ -595,7 +611,7 @@ class TPages
 		useLib('admin/lists');
 		$table = new AdminList;
 		$table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
-		$table->addRow(array(admPagesRoot, '', '', '',
+		$table->addRow(array(i18n('КОРЕНЬ', __CLASS__), '', '', '',
 			array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
 		$table->addRows($this->sectionIndexBranch(0, 1));
 		$result = $table->render();

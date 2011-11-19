@@ -157,9 +157,9 @@ class TSettings
 
 		/* Создаем список типов контента */
 		$contentTypes = array(
-			array('name' => 'default','caption' => admPagesContentDefault),
-			array('name' => 'list','caption' => admPagesContentList),
-			array('name' => 'url','caption' => admPagesContentURL)
+			array('name' => 'default','caption' => i18n('По умолчанию', __CLASS__)),
+			array('name' => 'list','caption' => i18n('Список подразделов', __CLASS__)),
+			array('name' => 'url','caption' => i18n('URL', __CLASS__))
 		);
 
 		foreach ($Eresus->plugins->items as $plugin)

@@ -64,7 +64,10 @@ class TThemes
 	 * @var unknown_type
 	 */
 	public $stdTemplates = array(
-		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
+		'SectionListItem' => array('caption' => 'Шаблон элемента списка разделов', 'hint' =>
+			'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок;
+			<strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание;
+			<strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.'),
 		'PageSelector' => array('caption' => 'Шаблон переключателя страниц',
 			'hint' => 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol>
 				<li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li>

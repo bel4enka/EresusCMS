@@ -732,23 +732,29 @@ function upload($name, $filename, $overwrite = true)
 				}
 				else
 				{
-					ErrorMessage(sprintf(errFileMove, $_FILES[$name]['name'], $filename));
+					ErrorMessage(sprintf(i18n('Не удается переместить файл "%s" в "%s"', 'upload'),
+						$_FILES[$name]['name'], $filename));
 				}
 			}
 		break;
 		case UPLOAD_ERR_INI_SIZE:
-			ErrorMessage(sprintf(errUploadSizeINI, $_FILES[$name]['name']));
+			ErrorMessage(sprintf(
+				i18n('Размер файла "%s" превышает максимально допустимый размер %s.', 'upload'),
+				$_FILES[$name]['name']), ini_get('upload_max_filesize'));
 		break;
 		case UPLOAD_ERR_FORM_SIZE:
-			ErrorMessage(sprintf(errUploadSizeFORM, $_FILES[$name]['name']));
+			ErrorMessage(sprintf(
+				i18n('Размер файла "%s" превышает максимально допустимый размер указанный в форме.',
+					'upload'), $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_PARTIAL:
-			ErrorMessage(sprintf(errUploadPartial, $_FILES[$name]['name']));
+			ErrorMessage(sprintf(i18n('Файл "%s" получен только частично.', 'upload'),
+				$_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_NO_FILE:
 			if (strlen($_FILES[$name]['name']))
 			{
-				ErrorMessage(sprintf(errUploadNoFile, $_FILES[$name]['name']));
+				ErrorMessage(sprintf(i18n('Файл "%s" не был загружен.', 'upload'), $_FILES[$name]['name']));
 			}
 		break;
 	}

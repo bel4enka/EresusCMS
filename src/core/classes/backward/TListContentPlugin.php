@@ -138,7 +138,8 @@ global $Eresus, $page;
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'update', get_class($this)));
+				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'update',
+					get_class($this)));
 			}
 		break;
 
@@ -149,7 +150,8 @@ global $Eresus, $page;
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'toggle', get_class($this)));
+				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'toggle',
+					get_class($this)));
 			}
 		break;
 
@@ -160,7 +162,7 @@ global $Eresus, $page;
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'delete',
+				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'delete',
 					get_class($this)));
 			}
 		break;
@@ -174,7 +176,8 @@ global $Eresus, $page;
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'up', get_class($this)));
+				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'up',
+					get_class($this)));
 			}
 		break;
 
@@ -187,7 +190,8 @@ global $Eresus, $page;
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'down', get_class($this)));
+				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'down',
+					get_class($this)));
 			}
 		break;
 
@@ -198,8 +202,8 @@ global $Eresus, $page;
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'adminEditItem',
-					get_class($this)));
+				ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__),
+					'adminEditItem', get_class($this)));
 			}
 		break;
 
@@ -213,7 +217,7 @@ global $Eresus, $page;
 					}
 					else
 					{
-						ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'adminAddItem',
+						ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'adminAddItem',
 							get_class($this)));
 					}
 				break;
@@ -225,7 +229,7 @@ global $Eresus, $page;
 					}
 					else
 					{
-						ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'insert',
+						ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".', __CLASS__), 'insert',
 							get_class($this)));
 					}
 				break;

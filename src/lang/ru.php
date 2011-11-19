@@ -1,10 +1,4 @@
 <?php
-define('errFileMove', 'Не удается переместить файл "%s" в "%s"');
-define('errTemplateNotFound', 'Шаблон "%s" не найден');
-define('errUploadSizeINI', 'Размер файла "%s" превышает максимально допустимый размер '.ini_get('upload_max_filesize').'.');
-define('errUploadSizeFORM', 'Размер файла "%s" превышает максимально допустимый размер указанный в форме.');
-define('errUploadPartial', 'Файл "%s" получен только частично.');
-define('errUploadNoFile', 'Файл "%s" не был загружен.');
 define('errInvalidPassword', 'Неверное имя пользователя или пароль');
 define('errAccountNotActive', errInvalidPassword);
 define('errAccountNotExists', errInvalidPassword);
@@ -153,53 +147,3 @@ define('admUsersName', 'Имя');
 define('admUsersLogin', 'Логин');
 define('admUsersAccountState', 'Учетная запись активна');
 define('admUsersAccessLevelShort', 'Дост.');
-define('admUsersLoginErrors', 'Ошибок входа');
-define('admUsersLoginErrorsShort', 'Ошиб.');
-define('admUsersMail', 'e-mail');
-define('admUsersLastVisit', 'Последний визит');
-define('admUsersLastVisitShort', 'Последний визит');
-define('admUsersPassword', 'Пароль');
-define('admUsersConfirmation', 'Подтверждение');
-define('admUsersChangeUser', 'Изменить учетную запись');
-define('admUsersChangePassword', 'Изменить пароль');
-define('admUsersPasswordChanged', 'Изменен пароль');
-define('admUsersNameInvalid', 'Псевдоним пользователя не может быть пустым.');
-define('admUsersLoginInvalid', 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и символа подчеркивания.');
-define('admUsersLoginExists', 'Пользователь с таким логином уже существует.');
-define('admUsersMailInvalid', 'Неверно указан почтовый адрес.');
-define('admUsersConfirmInvalid', 'Пароль и подтверждение не совпадают.');
-define('admUsersCreate', 'Создать пользователя');
-define('admUsersAdded', 'Добавлена учетная запись');
-define('admPagesMove', 'Переместить ветку');
-define('admPagesRoot', 'КОРЕНЬ');
-define('admPagesContentDefault', 'По умолчанию');
-define('admPagesContentList', 'Список подразделов');
-define('admPagesContentURL', 'URL');
-define('admPagesThisURL', 'URL этой страницы');
-define('admPagesID', 'ID страницы');
-define('admPagesName', 'Имя страницы');
-define('admPagesNameInvalid', 'Имя страницы не может быть пустым и может состоять из латинских букв, цифр и символа подчеркивания.');
-define('admPagesTitle', 'Заголовок страницы');
-define('admPagesTitleInvalid', 'Заголовок страницы не может быть пустым');
-define('admPagesCaption', 'Название пункта меню');
-define('admPagesCaptionInvalid', 'Пункт меню не может быть пустым');
-define('admPagesDescription', 'Описание');
-define('admPagesKeywords', 'Ключевые слова');
-define('admPagesHint', 'Подсказка');
-define('admPagesContentType', 'Тип страницы');
-define('admPagesTemplate', 'Шаблон');
-define('admPagesActive', 'Активна');
-define('admPagesVisible', 'Видимая');
-define('admPagesCreated', 'Дата создания');
-define('admPagesUpdated', 'Дата обновления');
-define('admPagesUpdatedAuto', 'Обновить дату изменения автоматически');
-define('admPagesOptions', 'Дополнительные опции');
-define('admPagesContent', 'Контент страницы');
-define('admTemplList', 'Шаблон элемента списка разделов');
-define('admTemplListLabel', 'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
-define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок; <strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание; <strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.');
-
-$GLOBALS['translit_table'] = array(
-	'а'=> 'a', 'б'=> 'b', 'в'=> 'v', 'г'=> 'g', 'д'=> 'd', 'е'=> 'e', 'ё'=> 'yo', 'ж'=> 'zh', 'з'=> 'z', 'и'=> 'i', 'й'=> 'y', 'к'=> 'k', 'л'=> 'l', 'м'=> 'm', 'н'=> 'n', 'о'=> 'o', 'п'=> 'p', 'р'=> 'r', 'с'=> 's', 'т'=> 't', 'у'=> 'u', 'ф'=> 'f', 'х'=> 'h', 'ц'=> 'tc', 'ч'=> 'ch', 'ш'=> 'sh', 'щ'=> 'sch', 'ь'=> '', 'ы'=> 'y', 'ъ'=> '', 'э'=> 'e', 'ю'=> 'yu', 'я'=> 'ya',
-	'А'=> 'a', 'Б'=> 'b', 'В'=> 'v', 'Г'=> 'g', 'Д'=> 'd', 'Е'=> 'e', 'Ё'=> 'yo', 'Ж'=> 'zh', 'З'=> 'z', 'И'=> 'i', 'Й'=> 'y', 'К'=> 'k', 'Л'=> 'l', 'М'=> 'm', 'Н'=> 'n', 'О'=> 'o', 'П'=> 'p', 'Р'=> 'r', 'С'=> 's', 'Т'=> 't', 'У'=> 'u', 'Ф'=> 'f', 'Х'=> 'h', 'Ц'=> 'tc', 'Ч'=> 'ch', 'Ш'=> 'sh', 'Щ'=> 'sch', 'Ь'=> '', 'Ы'=> 'y', 'Ъ'=> '', 'Э'=> 'e', 'Ю'=> 'yu', 'Я'=> 'ya'
-);

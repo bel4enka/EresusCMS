@@ -179,14 +179,14 @@ class Plugins
 			}
 			else
 			{
-				FatalError(sprintf(i18n('Класс "%s" не найден.'), $ClassName));
+				FatalError(sprintf(i18n('Класс "%s" не найден.'), $className));
 			}
 		}
 		else
 		{
 			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
 				$name);
-			$msg = i18n('Не удалось найти основной файл "%s" для модуля расширения "%s".', 'admin');
+			$msg = i18n('Не удалось найти основной файл "%s" для модуля расширения "%s".', __CLASS__);
 			$msg = sprintf($msg, $filename, $name);
 			ErrorMessage($msg);
 		}
