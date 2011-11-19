@@ -181,7 +181,13 @@ class TUsers extends Accounts
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
 				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%','value'=>$item['name'], 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
 				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%','value'=>$item['login'], 'pattern'=>'/^[a-z\d_]+$/', 'errormsg'=>admUsersLoginInvalid, 'access'=>ADMIN),
-				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2, ACCESSLEVEL3, ACCESSLEVEL4), 'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
+				array('type' => 'select', 'name' => 'access', 'label' => admAccessLevel,
+					'values' => array('2','3','4'),
+					'items' => array(
+						i18n('Администратор'),
+						i18n('Редактор'),
+						i18n('Пользователь')
+					), 'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
 				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState,'value'=>$item['active'], 'access'=>ADMIN),
 				array('type'=>'edit','name'=>'loginErrors','label'=>admUsersLoginErrors,'maxlength'=>2,'width'=>'30px','value'=>$item['loginErrors'], 'access'=>ADMIN),
 				array('type'=>'edit','name'=>'mail','label'=>admUsersMail,'maxlength'=>32,'width'=>'100%','value'=>$item['mail'], 'pattern'=>'/^[\w]+[\w\d_\.\-]+@[\w\d\-]{2,}\.[a-z]{2,5}$/i', 'errormsg'=>admUsersMailInvalid, 'access'=>ADMIN),
@@ -218,7 +224,13 @@ class TUsers extends Accounts
 				array('type'=>'hidden','name'=>'action','value'=>'insert'),
 				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%', 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
 				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admUsersLoginInvalid),
-				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'width'=>'100%','values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4), 'default' => USER),
+				array('type' => 'select', 'name' => 'access', 'label' => admAccessLevel, 'width'=>'100%',
+					'values' => array('2','3','4'),
+					'items' => array(
+						i18n('Администратор'),
+						i18n('Редактор'),
+						i18n('Пользователь')
+					), 'default' => USER),
 				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState, 'default' => true),
 				array('type'=>'divider'),
 				array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,'width'=>'100%'),

@@ -880,7 +880,8 @@ class TAdminUI extends WebPage
 			}
 			else
 			{
-				ErrorMessage(errFileNotFound.': "' . $GLOBALS['Eresus']->froot . "core/$module.php'");
+				ErrorMessage(i18n('Файл не найден') . ': "' . $GLOBALS['Eresus']->froot .
+					"core/$module.php'");
 			}
 
 			/*
@@ -921,7 +922,8 @@ class TAdminUI extends WebPage
 				}
 				else
 				{
-					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
+					$result .= ErrorBox(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'adminRender',
+						get_class($this->module)));
 				}
 			}
 			else

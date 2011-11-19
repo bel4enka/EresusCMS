@@ -1,14 +1,4 @@
 <?php
-define('ACCESSLEVEL0', 'Неизвестный');
-define('ACCESSLEVEL1', 'Главный администратор');
-define('ACCESSLEVEL2', 'Администратор');
-define('ACCESSLEVEL3', 'Редактор');
-define('ACCESSLEVEL4', 'Пользователь');
-define('ACCESSLEVEL5', 'Гость');
-define('errContentPluginNotFound', 'Не найдено модуля поддержки типа контента "%s"');
-define('errClassNotFound', 'Класс "%s" не найден.');
-define('errMethodNotFound', 'Метод "%s" не найден в классе "%s".');
-define('errFileNotFound', 'Файл не найден');
 define('errFileMove', 'Не удается переместить файл "%s" в "%s"');
 define('errTemplateNotFound', 'Шаблон "%s" не найден');
 define('errUploadSizeINI', 'Размер файла "%s" превышает максимально допустимый размер '.ini_get('upload_max_filesize').'.');
@@ -208,6 +198,7 @@ define('admPagesContent', 'Контент страницы');
 define('admTemplList', 'Шаблон элемента списка разделов');
 define('admTemplListLabel', 'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
 define('admTemplListItemLabel', 'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок; <strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание; <strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.');
+
 $GLOBALS['translit_table'] = array(
 	'а'=> 'a', 'б'=> 'b', 'в'=> 'v', 'г'=> 'g', 'д'=> 'd', 'е'=> 'e', 'ё'=> 'yo', 'ж'=> 'zh', 'з'=> 'z', 'и'=> 'i', 'й'=> 'y', 'к'=> 'k', 'л'=> 'l', 'м'=> 'm', 'н'=> 'n', 'о'=> 'o', 'п'=> 'p', 'р'=> 'r', 'с'=> 's', 'т'=> 't', 'у'=> 'u', 'ф'=> 'f', 'х'=> 'h', 'ц'=> 'tc', 'ч'=> 'ch', 'ш'=> 'sh', 'щ'=> 'sch', 'ь'=> '', 'ы'=> 'y', 'ъ'=> '', 'э'=> 'e', 'ю'=> 'yu', 'я'=> 'ya',
 	'А'=> 'a', 'Б'=> 'b', 'В'=> 'v', 'Г'=> 'g', 'Д'=> 'd', 'Е'=> 'e', 'Ё'=> 'yo', 'Ж'=> 'zh', 'З'=> 'z', 'И'=> 'i', 'Й'=> 'y', 'К'=> 'k', 'Л'=> 'l', 'М'=> 'm', 'Н'=> 'n', 'О'=> 'o', 'П'=> 'p', 'Р'=> 'r', 'С'=> 's', 'Т'=> 't', 'У'=> 'u', 'Ф'=> 'f', 'Х'=> 'h', 'Ц'=> 'tc', 'Ч'=> 'ch', 'Ш'=> 'sh', 'Щ'=> 'sch', 'Ь'=> '', 'Ы'=> 'y', 'Ъ'=> '', 'Э'=> 'e', 'Ю'=> 'yu', 'Я'=> 'ya'

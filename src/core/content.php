@@ -113,8 +113,8 @@ class TContent
 					break;
 
 					default:
-						$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox',
-						i18n('Ошибка'));
+						$result = $page->box(sprintf(i18n('Не найдено модуля поддержки типа контента "%s"'),
+							$item['type']), 'errorBox',	i18n('Ошибка'));
 					break;
 				}
 			}

@@ -179,7 +179,7 @@ class Plugins
 			}
 			else
 			{
-				FatalError(sprintf(errClassNotFound, $ClassName));
+				FatalError(sprintf(i18n('Класс "%s" не найден.'), $ClassName));
 			}
 		}
 		else
@@ -268,7 +268,7 @@ class Plugins
 		{
 			eresus_log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
 				$className, $name, $filename);
-			FatalError(sprintf(errClassNotFound, $name));
+			FatalError(sprintf(i18n('Класс "%s" не найден.'), $name));
 		}
 
 		// Заносим экземпляр в реестр
@@ -342,12 +342,25 @@ class Plugins
 			case 'url':
 				HTTP::redirect($page->replaceMacros($page->content));
 			break;
+
 			default:
-			if ($this->load($page->type)) {
-				if (method_exists($this->items[$page->type], 'clientRenderContent'))
-					$result = $this->items[$page->type]->clientRenderContent();
-				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
-			} else ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
+				if ($this->load($page->type))
+				{
+					if (method_exists($this->items[$page->type], 'clientRenderContent'))
+					{
+						$result = $this->items[$page->type]->clientRenderContent();
+					}
+					else
+					{
+						ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'clientRenderContent',
+							get_class($this->items[$page->type])));
+					}
+				}
+				else
+				{
+					ErrorMessage(sprintf(i18n('Не найдено модуля поддержки типа контента "%s"'), $page->type));
+				}
+			break;
 		}
 		return $result;
 	}
@@ -389,23 +402,31 @@ class Plugins
 			foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
 		return $text;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	/* function clientOnFormControlRender($formName, $control, $text)
-	{
-		if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
-		return $text;
-	}*/
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
 	function adminOnMenuRender()
 	{
-		if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin)
-			if (method_exists($this->items[$plugin], 'adminOnMenuRender')) $this->items[$plugin]->adminOnMenuRender();
-			else ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+		if (isset($this->events['adminOnMenuRender']))
+		{
+			foreach($this->events['adminOnMenuRender'] as $plugin)
+			{
+				if (method_exists($this->items[$plugin], 'adminOnMenuRender'))
+				{
+					$this->items[$plugin]->adminOnMenuRender();
+				}
+				else
+				{
+					ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'adminOnMenuRender',
+						$plugin));
+				}
+			}
+		}
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
- /**
-	* Событие ajaxOnRequest
-	*/
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Событие ajaxOnRequest
+	 */
 	function ajaxOnRequest()
 	{
 		if (isset($this->events['ajaxOnRequest']))

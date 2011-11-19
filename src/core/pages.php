@@ -436,7 +436,12 @@ class TPages
 					'default'=>true),
 				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
 					'values'=>array(ADMIN,EDITOR,USER,GUEST),
-					'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5),
+					'items' => array(
+						i18n('Администратор'),
+						i18n('Редактор'),
+						i18n('Пользователь'),
+						i18n('Гость')
+					),
 					'default' => GUEST),
 				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
 					'width' => '4em','maxlength' => '5'),
@@ -493,7 +498,12 @@ class TPages
 				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible),
 				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
 					'values'=>array(ADMIN,EDITOR,USER,GUEST),
-					'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5)),
+					'items' => array(
+						i18n('Администратор'),
+						i18n('Редактор'),
+						i18n('Пользователь'),
+						i18n('Гость')
+					)),
 				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
 					'width' => '4em','maxlength' => '5'),
 				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5'),
@@ -525,6 +535,15 @@ class TPages
 	{
 		global $Eresus;
 
+		$accessLevels = array(
+			i18n('Неизвестный уровень доступа'),
+			i18n('Главный администратор'),
+			i18n('Администратор'),
+			i18n('Редактор'),
+			i18n('Пользователь'),
+			i18n('Гость'),
+		);
+
 		$result = array();
 		$items = $Eresus->sections->children($owner,
 			$Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
@@ -538,7 +557,7 @@ class TPages
 				'href'=>$Eresus->root.'admin.php?mod=content&amp;section='.$items[$i]['id']);
 			$row[] = $items[$i]['name'];
 			$row[] = array('text' => $content_type, 'align' => 'center');
-			$row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
+			$row[] = array('text' => $accessLevels[$items[$i]['access']], 'align' => 'center');
 			$row[] = sprintf($this->cache['index_controls'], $items[$i]['id'], $items[$i]['id'],
 				$items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
 			$result[] = $row;
