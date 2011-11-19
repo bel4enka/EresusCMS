@@ -335,13 +335,19 @@ class WebPage
 	{
 		/* Проверяем, не добавлен ли уже этот URL  */
 		for ($i = 0; $i < count($this->head['link']); $i++)
+		{
 			if ($this->head['link'][$i]['href'] == $url)
+			{
 				return;
+			}
+		}
 
 		$item = array('rel' => 'StyleSheet', 'href' => $url, 'type' => 'text/css');
 
 		if (!empty($media))
+		{
 			$item['media'] = $media;
+		}
 
 		$this->head['link'][] = $item;
 	}
@@ -359,7 +365,9 @@ class WebPage
 		$content = rtrim($content);
 		$item = array('content' => $content);
 		if (!empty($media))
+		{
 			$item['media'] = $media;
+		}
 		$this->head['style'][] = $item;
 	}
 	//------------------------------------------------------------------------------
@@ -592,18 +600,30 @@ class WebPage
 		$result = array();
 		/* <meta> теги */
 		if (count($this->head['meta-http']))
-			foreach($this->head['meta-http'] as $key => $value)
+		{
+			foreach ($this->head['meta-http'] as $key => $value)
+			{
 				$result[] = '	<meta http-equiv="'.$key.'" content="'.$value.'" />';
+			}
+		}
 
 		if (count($this->head['meta-tags']))
-			foreach($this->head['meta-tags'] as $key => $value)
+		{
+			foreach ($this->head['meta-tags'] as $key => $value)
+			{
 				$result[] = '	<meta name="'.$key.'" content="'.$value.'" />';
+			}
+		}
 
 		/* <link> */
 		if (count($this->head['link']))
-			foreach($this->head['link'] as $value)
+		{
+			foreach ($this->head['link'] as $value)
+			{
 				$result[] = '	<link rel="'.$value['rel'].'" href="'.$value['href'].'" type="'.
 					$value['type'].'"'.(isset($value['media'])?' media="'.$value['media'].'"':'').' />';
+			}
+		}
 
 		/*
 		 * <script>
@@ -615,13 +635,19 @@ class WebPage
 
 		/* <style> */
 		if (count($this->head['style']))
-			foreach($this->head['style'] as $value)
+		{
+			foreach ($this->head['style'] as $value)
+			{
 				$result[] = '	<style type="text/css"'.(isset($value['media'])?' media="'.
 					$value['media'].'"':'').'>'."\n".$value['content']."\n  </style>";
+			}
+		}
 
 		$this->head['content'] = trim($this->head['content']);
 		if (!empty($this->head['content']))
+		{
 			$result[] = $this->head['content'];
+		}
 
 		$result = implode("\n" , $result);
 		return $result;
@@ -674,13 +700,21 @@ class WebPage
 
 		/* Превращаем значения-массивы в строки, соединяя элементы запятой */
 		foreach ($args as $key => $value)
+		{
 			if (is_array($value))
+			{
 				$args[$key] = implode(',', $value);
+			}
+		}
 
 		$result = array();
 		foreach ($args as $key => $value)
+		{
 			if ($value !== '')
+			{
 				$result []= "$key=$value";
+			}
+		}
 
 		$result = implode('&amp;', $result);
 		$result = $Eresus->request['path'].'?'.$result;
@@ -700,15 +734,24 @@ class WebPage
 
 		$parents = $Eresus->sections->parents($id);
 
-		if (is_null($parents)) return null;
+		if (is_null($parents))
+		{
+			return null;
+		}
 
 		array_push($parents, $id);
 		$items = $Eresus->sections->get( $parents);
 
 		$list = array();
-		for($i = 0; $i < count($items); $i++) $list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
+		for ($i = 0; $i < count($items); $i++)
+		{
+			$list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
+		}
 		$result = $Eresus->root;
-		for($i = 0; $i < count($list); $i++) $result .= $list[$i].'/';
+		for ($i = 0; $i < count($list); $i++)
+		{
+			$result .= $list[$i].'/';
+		}
 
 		return $result;
 	}
@@ -730,13 +773,21 @@ class WebPage
 		$result = '';
 		# Загрузка шаблонов
 		if (!is_array($templates))
+		{
 			$templates = array();
+		}
 		for ($i=0; $i < 5; $i++)
+		{
 			if (!isset($templates[$i]))
+			{
 				$templates[$i] = $this->defaults['pageselector'][$i];
+			}
+		}
 
 		if (is_null($url))
+		{
 			$url = $Eresus->request['path'].'p%d/';
+		}
 
 		$pages = array(); # Отображаемые страницы
 		# Определяем номера первой и последней отображаемых страниц
@@ -746,21 +797,24 @@ class WebPage
 			# Будут показаны НЕ все страницы
 			$from = floor($current - $visible / 2); # Начинаем показ с текущей минус половину видимых
 			if ($from < 1)
+			{
 				$from = 1; # Страниц меньше 1-й не существует
+			}
 			$to = $from + $visible - 1; # мы должны показать $visible страниц
 			if ($to > $total)
-			{ # Но если это больше чем страниц всего, вносим исправления
+			{
+				# Но если это больше чем страниц всего, вносим исправления
 				$to = $total;
 				$from = $to - $visible + 1;
 			}
 		}
-			else
+		else
 		{
 			# Будут показаны все страницы
 			$from = 1;
 			$to = $total;
 		}
-		for($i = $from; $i <= $to; $i++)
+		for ($i = $from; $i <= $to; $i++)
 		{
 			$src['href'] = sprintf($url, $i);
 			$src['number'] = $i;
@@ -769,9 +823,13 @@ class WebPage
 
 		$pages = implode('', $pages);
 		if ($from != 1)
+		{
 			$pages = replaceMacros($templates[3], array('href' => sprintf($url, 1))).$pages;
+		}
 		if ($to != $total)
+		{
 			$pages .= replaceMacros($templates[4], array('href' => sprintf($url, $total)));
+		}
 		$result = replaceMacros($templates[0], array('pages' => $pages));
 
 		return $result;

@@ -95,7 +95,7 @@ class MySQL
 		{
 			$db = DB::connect($dsn);
 		}
-			catch (DBRuntimeException $e)
+		catch (DBRuntimeException $e)
 		{
 			Core::logException($e);
 			FatalError("Can not connect to MySQL server. See log for more info.");
@@ -157,7 +157,9 @@ class MySQL
 		$db = DB::getHandler();
 		$stmt = $db->prepare($query);
 		if (!$stmt->execute())
+		{
 			return false;
+		}
 
 		$values = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $values;
@@ -218,22 +220,23 @@ class MySQL
 	}
 	//------------------------------------------------------------------------------
 
- /**
-	* Производит выборку данных из источника
-	*
-	* @param  string   $tables     Список таблиц из которых проводится выборка
-	* @param  string   $condition  Условие для выборки (WHERE)
-	* @param  string   $order      Поля для сортировки (ORDER BY)
-	* @param  string   $fields     Список полей для получения
-	* @param  int      $limit      Максимльное количество получаемых записей
-	* @param  int      $offset     Начальное смещение для выборки
-	* @param  string   $group      Поле для группировки
-	* @param  bool     $distinct   Вернуть только уникальные записи
-	*
-	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
-	* @deprecated
-	*/
-	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0, $offset = 0, $group = '', $distinct = false)
+	/**
+	 * Производит выборку данных из источника
+	 *
+	 * @param  string   $tables     Список таблиц из которых проводится выборка
+	 * @param  string   $condition  Условие для выборки (WHERE)
+	 * @param  string   $order      Поля для сортировки (ORDER BY)
+	 * @param  string   $fields     Список полей для получения
+	 * @param  int      $limit      Максимльное количество получаемых записей
+	 * @param  int      $offset     Начальное смещение для выборки
+	 * @param  string   $group      Поле для группировки
+	 * @param  bool     $distinct   Вернуть только уникальные записи
+	 *
+	 * @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
+	 * @deprecated
+	 */
+	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0,
+		$offset = 0, $group = '', $distinct = false)
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$db = DB::getHandler();
@@ -241,23 +244,32 @@ class MySQL
 		$e = $q->expr;
 
 		if (empty($fields))
+		{
 			$fields = '*';
+		}
 
 		if ($distinct)
+		{
 			$q->selectDistinct($fields);
+		}
 		else
+		{
 			$q->select($fields);
+		}
 
 		$tables = explode(',', $tables);
 		$q->from($tables);
 
 		if ($condition)
+		{
 			$q->where($condition);
+		}
 
 		if (strlen($order))
 		{
 			$order = explode(',', $order);
-			for($i = 0; $i < count($order); $i++)
+			for ($i = 0; $i < count($order); $i++)
+			{
 				switch ($order[$i]{0})
 				{
 					case '+':
@@ -272,15 +284,22 @@ class MySQL
 						$q->orderBy($order[$i]);
 					break;
 				}
+			}
 		}
 
 		if ($limit && $offset)
+		{
 			$q->limit($limit, $offset);
+		}
 		elseif ($limit)
+		{
 			$q->limit($limit);
+		}
 
 		if ($group)
+		{
 			$q->groupBy($group);
+		}
 
 		$result = DB::fetchAll($q);
 
@@ -302,14 +321,20 @@ class MySQL
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$fields = $this->fields($table);
 		if (!$table)
+		{
 			return false;
+		}
 
 		$q = DB::getHandler()->createInsertQuery();
 		$q->insertInto($table);
 
 		foreach ($fields as $field)
+		{
 			if (isset($item[$field]))
+			{
 				$q->set($field, $q->bindValue($item[$field]));
+			}
+		}
 
 		DB::execute($q);
 		return true;
@@ -363,72 +388,28 @@ class MySQL
 		return null;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Получение списка полей таблицы
-	*
-	* @param string $table            Имя таблицы
-	* @param bool   $info [optional]
-	* @return array|false  Список полей, с описанием, если $info = true
-	*
-	* @deprecated с 2.14
-	*/
+
+	/**
+	 * Получение списка полей таблицы
+	 *
+	 * @param string $table            Имя таблицы
+	 * @param bool   $info [optional]
+	 * @return array|false  Список полей, с описанием, если $info = true
+	 *
+	 * @deprecated с 2.14
+	 */
 	public function fields($table, $info = false)
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$schm = $this->getSchema()->getSchema();
 		if ($schm[$table]->fields)
+		{
 			return array_keys($schm[$table]->fields);
+		}
 		else
+		{
 			return false;
-/*		global $Eresus;
-
-		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
-		if ($fields) {
-			$result = array();
-			foreach($fields as $item) {
-				if ($info) {
-					$result[$item['Field']] = array(
-						'name' => $item['Field'],
-						'type' => $item['Type'],
-						'size' => 0,
-						'signed' => false,
-						'default' => $item['Default'],
-					);
-					switch (true) {
-						case $item['Type'] == 'text':
-							$result[$item['Field']]['size'] = 65535;
-						break;
-						case $item['Type'] == 'longtext':
-							$result[$item['Field']]['type'] = 'text';
-							$result[$item['Field']]['size'] = 4294967295;
-						break;
-						case substr($item['Type'], 0, 3) == 'int':
-							$result[$item['Field']]['signed'] = strpos($result[$item['Field']]['type'], 'unsigned') === false;
-							$item['Type'] = str_replace(' unsigned', '', $item['Type']);
-							$result[$item['Field']]['type'] = 'int';
-							$result[$item['Field']]['size'] = substr($item['Type'], 4, -1);
-						break;
-						case substr($item['Type'], 0, 8) == 'smallint':
-							$result[$item['Field']]['signed'] = strpos($result[$item['Field']]['type'], 'unsigned') === false;
-							$item['Type'] = str_replace(' unsigned', '', $item['Type']);
-							$result[$item['Field']]['type'] = 'int';
-							$result[$item['Field']]['size'] = substr($item['Type'], 9, -1);
-						break;
-						case substr($item['Type'], 0, 7) == 'tinyint':
-							$result[$item['Field']]['signed'] = strpos($result[$item['Field']]['type'], 'unsigned') === false;
-							$item['Type'] = str_replace(' unsigned', '', $item['Type']);
-							$result[$item['Field']]['type'] = 'int';
-							$result[$item['Field']]['size'] = substr($item['Type'], 8, -1);
-						break;
-						case substr($item['Type'], 0, 7) == 'varchar':
-							$result[$item['Field']]['type'] = 'string';
-							$result[$item['Field']]['size'] = substr($item['Type'], 8, -1);
-						break;
-					}
-				} else $result[] = $item['Field'];
-			}
-		} else FatalError(mysql_error($this->Connection));
-		return $result;*/
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -447,7 +428,9 @@ class MySQL
 		$q = DB::getHandler()->createSelectQuery();
 
 		if ($fields == '')
+		{
 			$fields = '*';
+		}
 
 		$q->select($fields)
 			->from($table)
@@ -474,15 +457,21 @@ class MySQL
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$fields = $this->fields($table);
 		if (!$table)
+		{
 			return false;
+		}
 
 		$q = DB::getHandler()->createUpdateQuery();
 		$q->update($table)
 			->where($condition);
 
 		foreach ($fields as $field)
+		{
 			if (isset($item[$field]))
+			{
 				$q->set($field, $q->bindValue($item[$field]));
+			}
+		}
 
 		DB::execute($q);
 		return true;
@@ -509,16 +498,24 @@ class MySQL
 			->from($table);
 
 		if ($condition)
+		{
 			$q->where($condition);
+		}
 
 		if ($group)
+		{
 			$q->groupBy($group);
+		}
 
 		$result = DB::fetchAll($q);
 		if ($rows)
+		{
 			return count($result);
+		}
 		else
+		{
 			return intval($result[0]['count']);
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -547,9 +544,13 @@ class MySQL
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
-		if ($result) {
+		if ($result)
+		{
 			$result = $result[0];
-			if (!empty($param)) $result = $result[$param];
+			if (!empty($param))
+			{
+				$result = $result[$param];
+			}
 		}
 		return $result;
 	}
