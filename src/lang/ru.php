@@ -162,7 +162,6 @@ define('strReturn', 'Вернуться');
 define('strProperties', 'Свойства');
 define('strYes', 'Да');
 define('strNo', 'Нет');
-define('strExit', 'Выход');
 
 /* ОПОВЕЩЕНИЯ */
 define('strNotification', "Оповещение");
@@ -183,7 +182,6 @@ define('strRemind', 'Напомнить');
 define('strPassword', 'Пароль');
 define('strAutoLogin', 'Запомнить');
 define('strEnterSite', 'Войти');
-define('strExitSite', 'Выйти');
 define('strLastVisit', 'Последний визит');
 define('strURL', 'Адрес');
 define('strViewTopic', 'Показать полностью');
@@ -213,7 +211,6 @@ define('admNA', '(не задано)');
 define('admPlugin', 'Плагин');
 define('admPlugins', 'Модули расширения');
 define('admSettings', 'Настройки');
-define('admContent', 'Контент');
 define('admControls', 'Управление');
 define('admConfiguration', 'Конфигурация');
 define('admStructure', 'Разделы сайта');
@@ -299,7 +296,6 @@ define('admPluginsAdd', 'Добавить плагин');
 define('admPluginsTableHint', "Типы: <strong>user</strong> - работает с фронт-эндом, <strong>admin</strong> - работает с бэк-эндом, <strong>content</strong> - плагин контента, <strong>ondemand</strong> - загружается только при необходимости");
 define('admPluginsFound', 'Найденные плагины');
 define('admPluginsInvalidFile', 'Файл не является модулем расширения');
-define('admPluginsInvalidVersion', 'Требуется ядро %s или выше.');
 define('admPluginsAdded', 'Подключен новый плагин');
 define('admPluginTopicTable', 'Таблица топиков');
 
@@ -358,6 +354,3 @@ define('admTemplListItemLabel', 'Шаблон элемента списка ра
 define('admTemplPageSelector', 'Шаблон переключателя страниц');
 define('admTemplPageSelectorLabel', 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol><li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li><li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li><li>Шаблон перехода к первой странице, $(href) - ссылка</li><li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>');
 
-define('templPosted', '$(posted)');
-
-define('ERR_PLUGIN_NOT_AVAILABLE', 'Модуль расширения "%s" не установлен или отключен.');

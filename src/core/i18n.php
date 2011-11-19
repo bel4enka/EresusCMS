@@ -1,15 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Модуль интернационализации
  *
- * Модуль интернационализации.
- *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -36,82 +34,212 @@
 /**
  * Служба интернационализации
  *
+ * Файлы локализации должны располагаться в папке «lang» и называться «код_локали.php». Например:
+ * «lang/ru_RU.php».
+ *
+ * <b>Примеры</b>
+ *
+ * <code>
+ * $i18n = Eresus_i18n::getInstance();
+ * $i18n->setLocale('ru_RU');
+ * echo $i18->getText('Hello world!'); // Может вывести, например, "Привет, мир!"
+ * </code>
+ *
+ * Можно использовать сокращённый вызов метода:
+ *
+ * <code>
+ * echo i18n('Hello world!');
+ * </code>
+ *
+ * И в шаблонах:
+ *
+ * <code>
+ * <div>{i18n('Hello world')}</div>
+ * </code>
+ *
  * @package Eresus
+ * @since 2.16
  */
-class I18n
+class Eresus_i18n
 {
-
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var I18n
+	 * @var Eresus_i18n
+	 * @since 2.16
 	 */
 	static private $instance;
 
 	/**
 	 * Путь к файлам локализации
+	 *
 	 * @var string
+	 * @since 2.16
 	 */
 	private $path;
 
 	/**
 	 * Локаль
+	 *
 	 * @var string
+	 * @since 2.16
 	 */
 	private $locale;
 
 	/**
+	 * Строковые данные
+	 *
+	 * @var array
+	 * @since 2.16
+	 */
+	private $data = array();
+
+	/**
 	 * Возвращает экземпляр-одиночку
 	 *
-	 * @return I18n
+	 * @return Eresus_i18n
+	 *
+	 * @since 2.16
+	 * @uses Eresus_Kernel::app()
+	 * @uses Eresus_Kernel::getRootDir()
 	 */
 	static public function getInstance()
 	{
 		if (!self::$instance)
-			self::$instance = new I18n(Eresus_Kernel::app()->getFsRoot() . '/lang');
+		{
+			self::$instance = new self(Eresus_Kernel::app()->getRootDir() . '/lang');
+		}
 
 		return self::$instance;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Конструктор
+	 * Возвращает текущую локаль
 	 *
-	 * @param string $path  Путь к файлам локализации
-	 * @return I18n
+	 * @return string
+	 *
+	 * @since 2.16
 	 */
-	public function __construct($path)
+	public function getLocale()
 	{
-		$this->path = $path;
+		return $this->locale;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выбор локали
 	 *
-	 * @param string $locale
+	 * @param string $locale  код локали (ru_RU, en_US, …)
+	 *
+	 * @throws InvalidArgumentException  если код локали не в фомрате xx_XX
+	 *
 	 * @return void
+	 *
+	 * @since 2.16
 	 */
 	public function setLocale($locale)
 	{
+		if (!preg_match('/^[a-z]{2}_[A-Z]{2}$/', $locale))
+		{
+			throw new InvalidArgumentException('Invalid locale code: ' . $locale);
+		}
 		$this->locale = $locale;
-		include_once $this->path . '/' . $this->locale . '.php';
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает текст в заданной локали
 	 *
-	 * @param string $key                 Ключ искомой строки
-	 * @param string $context [optional]  Контекст
+	 * @param string $text     искомый текст
+	 * @param string $context  контекст
+	 *
 	 * @return string
+	 *
+	 * @since 2.16
 	 */
-	public function getText($key, $context = null)
+	public function get($text, $context = null)
 	{
-		if (defined($key))
-			return constant($key);
+		$this->localeLazyLoad();
 
-		return $key;
+		if (isset($this->data[$this->locale]))
+		{
+			if ($context && isset($this->data[$this->locale]['messages'][$context]))
+			{
+				$messages = $this->data[$this->locale]['messages'][$context];
+			}
+			else
+			{
+				$messages = $this->data[$this->locale]['messages']['global'];
+			}
+			if (isset($messages[$text]))
+			{
+				return $messages[$text];
+			}
+		}
+
+		return $text;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Конструктор
+	 *
+	 * @param string $path  путь к файлам локализации
+	 *
+	 * @return Eresus_i18n
+	 *
+	 * @since 2.16
+	 */
+	private function __construct($path)
+	{
+		$this->path = $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Ленивая загрузка файла локали
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	private function localeLazyLoad()
+	{
+		if (!$this->locale)
+		{
+			$this->locale = Eresus_Config::get('eresus.cms.locale.default', 'ru_RU');
+		}
+		if (!isset($this->data[$this->locale]))
+		{
+			$filename = $this->path . '/' . $this->locale . '.php';
+			if (file_exists($filename))
+			{
+				$this->data[$this->locale] = include $filename;
+			}
+			else
+			{
+				//Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Can not load language file "%s"', $filename);
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
+
 }
+
+
+/**
+ * Сокращение для «{@link Eresus_i18n::get() Eresus_i18n::getInstance()->get()}»
+ *
+ * @param string $text     искомый текст
+ * @param string $context  контекст
+ *
+ * @return string
+ *
+ * @since 2.16
+ */
+function i18n($text, $context = null)
+{
+	return Eresus_i18n::getInstance()->get($text, $context);
+}
+//-----------------------------------------------------------------------------

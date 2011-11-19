@@ -38,17 +38,16 @@
  *
  * Некоторые ключи:
  *
- * - <b>eresus.cms.multiple</b>: bool — вкл. или выкл. режим обслуживания нескольких сайтов
  * - <b>eresus.cms.dsn</b>: string — DSN для подключения к БД
  * - <b>eresus.cms.dsn.prefix</b>: string — префикс имён таблиц БД
- * - <b>eresus.cms.locale</b>: string — код локали «ru_RU», «en_US» и т. д.
+ * - <b>eresus.cms.locale.default</b>: string — код локали по умолчанию «ru_RU», «en_US» и т. д.
  * - <b>eresus.cms.timezone</b>: string — временна́я зона
  * - <b>eresus.cms.session.timeout</b>: int — тайм-аут сессии
  * - <b>eresus.cms.debug</b>: bool — вкл./выкл. режима отладки
  * - <b>eresus.cms.log.level</b>: int — уровень детализации журнала
  *
  * @package Eresus
- * @since 2.16
+ * @since 2.17
  * @link http://martinfowler.com/eaaCatalog/registry.html Registry pattern
  */
 class Eresus_Config
@@ -75,7 +74,7 @@ class Eresus_Config
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @see get(), drop()
 	 */
 	public static function set($key, $value)
@@ -92,7 +91,7 @@ class Eresus_Config
 	 *
 	 * @return mixed  значение ключа, $default или null
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @see set(), drop()
 	 */
 	static public function get($key, $default = null)
@@ -110,7 +109,7 @@ class Eresus_Config
 	 *
 	 * @param string $key  имя ключа
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @see get(), set()
 	 */
 	static public function drop($key)

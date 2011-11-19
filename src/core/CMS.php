@@ -46,6 +46,15 @@ class Eresus_CMS extends EresusApplication
 	protected $request;
 
 	/**
+	 * Корневая директория приложения
+	 *
+	 * @var string
+	 * @see getRootDir()
+	 * @since 2.17
+	 */
+	private $rootDir;
+
+	/**
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
@@ -80,10 +89,14 @@ class Eresus_CMS extends EresusApplication
 				include_once 'debug.php';
 			}
 
-			$i18n = I18n::getInstance();
-			TemplateSettings::setGlobalValue('i18n', $i18n);
 			//$this->initDB();
 			//$this->initSession();
+
+			/*
+			 * FIXME Приходится делать этот вызов, чтобы в шаблонах можно было использовать
+			 * функцию i18n.
+			 */
+			Eresus_i18n::getInstance();
 			$GLOBALS['Eresus']->init();
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
@@ -124,6 +137,28 @@ class Eresus_CMS extends EresusApplication
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Возвращает корневую директорию приложения
+	 *
+	 * Полный файловый путь к директории приложения без финального слеша.
+	 *
+	 * @return string  корневая директория приложения
+	 *
+	 * @since 2.17
+	 */
+	public function getRootDir()
+	{
+		if (!$this->rootDir)
+		{
+			$this->rootDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
+			if (DIRECTORY_SEPARATOR != '/')
+			{
+				$this->rootDir = str_replace($this->rootDir, DIRECTORY_SEPARATOR, '/');
+			}
+		}
+		return $this->rootDir;
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверка окружения

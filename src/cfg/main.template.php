@@ -30,7 +30,7 @@ Eresus_Config::set('eresus.cms.dsn', 'mysql://user:password@localhost/database')
 /*
  * Локаль по умолчанию
  */
-//Eresus_Config::set('eresus.cms.locale', 'ru_RU');
+//Eresus_Config::set('eresus.cms.locale.default', 'ru_RU');
 
 /*
  * Временная зона по умолчанию

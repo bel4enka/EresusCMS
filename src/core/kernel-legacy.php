@@ -1416,7 +1416,7 @@ class Eresus
 	{
 		global $locale;
 
-		$locale['lang'] = substr(Eresus_Config::get('eresus.cms.locale', 'ru_RU'), 0, 2);
+		$locale['lang'] = substr(Eresus_Config::get('eresus.cms.locale.default', 'ru_RU'), 0, 2);
 		$locale['prefix'] = '';
 
 		# Подключение строковых данных

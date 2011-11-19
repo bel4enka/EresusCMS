@@ -191,7 +191,7 @@ class TPlgMgr
 						version_compare($kernelVersion, $required[1], '>')*/
 					)
 					{
-						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
+						$msg =  i18n('Eresus %s or higher required.', 'admin');
 						$errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
 					}
 					/*}
@@ -229,7 +229,7 @@ class TPlgMgr
 					)
 					{
 						{
-							$msg = I18n::getInstance()->getText('Requires plugin: %s', $this);
+							$msg = i18n('Requires plugin: %s', 'admin');
 							$item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
 						}
 					}

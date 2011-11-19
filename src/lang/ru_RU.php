@@ -2,12 +2,10 @@
 /**
  * ${product.title}
  *
- * Модульные тесты
+ * Русские сообщения
  *
  * @version ${product.version}
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -28,34 +26,48 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once __DIR__ . '/Config_Test.php';
-require_once dirname(__FILE__) . '/EresusCMSTest.php';
-require_once __DIR__ . '/Functions_Test.php';
-require_once __DIR__ . '/Kernel_Test.php';
-require_once __DIR__ . '/i18n_Test.php';
-require_once dirname(__FILE__) . '/classes/AllTests.php';
-
-class Core_AllTests
-{
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite('core');
-
-		$suite->addTestSuite('Eresus_Config_Test');
-		$suite->addTestSuite('Eresus_CMS_Test');
-		$suite->addTestSuite('Functions_Test');
-		$suite->addTestSuite('Eresus_i18n_Test');
-		$suite->addTestSuite('Eresus_Kernel_Test');
-
-		$suite->addTest(Core_Classes_AllTests::suite());
-
-		return $suite;
-	}
-}
+return array(
+	/*
+	 * Сообщения
+	 */
+	'messages' => array(
+		/*
+		 * Языковые коды
+		 */
+		'locale' => array(
+			// ISO 639-1
+			'en' => 'ru',
+		),
+		/*
+		 * Глобальный контекст
+		 */
+		'global' => array(
+		),
+		/*
+		 * Вход в панель управления
+		 */
+		'admin.auth' => array(
+		),
+		/*
+		 * Административный интерфейс
+		 */
+		'admin' => array(
+			'An error occured in module "%s".' => 'В подсистеме "%s" произошла ошибка.',
+			'An error occured in plugin "%s".' => 'В расширении "%s" произошла ошибка.',
+			'Can not find main file "%s" for plugin "%s"' =>
+				'Не удалось найти основной файл "%s" для модуля расширения "%s" ',
+			'Change password' => 'Сменить пароль',
+			'Content' => 'Наполнение',
+			'Eresus %s or higher required.' => 'Требуется Eresus %s или выше.',
+			'Exit' => 'Выйти',
+			'Plugin "%" not installed or disabled.' =>
+				'Модуль расширения "%s" не установлен или отключен.',
+			'Requires plugin: %s' => 'Требуется расширение %s',
+		),
+	),
+);
