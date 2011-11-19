@@ -35,7 +35,7 @@
  * Исключительная ситуация, не связанная с ошибкой
  *
  * @package Eresus
- * @since 2.16
+ * @since 2.17
  */
 class Eresus_SuccessException extends Exception {}
 
@@ -44,7 +44,7 @@ class Eresus_SuccessException extends Exception {}
  * Исключительная ситуация, не связанная с ошибкой, требующая завершения приложения
  *
  * @package Eresus
- * @since 2.16
+ * @since 2.17
  */
 class Eresus_ExitException extends Eresus_SuccessException {}
 
@@ -59,7 +59,7 @@ class Eresus_ExitException extends Eresus_SuccessException {}
  * 4. получение основных сведений о системе.
  *
  * @package Eresus
- * @since 2.16
+ * @since 2.17
  */
 class Eresus_Kernel
 {
@@ -103,7 +103,7 @@ class Eresus_Kernel
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	// @codeCoverageIgnoreStart
 	static public function init()
@@ -142,7 +142,7 @@ class Eresus_Kernel
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @uses Eresus_Logger::log()
 	 */
 	static private function initExceptionHandling()
@@ -199,7 +199,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @uses Eresus_Logger::log()
 	 */
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
@@ -266,7 +266,7 @@ class Eresus_Kernel
 	 *
 	 * @return string|false
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @uses Eresus_Logger::log
 	 */
 	public static function fatalErrorHandler($output)
@@ -325,7 +325,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @uses classExists()
 	 */
 	public static function autoload($className)
@@ -378,7 +378,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static function isUnixLike()
 	{
@@ -391,7 +391,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static function isWindows()
 	{
@@ -404,7 +404,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static function isMac()
 	{
@@ -419,7 +419,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static function isCLI()
 	{
@@ -440,7 +440,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static function isCGI()
 	{
@@ -454,7 +454,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static function isModule()
 	{
@@ -470,7 +470,7 @@ class Eresus_Kernel
 	 * @param string $name  имя класса или интерфейса
 	 * @return bool true если класс или интерфейс $name объявлен
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static public function classExists($name)
 	{
@@ -490,7 +490,7 @@ class Eresus_Kernel
 	 *
 	 * @return int  код завершения (0 — успешное завершение)
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @see $app, app()
 	 * @uses Eresus_Logger::log()
 	 */
@@ -541,7 +541,7 @@ class Eresus_Kernel
 	 * @return Eresus_CMS  выполняемое приложение
 	 *
 	 * @see $app, exec()
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	public static function app()
 	{
