@@ -149,6 +149,33 @@ class Eresus_i18n
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Загружает языковой файл для указанной локали
+	 *
+	 * @param string $locale
+	 *
+	 * @return void
+	 *
+	 * @since 2.17
+	 */
+	public function loadLocale($locale)
+	{
+		if (!array_key_exists($locale, $this->data))
+		{
+			$filename = $this->path . '/' . $locale . '.php';
+			if (file_exists($filename))
+			{
+				$this->data[$locale] = include $filename;
+			}
+			else
+			{
+				// FIXME
+				//Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Can not load language file "%s"', $filename);
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает текст в заданной локали
 	 *
 	 * @param string $text     искомый текст
@@ -183,6 +210,51 @@ class Eresus_i18n
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Транслитерирует текст
+	 *
+	 * @param string $source  транслитерируемый текст
+	 * @param string $locale  локаль текста (по умолчанию текущая)
+	 *
+	 * @return string
+	 *
+	 * @since 2.17
+	 */
+	public function translit($source, $locale = null)
+	{
+		$str = preg_replace('/\W/u', '', $source);
+		if (null === $locale)
+		{
+			$locale = $this->locale;
+		}
+
+		if (!array_key_exists($locale, $this->data))
+		{
+			$this->loadLocale($locale);
+		}
+
+		/*
+		 * Если в языковом файле есть таблица транслитерации, используем её. Иначе попробуем iconv
+		 */
+		if (isset($this->data[$locale]['translit']))
+		{
+			$table =& $this->data[$locale]['translit'];
+			$strlen = mb_strlen($str);
+			$result = '';
+			for ($i = 0; $i < $strlen; $i++)
+			{
+				$char = mb_substr($str, $i, 1);
+				$result .= isset($table[$char]) ? $table[$char] : '';
+			}
+		}
+		else
+		{
+			$result = iconv('utf-8', 'ascii//TRANSLIT', $str);
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Конструктор
 	 *
 	 * @param string $path  путь к файлам локализации
@@ -210,22 +282,7 @@ class Eresus_i18n
 		{
 			$this->locale = Eresus_Config::get('eresus.cms.locale.default', 'ru_RU');
 		}
-		if (
-			'ru_RU' != $this->locale && // Локаль ru_RU загружать не надо.
-			!isset($this->data[$this->locale]) // Если локаль уже загружена, ничего загружать не надо
-		)
-		{
-			$filename = $this->path . '/' . $this->locale . '.php';
-			if (file_exists($filename))
-			{
-				$this->data[$this->locale] = include $filename;
-			}
-			else
-			{
-				// FIXME
-				//Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Can not load language file "%s"', $filename);
-			}
-		}
+		$this->loadLocale($this->locale);
 	}
 	//-----------------------------------------------------------------------------
 

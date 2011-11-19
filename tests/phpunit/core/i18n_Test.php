@@ -39,7 +39,7 @@ require_once TESTS_SRC_DIR . '/core/i18n.php';
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
+class Eresus_i18n_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * Log filename saver
@@ -116,17 +116,12 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_i18n::localeLazyLoad
+	 * @covers Eresus_i18n::loadLocale
 	 */
-	public function test_localeLazyLoad()
+	public function test_loadLocale()
 	{
 		$i18n = $this->getMockBuilder('Eresus_i18n')->setMethods(array('getInstance'))->
 			disableOriginalConstructor()->getMock();
-		$m_localeLazyLoad = new ReflectionMethod('Eresus_i18n', 'localeLazyLoad');
-		$m_localeLazyLoad->setAccessible(true);
-
-		$p_locale = new ReflectionProperty('Eresus_i18n', 'locale');
-		$p_locale->setAccessible(true);
 
 		$p_data = new ReflectionProperty('Eresus_i18n', 'data');
 		$p_data->setAccessible(true);
@@ -145,10 +140,45 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 		*/
 
 		file_put_contents(TESTS_SRC_DIR . '/lang/xx_XX.php', '<?php return array();');
-		$p_locale->setValue($i18n, 'xx_XX');
-		$m_localeLazyLoad->invoke($i18n);
+		$i18n->loadLocale('xx_XX');
 		$this->assertTrue(is_array($p_data->getValue($i18n)));
 		$this->assertArrayHasKey('xx_XX', $p_data->getValue($i18n));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_i18n::localeLazyLoad
+	 */
+	public function test_localeLazyLoad()
+	{
+		$i18n = $this->getMockBuilder('Eresus_i18n')->setMethods(array('getInstance'))->
+			disableOriginalConstructor()->getMock();
+		$m_localeLazyLoad = new ReflectionMethod('Eresus_i18n', 'localeLazyLoad');
+		$m_localeLazyLoad->setAccessible(true);
+
+		$p_locale = new ReflectionProperty('Eresus_i18n', 'locale');
+		$p_locale->setAccessible(true);
+		$p_locale->setValue($i18n, null);
+
+		$p_data = new ReflectionProperty('Eresus_i18n', 'data');
+		$p_data->setAccessible(true);
+		$p_data->setValue($i18n, array());
+
+		$p_path = new ReflectionProperty('Eresus_i18n', 'path');
+		$p_path->setAccessible(true);
+		$p_path->setValue($i18n, TESTS_SRC_DIR . '/lang');
+
+		/*
+		Eresus_Config::set('eresus.cms.log.level', LOG_WARNING);
+		$p_locale->setValue($i18n, 'xx_XX');
+		$m_localeLazyLoad->invoke($i18n);
+		$message = file_get_contents($this->logFilename);
+		$this->assertContains('Can not load language file', $message);
+		*/
+
+		$m_localeLazyLoad->invoke($i18n);
+		$this->assertTrue(is_array($p_data->getValue($i18n)));
+		$this->assertArrayHasKey('ru_RU', $p_data->getValue($i18n));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -181,6 +211,25 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 		$this->assertEquals('Z', $i18n->get('Z'));
 		$this->assertEquals('B', $i18n->get('A'));
 		$this->assertEquals('C', $i18n->get('A', 'some.context'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_i18n::translit
+	 */
+	public function test_translit()
+	{
+		$i18n = $this->getMockBuilder('Eresus_i18n')->
+			setMethods(array('getInstance'))->disableOriginalConstructor()->getMock();
+
+		$p_path = new ReflectionProperty('Eresus_i18n', 'path');
+		$p_path->setAccessible(true);
+		$p_path->setValue($i18n, TESTS_SRC_DIR . '/lang');
+
+		$i18n->setLocale('ru_RU');
+		$this->assertEquals('test', $i18n->translit('тест'));
+
+		$this->assertEquals('test', $i18n->translit('test!', 'en_US'));
 	}
 	//-----------------------------------------------------------------------------
 

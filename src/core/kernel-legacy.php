@@ -697,7 +697,7 @@ function upload($name, $filename, $overwrite = true)
 	if (substr($filename, -1) == '/')
 	{
 		$filename .= option('filesTranslitNames') ?
-			Translit($_FILES[$name]['name']) :
+			Eresus_i18n::getInstance()->translit($_FILES[$name]['name']) :
 			$_FILES[$name]['name'];
 		if (file_exists($filename) &&
 			((is_string($overwrite) && $filename != $overwrite ) || (is_bool($overwrite) && !$overwrite))
@@ -924,22 +924,6 @@ function FormatSize($size)
 		$z = 0;
 	}
 	return number_format($size, $z, '.', ' ').' '.$units;
-}
-//-----------------------------------------------------------------------------
-
-/**
- * @deprecated с 2.17
- */
-function Translit($s) #: String
-{
-	$s = strtr($s, $GLOBALS['translit_table']);
-	$s = str_replace(
-		array(' ','/','?'),
-		array('_','-','7'),
-		$s
-	);
-	$s = preg_replace('/(\s|_)+/', '$1', $s);
-	return $s;
 }
 //-----------------------------------------------------------------------------
 

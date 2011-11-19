@@ -2,12 +2,10 @@
 /**
  * ${product.title}
  *
- * Модульные тесты
+ * Русские сообщения
  *
  * @version ${product.version}
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -28,43 +26,65 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
  * $Id$
  */
 
-mb_internal_encoding('utf-8');
 
-require_once __DIR__ . '/stubs.php';
-
-require_once TESTS_SRC_DIR . '/lang/ru.php';
-
-
-/**
-* Вспомогательный инструментарий для тестов
-*
-* @package Eresus
-* @subpackage Tests
-* @since 2.17
-*/
-class Eresus_Tests
-{
-	/**
-	 * Устанавливает статическое приватное свойство класса
-	 *
-	 * @param string $className
-	 * @param mixed  $value
-	 * @param string $propertyName
-	 *
-	 * @return void
-	 *
-	 * @since 2.16
+return array(
+	/*
+	 * Сообщения
 	 */
-	public static function setStatic($className, $value, $propertyName = 'instance')
-	{
-		$property = new ReflectionProperty($className, $propertyName);
-		$property->setAccessible(true);
-		$property->setValue($className, $value);
-	}
-	//-----------------------------------------------------------------------------
-}
+	'messages' => array(
+		/*
+		 * Языковые коды
+		 */
+		'locale' => array(
+			// ISO 639-1
+			'ru' => 'ru',
+		),
+		/*
+		 * Глобальный контекст
+		 */
+		'global' => array(
+		),
+		/*
+		 * Вход в панель управления
+		 */
+		'admin.auth' => array(
+		),
+		/*
+		 * Административный интерфейс
+		 */
+		'admin' => array(
+		),
+	),
+	/*
+	 * Таблица транслитерации
+	 */
+	'translit' => array(
+		'а' => 'a',   'б' => 'b',   'в' => 'v',
+		'г' => 'g',   'д' => 'd',   'е' => 'e',
+		'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
+		'и' => 'i',   'й' => 'y',   'к' => 'k',
+		'л' => 'l',   'м' => 'm',   'н' => 'n',
+		'о' => 'o',   'п' => 'p',   'р' => 'r',
+		'с' => 's',   'т' => 't',   'у' => 'u',
+		'ф' => 'f',   'х' => 'h',   'ц' => 'c',
+		'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
+		'ь' => "'",   'ы' => 'y',   'ъ' => "'",
+		'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
+
+		'А' => 'A',   'Б' => 'B',   'В' => 'V',
+		'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
+		'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
+		'И' => 'I',   'Й' => 'Y',   'К' => 'K',
+		'Л' => 'L',   'М' => 'M',   'Н' => 'N',
+		'О' => 'O',   'П' => 'P',   'Р' => 'R',
+		'С' => 'S',   'Т' => 'T',   'У' => 'U',
+		'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
+		'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
+		'Ь' => "'",   'Ы' => 'Y',   'Ъ' => "'",
+		'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+	),
+);
