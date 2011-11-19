@@ -191,7 +191,7 @@ class TPlgMgr
 						version_compare($kernelVersion, $required[1], '>')*/
 					)
 					{
-						$msg =  i18n('Eresus %s or higher required.', 'admin');
+						$msg =  i18n('Требуется Eresus %s или выше.', 'admin');
 						$errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
 					}
 					/*}
@@ -229,7 +229,7 @@ class TPlgMgr
 					)
 					{
 						{
-							$msg = i18n('Requires plugin: %s', 'admin');
+							$msg = i18n('Требуется расширение %s', 'admin');
 							$item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
 						}
 					}

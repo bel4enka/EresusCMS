@@ -24,12 +24,9 @@ define('errFormFieldHasNoName', 'Не указано имя для поля ти
 define('errFormHasNoName', 'Не указано имя формы');
 define('errFormPatternError', 'Введенное значение в поле "%s" не соответствует требуемому формату "%s"');
 define('errFormBadConfirm', 'Пароль и подтверждение не совпадают!');
-define('errAccessDenied', 'Доступ к данному разделу запрещен!');
 define('errNonexistedDomain', 'Несуществующий домен: "%s"');
 define('errContentType', 'Неверный тип контента "%s"');
 define('errItemWithSameName', 'Элемент с именем "%s" уже существует.');
-define('HTTP_CODE_403', 'Доступ к запрошенному ресурсу запрещен');
-define('HTTP_CODE_404', 'Запрошенная страница не найдена');
 define('strOk', 'OK');
 define('strApply', 'Применить');
 define('strCancel', 'Отменить');

@@ -186,7 +186,7 @@ class Plugins
 		{
 			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
 				$name);
-			$msg = i18n('Can not find main file "%s" for plugin "%s"', 'admin');
+			$msg = i18n('Не удалось найти основной файл "%s" для модуля расширения "%s".', 'admin');
 			$msg = sprintf($msg, $filename, $name);
 			ErrorMessage($msg);
 		}

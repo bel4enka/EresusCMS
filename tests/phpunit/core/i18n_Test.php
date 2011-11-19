@@ -73,6 +73,7 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 	protected function tearDown()
 	{
 		@unlink($this->logFilename);
+		@unlink(TESTS_SRC_DIR . '/lang/xx_XX.php');
 		ini_set('error_log', $this->logSaver);
 	}
 	//-----------------------------------------------------------------------------
@@ -143,10 +144,11 @@ class Eresus_i18n_Test extends PHPUnit_Extensions_OutputTestCase
 		$this->assertContains('Can not load language file', $message);
 		*/
 
+		file_put_contents(TESTS_SRC_DIR . '/lang/xx_XX.php', '<?php return array();');
+		$p_locale->setValue($i18n, 'xx_XX');
 		$m_localeLazyLoad->invoke($i18n);
-		$p_locale->setValue($i18n, 'ru_RU');
 		$this->assertTrue(is_array($p_data->getValue($i18n)));
-		$this->assertArrayHasKey('ru_RU', $p_data->getValue($i18n));
+		$this->assertArrayHasKey('xx_XX', $p_data->getValue($i18n));
 	}
 	//-----------------------------------------------------------------------------
 

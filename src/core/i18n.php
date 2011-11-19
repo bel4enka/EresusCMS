@@ -41,24 +41,24 @@
  *
  * <code>
  * $i18n = Eresus_i18n::getInstance();
- * $i18n->setLocale('ru_RU');
- * echo $i18->getText('Hello world!'); // Может вывести, например, "Привет, мир!"
+ * $i18n->setLocale('en_US');
+ * echo $i18->getText('Привет, мир!'); // Может вывести, например, "Hello world!"
  * </code>
  *
  * Можно использовать сокращённый вызов метода:
  *
  * <code>
- * echo i18n('Hello world!');
+ * echo i18n('Привет, мир!');
  * </code>
  *
  * И в шаблонах:
  *
  * <code>
- * <div>{i18n('Hello world')}</div>
+ * <div>{i18n('Привет, мир!')}</div>
  * </code>
  *
  * @package Eresus
- * @since 2.16
+ * @since 2.17
  */
 class Eresus_i18n
 {
@@ -66,7 +66,7 @@ class Eresus_i18n
 	 * Экземпляр-одиночка
 	 *
 	 * @var Eresus_i18n
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	static private $instance;
 
@@ -74,7 +74,7 @@ class Eresus_i18n
 	 * Путь к файлам локализации
 	 *
 	 * @var string
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	private $path;
 
@@ -82,7 +82,7 @@ class Eresus_i18n
 	 * Локаль
 	 *
 	 * @var string
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	private $locale;
 
@@ -90,7 +90,7 @@ class Eresus_i18n
 	 * Строковые данные
 	 *
 	 * @var array
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	private $data = array();
 
@@ -99,7 +99,7 @@ class Eresus_i18n
 	 *
 	 * @return Eresus_i18n
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 * @uses Eresus_Kernel::app()
 	 * @uses Eresus_Kernel::getRootDir()
 	 */
@@ -119,7 +119,7 @@ class Eresus_i18n
 	 *
 	 * @return string
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	public function getLocale()
 	{
@@ -136,7 +136,7 @@ class Eresus_i18n
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	public function setLocale($locale)
 	{
@@ -156,7 +156,7 @@ class Eresus_i18n
 	 *
 	 * @return string
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	public function get($text, $context = null)
 	{
@@ -189,7 +189,7 @@ class Eresus_i18n
 	 *
 	 * @return Eresus_i18n
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	private function __construct($path)
 	{
@@ -202,7 +202,7 @@ class Eresus_i18n
 	 *
 	 * @return void
 	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
 	private function localeLazyLoad()
 	{
@@ -210,7 +210,10 @@ class Eresus_i18n
 		{
 			$this->locale = Eresus_Config::get('eresus.cms.locale.default', 'ru_RU');
 		}
-		if (!isset($this->data[$this->locale]))
+		if (
+			'ru_RU' != $this->locale && // Локаль ru_RU загружать не надо.
+			!isset($this->data[$this->locale]) // Если локаль уже загружена, ничего загружать не надо
+		)
 		{
 			$filename = $this->path . '/' . $this->locale . '.php';
 			if (file_exists($filename))
@@ -219,6 +222,7 @@ class Eresus_i18n
 			}
 			else
 			{
+				// FIXME
 				//Eresus_Logger::log(__METHOD__, LOG_WARNING, 'Can not load language file "%s"', $filename);
 			}
 		}
@@ -236,7 +240,7 @@ class Eresus_i18n
  *
  * @return string
  *
- * @since 2.16
+ * @since 2.17
  */
 function i18n($text, $context = null)
 {

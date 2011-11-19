@@ -102,7 +102,7 @@ function FatalError($msg)
 			"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
 			"<html>\n".
 			"<head>\n".
-			"  <title>". i18n('Error') . "</title>\n".
+			"  <title>". i18n('Ошибка') . "</title>\n".
 			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n".
 			"</head>\n\n".
 			"<body>\n".
@@ -111,7 +111,8 @@ function FatalError($msg)
 				"border-color: #e88 #800 #800 #e88; min-width: 500px;\">\n".
 			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
 				"border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; " .
-				"font-weight: bold; text-align: center; font-size: 10pt;\">" . i18n('Error')."</td></tr>\n".
+				"font-weight: bold; text-align: center; font-size: 10pt;\">" . i18n('Ошибка') .
+				"</td></tr>\n".
 			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
 				"border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; " .
 				"font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
@@ -141,7 +142,7 @@ function ErrorBox($text, $caption = null)
 {
 	if (is_null($caption))
 	{
-		$caption = i18n('Error');
+		$caption = i18n('Ошибка');
 	}
 	$result =
 		(empty($caption)?'':"<div class=\"errorBoxCap\">".$caption."</div>\n").

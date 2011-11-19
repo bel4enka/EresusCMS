@@ -899,13 +899,13 @@ class TAdminUI extends WebPage
 						if (isset($name))
 						{
 							$logMsg = 'Error in plugin "' . $name . '"';
-							$msg = i18n('An error occured in plugin "%s".', 'admin');
+							$msg = i18n('В расширении "%s" произошла ошибка.', 'admin');
 							$msg = sprintf($msg, $name);
 						}
 						else
 						{
 							$logMsg = 'Error in module "' . $module . '"';
-							$msg = i18n('An error occured in module "%s".', 'admin');
+							$msg = i18n('В подсистеме "%s" произошла ошибка.', 'admin');
 							$msg = sprintf($msg, $module);
 						}
 
@@ -927,7 +927,7 @@ class TAdminUI extends WebPage
 			else
 			{
 				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
-				$msg = i18n('Plugin "%" not installed or disabled.', 'admin');
+				$msg = i18n('Модуль расширения "%s" не установлен или отключен.', 'admin');
 				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}

@@ -93,6 +93,17 @@ class TClientUI extends WebPage
 		}
 		$section = strip_tags(implode($section, option('siteTitleDivider')));
 
+		$accessLevels = array(
+			i18n('Неизвестный уровень доступа'),
+			i18n('Главный администратор'),
+			i18n('Администратор'),
+			i18n('Редактор'),
+			i18n('Пользователь'),
+			i18n('Гость'),
+		);
+		$accessLevelName = isset($accessLevels[$this->access]) ? $accessLevels[$this->access] : '';
+
+
 		$result = str_replace(
 			array(
 				'$(httpHost)',
@@ -138,7 +149,7 @@ class TClientUI extends WebPage
 				$this->description,
 				$this->keywords,
 				$this->access,
-				constant('ACCESSLEVEL'.$this->access),
+				$accessLevelName,
 				$section,
 			),
 			$text

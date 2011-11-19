@@ -114,7 +114,7 @@ class TContent
 
 					default:
 						$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox',
-						i18n('Error'));
+						i18n('Ошибка'));
 					break;
 				}
 			}
