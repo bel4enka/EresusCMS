@@ -67,6 +67,24 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	{
 		ini_set('error_log', $this->error_log);
 		set_include_path($this->inclue_path);
+
+		$filename = TESTS_SRC_DIR . '/core/Stub.php';
+		if (is_file($filename))
+		{
+			unlink($filename);
+		}
+
+		$filename = TESTS_SRC_DIR . '/core/libbotobor/libbotobor.php';
+		if (is_file($filename))
+		{
+			unlink($filename);
+		}
+
+		$filename = TESTS_SRC_DIR . '/core/libbotobor';
+		if (is_dir($filename))
+		{
+			rmdir($filename);
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -243,6 +261,41 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 		$this->assertFalse(Eresus_Kernel::classExists('UnexistentClass'));
 		$this->assertTrue(Eresus_Kernel::classExists('Eresus_Kernel_Test_Class'));
 		$this->assertTrue(Eresus_Kernel::classExists('Eresus_Kernel_Test_Interface'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::autoload
+	 */
+	public function test_autoload()
+	{
+		$this->assertFalse(Eresus_Kernel::autoload('UnexistentClass'));
+
+		/*
+		 * Классы Eresus
+		 */
+		file_put_contents(TESTS_SRC_DIR . '/core/Stub.php',	'<?php class Eresus_Stub {} ?>');
+		$this->assertTrue(Eresus_Kernel::autoload('Eresus_Stub'));
+		$this->assertFalse(Eresus_Kernel::autoload('Eresus_Stub_Table'));
+
+		/*
+		 * Классы Botobor
+		 */
+		$this->assertFalse(Eresus_Kernel::autoload('Botobor_Stub'));
+		mkdir(TESTS_SRC_DIR . '/core/libbotobor', 0777, true);
+		file_put_contents(TESTS_SRC_DIR . '/core/libbotobor/libbotobor.php',
+			'<?php class Botobor_Stub {} ?>');
+		$this->assertTrue(Eresus_Kernel::autoload('Botobor_Stub'));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_Kernel::autoload
+	 * @expectedException LogicException
+	 */
+	public function test_autoload_failed()
+	{
+		$this->assertFalse(Eresus_Kernel::autoload('Eresus_Unexistent'));
 	}
 	//-----------------------------------------------------------------------------
 

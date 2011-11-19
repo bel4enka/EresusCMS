@@ -32,20 +32,9 @@
  */
 
 return array(
-	'AdminFileManager' => 'admin/components/FileManager/AdminFileManager.php',
-	'Eresus_Feed_Writer' => 'core/Feed/Writer.php',
-	'Eresus_Feed_Writer_Item' => 'core/Feed/Writer/Item.php',
-	'Eresus_PluginInfo' => 'core/classes/PluginInfo.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
-
-	// Ботобор
-	'Botobor' => 'core/libbotobor/libbotobor.php',
-	'Botobor_Form' => 'core/libbotobor/libbotobor.php',
-	'Botobor_Form_HTML' => 'core/libbotobor/libbotobor.php',
-	'Botobor_Keeper' => 'core/libbotobor/libbotobor.php',
-	'Botobor_MetaData' => 'core/libbotobor/libbotobor.php',
 );

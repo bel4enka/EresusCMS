@@ -330,27 +330,43 @@ class Eresus_Kernel
 	 */
 	public static function autoload($className)
 	{
-		if (stripos($className, 'Eresus_') !== 0 || self::classExists($className))
-		{
-			return false;
-		}
-
-		$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-			str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
-
-		if (file_exists($fileName))
-		{
-			include $fileName;
-			return self::classExists($className);
-		}
 		/*
-		 * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
-		 * Отсутствие такого класса не является ошибкой. Отсутствие любого другого класса расцениваем
-		 * как логическую ошибку.
+		 * Классы Eresus
 		 */
-		elseif (substr($className, -5) !== 'Table')
+		if (stripos($className, 'Eresus_') === 0)
 		{
-			throw new LogicException('Class "' . $className . '" not found');
+			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
+				str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
+
+			if (file_exists($fileName))
+			{
+				include $fileName;
+				return self::classExists($className);
+			}
+			/*
+			 * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
+			 * Отсутствие такого класса не является ошибкой. Отсутствие любого другого класса расцениваем
+			 * как логическую ошибку.
+			 */
+			elseif (substr($className, -5) !== 'Table')
+			{
+				throw new LogicException('Class "' . $className . '" not found');
+			}
+		}
+
+		/*
+		 * Классы Botobor
+		 */
+		if (stripos($className, 'Botobor') === 0)
+		{
+			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'libbotobor' . DIRECTORY_SEPARATOR .
+				'libbotobor.php';
+
+			if (file_exists($fileName))
+			{
+				include $fileName;
+				return self::classExists($className);
+			}
 		}
 
 		return false;
