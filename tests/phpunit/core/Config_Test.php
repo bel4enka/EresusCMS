@@ -1,13 +1,10 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
  * Модульные тесты
  *
- * @version ${product.version}
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -33,27 +30,30 @@
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+require_once __DIR__ . '/../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Config.php';
 
-require_once __DIR__ . '/Config_Test.php';
-require_once dirname(__FILE__) . '/EresusCMSTest.php';
-require_once __DIR__ . '/Functions_Test.php';
-require_once __DIR__ . '/Kernel_Test.php';
-require_once dirname(__FILE__) . '/classes/AllTests.php';
-
-class Core_AllTests
+/**
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_Config_Test extends PHPUnit_Framework_TestCase
 {
-	public static function suite()
+	/**
+	 * @covers Eresus_Config::set
+	 * @covers Eresus_Config::get
+	 * @covers Eresus_Config::drop
+	 */
+	public function test_set_get_drop()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('core');
+		Eresus_Config::set('key1', 'value1');
+		$this->assertEquals('value1', Eresus_Config::get('key1'));
+		Eresus_Config::drop('key1');
+		$this->assertNull(Eresus_Config::get('key1'));
 
-		$suite->addTestSuite('Eresus_Config_Test');
-		$suite->addTestSuite('Eresus_CMS_Test');
-		$suite->addTestSuite('Functions_Test');
-		$suite->addTestSuite('Eresus_Kernel_Test');
-
-		$suite->addTest(Core_Classes_AllTests::suite());
-
-		return $suite;
+		$this->assertEquals('value2', Eresus_Config::get('key2', 'value2'));
 	}
+	//-----------------------------------------------------------------------------
+
+	/* */
 }

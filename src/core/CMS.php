@@ -75,7 +75,7 @@ class Eresus_CMS extends EresusApplication
 			 */
 			$GLOBALS['Eresus'] = new Eresus;
 			$this->initConf();
-			if ($GLOBALS['Eresus']->conf['debug']['enable'])
+			if (Eresus_Config::get('eresus.cms.debug'))
 			{
 				include_once 'debug.php';
 			}
@@ -340,17 +340,6 @@ class Eresus_CMS extends EresusApplication
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-/*
-		global $Eresus; // FIXME: Устаревшая переменная $Eresus
-
-		// FIXME Использование устаревших настроек
-		$dsn = ($Eresus->conf['db']['engine'] ? $Eresus->conf['db']['engine'] : 'mysql') .
-			'://' . $Eresus->conf['db']['user'] .
-			':' . $Eresus->conf['db']['password'] .
-			'@' . ($Eresus->conf['db']['host'] ? $Eresus->conf['db']['host'] : 'localhost') .
-			'/' . $Eresus->conf['db']['name'];
-
-		DBSettings::setDSN($dsn);*/
 	}
 	//-----------------------------------------------------------------------------
 

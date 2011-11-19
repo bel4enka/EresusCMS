@@ -332,23 +332,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		$headers .= "Content-type: text/plain; charset=$charset\n";
 	}
 
-	if ($Eresus->conf['debug']['enable'] && $Eresus->conf['debug']['mail'] !== true)
-	{
-		if (is_string($Eresus->conf['debug']['mail']))
-		{
-			$hnd = @fopen($Eresus->conf['debug']['mail'], 'a');
-			if ($hnd)
-			{
-				fputs($hnd, "\n====================\n$headers\nTo: $address\nSubject: $subject\n\n$text\n");
-				fclose($hnd);
-			}
-			return true;
-		}
-	}
-	else
-	{
-		return (mail($address, $subject, $text, $headers)===0);
-	}
+	return (mail($address, $subject, $text, $headers)===0);
 }
 //-----------------------------------------------------------------------------
 
@@ -1109,29 +1093,7 @@ class Eresus
 	 * @var array
 	 */
 	var $conf = array(
-		'lang' => 'ru',
-		'timezone' => '',
-		'db' => array(
-			'engine'   => 'mysql',
-			'host'     => 'localhost',
-			'user'     => '',
-			'password' => '',
-			'name'     => '',
-			'prefix'   => '',
-		),
-		'session' => array(
-			'timeout' => 30,
-		),
 		'extensions' => array(),
-		'backward' => array(
-			'TPlugin' => false,
-			'TContentPlugin' => false,
-			'TListContentPlugin' => false,
-		),
-		'debug' => array(
-			'enable' => false,
-			'mail' => true,
-		),
 	);
 
 	/**
@@ -1454,7 +1416,7 @@ class Eresus
 	{
 		global $locale;
 
-		$locale['lang'] = $this->conf['lang'];
+		$locale['lang'] = substr(Eresus_Config::get('eresus.cms.locale', 'ru_RU'), 0, 2);
 		$locale['prefix'] = '';
 
 		# Подключение строковых данных
@@ -1487,18 +1449,6 @@ class Eresus
 		{
 			FatalError("Classes file '$filename' not found!");
 		}
-		if ($this->conf['backward']['TListContentPlugin'])
-		{
-			useClass('backward/TListContentPlugin');
-		}
-		elseif ($this->conf['backward']['TContentPlugin'])
-		{
-			useClass('backward/TContentPlugin');
-		}
-		elseif ($this->conf['backward']['TPlugin'])
-		{
-			useClass('backward/TPlugin');
-		}
 	}
 	//------------------------------------------------------------------------------
 
@@ -1524,16 +1474,7 @@ class Eresus
 	 */
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine']))
-		{
-			$this->db = new $this->conf['db']['engine'];
-			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
-				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-		}
-		else
-		{
-			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
-		}
+		$this->db = new MySQL();
 	}
 	//------------------------------------------------------------------------------
 
@@ -1567,7 +1508,8 @@ class Eresus
 		if (isset($this->session['time']))
 		{
 			if (
-				(time() - $this->session['time'] > $this->conf['session']['timeout']*3600) &&
+				(time() - $this->session['time'] >
+					Eresus_Config::get('eresus.cms.session.timeout', 30) * 3600) &&
 				($this->user['auth'])
 			)
 			{
@@ -1668,9 +1610,9 @@ class Eresus
 		}
 		# Читаем конфигурацию
 		$this->init_config();
-		if ($this->conf['timezone'])
+		if (Eresus_Config::get('eresus.cms.timezone'))
 		{
-			date_default_timezone_set($this->conf['timezone']);
+			date_default_timezone_set(Eresus_Config::get('eresus.cms.timezone'));
 		}
 		# Определение путей
 		$this->init_resolve();
@@ -1717,11 +1659,7 @@ class Eresus
 	 */
 	function password_hash($password)
 	{
-		$result = md5($password);
-		if (!$this->conf['backward']['weak_password'])
-		{
-			$result = md5($result);
-		}
+		$result = md5(md5($password));
 		return $result;
 	}
 	//-----------------------------------------------------------------------------

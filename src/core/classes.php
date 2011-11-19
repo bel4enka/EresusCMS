@@ -1248,7 +1248,7 @@ class EresusExtensionConnector
 			break;
 
 			case $ext == 'php':
-				$Eresus->conf['debug']['enable'] = false;
+				Eresus_Config::set('eresus.cms.debug', false);
 				restore_error_handler();
 				chdir(dirname($filename));
 				require $filename;

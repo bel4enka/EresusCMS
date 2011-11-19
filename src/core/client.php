@@ -441,12 +441,12 @@ class TClientUI extends WebPage
 		}
 
 		$result = $Eresus->plugins->clientBeforeSend($result);
-		if (!$Eresus->conf['debug']['enable'])
+		if (!Eresus_Config::get('eresus.cms.debug'))
 		{
 			ob_start('ob_gzhandler');
 		}
 		echo $result;
-		if (!$Eresus->conf['debug']['enable'])
+		if (!Eresus_Config::get('eresus.cms.debug'))
 		{
 			ob_end_flush();
 		}

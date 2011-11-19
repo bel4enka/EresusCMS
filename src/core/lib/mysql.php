@@ -78,18 +78,12 @@ class MySQL
 	/**
 	 * Открывает соединение сервером данных и выбирает источник
 	 *
-	 * @param string $server    Сервер данных
-	 * @param string $username  Имя пользователя для доступа к серверу
-	 * @param string $password  Пароль пользователя
-	 * @param string $source    Имя источника данных
-	 *
-	 * @return bool  Результат соединения
 	 * @deprecated
 	 */
-	public function init($server, $username, $password, $source, $prefix = '')
+	public function __construct()
 	{
 		eresus_log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$dsn = "mysql://$username:$password@$server/$source?charset=utf8";
+		$dsn = Eresus_Config::get('eresus.cms.dsn') . '?charset=utf8';
 
 		try
 		{
@@ -101,7 +95,9 @@ class MySQL
 			FatalError("Can not connect to MySQL server. See log for more info.");
 		}
 
-		$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+		$options = new ezcDbOptions(array(
+			'tableNamePrefix' => Eresus_Config::get('eresus.cms.dsn.prefix', '')
+		));
 		$db->setOptions($options);
 
 		return true;

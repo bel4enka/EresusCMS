@@ -34,7 +34,12 @@
 return array(
 	'EresusForm' => 'core/EresusForm.php',
 	'I18n' => 'core/i18n.php',
+	'MySQL' => 'core/lib/mysql.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
+
+	'TListContentPlugin' => 'core/backward/TListContentPlugin',
+	'TContentPlugin' => 'core/backward/TContentPlugin',
+	'TPlugin' => 'core/backward/TPlugin',
 );
