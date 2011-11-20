@@ -84,7 +84,8 @@ class TPages
 		}
 		else
 		{
-			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
+			ErrorMessage(sprintf(i18n('Элемент с именем "%s" уже существует.', __CLASS__),
+				$item['name']));
 			saveRequest();
 			HTTP::redirect($Eresus->request['referer']);
 		}
@@ -120,7 +121,8 @@ class TPages
 			$item['owner'] . "' AND `id` <> " . $item['id'] . ")");
 		if (count($temp) > 0)
 		{
-			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
+			ErrorMessage(sprintf(i18n('Элемент с именем "%s" уже существует.', __CLASS__),
+				$item['name']));
 			saveRequest();
 			HTTP::redirect($Eresus->request['referer']);
 		}
@@ -161,7 +163,7 @@ class TPages
 				$item['caption'] = trim($item['caption']);
 				if (empty($item['caption']))
 				{
-					$item['caption'] = admNA;
+					$item['caption'] = i18n('(не задано)', __CLASS__);
 				}
 				$result[0][] = $item['id'];
 				$result[1][] = str_repeat('&nbsp;', $level*2).$item['caption'];
@@ -276,7 +278,8 @@ class TPages
 					array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
 					array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
 					array('type'=>'hidden', 'name'=>'id', 'value' => $item['id']),
-					array('type'=>'select', 'label'=>strMove.' "<b>'.$item['caption'].'</b>" в',
+					array('type'=>'select',
+						'label'=> i18n('Переместить', __CLASS__) . ' "<b>' . $item['caption'].'</b>" в',
 						'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
 				),
 				'buttons' => array('ok', 'cancel'),
@@ -412,7 +415,7 @@ class TPages
 		restoreRequest();
 		$form = array (
 			'name' => 'createPage',
-			'caption' => strAdd,
+			'caption' => i18n('Добавить', __CLASS__),
 			'width' => '600px',
 			'fields' => array (
 				array ('type' => 'hidden','name'=>'owner','value'=>arg('owner', 'int')),
@@ -442,8 +445,8 @@ class TPages
 					'default'=>true),
 				array ('type' => 'checkbox','name' => 'visible','label' => i18n('Видимая', __CLASS__),
 					'default'=>true),
-				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
-					'values'=>array(ADMIN,EDITOR,USER,GUEST),
+				array ('type' => 'select','name' => 'access','label' => i18n('Уровень доступа', __CLASS__),
+					'access' => ADMIN, 'values'=>array(ADMIN,EDITOR,USER,GUEST),
 					'items' => array(
 						i18n('Администратор'),
 						i18n('Редактор'),
@@ -451,8 +454,8 @@ class TPages
 						i18n('Гость')
 					),
 					'default' => GUEST),
-				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
-					'width' => '4em','maxlength' => '5'),
+				array ('type' => 'edit', 'name' => 'position', 'label' => i18n('Позиция', __CLASS__),
+					'access' => ADMIN, 'width' => '4em', 'maxlength' => '5'),
 				array ('type' => 'memo','name' => 'options',
 					'label' => i18n('Дополнительные опции', __CLASS__), 'height' => '5')
 			),
@@ -511,16 +514,16 @@ class TPages
 					'items' => $content[0], 'values' => $content[1]),
 				array ('type' => 'checkbox','name' => 'active','label' => i18n('Активна', __CLASS__)),
 				array ('type' => 'checkbox','name' => 'visible','label' => i18n('Видимая', __CLASS__)),
-				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,
-					'values'=>array(ADMIN,EDITOR,USER,GUEST),
+				array ('type' => 'select','name' => 'access','label' => i18n('Уровень доступа', __CLASS__),
+					'access' => ADMIN, 'values'=>array(ADMIN,EDITOR,USER,GUEST),
 					'items' => array(
 						i18n('Администратор'),
 						i18n('Редактор'),
 						i18n('Пользователь'),
 						i18n('Гость')
 					)),
-				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,
-					'width' => '4em','maxlength' => '5'),
+				array ('type' => 'edit', 'name' => 'position', 'label' => i18n('Позиция', __CLASS__),
+					'access' => ADMIN, 'width' => '4em', 'maxlength' => '5'),
 				array ('type' => 'memo','name' => 'options',
 					'label' => i18n('Дополнительные опции', __CLASS__), 'height' => '5'),
 				array ('type' => 'edit', 'name' => 'created', 'label' => i18n('Дата создания', __CLASS__),
@@ -567,7 +570,8 @@ class TPages
 		{
 			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?
 				$this->cache['content_types'][$items[$i]['type']] :
-				'<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
+				'<span class="admError">'.sprintf(i18n('Неверный тип контента "%s"', __CLASS__),
+				$items[$i]['type']).'</span>';
 			$row = array();
 			$row[] = array('text' => $items[$i]['caption'], 'style'=>"padding-left: {$level}em;",
 				'href'=>$Eresus->root.'admin.php?mod=content&amp;section='.$items[$i]['id']);

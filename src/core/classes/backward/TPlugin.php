@@ -82,7 +82,7 @@ class TPlugin
 	 */
 	public function __construct()
 	{
-		global $Eresus, $locale;
+		global $Eresus;
 
 		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
 		{
@@ -92,9 +92,6 @@ class TPlugin
 			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
 				$this->resetPlugin();
 		}
-		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
-		if (FS::isFile($filename))
-			Core::safeInclude($filename);
 	}
 	//------------------------------------------------------------------------------
 

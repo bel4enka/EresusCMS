@@ -51,11 +51,10 @@ class TThemes
 	 * @var unknown_type
 	 */
 	public $tabs = array(
-		'width' => admThemesTabWidth,
 		'items' => array(
-			array('caption' => admThemesTemplates),
-			array('caption' => admThemesStandard),
-			array('caption' => admThemesStyles),
+			array('caption' => 'Шаблоны страниц'),
+			array('caption' => 'Стандартные шаблоны'),
+			array('caption' => 'Файлы стилей'),
 		),
 	);
 
@@ -150,13 +149,15 @@ class TThemes
 
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title.admTDiv.admAdd,
+			'caption' => $page->title . ' - ' . i18n('Добавить', __CLASS__),
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'edit','name'=>'name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html'),
-				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type' => 'edit', 'name' => 'name', 'label' => i18n('Имя файла', __CLASS__),
+					'width' => '200px', 'comment' => '.html'),
+				array('type' => 'edit', 'name' => 'desc', 'label' => i18n('Описание', __CLASS__),
+					'width' => '100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok','cancel'),
@@ -179,14 +180,16 @@ class TThemes
 		$item = $templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title.admTDiv.admEdit,
+			'caption' => $page->title. '-' . i18n('Изменить', __CLASS__),
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html', 'disabled' => true, 'value' => $item['name']),
-				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type' => 'edit', 'name' => 'filename', 'label' => i18n('Имя файла', __CLASS__),
+					'width' => '200px', 'comment' => '.html', 'disabled' => true, 'value' => $item['name']),
+				array('type' => 'edit', 'name' => 'desc', 'label' => i18n('Описание', __CLASS__),
+					'width' => '100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -220,7 +223,7 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
+					array('caption' => i18n('Добавить', __CLASS__), 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
@@ -242,7 +245,7 @@ class TThemes
 	{
 	global $Eresus, $page;
 
-		$page->title .= admTDiv.admThemesTemplates;
+		$page->title .= ' - ' . i18n('Шаблоны страниц', __CLASS__);
 
 		switch(arg('action')) {
 			case 'update': $result = $this->sectionTemplatesUpdate(); break;
@@ -321,12 +324,13 @@ class TThemes
 		");
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title.admTDiv.admAdd,
+			'caption' => $page->title . ' - ' . i18n('Добавить', __CLASS__),
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values, 'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
+				array('type' => 'select', 'name' => 'name', 'label' => i18n('Шаблон', __CLASS__),
+					'values' => $values, 'items' => $items, 'extra' => 'onchange="onTemplateNameChange()"'),
 				array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
@@ -350,13 +354,13 @@ class TThemes
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title . admTDiv . admEdit,
+			'caption' => $page->title . ' - ' . i18n('Изменить', __CLASS__),
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'_name','label' => admThemesFilenameLabel,
+				array('type'=>'edit','name'=>'_name','label' => i18n('Имя файла', __CLASS__),
 					'width' => '200px', 'comment' => '.tmpl (' .
 					$this->stdTemplates[$item['name']]['caption'].')',
 					'disabled' => true, 'value'=>$item['name']),
@@ -394,7 +398,7 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
+					array('caption' => i18n('Добавить', __CLASS__), 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
@@ -416,7 +420,7 @@ class TThemes
 	{
 		global $page;
 
-		$page->title .= admTDiv.admThemesStandard;
+		$page->title .= ' - ' . i18n('Стандартные шаблоны', __CLASS__);
 
 		switch(arg('action')) {
 			case 'update': $result = $this->sectionStdUpdate(); break;
@@ -480,13 +484,15 @@ class TThemes
 
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title.admTDiv.admAdd,
+			'caption' => $page->title . ' - ' . i18n('Добавить', __CLASS__),
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css'),
-				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type' => 'edit', 'name' => 'filename', 'label' => i18n('Имя файла', __CLASS__),
+					'width' => '200px', 'comment' => '.css'),
+				array('type' => 'edit', 'name' => 'description', 'label' => i18n('Описание', __CLASS__),
+					'width' => '100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
 			'buttons' => array('ok','cancel'),
@@ -512,14 +518,17 @@ class TThemes
 		$item['html'] = trim(mb_substr($item['html'], mb_strpos($item['html'], "\n")));
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title.admTDiv.admEdit,
+			'caption' => $page->title.' - '.i18n('Изменить', __CLASS__),
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'filename'),
-				array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
-				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type' => 'edit', 'name' => '_filename', 'label' => i18n('Имя файла', __CLASS__),
+					'width' => '200px', 'comment' => '.css', 'disabled' => true,
+					'value' => $item['filename']),
+				array('type' => 'edit', 'name' => 'description', 'label' => i18n('Описание', __CLASS__),
+					'width' => '100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -553,7 +562,7 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
+					array('caption' => i18n('Добавить', __CLASS__), 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
@@ -583,7 +592,7 @@ class TThemes
 	{
 	global $page;
 
-		$page->title .= admTDiv.admThemesStyles;
+		$page->title .= ' - ' . i18n('Файлы стилей', __CLASS__);
 		switch(arg('action')) {
 			case 'update': $result = $this->sectionStylesUpdate(); break;
 			case 'insert': $result = $this->sectionStylesInsert(); break;

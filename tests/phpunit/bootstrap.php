@@ -37,9 +37,6 @@ mb_internal_encoding('utf-8');
 
 require_once __DIR__ . '/stubs.php';
 
-require_once TESTS_SRC_DIR . '/lang/ru.php';
-
-
 /**
 * Вспомогательный инструментарий для тестов
 *

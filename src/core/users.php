@@ -62,7 +62,7 @@ class TUsers extends Accounts
 		$host = substr($mail, strpos($mail, '@')+1);
 		$ip = gethostbyname($host);
 		if ($ip == $host) {
-			ErrorMessage(sprintf(errNonexistedDomain, $host));
+			ErrorMessage(sprintf(i18n('Несуществующий домен: "%s"', __CLASS__), $host));
 			return false;
 		}
 		return true;
@@ -207,7 +207,7 @@ class TUsers extends Accounts
 					'pattern' => '/^[a-z\d_]+$/',
 					'errormsg' => 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
 						'символа подчеркивания.', 'access'=>ADMIN),
-				array('type' => 'select', 'name' => 'access', 'label' => admAccessLevel,
+				array('type' => 'select', 'name' => 'access', 'label' => i18n('Уровень доступа', __CLASS__),
 					'values' => array('2','3','4'),
 					'items' => array(
 						i18n('Администратор'),
@@ -264,8 +264,8 @@ class TUsers extends Accounts
 					'maxlength' => 16, 'width' => '100%', 'pattern' => '/^[a-z0-9_]+$/i',
 					'errormsg' => 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
 						'символа подчеркивания.', __CLASS__),
-				array('type' => 'select', 'name' => 'access', 'label' => admAccessLevel, 'width'=>'100%',
-					'values' => array('2','3','4'),
+				array('type' => 'select', 'name' => 'access', 'label' => i18n('Уровень доступа', __CLASS__),
+					'width'=>'100%', 'values' => array('2','3','4'),
 					'items' => array(
 						i18n('Администратор'),
 						i18n('Редактор'),

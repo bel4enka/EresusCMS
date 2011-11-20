@@ -515,13 +515,13 @@ class TClientUI extends WebPage
 					}
 					if ($for_from != $pagesCount)
 					{
-						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage.
-							"\">&nbsp;&laquo;&nbsp;</a>";
+						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"" .
+							i18n('Последняя страница', __CLASS__) . "\">&nbsp;&laquo;&nbsp;</a>";
 					}
 					if ($for_to != 0)
 					{
-						$side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage.
-							"\">&nbsp;&raquo;&nbsp;</a>";
+						$side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"" .
+							i18n('Первая страница', __CLASS__) . "\">&nbsp;&raquo;&nbsp;</a>";
 					}
 				}
 				# Если установлен прямой порядок страниц
@@ -538,17 +538,17 @@ class TClientUI extends WebPage
 					$for_to = $for_from + $at_once;
 					if ($for_from != 1)
 					{
-						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage.
-							"\">&nbsp;&laquo;&nbsp;</a>";
+						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"" .
+							i18n('Первая страница', __CLASS__) . "\">&nbsp;&laquo;&nbsp;</a>";
 					}
 					if ($for_to < $pagesCount)
 					{
 						$side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".
-							strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
+							i18n('Последняя страница', __CLASS__) . "\">&nbsp;&raquo;&nbsp;</a>";
 					}
 				}
 			}
-			$result = '<div class="pages">'.strPages;
+			$result = '<div class="pages">' . i18n('Страницы: ', __CLASS__);
 			$result .= $side_left;
 			for ($i = $for_from; $i != $for_to; $i += $for_delta)
 			{

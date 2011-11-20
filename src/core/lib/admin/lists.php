@@ -40,15 +40,24 @@ class AdminList {
 	var $head = array();
 	var $body = array();
 	var $__controls = array(
-		'add'           => array('image' => 'admin/themes/default/img/medium/item-add.png', 'title' => strAdd, 'alt' => '+'),
-		'edit' 	        => array('image' => 'admin/themes/default/img/medium/item-edit.png', 'title' => strEdit, 'alt' => '&plusmn;'),
-		'delete'        => array('image' => 'admin/themes/default/img/medium/item-delete.png', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
-		'setup'         => array('image' => 'admin/themes/default/img/medium/item-config.png', 'title' => strProperties, 'alt' => '*'),
-		'move'          => array('image' => 'admin/themes/default/img/medium/item-move.png', 'title' => strMove, 'alt' => '-&gt;'),
-		'on'            => array('image' => 'admin/themes/default/img/medium/item-inactive.png', 'title' => admActivate, 'alt' => '0'),
-		'off'           => array('image' => 'admin/themes/default/img/medium/item-active.png', 'title' => admDeactivate, 'alt' => '1'),
-		'position'      => array('image' => 'admin/themes/default/img/medium/move-up.png', 'title' => admUp, 'alt' => '&uarr;'),
-		'position_down' => array('image' => 'admin/themes/default/img/medium/move-down.png', 'title' => admDown, 'alt' => '&darr;'),
+		'add' => array('image' => 'admin/themes/default/img/medium/item-add.png',
+			'title' => 'Добавить', 'alt' => '+'),
+		'edit' => array('image' => 'admin/themes/default/img/medium/item-edit.png',
+			'title' => 'Изменить', 'alt' => '&plusmn;'),
+		'delete' => array('image' => 'admin/themes/default/img/medium/item-delete.png',
+			'title' => 'Удалить', 'alt' => 'X', 'onclick' => 'return askdel(this)'),
+		'setup' => array('image' => 'admin/themes/default/img/medium/item-config.png',
+			'title' => 'Свойства', 'alt' => '*'),
+		'move' => array('image' => 'admin/themes/default/img/medium/item-move.png',
+			'title' => 'Переместить', 'alt' => '-&gt;'),
+		'on' => array('image' => 'admin/themes/default/img/medium/item-inactive.png',
+			'title' => 'Включить', 'alt' => '0'),
+		'off' => array('image' => 'admin/themes/default/img/medium/item-active.png',
+			'title' => 'Отключить', 'alt' => '1'),
+		'position' => array('image' => 'admin/themes/default/img/medium/move-up.png',
+			'title' => 'Вверх', 'alt' => '&uarr;'),
+		'position_down' => array('image' => 'admin/themes/default/img/medium/move-down.png',
+			'title' => 'Вниз', 'alt' => '&darr;'),
 		);
 	/**
 	 * Отрисовывает элемент управления

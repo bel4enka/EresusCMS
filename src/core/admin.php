@@ -189,7 +189,7 @@ class TAdminUI extends WebPage
 		$this->setUITheme($theme);
 		TemplateSettings::setGlobalValue('theme', $theme);
 
-		$this->title = admControls;
+		$this->title = i18n('Управление', __CLASS__);
 		/* Определяем уровень вложенности */
 		do
 		{
@@ -203,21 +203,21 @@ class TAdminUI extends WebPage
 		/* Создаем меню */
 		$this->menu = array(
 			array(
-				"access"  => EDITOR,
-				"caption" => admControls,
-				"items" => array (
-					array ("link" => "pages", "caption"  => admStructure, "hint"  => admStructureHint,
-						'access'=>ADMIN),
-					array ("link" => "files", "caption"  => admFileManager, "hint"  => admFileManagerHint,
-						'access'=>EDITOR),
-					array ("link" => "plgmgr", "caption"  => admPlugins, "hint"  => admPluginsHint,
-						'access'=>ADMIN),
-					array ("link" => "themes", "caption"  => admThemes, "hint"  => admThemesHint,
-						'access'=>ADMIN),
-					array ("link" => "users", "caption"  => admUsers, "hint"  => admUsersHint,
-						'access'=>ADMIN),
-					array ("link" => "settings", "caption"  => admConfiguration,
-						"hint"  => admConfigurationHint, 'access'=>ADMIN),
+				'access'  => EDITOR,
+				'caption' => i18n('Управление', __CLASS__),
+				'items' => array(
+					array('link' => 'pages', 'caption' => i18n('Разделы сайта', __CLASS__),
+						'hint' => i18n('Управление структурой разделов', __CLASS__), 'access' => ADMIN),
+					array('link' => 'files', 'caption' => i18n('Файловый менеджер', __CLASS__),
+						'hint' => i18n('Управление файлами данных', __CLASS__), 'access' => EDITOR),
+					array ('link' => 'plgmgr', 'caption' => i18n('Модули расширения', __CLASS__),
+						'hint' => i18n('Управление модулями расширения', __CLASS__), 'access' => ADMIN),
+					array('link' => 'themes', 'caption' => i18n('Оформление', __CLASS__),
+						'hint' => i18n('Управление шаблонами страниц и стилями', __CLASS__), 'access' => ADMIN),
+					array('link' => 'users', 'caption' => i18n('Пользователи', __CLASS__),
+						'hint' => i18n('Управление пользователями', __CLASS__), 'access' => ADMIN),
+					array('link' => 'settings', 'caption' => i18n('Настройки сайта', __CLASS__),
+						'hint' => i18n('Основные настройки сайта', __CLASS__), 'access' => ADMIN),
 				)
 			),
 		);
@@ -416,21 +416,21 @@ class TAdminUI extends WebPage
 			case 'add':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-add.png',
-					'title' => strAdd,
+					'title' => i18n('Добавить', __CLASS__),
 					'alt' => '+',
 				);
 			break;
 			case 'edit':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-edit.png',
-					'title' => strEdit,
+					'title' => i18n('Изменить', __CLASS__),
 					'alt' => '&plusmn;',
 				);
 			break;
 			case 'delete':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-delete.png',
-					'title' => strDelete,
+					'title' => i18n('Удалить', __CLASS__),
 					'alt' => 'X',
 					'onclick' => 'return askdel(this)',
 				);
@@ -438,21 +438,21 @@ class TAdminUI extends WebPage
 			case 'setup':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-config.png',
-					'title' => strProperties,
+					'title' => i18n('Свойства', __CLASS__),
 					'alt' => '*',
 				);
 			break;
 			case 'move':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-move.png',
-					'title' => strMove,
+					'title' => i18n('Переместить', __CLASS__),
 					'alt' => '-&gt;',
 				);
 			break;
 			case 'position':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/move-up.png',
-					'title' => admUp,
+					'title' => i18n('Вверх', __CLASS__),
 					'alt' => '&uarr;',
 				);
 				$s = array_pop($href);
@@ -461,7 +461,7 @@ class TAdminUI extends WebPage
 			case 'position_down':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/move-down.png',
-					'title' => admDown,
+					'title' => i18n('Вниз', __CLASS__),
 					'alt' => '&darr;',
 				);
 			break;
@@ -548,7 +548,7 @@ class TAdminUI extends WebPage
 		$prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
 		if ($itemsCount > $itemsPerPage)
 		{
-			$result = '<div class="admListPages">'.strPages;
+			$result = '<div class="admListPages">' . i18n('Страницы: ', __CLASS__);
 			if ($Descending)
 			{
 				$forFrom = $pageCount;
@@ -654,11 +654,12 @@ class TAdminUI extends WebPage
 			$result .= $pages;
 		}
 		$result .= "<table class=\"admList\">\n".
-			'<tr><th style="width: 100px;">'.admControls.
+			'<tr><th style="width: 100px;">' . i18n('Управление', __CLASS__) .
 			(isset($table['controls']['position'])?' <a href="'.
 			$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.
-			admSortPosition.'">'.
-			img('admin/themes/default/img/ard.gif', admSortPosition, admSortPosition).'</a>':'').
+			i18n('По порядку', __CLASS__) . '">'.
+			img('admin/themes/default/img/ard.gif', i18n('По порядку', __CLASS__),
+				i18n('По порядку', __CLASS__)).'</a>':'').
 			"</th>";
 		if (count($table['columns']))
 		{
@@ -670,12 +671,13 @@ class TAdminUI extends WebPage
 					'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
 					(isset($table['name'])?
 					' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).
-					'" title="'.admSortAscending.'">'.
-					img('admin/themes/default/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
+					'" title="' . i18n('По возрастанию', __CLASS__) . '">'.
+					img('admin/themes/default/img/ard.gif', i18n('По возрастанию', __CLASS__),
+						i18n('По возрастанию', __CLASS__)).'</a> '.
 					'<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).
-					'" title="'.admSortDescending.'">'.
-					img('admin/themes/default/img/aru.gif', admSortDescending, admSortDescending).
-					'</a></th>':'');
+					'" title="' . i18n('По убыванию', __CLASS__) . '">'.
+					img('admin/themes/default/img/aru.gif', i18n('По убыванию', __CLASS__),
+						i18n('По убыванию', __CLASS__)). '</a></th>':'');
 			}
 		}
 		$result .= "</tr>\n";
@@ -699,8 +701,9 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_delete, $item[$table['key']]) . '" title="' .
-						admDelete . '" onclick="return askdel(this)">' .
-						img('admin/themes/default/img/medium/item-delete.png', admDelete, admDelete, 16, 16).
+						i18n('Удалить', __CLASS__) . '" onclick="return askdel(this)">' .
+						img('admin/themes/default/img/medium/item-delete.png', i18n('Удалить', __CLASS__),
+							i18n('Удалить', __CLASS__), 16, 16).
 						'</a>';
 				}
 
@@ -714,8 +717,9 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_edit, $item[$table['key']]) . '" title="' .
-						admEdit .	'">' .
-						img('admin/themes/default/img/medium/item-edit.png', admEdit, admEdit, 16, 16).'</a>';
+						i18n('Изменить', __CLASS__) .	'">' .
+						img('admin/themes/default/img/medium/item-edit.png', i18n('Изменить', __CLASS__),
+							i18n('Изменить', __CLASS__), 16, 16).'</a>';
 				}
 
 				/* Вверх/вниз */
@@ -729,11 +733,13 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_position, 'up', $item[$table['key']]) .
-						'" title="' . admUp . '">' .
-						img('admin/themes/default/img/medium/move-up.png', admUp, admUp).'</a>';
+						'" title="' . i18n('Вверх', __CLASS__) . '">' .
+						img('admin/themes/default/img/medium/move-up.png', i18n('Вверх', __CLASS__),
+							i18n('Вверх', __CLASS__)).'</a>';
 					$result .= ' <a href="' . sprintf($url_position, 'down', $item[$table['key']]) .
-						'" title="' . admDown . '">' .
-						img('admin/themes/default/img/medium/move-down.png', admDown, admDown).'</a>';
+						'" title="' . i18n('Вниз', __CLASS__) . '">' .
+						img('admin/themes/default/img/medium/move-down.png', i18n('Вниз', __CLASS__),
+							i18n('Вниз', __CLASS__)).'</a>';
 				}
 
 				/* Активность */
@@ -746,10 +752,10 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_toggle, $item[$table['key']]) . '" title="' .
-						($item['active'] ? admDeactivate : admActivate) . '">' .
+						($item['active'] ? i18n('Отключить', __CLASS__) : i18n('Включить', __CLASS__)) . '">' .
 						img('admin/themes/default/img/medium/item-' . ($item['active'] ? 'active':'inactive').
-						'.png', $item['active']?admDeactivate:admActivate,
-						$item['active']?admDeactivate:admActivate).'</a>';
+						'.png', $item['active'] ? i18n('Отключить', __CLASS__) : i18n('Включить', __CLASS__),
+						$item['active'] ? i18n('Отключить', __CLASS__) : i18n('Включить', __CLASS__)).'</a>';
 				}
 
 				$result .= '</td>';
@@ -791,16 +797,16 @@ class TAdminUI extends WebPage
 							switch ($column['function'])
 							{
 								case 'isEmpty':
-									$value = empty($value)?strYes:strNo;
+									$value = empty($value)? i18n('Да') : i18n('Нет');
 								break;
 								case 'isNotEmpty':
-									$value = empty($value)?strNo:strYes;
+									$value = empty($value)? i18n('Нет') : i18n('Да');
 								break;
 								case 'isNull':
-									$value = is_null($value)?strYes:strNo;
+									$value = is_null($value)? i18n('Да') : i18n('Нет');
 								break;
 								case 'isNotNull':
-									$value = is_null($value)?strNo:strYes;
+									$value = is_null($value)? i18n('Нет') : i18n('Да');
 								break;
 								case 'length':
 									$value = mb_strlen($value);
@@ -982,7 +988,7 @@ class TAdminUI extends WebPage
 			{
 				if (empty($item['caption']))
 				{
-					$item['caption'] = admNA;
+					$item['caption'] = i18n('(не задано)', __CLASS__);
 				}
 
 				if (

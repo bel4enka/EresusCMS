@@ -120,7 +120,8 @@ function FatalError($msg)
 			"        <div align=\"center\"><br /><a href=\"javascript:history.back()\" " .
 				"style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; " .
 				"height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; " .
-				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
+				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">" . i18n('Вернуться') .
+				"</a></div>\n".
 			"      </td></tr>\n".
 			"    </table>\n".
 			"  </div>\n".
@@ -156,8 +157,12 @@ function ErrorBox($text, $caption = null)
 /**
  * Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
  */
-function InfoBox($text, $caption=strInformation)
+function InfoBox($text, $caption = null)
 {
+	if (null === $caption)
+	{
+		$caption = i18n('Информация');
+	}
 	$result =
 		(empty($caption)?'':"<div class=\"infoBoxCap\">".$caption."</div>\n").
 		"<div class=\"infoBox\">\n".
@@ -1351,31 +1356,6 @@ class Eresus
 	//------------------------------------------------------------------------------
 
 	/**
-	 * Инициализация локали
-	 *
-	 * @access private
-	 */
-	function init_locale()
-	{
-		global $locale;
-
-		$locale['lang'] = substr(Eresus_Config::get('eresus.cms.locale.default', 'ru_RU'), 0, 2);
-		$locale['prefix'] = '';
-
-		# Подключение строковых данных
-		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
-		if (is_file($filename))
-		{
-			include_once($filename);
-		}
-		else
-		{
-			FatalError("Locale file '$filename' not found!");
-		}
-	}
-	//------------------------------------------------------------------------------
-
-	/**
 	 * Подключение базовых классов
 	 *
 	 * @access private
@@ -1523,7 +1503,8 @@ class Eresus
 				}
 				else
 				{
-					ErrorMessage(sprintf(errAccountNotActive, $item['login']));
+					ErrorMessage(sprintf(i18n('Неверное имя пользователя или пароль', __CLASS__),
+						$item['login']));
 					$this->logout();
 				}
 			}
@@ -1567,8 +1548,6 @@ class Eresus
 		$this->init_settings();
 		# Первичный разбор запроса
 		$this->init_request();
-		# Настройка локали
-		$this->init_locale();
 		# Подключение базовых классов
 		$this->init_classes();
 		# Инициализация расширений
@@ -1648,7 +1627,7 @@ class Eresus
 
 		if ($login != $unsafeLogin)
 		{
-			ErrorMessage(errInvalidPassword);
+			ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
 			return false;
 		}
 
@@ -1693,7 +1672,7 @@ class Eresus
 						// Если пароль не верен...
 						if (!$cookie)
 						{
-							ErrorMessage(errInvalidPassword);
+							ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
 							$item['lastLoginTime'] = time();
 							$item['loginErrors']++;
 							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
@@ -1703,19 +1682,21 @@ class Eresus
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
+					ErrorMessage(sprintf(
+						i18n('Перед попыткой повторного логина должно пройти не менее %s секунд!', __CLASS__),
+						$item['loginErrors']));
 					$item['lastLoginTime'] = time();
 					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 				}
 			}
 			else
 			{
-				ErrorMessage(sprintf(errAccountNotActive, $login));
+				ErrorMessage(sprintf(i18n('Неверное имя пользователя или пароль', __CLASS__), $login));
 			}
 		}
 		else
 		{
-			ErrorMessage(errInvalidPassword);
+			ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
 		}
 		return $result;
 	}

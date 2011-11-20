@@ -111,7 +111,8 @@ function adminRenderContent()
     'width' => '100%',
     'fields' => array (
       array ('type'=>'hidden','name'=>'update'),
-      array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
+      array ('type' => 'memo', 'name' => 'content', 'label' => i18n('Изменить', __CLASS__),
+      	'height' => '30'),
     ),
     'buttons' => array('apply', 'reset'),
   );

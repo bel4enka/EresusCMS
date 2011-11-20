@@ -264,7 +264,7 @@ class TPlgMgr
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
-		$page->title = admPlugins;
+		$page->title = i18n('Модули расширения', __CLASS__);
 
 		switch (true)
 		{
@@ -298,9 +298,11 @@ class TPlgMgr
 					'key' => 'name',
 					'sortMode' => 'title',
 					'columns' => array(
-						array('name' => 'title', 'caption' => admPlugin, 'width' => '90px', 'wrap'=>false),
-						array('name' => 'description', 'caption' => admDescription),
-						array('name' => 'version', 'caption' => admVersion, 'width'=>'70px','align'=>'center'),
+						array('name' => 'title', 'caption' => i18n('Плагин', __CLASS__), 'width' => '90px',
+							'wrap'=>false),
+						array('name' => 'description', 'caption' => i18n('Описание', __CLASS__)),
+						array('name' => 'version', 'caption' => i18n('Версия', __CLASS__), 'width'=>'70px',
+							'align'=>'center'),
 					),
 					'controls' => array (
 						'delete' => '',
