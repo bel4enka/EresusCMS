@@ -310,7 +310,8 @@ class TPlgMgr
 					'tabs' => array(
 						'width'=>'180px',
 						'items'=>array(
-							array('caption'=>admPluginsAdd, 'name'=>'action', 'value'=>'add')
+							array('caption' => i18n('Добавить плагин', __CLASS__), 'name' => 'action',
+								'value' => 'add')
 						)
 					)
 				);

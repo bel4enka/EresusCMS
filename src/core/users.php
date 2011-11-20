@@ -199,11 +199,12 @@ class TUsers extends Accounts
 			'width' => '400px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array('type' => 'edit', 'name' => 'name', 'label' => admUsersName, 'maxlength' => 32,
-					'width' => '100%', 'value' => $item['name'], 'pattern'=>'/.+/',
+				array('type' => 'edit', 'name' => 'name', 'label' => i18n('Имя', __CLASS__),
+					'maxlength' => 32, 'width' => '100%', 'value' => $item['name'], 'pattern'=>'/.+/',
 					'errormsg' => i18n('Псевдоним пользователя не может быть пустым.', __CLASS__)),
-				array('type' => 'edit', 'name' => 'login', 'label' => admUsersLogin, 'maxlength' => 16,
-					'width' => '100%', 'value' => $item['login'], 'pattern' => '/^[a-z\d_]+$/',
+				array('type' => 'edit', 'name' => 'login', 'label' => i18n('Логин', __CLASS__),
+					'maxlength' => 16, 'width' => '100%', 'value' => $item['login'],
+					'pattern' => '/^[a-z\d_]+$/',
 					'errormsg' => 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
 						'символа подчеркивания.', 'access'=>ADMIN),
 				array('type' => 'select', 'name' => 'access', 'label' => admAccessLevel,
@@ -213,7 +214,9 @@ class TUsers extends Accounts
 						i18n('Редактор'),
 						i18n('Пользователь')
 					), 'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
-				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState,'value'=>$item['active'], 'access'=>ADMIN),
+				array('type' => 'checkbox', 'name' => 'active',
+					'label' => i18n('Учетная запись активна', __CLASS__), 'value' => $item['active'],
+					'access' => ADMIN),
 				array('type' => 'edit', 'name' => 'loginErrors', 'label' => i18n('Ошибок входа', __CLASS__),
 					'maxlength' => 2, 'width' => '30px', 'value' => $item['loginErrors'], 'access' => ADMIN),
 				array('type' => 'edit', 'name' => 'mail', 'label' => i18n('e-mail', __CLASS__),
@@ -254,11 +257,11 @@ class TUsers extends Accounts
 			'width' => '400px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action','value'=>'insert'),
-				array('type' => 'edit', 'name' => 'name', 'label' => admUsersName, 'maxlength' => 32,
-					'width' => '100%', 'pattern' => '/.+/',
+				array('type' => 'edit', 'name' => 'name', 'label' => i18n('Имя', __CLASS__),
+					'maxlength' => 32, 'width' => '100%', 'pattern' => '/.+/',
 					'errormsg' => i18n('Псевдоним пользователя не может быть пустым.', __CLASS__)),
-				array('type' => 'edit', 'name' => 'login', 'label' => admUsersLogin, 'maxlength' => 16,
-					'width' => '100%', 'pattern' => '/^[a-z0-9_]+$/i',
+				array('type' => 'edit', 'name' => 'login', 'label' => i18n('Логин', __CLASS__),
+					'maxlength' => 16, 'width' => '100%', 'pattern' => '/^[a-z0-9_]+$/i',
 					'errormsg' => 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
 						'символа подчеркивания.', __CLASS__),
 				array('type' => 'select', 'name' => 'access', 'label' => admAccessLevel, 'width'=>'100%',
@@ -268,7 +271,8 @@ class TUsers extends Accounts
 						i18n('Редактор'),
 						i18n('Пользователь')
 					), 'default' => USER),
-				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState, 'default' => true),
+				array('type' => 'checkbox', 'name' => 'active',
+					'label' => i18n('Учетная запись активна', __CLASS__), 'default' => true),
 				array('type'=>'divider'),
 				array('type' => 'password', 'name' => 'pswd1', 'label' => i18n('Пароль', __CLASS__),
 					'maxlength' => 32, 'width' => '100%'),
@@ -322,7 +326,7 @@ class TUsers extends Accounts
 					'itemsPerPage' => 20,
 					'columns' => array(
 						array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
-						array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
+						array('name' => 'name', 'caption' => i18n('Имя', __CLASS__), 'align' => 'left'),
 						array('name' => 'access', 'caption' => i18n('Дост.', __CLASS__), 'align' => 'center',
 							'width' => '70px', 'replace' => array (
 								'1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
@@ -330,7 +334,7 @@ class TUsers extends Accounts
 								'3' => '<span style="font-weight: bold; color: blue;">editor</span>',
 								'4' => 'user'
 							)),
-						array('name' => 'login', 'caption' => admUsersLogin, 'align' => 'left'),
+						array('name' => 'login', 'caption' => i18n('Логин', __CLASS__), 'align' => 'left'),
 						array('name' => 'mail', 'caption' => i18n('e-mail', __CLASS__), 'align' => 'center',
 							'macros'=>true, 'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
 						array('name' => 'lastVisit', 'caption' => i18n('Последний визит', __CLASS__),
