@@ -555,14 +555,13 @@ class Plugin
 	 * Производит чтение настроек плагина и подключение языковых файлов
 	 *
 	 * @uses $Eresus
-	 * @uses $locale
 	 * @uses FS::isFile
 	 * @uses Core::safeInclude
 	 * @uses Plugin::resetPlugin
 	 */
 	public function __construct()
 	{
-		global $Eresus, $locale;
+		global $Eresus;
 
 		$this->name = strtolower(get_class($this));
 		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
@@ -579,9 +578,11 @@ class Plugin
 		$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
 		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 		$this->urlStyle = $Eresus->style.$this->name.'/';
+		/* FIXME
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (FS::isFile($filename))
 			Core::safeInclude($filename);
+		*/
 	}
 	//------------------------------------------------------------------------------
 
