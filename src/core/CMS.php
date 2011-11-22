@@ -89,6 +89,11 @@ class Eresus_CMS extends EresusApplication
 				include_once 'debug.php';
 			}
 
+			if (Eresus_Config::get('eresus.cms.timezone'))
+			{
+				date_default_timezone_set(Eresus_Config::get('eresus.cms.timezone'));
+			}
+
 			//$this->initDB();
 			//$this->initSession();
 
@@ -372,8 +377,6 @@ class Eresus_CMS extends EresusApplication
 	protected function initConf()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
 		@include_once $this->getFsRoot() . '/cfg/main.php';
 
