@@ -39,7 +39,8 @@ PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 mb_internal_encoding('utf-8');
 
-require_once TESTS_SRC_DIR . '/../3rdparty/dependency-injection/sfServiceContainerAutoloader.php';
+require_once TESTS_SRC_DIR .
+	'/../3rdparty/dependency-injection/lib/sfServiceContainerAutoloader.php';
 sfServiceContainerAutoloader::register();
 
 /**
