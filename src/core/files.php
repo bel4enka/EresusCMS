@@ -170,7 +170,8 @@ class TFiles
 					$x = ($x - ($x % 2)) / 2;
 					$result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
 				}
-				if (function_exists('posix_getpwuid') && !$Eresus->isWin32()) {
+				if (function_exists('posix_getpwuid') && !Eresus_Kernel::isWindows())
+				{
 					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
 				} else $result[$i]['owner'] = 'unknown';

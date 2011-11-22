@@ -108,7 +108,7 @@ class Eresus_CMS extends EresusApplication
 
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
-			if (PHP::isCLI())
+			if (Eresus_Kernel::isCLI())
 			{
 				return $this->runCLI();
 			}
@@ -197,10 +197,14 @@ class Eresus_CMS extends EresusApplication
 
 		if ($errors)
 		{
-			if (!PHP::isCLI())
+			if (!Eresus_Kernel::isCLI())
+			{
 				require_once 'errors.html.php';
+			}
 			else
+			{
 				die("Errors...\n"); // TODO Доделать
+			}
 		}
 	}
 	//-----------------------------------------------------------------------------
