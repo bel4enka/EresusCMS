@@ -702,7 +702,7 @@ function upload($name, $filename, $overwrite = true)
 	if (substr($filename, -1) == '/')
 	{
 		$filename .= option('filesTranslitNames') ?
-			Eresus_i18n::getInstance()->translit($_FILES[$name]['name']) :
+			Eresus_Kernel::sc	()->i18n->translit($_FILES[$name]['name']) :
 			$_FILES[$name]['name'];
 		if (file_exists($filename) &&
 			((is_string($overwrite) && $filename != $overwrite ) || (is_bool($overwrite) && !$overwrite))
@@ -1124,7 +1124,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = FS::nativeForm(Eresus_Kernel::app()->getFsRoot() . '/');
+			$this->froot = FS::nativeForm(Eresus_Kernel::sc()->app->getFsRoot() . '/');
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;

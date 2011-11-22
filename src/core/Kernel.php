@@ -78,12 +78,11 @@ class Eresus_Kernel
 	static private $inited = false;
 
 	/**
-	 * Выполняемое приложение
+	 * Контейнер служб
 	 *
-	 * @var object
-	 * @see exec(), app()
+	 * @var sfServiceContainerBuilder
 	 */
-	static private $app = null;
+	private static $sc;
 
 	/**
 	 * Для тестирования
@@ -131,6 +130,11 @@ class Eresus_Kernel
 		{
 			set_magic_quotes_runtime(0);
 		}
+
+		require_once dirname(__FILE__) .
+			'/symfony/dependency-injection/sfServiceContainerAutoloader.php';
+		sfServiceContainerAutoloader::register();
+		self::$sc = new sfServiceContainerBuilder();
 
 		self::$inited = true;
 	}
@@ -497,7 +501,6 @@ class Eresus_Kernel
 	 * @return int  код завершения (0 — успешное завершение)
 	 *
 	 * @since 2.17
-	 * @see $app, app()
 	 * @uses Eresus_Logger::log()
 	 */
 	static public function exec($class)
@@ -507,18 +510,18 @@ class Eresus_Kernel
 			throw new LogicException('Application class "' . $class . '" does not exists');
 		}
 
-		self::$app = new $class();
+		$app = new $class();
 
 		if (!method_exists($class, 'main'))
 		{
-			self::$app = null;
 			throw new LogicException('Method "main()" does not exists in "' . $class . '"');
 		}
 
 		try
 		{
 			//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
-			$exitCode = self::$app->main();
+			self::sc()->setService('app', $app);
+			$exitCode = $app->main();
 			//Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
 		}
 		catch (Eresus_SuccessException $e)
@@ -530,28 +533,20 @@ class Eresus_Kernel
 			//self::handleException($e);
 			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
 		}
-		self::$app = null;
 		return $exitCode;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает выполняемое приложение или null, если приложение не запущено
+	 * Возвращает контейнер служб
 	 *
-	 * Пример: получение корневой директории приложения.
+	 * @return sfServiceContainerBuilder
 	 *
-	 * <code>
-	 * $appRootDir = Eresus_Kernel::app()->getRootDir();
-	 * </code>
-	 *
-	 * @return Eresus_CMS  выполняемое приложение
-	 *
-	 * @see $app, exec()
 	 * @since 2.17
 	 */
-	public static function app()
+	public static function sc()
 	{
-		return self::$app;
+		return self::$sc;
 	}
 	//-----------------------------------------------------------------------------
 }

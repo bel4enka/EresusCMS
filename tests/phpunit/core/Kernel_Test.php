@@ -31,8 +31,8 @@
  */
 require_once 'PHPUnit/Extensions/OutputTestCase.php';
 
-require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../src/core/Kernel.php';
+require_once dirname(__FILE__) . '/../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Kernel.php';
 
 /**
  * @package Eresus
@@ -171,10 +171,10 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers Eresus_Kernel::exec
-	 * @covers Eresus_Kernel::app
 	 */
 	public function testExecOk()
 	{
+		Eresus_Tests::setStatic('Eresus_Kernel', new UniversalStub(), 'sc');
 		$this->assertEquals(123, Eresus_Kernel::exec('Eresus_Kernel_Test_Application1'));
 	}
 	//-----------------------------------------------------------------------------
@@ -315,10 +315,6 @@ class Eresus_Kernel_Test_Application1
 	 */
 	public function main()
 	{
-		if (!(Eresus_Kernel::app() instanceof self))
-		{
-			throw new Exception('Eresus_Kernel::app() returns invalid result');
-		}
 		return 123;
 	}
 	//-----------------------------------------------------------------------------

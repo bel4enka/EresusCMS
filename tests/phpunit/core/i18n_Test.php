@@ -79,18 +79,6 @@ class Eresus_i18n_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_i18n::getInstance
-	 * @covers Eresus_i18n::__construct
-	 */
-	public function test_getInstance()
-	{
-		$app = $this->getMock('stdClass', array('getRootDir'));
-		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
-		$test = Eresus_i18n::getInstance();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * @covers Eresus_i18n::setLocale
 	 * @covers Eresus_i18n::getLocale
 	 */
@@ -241,7 +229,8 @@ class Eresus_i18n_Test extends PHPUnit_Framework_TestCase
 		$i18n = $this->getMockBuilder('Eresus_i18n')->setMethods(array('get'))->
 			disableOriginalConstructor()->getMock();
 		$i18n->expects($this->once())->method('get')->with('phrase', 'context');
-		Eresus_Tests::setStatic('Eresus_i18n', $i18n);
+		Eresus_Tests::setStatic('Eresus_Kernel', new sfServiceContainerBuilder(), 'sc');
+		Eresus_Kernel::sc()->setService('i18n', $i18n);
 
 		i18n('phrase', 'context');
 	}

@@ -63,14 +63,6 @@
 class Eresus_i18n
 {
 	/**
-	 * Экземпляр-одиночка
-	 *
-	 * @var Eresus_i18n
-	 * @since 2.17
-	 */
-	static private $instance;
-
-	/**
 	 * Путь к файлам локализации
 	 *
 	 * @var string
@@ -95,22 +87,17 @@ class Eresus_i18n
 	private $data = array();
 
 	/**
-	 * Возвращает экземпляр-одиночку
+	 * Конструктор
+	 *
+	 * @param string $path  путь к файлам локализации
 	 *
 	 * @return Eresus_i18n
 	 *
 	 * @since 2.17
-	 * @uses Eresus_Kernel::app()
-	 * @uses Eresus_Kernel::getRootDir()
 	 */
-	static public function getInstance()
+	public function __construct($path)
 	{
-		if (!self::$instance)
-		{
-			self::$instance = new self(Eresus_Kernel::app()->getRootDir() . '/lang');
-		}
-
-		return self::$instance;
+		$this->path = $path;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -261,21 +248,6 @@ class Eresus_i18n
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Конструктор
-	 *
-	 * @param string $path  путь к файлам локализации
-	 *
-	 * @return Eresus_i18n
-	 *
-	 * @since 2.17
-	 */
-	private function __construct($path)
-	{
-		$this->path = $path;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Ленивая загрузка файла локали
 	 *
 	 * @return void
@@ -296,7 +268,7 @@ class Eresus_i18n
 
 
 /**
- * Сокращение для «{@link Eresus_i18n::get() Eresus_i18n::getInstance()->get()}»
+ * Сокращение для «{@link Eresus_i18n::get() Eresus_Kernel::sc()->i18n->get()}»
  *
  * @param string $text     искомый текст
  * @param string $context  контекст
@@ -307,6 +279,6 @@ class Eresus_i18n
  */
 function i18n($text, $context = null)
 {
-	return Eresus_i18n::getInstance()->get($text, $context);
+	return Eresus_Kernel::sc()->i18n->get($text, $context);
 }
 //-----------------------------------------------------------------------------

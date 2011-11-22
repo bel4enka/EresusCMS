@@ -33,10 +33,6 @@
  * $Id$
  */
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-
 define('filesRoot', '/home/exmaple.org/');
 
 

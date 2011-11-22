@@ -33,17 +33,74 @@
  * $Id$
  */
 
+define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
+
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+
 mb_internal_encoding('utf-8');
 
-require_once __DIR__ . '/stubs.php';
+require_once TESTS_SRC_DIR . '/../3rdparty/dependency-injection/sfServiceContainerAutoloader.php';
+sfServiceContainerAutoloader::register();
 
 /**
-* Вспомогательный инструментарий для тестов
-*
-* @package Eresus
-* @subpackage Tests
-* @since 2.17
-*/
+ * Универсальная заглушка
+ *
+ * @package Eresus
+ * @subpackage Tests
+ * @since 2.17
+ */
+class UniversalStub implements ArrayAccess
+{
+	public function __get($a)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function __call($a, $b)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetExists($offset)
+	{
+		return true;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetGet($offset)
+	{
+		return $this;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetSet($offset, $value)
+	{
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function offsetUnset($offset)
+	{
+		;
+	}
+	//-----------------------------------------------------------------------------
+
+	public function __toString()
+	{
+		return '';
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * Вспомогательный инструментарий для тестов
+ *
+ * @package Eresus
+ * @subpackage Tests
+ * @since 2.17
+ */
 class Eresus_Tests
 {
 	/**
@@ -65,3 +122,5 @@ class Eresus_Tests
 	}
 	//-----------------------------------------------------------------------------
 }
+
+require_once __DIR__ . '/stubs.php';

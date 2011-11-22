@@ -45,7 +45,7 @@ class TAbout
 	{
 		global $Eresus, $page;
 
-		$lang = Eresus_i18n::getInstance()->getLocale();
+		$lang = Eresus_Kernel::sc()->i18n->getLocale();
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 		$xml->load($Eresus->froot . 'core/about.xml');

@@ -29,7 +29,7 @@
  * $Id$
  */
 
-require_once 'stubs.php';
+require_once 'bootstrap.php';
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/kernel-legacy.php');
 PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/lib/accounts.php');

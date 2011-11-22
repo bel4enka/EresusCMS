@@ -97,10 +97,11 @@ class Eresus_CMS extends EresusApplication
 			//$this->initDB();
 			//$this->initSession();
 
-			$i18n = Eresus_i18n::getInstance();
+			Eresus_Kernel::sc()->setService('i18n', new Eresus_i18n($this->getRootDir() . '/lang'));
+
 			if ($locale = Eresus_Config::get('eresus.cms.locale.default'))
 			{
-				$i18n->setLocale($locale);
+				Eresus_Kernel::sc()->i18n->setLocale($locale);
 				setlocale(LC_ALL, $locale);
 			}
 

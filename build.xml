@@ -195,6 +195,13 @@
 			</filterchain>
 		</copy>
 
+		<!-- Symfony Dependency Injection Container  -->
+		<copy todir="${build.dir}/core/symfony/dependency-injection">
+			<fileset dir="3rdparty/dependency-injection">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/libbotobor">
 			<fileset refid="files.3rd.libbotobor" />

@@ -594,7 +594,7 @@ class TinyImageManager
 				}
 
 				$md5 = md5_file($ufiles['tmp_name'][$k]);
-				$file = Eresus_i18n::getInstance()->translit($ufiles['name'][$k]);
+				$file = Eresus_Kernel::sc	()->i18n->translit($ufiles['name'][$k]);
 
 				//Проверка на изображение
 				if($pathtype == 'images') {
