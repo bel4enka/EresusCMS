@@ -412,15 +412,4 @@ class Eresus_Plugins
 		}
 	}
 	//-----------------------------------------------------------------------------
-
-	/**
-	 * Событие ajaxOnRequest
-	 */
-	function ajaxOnRequest()
-	{
-		if (isset($this->events['ajaxOnRequest']))
-		foreach($this->events['ajaxOnRequest'] as $plugin)
-		$this->items[$plugin]->ajaxOnRequest();
-	}
-	//-----------------------------------------------------------------------------
 }
