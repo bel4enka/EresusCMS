@@ -37,6 +37,11 @@ define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
+require_once 'vfsStream/vfsStream.php';
+$vfsStream = new ReflectionClass('vfsStream');
+$dir = dirname($vfsStream->getFileName());
+PHP_CodeCoverage_Filter::getInstance()->addDirectoryToBlacklist($dir);
+
 mb_internal_encoding('utf-8');
 
 require_once TESTS_SRC_DIR .

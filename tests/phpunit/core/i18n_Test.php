@@ -79,6 +79,19 @@ class Eresus_i18n_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @covers Eresus_i18n::__construct
+	 */
+	public function test_construct()
+	{
+		$p_path = new ReflectionProperty('Eresus_i18n', 'path');
+		$p_path->setAccessible(true);
+
+		$i18n = new Eresus_i18n('/some/path');
+		$this->assertEquals('/some/path', $p_path->getValue($i18n));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers Eresus_i18n::setLocale
 	 * @covers Eresus_i18n::getLocale
 	 */

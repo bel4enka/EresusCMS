@@ -37,6 +37,14 @@
  */
 class Eresus_CMS extends EresusApplication
 {
+	/**
+	 * Версия CMS
+	 *
+	 * @var string
+	 * @see getVersion()
+	 * @since 2.17
+	 */
+	private $version = '${product.version}';
 
 	/**
 	 * HTTP-запрос
@@ -53,6 +61,41 @@ class Eresus_CMS extends EresusApplication
 	 * @since 2.17
 	 */
 	private $rootDir;
+
+	/**
+	 * Возвращает версию приложения
+	 *
+	 * @return string
+	 * @uses $version
+	 */
+	public function getVersion()
+	{
+		return $this->version;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневую директорию приложения
+	 *
+	 * Полный файловый путь к директории приложения без финального слеша.
+	 *
+	 * @return string  корневая директория приложения
+	 *
+	 * @since 2.17
+	 */
+	public function getRootDir()
+	{
+		if (!$this->rootDir)
+		{
+			$this->rootDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
+			if (DIRECTORY_SEPARATOR != '/')
+			{
+				$this->rootDir = str_replace($this->rootDir, DIRECTORY_SEPARATOR, '/');
+			}
+		}
+		return $this->rootDir;
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Основной метод приложения
@@ -140,29 +183,6 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает корневую директорию приложения
-	 *
-	 * Полный файловый путь к директории приложения без финального слеша.
-	 *
-	 * @return string  корневая директория приложения
-	 *
-	 * @since 2.17
-	 */
-	public function getRootDir()
-	{
-		if (!$this->rootDir)
-		{
-			$this->rootDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
-			if (DIRECTORY_SEPARATOR != '/')
-			{
-				$this->rootDir = str_replace($this->rootDir, DIRECTORY_SEPARATOR, '/');
-			}
-		}
-		return $this->rootDir;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Проверка окружения
 	 *
 	 * @return void
@@ -208,25 +228,27 @@ class Eresus_CMS extends EresusApplication
 	 *
 	 * @return void
 	 */
-	protected function createFileStructure()
+	private function createFileStructure()
 	{
-		$dirs = array(
-			'/var/log',
-			'/var/cache',
-			'/var/cache/templates',
-		);
-
-		$errors = array();
-
-		foreach ($dirs as $dir)
+		$root = $this->getRootDir() . '/var';
+		if (is_dir($root))
 		{
-			if (!FS::exists($this->getFsRoot() . $dir))
+			$dirs = array(
+				'/log',
+				'/cache',
+				'/cache/templates',
+			);
+
+			foreach ($dirs as $dir)
 			{
-				$umask = umask(0000);
-				mkdir(FS::nativeForm($this->getFsRoot() . $dir), 0777);
-				umask($umask);
+				if (!file_exists($root . $dir))
+				{
+					$umask = umask(0000);
+					mkdir($root . $dir, 0777);
+					umask($umask);
+				}
+				// TODO Сделать проверку на запись в созданные директории
 			}
-			// TODO Сделать проверку на запись в созданные директории
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -352,24 +374,30 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Инициализация CLI
+	 * Чтение настроек
+	 *
+	 * @throws DomainException  если файл настроек содержит ошибки
 	 */
-	protected function initCLI()
+	private function initConf()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация конфигурации
-	 */
-	protected function initConf()
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		@include_once $this->getFsRoot() . '/cfg/main.php';
-
-		// TODO: Сделать проверку успешного подключения файла
+		$filename = $this->getRootDir() . '/cfg/main.php';
+		if (file_exists($filename))
+		{
+			$config = file_get_contents($filename);
+			if (substr($config, 0, 5) == '<?php')
+			{
+				$config = substr($config, 5);
+			}
+			elseif (substr($config, 0, 2) == '<?')
+			{
+				$config = substr($config, 2);
+			}
+			$result = @eval($config);
+			if ($result === false)
+			{
+				throw new DomainException('Error parsing cfg/main.php');
+			}
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -389,15 +417,6 @@ class Eresus_CMS extends EresusApplication
 			Eresus_Kernel::sc()->i18n->setLocale($locale);
 			setlocale(LC_ALL, $locale);
 		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация БД
-	 */
-	protected function initDB()
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
 	}
 	//-----------------------------------------------------------------------------
 
