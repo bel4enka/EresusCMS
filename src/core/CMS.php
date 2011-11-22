@@ -100,6 +100,12 @@ class Eresus_CMS extends EresusApplication
 			}
 
 			$GLOBALS['Eresus']->init();
+
+			$plugins = new Eresus_Plugins;
+			$plugins->init();
+			// Обратная совместимость. FIXME Удалить
+			$GLOBALS['Eresus']->plugins = $plugins;
+
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 			if (PHP::isCLI())
