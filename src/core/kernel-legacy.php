@@ -1517,11 +1517,6 @@ class Eresus
 	 */
 	function init()
 	{
-		// Отключение закавычивания передаваемых данных
-		if (!PHP::checkVersion('5.3'))
-		{
-			set_magic_quotes_runtime(0);
-		}
 		# Читаем конфигурацию
 		$this->init_config();
 		if (Eresus_Config::get('eresus.cms.timezone'))
