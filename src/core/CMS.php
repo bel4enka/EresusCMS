@@ -94,25 +94,13 @@ class Eresus_CMS extends EresusApplication
 				date_default_timezone_set(Eresus_Config::get('eresus.cms.timezone'));
 			}
 
+			$this->initLocale();
 			//$this->initDB();
+			$GLOBALS['Eresus']->init();
+			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+			$this->initPlugins();
 			//$this->initSession();
 
-			Eresus_Kernel::sc()->setService('i18n', new Eresus_i18n($this->getRootDir() . '/lang'));
-
-			if ($locale = Eresus_Config::get('eresus.cms.locale.default'))
-			{
-				Eresus_Kernel::sc()->i18n->setLocale($locale);
-				setlocale(LC_ALL, $locale);
-			}
-
-			$GLOBALS['Eresus']->init();
-
-			$plugins = new Eresus_Plugins;
-			$plugins->init();
-			// Обратная совместимость. FIXME Удалить
-			$GLOBALS['Eresus']->plugins = $plugins;
-
-			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 
 			if (Eresus_Kernel::isCLI())
 			{
@@ -386,11 +374,47 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Инициализирует локаль
+	 *
+	 * @return void
+	 *
+	 * @since 2.17
+	 */
+	protected function initLocale()
+	{
+		Eresus_Kernel::sc()->setService('i18n', new Eresus_i18n($this->getRootDir() . '/lang'));
+
+		if ($locale = Eresus_Config::get('eresus.cms.locale.default'))
+		{
+			Eresus_Kernel::sc()->i18n->setLocale($locale);
+			setlocale(LC_ALL, $locale);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Инициализация БД
 	 */
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует работу с плагинами
+	 *
+	 * @return void
+	 *
+	 * @since 2.17
+	 */
+	protected function initPlugins()
+	{
+		$plugins = new Eresus_Plugins;
+		$plugins->init();
+		// Обратная совместимость. FIXME Удалить
+		$GLOBALS['Eresus']->plugins = $plugins;
+		Eresus_Kernel::sc()->setService('plugins', $plugins);
 	}
 	//-----------------------------------------------------------------------------
 
