@@ -31,10 +31,16 @@
 
 require_once 'bootstrap.php';
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/kernel-legacy.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/lib/accounts.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/classes/backward/TPlugin.php');
-PHP_CodeCoverage_Filter::getInstance()->addFileToWhiteList(TESTS_SRC_DIR . '/core/classes/backward/TContentPlugin.php');
+PHP_CodeCoverage_Filter::getInstance()->
+	addFileToWhiteList(TESTS_SRC_DIR . '/core/kernel-legacy.php');
+PHP_CodeCoverage_Filter::getInstance()->
+	addFileToWhiteList(TESTS_SRC_DIR . '/core/lib/accounts.php');
+PHP_CodeCoverage_Filter::getInstance()->
+	addFileToWhiteList(TESTS_SRC_DIR . '/core/classes/backward/TPlugin.php');
+PHP_CodeCoverage_Filter::getInstance()->
+	addFileToWhiteList(TESTS_SRC_DIR . '/core/classes/backward/TContentPlugin.php');
+/*PHP_CodeCoverage_Filter::getInstance()->
+	addFileToWhiteList(TESTS_SRC_DIR . '/core/Admin/Controller.php');*/
 PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhiteList(TESTS_SRC_DIR);
 
 PHP_CodeCoverage_Filter::getInstance()->removeDirectoryFromWhiteList(TESTS_SRC_DIR . '/cfg');
