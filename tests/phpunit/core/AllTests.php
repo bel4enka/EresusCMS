@@ -35,12 +35,15 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
+//require_once __DIR__ . '/Admin/AllTests.php';
 require_once __DIR__ . '/DB/AllTests.php';
+require_once __DIR__ . '/XML/AllTests.php';
 require_once __DIR__ . '/CMS_Test.php';
 require_once __DIR__ . '/Config_Test.php';
 require_once __DIR__ . '/Functions_Test.php';
-require_once __DIR__ . '/Kernel_Test.php';
 require_once __DIR__ . '/i18n_Test.php';
+require_once __DIR__ . '/Kernel_Test.php';
+require_once __DIR__ . '/PluginInfo_Test.php';
 require_once __DIR__ . '/classes/AllTests.php';
 
 class Eresus_AllTests
@@ -49,12 +52,15 @@ class Eresus_AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('All/Eresus');
 
+		//$suite->addTest(Eresus_Admin_AllTests::suite());
 		$suite->addTest(Eresus_DB_AllTests::suite());
+		$suite->addTest(Eresus_XML_AllTests::suite());
 		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('Eresus_Config_Test');
 		$suite->addTestSuite('Functions_Test');
 		$suite->addTestSuite('Eresus_i18n_Test');
 		$suite->addTestSuite('Eresus_Kernel_Test');
+		$suite->addTestSuite('Eresus_PluginInfo_Test');
 
 		$suite->addTest(Core_Classes_AllTests::suite());
 

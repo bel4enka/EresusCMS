@@ -42,6 +42,13 @@
 class Eresus_PluginInfo
 {
 	/**
+	 * Данные в XML
+	 * @var SimpleXMLElement
+	 * @since 2.17
+	 */
+	private $xmlData;
+
+	/**
 	 * UID плагина
 	 *
 	 * @var string
@@ -79,16 +86,41 @@ class Eresus_PluginInfo
 	/**
 	 * Требуемая версия ядар
 	 *
-	 * @var array [min, max)]
+	 * @var array [min, max]
 	 */
 	private $requiredKernel = array();
 
 	/**
 	 * Требуемые плагины
 	 *
-	 * @var array [[name, min, max]]
+	 * @var array [[uid, min, max, name, url]]
+	 * @since 2.17
 	 */
 	private $requiredPlugins = array();
+
+	/**
+	 * Разработчики (компании)
+	 *
+	 * @var array [[title, url]]
+	 * @since 2.17
+	 */
+	private $developers = array();
+
+	/**
+	 * Авторы (люди)
+	 *
+	 * @var array [[name, email, url]]
+	 * @since 2.17
+	 */
+	private $authors = array();
+
+	/**
+	 * Документация
+	 *
+	 * @var array [xx_XX => url]
+	 * @since 2.17
+	 */
+	private $docs = array();
 
 	/**
 	 * Создаёт объект из файла
@@ -103,15 +135,28 @@ class Eresus_PluginInfo
 	 */
 	public static function loadFromFile($filename)
 	{
-		$xmlFile = substr($filename, 0, -4) . '/plugin.xml';
-		if (file_exists($xmlFile))
+		$info = new self;
+		$info->name = basename(dirname($filename));
+
+		libxml_use_internal_errors(true);
+		libxml_clear_errors();
+		$info->xmlData = new Eresus_XML_Element($filename, 0, true);
+		$errors = libxml_get_errors();
+		if (count($errors))
 		{
-			return self::loadFromXmlFile($xmlFile);
+			libxml_clear_errors();
+			$msg = array();
+			foreach ($errors as $e)
+			{
+				$msg []= $e->message . '(' . $e->file . ':' . $e->line . ':' . $e->column . ')';
+			}
+			$msg = implode('; ', $msg);
+			throw new RuntimeException($msg);
 		}
-		else
-		{
-			return self::loadFromPhpFile($filename);
-		}
+
+		$info->uid = strval($info->xmlData['uid']);
+
+		return $info;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -171,6 +216,11 @@ class Eresus_PluginInfo
 	 */
 	public function getTitle()
 	{
+		if (!$this->title)
+		{
+			$tags = $this->xmlData->xpath('/declaration/title');
+			$this->title = $tags[0]->getLocalized();
+		}
 		return $this->title;
 	}
 	//-----------------------------------------------------------------------------
@@ -184,6 +234,11 @@ class Eresus_PluginInfo
 	 */
 	public function getVersion()
 	{
+		if (!$this->version)
+		{
+			$tags = $this->xmlData->xpath('/declaration/version');
+			$this->version = strval($tags[0]);
+		}
 		return $this->version;
 	}
 	//-----------------------------------------------------------------------------
@@ -197,6 +252,11 @@ class Eresus_PluginInfo
 	 */
 	public function getDescription()
 	{
+		if (!$this->description)
+		{
+			$tags = $this->xmlData->xpath('/declaration/description');
+			$this->description = $tags[0]->getLocalized();
+		}
 		return $this->description;
 	}
 	//-----------------------------------------------------------------------------
@@ -210,6 +270,14 @@ class Eresus_PluginInfo
 	 */
 	public function getRequiredKernel()
 	{
+		if (!$this->requiredKernel)
+		{
+			$tags = $this->xmlData->xpath('/declaration/requires/cms');
+			$this->requiredKernel = array(
+				'min' => strval($tags[0]['min']),
+				'max' => strval($tags[0]['max'])
+			);
+		}
 		return $this->requiredKernel;
 	}
 	//-----------------------------------------------------------------------------
@@ -223,133 +291,96 @@ class Eresus_PluginInfo
 	 */
 	public function getRequiredPlugins()
 	{
+		if (!$this->requiredPlugins)
+		{
+			$tags = $this->xmlData->xpath('/declaration/requires/plugin');
+			$this->requiredPlugins = array();
+			foreach ($tags as $tag)
+			{
+				$uid = strval($tag['uid']);
+				$this->requiredPlugins[$uid] = array(
+					'uid' => $uid,
+					'min' => strval($tag['min']),
+					'max' => strval($tag['max']),
+					'name' => isset($tag['name']) ? strval($tag['name']) : null,
+					'url' => isset($tag['url']) ? strval($tag['url']) : null,
+				);
+			}
+		}
 		return $this->requiredPlugins;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Создаёт объект из файла XML
+	 * Возвращает список разработчиков
 	 *
-	 * @param string $filename
+	 * @return array
 	 *
-	 * @throws RuntimeException  если XML содержит ошибки
-	 *
-	 * @return Eresus_PluginInfo
-	 *
-	 * @since 2.16
+	 * @since 2.17
 	 */
-	private static function loadFromXmlFile($filename)
+	public function getDevelopers()
 	{
-		/* Это временное решение до полного отказа от PHP-файла */
-		$info = self::loadFromPhpFile(substr($filename, 0, -11) . '.php');
-
-		libxml_use_internal_errors(true);
-		libxml_clear_errors();
-		$xml = new SimpleXMLElement($filename, 0, true);
-		$errors = libxml_get_errors();
-		if (count($errors))
+		if (!$this->developers)
 		{
-			libxml_clear_errors();
-			$msg = array();
-			foreach ($errors as $e)
+			$tags = $this->xmlData->xpath('/declaration/developer');
+			$this->developers = array();
+			foreach ($tags as $tag)
 			{
-				$msg []= $e->message . '(' . $e->file . ':' . $e->line . ':' . $e->column . ')';
-			}
-			$msg = implode('; ', $msg);
-			throw new RuntimeException($msg);
-		}
-
-		$info->uid = strval($xml['uid']);
-
-		if (count($xml->requires->children()) > 0)
-		{
-			foreach ($xml->requires as $requires)
-			{
-				foreach ($requires as $item)
-				{
-					switch ($item->getName())
-					{
-						case 'plugin':
-							$info->requiredPlugins []= array(
-								strval($item['name']),
-								strval($item['min']),
-								strval($item['max'])
-							);
-						break;
-					}
-				}
+				$this->developers [] = array(
+					'title' => strval($tag['title']),
+					'url' => isset($tag['url']) ? strval($tag['url']) : null,
+				);
 			}
 		}
-
-		return $info;
+		return $this->developers;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	* Создаёт объект из файла PHP
-	*
-	* @param string $filename
-	*
-	* @return Eresus_PluginInfo
-	*
-	* @since 2.16
-	*/
-	private static function loadFromPhpFile($filename)
+	 * Возвращает список авторов
+	 *
+	 * @return array
+	 *
+	 * @since 2.17
+	 */
+	public function getAuthors()
 	{
-		$source = file_get_contents($filename);
-		$tokens = token_get_all($source);
-		$skipTokens = array(T_COMMENT, T_DOC_COMMENT);
-		$props = array('$version', '$kernel', '$title', '$description');
-
-		$info = new self;
-		$state = null;
-
-		foreach ($tokens as $token)
+		if (!$this->authors)
 		{
-			if (is_array($token))
+			$tags = $this->xmlData->xpath('/declaration/author');
+			$this->authors = array();
+			foreach ($tags as $tag)
 			{
-				list($id, $text) = $token;
-				if (in_array($id, $skipTokens))
-				{
-					continue;
-				}
-				switch (true)
-				{
-					case T_CLASS == $id && null === $state:
-						$state = 'class_name';
-					break;
-
-					case T_STRING == $id && 'class_name' == $state && trim($text) != '':
-						$info->name = basename($filename, '.php'); //strtolower($text);
-						$state = 'prop_name';
-					break;
-
-					case T_VARIABLE == $id && 'prop_name' == $state && in_array($text, $props):
-						$property = substr($text, 1);
-						$state = 'prop_value';
-					break;
-
-					case T_CONSTANT_ENCAPSED_STRING == $id && 'prop_value' == $state:
-						$value = substr($text, 1, -1);
-						if ('kernel' == $property)
-						{
-							$value = explode('/', $value);
-							$info->requiredKernel = array(
-								$value[0],
-								isset($value[1]) ? $value[1] : null
-							);
-						}
-						else
-						{
-							$info->$property = $value;
-						}
-						$state = 'prop_name';
-					break;
-				}
+				$this->authors [] = array(
+					'name' => strval($tag['name']),
+					'email' => isset($tag['email']) ? strval($tag['email']) : null,
+					'url' => isset($tag['url']) ? strval($tag['url']) : null,
+				);
 			}
 		}
-		return $info;
+		return $this->authors;
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * Возвращает список ссылок на документацию
+	 *
+	 * @return array
+	 *
+	 * @since 2.17
+	 */
+	public function getDocs()
+	{
+		if (!$this->docs)
+		{
+			$tags = $this->xmlData->xpath('/declaration/docs');
+			$this->docs = array();
+			foreach ($tags as $tag)
+			{
+				$this->docs[strval($tag['lang'])] = strval($tag['url']);
+			}
+		}
+		return $this->docs;
+	}
+	//-----------------------------------------------------------------------------
 }
