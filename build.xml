@@ -198,7 +198,15 @@
 		<!-- Symfony Dependency Injection Container  -->
 		<copy todir="${build.dir}/core/symfony/dependency-injection">
 			<fileset dir="3rdparty/dependency-injection/lib">
-				<include name="**/*" />
+				<include name="**" />
+			</fileset>
+		</copy>
+
+		<!-- Doctrine -->
+		<copy todir="${build.dir}/core">
+			<fileset dir="3rdparty/doctrine/lib">
+				<include name="**" />
+				<exclude name=".svn" />
 			</fileset>
 		</copy>
 

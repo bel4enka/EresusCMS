@@ -49,7 +49,7 @@ PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhiteList(TESTS_SRC_DIR .
 PHP_CodeCoverage_Filter::getInstance()->removeFileFromWhiteList(TESTS_SRC_DIR .
 	'/index.php');
 
-require_once dirname(__FILE__) . '/core/AllTests.php';
+require_once __DIR__ . '/core/AllTests.php';
 
 class AllTests
 {
@@ -57,7 +57,7 @@ class AllTests
 	{
 		$suite = new PHPUnit_Framework_TestSuite('All Tests');
 
-		$suite->addTest(Core_AllTests::suite());
+		$suite->addTest(Eresus_AllTests::suite());
 
 		return $suite;
 	}

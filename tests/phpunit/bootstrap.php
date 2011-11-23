@@ -101,6 +101,59 @@ class UniversalStub implements ArrayAccess
 }
 
 /**
+ * Фасад к моку для эмуляции статичных методов
+ *
+ * @package Eresus
+ * @subpackage Tests
+ * @since 2.17
+ */
+class MockFacade
+{
+	/**
+	 * Мок
+	 *
+	 * @var object
+	 */
+	private static $mock;
+
+	/**
+	 * Устанавливает мок
+	 *
+	 * @param object $mock
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public static function setMock($mock)
+	{
+		self::$mock = $mock;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Вызывает метод мока
+	 *
+	 * @param string $method
+	 * @param array  $args
+	 *
+	 * @return void
+	 *
+	 * @since 2.16
+	 */
+	public static function __callstatic($method, $args)
+	{
+		if (self::$mock && method_exists(self::$mock, $method))
+		{
+			return call_user_func_array(array(self::$mock, $method), $args);
+		}
+
+		return new UniversalStub();
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
  * Вспомогательный инструментарий для тестов
  *
  * @package Eresus
@@ -128,5 +181,20 @@ class Eresus_Tests
 	}
 	//-----------------------------------------------------------------------------
 }
+
+class Doctrine extends MockFacade {}
+class Doctrine_Core extends MockFacade
+{
+	const ATTR_AUTOLOAD_TABLE_CLASSES = 'ATTR_AUTOLOAD_TABLE_CLASSES';
+	const ATTR_TBLNAME_FORMAT = 'ATTR_TBLNAME_FORMAT';
+	const ATTR_VALIDATE = 'ATTR_VALIDATE';
+	const VALIDATE_ALL = 'VALIDATE_ALL';
+}
+
+
+class Doctrine_Manager extends MockFacade {}
+class Doctrine_Query {}
+class Doctrine_Record {}
+class Doctrine_Table {}
 
 require_once __DIR__ . '/stubs.php';

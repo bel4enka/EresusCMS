@@ -138,7 +138,7 @@ class Eresus_CMS extends EresusApplication
 			}
 
 			$this->initLocale();
-			//$this->initDB();
+			$this->initDB();
 			$GLOBALS['Eresus']->init();
 			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
 			$this->initPlugins();
@@ -408,7 +408,7 @@ class Eresus_CMS extends EresusApplication
 	 *
 	 * @since 2.17
 	 */
-	protected function initLocale()
+	private function initLocale()
 	{
 		Eresus_Kernel::sc()->setService('i18n', new Eresus_i18n($this->getRootDir() . '/lang'));
 
@@ -417,6 +417,54 @@ class Eresus_CMS extends EresusApplication
 			Eresus_Kernel::sc()->i18n->setLocale($locale);
 			setlocale(LC_ALL, $locale);
 		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализация БД
+	 *
+	 * Настраивает "ленивое" соединение с БД.
+	 *
+	 * @throws DomainException если в настройках не указан параметр "eresus.cms.dsn"
+	 *
+	 * @return void
+	 *
+	 * @uses Eresus_Config::get()
+	 * @uses Doctrine::autoload()
+	 * @uses Doctrine_Core::modelsAutoload()
+	 * @uses Doctrine_Manager::connection()
+	 * @uses Doctrine_Manager::getInstance()
+	 * @uses Doctrine_Manager::setAttribute()
+	 * @uses Doctrine_Core::loadModels()
+	 */
+	private function initDB()
+	{
+		/**
+		 * Подключение Doctrine
+		 */
+		include $this->getRootDir() . '/core/Doctrine.php';
+		spl_autoload_register(array('Doctrine', 'autoload'));
+		spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
+
+		$dsn = Eresus_Config::get('eresus.cms.dsn');
+		if (!$dsn)
+		{
+			throw new DomainException(i18n('Не установлен параметр настройки "eresus.cms.dsn"'));
+		}
+
+		Doctrine_Manager::connection($dsn);
+
+		$manager = Doctrine_Manager::getInstance();
+		$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+		$manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
+
+		$prefix = Eresus_Config::get('eresus.cms.dsn.prefix');
+		if ($prefix)
+		{
+			$manager->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, $prefix . '%s');
+		}
+
+		Doctrine_Core::loadModels(dirname(__FILE__) . '/Entity');
 	}
 	//-----------------------------------------------------------------------------
 

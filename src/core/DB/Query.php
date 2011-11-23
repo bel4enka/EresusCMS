@@ -1,15 +1,14 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
- * Модульные тесты
+ * ${product.description}
  *
- * @version ${product.version}
+ * Запрос к БД
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Mikhail Krasilnikov <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -28,36 +27,18 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
  * $Id$
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
-
-require_once __DIR__ . '/DB/AllTests.php';
-require_once __DIR__ . '/CMS_Test.php';
-require_once __DIR__ . '/Config_Test.php';
-require_once __DIR__ . '/Functions_Test.php';
-require_once __DIR__ . '/Kernel_Test.php';
-require_once __DIR__ . '/i18n_Test.php';
-require_once __DIR__ . '/classes/AllTests.php';
-
-class Eresus_AllTests
+/**
+ * Запрос к БД
+ *
+ * @package Eresus
+ * @since 2.17
+ */
+// @codeCoverageIgnoreStart
+class Eresus_DB_Query extends Doctrine_Query
 {
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite('All/Eresus');
-
-		$suite->addTest(Eresus_DB_AllTests::suite());
-		$suite->addTestSuite('Eresus_CMS_Test');
-		$suite->addTestSuite('Eresus_Config_Test');
-		$suite->addTestSuite('Functions_Test');
-		$suite->addTestSuite('Eresus_i18n_Test');
-		$suite->addTestSuite('Eresus_Kernel_Test');
-
-		$suite->addTest(Core_Classes_AllTests::suite());
-
-		return $suite;
-	}
 }
+// @codeCoverageIgnoreEnd
