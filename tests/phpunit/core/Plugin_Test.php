@@ -34,27 +34,27 @@ require_once __DIR__ . '/../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/XML/Element.php';
 require_once TESTS_SRC_DIR . '/core/i18n.php';
 require_once TESTS_SRC_DIR . '/core/Kernel.php';
-require_once TESTS_SRC_DIR . '/core/PluginInfo.php';
+require_once TESTS_SRC_DIR . '/core/Plugin.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_PluginInfo_Test extends PHPUnit_Framework_TestCase
+class Eresus_Plugin_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Eresus_PluginInfo::loadFromFile
-	 * @covers Eresus_PluginInfo::__get
-	 * @covers Eresus_PluginInfo::getUID
-	 * @covers Eresus_PluginInfo::getName
-	 * @covers Eresus_PluginInfo::getTitle
-	 * @covers Eresus_PluginInfo::getVersion
-	 * @covers Eresus_PluginInfo::getDescription
-	 * @covers Eresus_PluginInfo::getRequiredKernel
-	 * @covers Eresus_PluginInfo::getRequiredPlugins
-	 * @covers Eresus_PluginInfo::getDevelopers
-	 * @covers Eresus_PluginInfo::getAuthors
-	 * @covers Eresus_PluginInfo::getDocs
+	 * @covers Eresus_Plugin::loadFromFile
+	 * @covers Eresus_Plugin::__get
+	 * @covers Eresus_Plugin::getUID
+	 * @covers Eresus_Plugin::getName
+	 * @covers Eresus_Plugin::getTitle
+	 * @covers Eresus_Plugin::getVersion
+	 * @covers Eresus_Plugin::getDescription
+	 * @covers Eresus_Plugin::getRequiredKernel
+	 * @covers Eresus_Plugin::getRequiredPlugins
+	 * @covers Eresus_Plugin::getDevelopers
+	 * @covers Eresus_Plugin::getAuthors
+	 * @covers Eresus_Plugin::getDocs
 	 */
 	public function test_overall()
 	{
@@ -64,8 +64,8 @@ class Eresus_PluginInfo_Test extends PHPUnit_Framework_TestCase
 		$i18n->setLocale('ru_RU');
 		$container->setService('i18n', $i18n);
 
-		$info = Eresus_PluginInfo::loadFromFile(TESTS_SRC_DIR . '/plugins/Test/plugin.xml');
-		$this->assertInstanceOf('Eresus_PluginInfo', $info);
+		$info = Eresus_Plugin::loadFromFile(TESTS_SRC_DIR . '/plugins/Test/plugin.xml');
+		$this->assertInstanceOf('Eresus_Plugin', $info);
 		$this->assertEquals('ru.eresus.plugins.Test', $info->uid);
 		$this->assertEquals('Test', $info->name);
 		$this->assertEquals('Тестовый плагин', $info->title);

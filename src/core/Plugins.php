@@ -135,7 +135,7 @@ class Eresus_Plugins
 		$filename = filesRoot.'ext/'.$name.'.php';
 		if (FS::exists($filename))
 		{
-			$info = Eresus_PluginInfo::loadFromFile($filename);
+			$info = Eresus_Plugin::loadFromFile($filename);
 			/*
 			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
 			* ошибок. Хотя и не факт, что это сработает.

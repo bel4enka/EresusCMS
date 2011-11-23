@@ -72,7 +72,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 				$errors = array();
 				try
 				{
-					$info = Eresus_PluginInfo::loadFromFile($file);
+					$info = Eresus_Plugin::loadFromFile($file);
 					// Удаляем из версии ядра все буквы, чтобы сравнивать только цифры
 					$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
 					$required = $info->getRequiredKernel();
@@ -106,7 +106,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 
 		foreach ($data['plugins'] as &$item)
 		{
-			if ($item['info'] instanceof Eresus_PluginInfo)
+			if ($item['info'] instanceof Eresus_Plugin)
 			{
 				$required = $item['info']->getRequiredPlugins();
 				foreach ($required as $plugin)
@@ -139,7 +139,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 	/**
 	 * Возвращает список доступных локально плагинов
 	 *
-	 * @return Eresus_PluginInfo[]
+	 * @return Eresus_Plugin[]
 	 *
 	 * @since 2.17
 	 */
@@ -154,7 +154,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 				$filename = $fileInfo->getPathname() . '/plugin.xml';
 				if (file_exists($filename))
 				{
-					$info = Eresus_PluginInfo::loadFromFile($filename);
+					$info = Eresus_Plugin::loadFromFile($filename);
 					$plugins[$info->getUID()] = $info;
 				}
 			}

@@ -31,7 +31,7 @@
  */
 
 require_once __DIR__ . '/../../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/PluginInfo.php';
+require_once TESTS_SRC_DIR . '/core/Plugin.php';
 require_once TESTS_SRC_DIR . '/core/Admin/Controller.php';
 require_once TESTS_SRC_DIR . '/core/Admin/Controller/PluginInstaller.php';
 

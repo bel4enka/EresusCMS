@@ -39,7 +39,7 @@
  * @package Eresus
  * @since 2.16
  */
-class Eresus_PluginInfo
+class Eresus_Plugin
 {
 	/**
 	 * Данные в XML
@@ -129,7 +129,7 @@ class Eresus_PluginInfo
 	 *
 	 * @throws RuntimeException  если файл содержит ошибки
 	 *
-	 * @return Eresus_PluginInfo
+	 * @return Eresus_Plugin
 	 *
 	 * @since 2.16
 	 */
