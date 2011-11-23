@@ -70,6 +70,7 @@ class Eresus_Plugins
 	 */
 	public function init()
 	{
+		//$plugins = Doctrine_Core::getTable('Eresus_Entity_Plugin')->findByActive(true);
 		$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
 		if ($items)
 		{

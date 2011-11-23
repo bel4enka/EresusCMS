@@ -140,113 +140,6 @@ class TPlgMgr
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает диалог добавления плагина
-	 *
-	 * @return string  HTML
-	 */
-	private function add()
-	{
-		global $page, $Eresus;
-
-		$data = array();
-
-		/* Составляем список доступных плагинов */
-		$files = glob($Eresus->froot . 'ext/*.php');
-		if (false === $files)
-		{
-			$files = array();
-		}
-
-		/* Составляем списки доступынх и установленных плагинов */
-		$items = $Eresus->db->select('plugins', '', 'name, version');
-		$available = array();
-		$installed = array();
-		foreach ($items as $item)
-		{
-			$available[$item['name']] = $item['version'];
-			$installed []= $Eresus->froot . 'ext/' . $item['name'] . '.php';
-		}
-
-		// Оставляем только неустановленные
-		$files = array_diff($files, $installed);
-
-		/*
-		 * Собираем информацию о неустановленных плагинах
-		 */
-		$data['plugins'] = array();
-		$features = array();
-		if (count($files))
-		{
-			foreach ($files as $file)
-			{
-				$errors = array();
-				try
-				{
-					$info = Eresus_PluginInfo::loadFromFile($file);
-					// Удаляем из версии ядра все буквы, чтобы сравнивать только цифры
-					$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
-					$required = $info->getRequiredKernel();
-					if (
-						version_compare($kernelVersion, $required[0], '<')/* ||
-						version_compare($kernelVersion, $required[1], '>')*/
-					)
-					{
-						$msg =  i18n('Требуется Eresus %s или выше.', __CLASS__);
-						$errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
-					}
-					/*}
-					else
-					{
-						$msg =  I18n::getInstance()->getText('Class "%s" not found in plugin file', $this);
-						$info['errors'] []= sprintf($msg, $info['name']);
-					}*/
-				}
-				catch (RuntimeException $e)
-				{
-					$errors []= $e->getMessage();
-					$info = new stdClass();
-					$info->title = $info->name = basename($file, '.php');
-					$info->version = '';
-				}
-				$available[$info->name] = $info->version;
-				$data['plugins'][$info->title] = array('info' => $info, 'errors' => $errors);
-			}
-		}
-
-
-		foreach ($data['plugins'] as &$item)
-		{
-			if ($item['info'] instanceof Eresus_PluginInfo)
-			{
-				$required = $item['info']->getRequiredPlugins();
-				foreach ($required as $plugin)
-				{
-					list ($name, $minVer, $maxVer) = $plugin;
-					if (
-						!isset($available[$name]) ||
-						($minVer && version_compare($available[$name], $minVer, '<')) ||
-						($maxVer && version_compare($available[$name], $maxVer, '>'))
-					)
-					{
-						{
-							$msg = i18n('Требуется расширение %s', __CLASS__);
-							$item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
-						}
-					}
-				}
-			}
-		}
-
-		ksort($data['plugins']);
-
-		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
-		$html = $tmpl->compile($data);
-
-		return $html;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Отрисовка контента модуля
 	 *
 	 * @return string
@@ -285,7 +178,8 @@ class TPlgMgr
 			break;
 
 			case arg('action') == 'add':
-				$result = $this->add();
+				$ctrl = new Eresus_Admin_Controller_PluginInstaller(Eresus_Kernel::sc());
+				$result = $ctrl->showSelectorDialogAction();
 			break;
 
 			case arg('action') == 'insert':
