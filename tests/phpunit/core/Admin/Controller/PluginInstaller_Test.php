@@ -61,7 +61,8 @@ class Eresus_Admin_Controller_PluginInstaller_Test extends PHPUnit_Framework_Tes
 
 		$list = $m_getLocalPlugins->invoke($ctrl);
 		$this->assertInternalType('array', $list);
-		$this->assertArrayHasKey('ru.eresus.plugins.Test', $list);
+		$this->assertArrayHasKey('ru.eresus.plugins.Test1', $list);
+		$this->assertArrayHasKey('ru.eresus.plugins.Test2', $list);
 	}
 	//-----------------------------------------------------------------------------
 

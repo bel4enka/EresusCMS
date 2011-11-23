@@ -64,19 +64,19 @@ class Eresus_Plugin_Test extends PHPUnit_Framework_TestCase
 		$i18n->setLocale('ru_RU');
 		$container->setService('i18n', $i18n);
 
-		$info = Eresus_Plugin::loadFromFile(TESTS_SRC_DIR . '/plugins/Test/plugin.xml');
+		$info = Eresus_Plugin::loadFromFile(TESTS_SRC_DIR . '/plugins/Test2/plugin.xml');
 		$this->assertInstanceOf('Eresus_Plugin', $info);
-		$this->assertEquals('ru.eresus.plugins.Test', $info->uid);
-		$this->assertEquals('Test', $info->name);
-		$this->assertEquals('Тестовый плагин', $info->title);
+		$this->assertEquals('ru.eresus.plugins.Test2', $info->uid);
+		$this->assertEquals('Test2', $info->name);
+		$this->assertEquals('Тестовый плагин 2', $info->title);
 		$this->assertEquals('1.00', $info->version);
 		$this->assertEquals('Пример плагина', $info->description);
 		$this->assertEquals(array('min' => '2.17', 'max' => '2.17'), $info->requiredKernel);
-		$this->assertEquals(array('ru.eresus.plugins.Test2' => array(
-			'uid' => 'ru.eresus.plugins.Test2',
+		$this->assertEquals(array('ru.eresus.plugins.Test1' => array(
+			'uid' => 'ru.eresus.plugins.Test1',
 			'min' => '1.00',
 			'max' => '1.00',
-			'name' => 'Test2',
+			'name' => 'Test1',
 			'url' => 'http://example.org/',
 		)), $info->requiredPlugins);
 		$this->assertEquals(array(array(

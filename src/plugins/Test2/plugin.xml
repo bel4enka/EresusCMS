@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declaration uid="ru.eresus.plugins.Test2" format="1.1">
+
+	<title>
+		<ru_RU>Тестовый плагин 2</ru_RU>
+		<en_US>Test plugin 2</en_US>
+	</title>
+
+	<version>1.00</version>
+
+	<requires>
+		<cms min="2.17" max="2.17" />
+		<plugin uid="ru.eresus.plugins.Test1" min="1.00" max="1.00" name="Test1"
+			url="http://example.org/" />
+	</requires>
+
+	<description>
+		<ru_RU>Пример плагина</ru_RU>
+	</description>
+
+	<developer title="Eresus" url="http://eresus.ru/" />
+	<author name="Михаил Красильников" email="mihalych@vsepofigu.ru" />
+
+	<docs lang="ru_RU" url="http://docs.eresus.ru/cms/dev/index" />  
+
+</declaration>

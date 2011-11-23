@@ -18,7 +18,7 @@
 			<div class="plugin-list">
 				{foreach $plugins item}
 				<div class="plugin-list__plugin block box">
-					{if !$item.errors}<input type="checkbox" name="files[{$item.info->name}]" value="1" checked="checked" />{/if}
+					{if !$item.errors}<input type="checkbox" name="plugins[]" value="{$item.info->name}" checked="checked" />{/if}
 					<div class="block info">
 						<strong>{$item.info->title} {$item.info->version}</strong><br />
 						{$item.info->description}

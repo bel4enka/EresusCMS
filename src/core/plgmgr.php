@@ -103,40 +103,6 @@ class TPlgMgr
 		$Eresus->plugins->items[$Eresus->request['arg']['update']]->updateSettings();
 		HTTP::redirect($Eresus->request['arg']['submitURL']);
 	}
-
-	/**
-	 * Подключает плагины
-	 *
-	 * @return void
-	 * @see add()
-	 */
-	private function insert()
-	{
-		global $page, $Eresus;
-
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		$files = arg('files');
-		if ($files && is_array($files))
-		{
-			foreach ($files as $plugin => $install)
-			{
-				if ($install)
-				{
-					try
-					{
-						$Eresus->plugins->install($plugin);
-					}
-					catch (DomainException $e)
-					{
-						ErrorMessage($e->getMessage());
-					}
-				}
-			}
-
-		}
-		HttpResponse::redirect('admin.php?mod=plgmgr');
-	}
 	//-----------------------------------------------------------------------------
 
 	/**
@@ -183,7 +149,9 @@ class TPlgMgr
 			break;
 
 			case arg('action') == 'insert':
-				$this->insert();
+				$ctrl = new Eresus_Admin_Controller_PluginInstaller(Eresus_Kernel::sc());
+				$ctrl->installAction();
+				HttpResponse::redirect('admin.php?mod=plgmgr');
 			break;
 
 			default:

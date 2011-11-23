@@ -103,6 +103,42 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Устанавливает расширения, выбранные в диалоге добавления
+	 *
+	 * @return void
+	 *
+	 * @since 2.17
+	 */
+	public function installAction()
+	{
+		$toInstall = arg('plugins');
+		if (is_array($toInstall))
+		{
+			$rootPath = $this->container->app->getRootDir() . '/plugins/';
+			foreach ($toInstall as $name)
+			{
+				$filename = $rootPath . $name. '/plugin.xml';
+				if (file_exists($filename))
+				{
+					$plugin = Eresus_Plugin::loadFromFile($filename);
+					$entity = new Eresus_Entity_Plugin();
+					$entity->name = $plugin->name;
+					$entity->save();
+				}
+				else
+				{
+					eresus_log(__METHOD__, LOG_ERR, 'Can not find file "%s" for plugin "%s"', $filename,
+						$name);
+					$msg = i18n('Не удалось найти файл "%s" для расширения "%s".', __CLASS__);
+					$msg = sprintf($msg, $filename, $name);
+					//FIXME ErrorMessage($msg);
+				}
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает список доступных локально плагинов
 	 *
 	 * @return Eresus_Plugin[]

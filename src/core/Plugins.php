@@ -71,7 +71,7 @@ class Eresus_Plugins
 	public function init()
 	{
 		//$plugins = Doctrine_Core::getTable('Eresus_Entity_Plugin')->findByActive(true);
-		$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
+		/*$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
 		if ($items)
 		{
 			foreach ($items as &$item)
@@ -80,7 +80,7 @@ class Eresus_Plugins
 				$this->list[$item['name']] = $item;
 			}
 
-			/* Проверяем зависимости */
+			/* Проверяем зависимости * /
 			do
 			{
 				$success = true;
@@ -99,7 +99,7 @@ class Eresus_Plugins
 							$requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
 							eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
 							/*$msg = I18n::getInstance()->getText($msg, $this);
-							 ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
+							 ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));* /
 							unset($this->list[$plugin]);
 							$success = false;
 						}
@@ -108,12 +108,12 @@ class Eresus_Plugins
 			}
 			while (!$success);
 
-			/* Загружаем плагины */
+			/* Загружаем плагины  * /
 			foreach ($this->list as $item)
 			{
 				$this->load($item['name']);
 			}
-		}
+		}*/
 	}
 	//-----------------------------------------------------------------------------
 
@@ -131,72 +131,6 @@ class Eresus_Plugins
 	public function isAvailable($uid, $minVer, $maxVer)
 	{
 		return false;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Устанавливает плагин
-	 *
-	 * @param string $name  Имя плагина
-	 *
-	 * @return void
-	 *
-	 * @throws EresusSourceParseException
-	 */
-	public function install($name)
-	{
-		global $Eresus;
-
-		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
-
-		$filename = filesRoot.'ext/'.$name.'.php';
-		if (FS::exists($filename))
-		{
-			$info = Eresus_Plugin::loadFromFile($filename);
-			/*
-			 * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
-			* ошибок. Хотя и не факт, что это сработает.
-			*/
-			$code = file_get_contents($filename);
-			$code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
-			$code = str_replace('__FILE__', "'$filename'", $code);
-			ini_set('track_errors', true);
-			$valid = eval($code) !== false;
-			ini_set('track_errors', false);
-			if (!$valid)
-			{
-				throw new DomainException(
-				sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg)
-				);
-			}
-
-			$className = $name;
-			if (!class_exists($className, false) && class_exists('T' . $className, false))
-			{
-				$className = 'T' . $className; // FIXME: Обратная совместимость с версиями до 2.10b2
-			}
-
-			if (class_exists($className, false))
-			{
-				$this->items[$name] = new $className();
-				$this->items[$name]->install();
-				$item = $this->items[$name]->__item();
-				$item['info'] = serialize($info);
-				$Eresus->db->insert('plugins', $item);
-			}
-			else
-			{
-				FatalError(sprintf(i18n('Класс "%s" не найден.'), $className));
-			}
-		}
-		else
-		{
-			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
-			$name);
-			$msg = i18n('Не удалось найти основной файл "%s" для модуля расширения "%s".', __CLASS__);
-			$msg = sprintf($msg, $filename, $name);
-			ErrorMessage($msg);
-		}
 	}
 	//-----------------------------------------------------------------------------
 
