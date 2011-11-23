@@ -23,9 +23,19 @@
 						<strong>{$item.info->title} {$item.info->version}</strong><br />
 						{$item.info->description}
 						{if $item.errors}
-						<ul class="error-text">
-						{foreach $item.errors error}<li>{$error}</li>{/foreach}
-						</ul>
+						<div class="error-text">
+							{if $item.cms}
+							<div>{i18n('Расширение может работать только с Eresus')} {$item.cms.min}{if $item.cms.max > $item.cms.min} - {$item.cms.max}{/if}</div>
+							{/if}
+							{if $item.requires}
+							<div>{i18n('Следующие расширения должны быть установлены и активированы:')}</div> 
+							<ul>
+								{foreach $item.requires dep}
+								<li>{if $dep.url}<a href="{$dep.url}">{/if}{if $dep.name}<span title="{$dep.uid}">{$dep.name}</span>{else}{$dep.uid}{/if}{if $dep.url}</a>{/if} {$dep.min}{if $dep.max > $dep.min} - {$dep.max}{/if}</li>
+								{/foreach}
+							</ul>
+							{/if}
+						</div>
 						{/if}
 					</div>
 				</div>
