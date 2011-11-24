@@ -106,8 +106,6 @@ class Eresus_CMS extends EresusApplication
 	 */
 	public function main()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
 		try
 		{
 			/* Подключение таблицы автозагрузки классов */
@@ -144,16 +142,26 @@ class Eresus_CMS extends EresusApplication
 			$this->initPlugins();
 			//$this->initSession();
 
+			$this->initWeb();
 
-			if (Eresus_Kernel::isCLI())
+			$output = '';
+
+			switch (true)
 			{
-				return $this->runCLI();
+				case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
+					$this->call3rdPartyExtension();
+				break;
+
+				case substr($this->request->getLocal(), 0, 6) == '/admin':
+					$output = $this->runWebAdminUI();
+				break;
+
+				default:
+					$output = $this->runWebClientUI();
+				break;
 			}
-			else
-			{
-				$this->runWeb();
-				return 0;
-			}
+
+			echo $output;
 		}
 		catch (Exception $e)
 		{
@@ -161,7 +169,7 @@ class Eresus_CMS extends EresusApplication
 			ob_end_clean();
 			$this->fatalError($e, false);
 		}
-
+		return 0;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -254,36 +262,6 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Выполнение в режиме Web
-	 */
-	protected function runWeb()
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		$this->initWeb();
-
-		$output = '';
-
-		switch (true)
-		{
-			case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
-				$this->call3rdPartyExtension();
-			break;
-
-			case substr($this->request->getLocal(), 0, 6) == '/admin':
-				$output = $this->runWebAdminUI();
-			break;
-
-			default:
-				$output = $this->runWebClientUI();
-			break;
-		}
-
-		echo $output;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Инициализация Web
 	 */
 	protected function initWeb()
@@ -358,18 +336,6 @@ class Eresus_CMS extends EresusApplication
 			$this->request->getLocalRoot()
 		);
 
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Выполнение в режиме CLI
-	 */
-	protected function runCLI()
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		$this->initCLI();
-		return 0;
 	}
 	//-----------------------------------------------------------------------------
 
