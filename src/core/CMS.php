@@ -142,7 +142,13 @@ class Eresus_CMS extends EresusApplication
 			$this->initPlugins();
 			//$this->initSession();
 
-			$this->initWeb();
+			Core::setValue('core.template.templateDir', $this->getFsRoot());
+			Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
+
+			$this->request = HTTP::request();
+			//$this->response = new HttpResponse();
+			$this->detectWebRoot();
+			//$this->initRoutes();
 
 			$output = '';
 
@@ -258,23 +264,6 @@ class Eresus_CMS extends EresusApplication
 				// TODO Сделать проверку на запись в созданные директории
 			}
 		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализация Web
-	 */
-	protected function initWeb()
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		Core::setValue('core.template.templateDir', $this->getFsRoot());
-		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
-
-		$this->request = HTTP::request();
-		//$this->response = new HttpResponse();
-		$this->detectWebRoot();
-		//$this->initRoutes();
 	}
 	//-----------------------------------------------------------------------------
 
