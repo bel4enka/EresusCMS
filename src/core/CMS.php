@@ -301,7 +301,7 @@ class Eresus_CMS extends Eresus_Application
 		$extension = substr($this->request->getLocal(), 9);
 		$extension = substr($extension, 0, strpos($extension, '/'));
 
-		$filename = $this->getFsRoot().'/ext-3rd/'.$extension.'/eresus-connector.php';
+		$filename = $this->getRootDir() . '/ext-3rd/' . $extension . '/eresus-connector.php';
 		if ($extension && is_file($filename))
 		{
 			include_once $filename;
