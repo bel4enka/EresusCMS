@@ -108,17 +108,3 @@ class HttpRequest
 	}
 	//-----------------------------------------------------------------------------
 }
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
-class TemplateSettings
-{
-	public static function setGlobalValue($a, $b)
-	{
-		;
-	}
-	//-----------------------------------------------------------------------------
-}

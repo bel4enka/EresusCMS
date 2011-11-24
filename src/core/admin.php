@@ -140,7 +140,7 @@ class AdminUITheme
 	public function getTemplate($name)
 	{
 		$filename = $this->getResource($name);
-		$template = new Template($filename);
+		$template = Eresus_Template::fromFile($filename);
 		return $template;
 	}
 	//-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ class TAdminUI extends WebPage
 
 		$theme = new AdminUITheme();
 		$this->setUITheme($theme);
-		TemplateSettings::setGlobalValue('theme', $theme);
+		Eresus_Template::setGlobalValue('theme', $theme);
 
 		$this->title = i18n('Управление', __CLASS__);
 		/* Определяем уровень вложенности */
@@ -1224,7 +1224,7 @@ class TAdminUI extends WebPage
 		$data['controlMenu'] = $this->renderControlMenu();
 		$data['user'] = $Eresus->user;
 
-		$tmpl = new Template('admin/themes/default/page.default.html');
+		$tmpl = Eresus_Template::fromFile('admin/themes/default/page.default.html');
 		$html = $tmpl->compile($data);
 
 		if (count($this->headers))

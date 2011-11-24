@@ -182,7 +182,6 @@ class Eresus_Tests
 	//-----------------------------------------------------------------------------
 }
 
-class Core extends MockFacade {}
 class Doctrine extends MockFacade {}
 class Doctrine_Core extends MockFacade
 {
@@ -197,5 +196,9 @@ class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
 class Doctrine_Record {}
 class Doctrine_Table {}
+
+class Dwoo extends UniversalStub {}
+class Dwoo_Exception extends Exception {}
+class Dwoo_Template_File extends UniversalStub {}
 
 require_once __DIR__ . '/stubs.php';

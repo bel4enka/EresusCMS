@@ -55,6 +55,14 @@ class Eresus_Console extends Eresus_Application
 	{
 		try
 		{
+			$this->initConf();
+			$this->initDebugTools();
+			$this->initTimezone();
+			$this->initLocale();
+			$this->initDB();
+			$this->initPlugins();
+			$this->initTemplateEngine();
+
 			$this->loadCommands();
 
 			// FIXME не учитываются опции перед командой
