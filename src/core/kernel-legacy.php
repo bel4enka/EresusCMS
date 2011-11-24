@@ -1124,7 +1124,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = FS::nativeForm(Eresus_Kernel::sc()->app->getFsRoot() . '/');
+			$this->froot = FS::nativeForm(Eresus_Kernel::sc()->app->getRootDir() . '/');
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
