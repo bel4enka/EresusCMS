@@ -47,10 +47,6 @@ return array(
 	/* Misc */
 	'Registry' => 'Misc/Registry.php',
 
-	/* Template */
-	'Template' => 'Template/Template.php',
-	'TemplateFile' => 'Template/Template.php',
-
 	/* WWW */
 	'HTTP' => 'WWW/HTTP/HTTP.php',
 	'HttpHeader' => 'WWW/HTTP/HttpHeaders.php',
