@@ -48,7 +48,31 @@ class Eresus_Console_Command_DoctrineSchemaCreate extends Eresus_Console_Command
 	 */
 	public function execute()
 	{
-		// TODO
+		Doctrine_Core::createTablesFromModels();
+
+		/* TODO: Переделать через YAML */
+		$user = new Eresus_Entity_User();
+		$user->username = 'root';
+		$user->password = '';
+		$user->active = true;
+		$user->access = 1;
+		$user->fullname = 'Главный администратор';
+		$user->mail = 'root@example.org';
+		$user->save();
+
+		$section = new Eresus_Entity_Section();
+		$section->name = 'main';
+		$section->owner = 0;
+		$section->title = 'Главная страница';
+		$section->caption = 'Главная';
+		$section->active = true;
+		$section->access = 5;
+		$section->visible = true;
+		$section->template = 'default';
+		$section->type = 'default';
+		$section->content = '<h1>Eresus CMS</h1>';
+		$section->save();
+
 		return 0;
 	}
 	//-----------------------------------------------------------------------------

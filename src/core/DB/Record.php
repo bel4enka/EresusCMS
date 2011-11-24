@@ -82,7 +82,7 @@
  * @package Eresus
  * @since 2.17
  */
-class Eresus_DB_Record extends Doctrine_Record
+abstract class Eresus_DB_Record extends Doctrine_Record
 {
 	/**
 	 * Аксессор-десериализатор
