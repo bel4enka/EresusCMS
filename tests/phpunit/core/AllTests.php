@@ -40,6 +40,7 @@ require_once __DIR__ . '/Console/AllTests.php';
 require_once __DIR__ . '/DB/AllTests.php';
 require_once __DIR__ . '/XML/AllTests.php';
 
+require_once __DIR__ . '/Application_Test.php';
 require_once __DIR__ . '/CMS_Test.php';
 require_once __DIR__ . '/Config_Test.php';
 require_once __DIR__ . '/Console_Test.php';
@@ -61,6 +62,7 @@ class Eresus_AllTests
 		$suite->addTest(Eresus_DB_AllTests::suite());
 		$suite->addTest(Eresus_XML_AllTests::suite());
 
+		$suite->addTestSuite('Eresus_Application_Test');
 		$suite->addTestSuite('Eresus_CMS_Test');
 		$suite->addTestSuite('Eresus_Config_Test');
 		$suite->addTestSuite('Eresus_Console_Test');

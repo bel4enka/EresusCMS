@@ -49,7 +49,7 @@ class Eresus_Admin_Controller_PluginInstaller_Test extends PHPUnit_Framework_Tes
 		$container = new sfServiceContainerBuilder();
 		$container->setService('app', new Eresus_CMS);
 
-		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir = new ReflectionProperty('Eresus_Application', 'rootDir');
 		$p_rootDir->setAccessible(true);
 		$p_rootDir->setValue($container->app, TESTS_SRC_DIR);
 

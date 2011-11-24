@@ -182,6 +182,7 @@ class Eresus_Tests
 	//-----------------------------------------------------------------------------
 }
 
+class Core extends MockFacade {}
 class Doctrine extends MockFacade {}
 class Doctrine_Core extends MockFacade
 {

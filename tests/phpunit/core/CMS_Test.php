@@ -41,6 +41,7 @@ require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @api
 	 * @covers Eresus_CMS::getVersion
 	 */
 	public function test_getVersion()
@@ -51,6 +52,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * @api
 	 * @covers Eresus_CMS::getRootDir
 	 */
 	public function test_getRootDir()
@@ -59,83 +61,11 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(TESTS_SRC_DIR, $cms->getRootDir());
 
-		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir = new ReflectionProperty('Eresus_Application', 'rootDir');
 		$p_rootDir->setAccessible(true);
 		$p_rootDir->setValue($cms, '/home/example.org');
 
 		$this->assertEquals('/home/example.org', $cms->getRootDir());
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_CMS::initConf
-	 */
-	public function test_initConf()
-	{
-		if (extension_loaded('suhosin') &&
-			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
-		{
-			$this->markTestSkipped(__METHOD__ .
-				' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
-		}
-
-		$initConf = new ReflectionMethod('Eresus_CMS', 'initConf');
-		$initConf->setAccessible(true);
-
-		$rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
-		$rootDir->setAccessible(true);
-
-		$cms = new Eresus_CMS();
-
-		vfsStreamWrapper::register();
-		$file = new vfsStreamFile('main.php');
-		$file->setContent("<?php\nEresus_Config::set('initConf_1', 'valid');\n");
-		$dir = new vfsStreamDirectory('cfg');
-		$dir->addChild($file);
-		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
-		vfsStreamWrapper::getRoot()->addChild($dir);
-		$rootDir->setValue($cms, vfsStream::url('htdocs'));
-
-		$initConf->invoke($cms);
-		$this->assertEquals('valid', Eresus_Config::get('initConf_1'));
-
-		$file->setContent("<?\nEresus_Config::set('initConf_2', 'valid');\n");
-		$initConf->invoke($cms);
-		$this->assertEquals('valid', Eresus_Config::get('initConf_2'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_CMS::initConf
-	 * @expectedException DomainException
-	 */
-	public function test_initConf_errors()
-	{
-		if (extension_loaded('suhosin') &&
-			strpos(ini_get('suhosin.executor.include.whitelist'), 'vfs') === false)
-		{
-			$this->markTestSkipped(__METHOD__ .
-				' needs "vfs" to be allowed in "suhosin.executor.include.whitelist" option');
-		}
-
-		$initConf = new ReflectionMethod('Eresus_CMS', 'initConf');
-		$initConf->setAccessible(true);
-
-		$rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
-		$rootDir->setAccessible(true);
-
-		$cms = new Eresus_CMS();
-
-		vfsStreamWrapper::register();
-		$file = new vfsStreamFile('main.php');
-		$file->setContent("<?php\nabc\n");
-		$dir = new vfsStreamDirectory('cfg');
-		$dir->addChild($file);
-		vfsStreamWrapper::setRoot(new vfsStreamDirectory('htdocs'));
-		vfsStreamWrapper::getRoot()->addChild($dir);
-		$rootDir->setValue($cms, vfsStream::url('htdocs'));
-
-		$initConf->invoke($cms);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -152,7 +82,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getRootDir
-		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir = new ReflectionProperty('Eresus_Application', 'rootDir');
 		$p_rootDir->setAccessible(true);
 		$p_rootDir->setValue($obj, '/home/user/public_html');
 		$httpRequest = new HttpRequest();
@@ -182,7 +112,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getRootDir
-		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir = new ReflectionProperty('Eresus_Application', 'rootDir');
 		$p_rootDir->setAccessible(true);
 		$p_rootDir->setValue($obj, '/home/user/public_html/example.org');
 		$httpRequest = new HttpRequest();
@@ -212,7 +142,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getRootDir
-		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir = new ReflectionProperty('Eresus_Application', 'rootDir');
 		$p_rootDir->setAccessible(true);
 		$p_rootDir->setValue($obj, FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org'));
 		$httpRequest = new HttpRequest();

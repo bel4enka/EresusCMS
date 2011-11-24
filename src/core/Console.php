@@ -37,7 +37,7 @@
  * @package Eresus
  * @since 2.17
  */
-class Eresus_Console
+class Eresus_Console extends Eresus_Application
 {
 	/**
 	 * Доступные команды
@@ -53,28 +53,37 @@ class Eresus_Console
 	 */
 	public function main()
 	{
-		$this->loadCommands();
-
-		// FIXME не учитываются опции перед командой
-		$command = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : null;
-
-		$exitCode = 0;
-
-		if ($command)
+		try
 		{
-			if (isset($this->commands[$command]))
+			$this->loadCommands();
+
+			// FIXME не учитываются опции перед командой
+			$command = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : null;
+
+			$exitCode = 0;
+
+			if ($command)
 			{
-				$exitCode = $this->commands[$command]->execute();
+				if (isset($this->commands[$command]))
+				{
+					$exitCode = $this->commands[$command]->execute();
+				}
+				else
+				{
+					echo 'ERROR: Unknown command!' . PHP_EOL;
+					$exitCode = -1;
+				}
 			}
 			else
 			{
-				echo 'ERROR: Unknown command!' . PHP_EOL;
-				$exitCode = -1;
+				$this->showHelp();
 			}
 		}
-		else
+		catch (Exception $e)
 		{
-			$this->showHelp();
+			Eresus_Logger::exception($e);
+			echo 'ERROR: ' . $e->getMessage() . PHP_EOL;
+			$exitCode = -1;
 		}
 
 		return $exitCode;
