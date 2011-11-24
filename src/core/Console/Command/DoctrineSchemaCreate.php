@@ -2,12 +2,10 @@
 /**
  * ${product.title}
  *
- * Модульные тесты
+ * Создание схемы в БД
  *
  * @version ${product.version}
- *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -28,48 +26,45 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  *
- * $Id$
+ * $Id: Kernel.php 1978 2011-11-22 14:49:17Z mk $
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once __DIR__ . '/Admin/AllTests.php';
-require_once __DIR__ . '/Console/AllTests.php';
-require_once __DIR__ . '/DB/AllTests.php';
-require_once __DIR__ . '/XML/AllTests.php';
-
-require_once __DIR__ . '/CMS_Test.php';
-require_once __DIR__ . '/Config_Test.php';
-require_once __DIR__ . '/Console_Test.php';
-require_once __DIR__ . '/Functions_Test.php';
-require_once __DIR__ . '/i18n_Test.php';
-require_once __DIR__ . '/Kernel_Test.php';
-require_once __DIR__ . '/Plugin_Test.php';
-require_once __DIR__ . '/classes/AllTests.php';
-
-class Eresus_AllTests
+/**
+ * Создание схемы в БД
+ *
+ * @package Eresus
+ * @since 2.17
+ */
+class Eresus_Console_Command_DoctrineSchemaCreate extends Eresus_Console_Command
 {
-	public static function suite()
+	/**
+	 * Выполняет команду
+	 *
+	 * @return int  код завершения
+	 *
+	 * @since 2.17
+	 */
+	public function execute()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('All/Eresus');
-
-		$suite->addTest(Eresus_Admin_AllTests::suite());
-		$suite->addTest(Eresus_Console_AllTests::suite());
-		$suite->addTest(Eresus_DB_AllTests::suite());
-		$suite->addTest(Eresus_XML_AllTests::suite());
-
-		$suite->addTestSuite('Eresus_CMS_Test');
-		$suite->addTestSuite('Eresus_Config_Test');
-		$suite->addTestSuite('Eresus_Console_Test');
-		$suite->addTestSuite('Functions_Test');
-		$suite->addTestSuite('Eresus_i18n_Test');
-		$suite->addTestSuite('Eresus_Kernel_Test');
-		$suite->addTestSuite('Eresus_Plugin_Test');
-
-		$suite->addTest(Core_Classes_AllTests::suite());
-
-		return $suite;
+		// TODO
+		return 0;
 	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Настройка команды
+	 *
+	 * @return void
+	 *
+	 * @since 2.17
+	 */
+	protected function configure()
+	{
+		$this->
+			setName('doctrine:schema:create')->
+			setDescription('Executes (or dumps) the SQL needed to generate the database schema');
+	}
+	//-----------------------------------------------------------------------------
 }
