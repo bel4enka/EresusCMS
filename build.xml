@@ -197,6 +197,14 @@
 				<exclude name=".svn" />
 			</fileset>
 		</copy>
+		
+		<!-- Dwoo -->
+		<copy todir="${build.dir}/core/Dwoo">
+			<fileset dir="3rdparty/dwoo">
+				<include name="**" />
+				<exclude name=".svn" />
+			</fileset>
+		</copy>
 
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/libbotobor">
