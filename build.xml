@@ -66,18 +66,6 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- SQL dumps -->
-	<fileset dir="db" id="files.db">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- Tools files -->
-	<fileset dir="." id="files.tools">
-		<include name="tools/**" />
-		<exclude name=".svn" />
-	</fileset>
-
 	<!-- SDK files -->
 	<fileset dir="." id="files.sdk">
 		<include name="SDK/**" />
@@ -243,8 +231,6 @@
 		<mkdir dir="${build.dir}/distrib" />
 		
 		<copy todir="${build.dir}/distrib">
-			<fileset refid="files.db" />
-			<fileset refid="files.tools" />
 			<fileset refid="files.sdk" />
 			<filterchain>
 			    <expandproperties />
