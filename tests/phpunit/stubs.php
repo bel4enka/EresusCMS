@@ -80,22 +80,6 @@ class EresusRuntimeException extends Exception
  * @subpackage Tests
  * @since 2.15
  */
-class EresusApplication
-{
-	public $fsRoot;
-
-	public function getFsRoot()
-	{
-		return $this->fsRoot;
-	}
-	//-----------------------------------------------------------------------------
-}
-
-/**
- * @package EresusCMS
- * @subpackage Tests
- * @since 2.15
- */
 class HttpRequest
 {
 	public $localRoot;

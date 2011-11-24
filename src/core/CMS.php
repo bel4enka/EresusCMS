@@ -35,7 +35,7 @@
  *
  * @package Eresus
  */
-class Eresus_CMS extends EresusApplication
+class Eresus_CMS extends Eresus_Application
 {
 	/**
 	 * Версия CMS
@@ -115,9 +115,8 @@ class Eresus_CMS extends EresusApplication
 			$this->checkEnviroment();
 			$this->createFileStructure();
 
-			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-
 			/* Подключение старого ядра */
+			Eresus_Logger::log(__METHOD__, LOG_NOTICE, 'Init legacy kernel');
 			include_once 'kernel-legacy.php';
 
 			/**
@@ -276,7 +275,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		global $page;
 
-		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'client.php';
 
@@ -295,7 +294,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		global $page;
 
-		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'admin.php';
 
@@ -314,10 +313,10 @@ class Eresus_CMS extends EresusApplication
 	{
 		$webServer = WebServer::getInstance();
 		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
-		$SUFFIX = $this->getFsRoot();
+		$SUFFIX = $this->getRootDir();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
 		$this->request->setLocalRoot($SUFFIX);
-		eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
 		TemplateSettings::setGlobalValue('siteRoot',
 			$this->request->getScheme() . '://' .
@@ -445,7 +444,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	protected function initSession()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
 /*		global $Eresus; // FIXME: Устаревшая переменная $Eresus
 

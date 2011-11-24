@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Application.php';
 require_once TESTS_SRC_DIR . '/core/CMS.php';
 require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 
@@ -150,8 +151,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
 		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html';
+		// Подменяем результат getRootDir
+		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir->setAccessible(true);
+		$p_rootDir->setValue($obj, '/home/user/public_html');
 		$httpRequest = new HttpRequest();
 
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
@@ -178,8 +181,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
 		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html/example.org';
+		// Подменяем результат getRootDir
+		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir->setAccessible(true);
+		$p_rootDir->setValue($obj, '/home/user/public_html/example.org');
 		$httpRequest = new HttpRequest();
 
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
@@ -206,8 +211,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
 
 		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org');
+		// Подменяем результат getRootDir
+		$p_rootDir = new ReflectionProperty('Eresus_CMS', 'rootDir');
+		$p_rootDir->setAccessible(true);
+		$p_rootDir->setValue($obj, FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org'));
 		$httpRequest = new HttpRequest();
 
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
