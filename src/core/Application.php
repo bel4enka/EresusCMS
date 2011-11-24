@@ -190,6 +190,7 @@ abstract class Eresus_Application
 	{
 		Eresus_Config::set('dwoo.templateDir', $this->getRootDir());
 		Eresus_Config::set('dwoo.compileDir', $this->getRootDir() . '/var/cache/templates');
+		Eresus_Template::setGlobalValue('container', Eresus_Kernel::sc());
 	}
 	//-----------------------------------------------------------------------------
 
