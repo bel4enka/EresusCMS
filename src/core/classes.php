@@ -154,7 +154,6 @@ class Plugin
 	 * Производит чтение настроек плагина и подключение языковых файлов
 	 *
 	 * @uses $Eresus
-	 * @uses Core::safeInclude
 	 * @uses Plugin::resetPlugin
 	 */
 	public function __construct()

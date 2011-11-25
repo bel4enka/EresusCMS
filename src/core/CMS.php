@@ -110,7 +110,7 @@ class Eresus_CMS extends Eresus_Application
 		}
 		catch (Exception $e)
 		{
-			Core::logException($e);
+			Eresus_Logger::exception($e);
 			ob_end_clean();
 			$this->fatalError($e, false);
 		}

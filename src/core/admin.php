@@ -51,7 +51,7 @@ class TAdminUI extends WebPage
 	/**
 	 * Тема оформления
 	 *
-	 * @var AdminUITheme
+	 * @var Eresus_UI_Admin_Theme
 	 */
 	protected $uiTheme;
 
@@ -108,7 +108,7 @@ class TAdminUI extends WebPage
 
 	/**
 	 * Возвращает объект текущей темы оформления
-	 * @return AdminUITheme
+	 * @return Eresus_UI_Admin_Theme
 	 */
 	public function getUITheme()
 	{
@@ -757,7 +757,7 @@ class TAdminUI extends WebPage
 			$module = arg('mod', '/[^\w-]/');
 			if (file_exists($GLOBALS['Eresus']->froot . "core/$module.php"))
 			{
-				Core::safeInclude($Eresus->froot . "core/$module.php");
+				include $Eresus->froot . "core/$module.php";
 				$class = "T$module";
 				$this->module = new $class;
 			}
@@ -787,18 +787,16 @@ class TAdminUI extends WebPage
 					{
 						if (isset($name))
 						{
-							$logMsg = 'Error in plugin "' . $name . '"';
 							$msg = i18n('В расширении "%s" произошла ошибка.');
 							$msg = sprintf($msg, $name);
 						}
 						else
 						{
-							$logMsg = 'Error in module "' . $module . '"';
 							$msg = i18n('В подсистеме "%s" произошла ошибка.');
 							$msg = sprintf($msg, $module);
 						}
 
-						Core::logException($e, $logMsg);
+						Eresus_Logger::exception($e);
 
 						$msg .= '<br />' . $e->getMessage();
 						if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)

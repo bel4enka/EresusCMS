@@ -196,7 +196,7 @@ class Eresus_Plugins
 			return false;
 		}
 
-		Core::safeInclude($filename);
+		include $filename;
 		$className = $name;
 
 		/* TODO: Обратная совместимость с версиями до 2.10b2. Отказаться в новых версиях */

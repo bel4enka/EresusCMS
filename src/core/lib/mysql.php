@@ -91,7 +91,7 @@ class MySQL
 		}
 		catch (DBRuntimeException $e)
 		{
-			Core::logException($e);
+			Eresus_Logger::exception($e);
 			FatalError("Can not connect to MySQL server. See log for more info.");
 		}
 
