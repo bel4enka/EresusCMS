@@ -89,6 +89,12 @@ h6
 	border-width: 0;
 }
 
+p
+{
+	margin: 0 0 3px;
+	text-indent: 1em;
+}
+
 label
 {
 	white-space: nowrap;
@@ -271,6 +277,28 @@ a.pseudo-button:visited
 	background-image: url(img/medium/go-previous.png);
 }
 
+
+
+/**
+ * Сообщение
+ */
+.message
+{
+	margin: 5px 0;
+	padding: 5px;
+}
+
+	/**
+	 * Информационное сообщение
+	 */
+	.message_type_info
+	{
+		-moz-border-radius: 7px;
+		-webkit-border-radius: 7px;
+		background: #eee;
+		border-radius: 7px;
+		box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.5), 0 10px 5px 0 rgba(255, 255, 255, .7) inset
+	}
 
 /**
  * Блок
