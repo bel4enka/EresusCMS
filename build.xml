@@ -165,15 +165,6 @@
 		  </filterchain>
 		</copy>
 
-			<!-- Обработка файлов CSS темы default -->
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/typography.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/layout.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
-			<delete dir="${build.dir}/admin/themes/default/css.src" />
-
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
 		<copy todir="${build.dir}/core/framework">
