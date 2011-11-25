@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Модель плагина
+ * Интерфейс поставщика данных для {@link Eresus_Eresus_UI_List списка}
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,62 +27,41 @@
  *
  * @package Eresus
  *
- * $Id: Plugin.php 1609 2011-05-18 09:46:37Z mk $
+ * $Id: Kernel.php 1978 2011-11-22 14:49:17Z mk $
  */
 
+
 /**
- * Класс информации о плагине
+ * Интерфейс поставщика данных для {@link Eresus_Eresus_UI_List списка}
  *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
- *
- * @package Eresus
- * @since 2.17
+ * @package UI
  */
-class Eresus_Entity_Plugin extends Eresus_DB_Record
+interface Eresus_UI_List_DataProvider_Interface
 {
 	/**
-	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 * Должен возвращать элементы списка
+	 *
+	 * Должен возвращать массив элементов списка, количеством не более $limit, пропустив первые
+	 * $offset элементов. Элементы массива должны быть объектами, предоставляющими интерфейс
+	 * {@link Eresus_UI_List_Item_Interface}.
+	 *
+	 * @param int $limit   максимум элементов, который следует вернуть
+	 * @param int $offset  сколько элементов пропустить
+	 *
+	 * @return array  массив элементов списка
+	 *
+	 * @since 2.17
 	 */
-	public function setTableDefinition()
-	{
-		$this->setTableName('plugins');
-		$this->hasColumns(array(
-			'uid' => array(
-				'type' => 'string',
-				'length' => 255,
-				'primary' => true,
-				'notnull' => true,
-				'autoincrement' => false,
-			),
-			'name' => array(
-				'type' => 'string',
-				'length' => 255,
-				'notnull' => true,
-			),
-			'active' => array(
-				'type' => 'boolean',
-				'notnull' => true,
-			),
-			'settings' => array(
-				'type' => 'string',
-			),
-		));
-	}
+	public function getItems($limit = null, $offset = 0);
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @see Doctrine_Record::setUp()
+	 * Должен возвращать общее количество элементов в списке
+	 *
+	 * @return int  общее количество элементов в списке
+	 *
+	 * @since 2.17
 	 */
-	public function setUp()
-	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
-	}
+	public function getCount();
 	//-----------------------------------------------------------------------------
 }

@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Модель плагина
+ * Действие над элементом списка
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,62 +27,45 @@
  *
  * @package Eresus
  *
- * $Id: Plugin.php 1609 2011-05-18 09:46:37Z mk $
+ * $Id: Kernel.php 1978 2011-11-22 14:49:17Z mk $
  */
 
 /**
- * Класс информации о плагине
- *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
+ * Действие над элементом списка
  *
  * @package Eresus
  * @since 2.17
  */
-class Eresus_Entity_Plugin extends Eresus_DB_Record
+abstract class Eresus_UI_List_Control
 {
 	/**
-	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 * Список
+	 * @var Eresus_UI_List
 	 */
-	public function setTableDefinition()
+	protected $list;
+
+	/**
+	 * Конструктор действия
+	 *
+	 * @param Eresus_UI_List $list  список
+	 *
+	 * @since 2.17
+	 */
+	public function __construct(Eresus_UI_List $list)
 	{
-		$this->setTableName('plugins');
-		$this->hasColumns(array(
-			'uid' => array(
-				'type' => 'string',
-				'length' => 255,
-				'primary' => true,
-				'notnull' => true,
-				'autoincrement' => false,
-			),
-			'name' => array(
-				'type' => 'string',
-				'length' => 255,
-				'notnull' => true,
-			),
-			'active' => array(
-				'type' => 'boolean',
-				'notnull' => true,
-			),
-			'settings' => array(
-				'type' => 'string',
-			),
-		));
+		$this->list = $list;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @see Doctrine_Record::setUp()
+	 * Должен возвращать разметку ЭУ для этого действия
+	 *
+	 * @param Eresus_UI_List_Item_Interface $item  элемент списка
+	 *
+	 * @return string
+	 *
+	 * @since 2.17
 	 */
-	public function setUp()
-	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
-	}
+	abstract public function render(Eresus_UI_List_Item_Interface $item);
 	//-----------------------------------------------------------------------------
 }

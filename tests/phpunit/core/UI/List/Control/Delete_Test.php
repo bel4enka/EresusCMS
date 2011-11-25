@@ -1,11 +1,10 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
- * Модель плагина
+ * Модульные тесты
  *
- * @version ${product.version}
- * @copyright ${product.copyright}
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,63 +25,33 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage Tests
  *
- * $Id: Plugin.php 1609 2011-05-18 09:46:37Z mk $
+ * $Id: Element_Test.php 1984 2011-11-23 10:07:10Z mk $
  */
+
+
+require_once __DIR__ . '/../../../../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/Control/Delete.php';
 
 /**
- * Класс информации о плагине
- *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
- *
  * @package Eresus
- * @since 2.17
+ * @subpackage Tests
  */
-class Eresus_Entity_Plugin extends Eresus_DB_Record
+class Eresus_UI_List_Control_Delete_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 * @covers Eresus_UI_List_Control_Delete::render
 	 */
-	public function setTableDefinition()
+	public function test_render()
 	{
-		$this->setTableName('plugins');
-		$this->hasColumns(array(
-			'uid' => array(
-				'type' => 'string',
-				'length' => 255,
-				'primary' => true,
-				'notnull' => true,
-				'autoincrement' => false,
-			),
-			'name' => array(
-				'type' => 'string',
-				'length' => 255,
-				'notnull' => true,
-			),
-			'active' => array(
-				'type' => 'boolean',
-				'notnull' => true,
-			),
-			'settings' => array(
-				'type' => 'string',
-			),
-		));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see Doctrine_Record::setUp()
-	 */
-	public function setUp()
-	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
+		$ctrl = new Eresus_UI_List_Control_Delete(new Eresus_UI_List());
+		$item = new Eresus_UI_List_Test_Item();
+		$GLOBALS['page'] = new UniversalStub();
+		$GLOBALS['Eresus'] = new UniversalStub();
+		Eresus_Tests::setStatic('Eresus_Kernel', new sfServiceContainerBuilder(), 'sc');
+		Eresus_Kernel::sc()->setService('i18n', new UniversalStub());
+		$this->assertContains('action=delete', $ctrl->render($item));
 	}
 	//-----------------------------------------------------------------------------
 }

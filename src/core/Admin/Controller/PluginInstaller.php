@@ -95,7 +95,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 
 		ksort($vars['plugins']);
 
-		$tmpl = $GLOBALS['page']->getUITheme()->getTemplate('PluginManager/add-dialog.html');
+		$tmpl = Eresus_Template::fromFile('admin/themes/default/PluginManager/add-dialog.html');
 		$html = $tmpl->compile($vars);
 
 		return $html;
@@ -122,7 +122,9 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 				{
 					$plugin = Eresus_Plugin::loadFromFile($filename);
 					$entity = new Eresus_Entity_Plugin();
-					$entity->name = $plugin->name;
+					$entity->uid = $plugin->getUID();
+					$entity->name = $plugin->getName();
+					$entity->active = true;
 					$entity->save();
 				}
 				else

@@ -1,11 +1,10 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
  *
- * Модель плагина
+ * Модульные тесты
  *
- * @version ${product.version}
- * @copyright ${product.copyright}
+ * @copyright 2011, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,63 +25,35 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage Tests
  *
- * $Id: Plugin.php 1609 2011-05-18 09:46:37Z mk $
+ * $Id: Element_Test.php 1984 2011-11-23 10:07:10Z mk $
  */
+
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
+
+require_once __DIR__ . '/Delete_Test.php';
+require_once __DIR__ . '/Down_Test.php';
+require_once __DIR__ . '/Edit_Test.php';
+require_once __DIR__ . '/Toggle_Test.php';
+require_once __DIR__ . '/Up_Test.php';
 
 /**
- * Класс информации о плагине
- *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
- *
  * @package Eresus
- * @since 2.17
+ * @subpackage Tests
  */
-class Eresus_Entity_Plugin extends Eresus_DB_Record
+class Eresus_UI_List_Control_AllTests
 {
-	/**
-	 * @see Doctrine_Record_Abstract::setTableDefinition()
-	 */
-	public function setTableDefinition()
+	public static function suite()
 	{
-		$this->setTableName('plugins');
-		$this->hasColumns(array(
-			'uid' => array(
-				'type' => 'string',
-				'length' => 255,
-				'primary' => true,
-				'notnull' => true,
-				'autoincrement' => false,
-			),
-			'name' => array(
-				'type' => 'string',
-				'length' => 255,
-				'notnull' => true,
-			),
-			'active' => array(
-				'type' => 'boolean',
-				'notnull' => true,
-			),
-			'settings' => array(
-				'type' => 'string',
-			),
-		));
-	}
-	//-----------------------------------------------------------------------------
+		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/UI/List/Control');
 
-	/**
-	 * @see Doctrine_Record::setUp()
-	 */
-	public function setUp()
-	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
+		$suite->addTestSuite('Eresus_UI_List_Control_Delete_Test');
+		$suite->addTestSuite('Eresus_UI_List_Control_Down_Test');
+		$suite->addTestSuite('Eresus_UI_List_Control_Edit_Test');
+		$suite->addTestSuite('Eresus_UI_List_Control_Toggle_Test');
+		$suite->addTestSuite('Eresus_UI_List_Control_Up_Test');
+
+		return $suite;
 	}
-	//-----------------------------------------------------------------------------
 }

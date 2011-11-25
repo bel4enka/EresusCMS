@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Модель плагина
+ * Интерфейс элемента {@link Eresus_Eresus_UI_List списка}
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,62 +27,36 @@
  *
  * @package Eresus
  *
- * $Id: Plugin.php 1609 2011-05-18 09:46:37Z mk $
+ * $Id: Kernel.php 1978 2011-11-22 14:49:17Z mk $
  */
 
+
 /**
- * Класс информации о плагине
+ * Интерфейс элемента {@link Eresus_Eresus_UI_List списка}
  *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
- *
- * @package Eresus
- * @since 2.17
+ * @package UI
  */
-class Eresus_Entity_Plugin extends Eresus_DB_Record
+interface Eresus_UI_List_Item_Interface
 {
 	/**
-	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 * Должен возвращать идентификатор элемента
+	 *
+	 * @return string
+	 *
+	 * @since 2.17
 	 */
-	public function setTableDefinition()
-	{
-		$this->setTableName('plugins');
-		$this->hasColumns(array(
-			'uid' => array(
-				'type' => 'string',
-				'length' => 255,
-				'primary' => true,
-				'notnull' => true,
-				'autoincrement' => false,
-			),
-			'name' => array(
-				'type' => 'string',
-				'length' => 255,
-				'notnull' => true,
-			),
-			'active' => array(
-				'type' => 'boolean',
-				'notnull' => true,
-			),
-			'settings' => array(
-				'type' => 'string',
-			),
-		));
-	}
+	public function getId();
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @see Doctrine_Record::setUp()
+	 * Должен возвращять true если элемент включён
+	 *
+	 * Используется для определения состояния ЭУ «Активность»
+	 *
+	 * @return bool
+	 *
+	 * @since 2.17
 	 */
-	public function setUp()
-	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
-	}
+	public function isEnabled();
 	//-----------------------------------------------------------------------------
 }

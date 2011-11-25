@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Модель плагина
+ * Действие «Изменить»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,62 +27,27 @@
  *
  * @package Eresus
  *
- * $Id: Plugin.php 1609 2011-05-18 09:46:37Z mk $
+ * $Id: Kernel.php 1978 2011-11-22 14:49:17Z mk $
  */
 
+
 /**
- * Класс информации о плагине
- *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
+ * Действие «Изменить»
  *
  * @package Eresus
  * @since 2.17
  */
-class Eresus_Entity_Plugin extends Eresus_DB_Record
+class Eresus_UI_List_Control_Edit extends Eresus_UI_List_Control
 {
 	/**
-	 * @see Doctrine_Record_Abstract::setTableDefinition()
+	 * @see Eresus_UI_List_Control::render()
 	 */
-	public function setTableDefinition()
+	public function render(Eresus_UI_List_Item_Interface $item)
 	{
-		$this->setTableName('plugins');
-		$this->hasColumns(array(
-			'uid' => array(
-				'type' => 'string',
-				'length' => 255,
-				'primary' => true,
-				'notnull' => true,
-				'autoincrement' => false,
-			),
-			'name' => array(
-				'type' => 'string',
-				'length' => 255,
-				'notnull' => true,
-			),
-			'active' => array(
-				'type' => 'boolean',
-				'notnull' => true,
-			),
-			'settings' => array(
-				'type' => 'string',
-			),
-		));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see Doctrine_Record::setUp()
-	 */
-	public function setUp()
-	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
+		return '<a href="' . $this->list->getURL()->getEdit($item) . '" title="' . i18n('Изменить') .
+			'"><img src="' . $GLOBALS['Eresus']->root .
+			$GLOBALS['page']->getUITheme()->getIcon('item-edit.png') . '" alt="' . i18n('Изменить') .
+			'"></a> ';
 	}
 	//-----------------------------------------------------------------------------
 }
