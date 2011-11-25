@@ -135,18 +135,6 @@ class HTTP
 	static private $request;
 
 	/**
-	 * Sets test instance of HttpRequest
-	 *
-	 * @param HttpRequest|null $request
-	 */
-	static public function setTestRequest($request)
-	{
-		if (Core::testMode())
-			self::$request = $request;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Build an URL
 	 *
 	 * The parts of the second URL will be merged into the first according to the flags argument.
@@ -284,7 +272,7 @@ class HTTP
 		else
 			header($header);
 
-		if (!Core::testMode()) exit;
+		exit;
 	}
 	//-----------------------------------------------------------------------------
 

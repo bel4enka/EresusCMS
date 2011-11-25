@@ -147,7 +147,7 @@ class Eresus_CMS extends Eresus_Application
 		/* Проверяем наличие нужных файлов */
 		$required = array('cfg/main.php');
 		foreach ($required as $filename)
-			if (!FS::exists($filename))
+			if (!file_exists($filename))
 				$errors []= array('file' => $filename, 'problem' => 'missing');
 
 		/* Проверяем доступность для записи */
@@ -159,7 +159,7 @@ class Eresus_CMS extends Eresus_Application
 			'style'
 		);
 		foreach ($writable as $filename)
-			if (!FS::isWritable($filename))
+			if (!is_writable($filename))
 				$errors []= array('file' => $filename, 'problem' => 'non-writable');
 
 		if ($errors)

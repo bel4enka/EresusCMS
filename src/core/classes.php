@@ -154,7 +154,6 @@ class Plugin
 	 * Производит чтение настроек плагина и подключение языковых файлов
 	 *
 	 * @uses $Eresus
-	 * @uses FS::isFile
 	 * @uses Core::safeInclude
 	 * @uses Plugin::resetPlugin
 	 */
@@ -826,12 +825,13 @@ class EresusExtensionConnector
 		$filename = $Eresus->request['path'] . $Eresus->request['file'];
 		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
 
-		if (FS::isDir($filename))
+		if (is_dir($filename))
 		{
+			// FIXME
 			$filename = FS::normalize($filename . '/index.php');
 		}
 
-		if (!FS::isFile($filename))
+		if (!is_file($filename))
 		{
 			header('Not found', true, 404);
 			die('<h1>Not found.</h1>');
