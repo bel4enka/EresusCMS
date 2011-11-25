@@ -1073,7 +1073,7 @@ class TAdminUI extends WebPage
 			$Eresus->session['msg']['errors'] = array();
 		}
 
-		$tmpl = $this->getUITheme()->getTemplate('auth.html');
+		$tmpl = Eresus_Template::fromFile('admin/themes/default/auth.html');
 		$html = $tmpl->compile($data);
 		echo $html;
 	}
