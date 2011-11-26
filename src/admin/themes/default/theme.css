@@ -36,7 +36,7 @@ html
 {
 	font-family: Verdana, Helvetica, sans-serif;
 	font-size: 0.8125em; /* 13px для большинства браузеров */
-	line-height:1.54em;
+	line-height: 1.54em;
 }
 
 /**
@@ -44,8 +44,8 @@ html
  */
 body
 {
-	color: #000;
-	background: #dfdfdf;
+	color: black;
+	background: white;
 }
 
 
@@ -91,8 +91,15 @@ h6
 
 p
 {
-	margin: 0 0 3px;
+	margin: 0 0 .1em;
 	text-indent: 1em;
+}
+
+ul,
+ol
+{
+	margin: .1em 0;
+	padding: 0 0 0 15px;
 }
 
 label
@@ -106,14 +113,6 @@ sup
 	vertical-align: baseline;
 }
 
-/**
- * Текст, сообщающий об ошибке
- * @deprecated
- */
-.error-text
-{
-	color: red;
-}
 
 
 /**
@@ -144,34 +143,49 @@ body
 	max-width: 1200px;
 }
 
+
 /**
  * Заголовок страницы
  */
-#header
+.ui-header
 {
+	background: #cddef3;
+	border: solid 1px #99bbe8;
+	box-shadow:
+		0 1px 0 0 white inset,
+		0 1px 3px 0 rgba(255, 255, 255, 0.898) inset,
+		0 15px 1px 0 #D5E4F5 inset,
+		0 16px 0 0 #9AB8EC inset,
+		0 23px 4px 0 #B8CFEE inset;
 	font-size: 12px;
 	height: 32px;
 	line-height: 16px;
+	margin-bottom: 3px;
 	padding: 0 10px;
 }
 
-	#header h1
+
+	.ui-header__site-title
 	{
-		color: #ffd700;
+		color: #15428b;
 		font-family : Sans, Arial, Helvetica, sans-serif;
-		font-size : 16px;
+		font-size : 14px;
 		margin: 0;
 		padding: 0;
+	}
+	
+	.ui-header__cms-title
+	{
 	}
 
 /**
  * Логотип
  */
-#cmsLogo
+.cms-logo
 {
 	float: right;
-	width: 150px;
 	height: 30px;
+	width: 150px;
 }
 
 #body
@@ -193,7 +207,7 @@ body
 /**
  * Боковая панель
  */
-.nav.sidebar
+.sidebar
 {
 	position: absolute;
 	padding: 1px;
@@ -297,22 +311,150 @@ a.pseudo-button:visited
 		-webkit-border-radius: 7px;
 		background: #eee;
 		border-radius: 7px;
-		box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.5), 0 10px 5px 0 rgba(255, 255, 255, .7) inset
+		box-shadow: 
+			0 0 3px 0 rgba(0, 0, 0, 0.5), 
+			0 10px 5px 0 rgba(255, 255, 255, .7) inset
+	}
+
+	/**
+	 * Предупреждающее сообщение
+	 */
+	.message_type_warning
+	{
+		-moz-border-radius: 7px;
+		-webkit-border-radius: 7px;
+		background: #ffe87f url(img/32x32/status/dialog-warning.png) no-repeat 5px 50%;
+		border-radius: 7px;
+		box-shadow: 
+			0 0 3px 0 rgba(0, 0, 0, 0.5),
+			0 15px 10px 0 rgba(255, 255, 255, 0.6) inset;
+		padding-left: 45px;
 	}
 
 /**
- * Блок
- *
- * Блок - это прямоугольный контейнер, предназначенный для объединения набора логически связанных
- * элементов.
- *
- * @applicable div
+ * Блок информации
  */
 .block
 {
-	display: block;
-	padding: .2em .5em;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	background: white;
+	border: solid 1px #99bbe8;
+	border-radius: 3px;
+	box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3);
+	margin: 0 0 5px;
+	padding: 1px;
 }
+
+	/**
+	 * Блок, плавающий по левому краю
+	 */
+	.block_float_left
+	{
+		float: left;
+	}
+	
+	/**
+	 * Заголовок блока
+	 */
+	.block__header
+	{
+		background: #cddef3;
+		border: solid 1px #99bbe8;
+		box-shadow:
+			0 1px 0 0 white inset,
+			0 1px 3px 0 rgba(255, 255, 255, 0.898) inset,
+			0 11px 1px 0 #D5E4F5 inset,
+			0 12px 0 0 #9AB8EC inset,
+			0 19px 4px 0 #B8CFEE inset;
+		color: #15428b;
+		font-size: 13px;
+		font-weight: bold;
+		padding: 1px 5px;
+	}
+	
+	.block__contents
+	{
+		padding: 5px;
+	}
+
+
+
+/**
+ * Панель ЭУ
+ */
+.controls
+{
+	margin-bottom: 3px;
+}
+
+	.controls__item
+	{
+		display: inline;
+	}
+
+
+.control
+{
+	
+}
+
+	a.control_type_pseudolink,
+	a.control_type_pseudolink:visited
+	{
+		border-bottom: dotted 1px #07b;
+		color: #07b;
+		text-decoration: none !important;
+	}
+
+		a.control_type_pseudolink:hover
+		{
+			border-bottom: dotted 1px #f00;
+			color: #f00;
+			text-decoration: none !important;
+		}
+
+
+/**
+ * Список-таблица
+ */
+.grid-list
+{
+	background: white;
+	border: solid 1px #ededed;
+	border-collapse: collapse;
+	line-height: 1.3em;
+}
+
+	.grid-list thead th
+	{
+		background: #eff0f2;
+		border: solid 1px;
+		border-color: white #d0d0d0 #d0d0d0 white;
+		box-shadow: 0 10px 0 0 #f9f9f9 inset; 
+		color: black;
+		font-weight: normal;
+		padding: 1px 5px;
+		white-space: nowrap;
+	}
+
+	.grid-list__item td
+	{
+		padding: 1px 5px;
+	}	
+
+	.grid-list__item:hover
+	{
+		background: #eff0f2;
+		box-shadow: 0 10px 0 0 #f9f9f9 inset; 
+	}
+
+	.grid-list__item-ctrl 
+	{
+		text-align: center; 
+		white-space: nowrap;
+	}
+
 
 /**
  * Бокс
@@ -1195,25 +1337,42 @@ table.ui-grid.ui-hlines
 	/**
 	 * Диалог добавления плагинов
 	 */
-
+		.add-plugins-dialog
+		{
+			width: 600px;
+		}
+		
 	 	/**
 	 	 * Блок плагина
 	 	 */
-		#plugin-manager-add-dlg .plugin-list .plugin-list__plugin
+		.add-plugins-dialog__plugin
 		{
-			background: #fff;
+			border: solid 1px #eee;
+			border-radius: 3px;
+			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .3);
+			padding: 3px;
+			margin-bottom: 5px;
 		}
 
-		#plugin-manager-add-dlg .plugin-list input[type=checkbox]
+		.add-plugins-dialog__plugin input[type=checkbox]
 		{
 			float: left;
-			margin-top: 1.2em
 		}
 
-		#plugin-manager-add-dlg .plugin-list .info
+		.add-plugins-dialog__plugin-info
 		{
 			margin-left: 2em;
 		}
+		
+			.add-plugins-dialog__plugin-brief
+			{
+				font-weight: bold;
+			}
+			
+			.add-plugins-dialog__plugin-info .message_type_warning
+			{
+			font-size: 11px;
+			}
 
 /**
  * Визуальный редактор
