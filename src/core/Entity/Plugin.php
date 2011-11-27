@@ -33,14 +33,11 @@
 /**
  * Класс информации о плагине
  *
- * @property string $uid
- * @property string $name
- * @property int    $active
- * @property int    $content
- * @property string $settings
- * @property string $title
- * @property string $version
- * @property string $description
+ * @property string         $uid
+ * @property string         $name
+ * @property int            $active
+ * @property array          $settings
+ * @property Eresus_Plugin  $object
  *
  * @package Eresus
  * @since 2.17
@@ -73,6 +70,9 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 			'settings' => array(
 				'type' => 'string',
 			),
+			'object' => array(
+				'type' => 'string',
+			),
 		));
 	}
 	//-----------------------------------------------------------------------------
@@ -83,6 +83,7 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	public function setUp()
 	{
 		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
+		$this->hasAccessorMutator('object', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 }
