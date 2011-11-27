@@ -1310,17 +1310,6 @@ class Eresus
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Подключение к источнику данных
-	 *
-	 * @access private
-	 */
-	function init_datasource()
-	{
-		$this->db = new MySQL();
-	}
-	//------------------------------------------------------------------------------
-
-	/**
 	 * Инициализация учётной записи пользователя
 	 *
 	 */
@@ -1450,8 +1439,6 @@ class Eresus
 		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
-		# Подключение к источнику данных
-		$this->init_datasource();
 		# Инициализация учётной записи пользователя
 		$this->init_user();
 		# Проверка сессии
@@ -1527,7 +1514,8 @@ class Eresus
 			return false;
 		}
 
-		$item = $this->db->selectItem('users', "`login`='$login'");
+		$user = Doctrine_Core::getTable('Eresus_Entity_User')->findBy('login', $login);
+		var_dump($user); die;
 		if (!is_null($item))
 		{
 			// Если такой пользователь есть...

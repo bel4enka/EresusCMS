@@ -33,7 +33,6 @@
 
 return array(
 	'EresusForm' => 'core/EresusForm.php',
-	'MySQL' => 'core/lib/mysql.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
