@@ -1,7 +1,7 @@
 /**
  * ${product.title}
  *
- * Тема оформления АИ
+ * Классическая тема оформления АИ
  *
  * @version ${product.version}
  *
@@ -127,6 +127,19 @@ sup
  *****************************************************************************/
 
 /**
+ * Поля для ввода текста
+ */
+input[type=email],
+input[type=password],
+input[type=phone],
+input[type=text],
+input[type=url],
+textarea
+{
+	border: #aaa solid 1px;
+}
+
+/**
  * Кнопка
  *
  * Правила с "a" используются для Webkit и Presto
@@ -139,12 +152,9 @@ a.button,
 a.button:visited
 {
 	background-color: #eee;
-	border: white solid 1px;
-	border-radius: 4px;
-	box-shadow:
-		0 1px 2px 0 rgba(0, 0, 0, .5),
-		0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
-		0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
+	border-color: white gray gray white;
+	border-style: solid;
+	border-width: 1px;
 	color: #000;
 	cursor: pointer;
 	font-size: 13px;
@@ -173,11 +183,7 @@ a.button
 	input[type=submit]:hover,
 	a.button:hover
 	{
-		box-shadow:
-			0 0 2px 2px #cddef3,
-			0 1px 2px 0 rgba(0, 0, 0, .5),
-			0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
-			0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
+		outline: solid 1px #7be;
 	}
 
 	a.button:active
@@ -186,15 +192,6 @@ a.button
 		outline: none;
 		position: relative;
 		top: 1px;
-	}
-
-	a.button:focus
-	{
-		box-shadow:
-			0 0 2px 2px #cddef3,
-			0 1px 2px 0 rgba(0, 0, 0, .5),
-			0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
-			0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
 	}
 
 .button_has_icon
@@ -302,14 +299,12 @@ a.button
  */
 .block
 {
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	background: white;
-	border: solid 1px #99bbe8;
-	border-radius: 3px;
-	box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3);
+	background: #eee;
+	border-color: #eee #555 #555 #eee;
+	border-style: solid;
+	border-width: 1px;
+	color: black;
 	margin: 0 0 5px;
-	padding: 1px;
 }
 
 	/**
@@ -325,18 +320,11 @@ a.button
 	 */
 	.block__header
 	{
-		background: #cddef3;
-		border: solid 1px #99bbe8;
-		box-shadow:
-			0 1px 0 0 white inset,
-			0 1px 3px 0 rgba(255, 255, 255, 0.898) inset,
-			0 11px 1px 0 #D5E4F5 inset,
-			0 12px 0 0 #9AB8EC inset,
-			0 19px 4px 0 #B8CFEE inset;
-		color: #15428b;
-		font-size: 13px;
+		background: #25b;
+		color: gold;
 		font-weight: bold;
-		padding: 1px 5px;
+		padding: .1em;
+		text-align: center;
 	}
 	
 	.block__contents
@@ -543,10 +531,16 @@ body
  **
  *******************************************************/
 
+.auth-page
+{
+	background: #000;
+	color: #fff;
+}
+
 .auth-dialog
 {
-	width: 350px;
-	margin: 100px auto 0;
+	width: 20em;
+	margin: 10em auto 0;
 }
 
 .auth-dialog .dialog__label
