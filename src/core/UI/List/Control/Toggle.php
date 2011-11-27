@@ -47,8 +47,8 @@ class Eresus_UI_List_Control_Toggle extends Eresus_UI_List_Control
 		return '<a href="' . $this->list->getURL()->getToggle($item) . '" title="' .
 			($item->isEnabled() ? i18n('Отключить') : i18n('Включить') ) .
 			'"><img src="' . $GLOBALS['Eresus']->root .
-			$GLOBALS['page']->getUITheme()->getIcon('item-' .
-			($item->isEnabled() ? 'active' : 'inactive') . '.png') . '" alt="' .
+			$GLOBALS['page']->getUITheme()->getIcon('/status/item-' .
+			($item->isEnabled() ? 'enabled' : 'disabled') . '.png') . '" alt="' .
 			($item->isEnabled() ? i18n('Включено') : i18n('Отключено') ) . '"></a> ';
 	}
 	//-----------------------------------------------------------------------------

@@ -46,8 +46,8 @@ class Eresus_UI_List_Control_Down extends Eresus_UI_List_Control
 	{
 		return '<a href="' . $this->list->getURL()->getOrderingDown($item) . '" title="' .
 			i18n('Опустить') . '"><img src="' . $GLOBALS['Eresus']->root .
-			$GLOBALS['page']->getUITheme()->getIcon('move-down.png') . '" alt="' . i18n('Опустить') .
-			'"></a> ';
+			$GLOBALS['page']->getUITheme()->getIcon('/actions/go-down.png') . '" alt="' .
+			i18n('Опустить') . '"></a> ';
 	}
 	//-----------------------------------------------------------------------------
 }

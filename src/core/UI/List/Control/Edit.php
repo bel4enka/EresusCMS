@@ -46,8 +46,8 @@ class Eresus_UI_List_Control_Edit extends Eresus_UI_List_Control
 	{
 		return '<a href="' . $this->list->getURL()->getEdit($item) . '" title="' . i18n('Изменить') .
 			'"><img src="' . $GLOBALS['Eresus']->root .
-			$GLOBALS['page']->getUITheme()->getIcon('item-edit.png') . '" alt="' . i18n('Изменить') .
-			'"></a> ';
+			$GLOBALS['page']->getUITheme()->getIcon('/actions/document-properties.png') . '" alt="' .
+			i18n('Изменить') . '"></a> ';
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -46,7 +46,7 @@ class Eresus_UI_List_Control_Up extends Eresus_UI_List_Control
 	{
 		return '<a href="' . $this->list->getURL()->getOrderingUp($item) . '" title="' .
 			i18n('Поднять') . '"><img src="' . $GLOBALS['Eresus']->root .
-			$GLOBALS['page']->getUITheme()->getIcon('move-up.png') . '" alt="' . i18n('Поднять') .
+			$GLOBALS['page']->getUITheme()->getIcon('/actions/go-up.png') . '" alt="' . i18n('Поднять') .
 			'"></a> ';
 	}
 	//-----------------------------------------------------------------------------

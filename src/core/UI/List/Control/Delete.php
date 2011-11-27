@@ -46,7 +46,7 @@ class Eresus_UI_List_Control_Delete extends Eresus_UI_List_Control
 	{
 		return '<a href="' . $this->list->getURL()->getDelete($item) . '" title="' . i18n('Удалить') .
 			'" onclick="return askdel(this);"><img src="' . $GLOBALS['Eresus']->root .
-			$GLOBALS['page']->getUITheme()->getIcon('item-delete.png') . '" alt="' . i18n('Удалить') .
+			$GLOBALS['page']->getUITheme()->getIcon('/actions/edit-delete.png') . '" alt="' . i18n('Удалить') .
 			'"></a> ';
 	}
 	//-----------------------------------------------------------------------------
