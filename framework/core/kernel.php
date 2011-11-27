@@ -1031,11 +1031,7 @@ class Core {
 				throw $e;
 
 			eresus_log(__METHOD__, LOG_DEBUG, 'Native include failed to locate file');
-			throw new EresusFsFileNotExistsException(
-				$filename,
-				"File '$filename' not found in '".get_include_path()."'",
-				$e
-			);
+			throw new RuntimeException("File '$filename' not found in '".get_include_path()."'");
 
 		}
 	}
