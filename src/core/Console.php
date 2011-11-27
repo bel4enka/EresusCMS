@@ -161,4 +161,20 @@ class Eresus_Console extends Eresus_Application
 			PHP_EOL;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Eresus_Application::initPlugins()
+	 */
+	protected function initPlugins()
+	{
+		try
+		{
+			parent::initPlugins();
+		}
+		catch (Doctrine_Connection_Exception $e)
+		{
+			// Ничего не делаем. Обычно это исключение означает лишь, что в БД нет таблицы расширений
+		}
+	}
+	//-----------------------------------------------------------------------------
 }
