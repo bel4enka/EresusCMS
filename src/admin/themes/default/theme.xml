@@ -2,11 +2,9 @@
 <theme>
 
 	<name>
-		<ru>Стандартная</ru>
-		<en>Default</en>
+		<ru_RU>ExtJS</ru_RU>
 	</name>
 
-	<copyright year="2010" holder="Eresus Project" url="http://eresus.ru/" />
-	<copyright year="2004" holder="David Vignoni" url="http://icon-king.com/projects/nuvola/">Nuvola icons</copyright>
+	<copyright year="2011" holder="Eresus Project" url="http://eresus.ru/" />
 	<copyright year="2006" holder="David Vignoni" url="http://oxygen-icons.org/">Oxygen icons</copyright>
 </theme>

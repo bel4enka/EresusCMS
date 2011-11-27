@@ -36,7 +36,7 @@ html
 {
 	font-family: Verdana, Helvetica, sans-serif;
 	font-size: 0.8125em; /* 13px для большинства браузеров */
-	line-height: 1.54em;
+	line-height: 1.54;
 }
 
 /**
@@ -229,34 +229,56 @@ body
  *
  * Правила с "a" используются для Webkit и Presto
  */
-a.pseudo-button,
-a.pseudo-button:visited
-	{
-	-moz-border-radius: 3px;
-	-moz-box-shadow: -1px -1px 1px #ccc, 1px 1px 0 #fff inset;
-	-webkit-border-radius: 3px;
-	-webkit-box-shadow: -1px -1px 1px #ccc, 1px 1px 0 #fff inset;
+button,
+input[type=button],
+input[type=reset],
+input[type=submit],
+a.button,
+a.button:visited
+{
 	background-color: #eee;
-	border-color: #aaa #bbb #bbb #aaa;
-	border-radius: 3px;
-	border-style: solid;
-	border-width: 1px;
-	box-shadow: -1px -1px 1px #ccc, 1px 1px 0 #fff inset;
+	border: white solid 1px;
+	border-radius: 4px;
+	box-shadow:
+		0 1px 2px 0 rgba(0, 0, 0, .5),
+		0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
+		0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
 	color: #000;
-	line-height: 2em;
+	cursor: pointer;
+	font-size: 13px;
+	min-width: 7em;
 	outline: none;
 	padding: 3px 10px;
 	text-decoration: none;
 }
 
-	a.pseudo-button:hover
+a.button
+{
+	line-height: 2em;
+}
+
+	/**
+	 *
+	 */
+	button[type=submit]
 	{
-		-moz-box-shadow: 0 0 5px 0px #007acc, 1px 1px 0 #fff inset;
-		-webkit-box-shadow: 0 0 5px 0px #007acc, 1px 1px 0 #fff inset;
-		box-shadow: 0 0 5px 0px #007acc, 1px 1px 0 #fff inset;
+		font-weight: bold;
 	}
 
-	a.pseudo-button:active
+	button:hover,
+	input[type=button]:hover,
+	input[type=reset]:hover,
+	input[type=submit]:hover,
+	a.button:hover
+	{
+		box-shadow:
+			0 0 2px 2px #cddef3,
+			0 1px 2px 0 rgba(0, 0, 0, .5),
+			0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
+			0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
+	}
+
+	a.button:active
 	{
 		left: 1px;
 		outline: none;
@@ -264,31 +286,56 @@ a.pseudo-button:visited
 		top: 1px;
 	}
 
-.pseudo-button_has_icon
+	a.button:focus
+	{
+		box-shadow:
+			0 0 2px 2px #cddef3,
+			0 1px 2px 0 rgba(0, 0, 0, .5),
+			0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
+			0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
+	}
+
+.button_has_icon
 {
 	background-repeat: no-repeat;
-	background-position: 3px 50%;
+	background-position: 7px 50%;
 }
 
-.pseudo-button_has_icon .pseudo-button__caption
+	.button_has_icon .button__caption
+	{
+		margin-left: 18px;
+	}
+
+/**
+ * Значок «OK»
+ */
+.button_icon_ok
 {
-	margin-left: 13px;
+	background-image: url(img/medium/actions/dialog-ok.png);
+}
+
+/**
+ * Значок «Отмена»
+ */
+.button_icon_cancel
+{
+	background-image: url(img/medium/actions/dialog-cancel.png);
 }
 
 /**
  * Значок «Добавить»
  */
-.pseudo-button_icon_add
+.button_icon_add
 {
-	background-image: url(img/medium/item-add.png);
+	background-image: url(img/medium/actions/list-add.png);
 }
 
 /**
  * Значок «Вернуться»
  */
-.pseudo-button_icon_previous
+.button_icon_previous
 {
-	background-image: url(img/medium/go-previous.png);
+	background-image: url(img/medium/actions/go-previous.png);
 }
 
 
@@ -323,7 +370,7 @@ a.pseudo-button:visited
 	{
 		-moz-border-radius: 7px;
 		-webkit-border-radius: 7px;
-		background: #ffe87f url(img/32x32/status/dialog-warning.png) no-repeat 5px 50%;
+		background: #ffe87f url(img/large/status/dialog-warning.png) no-repeat 5px 50%;
 		border-radius: 7px;
 		box-shadow: 
 			0 0 3px 0 rgba(0, 0, 0, 0.5),
@@ -385,7 +432,8 @@ a.pseudo-button:visited
  */
 .controls
 {
-	margin-bottom: 3px;
+	margin: 0 0 5px;
+	padding: 0;
 }
 
 	.controls__item
@@ -413,6 +461,25 @@ a.pseudo-button:visited
 			color: #f00;
 			text-decoration: none !important;
 		}
+
+
+/**
+ * Панель кнопок модуля
+ */
+.module-buttons
+{
+	margin: 0 0 5px;
+	padding: 0;
+}
+
+
+/**
+ * Кнопки диалога
+ */
+.dialog-buttons
+{
+	padding: 5px 0 0;
+}
 
 
 /**
@@ -451,10 +518,11 @@ a.pseudo-button:visited
 
 	.grid-list__item-ctrl 
 	{
+		line-height: .9;
+		padding: 1px 0 0;
 		text-align: center; 
 		white-space: nowrap;
 	}
-
 
 /**
  * Бокс
@@ -549,25 +617,6 @@ table.ui-grid.ui-hlines
 		padding: .1em .5em .2em;
 	}
 
-.ui-button-box
-{
-	padding: .6em 1em;
-}
-
-	.ui-button-box button
-	{
-		font-size: 110%;
-		min-width: 7em;
-		padding: .2em;
-	}
-
-	/**
-	 *
-	 */
-	.ui-button-box button[type=submit]
-	{
-		font-weight: bold;
-	}
 
 
 /*** Layout helpers ***/
