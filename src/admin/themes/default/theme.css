@@ -5,10 +5,10 @@
  *
  * @version ${product.version}
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,7 +26,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * $Id: typography.css 973 2010-07-06 10:56:24Z mk $
+ * $Id$
  */
 
 /**
@@ -136,15 +136,6 @@ body
 }
 
 /**
- * Ограничитель по ширине для широких мониторов
- */
-.width-limit
-{
-	max-width: 1200px;
-}
-
-
-/**
  * Заголовок страницы
  */
 .ui-header
@@ -188,17 +179,10 @@ body
 	width: 150px;
 }
 
-#body
-{
-	width: 100%;
-	border-collapse: collapse;
-}
-
-
 /**
  * Область контента
  */
-#content
+.ui-content
 {
 	margin-left: 205px;
 	padding: 1px;
