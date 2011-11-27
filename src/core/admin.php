@@ -67,7 +67,7 @@ class TAdminUI extends WebPage
 
 		parent::__construct();
 
-		$theme = new Eresus_UI_Admin_Theme();
+		$theme = new Eresus_UI_Admin_Theme(Eresus_Config::get('eresus.cms.admin.theme', 'default'));
 		$this->setUITheme($theme);
 		Eresus_Template::setGlobalValue('theme', $theme);
 
@@ -1016,66 +1016,23 @@ class TAdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отправляет созданную страницу пользователю
+	 * Возвращает разметку страницы или отправляет её пользователю.
 	 *
-	 * @return void
+	 * @return string
 	 */
-	function render()
+	public function render()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверям права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
-			$this->auth();
+			$ctrl = new Eresus_Admin_Controller_Auth(Eresus_Kernel::sc());
+			$html = $ctrl->authAction();
 		}
 		else
 		{
-			$this->renderUI();
+			$html = $this->renderUI();
 		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Отрисовка и вывод страницы аутентификации
-	 *
-	 * Авторизация проводится методом {@see Eresus::login()}.
-	 *
-	 * @return void
-	 */
-	private function auth()
-	{
-		global $Eresus;
-
-		$req = HTTP::request();
-		$user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
-		$password = $req->arg('password');
-		$autologin = $req->arg('autologin');
-
-		$data = array('errors' => array());
-		$data['user'] = $user;
-		$data['autologin'] = $autologin;
-
-		if ($req->getMethod() == 'POST')
-		{
-			if ($Eresus->login($req->arg('user'), $Eresus->password_hash($password), $autologin))
-			{
-				HTTP::redirect('./admin.php');
-			}
-		}
-
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
-		{
-			foreach ($Eresus->session['msg']['errors'] as $message)
-			{
-				$data['errors'] []= $message;
-			}
-
-			$Eresus->session['msg']['errors'] = array();
-		}
-
-		$tmpl = Eresus_Template::fromFile('admin/themes/default/auth.html');
-		$html = $tmpl->compile($data);
-		echo $html;
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1104,7 +1061,7 @@ class TAdminUI extends WebPage
 		$data['controlMenu'] = $this->renderControlMenu();
 		$data['user'] = $Eresus->user;
 
-		$tmpl = Eresus_Template::fromFile('admin/themes/default/page.default.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/page.default.html');
 		$html = $tmpl->compile($data);
 
 		if (count($this->headers))
