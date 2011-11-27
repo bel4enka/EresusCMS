@@ -1,48 +1,99 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Вход - ${product.title}</title>
-	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/theme.css" />
-	<link rel="StyleSheet" type="text/css" href="{$siteRoot}/admin/themes/default/auth.css" />
+	<meta charset="UTF-8">
+	<title>{i18n('Вход', 'admin.auth')} &mdash; ${product.title}</title>
+	<link rel="StyleSheet" href="{$globals.siteRoot}{$globals.theme->getResource('theme.css')}" />
+	<style>
+		.ie
+		{
+			background-color: #feefda;
+			border: 1px solid #f7941d;
+			height: 75px;
+			text-align: center;
+		}
+		
+		.ie__contents
+		{
+			color: black;
+			margin: 0 auto;
+			overflow: hidden;
+			padding: 0;
+			text-align: left;
+			width: 640px;
+		}
+		
+		.ie a img
+		{
+			border: none;
+		}
+	</style>
 </head>
-<body onload="document.getElementById('user').focus();">
+<body class="auth-page">
 
-	<table id="body">
-		<tr>
-			<td>
-
-				<div id="auth-dialog">
-					<form id="auth-form" action="{$siteRoot}/admin.php" method="post">
-
-						<div class="title">Вход в панель управления</div>
-						<div class="content">
-							{if $errors}
-							{foreach $errors message}
-							<div class="box error">{$message}</div>
-							{/foreach}
-							{/if}
-							<div class="label"><label for="user">Пользователь:</label></div>
-							<div><input type="text" name="user" id="user"{if $user} value="{$user}"{/if} /></div>
-							<div class="label"><label for="password">Пароль:</label></div>
-							<div><input type="password" name="password" id="password" /></div>
-							<div class="checkbox">
-								<label for="autologin">
-									<input type="checkbox" name="autologin" id="autologin" value="1"{if $autologin} checked="checked"{/if} />
-									Запомнить
-								</label>
-							</div>
-						</div>
-						<div class="buttons">
-							<button type="submit">Войти</button>
-						</div>
-					</form>
+	<!--[if lt IE 8]>
+	<div class="ie">
+		<div class="ie__contents">
+			<div style="width: 75px; float: left;">
+				<img src="http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg" alt="Внимание!" />
+			</div>
+			<div style="width: 275px; float: left; font-family: Arial, sans-serif;">
+				<div style="font-size: 14px; font-weight: bold; margin-top: 12px;">{i18n('Your browser is outdated')}</div>
+				<div style="font-size: 12px; margin-top: 6px; line-height: 12px;">
+					{i18n('Install a modern browser to view this site properly.')}
 				</div>
+			</div>
+			<div style="width: 75px; float: left;">
+				<a href="http://www.mozilla.com/ru/firefox/" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg" alt="Скачать Firefox 3.6" /></a>
+			</div>
+			<div style="width: 73px; float: left;">
+				<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg" alt="Скачать Google Chrome" /></a>
+			</div>
+			<div style="width: 73px; float: left;">
+				<a href="http://www.apple.com/safari/download/" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg" alt="Скачать Safari 5" /></a>
+			</div>
+			<div style="float: left;">
+				<a href="http://www.browserforthebetter.com/download.html" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg" alt="Скачать Internet Explorer 8" /></a>
+			</div>
+		</div>
+	</div>
+	<![endif]-->
 
-			</td>
-		</tr>
-	</table>
+	<div class="auth-dialog block dialog">
+		<form action="{$globals.siteRoot}/admin.php" method="post">
+
+			<div class="block__header">{i18n('Вход в панель управления', 'admin.auth')}</div>
+			<div class="block__contents">
+				{if $errors}
+				{foreach $errors message}
+				<div class="message message_type_error">
+					{$message}
+				</div>
+				{/foreach}
+				{/if}
+				<div class="dialog__input-pair">
+					<label class="dialog__label" for="user">Пользователь:</label>
+					<input class="dialog__input" type="text" name="user" id="user"{if $user} value="{$user}"{/if} autofocus required>
+				</div>
+				<div class="dialog__input-pair">
+					<label class="dialog__label" for="password">Пароль:</label>
+					<input class="dialog__input" type="password" name="password" id="password">
+				</div>
+				<div class="dialog__input-pair">
+					<label class="dialog__label" for="autologin">
+						<input class="dialog__input" type="checkbox" name="autologin" id="autologin" value="1"{if $autologin} checked{/if}>
+						<span class="dialog__label">Запомнить</span>
+					</label>
+				</div>
+			</div>
+			<div class="dialog-buttons">
+				<button type="submit" class="button button_has_icon button_icon_ok">
+					<span class="button__caption">Войти</span>
+				</button>
+			</div>
+		</form>
+	</div>
 
 </body>
 </html>
