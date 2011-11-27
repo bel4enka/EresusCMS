@@ -232,14 +232,12 @@ class Eresus_CMS extends Eresus_Application
 	 */
 	protected function runWebAdminUI()
 	{
-		global $page;
-
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		include_once 'admin.php';
 
-		$page = new TAdminUI();
-		/*return */$page->render();
+		$GLOBALS['page'] = new TAdminUI();
+		return $GLOBALS['page']->render();
 	}
 	//-----------------------------------------------------------------------------
 
