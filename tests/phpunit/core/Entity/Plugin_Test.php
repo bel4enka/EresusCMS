@@ -59,8 +59,6 @@ class Eresus_Entity_Plugin_Test extends PHPUnit_Framework_TestCase
 	{
 		$test = $this->getMockBuilder('Eresus_Entity_Plugin')->setMethods(array('hasAccessorMutator'))
 			->disableOriginalConstructor()->getMock();
-		$test->expects($this->once())->method('hasAccessorMutator')->
-			with('settings', 'unserializeAccessor', 'serializeMutator');
 		$test->setUp();
 	}
 	//-----------------------------------------------------------------------------

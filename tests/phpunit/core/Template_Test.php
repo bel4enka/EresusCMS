@@ -112,10 +112,10 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 		$m_loadFromFile->setAccessible(true);
 		$p_file = new ReflectionProperty('Eresus_Template', 'file');
 		$p_file->setAccessible(true);
-		Eresus_Config::set('dwoo.templateDir', TESTS_SRC_DIR . '/admin/themes/default');
+		Eresus_Config::set('dwoo.templateDir', TESTS_SRC_DIR);
 		$tmpl = new Eresus_Template();
 
-		$m_loadFromFile->invoke($tmpl, 'auth.html');
+		$m_loadFromFile->invoke($tmpl, 'core/templates/auth.html');
 		$this->assertInstanceOf('Dwoo_Template_File', $p_file->getValue($tmpl));
 
 		$m_loadFromFile->invoke($tmpl, 'unexistent');
@@ -183,9 +183,10 @@ class Eresus_Template_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_fromFile()
 	{
-		Eresus_Config::set('dwoo.templateDir', TESTS_SRC_DIR . '/admin/themes/default');
+		Eresus_Config::set('dwoo.templateDir', TESTS_SRC_DIR);
 
-		$this->assertInstanceOf('Eresus_Template', Eresus_Template::fromFile('auth.html'));
+		$this->assertInstanceOf('Eresus_Template',
+			Eresus_Template::fromFile('core/templates/auth.html'));
 		$this->assertNull(Eresus_Template::fromFile('unexistent'));
 	}
 	//-----------------------------------------------------------------------------
