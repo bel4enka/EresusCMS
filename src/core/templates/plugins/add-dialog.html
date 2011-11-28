@@ -1,40 +1,50 @@
-<div class="box ui-widget-content" id="plugin-manager-add-dlg" style="width: 600px">
-	<div class="header">Доступные модули расширения</div>
-	<div class="content">
+<div class="block dialog add-plugins-dialog">
+	<div class="block__header">Доступные модули расширения</div>
+	<div class="block__contents">
 
-		<div class="block controls">
-			<a href="#" class="pseudo" onclick="return pluginManagerCheckAll()">Отметить все</a>
-			/
-			<a href="#" class="pseudo" onclick="return pluginManagerUncheckAll()">Снять все отметки </a>
-		</div>
+		<ul class="controls">
+			<li class="controls__item">
+				<a href="#" class="control control_type_pseudolink" onclick="return pluginManagerCheckAll()">Отметить все</a>
+			</li>
+			<li class="controls__item">
+				<a href="#" class="control control_type_pseudolink" onclick="return pluginManagerUncheckAll()">Снять все отметки </a>
+			</li>
+		</ul>
 
 		<form action="admin.php" method="post">
 
-			<div class="hidden">
-				<input type="hidden" name="mod" value="plgmgr" />
-				<input type="hidden" name="action" value="insert" />
+			<div>
+				<input type="hidden" name="mod" value="plgmgr">
+				<input type="hidden" name="action" value="insert">
 			</div>
 
-			<div class="plugin-list">
+			<div class="add-plugins-dialog__list">
 				{foreach $plugins item}
-				<div class="plugin-list__plugin block box">
-					{if !$item.errors}<input type="checkbox" name="plugins[]" value="{$item.info->name}" checked="checked" />{/if}
-					<div class="block info">
-						<strong>{$item.info->title} {$item.info->version}</strong><br />
-						{$item.info->description}
+				<div class="add-plugins-dialog__plugin">
+					{if !$item.errors}<input type="checkbox" name="plugins[]" value="{$item.info->name}" checked>{/if}
+					<div class="add-plugins-dialog__plugin-info">
+						<div class="add-plugins-dialog__plugin-brief">
+							<span class="add-plugins-dialog__plugin-title">{$item.info->title}</span>
+							<span class="add-plugins-dialog__plugin-version">{$item.info->version}</span>
+						</div>
+						<div class="add-plugins-dialog__plugin-about">
+							{$item.info->description}
+						</div>
 						{if $item.errors}
-						<div class="error-text">
-							{if $item.cms}
-							<div>{i18n('Расширение может работать только с Eresus')} {$item.cms.min}{if $item.cms.max > $item.cms.min} - {$item.cms.max}{/if}</div>
-							{/if}
-							{if $item.requires}
-							<div>{i18n('Следующие расширения должны быть установлены и активированы:')}</div> 
-							<ul>
-								{foreach $item.requires dep}
-								<li>{if $dep.url}<a href="{$dep.url}">{/if}{if $dep.name}<span title="{$dep.uid}">{$dep.name}</span>{else}{$dep.uid}{/if}{if $dep.url}</a>{/if} {$dep.min}{if $dep.max > $dep.min} - {$dep.max}{/if}</li>
-								{/foreach}
-							</ul>
-							{/if}
+						<div class="message message_type_warning">
+							<div class="message__contents">
+								{if $item.cms}
+								<div>{i18n('Расширение может работать только с Eresus')} {$item.cms.min}{if $item.cms.max > $item.cms.min} - {$item.cms.max}{/if}</div>
+								{/if}
+								{if $item.requires}
+								<div>{i18n('Следующие расширения должны быть установлены и активированы:')}</div> 
+								<ul>
+									{foreach $item.requires dep}
+									<li>{if $dep.url}<a href="{$dep.url}">{/if}{if $dep.name}<span title="{$dep.uid}">{$dep.name}</span>{else}{$dep.uid}{/if}{if $dep.url}</a>{/if} {$dep.min}{if $dep.max > $dep.min} - {$dep.max}{/if}</li>
+									{/foreach}
+								</ul>
+								{/if}
+							</div>
 						</div>
 						{/if}
 					</div>
@@ -42,9 +52,13 @@
 				{/foreach}
 			</div>
 
-			<div class="ui-button-box">
-				<button type="submit">Добавить</button>
-				<button type="button" class="cancel" onclick="history.back();">Отменить</button>
+			<div class="dialog__buttons">
+				<button type="submit" class="button button_has_icon button_icon_ok">
+					<span class="button__caption">Добавить</span>
+				</button>
+				<button type="button" class="button button_has_icon button_icon_cancel" onclick="history.back();">
+					<span class="button__caption">Отменить</span>
+				</button>
 			</div>
 
 		</form>
@@ -55,13 +69,13 @@
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 	function pluginManagerCheckAll()
 	{
-		jQuery("#plugin-manager-add-dlg input").attr("checked", "checked");
+		jQuery('.add-plugins-dialog__list input').attr('checked', 'checked');
 		return false;
 	}
 
 	function pluginManagerUncheckAll()
 	{
-		jQuery("#plugin-manager-add-dlg input").removeAttr("checked");
+		jQuery('.add-plugins-dialog__list input').removeAttr('checked');
 		return false;
 	}
 //--><!]]></script>

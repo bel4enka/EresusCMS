@@ -1,0 +1,29 @@
+<div class="block dialog plugins-confirm-deps">
+	<form action="admin.php" method="post">
+		<div class="block__header">
+			{i18n('Подтверждение')}
+		</div>
+		<div class="block__contents">
+			<div class="message message_type_warning">
+				{if $deletion}
+				{sprintf(i18n('Удаление расширения «%s» приведёт к отключению зависящих от него расширений:'), $plugin->title)}
+				{else}
+				{sprintf(i18n('Отключение расширения «%s» приведёт к отключению зависящих от него расширений:'), $plugin->title)}
+				{/if}
+				<ul class="plugins-confirm-deps__list">
+					{foreach $dependent item}
+					<li class="plugins-confirm-deps__list-item">{$item->title}</li>
+					{/foreach}
+				</ul>
+			</div>
+			<div class="dialog__buttons">
+				<button type="submit" class="button button_has_icon button_icon_ok">
+					<span class="button__caption">Продолжить</span>
+				</button>
+				<button type="button" class="button button_has_icon button_icon_cancel" onclick="history.back();">
+					<span class="button__caption">Отменить</span>
+				</button>
+			</div>
+		</div>
+	</form>
+</div>

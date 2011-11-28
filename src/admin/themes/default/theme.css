@@ -400,13 +400,18 @@ input[type=checkbox] + .dialog__label
 {
 }
 
-/**
- * Кнопки диалога
- */
-.dialog-buttons
+.dialog
 {
-	padding: 5px;
+	
 }
+
+	/**
+	 * Кнопки диалога
+	 */
+	.dialog__buttons
+	{
+		padding: 5px;
+	}
 
 
 /**
@@ -434,6 +439,9 @@ input[type=checkbox] + .dialog__label
 
 	.grid-list__item td
 	{
+		border-color: #eee;
+		border-style: solid;
+		border-width: 1px 0;
 		padding: 1px 5px;
 	}	
 
@@ -616,3 +624,14 @@ body
 			{
 			font-size: 11px;
 			}
+
+
+.plugins-confirm-deps
+{
+	width: 600px;
+}
+
+	.plugins-confirm-deps__list
+	{
+		margin: 1em;
+	}
