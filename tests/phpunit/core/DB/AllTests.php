@@ -31,15 +31,11 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once dirname(__FILE__) . '/Record_Test.php';
-
 class Eresus_DB_AllTests
 {
 	public static function suite()
 	{
 		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/DB');
-
-		$suite->addTestSuite('Eresus_DB_Record_Test');
 
 		return $suite;
 	}
