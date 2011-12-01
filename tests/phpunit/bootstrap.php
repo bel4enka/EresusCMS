@@ -194,7 +194,14 @@ class Doctrine_Core extends MockFacade
 
 class Doctrine_Manager extends MockFacade {}
 class Doctrine_Query {}
-class Doctrine_Record {}
+class Doctrine_Record
+{
+	public function __get($name)
+	{
+		throw new LogicException('Trying to get unexistent property: ' . $name);
+	}
+	//-----------------------------------------------------------------------------
+}
 class Doctrine_Table {}
 
 class Dwoo extends UniversalStub {}
