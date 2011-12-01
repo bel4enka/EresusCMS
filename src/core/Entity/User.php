@@ -129,9 +129,7 @@ class Eresus_Entity_User extends Eresus_DB_Record
 			'notnull' => true,
 		),
 		'profile' => array(
-			'type' => 'string',
-			'default' => '',
-			'notnull' => true,
+			'type' => 'array',
 		)));
 
 	}
@@ -147,7 +145,6 @@ class Eresus_Entity_User extends Eresus_DB_Record
 	{
 		$this->hasMutator('username', 'usernameMutator');
 		$this->hasMutator('password', 'passwordMutator');
-		$this->hasAccessorMutator('profile', 'unserializeAccessor', 'serializeMutator');
 	}
 	//-----------------------------------------------------------------------------
 
