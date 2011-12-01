@@ -783,6 +783,11 @@ class TAdminUI extends WebPage
 					{
 						$result .= $this->module->adminRender();
 					}
+					catch (Eresus_CMS_Exception_NotFound $e)
+					{
+						header('Not Found', true, 404);
+						return i18n('Страница не найдена');
+					}
 					catch (Exception $e)
 					{
 						if (isset($name))
@@ -803,44 +808,47 @@ class TAdminUI extends WebPage
 						{
 							$msg .= '<br />' . $e->getDescription();
 						}
-						$result .= ErrorBox($msg);
+						ErrorMessage($msg);
 					}
 				}
 				else
 				{
-					$result .= ErrorBox(sprintf(i18n('Метод "%s" не найден в классе "%s".'), 'adminRender',
-						get_class($this->module)));
+					$result .= ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'),
+						'adminRender', get_class($this->module)));
 				}
 			}
 			else
 			{
 				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
 				$msg = i18n('Модуль расширения "%s" не установлен или отключен.', __CLASS__);
-				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
+				ErrorMessage(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
+
+		$session =& $Eresus->session;
+		$tmpl = Eresus_Template::fromFile('core/templates/message.html');
+
 		if (
-			isset($Eresus->session['msg']['information']) &&
-			count($Eresus->session['msg']['information'])
+			isset($session['msg']['information']) && count($session['msg']['information'])
 		)
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['information'] as $message)
+			foreach ($session['msg']['information'] as $message)
 			{
-				$messages .= InfoBox($message);
+				$messages .= $tmpl->compile(array('text' => $message, 'type' => 'info'));
 			}
-			$result = $messages.$result;
-			$Eresus->session['msg']['information'] = array();
+			$result = $messages . $result;
+			$session['msg']['information'] = array();
 		}
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
+		if (isset($session['msg']['errors']) && count($session['msg']['errors']))
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['errors'] as $message)
+			foreach ($session['msg']['errors'] as $message)
 			{
-				$messages .= ErrorBox($message);
+				$messages .= $tmpl->compile(array('text' => $message, 'type' => 'error'));
 			}
-			$result = $messages.$result;
-			$Eresus->session['msg']['errors'] = array();
+			$result = $messages . $result;
+			$session['msg']['errors'] = array();
 		}
 		return $result;
 	}

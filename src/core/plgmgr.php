@@ -125,61 +125,39 @@ class TPlgMgr
 		$result = '';
 		$page->title = i18n('Модули расширения', __CLASS__);
 
-		switch (true)
+		switch (arg('action'))
 		{
-			case arg('update') !== null:
+			case 'update':
 				$this->update();
 			break;
 
-			case arg('toggle') !== null:
-				$this->toggle();
+			case 'toggle':
+				$ctrl = new Eresus_Admin_Controller_Plugins(Eresus_Kernel::sc());
+				$result = $ctrl->toggleAction();
 			break;
 
-			case arg('delete') !== null:
+			case 'delete':
 				$this->delete();
 			break;
 
-			case arg('id') !== null:
+			case 'edit':
 				$result = $this->edit();
 			break;
 
-			case arg('action') == 'add':
+			case 'add':
 				$ctrl = new Eresus_Admin_Controller_PluginInstaller(Eresus_Kernel::sc());
 				$result = $ctrl->showSelectorDialogAction();
 			break;
 
-			case arg('action') == 'insert':
+			case 'insert':
 				$ctrl = new Eresus_Admin_Controller_PluginInstaller(Eresus_Kernel::sc());
 				$ctrl->installAction();
 				HttpResponse::redirect('admin.php?mod=plgmgr');
 			break;
 
 			default:
-				$table = array (
-					'name' => 'plugins',
-					'key' => 'name',
-					'sortMode' => 'title',
-					'columns' => array(
-						array('name' => 'title', 'caption' => i18n('Плагин', __CLASS__), 'width' => '90px',
-							'wrap'=>false),
-						array('name' => 'description', 'caption' => i18n('Описание', __CLASS__)),
-						array('name' => 'version', 'caption' => i18n('Версия', __CLASS__), 'width'=>'70px',
-							'align'=>'center'),
-					),
-					'controls' => array (
-						'delete' => '',
-						'edit' => '',
-						'toggle' => '',
-					),
-					'tabs' => array(
-						'width'=>'180px',
-						'items'=>array(
-							array('caption' => i18n('Добавить плагин', __CLASS__), 'name' => 'action',
-								'value' => 'add')
-						)
-					)
-				);
-				$result = $page->renderTable($table);
+				$ctrl = new Eresus_Admin_Controller_Plugins(Eresus_Kernel::sc());
+				$result = $ctrl->showListAction();
 			break;
 		}
 		return $result;

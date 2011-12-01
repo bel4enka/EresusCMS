@@ -38,20 +38,11 @@
 class Eresus_Plugins
 {
 	/**
-	 * Список всех плагинов
-	 *
-	 * @var array
-	 * @todo сделать private
-	 */
-	public $list = array();
-
-	/**
 	 * Массив плагинов
 	 *
 	 * @var array
-	 * @todo сделать private
 	 */
-	public $items = array();
+	private $plugins = array();
 
 	/**
 	 * Таблица обработчиков событий
@@ -70,7 +61,11 @@ class Eresus_Plugins
 	 */
 	public function init()
 	{
-		//$plugins = Doctrine_Core::getTable('Eresus_Entity_Plugin')->findByActive(true);
+		$plugins = Doctrine_Core::getTable('Eresus_Entity_Plugin')->findAll();
+		foreach ($plugins as $plugin)
+		{
+			$this->plugins[$plugin->uid] = $plugin;
+		}
 		/*$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
 		if ($items)
 		{
@@ -130,44 +125,72 @@ class Eresus_Plugins
 	 */
 	public function isAvailable($uid, $minVer, $maxVer)
 	{
-		return false;
+		if (!isset($this->plugins[$uid]))
+		{
+			return false;
+		}
+
+		$version = $this->plugins[$uid]->version;
+		if (version_compare($version, $minVer, '<') || version_compare($version, $maxVer, '>'))
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Деинсталлирует плагин
+	 * Возврашает объект расширения
 	 *
-	 * @param string $name  Имя плагина
+	 * @param string $uid
+	 *
+	 * @return Eresus_Plugin|null
+	 *
+	 * @since 2.17
 	 */
-	public function uninstall($name)
+	public function get($uid)
 	{
-		global $Eresus;
-
-		if (!isset($this->items[$name]))
+		if (isset($this->plugins[$uid]))
 		{
-			$this->load($name);
+			return $this->plugins[$uid];
 		}
-		if (isset($this->items[$name]))
-		{
-			$this->items[$name]->uninstall();
-		}
-		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
-		if (!is_null($item))
-		{
-			$Eresus->db->delete('plugins', "`name`='".$name."'");
-		}
-		$filename = filesRoot.'ext/'.$name.'.php';
-		#if (file_exists($filename)) unlink($filename);
+		return null;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает установленные расширения, зависящие от указанного
+	 *
+	 * @param string $uid
+	 *
+	 * @return array
+	 *
+	 * @since 2.17
+	 */
+	public function getDependent($uid)
+	{
+		$dependent = array();
+		foreach ($this->plugins as $plugin)
+		{
+			$deps = $plugin->requiredPlugins;
+			if (isset($deps[$uid]))
+			{
+				$dependent []= $plugin;
+				$dependent = array_merge($dependent, $this->getDependent($plugin->uid));
+			}
+		}
+		return $dependent;
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * Загружает плагин и возвращает его экземпляр
-	*
-	* @param string $name  Имя плагина
-	*
-	* @return Plugin|TPlugin|false  Экземпляр плагина или FASLE если не удалось загрузить плагин
-	*/
+	 *
+	 * @param string $name  Имя плагина
+	 *
+	 * @return Plugin|TPlugin|false  Экземпляр плагина или FASLE если не удалось загрузить плагин
+	 */
 	public function load($name)
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);

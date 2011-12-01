@@ -85,7 +85,8 @@ class Sections
 
 		if ($force || !$this->index)
 		{
-			$items = $Eresus->db->select($this->table, '', '`position`', '`id`,`owner`');
+			$items = array();
+			// FIXME $Eresus->db->select($this->table, '', '`position`', '`id`,`owner`');
 			if ($items)
 			{
 				$this->index = array();

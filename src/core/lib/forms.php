@@ -433,7 +433,6 @@ class Form
 		$hidden = '';     # Скрытые поля???
 		$body = '';       # Тело таблицы-формы
 
-		if (empty($this->form['name'])) $result .= ErrorBox(i18n('Не указано имя формы', __CLASS__));
 		if (count($this->form['fields'])) foreach($this->form['fields'] as $item) {
 			# Проверяем права доступа к элементу
 			if ((!isset($item['access'])) || (UserRights($item['access']))) {

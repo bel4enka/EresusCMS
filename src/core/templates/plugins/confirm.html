@@ -4,6 +4,10 @@
 			{i18n('Подтверждение')}
 		</div>
 		<div class="block__contents">
+			<input type="hidden" name="mod" value="plgmgr">
+			<input type="hidden" name="id" value="{$plugin->uid}">
+			<input type="hidden" name="action" value="toggle">
+			<input type="hidden" name="confirmed" value="1">
 			<div class="message message_type_warning">
 				{if $deletion}
 				{sprintf(i18n('Удаление расширения «%s» приведёт к отключению зависящих от него расширений:'), $plugin->title)}
