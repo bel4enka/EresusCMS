@@ -31,6 +31,9 @@
 
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/DB/Record.php';
+require_once TESTS_SRC_DIR . '/core/i18n.php';
+require_once TESTS_SRC_DIR . '/core/Kernel.php';
+require_once TESTS_SRC_DIR . '/core/XML/Element.php';
 require_once TESTS_SRC_DIR . '/core/Entity/Plugin.php';
 
 /**
@@ -53,13 +56,49 @@ class Eresus_Entity_Plugin_Test extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Eresus_Entity_Plugin::setUp
+	 * @covers Eresus_Entity_Plugin::loadFromFile
+	 * @covers Eresus_Entity_Plugin::getTitle
+	 * @covers Eresus_Entity_Plugin::getVersion
+	 * @covers Eresus_Entity_Plugin::getDescription
+	 * @covers Eresus_Entity_Plugin::getRequiredKernel
+	 * @covers Eresus_Entity_Plugin::getRequiredPlugins
+	 * @covers Eresus_Entity_Plugin::getDevelopers
+	 * @covers Eresus_Entity_Plugin::getAuthors
+	 * @covers Eresus_Entity_Plugin::getDocs
 	 */
-	public function test_setUp()
+	public function test_overall()
 	{
-		$test = $this->getMockBuilder('Eresus_Entity_Plugin')->setMethods(array('hasAccessorMutator'))
-			->disableOriginalConstructor()->getMock();
-		$test->setUp();
+		$container = new sfServiceContainerBuilder();
+		Eresus_Tests::setStatic('Eresus_Kernel', $container, 'sc');
+		$i18n = new Eresus_i18n(TESTS_SRC_DIR . '/lang');
+		$i18n->setLocale('ru_RU');
+		$container->setService('i18n', $i18n);
+
+		$plugin = Eresus_Entity_Plugin::loadFromFile(TESTS_SRC_DIR . '/plugins/Test2/plugin.xml');
+		$this->assertInstanceOf('Eresus_Entity_Plugin', $plugin);
+		$this->assertEquals('ru.eresus.plugins.Test2', $plugin->uid);
+		$this->assertEquals('Test2', $plugin->name);
+		$this->assertEquals('Тестовый плагин 2', $plugin->title);
+		$this->assertEquals('1.00', $plugin->version);
+		$this->assertEquals('Пример плагина', $plugin->description);
+		$this->assertEquals(array('min' => '2.17', 'max' => '2.17'), $plugin->requiredKernel);
+		$this->assertEquals(array('ru.eresus.plugins.Test1' => array(
+			'uid' => 'ru.eresus.plugins.Test1',
+			'min' => '1.00',
+			'max' => '1.00',
+			'name' => 'Test1',
+			'url' => 'http://example.org/',
+		)), $plugin->requiredPlugins);
+		$this->assertEquals(array(array(
+			'title' => 'Eresus',
+			'url' => 'http://eresus.ru/',
+		)), $plugin->developers);
+		$this->assertEquals(array(array(
+			'name' => 'Михаил Красильников',
+			'email' => 'mihalych@vsepofigu.ru',
+			'url' => null,
+		)), $plugin->authors);
+		$this->assertEquals(array('ru_RU' => 'http://docs.eresus.ru/cms/dev/index'), $plugin->docs);
 	}
 	//-----------------------------------------------------------------------------
 

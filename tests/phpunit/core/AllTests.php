@@ -50,7 +50,6 @@ require_once __DIR__ . '/Functions_Test.php';
 require_once __DIR__ . '/i18n_Test.php';
 require_once __DIR__ . '/Kernel_Test.php';
 require_once __DIR__ . '/Logger_Test.php';
-require_once __DIR__ . '/Plugin_Test.php';
 require_once __DIR__ . '/Template_Test.php';
 
 require_once __DIR__ . '/classes/AllTests.php';
@@ -76,7 +75,6 @@ class Eresus_AllTests
 		$suite->addTestSuite('Eresus_i18n_Test');
 		$suite->addTestSuite('Eresus_Kernel_Test');
 		$suite->addTestSuite('Eresus_Logger_Test');
-		$suite->addTestSuite('Eresus_Plugin_Test');
 		$suite->addTestSuite('Eresus_Template_Test');
 
 		$suite->addTest(Core_Classes_AllTests::suite());

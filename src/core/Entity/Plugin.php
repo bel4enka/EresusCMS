@@ -33,11 +33,18 @@
 /**
  * Класс информации о плагине
  *
- * @property string         $uid
- * @property string         $name
- * @property int            $active
- * @property array          $settings
- * @property Eresus_Plugin  $object
+ * @property-read string         $uid
+ * @property-read string         $name
+ * @property-read string         $version
+ * @property-read string         $title
+ * @property-read string         $description
+ * @property-read array          $requiredKernel
+ * @property-read array          $requiredPlugins
+ * @property-read array          $developers
+ * @property-read array          $authors
+ * @property-read array          $docs
+ * @property      int            $active
+ * @property      array          $settings
  *
  * @package Eresus
  * @since 2.17
@@ -68,22 +75,219 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 				'notnull' => true,
 			),
 			'settings' => array(
-				'type' => 'string',
+				'type' => 'array',
 			),
-			'object' => array(
-				'type' => 'string',
+			'xml' => array(
+				'type' => 'object',
 			),
 		));
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @see Doctrine_Record::setUp()
+	 * Создаёт объект из файла
+	 *
+	 * @param string $filename
+	 *
+	 * @throws RuntimeException  если файл содержит ошибки
+	 *
+	 * @return Eresus_Plugin
+	 *
+	 * @since 2.16
 	 */
-	public function setUp()
+	public static function loadFromFile($filename)
 	{
-		$this->hasAccessorMutator('settings', 'unserializeAccessor', 'serializeMutator');
-		$this->hasAccessorMutator('object', 'unserializeAccessor', 'serializeMutator');
+		$plugin = new self;
+		$plugin->name = basename(dirname($filename));
+
+		libxml_use_internal_errors(true);
+		libxml_clear_errors();
+		$plugin->xml = new Eresus_XML_Element($filename, 0, true);
+		$errors = libxml_get_errors();
+		if (count($errors))
+		{
+			libxml_clear_errors();
+			$msg = array();
+			foreach ($errors as $e)
+			{
+				$msg []= $e->message . '(' . $e->file . ':' . $e->line . ':' . $e->column . ')';
+			}
+			$msg = implode('; ', $msg);
+			throw new RuntimeException($msg);
+		}
+
+		$plugin->uid = strval($plugin->xml['uid']);
+
+		return $plugin;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Имитация свойств
+	 *
+	 * @param string $name
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.17
+	 */
+	public function __get($name)
+	{
+		$getter = 'get' . $name;
+		if (method_exists($this, $getter))
+		{
+			return $this->$getter();
+		}
+		return parent::__get($name);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает название
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	private function getTitle()
+	{
+		$tags = $this->xml->xpath('/declaration/title');
+		return $tags[0]->getLocalized();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает версию
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	private function getVersion()
+	{
+		$tags = $this->xml->xpath('/declaration/version');
+		return strval($tags[0]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает описание
+	 *
+	 * @return string
+	 *
+	 * @since 2.16
+	 */
+	private function getDescription()
+	{
+		$tags = $this->xml->xpath('/declaration/description');
+		return $tags[0]->getLocalized();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает требуемую версию CMS
+	 *
+	 * @return array
+	 *
+	 * @since 2.16
+	 */
+	private function getRequiredKernel()
+	{
+		$tags = $this->xml->xpath('/declaration/requires/cms');
+		return array(
+			'min' => strval($tags[0]['min']),
+			'max' => strval($tags[0]['max'])
+		);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает список требуемых плагинов
+	 *
+	 * @return array
+	 *
+	 * @since 2.16
+	 */
+	private function getRequiredPlugins()
+	{
+		$tags = $this->xml->xpath('/declaration/requires/plugin');
+		$plugins = array();
+		foreach ($tags as $tag)
+		{
+			$uid = strval($tag['uid']);
+			$plugins[$uid] = array(
+				'uid' => $uid,
+				'min' => strval($tag['min']),
+				'max' => strval($tag['max']),
+				'name' => isset($tag['name']) ? strval($tag['name']) : null,
+				'url' => isset($tag['url']) ? strval($tag['url']) : null,
+			);
+		}
+		return $plugins;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает список разработчиков
+	 *
+	 * @return array
+	 *
+	 * @since 2.17
+	 */
+	private function getDevelopers()
+	{
+		$tags = $this->xml->xpath('/declaration/developer');
+		$developers = array();
+		foreach ($tags as $tag)
+		{
+			$developers [] = array(
+				'title' => strval($tag['title']),
+				'url' => isset($tag['url']) ? strval($tag['url']) : null,
+			);
+		}
+		return $developers;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает список авторов
+	 *
+	 * @return array
+	 *
+	 * @since 2.17
+	 */
+	private function getAuthors()
+	{
+		$tags = $this->xml->xpath('/declaration/author');
+		$authors = array();
+		foreach ($tags as $tag)
+		{
+			$authors [] = array(
+				'name' => strval($tag['name']),
+				'email' => isset($tag['email']) ? strval($tag['email']) : null,
+				'url' => isset($tag['url']) ? strval($tag['url']) : null,
+			);
+		}
+		return $authors;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает список ссылок на документацию
+	 *
+	 * @return array
+	 *
+	 * @since 2.17
+	 */
+	private function getDocs()
+	{
+		$tags = $this->xml->xpath('/declaration/docs');
+		$docs = array();
+		foreach ($tags as $tag)
+		{
+			$docs[strval($tag['lang'])] = strval($tag['url']);
+		}
+		return $docs;
 	}
 	//-----------------------------------------------------------------------------
 }
