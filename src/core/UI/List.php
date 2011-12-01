@@ -120,6 +120,7 @@ class Eresus_UI_List
 	 * @see getControls()
 	 */
 	private $controls = array(
+		'config' => 'Eresus_UI_List_Control_Config',
 		'delete' => 'Eresus_UI_List_Control_Delete',
 		'edit' => 'Eresus_UI_List_Control_Edit',
 		'up' => 'Eresus_UI_List_Control_Up',
@@ -302,7 +303,7 @@ class Eresus_UI_List
 	 * Стандартные имена ЭУ:
 	 *
 	 * - delete — Удаление
-	 * - edit — Изменение
+	 * - config/edit — Изменение (разница в значках)
 	 * - up — Переместить выше в списке
 	 * - down — Переместить ниже в списке
 	 * - toggle — Включить/Отключить
