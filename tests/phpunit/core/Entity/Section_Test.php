@@ -52,18 +52,5 @@ class Eresus_Entity_Section_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * @covers Eresus_Entity_Section::setUp
-	 */
-	public function test_setUp()
-	{
-		$test = $this->getMockBuilder('Eresus_Entity_Section')->setMethods(array('hasAccessorMutator'))
-			->disableOriginalConstructor()->getMock();
-		$test->expects($this->once())->method('hasAccessorMutator')->
-			with('options', 'unserializeAccessor', 'serializeMutator');
-		$test->setUp();
-	}
-	//-----------------------------------------------------------------------------
-
 	/* */
 }
