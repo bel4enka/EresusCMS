@@ -37,8 +37,131 @@
  * @package Eresus
  * @since 2.17
  */
-class Eresus_XML_Element extends SimpleXMLElement
+class Eresus_XML_Element implements Serializable, ArrayAccess
 {
+	/**
+	 * Объект SimpleXMLElement
+	 *
+	 * Нельзя унаследовать Eresus_XML_Element от SimpleXMLElement, потому что последний нельзя
+	 * сериализовывать. Поэтому использует декоратор.
+	 *
+	 * @var SimpleXMLElement
+	 */
+	private $xml;
+
+	/**
+	 * @since 2.17
+	 */
+	public function __construct($data, $options = 0, $data_is_url = false, $ns = '',
+		$is_prefix = false)
+	{
+		if ($data instanceof SimpleXMLElement)
+		{
+			$this->xml = $data;
+		}
+		else
+		{
+			$this->xml = new SimpleXMLElement($data, $options, $data_is_url, $ns, $is_prefix);
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see SimpleXMLElement::__toString()
+	 */
+	public function __toString()
+	{
+		return $this->xml->__toString();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function __get($name)
+	{
+		$value = $this->xml->$name;
+		$value = $this->convertValue($value);
+		return $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function __set($name, $value)
+	{
+		$this->xml->$name = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function __call($method, $args)
+	{
+		$value = call_user_func_array(array($this->xml, $method), $args);
+		$value = $this->convertValue($value);
+		return $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->xml[$offset]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function offsetGet($offset)
+	{
+		$value = $this->xml[$offset];
+		$value = $this->convertValue($value);
+		return $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->xml[$offset] = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @since 2.17
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->xml[$offset]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Serializable::serialize()
+	 */
+	public function serialize()
+	{
+		return serialize($this->xml->asXML());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Serializable::unserialize()
+	 */
+	public function unserialize($value)
+	{
+		$this->xml = new SimpleXMLElement(unserialize($value));
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * Возвращает локализованный текст узла
 	 *
@@ -49,21 +172,21 @@ class Eresus_XML_Element extends SimpleXMLElement
 	public function getLocalized()
 	{
 		$locale = Eresus_Kernel::sc()->i18n->getLocale();
-		$tags = $this->$locale;
+		$tags = $this->xml->$locale;
 		if (count($tags))
 		{
 			return strval($tags[0]);
 		}
 
 		$locale = substr($locale, 0, 3);
-		$tags = $this->xpath('//*[starts-with(name(), "' . $locale . '")]');
+		$tags = $this->xml->xpath('//*[starts-with(name(), "' . $locale . '")]');
 		if (count($tags))
 		{
 			return strval($tags[0]);
 		}
 
 		$locale = Eresus_Config::get('eresus.cms.locale.default', 'ru_RU');
-		$tags = $this->$locale;
+		$tags = $this->xml->$locale;
 		if (count($tags))
 		{
 			return strval($tags[0]);
@@ -72,4 +195,31 @@ class Eresus_XML_Element extends SimpleXMLElement
 		return '';
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Оборачивает все значения SimpleXMLElement в Eresus_XML_Element
+	 *
+	 * @param mixed $value
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.17
+	 */
+	private function convertValue($value)
+	{
+		if (is_array($value))
+		{
+			foreach ($value as &$element)
+			{
+				$element = $this->convertValue($element);
+			}
+		}
+		elseif ($value instanceof SimpleXMLElement)
+		{
+			$value = new self($value);
+		}
+		return $value;
+	}
+	//-----------------------------------------------------------------------------
+
 }
