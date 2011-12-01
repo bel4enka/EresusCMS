@@ -34,7 +34,7 @@
 /**
  * Интерфейс элемента {@link Eresus_Eresus_UI_List списка}
  *
- * @package UI
+ * @package Eresus
  */
 interface Eresus_UI_List_Item_Interface
 {
