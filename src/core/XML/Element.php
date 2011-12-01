@@ -36,6 +36,8 @@
  *
  * @package Eresus
  * @since 2.17
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class Eresus_XML_Element implements Serializable, ArrayAccess
 {

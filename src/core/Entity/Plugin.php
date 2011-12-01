@@ -148,6 +148,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return string
 	 *
 	 * @since 2.16
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getTitle()
 	{
@@ -162,6 +164,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return string
 	 *
 	 * @since 2.16
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getVersion()
 	{
@@ -176,6 +180,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return string
 	 *
 	 * @since 2.16
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getDescription()
 	{
@@ -190,6 +196,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return array
 	 *
 	 * @since 2.16
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getRequiredKernel()
 	{
@@ -207,6 +215,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return array
 	 *
 	 * @since 2.16
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getRequiredPlugins()
 	{
@@ -233,6 +243,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return array
 	 *
 	 * @since 2.17
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getDevelopers()
 	{
@@ -255,6 +267,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return array
 	 *
 	 * @since 2.17
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getAuthors()
 	{
@@ -278,6 +292,8 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 	 * @return array
 	 *
 	 * @since 2.17
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function getDocs()
 	{
