@@ -70,7 +70,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 					'cms' => null,
 					'requires' => null,
 				);
-				$required = $plugin->getRequiredKernel();
+				$required = $plugin->requiredKernel;
 				if (
 					version_compare($kernelVersion, $required['min'], '<') ||
 					version_compare($kernelVersion, $required['max'], '>')
@@ -95,7 +95,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 
 		ksort($vars['plugins']);
 
-		$tmpl = Eresus_Template::fromFile('admin/themes/default/PluginManager/add-dialog.html');
+		$tmpl = Eresus_Template::fromFile('core/templates/plugins/add-dialog.html');
 		$html = $tmpl->compile($vars);
 
 		return $html;
@@ -120,12 +120,9 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 				$filename = $rootPath . $name. '/plugin.xml';
 				if (file_exists($filename))
 				{
-					$plugin = Eresus_Plugin::loadFromFile($filename);
-					$entity = new Eresus_Entity_Plugin();
-					$entity->uid = $plugin->getUID();
-					$entity->name = $plugin->getName();
-					$entity->active = true;
-					$entity->save();
+					$plugin = Eresus_Entity_Plugin::loadFromFile($filename);
+					$plugin->active = true;
+					$plugin->save();
 				}
 				else
 				{
@@ -158,8 +155,8 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 				$filename = $fileInfo->getPathname() . '/plugin.xml';
 				if (file_exists($filename))
 				{
-					$info = Eresus_Plugin::loadFromFile($filename);
-					$plugins[$info->getUID()] = $info;
+					$plugin = Eresus_Entity_Plugin::loadFromFile($filename);
+					$plugins[$plugin->uid] = $plugin;
 				}
 			}
 		}
@@ -199,8 +196,7 @@ class Eresus_Admin_Controller_PluginInstaller extends Eresus_Admin_Controller
 	 */
 	private function filterInstalled(array $existed, array $installed)
 	{
-		// FIXME TODO
-		return $existed;
+		return array_diff_key($existed, $installed);
 	}
 	//-----------------------------------------------------------------------------
 }
