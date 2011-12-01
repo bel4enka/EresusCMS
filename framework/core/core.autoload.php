@@ -33,17 +33,6 @@
 
 return array(
 
-	/* Console */
-
-	/* DB */
-	'DB' => 'DB/DB.php',
-	'DBSettings' => 'DB/DB.php',
-	'DBRuntimeException' => 'DB/DB.php',
-	'DBQueryException' => 'DB/DBQueryException.php',
-
-	/* File */
-	'WindowsFS' => 'File/FS/WindowsFS.php',
-
 	/* Misc */
 	'Registry' => 'Misc/Registry.php',
 
