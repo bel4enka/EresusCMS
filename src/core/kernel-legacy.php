@@ -174,15 +174,13 @@ function InfoBox($text, $caption = null)
 
 function ErrorMessage($message)
 {
-	global $Eresus;
-	$Eresus->session['msg']['errors'][] = $message;
+	$GLOBALS['Eresus']->session['msg']['errors'][] = $message;
 }
 //------------------------------------------------------------------------------
 
 function InfoMessage($message)
 {
-	global $Eresus;
-	$Eresus->session['msg']['information'][] = $message;
+	$GLOBALS['Eresus']->session['msg']['information'][] = $message;
 }
 //------------------------------------------------------------------------------
 
@@ -195,9 +193,9 @@ function UserRights($level)
 
 	return (
 		(
-			($Eresus->user['auth']) &&
-			($Eresus->user['access'] <= $level) &&
-			($Eresus->user['access'] != 0)
+			($Eresus->user) &&
+			($Eresus->user->access <= $level) &&
+			($Eresus->user->access != 0)
 		) ||
 		($level == GUEST)
 	);
@@ -1369,7 +1367,7 @@ class Eresus
 	 */
 	function check_cookies()
 	{
-		if (!$this->user['auth'] && isset($_COOKIE['eresus_login']))
+		if (!$this->user && isset($_COOKIE['eresus_login']))
 		{
 			if (!$this->login($_COOKIE['eresus_login'], $_COOKIE['eresus_key'], true, true))
 			{
@@ -1384,25 +1382,21 @@ class Eresus
 	 */
 	function reset_login()
 	{
-		$this->user['auth'] = isset($this->user['auth']) ? $this->user['auth'] : false;
-		if ($this->user['auth'])
+		if ($this->user)
 		{
-			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
-			if (!is_null($item))
+			$item = Doctrine_Core::getTable('Eresus_Entity_User')->find($this->user->id);
+			if ($item)
 			{
 				# Если такой пользователь есть...
-				if ($item['active'])
+				if ($item->active)
 				{
 					# Если учетная запись активна...
-					$this->user['name'] = $item['name'];
-					$this->user['mail'] = $item['mail'];
-					$this->user['access'] = $item['access'];
-					$this->user['profile'] = decodeOptions($item['profile']);
+					$this->user = $item;
 				}
 				else
 				{
 					ErrorMessage(sprintf(i18n('Неверное имя пользователя или пароль', __CLASS__),
-						$item['login']));
+						$item->login));
 					$this->logout();
 				}
 			}
@@ -1413,7 +1407,7 @@ class Eresus
 		}
 		else
 		{
-			$this->user['access'] = GUEST;
+			$this->user->access = GUEST;
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1514,19 +1508,15 @@ class Eresus
 			return false;
 		}
 
-		$user = Doctrine_Core::getTable('Eresus_Entity_User')->findBy('login', $login);
-		var_dump($user); die;
-		if (!is_null($item))
+		$user = Doctrine_Core::getTable('Eresus_Entity_User')->findOneBy('username', $login);
+		if ($user !== false)
 		{
-			// Если такой пользователь есть...
-			if ($item['active'])
+			if ($user->active)
 			{
-				// Если учетная запись активна...
-				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
+				if (time() - $user->lastLoginTime > $user->loginErrors)
 				{
-					if ($key == $item['hash'])
+					if ($key == $user->password)
 					{
-						// Если пароль верен...
 						if ($auto)
 						{
 							$this->set_login_cookies($login, $key);
@@ -1536,18 +1526,14 @@ class Eresus
 							$this->clear_login_cookies();
 						}
 						$setVisitTime = (! isset($this->uset['id'])) || (! (bool) $this->user['id']);
-						$this->user = $item;
-						$this->user['profile'] = decodeOptions($this->user['profile']);
-						$this->user['auth'] = true; # Устанавливаем флаг авторизации
-						// Хэш пароля используется для подтверждения аутентификации
-						$this->user['hash'] = $item['hash'];
+						$this->user = $user;
 						if ($setVisitTime)
 						{
-							$item['lastVisit'] = gettime(); # Записываем время последнего входа
+							$user->lastVisit = date('Y-m-d H:i:s');
 						}
-						$item['lastLoginTime'] = time();
-						$item['loginErrors'] = 0;
-						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+						$user->lastLoginTime = time();
+						$user->loginErrors = 0;
+						$user->save();
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
@@ -1557,9 +1543,9 @@ class Eresus
 						if (!$cookie)
 						{
 							ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
-							$item['lastLoginTime'] = time();
-							$item['loginErrors']++;
-							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+							$user->lastLoginTime = time();
+							$user->loginErrors++;
+							$user->save();
 						}
 					}
 				}
@@ -1568,9 +1554,9 @@ class Eresus
 					// Если авторизация проведена слишком рано
 					ErrorMessage(sprintf(
 						i18n('Перед попыткой повторного логина должно пройти не менее %s секунд!', __CLASS__),
-						$item['loginErrors']));
-					$item['lastLoginTime'] = time();
-					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+						$user->loginErrors));
+						$user->lastLoginTime = time();
+						$user->save();
 				}
 			}
 			else
@@ -1593,9 +1579,7 @@ class Eresus
 	 */
 	public function logout($clearCookies=true)
 	{
-		$this->user['id'] = null;
-		$this->user['auth'] = false;
-		$this->user['access'] = GUEST;
+		$this->user = null;
 		if ($clearCookies)
 		{
 			$this->clear_login_cookies();
