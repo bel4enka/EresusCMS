@@ -30,32 +30,45 @@
  * $Id: Element_Test.php 1984 2011-11-23 10:07:10Z mk $
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once __DIR__ . '/Control/AllTests.php';
-require_once __DIR__ . '/DataProvider/AllTests.php';
-require_once __DIR__ . '/Item/AllTests.php';
-require_once __DIR__ . '/URL/AllTests.php';
-
-require_once __DIR__ . '/Control_Test.php';
+require_once __DIR__ . '/../../../../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/Item/Interface.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/Item/Object.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_UI_List_AllTests
+class Eresus_UI_List_Item_Object_Test extends PHPUnit_Framework_TestCase
 {
-	public static function suite()
+	/**
+	 * @covers Eresus_UI_List_Item_Object::__construct
+	 * @expectedException InvalidArgumentException
+	 */
+	public function test_construct_notObject()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/UI/List');
-
-		$suite->addTest(Eresus_UI_List_Control_AllTests::suite());
-		$suite->addTest(Eresus_UI_List_DataProvider_AllTests::suite());
-		$suite->addTest(Eresus_UI_List_Item_AllTests::suite());
-		$suite->addTest(Eresus_UI_List_URL_AllTests::suite());
-
-		$suite->addTestSuite('Eresus_UI_List_Control_Test');
-
-		return $suite;
+		$item = new Eresus_UI_List_Item_Object(null);
 	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @covers Eresus_UI_List_Item_Object::__construct
+	 * @covers Eresus_UI_List_Item_Object::getId
+	 * @covers Eresus_UI_List_Item_Object::isEnabled
+	 * @covers Eresus_UI_List_Item_Object::__get
+	 */
+	public function test_overall()
+	{
+		$obj = new stdClass();
+		$obj->foo = 'bar';
+		$obj->uid = 123;
+		$obj->active = true;
+
+		$item = new Eresus_UI_List_Item_Object($obj, array('id' => 'uid', 'enabled' => 'active'));
+
+		$this->assertEquals(123, $item->getId());
+		$this->assertTrue($item->isEnabled());
+		$this->assertEquals('bar', $item->foo);
+	}
+	//-----------------------------------------------------------------------------
 }
