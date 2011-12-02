@@ -142,59 +142,6 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Инициализирует обработчики ошибок
-	 *
-	 * Этот метод:
-	 * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
-	 * 2. отключает HTML-оформление стандартных сообщенй об ошибках;
-	 * 3. регистрирует {@link errorHandler()};
-	 * 4. регистрирует {@link fatalErrorHandler()}.
-	 *
-	 * @return void
-	 *
-	 * @since 2.17
-	 * @uses Eresus_Logger::log()
-	 */
-	static private function initExceptionHandling()
-	{
-		/* Резервируем буфер на случай переполнения памяти */
-		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
-			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
-
-		/* Меняем значения php.ini */
-		ini_set('html_errors', 0); // Немного косметики
-
-		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
-		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
-
-		//set_exception_handler('Eresus_Kernel::handleException');
-		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
-
-		/*
-		 * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
-		 * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
-		 * Но только не в режиме CLI.
-		 */
-		// @codeCoverageIgnoreStart
-		if (! self::isCLI())
-		{
-			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
-			{
-				//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-			}
-			else
-			{
-				/*Eresus_Logger::log(
-					LOG_NOTICE, __METHOD__,
-					'Fatal error handler not instaled! Fatal error will be not handled!'
-				);*/
-			}
-		}
-		// @codeCoverageIgnoreEnd
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Обработчик ошибок
 	 *
 	 * Обработчик ошибок, устанавливаемый через {@link set_error_handler() set_error_handler()} в
@@ -254,7 +201,7 @@ class Eresus_Kernel
 				$errfile,
 				$errline
 			);
-			//Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
+			Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
 		}
 
 		return true;
@@ -547,6 +494,59 @@ class Eresus_Kernel
 	public static function sc()
 	{
 		return self::$sc;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует обработчики ошибок
+	 *
+	 * Этот метод:
+	 * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
+	 * 2. отключает HTML-оформление стандартных сообщенй об ошибках;
+	 * 3. регистрирует {@link errorHandler()};
+	 * 4. регистрирует {@link fatalErrorHandler()}.
+	 *
+	 * @return void
+	 *
+	 * @since 2.17
+	 * @uses Eresus_Logger::log()
+	 */
+	static private function initExceptionHandling()
+	{
+		/* Резервируем буфер на случай переполнения памяти */
+		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
+
+		/* Меняем значения php.ini */
+		ini_set('html_errors', 0); // Немного косметики
+
+		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
+		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+
+		//set_exception_handler('Eresus_Kernel::handleException');
+		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+
+		/*
+		 * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
+		 * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
+		 * Но только не в режиме CLI.
+		 */
+		// @codeCoverageIgnoreStart
+		if (! self::isCLI())
+		{
+			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
+			{
+				//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+			}
+			else
+			{
+				/*Eresus_Logger::log(
+					LOG_NOTICE, __METHOD__,
+					'Fatal error handler not instaled! Fatal error will be not handled!'
+				);*/
+			}
+		}
+		// @codeCoverageIgnoreEnd
 	}
 	//-----------------------------------------------------------------------------
 }

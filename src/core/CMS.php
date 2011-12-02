@@ -122,16 +122,20 @@ class Eresus_CMS extends Eresus_Application
 	 * Выводит сообщение о фатальной ошибке и прекращает работу приложения
 	 *
 	 * @param Exception|string $error  исключение или описание ошибки
-	 * @param bool             $exit   завершить или нет выполнение приложения
+	 *
+	 * @throws Eresus_ExitException  всегда вбрасывает исключение для завершения приложения
 	 *
 	 * @return void
 	 *
 	 * @since 2.16
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
-	public function fatalError($error = null, $exit = true)
+	public function fatalError($error = null)
 	{
 		include dirname(__FILE__) . '/fatal.html.php';
-		die;
+
+		throw new Eresus_ExitException;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -147,8 +151,12 @@ class Eresus_CMS extends Eresus_Application
 		/* Проверяем наличие нужных файлов */
 		$required = array('cfg/main.php');
 		foreach ($required as $filename)
+		{
 			if (!file_exists($filename))
+			{
 				$errors []= array('file' => $filename, 'problem' => 'missing');
+			}
+		}
 
 		/* Проверяем доступность для записи */
 		$writable = array(
@@ -159,19 +167,16 @@ class Eresus_CMS extends Eresus_Application
 			'style'
 		);
 		foreach ($writable as $filename)
+		{
 			if (!is_writable($filename))
+			{
 				$errors []= array('file' => $filename, 'problem' => 'non-writable');
+			}
+		}
 
 		if ($errors)
 		{
-			if (!Eresus_Kernel::isCLI())
-			{
-				require_once 'errors.html.php';
-			}
-			else
-			{
-				die("Errors...\n"); // TODO Доделать
-			}
+			require_once 'errors.html.php';
 		}
 	}
 	//-----------------------------------------------------------------------------

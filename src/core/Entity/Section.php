@@ -61,6 +61,8 @@ class Eresus_Entity_Section extends Eresus_DB_Record
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
 	 *
 	 * @since 2.17
+	 *
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
 	 */
 	public function setTableDefinition()
 	{

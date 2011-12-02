@@ -104,6 +104,8 @@ abstract class Eresus_Application
 	 * Читает настройки
 	 *
 	 * @throws DomainException  если файл настроек содержит ошибки
+	 *
+	 * @SuppressWarnings(PHPMD.EvalExpression)
 	 */
 	protected function initConf()
 	{

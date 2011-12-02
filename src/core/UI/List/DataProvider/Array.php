@@ -66,6 +66,8 @@ class Eresus_UI_List_DataProvider_Array implements Eresus_UI_List_DataProvider_I
 	/**
 	 * @see Eresus_UI_List_DataProvider_Interface::getItems
 	 * @since 2.17
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function getItems($limit = null, $offset = 0)
 	{

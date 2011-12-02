@@ -164,6 +164,7 @@ class Eresus_Console extends Eresus_Application
 
 	/**
 	 * @see Eresus_Application::initPlugins()
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	protected function initPlugins()
 	{
