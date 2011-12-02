@@ -33,6 +33,9 @@
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
 require_once __DIR__ . '/Control/AllTests.php';
+require_once __DIR__ . '/DataProvider/AllTests.php';
+
+require_once __DIR__ . '/Control_Test.php';
 
 /**
  * @package Eresus
@@ -45,6 +48,9 @@ class Eresus_UI_List_AllTests
 		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/UI/List');
 
 		$suite->addTest(Eresus_UI_List_Control_AllTests::suite());
+		$suite->addTest(Eresus_UI_List_DataProvider_AllTests::suite());
+
+		$suite->addTestSuite('Eresus_UI_List_Control_Test');
 
 		return $suite;
 	}

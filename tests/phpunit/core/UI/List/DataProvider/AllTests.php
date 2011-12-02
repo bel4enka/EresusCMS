@@ -32,29 +32,19 @@
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once __DIR__ . '/Config_Test.php';
-require_once __DIR__ . '/Delete_Test.php';
-require_once __DIR__ . '/Down_Test.php';
-require_once __DIR__ . '/Edit_Test.php';
-require_once __DIR__ . '/Toggle_Test.php';
-require_once __DIR__ . '/Up_Test.php';
+require_once __DIR__ . '/Array_Test.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_UI_List_Control_AllTests
+class Eresus_UI_List_DataProvider_AllTests
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/UI/List/Control');
+		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/UI/List/DataProvider');
 
-		$suite->addTestSuite('Eresus_UI_List_Control_Config_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Delete_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Down_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Edit_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Toggle_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Up_Test');
+		$suite->addTestSuite('Eresus_UI_List_DataProvider_Array_Test');
 
 		return $suite;
 	}

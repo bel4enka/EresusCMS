@@ -30,32 +30,29 @@
  * $Id: Element_Test.php 1984 2011-11-23 10:07:10Z mk $
  */
 
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
-require_once __DIR__ . '/Config_Test.php';
-require_once __DIR__ . '/Delete_Test.php';
-require_once __DIR__ . '/Down_Test.php';
-require_once __DIR__ . '/Edit_Test.php';
-require_once __DIR__ . '/Toggle_Test.php';
-require_once __DIR__ . '/Up_Test.php';
+require_once __DIR__ . '/../../../../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/Item/Interface.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/Item/Object.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/DataProvider/Array.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_UI_List_Control_AllTests
+class Eresus_UI_List_DataProvider_Array_Test extends PHPUnit_Framework_TestCase
 {
-	public static function suite()
+	/**
+	 * @covers Eresus_UI_List_DataProvider_Array::__construct
+	 * @covers Eresus_UI_List_DataProvider_Array::getItems
+	 * @covers Eresus_UI_List_DataProvider_Array::getCount
+	 */
+	public function test_overall()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('All/Eresus/UI/List/Control');
-
-		$suite->addTestSuite('Eresus_UI_List_Control_Config_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Delete_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Down_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Edit_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Toggle_Test');
-		$suite->addTestSuite('Eresus_UI_List_Control_Up_Test');
-
-		return $suite;
+		$provider = new Eresus_UI_List_DataProvider_Array(array(new stdClass(), new stdClass()));
+		$this->assertEquals(2, $provider->getCount());
+		$items = $provider->getItems();
+		$this->assertInstanceOf('Eresus_UI_List_Item_Interface', $items[0]);
 	}
+	//-----------------------------------------------------------------------------
 }

@@ -49,7 +49,7 @@ class Eresus_UI_AllTests
 
 		$suite->addTestSuite('Eresus_UI_List_Test');
 
-		$suite->addTest(      Eresus_UI_List_Control_AllTests::suite());
+		$suite->addTest(      Eresus_UI_List_AllTests::suite());
 
 		return $suite;
 	}
