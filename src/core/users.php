@@ -41,7 +41,11 @@ class TUsers extends Accounts
 {
 	private $accounts;
 
-	public $access = ADMIN;
+	/**
+	 * Уровень доступа к модулю
+	 * @var int
+	 */
+	private $access = ADMIN;
 
 	private $itemsPerPage = 30;
 
@@ -301,64 +305,85 @@ class TUsers extends Accounts
 		$result = '';
 		$granted = false;
 		if (UserRights($this->access))
+		{
 			$granted = true;
-			else
+		}
+		else
 		{
 			if (arg('id') == $Eresus->user['id']) {
 				if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
 				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
 			}
 		}
-		if ($granted)
+
+		if (!$granted)
 		{
-			if (arg('update')) $this->update(null);
-			elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
-			elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
-			elseif (isset($Eresus->request['arg']['delete'])) $this->delete(null);
-			elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
-			elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
-				case 'create': $result = $this->create(); break;
-				case 'insert': $this->insert(); break;
-			} else {
-				$table = array (
-					'name' => 'users',
-					'key'=>'id',
-					'itemsPerPage' => 20,
-					'columns' => array(
-						array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
-						array('name' => 'name', 'caption' => i18n('Имя', __CLASS__), 'align' => 'left'),
-						array('name' => 'access', 'caption' => i18n('Дост.', __CLASS__), 'align' => 'center',
-							'width' => '70px', 'replace' => array (
-								'1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
-								'2' => '<span style="font-weight: bold; color: red;">admin</span>',
-								'3' => '<span style="font-weight: bold; color: blue;">editor</span>',
-								'4' => 'user'
-							)),
-						array('name' => 'login', 'caption' => i18n('Логин', __CLASS__), 'align' => 'left'),
-						array('name' => 'mail', 'caption' => i18n('e-mail', __CLASS__), 'align' => 'center',
-							'macros'=>true, 'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
-						array('name' => 'lastVisit', 'caption' => i18n('Последний визит', __CLASS__),
-							'align' => 'center', 'width' => '140px'),
-						array('name' => 'loginErrors', 'caption' => i18n('Ошиб.', __CLASS__),
-							'align' => 'center', 'replace' => array ('0' => '')),
-					),
-					'controls' => array (
-						'delete' => 'check_for_root',
-						'edit' => 'check_for_edit',
-						'toggle' => 'check_for_root',
-					),
-					'tabs' => array(
-						'width'=>'180px',
-						'items'=>array(
-						 array('caption' => i18n('Создать пользователя', __CLASS__), 'name' => 'action',
-						 	'value' => 'create')
-						)
-					)
-				);
-				$result = $page->renderTable($table);
-			}
-			return $result;
+			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
+			return '';
 		}
+
+		if (arg('update')) $this->update(null);
+		elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
+		elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
+		elseif (isset($Eresus->request['arg']['delete'])) $this->delete(null);
+		elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
+		elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
+			case 'create': $result = $this->create(); break;
+			case 'insert': $this->insert(); break;
+		}
+		else
+		{
+			$result = $this->listAction();
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отрисовывает список пользователей
+	 *
+	 * @return string  HTML
+	 *
+	 * @since 2.17
+	 */
+	private function listAction()
+	{
+		$table = array (
+						'name' => 'users',
+						'key'=>'id',
+						'itemsPerPage' => 20,
+						'columns' => array(
+		array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
+		array('name' => 'name', 'caption' => i18n('Имя', __CLASS__), 'align' => 'left'),
+		array('name' => 'access', 'caption' => i18n('Дост.', __CLASS__), 'align' => 'center',
+								'width' => '70px', 'replace' => array (
+									'1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
+									'2' => '<span style="font-weight: bold; color: red;">admin</span>',
+									'3' => '<span style="font-weight: bold; color: blue;">editor</span>',
+									'4' => 'user'
+		)),
+		array('name' => 'login', 'caption' => i18n('Логин', __CLASS__), 'align' => 'left'),
+		array('name' => 'mail', 'caption' => i18n('e-mail', __CLASS__), 'align' => 'center',
+								'macros'=>true, 'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
+		array('name' => 'lastVisit', 'caption' => i18n('Последний визит', __CLASS__),
+								'align' => 'center', 'width' => '140px'),
+		array('name' => 'loginErrors', 'caption' => i18n('Ошиб.', __CLASS__),
+								'align' => 'center', 'replace' => array ('0' => '')),
+		),
+						'controls' => array (
+							'delete' => 'check_for_root',
+							'edit' => 'check_for_edit',
+							'toggle' => 'check_for_root',
+		),
+						'tabs' => array(
+							'width'=>'180px',
+							'items'=>array(
+		array('caption' => i18n('Создать пользователя', __CLASS__), 'name' => 'action',
+							 	'value' => 'create')
+		)
+		)
+		);
+		$result = $page->renderTable($table);
 	}
 	//-----------------------------------------------------------------------------
 }
