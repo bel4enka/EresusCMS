@@ -30,8 +30,8 @@
 		<exclude name="**/*.src" />
 	</fileset>
 
-	<!-- 3rd party: libbotobor -->
-	<fileset dir="3rdparty/libbotobor/src" id="files.3rd.libbotobor">
+	<!-- 3rd party: botobor -->
+	<fileset dir="3rdparty/botobor/src" id="files.3rd.botobor">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
@@ -198,8 +198,8 @@
 		</copy>
 
 		<!-- Ботобор -->
-		<copy todir="${build.dir}/core/libbotobor">
-			<fileset refid="files.3rd.libbotobor" />
+		<copy todir="${build.dir}/core/botobor">
+			<fileset refid="files.3rd.botobor" />
 		</copy>
 
 		<!-- jQuery -->
