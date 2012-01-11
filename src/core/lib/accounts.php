@@ -128,21 +128,18 @@ class EresusAccounts {
 		return	$result;
 	}
 	//------------------------------------------------------------------------------
-	/**
-	*	Удаляет	учётную	запись
-	*
-	*	@access	public
-	*
-	*	@param	int	$id	Идентификатор	записи
-	*
-	*	@return	bool	Результат	операции
-	*/
-	function	delete($id)
-	{
-		global	$Eresus;
 
-		$result	=	$Eresus->db->delete($this->table,	"`id`=$id");
-		return	$result;
+	/**
+	 * Удаляет учётную запись
+	 *
+	 * @param int $id  Идентификатор записи
+	 *
+	 * @return	void
+	 */
+	public function delete($id)
+	{
+		$user = Doctrine_Core::getTable('Eresus_Entity_User')->find($id);
+		$user->delete();
 	}
 	//------------------------------------------------------------------------------
 }

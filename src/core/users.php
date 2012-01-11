@@ -58,7 +58,7 @@ class TUsers
 	*/
 	function __construct()
 	{
-		$this->accounts = new Accounts();
+		$this->accounts = new EresusAccounts();
 	}
 	//-----------------------------------------------------------------------------
 	function checkMail($mail)
@@ -167,17 +167,6 @@ class TUsers
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-	/**
-	 */
-	function delete($dummy)
-	{
-		global $Eresus, $page;
-
-		$item = $this->accounts->get(arg('delete', 'int'));
-		$this->accounts->delete(arg('delete', 'int'));
-		HTTP::redirect($page->url());
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function password()
 	{
 		global $Eresus, $page;
@@ -320,18 +309,26 @@ class TUsers
 			return '';
 		}
 
-		if (arg('update')) $this->update(null);
-		elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
-		elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
-		elseif (isset($Eresus->request['arg']['delete'])) $this->delete(null);
-		elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
-		elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
-			case 'create': $result = $this->create(); break;
-			case 'insert': $this->insert(); break;
-		}
-		else
+		switch (arg('action'))
 		{
-			$result = $this->listAction();
+			case 'delete':
+				$this->delete(arg('id', 'int'));
+				break;
+
+			default:
+				if (arg('update')) $this->update(null);
+				elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
+				elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
+				elseif (isset($Eresus->request['arg']['delete'])) ;
+				elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
+				elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
+					case 'create': $result = $this->create(); break;
+					case 'insert': $this->insert(); break;
+				}
+				else
+				{
+					$result = $this->listAction();
+				}
 		}
 		return $result;
 	}
@@ -353,13 +350,25 @@ class TUsers
 		$tmpl = Eresus_Template::fromFile('core/templates/accounts/list.html');
 		return $tmpl->compile(array('list' => $list));
 		/*
-		$table = array (
+			$table = array (
 						'itemsPerPage' => 20,
 						'controls' => array (
 							'delete' => 'check_for_root',
 							'edit' => 'check_for_edit',
 							'toggle' => 'check_for_root',
 		*/
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Удаляет пользователя
+	 *
+	 * @param int $id  идентификатор пользователя
+	 */
+	private function delete($id)
+	{
+		$this->accounts->delete($id);
+		HTTP::redirect($GLOBALS['page']->url());
 	}
 	//-----------------------------------------------------------------------------
 }
