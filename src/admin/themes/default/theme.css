@@ -111,6 +111,11 @@ label
 	white-space: nowrap;
 }
 
+label sup
+{
+	color: red;
+}
+
 sup
 {
 	font-size: 90%;
@@ -459,6 +464,17 @@ input[type=checkbox] + .dialog__label
 		white-space: nowrap;
 	}
 
+.table_type_lined-form
+{
+	border-collapse: collapse;
+}
+
+	.table_type_lined-form > tbody > tr > td
+	{
+		border-bottom: solid 1px #ddd;
+		padding: .1em .5em .2em;
+	}
+
 /**
  ** ОСНОВНЫЕ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
  **
@@ -624,6 +640,16 @@ body
 			color: black;
 		}
 
+
+/**
+ ** Диалог настроек
+ ** @section admin.modules.settings
+ **
+ *******************************************************/
+#settingsDialog
+{
+	max-width: 900px;
+}
 
 /**
  ** Менеджер плагинов

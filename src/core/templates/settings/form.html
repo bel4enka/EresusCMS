@@ -5,7 +5,7 @@
 		</div>
 		
 		<div class="block__contents">
-			<fc:tabwidget id="settingsFormTabs">
+			<fc:tabwidget id="settingsDialogTabs">
 	
 				<fc:tabcontrol>
 					<fc:tab name="main">Основные</fc:tab>
@@ -17,16 +17,18 @@
 				<fc:tabs>
 	
 					<fc:tab name="main">
-						<table class="ui-grid ui-hlines">
+						<table class="table_type_lined-form">
 							<tr>
 								<td>
-									<label for="settigs-siteName">Название сайта</label><br />
+									<label for="settings-siteName">Название сайта</label><br />
 									<input type="text" name="siteName" value="{$siteName|escape}" size="20"
-										id="settigs-siteName" tabindex="1" fc:required="Укажите название сайта" />
+										id="settings-siteName" tabindex="1" fc:required="Укажите название сайта" />
 								</td>
-								<td class="ui-minor">
-									Предназначено только для внутреннего использования, и не будет отображаться нигде,
-									кроме панели управления. Желательно чтобы название сайта было коротким.
+								<td>
+									<small>
+										Предназначено только для внутреннего использования, и не будет отображаться нигде,
+										кроме панели управления. Желательно чтобы название сайта было коротким.
+									</small>
 								</td>
 							</tr>
 							<tr>
@@ -34,10 +36,12 @@
 									<label>Заголовок сайта</label><br />
 									<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle|escape}</textarea>
 								</td>
-								<td class="ui-minor">
-									Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
-									текст подставлялся в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
-									<a href="admin.php?mod=themes">шаблоны страниц</a>.
+								<td>
+									<small>
+										Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
+										текст подставлялся в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
+										<a href="admin.php?mod=themes">шаблоны страниц</a>.
+									</small>
 								</td>
 							</tr>
 							<tr>
@@ -46,17 +50,21 @@
 										<input type="checkbox" name="siteTitleReverse" value="1"{if $siteTitleReverse} checked="checked"{/if} tabindex="3" />
 										Обратный порядок разделов в $(sectionTitle)
 									</label>
-									<div class="ui-minor">
-										<em>Пример:</em> <span id="settings-siteTitleReverse-example">
-											<span class="checked"{if !$siteTitleReverse} style="display: none;"{/if}>Главная - Категория - Товар</span>
-											<span class="unchecked"{if $siteTitleReverse} style="display: none;"{/if}>Товар - Категория - Главная</span>
-										</span>
+									<div>
+										<small>
+											<samp>Пример:</samp> <span id="settings-siteTitleReverse-example">
+												<span class="checked"{if !$siteTitleReverse} style="display: none;"{/if}>Главная - Категория - Товар</span>
+												<span class="unchecked"{if $siteTitleReverse} style="display: none;"{/if}>Товар - Категория - Главная</span>
+											</span>
+										</small>
 									</div>
 								</td>
-								<td class="ui-minor">
-									Макрос <b>$(sectionTitle)</b> заменяется на название открытой страницы и списка всех
-									родительских страниц. Этот переключатель определяет в каком порядке будут выводиться
-									их названия: от открытой страницы к корню (по умолчанию) или наоборот.
+								<td>
+									<small>
+										Макрос <b>$(sectionTitle)</b> заменяется на название открытой страницы и списка всех
+										родительских страниц. Этот переключатель определяет в каком порядке будут выводиться
+										их названия: от открытой страницы к корню (по умолчанию) или наоборот.
+									</small>
 								</td>
 							</tr>
 							<tr>
@@ -65,16 +73,18 @@
 									<div class="nowrap">
 										<input type="text" name="siteTitleDivider" value="{$siteTitleDivider|escape}"
 											size="4" tabindex="4" />
-										<span class="ui-minor">
-											<em>Пример:</em> <span id="settings-siteTitleDivider-example">
+										<small>
+											Пример: <span id="settings-siteTitleDivider-example">
 												Товар<span>{$siteTitleDivider}</span>Категория<span>{$siteTitleDivider}</span>Каталог
 											</span>
-										</span>
+										</small>
 									</div>
 								</td>
-								<td class="ui-minor">
-									Этот разделитель используется для объединения названий разделов в макросе
-									<b>$(sectionTitle)</b>.
+								<td>
+									<small>
+										Этот разделитель используется для объединения названий разделов в макросе
+										<b>$(sectionTitle)</b>.
+									</small>
 								</td>
 							</tr>
 							<tr>
@@ -82,10 +92,12 @@
 									<label>Ключевые слова</label><br />
 									<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords|escape}</textarea>
 								</td>
-								<td class="ui-minor">
-									Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
-									Чтобы эти слова подставлялись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
-									в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+								<td>
+									<small>
+										Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
+										Чтобы эти слова подставлялись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
+										в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+									</small>
 								</td>
 							</tr>
 							<tr>
@@ -93,10 +105,12 @@
 									<label>Описание</label><br />
 									<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription|escape}</textarea>
 								</td>
-								<td class="ui-minor">
-									Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
-									Чтобы этот текст подставлялся в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
-									в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+								<td>
+									<small>
+										Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
+										Чтобы этот текст подставлялся в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
+										в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+									</small>
 								</td>
 							</tr>
 						</table>
@@ -109,19 +123,19 @@
 								<tr>
 									<td>
 										<label for="settings-mailFromAddr">Адрес отправителя</label><br />
-										<input type="text" name="mailFromAddr" value="{$mailFromAddr|escape}" size="20"
+										<input type="text" name="mailFromAddr" value="{$mailFromAddr|escape}" size="25"
 											id="settings-mailFromAddr" tabindex="2" />
-										<div class="ui-minor nowrap">Пример: <em>robot@example.org</em></div>
+										<div class="nowrap"><small>Пример: <samp>robot@example.org</samp></small></div>
 									</td>
 									<td>
 										<label>Имя отправителя</label><br />
-										<input type="text" name="mailFromName" value="{$mailFromName|escape}" size="20" tabindex="3" />
-										<div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
+										<input type="text" name="mailFromName" value="{$mailFromName|escape}" size="25" tabindex="3" />
+										<div class="nowrap"><small>Пример: <samp>Администрация</samp></small></div>
 									</td>
 									<td style="width: 80%">
 										<label>Организация</label><br />
-										<input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="20" tabindex="4" />
-										<div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
+										<input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="25" tabindex="4" />
+										<div class="nowrap"><small>Пример: <samp>Рога и копыта</samp></small></div>
 									</td>
 								</tr>
 								<tr>
@@ -129,9 +143,9 @@
 										<label>Обратный адрес</label><br />
 										<input type="text" name="mailReplyTo" value="{$mailReplyTo|escape}" size="20" tabindex="5" />
 									</td>
-									<td class="ui-minor" colspan="2">
+									<td colspan="2">
 										<br/>
-										Вы можете указать адрес для ответа, отличный от адреса отправителя.
+										<small>Вы можете указать адрес для ответа, отличный от адреса отправителя.</small>
 									</td>
 								</tr>
 								<tr>
@@ -169,14 +183,14 @@
 								<td>
 									<label>Тип раздела по умолчанию</label><br />
 									<select name="contentTypeDefault">
-										{foreach $contentTypes item}
-										<option value="{$item.name}"{if $contentTypeDefault == $item.name} selected="selected"{/if}>{$item.caption}</option>
+										{foreach $contentTypes uid item}
+										<option value="{$uid}"{if $contentTypeDefault == $uid} selected="selected"{/if}>{$item.title}</option>
 										{/foreach}
 									</select>
 								</td>
-								<td class="ui-minor">
+								<td>
 									<br />
-									Будет использован для вновь создаваемых разделов.
+									<small>Будет использован для вновь создаваемых разделов.</small>
 								</td>
 							</tr>
 							<tr>
@@ -188,9 +202,9 @@
 										{/foreach}
 									</select>
 								</td>
-								<td class="ui-minor">
+								<td>
 									<br />
-									Будет использован для вновь создаваемых разделов.
+									<small>Будет использован для вновь создаваемых разделов.</small>
 								</td>
 							</tr>
 						</table>
@@ -213,37 +227,37 @@
 	<script type="text/javascript">//<![CDATA[
 		$(document).ready(function () {
 
-			$("#settingsForm input[name=siteTitleReverse]").click(function (){
+			$("#settingsDialog input[name=siteTitleReverse]").click(function (){
 				var root = $("#settings-siteTitleReverse-example");
 				$("span", root).hide();
 				$("." + (this.checked ? "checked" : "unchecked"), root).show();
 			});
 
-			$("#settingsForm input[name=siteTitleDivider]").keyup(function (){
+			$("#settingsDialog input[name=siteTitleDivider]").keyup(function (){
 				$("#settings-siteTitleDivider-example span").text(this.value);
 			});
 
-			$("#settingsForm textarea[name=siteDescription]").keydown(function (event){
+			$("#settingsDialog textarea[name=siteDescription]").keydown(function (event){
 				if (event.keyCode == 9)
 				{
-					$("#settingsFormTabs").tabs("select", 1);
-					setTimeout(function()\{$("#settingsForm input[name=mailFromAddr]").focus();}, 10);
+					$("#settingsDialogTabs").tabs("select", 1);
+					setTimeout(function()\{$("#settingsDialog input[name=mailFromAddr]").focus();}, 10);
 				}
 			});
 
-			$("#settingsForm textarea[name=mailFromSign]").keydown(function (event){
+			$("#settingsDialog textarea[name=mailFromSign]").keydown(function (event){
 				if (event.keyCode == 9)
 				{
-					$("#settingsFormTabs").tabs("select", 2);
-					setTimeout(function()\{$("#settingsForm input[name=filesModeSetOnUpload]").focus();}, 10);
+					$("#settingsDialogTabs").tabs("select", 2);
+					setTimeout(function()\{$("#settingsDialog input[name=filesModeSetOnUpload]").focus();}, 10);
 				}
 			});
 
-			$("#settingsForm input[name=filesModeDefault]").keydown(function (event){
+			$("#settingsDialog input[name=filesModeDefault]").keydown(function (event){
 				if (event.keyCode == 9)
 				{
-					$("#settingsFormTabs").tabs("select", 3);
-					setTimeout(function()\{$("#settingsForm select[name=contentTypeDefault]").focus();}, 10);
+					$("#settingsDialogTabs").tabs("select", 3);
+					setTimeout(function()\{$("#settingsDialog select[name=contentTypeDefault]").focus();}, 10);
 				}
 			});
 

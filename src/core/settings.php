@@ -135,8 +135,7 @@ class TSettings
 	{
 		global $Eresus, $page;
 
-		$template = $page->getUITheme()->getResource('SiteSettings/form.html');
-		$form = new EresusForm($template);
+		$form = new EresusForm('core/templates/settings/form.html');
 		/* Основные */
 		$form->setValue('siteName', option('siteName'));
 		$form->setValue('siteTitle', option('siteTitle'));
@@ -156,21 +155,7 @@ class TSettings
 		$form->setValue('filesTranslitNames', option('filesTranslitNames'));
 
 		/* Создаем список типов контента */
-		$contentTypes = array(
-			array('name' => 'default','caption' => i18n('По умолчанию', __CLASS__)),
-			array('name' => 'list','caption' => i18n('Список подразделов', __CLASS__)),
-			array('name' => 'url','caption' => i18n('URL', __CLASS__))
-		);
-
-		foreach ($Eresus->plugins->items as $plugin)
-		{
-			if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
-			{
-				$contentTypes []= array('name' => $plugin->name, 'caption' => $plugin->title);
-			}
-		}
-
-		$form->setValue('contentTypes', $contentTypes);
+		$form->setValue('contentTypes', Eresus_Kernel::sc()->plugins->getContentTypes());
 		$form->setValue('contentTypeDefault', option('contentTypeDefault'));
 
 		/* Загружаем список шаблонов */
