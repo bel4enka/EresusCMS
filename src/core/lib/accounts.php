@@ -56,29 +56,47 @@ class EresusAccounts {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Возвращает учётную запись или список записей
-	*
-	* @access public
-	*
-	* @param int    $id  ID пользователя
-	*	или
-	*	@param array  $id  Список идентификаторов
-	*	или
-	*	@param string $id  SQL-условие
-	*
-	* @return array
-	*/
-	function	get($id)
+	/**
+	 * Возвращает учётную запись или список записей
+	 *
+	 * @access public
+	 *
+	 * @param int    $id  ID пользователя
+	 * или
+	 * @param array  $id  Список идентификаторов
+	 * или
+	 * @param string $id  SQL-условие
+	 *
+	 * @return array
+	 */
+	public function get($id)
 	{
-		global	$Eresus;
+		global $Eresus;
 
-		if	(is_array($id))	$what	=	"FIND_IN_SET(`id`,	'".implode(',',	$id)."')";
-		elseif	(is_numeric($id))	$what	=	"`id`=$id";
-		else	$what	=	$id;
-		$result	=	$Eresus->db->select($this->table,	$what);
-		if	($result)	for($i=0;	$i<count($result);	$i++)	$result[$i]['profile']	=	decodeOptions($result[$i]['profile']);
-		if	(is_numeric($id)	&&	$result	&&	count($result))	$result	=	$result[0];
+		if (is_array($id))
+		{
+			$what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
+		}
+		elseif (is_numeric($id))
+		{
+			$what = "`id`=$id";
+		}
+		else
+		{
+			$what = $id;
+		}
+		$result = $Eresus->db->select($this->table, $what);
+		if ($result)
+		{
+			for ($i=0; $i<count($result); $i++)
+			{
+				$result[$i]['profile'] = decodeOptions($result[$i]['profile']);
+			}
+		}
+		if (is_numeric($id) && $result && count($result))
+		{
+			$result = $result[0];
+		}
 		return	$result;
 	}
 	//------------------------------------------------------------------------------
