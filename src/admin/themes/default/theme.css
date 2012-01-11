@@ -464,6 +464,15 @@ input[type=checkbox] + .dialog__label
 		white-space: nowrap;
 	}
 
+/**
+ * Ячейка таблицы, содержащая число
+ */
+.cell_type_number
+{
+	padding-right: .1em;
+	text-align: right;
+}
+
 .table_type_lined-form
 {
 	border-collapse: collapse;
