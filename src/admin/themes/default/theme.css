@@ -617,7 +617,6 @@ body
 	.nav-main-item_state_current
 	{
 		background: #dfe8f6;
-		border: 1px dotted #a3bae9;
 	}
 
 		.nav-main-item_state_current .nav-main-item__caption
@@ -682,3 +681,154 @@ body
 	{
 		margin: 1em;
 	}
+
+
+/**
+ ** Старые классы
+ **
+ ** TODO От них надо как-то избавиться, заменив на классы в стиле БЭМ
+ **************************************************************************/
+
+/**
+ * Applies float wrapping properties to parent elements
+ *
+ * См. следующие 4 правила. Порядок правил не изменять!
+ */
+.ui-helper-clearfix:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.ui-helper-clearfix
+{
+	display: inline-block;
+}
+
+/* required comment for clearfix to work in Opera \*/
+* html .ui-helper-clearfix
+{
+	height: 1%;
+}
+
+.ui-helper-clearfix 
+{
+	display: block;
+}
+/* end clearfix */
+
+/**
+ * Вкладки
+ */
+
+.ui-tabs
+{
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	background: white;
+	border: solid 1px #99bbe8;
+	border-radius: 3px;
+}
+
+.ui-tabs-nav.ui-widget-header
+{
+	background-color: #cedff5;
+	box-shadow:
+		0 5px 10px 0 rgba(255, 255, 255, 0.3) inset,
+		0 -10px 15px 0 rgba(0, 109, 239, 0.1) inset;
+	border-width: 0;
+	color: #ffffff;
+	font-size: 85%;
+}
+
+	/**
+	 * Переключатель вкладок 
+	 */
+	.ui-tabs .ui-tabs-nav
+	{
+		border-bottom: solid 1px #99BBE8;
+		list-style: none;
+		padding: .2em .2em 0;
+		position: relative;
+	}
+
+	.ui-tabs .ui-tabs-nav li
+	{
+    background-color: #deecfd;
+    border: 1px solid #99bbe8;
+		border-bottom-width: 0 !important;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+		box-shadow:
+			1px 1px 0 0 #FFFFFF inset,
+			0 5px 4px 0 #CCDEF6 inset;
+		float: left;
+		margin: 0 .2em -1px 0;
+		padding: 0;
+		position: relative;
+	}
+	
+		/**
+		 * Ссылка на кнопке вкладки
+		 */
+		.ui-tabs .ui-tabs-nav li a
+		{
+			color: #416aa3;
+			float: left;
+			text-decoration: none;
+			padding: 1px 7px;
+		}
+
+	/**
+	 * Нажатая кнопка вкладки
+	 */
+	.ui-tabs .ui-tabs-nav li.ui-tabs-selected
+	{
+		border-bottom-width: 0;
+		box-shadow:
+			1px 1px 0 0 #FFFFFF inset,
+			0 5px 4px 0 #FFFFFF inset;
+		padding-bottom: 1px;
+	}
+
+	/**
+	 * Кнопка вкладки под курсором мыши
+	 */
+	.ui-tabs .ui-tabs-nav li.ui-state-hover
+	{
+		background: #e8f4ff;
+	}
+		.ui-tabs .ui-tabs-nav li.ui-state-hover a
+		{
+			color: #15428b;
+		}
+
+	.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+	.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+	.ui-tabs .ui-tabs-nav li.ui-state-processing a
+	{
+		cursor: text;
+	}
+
+	/**
+	 * first selector in group seems obsolete, but required to overcome bug in Opera applying 
+	 * cursor: text overall if defined elsewhere... 
+	 */
+	.ui-tabs .ui-tabs-nav li a, 
+	.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a 
+	{ 
+		cursor: pointer; 
+	}
+
+/* Панель вкладки */
+.ui-tabs .ui-tabs-panel
+{
+	padding: .2em;
+	display: block;
+	border-width: 0;
+	background: none;
+}
+.ui-tabs .ui-tabs-hide { display: none !important; }
