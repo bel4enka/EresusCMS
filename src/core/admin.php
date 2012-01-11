@@ -960,7 +960,7 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
-		$Eresus->plugins->adminOnMenuRender();
+		//$Eresus->plugins->adminOnMenuRender();
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)
@@ -968,7 +968,7 @@ class TAdminUI extends WebPage
 			if (UserRights($this->extmenu[$section]['access']))
 			{
 				$menu .= '<div class="header">' . $this->extmenu[$section]['caption'] .
-					'</div><div class="content">';
+					'</div><div class="content"><ul class="nav-main">';
 				foreach ($this->extmenu[$section]['items'] as $item)
 				{
 					if (
@@ -982,12 +982,13 @@ class TAdminUI extends WebPage
 						{
 							$this->title = $item['caption'];
 						}
-						$menu .= '<div ' . ($item['link'] == arg('mod') ? 'class="selected"' : '') .
-							"><a href=\"" . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
-							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
+						$menu .= '<li class="nav-main-item' .
+							($item['link'] == arg('mod') ? ' nav-main-item_state_current' : '') .
+							'"><a href="' . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
+							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></li>\n";
 					}
 				}
-				$menu .= "</div>\n";
+				$menu .= "</ul></div>\n";
 			}
 		}
 
@@ -995,8 +996,9 @@ class TAdminUI extends WebPage
 		{
 			if (UserRights($this->menu[$section]['access']))
 			{
-				$menu .= '<div class="header">' . $this->menu[$section]['caption'] .
-					'</div><div class="content">';
+				$menu .=
+					'<div class="block__header">' . $this->menu[$section]['caption'] . '</div>' .
+					'<ul class="nav-main">';
 				foreach ($this->menu[$section]['items'] as $item)
 				{
 					if (
@@ -1010,12 +1012,13 @@ class TAdminUI extends WebPage
 						{
 							$this->title = $item['caption'];
 						}
-						$menu .= '<div '.($item['link'] == arg('mod') ?'class="selected"':'') .
-							"><a href=\"" . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
-							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
+						$menu .= '<li class="nav-main-item' .
+							($item['link'] == arg('mod') ? ' nav-main-item_state_current' : '') .
+							'"><a href="' . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
+							'" title="' .	$item['hint'] . '" class="nav-main-item__caption">' . $item['caption'] . "</a></li>\n";
 					}
 				}
-				$menu .= "</div>\n";
+				$menu .= "</ul>\n";
 			}
 		}
 
