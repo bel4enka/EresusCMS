@@ -33,14 +33,15 @@
 /**
  * Модель пользователя
  *
- * @property int	  $id             идентификатор
+ * @property int    $id             идентификатор
  * @property string $username       имя входа
  * @property string $password       при чтении возвразает хеш, при записи хеширует значение
- * @property int	  $active         признак активности учётной записи
+ * @property int    $active         признак активности учётной записи
  * @property string $lastVisit      время последнего удачного входа в систему
- * @property int	  $lastLoginTime  время последней попытки входа в систему
- * @property int	  $loginErrors    количество неудачных попыток входа
- * @property int	  $access         уровень доступа
+ * @property int    $lastLoginTime  время последней попытки входа в систему
+ * @property int    $loginErrors    количество неудачных попыток входа
+ * @property int    $access         уровень доступа
+ * @property string $accessStr      уровень доступа (строковое представление)
  * @property string $fullname       полное имя
  * @property string $mail           адрес e-mail
  * @property array  $profile        дополнительные данные профиля
@@ -145,6 +146,7 @@ class Eresus_Entity_User extends Eresus_DB_Record
 	{
 		$this->hasMutator('username', 'usernameMutator');
 		$this->hasMutator('password', 'passwordMutator');
+		$this->hasAccessor('accessStr', 'accessStrAccessor');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -208,6 +210,33 @@ class Eresus_Entity_User extends Eresus_DB_Record
 	public function isPasswordValid($password)
 	{
 		return $this->password == self::passwordHash($password);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Аксессор строкового значения уровня доступа
+	 *
+	 * @param int $value
+	 *
+	 * @return string
+	 *
+	 * @since 2.17
+	 */
+	public function accessStrAccessor($value)
+	{
+		static $map = array(
+			1 => 'Главный администратор',
+			2 => 'Администратор',
+			3 => 'Редактор',
+			4 => 'Пользователь'
+		);
+
+		if (isset($map[$value]))
+		{
+			return i18n($map[$value]);
+		}
+
+		return i18n('неизвестно');
 	}
 	//-----------------------------------------------------------------------------
 }
