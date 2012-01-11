@@ -42,28 +42,6 @@ class TPlgMgr
 	 */
 	private $access = ADMIN;
 
-	/**
-	 * Включает или отключает плагин
-	 *
-	 * @return void
-	 */
-	private function toggle()
-	{
-		global $page, $Eresus;
-
-		$q = DB::getHandler()->createUpdateQuery();
-		$e = $q->expr;
-		$q->update('plugins')
-			->set('active', $e->not('active'))
-			->where(
-				$e->eq('name', $q->bindValue(arg('toggle')))
-			);
-		DB::execute($q);
-
-		HttpResponse::redirect($page->url());
-	}
-	//-----------------------------------------------------------------------------
-
 	private function delete()
 	{
 	global $page, $Eresus;
