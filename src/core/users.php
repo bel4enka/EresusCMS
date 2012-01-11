@@ -37,7 +37,7 @@ useLib('accounts');
  *
  * @package Eresus
  */
-class TUsers extends Accounts
+class TUsers
 {
 	private $accounts;
 
@@ -168,8 +168,6 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * @param void $dummy  Используется для совместимости с родительтским методом
-	 * @see main/core/lib/EresusAccounts#delete($id)
 	 */
 	function delete($dummy)
 	{
@@ -348,42 +346,20 @@ class TUsers extends Accounts
 	 */
 	private function listAction()
 	{
+		$accounts = Doctrine_Core::getTable('Eresus_Entity_User')->findAll();
+		$provider = new Eresus_UI_List_DataProvider_Array($accounts->getData(),
+			array('enabled' => 'active'));
+		$list = new Eresus_UI_List($provider);
+		$tmpl = Eresus_Template::fromFile('core/templates/accounts/list.html');
+		return $tmpl->compile(array('list' => $list));
+		/*
 		$table = array (
-						'name' => 'users',
-						'key'=>'id',
 						'itemsPerPage' => 20,
-						'columns' => array(
-		array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
-		array('name' => 'name', 'caption' => i18n('Имя', __CLASS__), 'align' => 'left'),
-		array('name' => 'access', 'caption' => i18n('Дост.', __CLASS__), 'align' => 'center',
-								'width' => '70px', 'replace' => array (
-									'1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
-									'2' => '<span style="font-weight: bold; color: red;">admin</span>',
-									'3' => '<span style="font-weight: bold; color: blue;">editor</span>',
-									'4' => 'user'
-		)),
-		array('name' => 'login', 'caption' => i18n('Логин', __CLASS__), 'align' => 'left'),
-		array('name' => 'mail', 'caption' => i18n('e-mail', __CLASS__), 'align' => 'center',
-								'macros'=>true, 'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
-		array('name' => 'lastVisit', 'caption' => i18n('Последний визит', __CLASS__),
-								'align' => 'center', 'width' => '140px'),
-		array('name' => 'loginErrors', 'caption' => i18n('Ошиб.', __CLASS__),
-								'align' => 'center', 'replace' => array ('0' => '')),
-		),
 						'controls' => array (
 							'delete' => 'check_for_root',
 							'edit' => 'check_for_edit',
 							'toggle' => 'check_for_root',
-		),
-						'tabs' => array(
-							'width'=>'180px',
-							'items'=>array(
-		array('caption' => i18n('Создать пользователя', __CLASS__), 'name' => 'action',
-							 	'value' => 'create')
-		)
-		)
-		);
-		$result = $page->renderTable($table);
+		*/
 	}
 	//-----------------------------------------------------------------------------
 }
