@@ -1395,8 +1395,7 @@ class Eresus
 				}
 				else
 				{
-					ErrorMessage(sprintf(i18n('Неверное имя пользователя или пароль', __CLASS__),
-						$item->login));
+					ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
 					$this->logout();
 				}
 			}

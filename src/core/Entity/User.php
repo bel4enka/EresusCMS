@@ -33,18 +33,18 @@
 /**
  * Модель пользователя
  *
- * @property int    $id             идентификатор
- * @property string $username       имя входа
- * @property string $password       при чтении возвразает хеш, при записи хеширует значение
- * @property int    $active         признак активности учётной записи
- * @property string $lastVisit      время последнего удачного входа в систему
- * @property int    $lastLoginTime  время последней попытки входа в систему
- * @property int    $loginErrors    количество неудачных попыток входа
- * @property int    $access         уровень доступа
- * @property string $accessStr      уровень доступа (строковое представление)
- * @property string $fullname       полное имя
- * @property string $mail           адрес e-mail
- * @property array  $profile        дополнительные данные профиля
+ * @property int     $id             идентификатор
+ * @property string  $username       имя входа
+ * @property string  $password       при чтении возвразает хеш, при записи хеширует значение
+ * @property boolean $active         признак активности учётной записи
+ * @property string  $lastVisit      время последнего удачного входа в систему
+ * @property int     $lastLoginTime  время последней попытки входа в систему
+ * @property int     $loginErrors    количество неудачных попыток входа
+ * @property int     $access         уровень доступа
+ * @property string  $accessStr      уровень доступа (строковое представление)
+ * @property string  $fullname       полное имя
+ * @property string  $mail           адрес e-mail
+ * @property array   $profile        дополнительные данные профиля
  *
  * @package	Eresus
  *
@@ -90,9 +90,8 @@ class Eresus_Entity_User extends Eresus_DB_Record
 			'notnull' => true,
 		),
 		'active' => array(
-			'type' => 'integer',
-			'length' => 1,
-			'default' => 1,
+			'type' => 'boolean',
+			'default' => true,
 			'notnull' => true,
 		),
 		'lastVisit' => array(

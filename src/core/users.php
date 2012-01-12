@@ -84,16 +84,6 @@ class TUsers
 		return (($item['access'] != ROOT)||($Eresus->user['id'] == $item['id'])) && UserRights(ADMIN);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function toggle()
-	{
-		global $Eresus, $page;
-
-		$item = $this->accounts->get(arg('toggle', 'int'));
-		$item['active'] = !$item['active'];
-		$this->accounts->update($item);
-		HTTP::redirect($page->url());
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
 	 * @param void $dummy  Используется для совместимости с родительтским методом
@@ -311,6 +301,10 @@ class TUsers
 
 		switch (arg('action'))
 		{
+			case 'toggle':
+				$this->toggle(arg('id', 'int'));
+			break;
+
 			case 'delete':
 				$this->delete(arg('id', 'int'));
 				break;
@@ -318,7 +312,6 @@ class TUsers
 			default:
 				if (arg('update')) $this->update(null);
 				elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
-				elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
 				elseif (isset($Eresus->request['arg']['delete'])) ;
 				elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
 				elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
@@ -368,6 +361,20 @@ class TUsers
 	private function delete($id)
 	{
 		$this->accounts->delete($id);
+		HTTP::redirect($GLOBALS['page']->url());
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Переключает активность пользователя
+	 *
+	 * @param int $id  идентификатор пользователя
+	 */
+	private function toggle($id)
+	{
+		$user = $this->accounts->get($id);
+		$user->active = !$user->active;
+		$user->save();
 		HTTP::redirect($GLOBALS['page']->url());
 	}
 	//-----------------------------------------------------------------------------

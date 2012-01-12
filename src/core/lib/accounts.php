@@ -75,29 +75,18 @@ class EresusAccounts {
 
 		if (is_array($id))
 		{
-			$what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
+			// FIXME
+			return null;
 		}
 		elseif (is_numeric($id))
 		{
-			$what = "`id`=$id";
+			return Doctrine_Core::getTable('Eresus_Entity_User')->find($id);
 		}
 		else
 		{
-			$what = $id;
+			//FIXME
+			return null;
 		}
-		$result = $Eresus->db->select($this->table, $what);
-		if ($result)
-		{
-			for ($i=0; $i<count($result); $i++)
-			{
-				$result[$i]['profile'] = decodeOptions($result[$i]['profile']);
-			}
-		}
-		if (is_numeric($id) && $result && count($result))
-		{
-			$result = $result[0];
-		}
-		return	$result;
 	}
 	//------------------------------------------------------------------------------
 	function getByName($name)
