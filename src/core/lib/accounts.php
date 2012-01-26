@@ -95,25 +95,25 @@ class EresusAccounts {
 	}
 	//-----------------------------------------------------------------------------
 	/**
-	*	Добавляет	учётную	запись
-	*
-	*	@access	public
-	*
-	*	@param	array	$item	Учётная	запись
-	*
-	*	@return	mixed	Описание	записи	или	false	в	случае	неудачи
-	*/
-	function	add($item)
+	 * Добавляет учётную запись
+	 *
+	 * @param array $item  учётная запись
+	 *
+	 * @return Eresus_Entity_User  модель пользователя
+	 */
+	public function add($item)
 	{
-		global	$Eresus;
+		assert('is_array($item)');
 
-		$result	=	false;
-		if	(isset($item['id']))	unset($item['id']);
-		if	(!isset($item['profile']))	$item['profile']	=	array();
-		$item['profile']	=	encodeOptions($item['profile']);
-		if	($Eresus->db->insert($this->table,	$item))
-			$result	=	$this->get($Eresus->db->getInsertedId());
-		return	$result;
+		$user = new Eresus_Entity_User;
+		$user->username = $item['username'];
+		$user->password = $item['password'];
+		$user->active = $item['active'];
+		$user->access = $item['access'];
+		$user->fullname = $item['fullname'];
+		$user->mail = $item['mail'];
+		$user->save();
+		return $user;
 	}
 	//------------------------------------------------------------------------------
 	/**
