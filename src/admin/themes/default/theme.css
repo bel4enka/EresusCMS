@@ -330,6 +330,7 @@ a.button
 	 */
 	.block__header
 	{
+		-o-text-overflow: ellipsis;
 		background: #cddef3;
 		border: solid 1px #99bbe8;
 		box-shadow:
@@ -341,7 +342,10 @@ a.button
 		color: #15428b;
 		font-size: 13px;
 		font-weight: bold;
+		overflow: hidden;
 		padding: 1px 5px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	
 	.block__contents
@@ -397,24 +401,67 @@ a.button
 }
 
 
-input[type=checkbox].dialog__input
-{
-}
-
-input[type=checkbox] + .dialog__label
-{
-}
-
 .dialog
 {
 	
 }
 
 	/**
+	 * Пара «метка-поле» 
+	 */
+	.dialog__input-pair
+	{
+	}
+	
+	.dialog__input-pair_type_checkbox
+	{
+		margin-top: 0.5em;
+	}
+
+		.dialog__label
+		{
+			display: block;
+		}
+
+		.dialog__input-pair_is_required .dialog__label::after
+		{
+			color: red;
+			content: '*';
+			font-size: 50%;
+			vertical-align: super;
+		}
+
+		input[type=text],
+		input[type=password],
+		select,
+		textarea
+		{
+			-moz-box-sizing: border-box;
+			background: white;
+			border: 1px solid #B5B8C8;
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1) inset;
+			box-sizing: border-box;
+			margin: 0;
+			padding: 2px;
+		}
+	
+		input[type=checkbox].dialog__input
+		{
+			display: inline;
+		}
+		
+		input[type=checkbox] + .dialog__label
+		{
+			display: inline;
+		}
+
+	/**
 	 * Кнопки диалога
 	 */
 	.dialog__buttons
 	{
+		border-top: 1px solid #99BBE8;
+		margin-top: 5px;
 		padding: 5px;
 	}
 
@@ -582,27 +629,11 @@ body
 	margin: 100px auto 0;
 }
 
-.auth-dialog .dialog__label
+.auth-dialog input[type=text].dialog__input,
+.auth-dialog input[type=password].dialog__input
 {
-	display: block;
-}
-
-	.auth-dialog input[type=checkbox] + .dialog__label
-	{
-		display: inline;
-	}
-
-.auth-dialog .dialog__input
-{
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
 	width: 100%;
 }
-
-	.auth-dialog input[type=checkbox].dialog__input
-	{
-		display: inline;
-	}
 
 /**
  ** Главное меню
@@ -716,6 +747,22 @@ body
 	{
 		margin: 1em;
 	}
+
+
+/**
+ ** Управление пользователями
+ ** @section admin.modules.accounts
+ **
+ *******************************************************/
+
+	/**
+	 * Диалог добавления пользователя
+	 */
+		.add-account-dialog
+		{
+			float: left;
+		}
+
 
 
 /**
