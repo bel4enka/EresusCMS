@@ -58,9 +58,10 @@ class Eresus_Entity_User_Test extends PHPUnit_Framework_TestCase
 	public function test_setUp()
 	{
 		$test = $this->getMockBuilder('Eresus_Entity_User')->
-			setMethods(array('hasMutator'))
+			setMethods(array('hasMutator', 'hasAccessor'))
 			->disableOriginalConstructor()->getMock();
 		$test->expects($this->exactly(2))->method('hasMutator');
+		$test->expects($this->exactly(1))->method('hasAccessor');
 		$test->setUp();
 	}
 	//-----------------------------------------------------------------------------

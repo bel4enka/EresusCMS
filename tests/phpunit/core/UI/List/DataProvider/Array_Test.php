@@ -34,6 +34,7 @@
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/UI/List/Item/Interface.php';
 require_once TESTS_SRC_DIR . '/core/UI/List/Item/Object.php';
+require_once TESTS_SRC_DIR . '/core/UI/List/DataProvider/Interface.php';
 require_once TESTS_SRC_DIR . '/core/UI/List/DataProvider/Array.php';
 
 /**

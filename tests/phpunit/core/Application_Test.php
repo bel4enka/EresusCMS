@@ -178,6 +178,9 @@ class Eresus_Application_Test extends PHPUnit_Framework_TestCase
 		$m_initLocale = new ReflectionMethod('Eresus_Application', 'initLocale');
 		$m_initLocale->setAccessible(true);
 
+		$container = new sfServiceContainerBuilder();
+		Eresus_Tests::setStatic('Eresus_Kernel', $container, 'sc');
+
 		Eresus_Config::set('eresus.cms.locale.default', 'ru_RU');
 		$m_initLocale->invoke($cms);
 	}

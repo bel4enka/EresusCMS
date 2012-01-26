@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">../../src</directory>
+			<exclude>
+				<directory suffix=".html.php">../../src/core</directory>
+				<directory>../../src/ext-3rd/tinymce/plugins/images/</directory>
+				<file>../../src/core/gziph.php</file>
+				<file>../../src/index.php</file>
+			</exclude>
+		</whitelist>
+	</filter>
+
+	<testsuites>
+		<testsuite name="All tests">
+			<directory suffix="_Test.php">.</directory>
+		</testsuite>
+	</testsuites>
+
+</phpunit>

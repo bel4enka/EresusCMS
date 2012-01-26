@@ -37,6 +37,7 @@ require_once TESTS_SRC_DIR . '/core/UI/List/DataProvider/Interface.php';
 require_once TESTS_SRC_DIR . '/core/UI/List/Item/Interface.php';
 require_once TESTS_SRC_DIR . '/core/UI/List/URL/Interface.php';
 require_once TESTS_SRC_DIR . '/core/UI/List/URL/Query.php';
+require_once TESTS_SRC_DIR . '/core/classes/helpers/PaginationHelper.php';
 require_once TESTS_SRC_DIR . '/core/UI/List.php';
 
 /**
