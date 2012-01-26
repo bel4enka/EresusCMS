@@ -53,6 +53,16 @@
 class Eresus_Entity_User extends Eresus_DB_Record
 {
 	/**
+	 * PRCE-шаблон для свойства "username"
+	 *
+	 * Этот шаблон должен быть совместим с JavaScript и  HTML5
+	 *
+	 * @var string
+	 * @since 2.17
+	 */
+	const USERNAME_PATTERN = '^[a-z0-9_\-\.\@]+$';
+
+	/**
 	 * PRCE-фильтр для свойства "username"
 	 *
 	 * @var string

@@ -81,7 +81,7 @@ class TUsers
 	{
 		global $Eresus;
 
-		return (($item['access'] != ROOT)||($Eresus->user['id'] == $item['id'])) && UserRights(ADMIN);
+		return (($item['access'] != ROOT)||($Eresus->user->id == $item['id'])) && UserRights(ADMIN);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -96,7 +96,7 @@ class TUsers
 		$item = $this->accounts->get(arg('update', 'int'));
 		$old = $item;
 		foreach ($item as $key => $value) if (isset($Eresus->request['arg'][$key])) $item[$key] = arg($key, 'dbsafe');
-		$item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user['id'] == $item['id']);
+		$item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user->id == $item['id']);
 		if ($this->checkMail($item['mail'])) {
 			$this->accounts->update($item);
 		};
@@ -227,49 +227,6 @@ class TUsers
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function create()
-	{
-		global $Eresus, $page;
-
-		restoreRequest();
-		$form = array(
-			'name'=>'UserForm',
-			'caption' => i18n('Создать пользователя', __CLASS__),
-			'width' => '400px',
-			'fields' => array (
-				array('type'=>'hidden','name'=>'action','value'=>'insert'),
-				array('type' => 'edit', 'name' => 'name', 'label' => i18n('Имя', __CLASS__),
-					'maxlength' => 32, 'width' => '100%', 'pattern' => '/.+/',
-					'errormsg' => i18n('Псевдоним пользователя не может быть пустым.', __CLASS__)),
-				array('type' => 'edit', 'name' => 'login', 'label' => i18n('Логин', __CLASS__),
-					'maxlength' => 16, 'width' => '100%', 'pattern' => '/^[a-z0-9_]+$/i',
-					'errormsg' => 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
-						'символа подчеркивания.', __CLASS__),
-				array('type' => 'select', 'name' => 'access', 'label' => i18n('Уровень доступа', __CLASS__),
-					'width'=>'100%', 'values' => array('2','3','4'),
-					'items' => array(
-						i18n('Администратор'),
-						i18n('Редактор'),
-						i18n('Пользователь')
-					), 'default' => USER),
-				array('type' => 'checkbox', 'name' => 'active',
-					'label' => i18n('Учетная запись активна', __CLASS__), 'default' => true),
-				array('type'=>'divider'),
-				array('type' => 'password', 'name' => 'pswd1', 'label' => i18n('Пароль', __CLASS__),
-					'maxlength' => 32, 'width' => '100%'),
-				array('type' => 'password', 'name' => 'pswd2', 'label' => i18n('Подтверждение', __CLASS__),
-					'maxlength' => 32, 'width' => '100%', 'equal' => 'pswd1',
-					'errormsg' => i18n('Пароль и подтверждение не совпадают.', __CLASS__)),
-				array('type'=>'divider'),
-				array('type' => 'edit', 'name' => 'mail', 'label' => i18n('e-mail', __CLASS__),
-					'maxlength' => 32, 'width' => '100%'),
-			),
-			'buttons'=>array('ok', 'cancel')
-		);
-		$result = $page->renderForm($form, $Eresus->request['arg']);
-		return $result;
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
 	 *
@@ -287,23 +244,27 @@ class TUsers
 		}
 		else
 		{
-			if (arg('id') == $Eresus->user['id']) {
-				if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
-				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
+			if (arg('id') == $Eresus->user->id) {
+				if (!arg('password') || (arg('password') == $Eresus->user->id)) $granted = true;
+				if (!arg('update') || (arg('update') == $Eresus->user->id)) $granted = true;
 			}
 		}
 
 		if (!$granted)
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
+			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user->username);
 			return '';
 		}
 
 		switch (arg('action'))
 		{
+			case 'add':
+				$result = $this->addUserAction();
+				break;
+
 			case 'toggle':
 				$this->toggle(arg('id', 'int'));
-			break;
+				break;
 
 			case 'delete':
 				$this->delete(arg('id', 'int'));
@@ -315,7 +276,6 @@ class TUsers
 				elseif (isset($Eresus->request['arg']['delete'])) ;
 				elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
 				elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
-					case 'create': $result = $this->create(); break;
 					case 'insert': $this->insert(); break;
 				}
 				else
@@ -354,6 +314,35 @@ class TUsers
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Добавляет нового пользователя
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.17
+	 */
+	private function addUserAction()
+	{
+		if ('POST' == $GLOBALS['Eresus']->request['method'])
+		{
+			$info = array(
+				'username' => arg('username'),
+				'password' => arg('password'),
+				'active' => arg('enabled', 'int'),
+				'access' => arg('access', 'int'),
+				'fullname' => arg('fullname'),
+				'mail' => arg('email'),
+			);
+			$this->accounts->add($info);
+			HTTP::redirect('admin.php?mod=users');
+		}
+
+		$tmpl = Eresus_Template::fromFile('core/templates/accounts/add-dialog.html');
+		$html = $tmpl->compile();
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Удаляет пользователя
 	 *
 	 * @param int $id  идентификатор пользователя
@@ -361,7 +350,7 @@ class TUsers
 	private function delete($id)
 	{
 		$this->accounts->delete($id);
-		HTTP::redirect($GLOBALS['page']->url());
+		HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
 	}
 	//-----------------------------------------------------------------------------
 

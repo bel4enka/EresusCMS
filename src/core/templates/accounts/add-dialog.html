@@ -1,0 +1,73 @@
+<div class="block dialog add-account-dialog">
+	<div class="block__header">Создание нового пользователя</div>
+	<div class="block__contents">
+
+		<form action="admin.php" method="post">
+
+			<div>
+				<input type="hidden" name="mod" value="users">
+				<input type="hidden" name="action" value="add">
+			</div>
+			
+			<div class="dialog__input-pair dialog__input-pair_is_required">
+				<label for="input-account-fullname" class="dialog__label">{i18n('Полное имя:')}</label>
+				<input type="text" name="fullname" id="input-account-fullname" class="dialog__input"
+					tabindex="1" maxlength="255" required size="50">
+			</div>
+
+			<div class="dialog__input-pair dialog__input-pair_is_required">
+				<label for="input-account-username" class="dialog__label">{i18n('Имя для входа:')}</label>
+				<input type="text" name="username" id="input-account-username" class="dialog__input"
+					tabindex="2" maxlength="255" required size="30"
+					pattern="{constant('Eresus_Entity_User::USERNAME_PATTERN')}"
+					title="{i18n('Имя входа не может быть пустым и должно состоять только из букв a-z, цифр и символа подчеркивания')}">
+			</div>
+
+			<div class="dialog__input-pair">
+				<label for="input-account-password" class="dialog__label">{i18n('Пароль:')}</label>
+				<input type="password" name="password" id="input-account-password" class="dialog__input"
+					tabindex="3" maxlength="255" size="30">
+			</div>
+
+			<div class="dialog__input-pair">
+				<label for="input-account-confirm" class="dialog__label">{i18n('Повторите пароль ещё раз:')}</label>
+				<input type="password" name="confirm" id="input-account-confirm" class="dialog__input"
+					tabindex="4" maxlength="255" size="30">
+			</div>
+
+			<div class="dialog__input-pair dialog__input-pair_is_required">
+				<label for="input-account-email" class="dialog__label">{i18n('E-mail:')}</label>
+				<input type="email" name="email" id="input-account-email" class="dialog__input"
+					tabindex="5" maxlength="255" required size="30">
+			</div>
+
+			<div class="dialog__input-pair">
+				<label for="input-account-access" class="dialog__label">{i18n('Уровень доступа:')}</label>
+				<select name="access" id="input-account-access" class="dialog__input"	tabindex="6">
+					<option value="2">{i18n('Администратор')}</option>
+					<option value="3">{i18n('Редактор')}</option>
+					<option value="4" selected>{i18n('Пользователь')}</option>
+				</select>
+			</div>
+
+			<div class="dialog__input-pair dialog__input-pair_type_checkbox">
+				<label class="dialog__label" for="input-account-enabled">
+					<input class="dialog__input" type="checkbox" name="enabled" id="input-account-enabled"
+						value="1" tabindex="7" checked>
+					<span class="dialog__label">{i18n('Активировать учётную запись')}</span>
+				</label>
+			</div>
+
+			<div class="dialog__buttons">
+				<button type="submit" class="button button_has_icon button_icon_ok" tabindex="8">
+					<span class="button__caption">Добавить</span>
+				</button>
+				<button type="button" class="button button_has_icon button_icon_cancel" tabindex="9" onclick="history.back();">
+					<span class="button__caption">Отменить</span>
+				</button>
+			</div>
+
+		</form>
+
+	</div>
+</div>
