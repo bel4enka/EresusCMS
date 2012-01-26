@@ -37,6 +37,7 @@ define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 
 require_once TESTS_SRC_DIR . '/core/classes/WebPage.php';
 require_once TESTS_SRC_DIR . '/core/classes/backward/TPlugin.php';
+require_once TESTS_SRC_DIR . '/core/classes/backward/TContentPlugin.php';
 
 //PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__);
 
