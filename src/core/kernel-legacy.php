@@ -1329,7 +1329,7 @@ class Eresus
 			if (
 				(time() - $this->session['time'] >
 					Eresus_Config::get('eresus.cms.session.timeout', 30) * 3600) &&
-				($this->user['auth'])
+				$this->user
 			)
 			{
 				$this->logout(false);
@@ -1524,7 +1524,7 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = (! isset($this->uset['id'])) || (! (bool) $this->user['id']);
+						$setVisitTime = (! isset($this->uset['id'])) || (! (bool) $this->user->id);
 						$this->user = $user;
 						if ($setVisitTime)
 						{

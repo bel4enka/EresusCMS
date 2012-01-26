@@ -868,7 +868,7 @@ class TAdminUI extends WebPage
 		$theme = $this->getUITheme();
 
 		$result = '';
-		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
+		$items = $Eresus->sections->children($owner, $Eresus->user->access, SECTIONS_ACTIVE);
 
 		if (count($items))
 		{
@@ -960,7 +960,7 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
-		//$Eresus->plugins->adminOnMenuRender();
+		//TODO $Eresus->plugins->adminOnMenuRender();
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)

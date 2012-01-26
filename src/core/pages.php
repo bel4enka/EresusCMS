@@ -154,7 +154,7 @@ class TPages
 	{
 		global $Eresus;
 
-		$items = $Eresus->sections->children($owner, $Eresus->user['access']);
+		$items = $Eresus->sections->children($owner, $Eresus->user->access);
 		$result = array(array(), array());
 		foreach ($items as $item)
 		{
@@ -564,8 +564,7 @@ class TPages
 		);
 
 		$result = array();
-		$items = $Eresus->sections->children($owner,
-			$Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
+		$items = $Eresus->sections->children($owner, $Eresus->user ? $Eresus->user->access : GUEST);
 		for ($i=0; $i<count($items); $i++)
 		{
 			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?

@@ -94,7 +94,7 @@ class TPlgMgr
 
 		if (!UserRights($this->access))
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
+			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user->username);
 			return '';
 		}
 
