@@ -5,7 +5,7 @@
 			<directory suffix=".php">../../src</directory>
 			<exclude>
 				<directory suffix=".html.php">../../src/core</directory>
-				<directory>../../src/ext-3rd/tinymce/plugins/images/</directory>
+				<directory>../../src/ext-3rd</directory>
 				<file>../../src/core/gziph.php</file>
 				<file>../../src/index.php</file>
 			</exclude>
