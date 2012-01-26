@@ -431,6 +431,7 @@ class Eresus_Kernel
 	 */
 	static public function classExists($name)
 	{
+		assert('is_string($name)');
 		return class_exists($name, false) || interface_exists($name, false);
 	}
 	//-----------------------------------------------------------------------------
@@ -452,6 +453,7 @@ class Eresus_Kernel
 	 */
 	static public function exec($class)
 	{
+		assert('is_string($class)');
 		if (!class_exists($class))
 		{
 			throw new LogicException('Application class "' . $class . '" does not exists');
