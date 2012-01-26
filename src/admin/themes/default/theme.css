@@ -432,6 +432,7 @@ a.button
 		}
 
 		input[type=text],
+		input[type=email],
 		input[type=password],
 		select,
 		textarea
@@ -444,6 +445,18 @@ a.button
 			margin: 0;
 			padding: 2px;
 		}
+		
+			/**
+			 * Неправильно заполненные поля форм
+			 */
+			input[type=text]:-moz-ui-invalid,
+			input[type=email]:-moz-ui-invalid,
+			input[type=password]:-moz-ui-invalid,
+			select:-moz-ui-invalid,
+			textarea:-moz-ui-invalid
+			{
+				box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.5);
+			}
 	
 		input[type=checkbox].dialog__input
 		{
