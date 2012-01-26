@@ -176,7 +176,11 @@ class Eresus_Template
 		}
 		catch (Exception $e)
 		{
-			if (count(ob_get_status()))
+			$status = ob_get_status();
+			/*
+			 * См. http://php.net/manual/function.ob-get-level.php#52945
+			 */
+			if (count($status) && $status['name'] != 'default output handler')
 			{
 				ob_end_clean();
 			}
