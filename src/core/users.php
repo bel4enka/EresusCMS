@@ -262,6 +262,10 @@ class TUsers
 				$result = $this->addUserAction();
 				break;
 
+			case 'edit':
+				$result = $this->editUserAction(arg('id', 'int'));
+				break;
+
 			case 'toggle':
 				$this->toggle(arg('id', 'int'));
 				break;
@@ -333,11 +337,49 @@ class TUsers
 				'mail' => arg('email'),
 			);
 			$this->accounts->add($info);
-			HTTP::redirect('admin.php?mod=users');
+			HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
 		}
 
 		$tmpl = Eresus_Template::fromFile('core/templates/accounts/add-dialog.html');
 		$html = $tmpl->compile();
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Настройки пользователя
+	 *
+	 * @param int $id  ID пользователя
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.17
+	 */
+	private function editUserAction($id)
+	{
+		$user = $this->accounts->get($id);
+		if (false === $user)
+		{
+			throw new Eresus_CMS_Exception_NotFound;
+		}
+
+		if ('POST' == $GLOBALS['Eresus']->request['method'])
+		{
+			$user->username = arg('username');
+			$user->active = arg('enabled', 'int');
+			$user->access = arg('access', 'int');
+			$user->fullname = arg('fullname');
+			$user->mail = arg('email');
+			if (arg('chpswd'))
+			{
+				$user->password = arg('password');
+			}
+			$user->save();
+			HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
+		}
+
+		$tmpl = Eresus_Template::fromFile('core/templates/accounts/edit-dialog.html');
+		$html = $tmpl->compile(array('account' => $user));
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
@@ -362,9 +404,13 @@ class TUsers
 	private function toggle($id)
 	{
 		$user = $this->accounts->get($id);
+		if (false === $user)
+		{
+			throw new Eresus_CMS_Exception_NotFound;
+		}
 		$user->active = !$user->active;
 		$user->save();
-		HTTP::redirect($GLOBALS['page']->url());
+		HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
 	}
 	//-----------------------------------------------------------------------------
 }

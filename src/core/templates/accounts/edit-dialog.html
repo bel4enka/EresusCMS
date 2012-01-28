@@ -1,0 +1,105 @@
+<div class="block dialog edit-account-dialog">
+	<div class="block__header">Изменение пользователя</div>
+	<div class="block__contents">
+
+		<form action="admin.php" method="post">
+
+			<div>
+				<input type="hidden" name="mod" value="users">
+				<input type="hidden" name="action" value="edit">
+				<input type="hidden" name="id" value="{$account->id}">
+			</div>
+			
+			<div class="dialog__input-pair dialog__input-pair_is_required">
+				<label for="input-account-fullname" class="dialog__label">{i18n('Полное имя:')}</label>
+				<input type="text" name="fullname" id="input-account-fullname" class="dialog__input"
+					tabindex="1" maxlength="255" required size="50" value="{$account->fullname|escape}">
+			</div>
+
+			<div class="dialog__input-pair dialog__input-pair_is_required">
+				<label for="input-account-username" class="dialog__label">{i18n('Имя для входа:')}</label>
+				<input type="text" name="username" id="input-account-username" class="dialog__input"
+					tabindex="2" maxlength="255" required size="30"
+					pattern="{constant('Eresus_Entity_User::USERNAME_PATTERN')}"
+					title="{i18n('Имя входа не может быть пустым и должно состоять только из букв a-z, цифр и символа подчеркивания')}"
+					value="{$account->username|escape}">
+			</div>
+
+			<div class="dialog__input-pair dialog__input-pair_is_required">
+				<label for="input-account-email" class="dialog__label">{i18n('E-mail:')}</label>
+				<input type="email" name="email" id="input-account-email" class="dialog__input"
+					tabindex="3" maxlength="255" required size="30" value="{$account->mail|escape}">
+			</div>
+
+			<div class="dialog__input-pair">
+				<label for="input-account-access" class="dialog__label">{i18n('Уровень доступа:')}</label>
+				<select name="access" id="input-account-access" class="dialog__input"	tabindex="4">
+					<option value="2"{if $account->access == 2} selected{/if}>{i18n('Администратор')}</option>
+					<option value="3"{if $account->access == 3} selected{/if}>{i18n('Редактор')}</option>
+					<option value="4"{if $account->access == 4} selected{/if}>{i18n('Пользователь')}</option>
+				</select>
+			</div>
+
+			<div class="dialog__input-pair dialog__input-pair_type_checkbox">
+				<label class="dialog__label" for="input-account-enabled">
+					<input class="dialog__input" type="checkbox" name="enabled" id="input-account-enabled"
+						value="1" tabindex="5"  {if $account->active}checked{/if}>
+					<span class="dialog__label">{i18n('Включить учётную запись')}</span>
+				</label>
+			</div>
+			
+			<fieldset>
+				<legend class="dialog__input-pair dialog__input-pair_type_checkbox">
+					<label class="dialog__label" for="input-account-chpswd">
+						<input class="dialog__input" type="checkbox" id="input-account-chpswd"
+							value="1" tabindex="6">
+						<span class="dialog__label">{i18n('Сменить пароль')}</span>
+					</label>
+				</legend>
+
+				<div class="dialog__input-pair">
+					<label for="input-account-password" class="dialog__label">{i18n('Пароль:')}</label>
+					<input type="password" name="password" id="input-account-password" class="dialog__input"
+						maxlength="255" size="30" disabled>
+				</div>
+	
+				<div class="dialog__input-pair">
+					<label for="input-account-confirm" class="dialog__label">{i18n('Повторите пароль ещё раз:')}</label>
+					<input type="password" name="confirm" id="input-account-confirm" class="dialog__input"
+						maxlength="255" size="30" disabled>
+				</div>
+			</fieldset>
+
+			<div class="dialog__buttons">
+				<button type="submit" class="button button_has_icon button_icon_ok">
+					<span class="button__caption">Сохранить</span>
+				</button>
+				<button type="button" class="button button_has_icon button_icon_cancel" onclick="history.back();">
+					<span class="button__caption">Отменить</span>
+				</button>
+			</div>
+
+		</form>
+
+	</div>
+</div>
+<script>
+	jQuery('#input-account-chpswd').change(
+		function ()
+		{
+			var inputPassword = jQuery('#input-account-password');
+			var inputConfirm = jQuery('#input-account-confirm');
+			
+			if (!this.checked)
+			{
+				inputPassword.attr('disabled', 'disabled');
+				inputConfirm.attr('disabled', 'disabled');
+			}
+			else
+			{
+				inputPassword.removeAttr('disabled');
+				inputConfirm.removeAttr('disabled');
+			}
+		}
+	);
+</script>

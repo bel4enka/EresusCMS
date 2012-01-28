@@ -56,6 +56,7 @@ class EresusAccounts {
 		return $result;
 	}
 	//------------------------------------------------------------------------------
+
 	/**
 	 * Возвращает учётную запись или список записей
 	 *
@@ -67,7 +68,7 @@ class EresusAccounts {
 	 * или
 	 * @param string $id  SQL-условие
 	 *
-	 * @return array
+	 * @return mixed  массив или модель пользователей или false если ничего не найдено
 	 */
 	public function get($id)
 	{
@@ -114,25 +115,6 @@ class EresusAccounts {
 		$user->mail = $item['mail'];
 		$user->save();
 		return $user;
-	}
-	//------------------------------------------------------------------------------
-	/**
-	*	Изменяет	учётную	запись
-	*
-	*	@access	public
-	*
-	*	@param	array	$item	Учётная	запись
-	*
-	*	@return	mixed	Описание	изменённой	записи	или	false	в	случае	неудачи
-	*/
-	function	update($item)
-	{
-		global	$Eresus;
-
-		$result	=	false;
-		$item['profile']	=	encodeOptions($item['profile']);
-		$result	=	$Eresus->db->updateItem($this->table,	$item,	"`id`={$item['id']}");
-		return	$result;
 	}
 	//------------------------------------------------------------------------------
 
