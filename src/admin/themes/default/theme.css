@@ -461,11 +461,14 @@ a.button
 		input[type=checkbox].dialog__input
 		{
 			display: inline;
+			margin: auto;
+			vertical-align: middle;
 		}
 		
 		input[type=checkbox] + .dialog__label
 		{
 			display: inline;
+			vertical-align: middle;
 		}
 
 	/**
@@ -769,9 +772,10 @@ body
  *******************************************************/
 
 	/**
-	 * Диалог добавления пользователя
+	 * Диалоги добавления и изменения пользователя
 	 */
-		.add-account-dialog
+		.add-account-dialog,
+		.edit-account-dialog
 		{
 			float: left;
 		}
