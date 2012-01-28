@@ -446,6 +446,15 @@ a.button
 			padding: 2px;
 		}
 		
+			input[type=text]:disabled,
+			input[type=email]:disabled,
+			input[type=password]:disabled,
+			select:disabled,
+			textarea:disabled
+			{
+				background: #eaeaea;
+			}
+		
 			/**
 			 * Неправильно заполненные поля форм
 			 */
