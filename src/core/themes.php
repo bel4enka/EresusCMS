@@ -104,19 +104,30 @@ class TThemes
 	 */
 	public function adminRender()
 	{
+		// FIXME Глобальные переменные использоваться не должны
 		global $page;
 
 		$result = '';
-		if (UserRights($this->access)) {
-			#FIXME: Временное решение #0000163
+		if (UserRights($this->access))
+		{
+			//FIXME: Временное решение #0000163
 			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
 			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
 			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
 			$result .= $page->renderTabs($this->tabs);
-			switch (arg('section')) {
-				case 'css': $result .= $this->sectionStyles(); break;
-				case 'std': $result .= $this->sectionStd(); break;
-				case 'themes': default: $result .= $this->sectionTemplates(); break;
+			switch (arg('section'))
+			{
+				case 'css':
+					$result .= $this->sectionStyles();
+					break;
+
+				case 'std':
+					$result .= $this->sectionStd();
+					break;
+
+				case 'themes':
+				default:
+					$result .= $this->sectionTemplates();
 			}
 		}
 		return $result;
