@@ -39,6 +39,12 @@ useLib('accounts');
  */
 class TUsers
 {
+	/**
+	 * Класс для работы с учётными записями
+	 *
+	 * @var EresusAccounts
+	 * @deprecated с 2.17
+	 */
 	private $accounts;
 
 	/**
@@ -46,10 +52,6 @@ class TUsers
 	 * @var int
 	 */
 	private $access = ADMIN;
-
-	private $itemsPerPage = 30;
-
-	private $pagesDesc = false;
 
  /**
 	* Конструктор
@@ -72,88 +74,11 @@ class TUsers
 		return true;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function check_for_root($item)
-	{
-		return ($item['access'] != ROOT);
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function check_for_edit($item)
 	{
 		global $Eresus;
 
 		return (($item['access'] != ROOT)||($Eresus->user->id == $item['id'])) && UserRights(ADMIN);
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-	/**
-	 * @param void $dummy  Используется для совместимости с родительтским методом
-	 * @see main/core/lib/EresusAccounts#update($item)
-	 */
-	function update($dummy)
-	{
-		global $Eresus, $page;
-
-		$item = $this->accounts->get(arg('update', 'int'));
-		$old = $item;
-		foreach ($item as $key => $value) if (isset($Eresus->request['arg'][$key])) $item[$key] = arg($key, 'dbsafe');
-		$item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user->id == $item['id']);
-		if ($this->checkMail($item['mail'])) {
-			$this->accounts->update($item);
-		};
-		HTTP::redirect(arg('submitURL'));
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
- /**
-	* Создание учётной записи
-	*/
-	function insert()
-	{
-		global $Eresus, $page;
-
-		# Получение данных
-		$item = array(
-			'name' => arg('name', 'dbsafe'),
-			'login' => arg('login', '/[^a-z0-9_]/'),
-			'access' => arg('access', 'int'),
-			'hash' => $Eresus->password_hash(arg('pswd1')),
-			'mail' => arg('mail', 'dbsafe'),
-		);
-		# Проверка входных данных
-		$error = false;
-		if (empty($item['name']))
-		{
-			ErrorMessage(i18n('Псевдоним пользователя не может быть пустым.', __CLASS__));
-			$error = true;
-		}
-		if (empty($item['login']))
-		{
-			ErrorMessage(i18n('Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
-				'символа подчеркивания.', __CLASS__));
-			$error = true;
-		}
-		if ($item['access'] <= ROOT) { ErrorMessage('Invalid access level!'); $error = true;}
-		if ($item['hash'] != $Eresus->password_hash(arg('pswd2')))
-		{
-			ErrorMessage(i18n('Пароль и подтверждение не совпадают.', __CLASS__));
-			$error = true;
-		}
-		# Проверка данных на уникальность
-		$check = $this->accounts->get("`login` = '{$item['login']}'");
-		if ($check)
-		{
-			ErrorMessage(i18n('Пользователь с таким логином уже существует.', __CLASS__));
-			$error = true;
-		}
-		if ($error)
-		{
-			saveRequest();
-			HTTP::redirect($Eresus->request['referer']);
-		}
-		if (!$this->accounts->add($item))
-		{
-			ErrorMessage('Error creating user account');
-		}
-		HTTP::redirect(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -167,64 +92,6 @@ class TUsers
 			$this->accounts->update($item);
 		}
 		HTTP::redirect(arg('submitURL'));
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function edit()
-	{
-		global $Eresus, $page;
-
-		$item = $Eresus->db->selectItem('users', "`id`='".arg('id')."'");
-		$form = array(
-			'name' => 'UserForm',
-			'caption' => i18n('Изменить учетную запись', __CLASS__) . ' №' . $item['id'],
-			'width' => '400px',
-			'fields' => array (
-				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array('type' => 'edit', 'name' => 'name', 'label' => i18n('Имя', __CLASS__),
-					'maxlength' => 32, 'width' => '100%', 'value' => $item['name'], 'pattern'=>'/.+/',
-					'errormsg' => i18n('Псевдоним пользователя не может быть пустым.', __CLASS__)),
-				array('type' => 'edit', 'name' => 'login', 'label' => i18n('Логин', __CLASS__),
-					'maxlength' => 16, 'width' => '100%', 'value' => $item['login'],
-					'pattern' => '/^[a-z\d_]+$/',
-					'errormsg' => 'Логин не может быть пустым и должен состоять только из букв a-z, цифр и ' .
-						'символа подчеркивания.', 'access'=>ADMIN),
-				array('type' => 'select', 'name' => 'access', 'label' => i18n('Уровень доступа', __CLASS__),
-					'values' => array('2','3','4'),
-					'items' => array(
-						i18n('Администратор'),
-						i18n('Редактор'),
-						i18n('Пользователь')
-					), 'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
-				array('type' => 'checkbox', 'name' => 'active',
-					'label' => i18n('Учетная запись активна', __CLASS__), 'value' => $item['active'],
-					'access' => ADMIN),
-				array('type' => 'edit', 'name' => 'loginErrors', 'label' => i18n('Ошибок входа', __CLASS__),
-					'maxlength' => 2, 'width' => '30px', 'value' => $item['loginErrors'], 'access' => ADMIN),
-				array('type' => 'edit', 'name' => 'mail', 'label' => i18n('e-mail', __CLASS__),
-					'maxlength' => 32, 'width' => '100%', 'value' => $item['mail'],
-					'pattern' => '/^[\w]+[\w\d_\.\-]+@[\w\d\-]{2,}\.[a-z]{2,5}$/i',
-					'errormsg' => i18n('Неверно указан почтовый адрес.', __CLASS__), 'access' => ADMIN),
-			),
-			'buttons' => array(UserRights($this->access)?'ok':'', 'apply', 'cancel'),
-		);
-
-		$pswd = array(
-			'name' => 'PasswordForm',
-			'caption' => i18n('Изменить пароль', __CLASS__),
-			'width' => '400px',
-			'fields' => array (
-				array('type'=>'hidden','name'=>'password', 'value'=>$item['id']),
-				array('type' => 'password', 'name' => 'pswd1', 'label' => i18n('Пароль', __CLASS__),
-					'maxlength' => 32, 'width' => '100%'),
-				array('type' => 'password', 'name' => 'pswd2', 'label' => i18n('Подтверждение', __CLASS__),
-					'maxlength' => 32, 'width' => '100%', 'equal' => 'pswd1',
-					'errormsg' => i18n('Пароль и подтверждение не совпадают.', __CLASS__)),
-			),
-			'buttons' => array(UserRights($this->access)?'ok':'apply', 'cancel'),
-		);
-
-		$result = $page->renderForm($form)."<br />\n".$page->renderForm($pswd);
-		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -391,7 +258,14 @@ class TUsers
 	 */
 	private function delete($id)
 	{
-		$this->accounts->delete($id);
+		if ($id != 1)
+		{
+			$this->accounts->delete($id);
+		}
+		else
+		{
+			ErrorMessage(i18n('Учётная запись root не может быть удалена', __CLASS__));
+		}
 		HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
 	}
 	//-----------------------------------------------------------------------------
@@ -403,13 +277,20 @@ class TUsers
 	 */
 	private function toggle($id)
 	{
-		$user = $this->accounts->get($id);
-		if (false === $user)
+		if ($id != 1)
 		{
-			throw new Eresus_CMS_Exception_NotFound;
+			$user = $this->accounts->get($id);
+			if (false === $user)
+			{
+				throw new Eresus_CMS_Exception_NotFound;
+			}
+			$user->active = !$user->active;
+			$user->save();
 		}
-		$user->active = !$user->active;
-		$user->save();
+		else
+		{
+			ErrorMessage(i18n('Учётная запись root не может быть отключена', __CLASS__));
+		}
 		HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
 	}
 	//-----------------------------------------------------------------------------

@@ -19,7 +19,13 @@
 		</thead>
 		{foreach $list->getItems() item}
 		<tr class="grid-list__item">
-			<td class="grid-list__item-ctrl">{$list->getControls($item, 'config', 'toggle', 'delete')}</td>
+			<td class="grid-list__item-ctrl">
+				{if $item->id == 1}
+					{if $globals.Eresus->user->id == 1}{$list->getControls($item, 'config')}{/if}
+				{else}
+					{$list->getControls($item, 'config', 'toggle', 'delete')}
+				{/if}
+			</td>
 			<td>{$item->fullname}</td>
 			<td>{$item->username}</td>
 			<td>{$item->accessStr}</td>
