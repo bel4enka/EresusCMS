@@ -34,6 +34,7 @@
 return array(
 	'EresusForm' => 'core/EresusForm.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
+	'Templates' => 'core/lib/templates.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
 
