@@ -32,6 +32,7 @@
  */
 
 return array(
+	'EresusAccounts' => 'core/lib/accounts.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'WebServer' => 'core/classes/WebServer.php',
