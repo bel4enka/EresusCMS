@@ -132,10 +132,3 @@ class EresusAccounts {
 	}
 	//------------------------------------------------------------------------------
 }
-
-/**
- * @deprecated since Eresus 2.11
- *
- * @package Eresus
- */
-class	Accounts extends EresusAccounts {}
