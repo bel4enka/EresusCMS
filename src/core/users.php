@@ -63,17 +63,6 @@ class TUsers
 		$this->accounts = new EresusAccounts();
 	}
 	//-----------------------------------------------------------------------------
-	function checkMail($mail)
-	{
-		$host = substr($mail, strpos($mail, '@')+1);
-		$ip = gethostbyname($host);
-		if ($ip == $host) {
-			ErrorMessage(sprintf(i18n('Несуществующий домен: "%s"', __CLASS__), $host));
-			return false;
-		}
-		return true;
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function check_for_edit($item)
 	{
 		global $Eresus;
