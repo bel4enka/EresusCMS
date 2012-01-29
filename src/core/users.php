@@ -131,14 +131,6 @@ class TUsers
 		$list = new Eresus_UI_List($provider);
 		$tmpl = Eresus_Template::fromFile('core/templates/accounts/list.html');
 		return $tmpl->compile(array('list' => $list));
-		/*
-			$table = array (
-						'itemsPerPage' => 20,
-						'controls' => array (
-							'delete' => 'check_for_root',
-							'edit' => 'check_for_edit',
-							'toggle' => 'check_for_root',
-		*/
 	}
 	//-----------------------------------------------------------------------------
 
