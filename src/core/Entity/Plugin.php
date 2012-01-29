@@ -52,6 +52,13 @@
 class Eresus_Entity_Plugin extends Eresus_DB_Record
 {
 	/**
+	 * Главный объект модуля расширения
+	 *
+	 * @var Eresus_CMS_Plugin
+	 */
+	private $mainObject;
+
+	/**
 	 * @see Doctrine_Record_Abstract::setTableDefinition()
 	 */
 	public function setTableDefinition()
@@ -139,6 +146,32 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 			return $this->$getter();
 		}
 		return parent::__get($name);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает основной объект модуля расширения
+	 *
+	 * @throws DomainException  если основной класс модуля не найден
+	 *
+	 * @return Eresus_CMS_Plugin
+	 *
+	 * @since 2.17
+	 */
+	public function main()
+	{
+		if (!$this->mainObject)
+		{
+			$className = 'Plugin_' . $this->name;
+			if (!class_exists($className))
+			{
+				Eresus_Logger::log(__METHOD__, LOG_ERR, 'Class not found: ' . $className);
+				throw new DomainException(
+					sprintf(i18n('Модуль расширения «%s» повреждён. Подробности в журнале.'), $this->title));
+			}
+ 			$this->mainObject = new $className(Eresus_Kernel::sc());
+		}
+		return $this->mainObject;
 	}
 	//-----------------------------------------------------------------------------
 
