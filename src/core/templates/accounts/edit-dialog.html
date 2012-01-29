@@ -51,7 +51,7 @@
 			<fieldset>
 				<legend class="dialog__input-pair dialog__input-pair_type_checkbox">
 					<label class="dialog__label" for="input-account-chpswd">
-						<input class="dialog__input" type="checkbox" id="input-account-chpswd"
+						<input class="dialog__input" type="checkbox" name="chpswd" id="input-account-chpswd"
 							value="1" tabindex="6">
 						<span class="dialog__label">{i18n('Сменить пароль')}</span>
 					</label>
@@ -84,6 +84,15 @@
 	</div>
 </div>
 <script>
+	jQuery('.edit-account-dialog form').bind('input',
+		function ()
+		{
+			this.confirm.setCustomValidity(
+				this.password.value != this.confirm.value ?
+					'{i18n("Пароль и подтверждение не совпадают")}' : ''
+			);
+		}
+	);
 	jQuery('#input-account-chpswd').change(
 		function ()
 		{
