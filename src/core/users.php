@@ -56,31 +56,11 @@ class TUsers
 	*
 	* @return TUsers
 	*/
-	function __construct()
+	public function __construct()
 	{
 		$this->accounts = new EresusAccounts();
 	}
 	//-----------------------------------------------------------------------------
-	function check_for_edit($item)
-	{
-		global $Eresus;
-
-		return (($item['access'] != ROOT)||($Eresus->user->id == $item['id'])) && UserRights(ADMIN);
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-	function password()
-	{
-		global $Eresus, $page;
-
-		$item = $this->accounts->get(arg('password', 'int'));
-		if (arg('pswd1') == arg('pswd2')) {
-			$item['hash'] = $Eresus->password_hash(arg('pswd1'));
-			$this->accounts->update($item);
-		}
-		HTTP::redirect(arg('submitURL'));
-	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
 	 *
@@ -164,6 +144,8 @@ class TUsers
 	/**
 	 * Добавляет нового пользователя
 	 *
+	 * @todo Сделать на конфликты username и email
+	 *
 	 * @return mixed
 	 *
 	 * @since 2.17
@@ -192,6 +174,8 @@ class TUsers
 
 	/**
 	 * Настройки пользователя
+	 *
+	 * @todo Сделать на конфликты username и email
 	 *
 	 * @param int $id  ID пользователя
 	 *
