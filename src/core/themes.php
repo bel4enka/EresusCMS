@@ -267,7 +267,10 @@ class TThemes
 		$templates = new Templates();
 		$list = $templates->enum();
 		$items = array();
-		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
+		foreach ($list as $key=>$value)
+		{
+			$items[] = array('filename' => $key, 'description' => $value);
+		}
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
@@ -279,18 +282,37 @@ class TThemes
 	 */
 	public function sectionTemplates()
 	{
-	global $Eresus, $page;
+		global $Eresus, $page;
 
 		$page->title .= ' - ' . i18n('Шаблоны страниц', __CLASS__);
 
-		switch(arg('action')) {
-			case 'update': $result = $this->sectionTemplatesUpdate(); break;
-			case 'insert': $result = $this->sectionTemplatesInsert(); break;
-			case 'add': $result = $this->sectionTemplatesAdd(); break;
+		switch (arg('action'))
+		{
+			case 'update':
+				$result = $this->sectionTemplatesUpdate();
+				break;
+
+			case 'insert':
+				$result = $this->sectionTemplatesInsert();
+				break;
+
+			case 'add':
+				$result = $this->sectionTemplatesAdd();
+				break;
+
 			default:
-				if (arg('delete')) $result = $this->sectionTemplatesDelete();
-				elseif (arg('id')) $result = $this->sectionTemplatesEdit();
-				else $result = $this->sectionTemplatesList();
+				if (arg('delete'))
+				{
+					$result = $this->sectionTemplatesDelete();
+				}
+				elseif (arg('id'))
+				{
+					$result = $this->sectionTemplatesEdit();
+				}
+				else
+				{
+					$result = $this->sectionTemplatesList();
+				}
 		}
 		return $result;
 	}
@@ -345,8 +367,12 @@ class TThemes
 		$values = array();
 		$items = array();
 		$jsArray = "var aTemplates = Array();\n";
-		foreach($this->stdTemplates as $key => $item) {
-			if (!isset($hint)) $hint = isset($item['hint'])?$item['hint']:'';
+		foreach ($this->stdTemplates as $key => $item)
+		{
+			if (!isset($hint))
+			{
+				$hint = isset($item['hint'])?$item['hint']:'';
+			}
 			$values[] = $key;
 			$items[] = $item['caption'];
 			$jsArray .= "aTemplates['".$key."'] = '".(isset($item['hint'])?$item['hint']:'')."'\n";
@@ -355,7 +381,8 @@ class TThemes
 		$page->addScripts($jsArray."
 			function onTemplateNameChange()
 			{
-				document.getElementById('templateHint').innerHTML = aTemplates[document.addForm.elements.namedItem('name').value];
+				document.getElementById('templateHint').innerHTML =
+					aTemplates[document.addForm.elements.namedItem('name').value];
 			}
 		");
 		$form = array(
@@ -400,7 +427,10 @@ class TThemes
 					'width' => '200px', 'comment' => '.tmpl (' .
 					$this->stdTemplates[$item['name']]['caption'].')',
 					'disabled' => true, 'value'=>$item['name']),
-				array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
+				array('type'=>'text','name'=>'hint',
+					'value' => isset($this->stdTemplates[$item['name']]['hint']) ?
+						$this->stdTemplates[$item['name']]['hint'] :
+						'', 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -442,7 +472,10 @@ class TThemes
 		$templates = new Templates();
 		$list = $templates->enum('std');
 		$items = array();
-		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
+		foreach ($list as $key=>$value)
+		{
+			$items[] = array('filename' => $key, 'description' => $value);
+		}
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
@@ -458,14 +491,33 @@ class TThemes
 
 		$page->title .= ' - ' . i18n('Стандартные шаблоны', __CLASS__);
 
-		switch(arg('action')) {
-			case 'update': $result = $this->sectionStdUpdate(); break;
-			case 'insert': $result = $this->sectionStdInsert(); break;
-			case 'add': $result = $this->sectionStdAdd(); break;
+		switch (arg('action'))
+		{
+			case 'update':
+				$result = $this->sectionStdUpdate();
+				break;
+
+			case 'insert':
+				$result = $this->sectionStdInsert();
+				break;
+
+			case 'add':
+				$result = $this->sectionStdAdd();
+				break;
+
 			default:
-				if (arg('delete')) $result = $this->sectionStdDelete();
-				if (arg('id')) $result = $this->sectionStdEdit();
-				else $result = $this->sectionStdList();
+				if (arg('delete'))
+				{
+					$result = $this->sectionStdDelete();
+				}
+				if (arg('id'))
+				{
+					$result = $this->sectionStdEdit();
+				}
+				else
+				{
+					$result = $this->sectionStdList();
+				}
 		}
 		return $result;
 	}
@@ -505,7 +557,10 @@ class TThemes
 		global $page;
 
 		$filename = filesRoot.'style/'.arg('delete');
-		if (file_exists($filename)) unlink($filename);
+		if (file_exists($filename))
+		{
+			unlink($filename);
+		}
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -605,14 +660,18 @@ class TThemes
 		# Загружаем список шаблонов
 		$dir = filesRoot.'style/';
 		$hnd = opendir($dir);
-		while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.css$/', $filename)) {
-			$description = file_get_contents($dir.$filename);
-			preg_match('|/\*(.*?)\*/|', $description, $description);
-			$description = trim($description[1]);
-			$items[] = array(
-				'filename' => $filename,
-				'description' => $description,
-			);
+		while (($filename = readdir($hnd))!==false)
+		{
+			if (preg_match('/.*\.css$/', $filename))
+			{
+				$description = file_get_contents($dir.$filename);
+				preg_match('|/\*(.*?)\*/|', $description, $description);
+				$description = trim($description[1]);
+				$items[] = array(
+					'filename' => $filename,
+					'description' => $description,
+				);
+			}
 		}
 		closedir($hnd);
 		$result = $page->renderTable($table, $items);
@@ -626,17 +685,36 @@ class TThemes
 	 */
 	public function sectionStyles()
 	{
-	global $page;
+		global $page;
 
 		$page->title .= ' - ' . i18n('Файлы стилей', __CLASS__);
-		switch(arg('action')) {
-			case 'update': $result = $this->sectionStylesUpdate(); break;
-			case 'insert': $result = $this->sectionStylesInsert(); break;
-			case 'add': $result = $this->sectionStylesAdd(); break;
+		switch (arg('action'))
+		{
+			case 'update':
+				$result = $this->sectionStylesUpdate();
+				break;
+
+			case 'insert':
+				$result = $this->sectionStylesInsert();
+				break;
+
+			case 'add':
+				$result = $this->sectionStylesAdd();
+				break;
+
 			default:
-				if (arg('delete')) $result = $this->sectionStylesDelete();
-				elseif (arg('id')) $result = $this->sectionStylesEdit();
-				else $result = $this->sectionStylesList();
+				if (arg('delete'))
+				{
+					$result = $this->sectionStylesDelete();
+				}
+				elseif (arg('id'))
+				{
+					$result = $this->sectionStylesEdit();
+				}
+				else
+				{
+					$result = $this->sectionStylesList();
+				}
 		}
 		return $result;
 	}
