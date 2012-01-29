@@ -98,7 +98,7 @@ class TPages
 	 */
 	function update()
 	{
-		global $Eresus, $page;
+		global $Eresus;
 
 		$old = $Eresus->sections->get(arg('update', 'int'));
 		$item = $old;
@@ -628,7 +628,7 @@ class TPages
 	 */
 	function adminRender()
 	{
-		global $Eresus, $page;
+		global $Eresus;
 
 		if (UserRights($this->access))
 		{
@@ -639,7 +639,8 @@ class TPages
 			}
 			elseif (arg('action'))
 			{
-				switch(arg('action')) {
+				switch (arg('action'))
+				{
 					case 'up':
 						$this->moveUp();
 					break;
