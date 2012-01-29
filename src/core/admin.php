@@ -376,52 +376,19 @@ class TAdminUI extends WebPage
 	 * @param array $tabs
 	 *
 	 * @return string  HTML
+	 *
+	 * @deprecated с 2.17
 	 */
-	function renderTabs($tabs)
+	public function renderTabs($tabs)
 	{
-		global $Eresus, $page;
-
+		$html = '';
 		if (count($tabs))
 		{
-			$result = '<div class="legacy-tabs ui-helper-clearfix">';
-			$width = empty($tabs['width']) ?
-				'' :
-				' style="width: ' . $tabs['width'] . '"';
-			if (
-				isset($tabs['items']) &&
-				count($tabs['items'])
-			)
-			{
-				foreach ($tabs['items'] as $item)
-				{
-					if (isset($item['url']))
-					{
-						$url = $item['url'];
-					}
-					else
-					{
-						$url = $Eresus->request['url'];
-						if (isset($item['name']))
-						{
-							if (($p = strpos($url, $item['name'].'=')) !== false)
-							{
-								$url = substr($url, 0, $p-1);
-							}
-							$url .= (strpos($url, '?') !== false ? '&' : '?') . $item['name'].'='.$item['value'];
-						}
-						else
-						{
-							$url = $page->url();
-						}
-					}
-					$url = preg_replace('/&(?!amp;)/', '&amp;', $url);
-					$result .= '<a'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').
-						' href="'.$url.'">'.$item['caption'].'</a>';
-				}
-			}
-			$result .= "</div>\n";
+			$tabs['baseURL'] = $GLOBALS['Eresus']->request['link'];
+			$tmpl = Eresus_Template::fromFile('core/templates/legacy/tabs.html');
+			$html = $tmpl->compile($tabs);
 		}
-		return $result;
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
