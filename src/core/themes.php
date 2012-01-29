@@ -46,6 +46,13 @@ class TThemes
 	private $access = ADMIN;
 
 	/**
+	 * Управление шаблонами
+	 *
+	 * @var Templates
+	 */
+	private $templates;
+
+	/**
 	 * ???
 	 * @var unknown_type
 	 */
@@ -98,6 +105,17 @@ class TThemes
 	);
 
 	/**
+	 * Конструктор
+	 *
+	 * @since 2.17
+	 */
+	public function __construct()
+	{
+		$this->templates = new Templates();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Возвращает разметку интерфейса
 	 *
 	 * @return string
@@ -140,8 +158,7 @@ class TThemes
 	 */
 	public function sectionTemplatesInsert()
 	{
-		$templates = new Templates();
-		$templates->add(arg('name'), '', arg('code'), arg('desc'));
+		$this->templates->add(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -152,8 +169,7 @@ class TThemes
 	 */
 	public function sectionTemplatesUpdate()
 	{
-		$templates = new Templates();
-		$templates->update(arg('name'), '', arg('code'), arg('desc'));
+		$this->templates->update(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -166,8 +182,7 @@ class TThemes
 	{
 		global $page;
 
-		$templates = new Templates();
-		$templates->delete(arg('delete'));
+		$this->templates->delete(arg('delete'));
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -208,8 +223,7 @@ class TThemes
 	{
 		global $page;
 
-		$templates = new Templates();
-		$item = $templates->get(arg('id'), '', true);
+		$item = $this->templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
 			'caption' => $page->title. '-' . i18n('Изменить', __CLASS__),
@@ -260,8 +274,7 @@ class TThemes
 			),
 		);
 
-		$templates = new Templates();
-		$list = $templates->enum();
+		$list = $this->templates->enum();
 		$items = array();
 		foreach ($list as $key=>$value)
 		{
@@ -320,8 +333,8 @@ class TThemes
 	 */
 	public function sectionStdInsert()
 	{
-		$templates = new Templates();
-		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
+		$this->templates->add(arg('name'), 'std', arg('code'),
+			$this->stdTemplates[arg('name')]['caption']);
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -344,8 +357,7 @@ class TThemes
 	{
 		global $page;
 
-		$templates = new Templates();
-		$templates->delete(arg('delete'), 'std');
+		$this->templates->delete(arg('delete'), 'std');
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -406,8 +418,7 @@ class TThemes
 	{
 		global $page;
 
-		$templates = new Templates();
-		$item = $templates->get(arg('id'), 'std', true);
+		$item = $this->templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
 			'caption' => $page->title . ' - ' . i18n('Изменить', __CLASS__),
@@ -461,8 +472,8 @@ class TThemes
 				)
 			),
 		);
-		$templates = new Templates();
-		$list = $templates->enum('std');
+
+		$list = $this->templates->enum('std');
 		$items = array();
 		foreach ($list as $key=>$value)
 		{
