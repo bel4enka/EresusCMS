@@ -36,15 +36,14 @@
  * Упрвление темами оформления
  *
  * @package Eresus
- * @author mekras
  */
 class TThemes
 {
 	/**
-	 * ???
-	 * @var unknown_type
+	 * Уровень доступа к модулю
+	 * @var int
 	 */
-	public $access = ADMIN;
+	private $access = ADMIN;
 
 	/**
 	 * ???
@@ -97,6 +96,32 @@ class TThemes
 		'416' => array('caption' => 'HTTP 416 - Requested Range Not Satisfiable'),
 		'417' => array('caption' => 'HTTP 417 - Expectation Failed'),
 	);
+
+	/**
+	 * Возвращает разметку интерфейса
+	 *
+	 * @return string
+	 */
+	public function adminRender()
+	{
+		global $page;
+
+		$result = '';
+		if (UserRights($this->access)) {
+			#FIXME: Временное решение #0000163
+			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
+			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
+			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
+			$result .= $page->renderTabs($this->tabs);
+			switch (arg('section')) {
+				case 'css': $result .= $this->sectionStyles(); break;
+				case 'std': $result .= $this->sectionStd(); break;
+				case 'themes': default: $result .= $this->sectionTemplates(); break;
+			}
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -606,28 +631,4 @@ class TThemes
 	}
 	//-----------------------------------------------------------------------------
 
-	/**
-	 * ???
-	 * @return unknown_type
-	 */
-	public function adminRender()
-	{
-		global $page;
-
-		$result = '';
-		if (UserRights($this->access)) {
-			#FIXME: Временное решение #0000163
-			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
-			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
-			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
-			$result .= $page->renderTabs($this->tabs);
-			switch (arg('section')) {
-				case 'css': $result .= $this->sectionStyles(); break;
-				case 'std': $result .= $this->sectionStd(); break;
-				case 'themes': default: $result .= $this->sectionTemplates(); break;
-			}
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
 }
