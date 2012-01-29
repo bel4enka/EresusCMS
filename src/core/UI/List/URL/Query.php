@@ -42,7 +42,7 @@
  *
  * Корневой URL может быть задан в {@link __construct конструкторе}.
  *
- * @package UI
+ * @package Eresus
  */
 class Eresus_UI_List_URL_Query implements Eresus_UI_List_URL_Interface
 {
