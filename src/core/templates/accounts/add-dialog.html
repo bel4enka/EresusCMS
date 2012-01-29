@@ -71,3 +71,14 @@
 
 	</div>
 </div>
+<script>
+	jQuery('.add-account-dialog form').bind('input',
+		function ()
+		{
+			this.confirm.setCustomValidity(
+				this.password.value != this.confirm.value ?
+					'{i18n("Пароль и подтверждение не совпадают")}' : ''
+			);
+		}
+	);
+</script>
