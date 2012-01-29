@@ -38,29 +38,10 @@
 class TUsers
 {
 	/**
-	 * Класс для работы с учётными записями
-	 *
-	 * @var EresusAccounts
-	 * @deprecated с 2.17
-	 */
-	private $accounts;
-
-	/**
 	 * Уровень доступа к модулю
 	 * @var int
 	 */
 	private $access = ADMIN;
-
- /**
-	* Конструктор
-	*
-	* @return TUsers
-	*/
-	public function __construct()
-	{
-		$this->accounts = new EresusAccounts();
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает разметку интерфейса
@@ -147,15 +128,14 @@ class TUsers
 	{
 		if ('POST' == $GLOBALS['Eresus']->request['method'])
 		{
-			$info = array(
-				'username' => arg('username'),
-				'password' => arg('password'),
-				'active' => arg('enabled', 'int'),
-				'access' => arg('access', 'int'),
-				'fullname' => arg('fullname'),
-				'mail' => arg('email'),
-			);
-			$this->accounts->add($info);
+			$user = new Eresus_Entity_User;
+			$user->username = arg('username');
+			$user->password = arg('password');
+			$user->active = arg('enabled', 'int');
+			$user->access = arg('access', 'int');
+			$user->fullname = arg('fullname');
+			$user->mail = arg('email');
+			$user->save();
 			HTTP::redirect($GLOBALS['page']->url(array('id' => null)));
 		}
 
@@ -178,7 +158,9 @@ class TUsers
 	 */
 	private function editUserAction($id)
 	{
-		$user = $this->accounts->get($id);
+		assert('preg_match("/^\d+$/", $id)');
+
+		$user = Doctrine_Core::getTable('Eresus_Entity_User')->find($id);
 		if (false === $user)
 		{
 			throw new Eresus_CMS_Exception_NotFound;
@@ -212,9 +194,12 @@ class TUsers
 	 */
 	private function delete($id)
 	{
+		assert('preg_match("/^\d+$/", $id)');
+
 		if ($id != 1)
 		{
-			$this->accounts->delete($id);
+			$user = Doctrine_Core::getTable('Eresus_Entity_User')->find($id);
+			$user->delete();
 		}
 		else
 		{
@@ -231,9 +216,11 @@ class TUsers
 	 */
 	private function toggle($id)
 	{
+		assert('preg_match("/^\d+$/", $id)');
+
 		if ($id != 1)
 		{
-			$user = $this->accounts->get($id);
+			$user = Doctrine_Core::getTable('Eresus_Entity_User')->find($id);
 			if (false === $user)
 			{
 				throw new Eresus_CMS_Exception_NotFound;
