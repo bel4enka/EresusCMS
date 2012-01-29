@@ -70,6 +70,19 @@ class Eresus_Entity_User extends Eresus_DB_Record
 	const USERNAME_FILTER = '/[^a-z0-9_\-\.\@]/';
 
 	/**
+	 * Названия уровней доступа
+	 *
+	 * @var array
+	 * @since 2.17
+	 */
+	static private $map = array(
+		1 => 'Главный администратор',
+		2 => 'Администратор',
+		3 => 'Редактор',
+		4 => 'Пользователь'
+	);
+
+	/**
 	 * Описание таблицы
 	 *
 	 * @since 2.17
@@ -225,24 +238,20 @@ class Eresus_Entity_User extends Eresus_DB_Record
 	/**
 	 * Аксессор строкового значения уровня доступа
 	 *
-	 * @param int $value
+	 * @param bool   $load
+	 * @param string $property  имя свойства (всегда должно быть «accessStr»)
 	 *
 	 * @return string
 	 *
 	 * @since 2.17
 	 */
-	public function accessStrAccessor($value)
+	public function accessStrAccessor($load, $property)
 	{
-		static $map = array(
-			1 => 'Главный администратор',
-			2 => 'Администратор',
-			3 => 'Редактор',
-			4 => 'Пользователь'
-		);
+		assert('$property == "accessStr"');
 
-		if (isset($map[$value]))
+		if (isset(self::$map[$this->access]))
 		{
-			return i18n($map[$value]);
+			return i18n(self::$map[$this->access]);
 		}
 
 		return i18n('неизвестно');
