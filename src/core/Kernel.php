@@ -489,6 +489,11 @@ class Eresus_Kernel
 	/**
 	 * Возвращает контейнер служб
 	 *
+	 * Список служб:
+	 *
+	 * - app — {@link Eresus_CMS}
+	 * - i18n — {@link Eresus_i18n}
+	 *
 	 * @return sfServiceContainerBuilder
 	 *
 	 * @since 2.17
