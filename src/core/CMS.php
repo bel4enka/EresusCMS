@@ -56,6 +56,7 @@ class Eresus_CMS extends Eresus_Application
 		try
 		{
 			/* Подключение таблицы автозагрузки классов */
+			// TODO Удалить
 			EresusClassAutoloader::add('core/cms.autoload.php');
 
 			/* Общая инициализация */
@@ -63,11 +64,13 @@ class Eresus_CMS extends Eresus_Application
 			$this->createFileStructure();
 
 			/* Подключение старого ядра */
+			// TODO Удалить
 			Eresus_Logger::log(__METHOD__, LOG_NOTICE, 'Init legacy kernel');
 			include_once 'kernel-legacy.php';
 
 			/**
 			 * @global Eresus Eresus
+			 * @deprecated с 2.17
 			 */
 			$GLOBALS['Eresus'] = new Eresus;
 
@@ -327,6 +330,7 @@ class Eresus_CMS extends Eresus_Application
  * Компонент АИ
  *
  * @package Eresus
+ * @deprecated с 2.17
  */
 class EresusAdminComponent
 {

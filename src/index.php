@@ -41,6 +41,7 @@ ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
 
 /**
  * Уровень детализации журнала
+ * TODO Это должно устанавливаться через настройки
  */
 define('ERESUS_LOG_LEVEL' , LOG_ERR);
 
