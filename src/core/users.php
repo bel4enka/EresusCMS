@@ -129,17 +129,7 @@ class TUsers
 				break;
 
 			default:
-				if (arg('update')) $this->update(null);
-				elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
-				elseif (isset($Eresus->request['arg']['delete'])) ;
-				elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
-				elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
-					case 'insert': $this->insert(); break;
-				}
-				else
-				{
-					$result = $this->listAction();
-				}
+				$result = $this->listAction();
 		}
 		return $result;
 	}
