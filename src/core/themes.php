@@ -282,7 +282,7 @@ class TThemes
 	 */
 	public function sectionTemplates()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$page->title .= ' - ' . i18n('Шаблоны страниц', __CLASS__);
 
