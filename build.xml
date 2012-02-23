@@ -11,17 +11,10 @@
 
 	<property file="build.properties" />
 
-	<!-- Основные файлы проекта -->
-	<fileset dir="src" id="files.sources">
-		<include name="**" />
-		<exclude name="**/.svn" />
-		<exclude name="**/*.src" />
+	<!-- Основные файлы проекта. Только PHP -->
+	<fileset dir="src" id="files.sources.php">
+		<include name="**/*.php" />
 	</fileset>
-
-		<!-- Основные файлы проекта. Только PHP -->
-		<fileset dir="src" id="files.sources.php">
-			<include name="**/*.php" />
-		</fileset>
 
 	<!-- Eresus Framework -->
 	<fileset dir="framework" id="files.framework">
@@ -159,11 +152,22 @@
 
 		<!-- Копирование основных файлов -->
 		<copy todir="${build.dir}">
-			<fileset refid="files.sources" />
+			<fileset dir="src">
+				<include name="**" />
+				<exclude name="**/.svn" />
+				<exclude name="admin/themes/default/css/" />
+			</fileset>
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
 		</copy>
+		
+		<!-- Сборка CSS для тем АИ -->
+		<append destFile="${build.dir}/admin/themes/default/theme.css">
+			<fileset dir="src/admin/themes/default/css">
+				<include name="**/*.css" />
+			</fileset>
+		</append>
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />

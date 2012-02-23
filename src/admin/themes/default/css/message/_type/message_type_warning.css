@@ -1,0 +1,14 @@
+/**
+ * Предупреждающее сообщение
+ */
+.message_type_warning
+{
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	background: #ffe87f url(img/large/status/dialog-warning.png) no-repeat 5px 50%;
+	border-radius: 7px;
+	box-shadow: 
+		0 0 3px 0 rgba(0, 0, 0, 0.5),
+		0 15px 10px 0 rgba(255, 255, 255, 0.6) inset;
+	padding-left: 45px;
+}

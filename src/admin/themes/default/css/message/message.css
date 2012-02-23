@@ -1,0 +1,9 @@
+/**
+ * Сообщение
+ */
+.message
+{
+	margin: 0 0 7px;
+	min-height: 30px;
+	padding: 5px;
+}

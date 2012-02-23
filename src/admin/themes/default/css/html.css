@@ -1,0 +1,85 @@
+html
+{
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 13px;
+	line-height: 1.54;
+}
+
+/**
+ * Стили тела документа
+ */
+body
+{
+	color: black;
+	background: white;
+}
+
+
+img
+{
+	border-width: 0;
+}
+
+/**
+ * Ссылки
+ */
+a,
+a:link
+{
+	color: #08c;
+	text-decoration: underline;
+}
+	/**
+	 * Посещённые ссылки
+	 */
+	a:visited
+	{
+		color: #037;
+		text-decoration: underline;
+	}
+
+	a:hover
+	{
+		color: #f00;
+		text-decoration: underline;
+	}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+{
+	color: #007acc;
+	border-width: 0;
+}
+
+p
+{
+	margin: 0 0 .1em;
+	text-indent: 1em;
+}
+
+ul,
+ol
+{
+	margin: .1em 0;
+	padding: 0 0 0 15px;
+}
+
+label
+{
+	white-space: nowrap;
+}
+
+label sup
+{
+	color: red;
+}
+
+sup
+{
+	font-size: 90%;
+	vertical-align: baseline;
+}

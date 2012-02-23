@@ -1,0 +1,14 @@
+/**
+ * Информационное сообщение
+ */
+.message_type_info
+{
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	background: #eee url(img/large/status/dialog-information.png) no-repeat 5px 50%;
+	border-radius: 7px;
+	box-shadow: 
+		0 0 3px 0 rgba(0, 0, 0, 0.5), 
+		0 10px 5px 0 rgba(255, 255, 255, .7) inset;
+	padding-left: 45px;
+}

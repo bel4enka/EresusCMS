@@ -1,0 +1,7 @@
+/**
+ * Значок «Отмена»
+ */
+.button_icon_cancel
+{
+	background-image: url(img/medium/actions/dialog-cancel.png);
+}
