@@ -493,6 +493,7 @@ class Eresus_Kernel
 	 *
 	 * - app — {@link Eresus_CMS}
 	 * - i18n — {@link Eresus_i18n}
+	 * - plugins — {@link Eresus_Plugins}
 	 *
 	 * @return sfServiceContainerBuilder
 	 *
