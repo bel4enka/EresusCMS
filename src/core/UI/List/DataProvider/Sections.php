@@ -93,8 +93,7 @@ class Eresus_UI_List_DataProvider_Sections implements Eresus_UI_List_DataProvide
 			$index[$section->owner] []= $key;
 		}
 
-		$map = array('enabled' => 'active');
-		self::$sections = self::buildBranch($sections, $index, $map, 0, 1);
+		self::$sections = self::buildBranch($sections, $index, 0, 1);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -103,7 +102,6 @@ class Eresus_UI_List_DataProvider_Sections implements Eresus_UI_List_DataProvide
 	 *
 	 * @param Doctrine_Collection $sections  все разделы
 	 * @param EresusCollection    $index     индекс
-	 * @param array               $map       карта
 	 * @param int                 $owner     идентификатор родителя
 	 * @param int                 $level     уровень вложенности
 	 *
@@ -112,7 +110,7 @@ class Eresus_UI_List_DataProvider_Sections implements Eresus_UI_List_DataProvide
 	 * @since 2.17
 	 */
 	private static function buildBranch(Doctrine_Collection $sections, EresusCollection $index,
-		array $map, $owner, $level)
+		$owner, $level)
 	{
 		assert('preg_match("/^\d+$/", $owner)');
 		assert('preg_match("/^\d+$/", $level)');
@@ -120,10 +118,10 @@ class Eresus_UI_List_DataProvider_Sections implements Eresus_UI_List_DataProvide
 		$result = array();
 		foreach ($index[$owner] as $id)
 		{
-			$obj = new Eresus_UI_List_Item_Object($sections[$id], $map);
+			$obj = new Eresus_UI_List_Item_Section($sections[$id]);
 			$obj->level = $level;
 			$result []= $obj;
-			$result = array_merge($result, self::buildBranch($sections, $index, $map, $sections[$id]->id,
+			$result = array_merge($result, self::buildBranch($sections, $index, $sections[$id]->id,
 				$level + 1));
 		}
 		return $result;

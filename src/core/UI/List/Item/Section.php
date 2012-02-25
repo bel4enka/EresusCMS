@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Элемент {@link Eresus_Eresus_UI_List списка} — объект
+ * Элемент {@link Eresus_Eresus_UI_List списка} — раздел сайта
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -32,75 +32,29 @@
 
 
 /**
- * Элемент {@link Eresus_Eresus_UI_List списка} — объект
+ * Элемент {@link Eresus_Eresus_UI_List списка} — раздел сайта
  *
  * @package Eresus
  */
-class Eresus_UI_List_Item_Object implements Eresus_UI_List_Item_Interface
+class Eresus_UI_List_Item_Section extends Eresus_UI_List_Item_Object
 {
-	/**
-	 * Объект
-	 *
-	 * @var object
-	 */
-	protected $object;
-
-	/**
-	 * Имя свойства с ID
-	 *
-	 * @var string
-	 */
-	protected $id = 'id';
-
 	/**
 	 * Имя поля «вкл/выкл»
 	 *
 	 * @var string
 	 */
-	protected $enabled = 'enabled';
+	protected $enabled = 'active';
 
 	/**
 	 * Конструктор элемента
 	 *
-	 * @param object $object  объект
-	 * @param array  $map     карта соответствия свойств
+	 * @param Eresus_Entity_Section $object  объект
 	 *
 	 * @since 2.17
 	 */
-	public function __construct($object, array $map = array())
+	public function __construct(Eresus_Entity_Section $object)
 	{
-		if (!is_object($object))
-		{
-			throw new InvalidArgumentException('First argument must be an object but ' .
-				gettype($object) . ' given');
-		}
-		$this->object = $object;
-		if (isset($map['id']))
-		{
-			$this->id = $map['id'];
-		}
-		if (isset($map['enabled']))
-		{
-			$this->enabled = $map['enabled'];
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see Eresus_UI_List_Item_Interface::getId()
-	 */
-	public function getId()
-	{
-		return $this->object->{$this->id};
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see Eresus_UI_List_Item_Interface::isEnabled()
-	 */
-	public function isEnabled()
-	{
-		return $this->object->{$this->enabled};
+		parent::__construct($object);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -115,7 +69,13 @@ class Eresus_UI_List_Item_Object implements Eresus_UI_List_Item_Interface
 	 */
 	public function __get($key)
 	{
-		return $this->object->{$key};
+		switch ($key)
+		{
+			case 'typeTitle':
+				$types = Eresus_Kernel::sc()->plugins->getContentTypes();
+				return isset($types[$this->type]) ? $types[$this->type]['title'] : false;
+		}
+		return parent::__get($key);
 	}
 	//-----------------------------------------------------------------------------
 }

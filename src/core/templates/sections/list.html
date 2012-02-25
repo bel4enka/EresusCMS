@@ -15,7 +15,13 @@
 				<a href="admin.php?mod=content&section={$item->id}">{$item->caption}</a>
 			</td>
 			<td>{$item->name}</td>
-			<td>{$item->type}</td>
+			<td>
+				{if $item->typeTitle}
+					{$item->typeTitle}
+				{else}
+					<span class="error" title="Неподдерживаемый тип раздела">{$item->type}</span>
+				{/if}
+			</td>
 			<td>{$item->access}</td>
 			<td class="grid-list__item-ctrl">
 				{$list->getControls($item, 'config', 'toggle', 'delete')}
