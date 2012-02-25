@@ -591,11 +591,17 @@ class TPages
 	//------------------------------------------------------------------------------
 
 	/**
-	 * ???
-	 * @return unknown_type
+	 * Строит интерфейс списка разделов
+	 *
+	 * @return string  HTML
 	 */
-	function sectionIndex()
+	private function sectionIndex()
 	{
+		$provider = new Eresus_UI_List_DataProvider_Sections();
+		$list = new Eresus_UI_List($provider);
+		$tmpl = Eresus_Template::fromFile('core/templates/sections/list.html');
+		return $tmpl->compile(array('list' => $list));
+
 		global $Eresus, $page;
 
 		$root = $Eresus->root.'admin.php?mod=pages&amp;';

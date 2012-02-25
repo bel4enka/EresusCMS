@@ -1,0 +1,26 @@
+<div class="block block_float_left">
+	<table class="grid-list">
+		<thead>
+			<tr>
+				<th>Раздел</th>
+				<th>Имя</th>
+				<th>Тип</th>
+				<th>Доступ</th>
+				<th>Управление</th>
+			</tr>
+		</thead>
+		{foreach $list->getItems() item}
+		<tr class="grid-list__item">
+			<td style="padding-left: {$item->level - 1}em;">
+				<a href="admin.php?mod=content&section={$item->id}">{$item->caption}</a>
+			</td>
+			<td>{$item->name}</td>
+			<td>{$item->type}</td>
+			<td>{$item->access}</td>
+			<td class="grid-list__item-ctrl">
+				{$list->getControls($item, 'config', 'toggle', 'delete')}
+			</td>
+		</tr>
+		{/foreach}
+	</table>
+</div>	

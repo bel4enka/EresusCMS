@@ -32,6 +32,7 @@
  */
 
 return array(
+	'EresusCollection' => 'core/classes/helpers/EresusCollection.php',
 	'EresusForm' => 'core/EresusForm.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
 	'Templates' => 'core/lib/templates.php',
