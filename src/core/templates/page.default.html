@@ -51,7 +51,9 @@
 				<form action="{$globals.siteRoot}/admin.php" method="post">
 					<div class="ui-button-box">
 						<input type="hidden" name="action" value="logout">
-						<button type="submit">{i18n('Выйти', 'admin')}</button>
+						<button type="submit" class="button">
+							<span class="button__contents">{i18n('Выйти', 'admin')}</span>
+						</button>
 					</div>
 				</form>
 			</div>
