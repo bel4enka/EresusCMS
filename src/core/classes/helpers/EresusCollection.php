@@ -38,7 +38,7 @@
  *
  * @since 2.15
  */
-class EresusCollection implements ArrayAccess, Countable, Serializable
+class EresusCollection implements ArrayAccess, Countable, Serializable, Iterator
 {
 	/**
 	 * Значение, возвращаемое, при обращении к несуществующему элементу коллекции
@@ -94,7 +94,6 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetExists()
 	 */
 	public function offsetExists($offset)
@@ -105,7 +104,6 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetGet()
 	 */
 	public function offsetGet($offset)
@@ -124,7 +122,6 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetSet()
 	 */
 	public function offsetSet($offset, $value)
@@ -148,7 +145,6 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetUnset()
 	 */
 	public function offsetUnset($offset)
@@ -163,7 +159,6 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Countable::count()
 	 */
 	public function count()
@@ -173,7 +168,6 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Serializable::serialize()
 	 */
 	public function serialize()
@@ -183,12 +177,56 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Serializable::unserialize()
 	 */
 	public function unserialize($serialized)
 	{
 		$this->data = unserialize($serialized);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::current()
+	 */
+	public function current()
+	{
+		return current($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::key()
+	 */
+	public function key()
+	{
+		return key($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::next()
+	 */
+	public function next()
+	{
+		return next($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::rewind()
+	 */
+	public function rewind()
+	{
+		return reset($this->data);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see Iterator::valid()
+	 */
+	public function valid()
+	{
+		return array_key_exists($this->key(), $this->data);
 	}
 	//-----------------------------------------------------------------------------
 
