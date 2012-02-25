@@ -343,33 +343,6 @@ body
  **
  *******************************************************/
 
-.nav-main
-{
-	list-style: none;
-	padding: 0;
-}
-
-	.nav-main-item
-	{
-		border-color: transparent transparent #ddd;
-		border-style: solid;
-		border-width: 1px;
-		padding: 1px 5px;
-	}
-
-	.nav-main-item:hover
-	{
-		background: #efefef;
-		box-shadow: 
-			0 10px 5px 0 rgba(255, 255, 255, .7) inset;
-	}
-
-		a.nav-main-item__caption
-		{
-			color: #3764a0;
-			display: block;
-			text-decoration: none;
-		}
 	
 	.nav-main-item_state_current
 	{

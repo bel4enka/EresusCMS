@@ -24,7 +24,7 @@ img
  * Ссылки
  */
 a,
-a:link
+.link
 {
 	color: #08c;
 	text-decoration: underline;
@@ -32,13 +32,15 @@ a:link
 	/**
 	 * Посещённые ссылки
 	 */
-	a:visited
+	a:visited,
+	.link:vsisted
 	{
 		color: #037;
 		text-decoration: underline;
 	}
 
-	a:hover
+	a:hover,
+	.link:hover
 	{
 		color: #f00;
 		text-decoration: underline;

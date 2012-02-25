@@ -18,7 +18,7 @@
 	text-decoration: none;
 }
 
-a.button:hover
+.button:hover
 {
 	box-shadow:
 		0 0 2px 2px #cddef3,

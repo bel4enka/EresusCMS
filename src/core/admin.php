@@ -949,8 +949,8 @@ class TAdminUI extends WebPage
 						{
 							$this->title = $item['caption'];
 						}
-						$menu .= '<li class="nav-main-item' .
-							($item['link'] == arg('mod') ? ' nav-main-item_state_current' : '') .
+						$menu .= '<li class="nav-main__item' .
+							($item['link'] == arg('mod') ? ' nav-main__item_state_current' : '') .
 							'"><a href="' . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
 							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></li>\n";
 					}
@@ -979,10 +979,11 @@ class TAdminUI extends WebPage
 						{
 							$this->title = $item['caption'];
 						}
-						$menu .= '<li class="nav-main-item' .
-							($item['link'] == arg('mod') ? ' nav-main-item_state_current' : '') .
+						$menu .= '<li class="nav-main__item' .
+							($item['link'] == arg('mod') ? ' nav-main__item_state_current' : '') .
 							'"><a href="' . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
-							'" title="' .	$item['hint'] . '" class="nav-main-item__caption">' . $item['caption'] . "</a></li>\n";
+							'" title="' .	$item['hint'] . '" class="nav-main__item-caption">' . $item['caption'] .
+							"</a></li>\n";
 					}
 				}
 				$menu .= "</ul>\n";
