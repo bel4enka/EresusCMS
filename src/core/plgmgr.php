@@ -42,15 +42,6 @@ class TPlgMgr
 	 */
 	private $access = ADMIN;
 
-	private function delete()
-	{
-	global $page, $Eresus;
-
-		$Eresus->plugins->load($Eresus->request['arg']['delete']);
-		$Eresus->plugins->uninstall($Eresus->request['arg']['delete']);
-		HTTP::redirect($page->url());
-	}
-
 	private function edit()
 	{
 	global $page, $Eresus;
@@ -115,7 +106,8 @@ class TPlgMgr
 			break;
 
 			case 'delete':
-				$this->delete();
+				$ctrl = new Eresus_Admin_Controller_Plugins(Eresus_Kernel::sc());
+				$result = $ctrl->deleteAction();
 			break;
 
 			case 'edit':

@@ -175,7 +175,7 @@ class Plugin
 		$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
 		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 		$this->urlStyle = $Eresus->style.$this->name.'/';
-		/* FIXME
+		/* FIXME Не загружается языковой файл плагина
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 		if (FS::isFile($filename))
 			Core::safeInclude($filename);
@@ -826,7 +826,7 @@ class EresusExtensionConnector
 
 		if (is_dir($filename))
 		{
-			// FIXME
+			// FIXME Отказаться от FS
 			$filename = FS::normalize($filename . '/index.php');
 		}
 

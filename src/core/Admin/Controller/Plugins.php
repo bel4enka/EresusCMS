@@ -82,20 +82,51 @@ class Eresus_Admin_Controller_Plugins extends Eresus_Admin_Controller
 				if (!arg('confirmed'))
 				{
 					$vars['deletion'] = false;
-					$vars['plugin'] = $plugin->object;
+					$vars['plugin'] = $plugin;
 					$tmpl = Eresus_Template::fromFile('core/templates/plugins/confirm.html');
 					$html = $tmpl->compile($vars);
 					return $html;
-				}
-				else
-				{
-
 				}
 			}
 		}
 
 		$plugin->active = ! $plugin->active;
 		$plugin->save();
+		HTTP::redirect('admin.php?mod=plgmgr');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Удаляет расширение
+	 *
+	 * @return string  HTML
+	 *
+	 * @since 2.17
+	 */
+	public function deleteAction()
+	{
+		$uid = arg('id');
+		$vars = array();
+		$plugin = Doctrine_Core::getTable('Eresus_Entity_Plugin')->find($uid);
+		if (false === $plugin)
+		{
+			throw new Eresus_CMS_Exception_NotFound;
+		}
+
+		$vars['dependent'] = $this->container->plugins->getDependent($uid);
+		if ($vars['dependent'])
+		{
+			if (!arg('confirmed'))
+			{
+				$vars['deletion'] = true;
+				$vars['plugin'] = $plugin;
+				$tmpl = Eresus_Template::fromFile('core/templates/plugins/confirm.html');
+				$html = $tmpl->compile($vars);
+				return $html;
+			}
+		}
+
+		$plugin->delete();
 		HTTP::redirect('admin.php?mod=plgmgr');
 	}
 	//-----------------------------------------------------------------------------
