@@ -280,7 +280,7 @@ class Eresus_CMS extends Eresus_Application
 	{
 		Eresus_Logger::log(__METHOD__, LOG_DEBUG, '()');
 
-/*		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+		/*global $Eresus; // FIXME: Устаревшая переменная $Eresus
 
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
