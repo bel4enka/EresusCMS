@@ -55,7 +55,7 @@ class TSettings
 
 		$req = HTTP::request();
 
-		$result = "  define('$name', ";
+		$result = "\tdefine('$name', ";
 		$quot = "'";
 		$value = isset($_POST[$name]) ? $_POST[$name] : null;
 
