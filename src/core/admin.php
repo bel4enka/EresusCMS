@@ -759,22 +759,25 @@ class TAdminUI extends WebPage
 					{
 						if (isset($name))
 						{
-							$msg = i18n('В расширении "%s" произошла ошибка.');
-							$msg = sprintf($msg, $name);
+							$desc = i18n('В расширении "%s" произошла ошибка.');
+							$desc = sprintf($desc, $name);
 						}
 						else
 						{
-							$msg = i18n('В подсистеме "%s" произошла ошибка.');
-							$msg = sprintf($msg, $module);
+							$desc = i18n('В подсистеме "%s" произошла ошибка.');
+							$desc = sprintf($desc, $module);
 						}
 
 						Eresus_Logger::exception($e);
 
-						$msg .= '<br />' . $e->getMessage();
-						if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)
-						{
-							$msg .= '<br />' . $e->getDescription();
-						}
+						$tmplFile = 'core/templates/exception' .
+							(Eresus_Config::get('eresus.cms.debug') ? '.debug' : '') . '.html';
+						$tmpl = Eresus_Template::fromFile($tmplFile);
+						$msg = $tmpl->compile(array(
+							'description' => $desc,
+							'e' => $e,
+							'source' => Eresus_Kernel::sc()->app->getExceptionSource($e)
+						));
 						ErrorMessage($msg);
 					}
 				}

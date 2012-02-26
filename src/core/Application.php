@@ -101,6 +101,38 @@ abstract class Eresus_Application
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает часть исходного кода, вызвавшую исключительную ситуацию
+	 *
+	 * @param Exception $e
+	 *
+	 * @return string  HTML
+	 *
+	 * @since 2.17
+	 */
+	public function getExceptionSource(Exception $e)
+	{
+		$dumpSize = 5;
+		$lines = @file($e->getFile());
+		$firstLine = $e->getLine() > $dumpSize ? $e->getLine() - $dumpSize : 0;
+		$lastLine = $e->getLine() + $dumpSize - 1 < count($lines) ?
+			$e->getLine() + $dumpSize :
+			count($lines);
+
+		$source = '';
+		for ($i = $firstLine; $i < $lastLine; $i++)
+		{
+			$line = highlight_string('<?php' . $lines[$i], true);
+			$line = preg_replace('/&lt;\?php/', '', $line, 1);
+			if ($i == $e->getLine() - 1)
+			{
+				$line = preg_replace('/(<\w+)/', '$1 class="error-line"', $line);
+			}
+			$source .= $line;
+		}
+		return $source;
+	}
+	//-----------------------------------------------------------------------------
+	/**
 	 * Читает настройки
 	 *
 	 * @throws DomainException  если файл настроек содержит ошибки
