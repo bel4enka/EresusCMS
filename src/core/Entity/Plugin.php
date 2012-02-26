@@ -169,7 +169,7 @@ class Eresus_Entity_Plugin extends Eresus_DB_Record
 				throw new DomainException(
 					sprintf(i18n('Модуль расширения «%s» повреждён. Подробности в журнале.'), $this->title));
 			}
- 			$this->mainObject = new $className(Eresus_Kernel::sc());
+			$this->mainObject = new $className(Eresus_Kernel::sc());
 		}
 		return $this->mainObject;
 	}
