@@ -288,7 +288,8 @@ class Eresus_CMS extends Eresus_Application
 
 		# Обратная совместимость
 		$Eresus->session = &$_SESSION['session'];
-		#if (!isset($Eresus->session['msg'])) $Eresus->session['msg'] = array('error' => array(), 'information' => array());
+		#if (!isset($Eresus->session['msg']))
+			$Eresus->session['msg'] = array('error' => array(), 'information' => array());
 		#$Eresus->user = &$_SESSION['user'];
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];*/
