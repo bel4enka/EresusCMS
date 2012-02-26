@@ -130,6 +130,7 @@
 		<phpcodesniffer
 			standard="Eresus"
 			haltonerror="false"
+			encoding="utf-8"
 		>
 			<formatter
 				type="${phpcs.format}"
