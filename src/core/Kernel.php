@@ -255,7 +255,7 @@ class Eresus_Kernel
 			}
 			//@codeCoverageIgnoreEnd
 
-			return $message . "\nSee application log for more info.\n";
+			return $message . "\nSee %HTDOCS%/var/log/eresus.log for more info.\n";
 		}
 		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
 			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
