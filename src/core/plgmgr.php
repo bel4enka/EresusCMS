@@ -111,7 +111,8 @@ class TPlgMgr
 			break;
 
 			case 'edit':
-				$result = $this->edit();
+				$ctrl = new Eresus_Admin_Controller_Plugins(Eresus_Kernel::sc());
+				$result = $ctrl->settingsAction();
 			break;
 
 			case 'add':

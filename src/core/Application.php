@@ -132,6 +132,41 @@ abstract class Eresus_Application
 		return $source;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Закгрузик классов плагинов
+	 *
+	 * @param string $className
+	 *
+	 * @return bool
+	 *
+	 * @since 2.17
+	 */
+	public function pluginClassAutoloader($className)
+	{
+		if (substr($className, 0, 7) == 'Plugin_' && !Eresus_Kernel::classExists($className))
+		{
+			$fileName = $this->rootDir . '/plugins/';
+			$pluginName = substr($className, 7);
+			$p = strpos($pluginName, '_');
+			if (false === $p)
+			{
+				$fileName .= $pluginName . '/classes/' . $pluginName . '.php';
+			}
+			else
+			{
+				$pluginName = substr($pluginName, 0, $p);
+				throw new LogicException('TODO');
+			}
+			if (file_exists($fileName))
+			{
+				include $fileName;
+			}
+		}
+		return Eresus_Kernel::classExists($className);
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * Читает настройки
 	 *
@@ -285,6 +320,8 @@ abstract class Eresus_Application
 	 */
 	protected function initPlugins()
 	{
+		spl_autoload_register(array($this, 'pluginClassAutoloader'));
+
 		$plugins = new Eresus_Plugins;
 		$plugins->init();
 		// Обратная совместимость. FIXME Удалить

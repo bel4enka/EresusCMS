@@ -130,4 +130,34 @@ class Eresus_Admin_Controller_Plugins extends Eresus_Admin_Controller
 		HTTP::redirect('admin.php?mod=plgmgr');
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Диалог настройки расширения
+	 *
+	 * @return string  HTML
+	 *
+	 * @since 2.17
+	 */
+	public function settingsAction()
+	{
+		$uid = arg('id');
+		$vars = array();
+		$plugin = Doctrine_Core::getTable('Eresus_Entity_Plugin')->find($uid);
+		if (false === $plugin)
+		{
+			throw new Eresus_CMS_Exception_NotFound;
+		}
+
+		$mainObject = $plugin->main();
+		if (method_exists($mainObject, 'settings'))
+		{
+			$html = $mainObject->settings();
+		}
+		else
+		{
+			$html = i18n('У модуля нет настроек');
+		}
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
 }
