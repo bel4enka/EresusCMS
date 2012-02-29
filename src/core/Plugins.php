@@ -149,7 +149,7 @@ class Eresus_Plugins
 	 *
 	 * @param string $uid
 	 *
-	 * @return Eresus_Plugin|null
+	 * @return Eresus_Entity_Plugin|null
 	 *
 	 * @since 2.17
 	 */
