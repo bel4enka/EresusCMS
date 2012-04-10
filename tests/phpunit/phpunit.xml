@@ -4,6 +4,15 @@
 	<filter>
 		<whitelist addUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">../../src</directory>
+			<exclude>
+				<file>../../src/core/admin.php</file>
+				<file>../../src/core/errors.html.php</file>
+				<file>../../src/core/fatal.html.php</file>
+				<directory>../../src/core/framework</directory>
+				<file>../../src/core/gziph.php</file>
+				<directory>../../src/ext-3rd</directory>
+				<file>../../src/index.php</file>
+			</exclude>
 		</whitelist>
 	</filter>
 
