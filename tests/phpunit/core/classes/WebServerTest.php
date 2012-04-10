@@ -38,6 +38,32 @@ require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 class WebServerTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @see PHPUnit_Framework_TestCase::setUp()
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+
+		$instance = new ReflectionProperty('WebServer', 'instance');
+		$instance->setAccessible(true);
+		$instance->setValue('WebServer', null);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @see PHPUnit_Framework_TestCase::tearDown()
+	 */
+	protected function tearDown()
+	{
+		parent::tearDown();
+
+		$instance = new ReflectionProperty('WebServer', 'instance');
+		$instance->setAccessible(true);
+		$instance->setValue('WebServer', null);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * @covers WebServer::__construct
 	 * @covers WebServer::getInstance
 	 * @covers WebServer::getDocumentRoot
