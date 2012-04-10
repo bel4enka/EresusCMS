@@ -359,8 +359,8 @@ class Eresus_Kernel
 		 */
 		if (stripos($className, 'Botobor') === 0)
 		{
-			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'libbotobor' . DIRECTORY_SEPARATOR .
-				'libbotobor.php';
+			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'botobor' . DIRECTORY_SEPARATOR .
+				'botobor.php';
 
 			if (file_exists($fileName))
 			{

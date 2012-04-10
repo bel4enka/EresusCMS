@@ -30,8 +30,8 @@
 		<exclude name="**/*.src" />
 	</fileset>
 
-	<!-- 3rd party: libbotobor -->
-	<fileset dir="3rdparty/libbotobor/src" id="files.3rd.libbotobor">
+	<!-- 3rd party: botobor -->
+	<fileset dir="3rdparty/botobor/src" id="files.3rd.botobor">
 		<include name="**" />
 		<exclude name=".svn" />
 	</fileset>
@@ -101,7 +101,7 @@
 				--log-junit ${logs.dir}/phpunit.xml
 				--coverage-clover ${logs.dir}/phpunit.coverage.xml
 				--coverage-html ${phpunit.coverage.html}
-				${project.basedir}/tests/phpunit/AllTests.php"
+				--configuration ${project.basedir}/tests/phpunit/phpunit.xml"
 			checkreturn="true"
 			logoutput="true"
 		/>
@@ -196,8 +196,8 @@
 		</copy>
 
 		<!-- Ботобор -->
-		<copy todir="${build.dir}/core/libbotobor">
-			<fileset refid="files.3rd.libbotobor" />
+		<copy todir="${build.dir}/core/botobor">
+			<fileset refid="files.3rd.botobor" />
 		</copy>
 
 		<!-- jQuery -->

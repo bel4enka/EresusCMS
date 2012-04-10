@@ -74,13 +74,13 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 			unlink($filename);
 		}
 
-		$filename = TESTS_SRC_DIR . '/core/libbotobor/libbotobor.php';
+		$filename = TESTS_SRC_DIR . '/core/botobor/botobor.php';
 		if (is_file($filename))
 		{
 			unlink($filename);
 		}
 
-		$filename = TESTS_SRC_DIR . '/core/libbotobor';
+		$filename = TESTS_SRC_DIR . '/core/botobor';
 		if (is_dir($filename))
 		{
 			rmdir($filename);
@@ -282,8 +282,8 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 		 * Классы Botobor
 		 */
 		$this->assertFalse(Eresus_Kernel::autoload('Botobor_Stub'));
-		mkdir(TESTS_SRC_DIR . '/core/libbotobor', 0777, true);
-		file_put_contents(TESTS_SRC_DIR . '/core/libbotobor/libbotobor.php',
+		mkdir(TESTS_SRC_DIR . '/core/botobor', 0777, true);
+		file_put_contents(TESTS_SRC_DIR . '/core/botobor/botobor.php',
 			'<?php class Botobor_Stub {} ?>');
 		$this->assertTrue(Eresus_Kernel::autoload('Botobor_Stub'));
 	}
