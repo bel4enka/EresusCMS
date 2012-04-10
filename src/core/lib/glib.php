@@ -40,20 +40,16 @@ function imageCreateFromFile($filename)
 {
 	$type = getimagesize($filename);
 	switch ($type[2]) {
-		case IMG_GIF:  $result = imageCreateFromGIF($filename); break;
-		case IMG_JPG:
-		case IMG_JPEG: $result = imageCreateFromJPEG($filename); break;
-		case IMG_PNG:  $result = imageCreateFromPNG($filename); break;
-		case IMG_WBMP: $result = imageCreateFromWBMP($filename); break;
-		case IMG_XPM:  $result = imageCreateFromXPM($filename); break;
+		case IMAGETYPE_GIF:      $result = imageCreateFromGIF($filename); break;
+		case IMAGETYPE_JPEG:
+		case IMAGETYPE_JPEG2000: $result = imageCreateFromJPEG($filename); break;
+		case IMAGETYPE_PNG:      $result = imageCreateFromPNG($filename); break;
 		default:
 			switch (substr($type['mime'], 6))
 			{
 				case 'gif':  $result = imageCreateFromGIF($filename); break;
 				case 'jpeg': $result = imageCreateFromJPEG($filename); break;
 				case 'png':  $result = imageCreateFromPNG($filename); break;
-				case 'wbmp': $result = imageCreateFromWBMP($filename); break;
-				case 'xpm':  $result = imageCreateFromXPM($filename); break;
 				default:       $result = false;
 			}
 	}
@@ -72,22 +68,18 @@ function imageSaveToFile($image, $filename, $format)
 {
 	$result = false;
 	switch ($format) {
-		case IMG_GIF:
+		case IMAGETYPE_GIF:
 			$result = imageGIF($image, $filename);
 		break;
-		case IMG_JPG:
-		case IMG_JPEG:
+		case IMAGETYPE_JPEG:
+		case IMAGETYPE_JPEG2000:
 			$quality = func_num_args() > 3 ? func_get_arg(3) : 80;
 			$result = imageJPEG($image, $filename, $quality);
 		break;
-		case IMG_PNG:
+		case IMAGETYPE_PNG:
 			$quality = func_num_args() > 3 ? func_get_arg(3) : 7;
 			$filters = func_num_args() > 4 ? func_get_arg(4) : 0;
 			$result = imagePNG($image, $filename, $quality, $filters);
-		break;
-		case IMG_WBMP:
-			$foreground = func_num_args() > 3 ? func_get_arg(3) : null;
-			$result = imageWBMP($image, $filename, $foreground);
 		break;
 	}
 	return $result;
