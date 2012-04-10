@@ -33,6 +33,9 @@
  * $Id$
  */
 
+define('TESTS_TEST_DIR', __DIR__ );
+define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
+
 require_once __DIR__ . '/stubs.php';
 
 require_once TESTS_SRC_DIR . '/lang/ru.php';
