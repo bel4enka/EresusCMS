@@ -29,7 +29,6 @@
  * $Id$
  */
 
-require_once __DIR__ . '/../../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/classes/helpers/EresusCollection.php';
 
 /**
@@ -185,20 +184,6 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 		$s = serialize($test1);
 		$test2 = unserialize($s);
 		$this->assertEquals('b', $test2[1]);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 */
-	public function test_foreach()
-	{
-		$test = new EresusCollection(array('a', 'b', 'c'));
-		$count = 0;
-		foreach ($test as $value)
-		{
-			$count++;
-		}
-		$this->assertEquals(3, $count);
 	}
 	//-----------------------------------------------------------------------------
 

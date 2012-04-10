@@ -92,12 +92,13 @@ class WebServer
 	 *
 	 * @return WebServer
 	 *
+	 * @uses FS::canonicalForm()
 	 * @since 2.15
 	 */
 	private function __construct()
 	{
 		$path = realpath($_SERVER['DOCUMENT_ROOT']);
-		$this->documentRoot = $path;
+		$this->documentRoot = FS::canonicalForm($path);
 	}
 	//-----------------------------------------------------------------------------
 

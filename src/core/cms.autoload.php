@@ -32,14 +32,9 @@
  */
 
 return array(
-	'EresusCollection' => 'core/classes/helpers/EresusCollection.php',
 	'EresusForm' => 'core/EresusForm.php',
+	'I18n' => 'core/i18n.php',
 	'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
-	'Templates' => 'core/lib/templates.php',
 	'WebServer' => 'core/classes/WebServer.php',
 	'WebPage' => 'core/classes/WebPage.php',
-
-	'TListContentPlugin' => 'core/backward/TListContentPlugin',
-	'TContentPlugin' => 'core/backward/TContentPlugin',
-	'TPlugin' => 'core/backward/TPlugin',
 );

@@ -41,7 +41,6 @@ ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
 
 /**
  * Уровень детализации журнала
- * TODO Это должно устанавливаться через настройки
  */
 define('ERESUS_LOG_LEVEL' , LOG_ERR);
 
@@ -56,7 +55,7 @@ Eresus_Kernel::init();
 /**
  * Подключение Eresus Core
  */
-include_once 'core/framework/core/eresus-core.php';
+include_once 'core/framework/core/eresus-core.compiled.php';
 
 if (isset($php_errormsg))
 {

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>{$siteName} - {$page->title}</title>
+	<link rel="StyleSheet" href="{$siteRoot}/admin/themes/default/theme.css" type="text/css">
+	<link rel="StyleSheet" href="{$siteRoot}/admin/themes/default/main.css" type="text/css">
+	<script type="text/javascript">//<![CDATA[
+		window.Eresus = {
+				siteRoot: "{$siteRoot}"
+		};
+	//]]></script>
+	{jslib jquery ui cookie}
+	{* renderHeadSection надо обязательно вызывать после всех jslib *}
+	{$page->renderHeadSection()}
+</head>
+<body>
+
+	<div id="header" class="header ui-widget-header">
+		<div class="width-limit">
+			<div id="cmsLogo">
+				<a href="admin.php?mod=about">
+					<img src="{$siteRoot}/admin/themes/default/img/logo.png" alt="{$cms.name} {$cms.version}"
+						width="150" height="30" />
+				</a>
+			</div>
+			<h1>{$siteName} &ndash; {$page->title}</h1>
+			CMS {$cms.name} {$cms.version}
+		</div>
+	</div>
+
+	<div class="width-limit">
+		<div class="nav sidebar">
+
+			<div class="box ui-widget ui-widget-content">
+				<div class="header">{$i18n->getText('admContent')}</div>
+				<div class="content menu menu-content">
+					<ul>
+						{$sectionMenu}
+					</ul>
+				</div>
+			</div>
+
+			<div class="box ui-widget ui-widget-content menu">
+				{$controlMenu}
+			</div>
+
+			<div class="box ui-widget ui-widget-content">
+				<div class="header">{$user.name}</div>
+				<div class="content user-box">
+					<a href="{$siteRoot}/admin.php?mod=users&amp;id={$user.id}">
+						{$i18n->getText('admUsersChangePassword')}
+					</a>
+					<form action="{$siteRoot}/admin.php" method="post">
+						<div class="ui-button-box">
+							<input type="hidden" name="action" value="logout">
+							<button type="submit">{$i18n->getText('strExit')}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="content">
+			<noscript>
+				<div class="ui-state-error box">
+					В вашем браузере не работает JavaScript. Без JavaScript работа с панелью управления
+					сайтом невозможна, и может привести к потере информации!
+				</div>
+			</noscript>
+			{if $Eresus->conf.debug.enable}
+			<div class="ui-state-error box">
+				Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
+				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
+			</div>
+			{/if}
+			{$content}
+		</div>
+	</div>
+
+	<script src="{$siteRoot}/admin/themes/default/theme.js" type="text/javascript"></script>
+	<script src="{$siteRoot}/core/functions.js" type="text/javascript"></script>
+	{$body}
+</body>
+</html>

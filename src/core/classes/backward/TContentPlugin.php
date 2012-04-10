@@ -30,11 +30,12 @@
  * $Id$
  */
 
+useClass('backward/TPlugin');
 /**
- * Базовый класс для плагинов, предоставляющих тип контента
- *
- * @package Eresus
- */
+* Базовый класс для плагинов, предоставляющих тип контента
+*
+* @package Eresus
+*/
 class TContentPlugin extends TPlugin
 {
 	/**
@@ -111,8 +112,7 @@ function adminRenderContent()
     'width' => '100%',
     'fields' => array (
       array ('type'=>'hidden','name'=>'update'),
-      array ('type' => 'memo', 'name' => 'content', 'label' => i18n('Изменить', __CLASS__),
-      	'height' => '30'),
+      array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
     ),
     'buttons' => array('apply', 'reset'),
   );

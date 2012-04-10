@@ -34,6 +34,13 @@
  */
 define('ERESUS_CORE_VERSION', '0.1.3');
 
+/**
+ * Emergency memory buffer size in KiB
+ *
+ * @see EresusFatalErrorHandler
+ */
+define('ERESUS_MEMORY_OVERFLOW_BUFFER', 64);
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *   Logging Functions
@@ -108,6 +115,7 @@ function eresus_log($sender, $priority, $message)
 
 		if (!syslog($priority, $message)) {
 			fputs(STDERR, "Can not log message!\n");
+			if (Core::testMode()) exit(-1);
 		}
 
 	}
@@ -198,7 +206,9 @@ class EresusRuntimeException extends RuntimeException implements EresusException
 		if (is_null($message))
 			$message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
 
-		if (version_compare(PHP_VERSION, '5.3', '>=')) {
+		if (Core::testMode()) $message .= " ($description)";
+
+		if (PHP::checkVersion('5.3')) {
 
 			parent::__construct($message, 0, $previous);
 
@@ -231,7 +241,7 @@ class EresusRuntimeException extends RuntimeException implements EresusException
 	 */
 	public function getPreviousException()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '>='))
+		if (PHP::checkVersion('5.3'))
 			return parent::getPrevious();
 
 		else
@@ -281,7 +291,9 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 		if (is_null($message))
 			$message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
 
-		if (version_compare(PHP_VERSION, '5.3', '>=')) {
+		if (Core::testMode()) $message .= " ($description)";
+
+		if (PHP::checkVersion('5.3')) {
 
 			parent::__construct($message, 0, $previous);
 
@@ -314,7 +326,7 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 	 */
 	public function getPreviousException()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '>='))
+		if (PHP::checkVersion('5.3'))
 			return parent::getPrevious();
 
 		else
@@ -489,6 +501,1034 @@ class EresusMethodNotExistsException extends EresusLogicException {
 	//-----------------------------------------------------------------------------
 }
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *   PHP Functions
+ *
+ *   ...
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Major and minor version numbers (N.N.x-xx)
+ */
+define('VERSION_ID', 0x01);
+
+/**
+ * Major version number (N.x.x-xx)
+ */
+define('VERSION_MAJOR', 0x02);
+
+/**
+ * Minor version number (x.N.x-xx)
+ */
+define('VERSION_MINOR', 0x03);
+
+/**
+ * Release number (x.x.N-xx)
+ */
+define('VERSION_RELEASE', 0x04);
+
+/**
+ * Extra information (x.x.x-NN)
+ */
+define('VERSION_EXTRA', 0x05);
+
+/**
+ * PHP information
+ *
+ * Part of functions was taken from a {@link http://limb-project.com/ Limb3 project}
+ *
+ * @package Core
+ * @since 0.0.1
+ */
+class PHP {
+
+	/**
+	 * Plain PHP version
+	 * @var string
+	 */
+	private static $phpVersion = PHP_VERSION;
+
+	/**
+	 * Parsed version cache
+	 * @var string
+	 */
+	private static $version = null;
+
+	/**
+	 * Parsed open_basedir list
+	 *
+	 * @var array
+	 */
+	protected static $open_basedir;
+
+	/**
+	 * Substitute PHP version with specified value
+	 *
+	 * @param string $version
+	 *
+	 * @since 0.1.1
+	 */
+	public static function setVersion($version)
+	{
+		self::$phpVersion = is_null($version) ? PHP_VERSION : $version;
+		self::$version = null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get PHP version
+	 *
+	 * @param int $part  Version part to return
+	 * @return string
+	 *
+	 * @see VERSION_XXX constants
+	 */
+	public static function version($part = null)
+	{
+		if (is_null($part))
+			return self::$phpVersion;
+
+		if (is_null(self::$version)) {
+			/* Parse PHP version only once */
+			preg_match('/^(\d+)\.(\d+)\.(\d+).?(.+)?/', self::$phpVersion, $v);
+			self::$version[VERSION_ID]      = $v[1] . '.' . $v[2];
+			self::$version[VERSION_MAJOR]   = $v[1];
+			self::$version[VERSION_MINOR]   = $v[2];
+			self::$version[VERSION_RELEASE] = isset($v[3]) ? $v[3] : 0;
+			self::$version[VERSION_EXTRA]   = isset($v[4]) ? $v[4] : 0;
+		}
+		$result = self::$version[$part];
+
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if current PHP version is equal or higher then $version
+	 *
+	 * @param string $version
+	 * @return bool
+	 *
+	 * @since 0.1.1
+	 */
+	static function checkVersion($version)
+	{
+		return version_compare(self::$phpVersion, $version, '>=');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get php.ini option
+	 *
+	 * @param string $key  Option name
+	 * @return mixed
+	 *
+	 * @since 0.1.1
+	 */
+	public static function iniGet($key)
+	{
+		return Core::testModeIsSet("ini.$key") ? Core::testModeGet("ini.$key") : ini_get($key);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check for CLI SAPI
+	 *
+	 * @return bool
+	 *
+	 * @since 0.0.1
+	 */
+	static function isCLI()
+	{
+		if (Core::testModeIsSet('PHP::isCLI')) return Core::testModeGet('PHP::isCLI');
+		return PHP_SAPI == 'cli';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check for CGI SAPI
+	 *
+	 * @return bool
+	 *
+	 * @since 0.0.1
+	 */
+	static function isCGI()
+	{
+		return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check for web server SAPI
+	 *
+	 * @return bool
+	 *
+	 * @since 0.0.1
+	 */
+	static function isModule()
+	{
+		return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if path is in open_basedir list
+	 *
+	 * If open_basedir option not set method returns 'true' for any path.
+	 *
+	 * @param string $path  Path to check
+	 * @return bool
+	 *
+	 * @since 0.1.1
+	 */
+	public static function inOpenBaseDir($path)
+	{
+		if (! self::iniGet('open_basedir'))
+			return true;
+
+		if (! self::$open_basedir)
+			self::$open_basedir = explode(PATH_SEPARATOR, self::iniGet('open_basedir'));
+
+		if ($path == '.')
+			$path = getcwd();
+
+		foreach (self::$open_basedir as $dir)
+			if (substr($path, 0, strlen($dir)) == $dir)
+				return true;
+
+		return false;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *   System Functions
+ *
+ *   ...
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * System information
+ *
+ * Part of functions was taken from a Limb3 project -
+ * {@link http://limb-project.com/}
+ *
+ * @package Core
+ * @since 0.0.1
+ */
+class System {
+
+	/**
+	 * Init
+	 *
+	 * @since 0.0.1
+	 * @todo UnitTest
+	 */
+	public static function init()
+	{
+		@$timezone = date_default_timezone_get();
+		date_default_timezone_set($timezone);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if system is a UNIX-like
+	 *
+	 * @return bool
+	 *
+	 * @since 0.0.1
+	 * @todo UnitTest for OSes  other then UNIX
+	 */
+	static function isUnixLike()
+	{
+		return DIRECTORY_SEPARATOR == '/';
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if system is a Microsoft Windows
+	 *
+	 * @return bool
+	 *
+	 * @since 0.0.1
+	 * @todo UnitTest for OSes  other then UNIX
+	 */
+	static function isWindows()
+	{
+		if (Core::testModeGet('System::isWindows')) return true;
+		return strncasecmp(PHP_OS, 'WIN', 3) == 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if system is a MacOS
+	 *
+	 * @return bool
+	 *
+	 * @since 0.0.1
+	 * @todo UnitTest for OSes  other then UNIX
+	 */
+	static function isMac()
+	{
+		return strncasecmp(PHP_OS, 'MAC', 3) == 0;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get system time zone
+	 *
+	 * @return string
+	 *
+	 * @since 0.0.1
+	 * @link http://ru2.php.net/timezones List of timezones
+	 *
+	 * @todo UnitTest
+	 */
+	public static function getTimezone()
+	{
+		return date_default_timezone_get();
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *   Filesystem Functions
+ *
+ *   ...
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+/**
+ * Exception thrown in case of FS runtime error
+ *
+ * @package Core
+ */
+class EresusFsRuntimeException extends EresusRuntimeException {}
+
+
+/**
+ * Exception thrown if path not exists
+ *
+ * @package Core
+ */
+class EresusFsPathNotExistsException extends EresusFsRuntimeException {
+
+	/**
+	 * Creates new exception object
+	 *
+	 * @param string    $path [optional]         Path
+	 * @param string    $description [optional]  Extended information
+	 * @param Exception $previous [optional]     Previous exception
+	 */
+	function __construct()
+	{
+		if (func_num_args() > 0) {
+
+			$path = func_get_arg(0);
+			$description = func_num_args() > 1 ? func_get_arg(1) : null;
+			$previous = func_num_args() > 2 ? func_get_arg(2) : null;
+
+			$message = "Path \"$path\" does not exists";
+
+			if ($description)
+				$message .= ' ' . $description;
+
+			parent::__construct($message, 'Path not exists', $previous);
+
+		} else parent::__construct('Path not exists');
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/**
+ * Exception thrown if file not exists
+ *
+ * @package Core
+ */
+class EresusFsFileNotExistsException extends EresusFsPathNotExistsException {
+
+	/**
+	 * Creates new exception object
+	 *
+	 * @param string    $filename [optional]     Filename
+	 * @param string    $description [optional]  Extended information
+	 * @param Exception $previous [optional]     Previous exception
+	 */
+	function __construct()
+	{
+		if (func_num_args() > 0) {
+
+			$filename = func_get_arg(0);
+			$description = func_num_args() > 1 ? func_get_arg(1) : null;
+			$previous = func_num_args() > 2 ? func_get_arg(2) : null;
+
+			$message = "File \"$filename\" does not exists";
+
+			if ($description)
+				$message .= ' ' . $description;
+
+			EresusFsRuntimeException::__construct($message, 'File not exists', $previous);
+
+		} else EresusFsRuntimeException::__construct('File not exists');
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+/**
+ * Filesystem abstraction layer
+ *
+ * This class provides static methods for system independent file operations.
+ * Special driver classes are used for particular file systems.
+ *
+ * The most important goal of FS is uniform file names for UNIX and Windows
+ * systems.
+ *
+ * @package Core
+ */
+class FS {
+
+	/**
+	 * Filesystem driver
+	 * @var GenericFS
+	 */
+	static private $driver;
+
+	/**
+	 * Init FS module
+	 *
+	 * Load FS driver for current system
+	 */
+	static public function init($driver = null)
+	{
+		eresus_log(__METHOD__, LOG_DEBUG, '(%s)', $driver);
+		self::$driver = null;
+
+		/* User defined driver */
+		if ($driver) {
+
+			if ($driver instanceof GenericFS)
+				self::$driver = $driver;
+			else
+				eresus_log(__METHOD__, LOG_ERR, 'Invalid FS driver: '.gettype($driver));
+
+		}
+
+		/* Autodetect */
+		if (is_null(self::$driver)) {
+
+			eresus_log(__METHOD__, LOG_DEBUG, 'Autodetecting file system...');
+
+			if (System::isWindows()) {
+
+				self::$driver = new WindowsFS();
+
+			}
+
+		}
+
+		/* Generic driver */
+		if (is_null(self::$driver))
+			self::$driver = new GenericFS();
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'Using FS driver: %s', self::$driver);
+		eresus_log(__METHOD__, LOG_DEBUG, 'Current directory: %s', self::canonicalForm(getcwd()));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get current FS driver
+	 *
+	 * @return GenericFS|null
+	 */
+	public static function driver()
+	{
+		return self::$driver;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Normalize file name
+	 *
+	 * In terms of FS, normal form of file name is:
+	 *   - Unix-like directory separator (/)
+	 *   - Absence of substitution symbols ('../', './')
+	 *
+	 * @param string $filename
+	 * @return string
+	 */
+	static public function normalize($filename)
+	{
+		return self::$driver->normalize($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Convert canonical (UNIX) filename to filesystem native form
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see FS::canonicalForm()
+	 */
+	static public function nativeForm($filename)
+	{
+		return self::$driver->nativeForm($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Convert filename from filesystem native form to canonical (UNIX)
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see FS::nativeForm()
+	 */
+	static public function canonicalForm($filename)
+	{
+		return self::$driver->canonicalForm($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Checks if file exists in file system
+	 *
+	 * @param string $filename
+	 * @return bool
+	 */
+	static public function exists($filename)
+	{
+		return self::$driver->exists($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get normalized directory name of a given filename
+	 *
+	 * @param string $filename
+	 * @return string
+	 */
+	static public function dirname($filename)
+	{
+		return self::$driver->dirname($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is a regular file
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the filename exists and is a regular file
+	 */
+	static public function isFile($filename)
+	{
+		return self::$driver->isFile($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+
+	/**
+	 * Tells whether the filename is a directory
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the filename exists and is a directory
+	 */
+	static public function isDir($filename)
+	{
+		return self::$driver->isDir($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is a symbolic link
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the filename exists and is a symbolic link
+	 */
+	static public function isLink($filename)
+	{
+		return self::$driver->isLink($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is readable
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the file or directory specified by filename
+	 *               exists and is readable
+	 */
+	static public function isReadable($filename)
+	{
+		return self::$driver->isReadable($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is writable
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the file or directory specified by filename
+	 *               exists and is writable
+	 */
+	static public function isWritable($filename)
+	{
+		return self::$driver->isWritable($filename);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public static function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		return self::$driver->mkDir($pathname, $mode, $recursive, $context);
+	}
+	//-----------------------------------------------------------------------------
+
+}
+
+
+/**
+ * Generic file system class
+ *
+ * @package Core
+ */
+class GenericFS
+{
+	/**
+	 * Directory create umask
+	 * @var int
+	 */
+	public $dirUmask = 0000;
+
+	/**
+	 * Normalize file name
+	 *
+	 * Function converts given filename to the normal UNIX form:
+	 *
+	 * /some/path/filename
+	 *
+	 * 1. Adds slash at the end of directory name (see $type)
+	 *
+	 * @param string $filename         File name to normalize
+	 * @return string
+	 */
+	public function normalize($filename)
+	{
+
+		$filename = $this->expandParentLinks($filename);
+
+		$filename = $this->tidy($filename);
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Correct some errors
+	 *
+	 * 1. Replace multiple serial directory separators with one
+	 * 2. Replace "/./" with "/"
+	 * 3. Replace "/../" by stripping parent directory
+	 * 4. Trim last "/"
+	 *
+	 * @param string $filename
+	 * @return string
+	 */
+	protected function tidy($filename)
+	{
+		$filename = preg_replace('~/{2,}~', '/', $filename);
+		$filename = str_replace('/./', '/', $filename);
+		$filename = preg_replace('~^./~', '', $filename);
+		if (substr($filename, -1) == '/')
+			$filename = substr($filename, 0, -1);
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Expand links to parent directory ('..')
+	 *
+	 * @param string $filename
+	 * @return string
+	 */
+	protected function expandParentLinks($filename)
+	{
+		if (strpos($filename, '..') === false)
+			return $filename;
+
+		$path = $filename;
+
+		if ($path) {
+
+			$parts = explode('/', $path);
+
+			for ($i = 0; $i < count($parts); $i++) {
+
+				if ($parts[$i] == '..') {
+					if ($i > 1) {
+						array_splice($parts, $i-1, 2);
+						$i -= 2;
+					} else {
+						array_splice($parts, $i, 1);
+						$i -= 1;
+					}
+				}
+
+			}
+
+			$path = implode('/', $parts);
+
+		}
+
+		$filename = $path;
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Convert canonical (UNIX) filename to filesystem native form
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see GenericFS::canonicalForm()
+	 */
+	public function nativeForm($filename)
+	{
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Convert filename from filesystem native form to canonical (UNIX)
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see GenericFS::nativeForm()
+	 */
+	public function canonicalForm($filename)
+	{
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get normalized file directory name
+	 * @param string $filename
+	 * @return string
+	 */
+	public function dirname($filename)
+	{
+		$path = $filename;
+
+		$lastDirSep = strrpos($path, '/');
+		if ($lastDirSep !== false)
+			$path = substr($path, 0, $lastDirSep);
+
+		if ($path === '')
+			$path = '.';
+
+		$path = $this->normalize($path);
+
+		return $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Checks if file exists in file system
+	 * @param string $filename
+	 * @return bool
+	 */
+	public function exists($filename)
+	{
+		return file_exists($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is a regular file
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the filename exists and is a regular file
+	 */
+	public function isFile($filename)
+	{
+		return is_file($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is a directory
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the filename exists and is a directory
+	 */
+	public function isDir($filename)
+	{
+		return is_dir($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is a symbolic link
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the filename exists and is a symbolic link
+	 */
+	public function isLink($filename)
+	{
+		return is_link($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is readable
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the file or directory specified by filename
+	 *               exists and is readable
+	 */
+	public function isReadable($filename)
+	{
+		return is_readable($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Tells whether the filename is writable
+	 *
+	 * @param string $filename  Path to the file
+	 * @return bool  Returns true if the file or directory specified by filename
+	 *               exists and is writable
+	 */
+	public function isWritable($filename)
+	{
+		return is_writable($this->nativeForm($filename));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Attempts to create the directory specified by pathname
+	 *
+	 * @param string   $pathname   The directory path.
+	 * @param int      $mode       The file access mode. Default is 0777.
+	 * @param bool     $recursive  Allows the creation of nested directories specified
+	 *                              in the pathname. Defaults to FALSE.
+	 * @param resource $context    Function context.
+	 *
+	 * @return bool
+	 *
+	 * @uses dirUmask
+	 */
+	public function mkDir($pathname, $mode = 0777, $recursive = false, $context = null)
+	{
+		$umask = umask($this->dirUmask);
+		if (is_null($context))
+			$result = mkdir($pathname, $mode, $recursive);
+		else
+			$result = mkdir($pathname, $mode, $recursive, $context);
+		umask($umask);
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+
+}
+
+/**
+ * Microsoft® Windows® file system driver class
+ *
+ * @package Core
+ *
+ */
+class WindowsFS extends GenericFS {
+
+	/**
+	 * Convert canonical (UNIX) filename to Windows native form
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see WindowsFS::canonicalForm()
+	 */
+	public function nativeForm($filename)
+	{
+		/* Look for drive letter */
+		if (preg_match('~^/[a-z]:/~i', $filename)) {
+
+			$drive = substr($filename, 1, 1);
+			$filename = substr($filename, 4);
+
+		} else $drive = false;
+
+		/* Convert slashes */
+		$filename = str_replace('/', '\\', $filename);
+
+		/* Prepend drive letter if needed */
+		if ($drive) {
+			$filename = $drive . ':\\' . $filename;
+		}
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Convert filename from Windows native form to canonical (UNIX)
+	 *
+	 * @param string $filename
+	 * @return string
+	 *
+	 * @see WindowsFS::nativeForm()
+	 */
+	public function canonicalForm($filename)
+	{
+		/* Convert slashes */
+		$filename = str_replace('\\', '/', $filename);
+
+		/* Prepend drive letter with slash if needed */
+		if (substr($filename, 1, 1) == ':')
+			$filename = '/' . $filename;
+
+		return $filename;
+	}
+	//-----------------------------------------------------------------------------
+
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *   Error & Exception Handling
+ *
+ *   ...
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Error handler
+ *
+ * @param int    $errno       Error type
+ * @param string $errstr      Error description
+ * @param string $errfile     Filename where error occured
+ * @param int    $errline     Line where error occured
+ * @param array  $errcontext  Context symbol table
+ */
+function EresusErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
+{
+	/* Zero value of 'error_reporting' means that "@" operator was used, if so, exiting */
+	if (error_reporting() == 0) return true;
+
+	/*
+	 *  Note: Actualy only E_WARNING, E_NOTICE, E_USER_ERROR, E_USER_WARNING,
+	 *  E_USER_NOTICE and E_STRICT can be handled by this function
+	 */
+
+	/* Convert error code to log level */
+	switch ($errno) {
+		case E_STRICT:
+		case E_NOTICE:
+		case E_USER_NOTICE:
+			$level = LOG_NOTICE;
+		break;
+		case E_WARNING:
+		case E_USER_WARNING:
+			$level = LOG_WARNING;
+		break;
+		default: $level = LOG_ERR;
+	}
+
+	if ($level < LOG_NOTICE) {
+
+		throw new ErrorException($errstr, $errno, $level, $errfile, $errline);
+
+	} else {
+
+		$logMessage = sprintf(
+			"%s in %s:%s",
+			$errstr,
+			$errfile,
+			$errline
+		);
+		eresus_log(__FUNCTION__, $level, $logMessage);
+
+	}
+
+	return true;
+}
+//-----------------------------------------------------------------------------
+
+/**
+ * Exception handler
+ *
+ * @param Exception $e  Exception object
+ *
+ */
+function EresusExceptionHandler($e)
+{
+	if (! ($e instanceof EresusExceptionInterface))
+		$e = new EresusRuntimeException(null, null, $e);
+
+	Core::handleException($e);
+}
+//-----------------------------------------------------------------------------
+
+/**
+ * Fatal error handler
+ *
+ * Perfomance note: this function disposes at begin and allocates at the end
+ * memory buffer for memory overflow error handling. These operations slows down
+ * output for 1-2%.
+ */
+function EresusFatalErrorHandler($output)
+{
+	# Free emergency buffer
+	unset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']);
+	if (preg_match('/(parse|fatal) error:.*in .* on line/Ui', $output, $m)) {
+		$GLOBALS['ERESUS_CORE_FATAL_ERROR_HANDLER'] = true;
+		switch(strtolower($m[1])) {
+			case 'fatal': $priority = LOG_CRIT; $message = 'Fatal error (see log for more info)'; break;
+			case 'parse': $priority = LOG_EMERG; $message = 'Parse error (see log for more info)'; break;
+	}
+		eresus_log(__FUNCTION__, $priority, trim($output));
+		if (!PHP::isCLI())
+			header('Content-type: text/plain', true);
+
+		return $message . "\n";
+	}
+	$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] = str_repeat('x', ERESUS_MEMORY_OVERFLOW_BUFFER * 1024);
+	/* Return 'false' to output buffer */
+	return false;
+}
+//-----------------------------------------------------------------------------
 
 
 /**
@@ -701,6 +1741,25 @@ class Core {
 	static private $registry = array();
 
 	/**
+	 * Test mode switch
+	 * @var bool
+	 */
+	static private $testMode = false;
+
+	/**
+	 * Test mode settings
+	 * @var array
+	 */
+	static private $testModeOptions;
+
+	/**
+	 * Application
+	 * @var EresusApplication
+	 * @see exec, app()
+	 */
+	static private $app = null;
+
+	/**
 	 * __autoload handlers pool
 	 *
 	 * @var array
@@ -720,7 +1779,12 @@ class Core {
 		/* Indicate that init in progress */
 		self::$initState = 1;
 
+		System::init();
+		FS::init();
+
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		self::initExceptionHandling();
 
 		/**
 		 * eZ Components
@@ -861,6 +1925,116 @@ class Core {
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Init exception handling
+	 *
+	 */
+	static private function initExceptionHandling()
+	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
+
+		/* Reserve memory for emergency needs */
+		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] = str_repeat('x', ERESUS_MEMORY_OVERFLOW_BUFFER * 1024);
+
+		/* Override php.ini settings */
+		ini_set('html_errors', 0); // Some cosmetic setup
+
+		set_error_handler('EresusErrorHandler');
+		eresus_log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+
+		set_exception_handler('EresusExceptionHandler');
+		eresus_log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+
+		/*
+		 * PHP has no standart methods to intercept some error types (e.g. E_PARSE or E_ERROR),
+		 * but there is a way to do this - register callback function via ob_start.
+		 * But not in CLI mode.
+		 */
+		if (! PHP::isCLI())
+		{
+			if (ob_start('EresusFatalErrorHandler', 4096))
+				eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+			else
+				eresus_log(
+					LOG_NOTICE, __METHOD__,
+					'Fatal error handler not instaled! Fatal error will be not handled!'
+				);
+		}
+
+		eresus_log(__METHOD__, LOG_DEBUG, 'done');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Writes exception description to log
+	 *
+	 * @param Exception $e
+	 * @param string    $msg [optional]  Message
+	 */
+	static public function logException($e, $msg = null)
+	{
+		if ($e instanceof EresusExceptionInterface) {
+
+			$description = $e->getDescription();
+			$previous = $e->getPreviousException();
+
+		} else {
+
+			$description = '(no description)';
+			$previous = null;
+
+		}
+
+		$logMessage = sprintf(
+			"%s in %s at %s\nMessage: %s\nDescription: %s\nBacktrace:\n%s\n",
+			get_class($e),
+			$e->getFile(),
+			$e->getLine(),
+			$e->getMessage(),
+			$description,
+			$trace = $e->getTraceAsString()
+		);
+		eresus_log('Core', LOG_ERR, $logMessage);
+
+		if ($previous)
+			self::logException($previous, 'Previous exception:');
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Default Eresus Core exception handler.
+	 *
+	 * If exception was not caught by application it will be handled with this method.
+	 *
+	 * @param Exception $e
+	 */
+	static public function handleException($e)
+	{
+		$app = self::app();
+		if ($app && method_exists($app, 'handleException')) {
+
+			$app->handleException($e);
+
+		} else {
+
+			Core::logException($e, 'Unhandled exception:');
+
+			if (!PHP::isCLI())
+				header('Content-type: text/plain', true);
+
+			echo get_class($e);
+
+			if ($e instanceof EresusExceptionInterface)
+				echo ': ' . $e->getMessage();
+
+			if (PHP::isCLI() && !self::testMode())
+				exit($e->getCode());
+
+		}
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Set value in internal registry
 	 *
 	 * @param string $key    Value name
@@ -903,6 +2077,59 @@ class Core {
 	static public function unsetValue($key)
 	{
 		unset(self::$registry[$key]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Make instance of application and execute it
+	 *
+	 * @param string $class  Application class name. Class must be derived from
+	 *                       {@link EresusApplication}
+	 * @return int  Exit code
+	 *
+	 * @see $app, app(), EresusApplication
+	 */
+	static public function exec($class)
+	{
+		if (!class_exists($class, false))
+			throw new EresusRuntimeException(
+				"Application class '$class' does not exists", 'Invalid application class'
+			);
+
+		if (!is_subclass_of($class, 'EresusApplication'))
+			throw new EresusRuntimeException(
+				"Application '$class' must be descendant of EresusApplication", 'Invalid application class'
+			);
+
+		self::$app = new $class();
+
+		try {
+
+			eresus_log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
+			$exitCode = self::$app->main();
+			eresus_log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
+
+		} catch (Exception $e) {
+
+			self::handleException($e);
+			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
+
+		}
+		self::$app = null;
+		return $exitCode;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get application object or null if there is no application instance
+	 *
+	 * @return object(EresusApplication)
+	 *
+	 * @see $app, exec(), EresusApplication
+	 */
+	static public function app()
+	{
+		return self::$app;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -957,6 +2184,7 @@ class Core {
 			$filename .= '.php';
 
 		$isAbsolutePath = substr($filename, 0, 1) == '/';
+		$filename = FS::nativeForm($filename);
 
 		/*
 		 * Try relative to current working directory
@@ -964,7 +2192,7 @@ class Core {
 
 		eresus_log(__METHOD__, LOG_DEBUG, 'Try relative to current directory...');
 
-		if (file_exists($filename)) {
+		if (FS::exists($filename)) {
 
 			eresus_log(__METHOD__, LOG_DEBUG, 'Found. Including.');
 
@@ -996,8 +2224,16 @@ class Core {
 			if ($dir == '.')
 				continue;
 
+			if (! PHP::inOpenBaseDir($dir)) {
+				eresus_log(
+					__METHOD__, LOG_DEBUG, 'Path "%s" is out of open_basedir list. Skipping for now.', $dir
+				);
+				$unsafe []= $dir;
+				continue;
+			}
+
 			eresus_log(__METHOD__, LOG_DEBUG, 'Probing "%s"', $dir . DIRECTORY_SEPARATOR . $filename);
-			if (file_exists($dir . DIRECTORY_SEPARATOR . $filename)) {
+			if (FS::exists($dir . DIRECTORY_SEPARATOR . $filename)) {
 
 				eresus_log(__METHOD__, LOG_DEBUG, 'File exists. Including.');
 
@@ -1031,11 +2267,99 @@ class Core {
 				throw $e;
 
 			eresus_log(__METHOD__, LOG_DEBUG, 'Native include failed to locate file');
-			throw new RuntimeException("File '$filename' not found in '".get_include_path()."'");
+			throw new EresusFsFileNotExistsException(
+				$filename,
+				"File '$filename' not found in '".get_include_path()."'",
+				$e
+			);
 
 		}
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Switch test mode
+	 *
+	 * @param bool $state
+	 * @return bool  Current state
+	 */
+	static public function testMode($state = null)
+	{
+		if (!is_null($state)) self::$testMode = $state;
+		return self::$testMode;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Set test mode option
+	 *
+	 * @param string $option
+	 * @param mixed  $value
+	 */
+	static public function testModeSet($option, $value)
+	{
+		self::$testModeOptions[$option] = $value;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Check if test mode option is set
+	 *
+	 * @param string $option
+	 * @return bool
+	 */
+	static public function testModeIsSet($option)
+	{
+		if (!self::testMode()) return null;
+		return isset(self::$testModeOptions[$option]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Get test mode option
+	 *
+	 * @param string $option
+	 * @return mixed
+	 */
+	static public function testModeGet($option)
+	{
+		return self::testMode() ? ecArrayValue(self::$testModeOptions, $option) : null;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Unset test mode option
+	 *
+	 * @param string $option
+	 */
+	static public function testModeUnset($option)
+	{
+		if (isset(self::$testModeOptions[$option]))
+			unset(self::$testModeOptions[$option]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Object to be returned by app() method in a test mode
+	 *
+	 * @param object $app
+	 */
+	static public function testSetApplication($app)
+	{
+		if (self::testMode()) self::$app = $app;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Test initExceptionHandling method
+	 */
+	static public function testInitExceptionHandling()
+	{
+		if (self::testMode())
+			self::initExceptionHandling();
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 

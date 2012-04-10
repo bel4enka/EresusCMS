@@ -35,7 +35,7 @@
  * Исключительная ситуация, не связанная с ошибкой
  *
  * @package Eresus
- * @since 2.17
+ * @since 3.00
  */
 class Eresus_SuccessException extends Exception {}
 
@@ -44,7 +44,7 @@ class Eresus_SuccessException extends Exception {}
  * Исключительная ситуация, не связанная с ошибкой, требующая завершения приложения
  *
  * @package Eresus
- * @since 2.17
+ * @since 3.00
  */
 class Eresus_ExitException extends Eresus_SuccessException {}
 
@@ -59,7 +59,7 @@ class Eresus_ExitException extends Eresus_SuccessException {}
  * 4. получение основных сведений о системе.
  *
  * @package Eresus
- * @since 2.17
+ * @since 3.00
  */
 class Eresus_Kernel
 {
@@ -78,11 +78,12 @@ class Eresus_Kernel
 	static private $inited = false;
 
 	/**
-	 * Контейнер служб
+	 * Выполняемое приложение
 	 *
-	 * @var sfServiceContainerBuilder
+	 * @var object
+	 * @see exec(), app()
 	 */
-	private static $sc;
+	static private $app = null;
 
 	/**
 	 * Для тестирования
@@ -102,7 +103,7 @@ class Eresus_Kernel
 	 *
 	 * @return void
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	// @codeCoverageIgnoreStart
 	static public function init()
@@ -113,32 +114,74 @@ class Eresus_Kernel
 			return;
 		}
 
+		// Устанавливаем кодировку по умолчанию для опрераций mb_*
+		mb_internal_encoding('utf-8');
+
 		/* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
 		@$timezone = date_default_timezone_get();
 		date_default_timezone_set($timezone);
-
-		// Устанавливаем кодировку по умолчанию для опрераций mb_*
-		mb_internal_encoding('utf-8');
 
 		// Регистрация автозагрузчика классов
 		spl_autoload_register(array('Eresus_Kernel', 'autoload'));
 
 		self::initExceptionHandling();
 
-		/* Отключение закавычивания передаваемых данных */
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			set_magic_quotes_runtime(0);
-		}
-
-		require_once dirname(__FILE__) .
-			'/symfony/dependency-injection/sfServiceContainerAutoloader.php';
-		sfServiceContainerAutoloader::register();
-		self::$sc = new sfServiceContainerBuilder();
-
 		self::$inited = true;
 	}
 	// @codeCoverageIgnoreEnd
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Инициализирует обработчики ошибок
+	 *
+	 * Этот метод:
+	 * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
+	 * 2. отключает HTML-оформление стандартных сообщенй об ошибках;
+	 * 3. регистрирует {@link errorHandler()};
+	 * 4. регистрирует {@link fatalErrorHandler()}.
+	 *
+	 * @return void
+	 *
+	 * @since 3.00
+	 * @uses Eresus_Logger::log()
+	 */
+	static private function initExceptionHandling()
+	{
+		/* Резервируем буфер на случай переполнения памяти */
+		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
+
+		/* Меняем значения php.ini */
+		ini_set('html_errors', 0); // Немного косметики
+
+		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
+		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+
+		//set_exception_handler('Eresus_Kernel::handleException');
+		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+
+		/*
+		 * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
+		 * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
+		 * Но только не в режиме CLI.
+		 */
+		// @codeCoverageIgnoreStart
+		if (! self::isCLI())
+		{
+			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
+			{
+				//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+			}
+			else
+			{
+				/*Eresus_Logger::log(
+					LOG_NOTICE, __METHOD__,
+					'Fatal error handler not instaled! Fatal error will be not handled!'
+				);*/
+			}
+		}
+		// @codeCoverageIgnoreEnd
+	}
 	//-----------------------------------------------------------------------------
 
 	/**
@@ -156,7 +199,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 * @uses Eresus_Logger::log()
 	 */
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
@@ -201,7 +244,7 @@ class Eresus_Kernel
 				$errfile,
 				$errline
 			);
-			Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
+			//Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
 		}
 
 		return true;
@@ -223,7 +266,7 @@ class Eresus_Kernel
 	 *
 	 * @return string|false
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 * @uses Eresus_Logger::log
 	 */
 	public static function fatalErrorHandler($output)
@@ -255,7 +298,7 @@ class Eresus_Kernel
 			}
 			//@codeCoverageIgnoreEnd
 
-			return $message . "\nSee %HTDOCS%/var/log/eresus.log for more info.\n";
+			return $message . "\nSee application log for more info.\n";
 		}
 		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
 			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
@@ -282,7 +325,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 * @uses classExists()
 	 */
 	public static function autoload($className)
@@ -335,7 +378,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static function isUnixLike()
 	{
@@ -348,7 +391,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static function isWindows()
 	{
@@ -361,7 +404,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static function isMac()
 	{
@@ -376,7 +419,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static function isCLI()
 	{
@@ -397,7 +440,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static function isCGI()
 	{
@@ -411,7 +454,7 @@ class Eresus_Kernel
 	 *
 	 * @return bool
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static function isModule()
 	{
@@ -427,11 +470,10 @@ class Eresus_Kernel
 	 * @param string $name  имя класса или интерфейса
 	 * @return bool true если класс или интерфейс $name объявлен
 	 *
-	 * @since 2.17
+	 * @since 3.00
 	 */
 	static public function classExists($name)
 	{
-		assert('is_string($name)');
 		return class_exists($name, false) || interface_exists($name, false);
 	}
 	//-----------------------------------------------------------------------------
@@ -448,29 +490,29 @@ class Eresus_Kernel
 	 *
 	 * @return int  код завершения (0 — успешное завершение)
 	 *
-	 * @since 2.17
+	 * @since 3.00
+	 * @see $app, app()
 	 * @uses Eresus_Logger::log()
 	 */
 	static public function exec($class)
 	{
-		assert('is_string($class)');
 		if (!class_exists($class))
 		{
 			throw new LogicException('Application class "' . $class . '" does not exists');
 		}
 
-		$app = new $class();
+		self::$app = new $class();
 
 		if (!method_exists($class, 'main'))
 		{
+			self::$app = null;
 			throw new LogicException('Method "main()" does not exists in "' . $class . '"');
 		}
 
 		try
 		{
 			//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
-			self::sc()->setService('app', $app);
-			$exitCode = $app->main();
+			$exitCode = self::$app->main();
 			//Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
 		}
 		catch (Eresus_SuccessException $e)
@@ -482,79 +524,28 @@ class Eresus_Kernel
 			//self::handleException($e);
 			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
 		}
+		self::$app = null;
 		return $exitCode;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает контейнер служб
+	 * Возвращает выполняемое приложение или null, если приложение не запущено
 	 *
-	 * Список служб:
+	 * Пример: получение корневой директории приложения.
 	 *
-	 * - app — {@link Eresus_CMS}
-	 * - i18n — {@link Eresus_i18n}
-	 * - plugins — {@link Eresus_Plugins}
+	 * <code>
+	 * $appRootDir = Eresus_Kernel::app()->getRootDir();
+	 * </code>
 	 *
-	 * @return sfServiceContainerBuilder
+	 * @return Eresus_CMS  выполняемое приложение
 	 *
-	 * @since 2.17
+	 * @see $app, exec()
+	 * @since 3.00
 	 */
-	public static function sc()
+	public static function app()
 	{
-		return self::$sc;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Инициализирует обработчики ошибок
-	 *
-	 * Этот метод:
-	 * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
-	 * 2. отключает HTML-оформление стандартных сообщенй об ошибках;
-	 * 3. регистрирует {@link errorHandler()};
-	 * 4. регистрирует {@link fatalErrorHandler()}.
-	 *
-	 * @return void
-	 *
-	 * @since 2.17
-	 * @uses Eresus_Logger::log()
-	 */
-	static private function initExceptionHandling()
-	{
-		/* Резервируем буфер на случай переполнения памяти */
-		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
-			str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
-
-		/* Меняем значения php.ini */
-		ini_set('html_errors', 0); // Немного косметики
-
-		set_error_handler(array('Eresus_Kernel', 'errorHandler'));
-		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
-
-		//set_exception_handler('Eresus_Kernel::handleException');
-		//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
-
-		/*
-		 * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
-		 * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
-		 * Но только не в режиме CLI.
-		 */
-		// @codeCoverageIgnoreStart
-		if (! self::isCLI())
-		{
-			if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
-			{
-				//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-			}
-			else
-			{
-				/*Eresus_Logger::log(
-					LOG_NOTICE, __METHOD__,
-					'Fatal error handler not instaled! Fatal error will be not handled!'
-				);*/
-			}
-		}
-		// @codeCoverageIgnoreEnd
+		return self::$app;
 	}
 	//-----------------------------------------------------------------------------
 }

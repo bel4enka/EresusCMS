@@ -33,7 +33,10 @@
  * $Id$
  */
 
+define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
+
 define('filesRoot', '/home/exmaple.org/');
+define('httpRoot', 'http:///exmaple.org/');
 
 
 function eresus_log() {}
@@ -80,6 +83,22 @@ class EresusRuntimeException extends Exception
  * @subpackage Tests
  * @since 2.15
  */
+class EresusApplication
+{
+	public $fsRoot;
+
+	public function getFsRoot()
+	{
+		return $this->fsRoot;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.15
+ */
 class HttpRequest
 {
 	public $localRoot;
@@ -105,6 +124,20 @@ class HttpRequest
 	public function getHost()
 	{
 		return 'example.org';
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * @package EresusCMS
+ * @subpackage Tests
+ * @since 2.15
+ */
+class TemplateSettings
+{
+	public static function setGlobalValue($a, $b)
+	{
+		;
 	}
 	//-----------------------------------------------------------------------------
 }

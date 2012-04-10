@@ -55,7 +55,7 @@ class TSettings
 
 		$req = HTTP::request();
 
-		$result = "\tdefine('$name', ";
+		$result = "  define('$name', ";
 		$quot = "'";
 		$value = isset($_POST[$name]) ? $_POST[$name] : null;
 
@@ -135,7 +135,8 @@ class TSettings
 	{
 		global $Eresus, $page;
 
-		$form = new EresusForm('core/templates/settings/form.html');
+		$template = $page->getUITheme()->getResource('SiteSettings/form.html');
+		$form = new EresusForm($template, LOCALE_CHARSET);
 		/* Основные */
 		$form->setValue('siteName', option('siteName'));
 		$form->setValue('siteTitle', option('siteTitle'));
@@ -155,7 +156,21 @@ class TSettings
 		$form->setValue('filesTranslitNames', option('filesTranslitNames'));
 
 		/* Создаем список типов контента */
-		$form->setValue('contentTypes', Eresus_Kernel::sc()->plugins->getContentTypes());
+		$contentTypes = array(
+			array('name' => 'default','caption' => admPagesContentDefault),
+			array('name' => 'list','caption' => admPagesContentList),
+			array('name' => 'url','caption' => admPagesContentURL)
+		);
+
+		foreach ($Eresus->plugins->items as $plugin)
+		{
+			if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
+			{
+				$contentTypes []= array('name' => $plugin->name, 'caption' => $plugin->title);
+			}
+		}
+
+		$form->setValue('contentTypes', $contentTypes);
 		$form->setValue('contentTypeDefault', option('contentTypeDefault'));
 
 		/* Загружаем список шаблонов */

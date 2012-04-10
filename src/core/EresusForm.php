@@ -1295,7 +1295,7 @@ class EresusForm
 	 */
 	protected function loadXML()
 	{
-		$tmpl = Eresus_Template::fromFile($this->template);
+		$tmpl = new Template($this->template);
 		$html = $tmpl->compile($this->values);
 
 		$imp = new DOMImplementation;

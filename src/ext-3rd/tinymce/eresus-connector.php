@@ -55,15 +55,11 @@ class TinyMCEConnector extends EresusExtensionConnector
 	 */
 	function forms_html($form, $field)
 	{
-		global $Eresus, $page;
+		global $Eresus, $page, $locale;
 
-		$value = isset($form->values[$field['name']]) ?
-			$form->values[$field['name']] : (isset($field['value'])?$field['value']:'');
+		$value = isset($form->values[$field['name']]) ? $form->values[$field['name']] : (isset($field['value'])?$field['value']:'');
 		$preset = isset($field['preset']) ? $field['preset'] : 'default';
-		$result = "\t\t".'<tr><td colspan="2">'.$field['label'].'<br /><textarea name="wyswyg_'.
-			$field['name'].'" class="tinymce_'.$preset.
-			'" cols="80" rows="25" style="width: 100%; height: '.$field['height'].';">'.
-			str_replace('$(httpRoot)', $Eresus->root, EncodeHTML($value)).'</textarea></td></tr>'."\n";
+		$result = "\t\t".'<tr><td colspan="2">'.$field['label'].'<br /><textarea name="wyswyg_'.$field['name'].'" class="tinymce_'.$preset.'" cols="80" rows="25" style="width: 100%; height: '.$field['height'].';">'.str_replace('$(httpRoot)', $Eresus->root, EncodeHTML($value)).'</textarea></td></tr>'."\n";
 
 		if (!self::$scriptsInstalled)
 		{

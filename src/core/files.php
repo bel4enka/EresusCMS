@@ -170,8 +170,7 @@ class TFiles
 					$x = ($x - ($x % 2)) / 2;
 					$result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
 				}
-				if (function_exists('posix_getpwuid') && !Eresus_Kernel::isWindows())
-				{
+				if (function_exists('posix_getpwuid') && !$Eresus->isWin32()) {
 					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
 				} else $result[$i]['owner'] = 'unknown';
@@ -272,12 +271,13 @@ class TFiles
 	 *
 	 * @return void
 	 *
+	 * @uses FS::mkDir()
 	 * @uses HTTP::redirect()
 	 */
 	function mkDir()
 	{
 		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
-		mkdir($pathname, 0777, true);
+		FS::mkDir($pathname, 0777, true);
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	//-----------------------------------------------------------------------------

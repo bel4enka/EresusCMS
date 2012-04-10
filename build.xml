@@ -11,10 +11,17 @@
 
 	<property file="build.properties" />
 
-	<!-- Основные файлы проекта. Только PHP -->
-	<fileset dir="src" id="files.sources.php">
-		<include name="**/*.php" />
+	<!-- Основные файлы проекта -->
+	<fileset dir="src" id="files.sources">
+		<include name="**" />
+		<exclude name="**/.svn" />
+		<exclude name="**/*.src" />
 	</fileset>
+
+		<!-- Основные файлы проекта. Только PHP -->
+		<fileset dir="src" id="files.sources.php">
+			<include name="**/*.php" />
+		</fileset>
 
 	<!-- Eresus Framework -->
 	<fileset dir="framework" id="files.framework">
@@ -59,6 +66,18 @@
 		<exclude name=".svn" />
 	</fileset>
 
+	<!-- SQL dumps -->
+	<fileset dir="db" id="files.db">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Tools files -->
+	<fileset dir="." id="files.tools">
+		<include name="tools/**" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<!-- SDK files -->
 	<fileset dir="." id="files.sdk">
 		<include name="SDK/**" />
@@ -79,10 +98,10 @@
 		<mkdir dir="${logs.dir}" />
 		<exec
 			command="phpunit
-				--configuration ${project.basedir}/tests/phpunit/phpunit.xml
 				--log-junit ${logs.dir}/phpunit.xml
 				--coverage-clover ${logs.dir}/phpunit.coverage.xml
-				--coverage-html ${phpunit.coverage.html}"
+				--coverage-html ${phpunit.coverage.html}
+				--configuration ${project.basedir}/tests/phpunit/phpunit.xml"
 			checkreturn="true"
 			logoutput="true"
 		/>
@@ -130,7 +149,6 @@
 		<phpcodesniffer
 			standard="Eresus"
 			haltonerror="false"
-			encoding="utf-8"
 		>
 			<formatter
 				type="${phpcs.format}"
@@ -153,22 +171,20 @@
 
 		<!-- Копирование основных файлов -->
 		<copy todir="${build.dir}">
-			<fileset dir="src">
-				<include name="**" />
-				<exclude name="**/.svn" />
-				<exclude name="admin/themes/default/css/" />
-			</fileset>
+			<fileset refid="files.sources" />
 			<filterchain>
 			    <expandproperties />
 		  </filterchain>
 		</copy>
-		
-		<!-- Сборка CSS для тем АИ -->
-		<append destFile="${build.dir}/admin/themes/default/theme.css">
-			<fileset dir="src/admin/themes/default/css">
-				<include name="**/*.css" />
-			</fileset>
-		</append>
+
+			<!-- Обработка файлов CSS темы default -->
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/typography.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/layout.css" />
+			<append destFile="${build.dir}/admin/themes/default/theme.css"
+				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
+			<delete dir="${build.dir}/admin/themes/default/css.src" />
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
@@ -177,29 +193,6 @@
 			<filterchain>
 				<expandproperties />
 			</filterchain>
-		</copy>
-
-		<!-- Symfony Dependency Injection Container  -->
-		<copy todir="${build.dir}/core/symfony/dependency-injection">
-			<fileset dir="3rdparty/dependency-injection/lib">
-				<include name="**" />
-			</fileset>
-		</copy>
-
-		<!-- Doctrine -->
-		<copy todir="${build.dir}/core">
-			<fileset dir="3rdparty/doctrine/lib">
-				<include name="**" />
-				<exclude name=".svn" />
-			</fileset>
-		</copy>
-		
-		<!-- Dwoo -->
-		<copy todir="${build.dir}/core/Dwoo">
-			<fileset dir="3rdparty/dwoo">
-				<include name="**" />
-				<exclude name=".svn" />
-			</fileset>
 		</copy>
 
 		<!-- Ботобор -->
@@ -235,6 +228,8 @@
 		<mkdir dir="${build.dir}/distrib" />
 		
 		<copy todir="${build.dir}/distrib">
+			<fileset refid="files.db" />
+			<fileset refid="files.tools" />
 			<fileset refid="files.sdk" />
 			<filterchain>
 			    <expandproperties />

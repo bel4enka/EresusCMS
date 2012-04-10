@@ -38,24 +38,6 @@ require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 class WebServerTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @see PHPUnit_Framework_TestCase::tearDown()
-	 */
-	protected function tearDown()
-	{
-		Eresus_Tests::setStatic('WebServer', null);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @see PHPUnit_Framework_TestCase::setUp()
-	 */
-	protected function setUp()
-	{
-		Eresus_Tests::setStatic('WebServer', null);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * @covers WebServer::__construct
 	 * @covers WebServer::getInstance
 	 * @covers WebServer::getDocumentRoot

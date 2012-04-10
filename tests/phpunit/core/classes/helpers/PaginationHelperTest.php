@@ -181,11 +181,15 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_commonUse_simple()
 	{
-		Eresus_Config::set('dwoo.templateDir', TESTS_SRC_DIR);
 		$test = new PaginationHelper(10, 5);
 
+		$data = $test->render();
+		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
+
+		$helper = $data['pagination'];
+
 		$i = 1;
-		foreach ($test as $page)
+		foreach ($helper as $page)
 		{
 			if ($i > 10)
 			{
@@ -197,7 +201,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 				$this->assertTrue($page['current']);
 			}
 
-			$this->assertEquals($i, $test->key());
+			$this->assertEquals($i, $helper->key());
 			$this->assertEquals($i, $page['title'], 'Ivalid page number');
 			$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid page url');
 			$i++;
@@ -213,10 +217,15 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$test = new PaginationHelper(100, 1);
 
+		$data = $test->render();
+		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
+
+		$helper = $data['pagination'];
+
 		$i = 1;
-		foreach ($test as $page)
+		foreach ($helper as $page)
 		{
-			$this->assertEquals($i, $test->key());
+			$this->assertEquals($i, $helper->key());
 
 			switch (true)
 			{
@@ -248,10 +257,15 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$test = new PaginationHelper(100, 100);
 
+		$data = $test->render();
+		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
+
+		$helper = $data['pagination'];
+
 		$i = 1;
-		foreach ($test as $page)
+		foreach ($helper as $page)
 		{
-			$this->assertEquals($i, $test->key());
+			$this->assertEquals($i, $helper->key());
 
 			switch (true)
 			{
@@ -283,10 +297,15 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$test = new PaginationHelper(100, 50);
 
+		$data = $test->render();
+		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
+
+		$helper = $data['pagination'];
+
 		$i = 1;
-		foreach ($test as $page)
+		foreach ($helper as $page)
 		{
-			$this->assertEquals($i, $test->key());
+			$this->assertEquals($i, $helper->key());
 
 			switch (true)
 			{

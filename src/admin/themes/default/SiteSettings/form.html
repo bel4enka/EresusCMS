@@ -1,0 +1,243 @@
+<form xmlns:fc="http://eresus.ru/schema/form/" action="" id="settingsForm" class="ui-widget ui-widget-content ui-corner-all">
+	<div class="ui-padding">
+		<fc:tabwidget id="settingsFormTabs">
+
+			<fc:tabcontrol>
+				<fc:tab name="main">Основные</fc:tab>
+				<fc:tab name="mail">Почта</fc:tab>
+				<fc:tab name="files">Файлы</fc:tab>
+				<fc:tab name="other">Прочее</fc:tab>
+			</fc:tabcontrol>
+
+			<fc:tabs>
+
+				<fc:tab name="main">
+					<table class="ui-grid ui-hlines">
+						<tr>
+							<td>
+								<label for="settigs-siteName">Название сайта</label><br />
+								<input type="text" name="siteName" value="{$siteName|escape}" size="20"
+									id="settigs-siteName" tabindex="1" fc:required="Укажите название сайта" />
+							</td>
+							<td class="ui-minor">
+								Предназначено только для внутреннего использования, и не будет отображаться нигде,
+								кроме панели управления. Желательно чтобы название сайта было коротким.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Заголовок сайта</label><br />
+								<textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle|escape}</textarea>
+							</td>
+							<td class="ui-minor">
+								Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
+								текст подставлялся в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
+								<a href="admin.php?mod=themes">шаблоны страниц</a>.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>
+									<input type="checkbox" name="siteTitleReverse" value="1"{if $siteTitleReverse} checked="checked"{/if} tabindex="3" />
+									Обратный порядок разделов в $(sectionTitle)
+								</label>
+								<div class="ui-minor">
+									<em>Пример:</em> <span id="settings-siteTitleReverse-example">
+										<span class="checked"{if !$siteTitleReverse} style="display: none;"{/if}>Главная - Категория - Товар</span>
+										<span class="unchecked"{if $siteTitleReverse} style="display: none;"{/if}>Товар - Категория - Главная</span>
+									</span>
+								</div>
+							</td>
+							<td class="ui-minor">
+								Макрос <b>$(sectionTitle)</b> заменяется на название открытой страницы и списка всех
+								родительских страниц. Этот переключатель определяет в каком порядке будут выводиться
+								их названия: от открытой страницы к корню (по умолчанию) или наоборот.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Разделитель названий разделов в $(sectionTitle):</label><br />
+								<div class="nowrap">
+									<input type="text" name="siteTitleDivider" value="{$siteTitleDivider|escape}"
+										size="4" tabindex="4" />
+									<span class="ui-minor">
+										<em>Пример:</em> <span id="settings-siteTitleDivider-example">
+											Товар<span>{$siteTitleDivider}</span>Категория<span>{$siteTitleDivider}</span>Каталог
+										</span>
+									</span>
+								</div>
+							</td>
+							<td class="ui-minor">
+								Этот разделитель используется для объединения названий разделов в макросе
+								<b>$(sectionTitle)</b>.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Ключевые слова</label><br />
+								<textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords|escape}</textarea>
+							</td>
+							<td class="ui-minor">
+								Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
+								Чтобы эти слова подставлялись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
+								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Описание</label><br />
+								<textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription|escape}</textarea>
+							</td>
+							<td class="ui-minor">
+								Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
+								Чтобы этот текст подставлялся в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
+								в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+							</td>
+						</tr>
+					</table>
+				</fc:tab>
+
+				<fc:tab name="mail">
+					<fieldset>
+						<legend>Параметры писем, отсылаемых с сайта</legend>
+						<table>
+							<tr>
+								<td>
+									<label for="settings-mailFromAddr">Адрес отправителя</label><br />
+									<input type="text" name="mailFromAddr" value="{$mailFromAddr|escape}" size="20"
+										id="settings-mailFromAddr" tabindex="2" />
+									<div class="ui-minor nowrap">Пример: <em>robot@example.org</em></div>
+								</td>
+								<td>
+									<label>Имя отправителя</label><br />
+									<input type="text" name="mailFromName" value="{$mailFromName|escape}" size="20" tabindex="3" />
+									<div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
+								</td>
+								<td style="width: 80%">
+									<label>Организация</label><br />
+									<input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="20" tabindex="4" />
+									<div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label>Обратный адрес</label><br />
+									<input type="text" name="mailReplyTo" value="{$mailReplyTo|escape}" size="20" tabindex="5" />
+								</td>
+								<td class="ui-minor" colspan="2">
+									<br/>
+									Вы можете указать адрес для ответа, отличный от адреса отправителя.
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">
+									<label>Подпись, добавляемая к тексту письма</label><br />
+									<textarea name="mailFromSign" cols="60" rows="4" tabindex="6">{$mailFromSign}</textarea>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</fc:tab>
+
+				<fc:tab name="files">
+					<fieldset>
+						<legend>Загрузка файлов на сайт</legend>
+						<table>
+							<tr>
+								<td>
+									<label>
+										<input type="checkbox" name="filesModeSetOnUpload" value="1"{if $filesModeSetOnUpload} checked="checked"{/if} />
+										Устанавливать на загружаемые файлы права:
+									</label><br />
+								</td>
+								<td>
+									<input type="text" name="filesModeDefault" value="{$filesModeDefault|escape}" size="4" />
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</fc:tab>
+
+				<fc:tab name="other">
+					<table class="ui-grid ui-hlines">
+						<tr>
+							<td>
+								<label>Тип раздела по умолчанию</label><br />
+								<select name="contentTypeDefault">
+									{foreach $contentTypes item}
+									<option value="{$item.name}"{if $contentTypeDefault == $item.name} selected="selected"{/if}>{$item.caption}</option>
+									{/foreach}
+								</select>
+							</td>
+							<td class="ui-minor">
+								<br />
+								Будет использован для вновь создаваемых разделов.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Шаблон по умолчанию</label><br />
+								<select name="pageTemplateDefault">
+									{foreach $templates item}
+									<option value="{$item.name}"{if $pageTemplateDefault == $item.name} selected="selected"{/if}>{$item.caption}</option>
+									{/foreach}
+								</select>
+							</td>
+							<td class="ui-minor">
+								<br />
+								Будет использован для вновь создаваемых разделов.
+							</td>
+						</tr>
+					</table>
+				</fc:tab>
+
+			</fc:tabs>
+
+		</fc:tabwidget>
+		
+	</div>
+
+	<div class="ui-button-box">
+		<button type="submit">Сохранить</button>
+	</div>
+	
+	<script type="text/javascript">//<![CDATA[
+		$(document).ready(function () {
+
+			$("#settingsForm input[name=siteTitleReverse]").click(function (){
+				var root = $("#settings-siteTitleReverse-example");
+				$("span", root).hide();
+				$("." + (this.checked ? "checked" : "unchecked"), root).show();
+			});
+
+			$("#settingsForm input[name=siteTitleDivider]").keyup(function (){
+				$("#settings-siteTitleDivider-example span").text(this.value);
+			});
+
+			$("#settingsForm textarea[name=siteDescription]").keydown(function (event){
+				if (event.keyCode == 9)
+				{
+					$("#settingsFormTabs").tabs("select", 1);
+					setTimeout(function()\{$("#settingsForm input[name=mailFromAddr]").focus();}, 10);
+				}
+			});
+
+			$("#settingsForm textarea[name=mailFromSign]").keydown(function (event){
+				if (event.keyCode == 9)
+				{
+					$("#settingsFormTabs").tabs("select", 2);
+					setTimeout(function()\{$("#settingsForm input[name=filesModeSetOnUpload]").focus();}, 10);
+				}
+			});
+
+			$("#settingsForm input[name=filesModeDefault]").keydown(function (event){
+				if (event.keyCode == 9)
+				{
+					$("#settingsFormTabs").tabs("select", 3);
+					setTimeout(function()\{$("#settingsForm select[name=contentTypeDefault]").focus();}, 10);
+				}
+			});
+
+		});
+	//]]></script>
+</form>

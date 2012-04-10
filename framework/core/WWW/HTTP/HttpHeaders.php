@@ -133,7 +133,7 @@ class HttpHeader {
 	 */
 	public function send()
 	{
-		if (!Eresus_Kernel::isCLI()) header($this);
+		if (!PHP::isCLI()) header($this);
 	}
 	//-----------------------------------------------------------------------------
 }

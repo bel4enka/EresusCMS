@@ -70,17 +70,12 @@ class Form
 		# Метка
 		if (!isset($item['label'])) $item['label'] = '';
 		# Подсказка
-		if (isset($item['hint']))
-		{
-			$item['label'] = '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>';
-		}
+		if (isset($item['hint'])) $item['label'] = '<span class="hint" title="'.$item['hint'].'">'.$item['label'].'</span>';
 		# Маска значения
 		if (isset($item['pattern']) && isset($item['name']))
 			$this->validator .= "
 				if (!form.".$item['name'].".value.match(".$item['pattern'].")) {
-					alert('".(isset($item['errormsg'])?$item['errormsg']:
-						sprintf(i18n('Введенное значение в поле "%s" не соответствует требуемому формату "%s"',
-							__CLASS__), $item['name'], $item['pattern']))."');
+					alert('".(isset($item['errormsg'])?$item['errormsg']:sprintf(errFormPatternError, $item['name'], $item['pattern']))."');
 					result = false;
 					form.".$item['name'].".select();
 				} else ";
@@ -183,11 +178,7 @@ class Form
 	*/
 	function render_hidden($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$this->hidden .= '<input type="hidden" name="'.$item['name'].'" value="'.$item['value'].'" />'."\n";
 		return '';
 	}
@@ -203,11 +194,7 @@ class Form
 	*/
 	function render_edit($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($item['value']).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$this->attrs($item).' />'.$item['comment']."</td></tr>\n";
 		return $result;
 	}
@@ -223,19 +210,9 @@ class Form
 	*/
 	function render_password($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><input type="password" name="'.$item['name'].'" value="'.EncodeHTML($item['value']).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$this->attrs($item).' />'.$item['comment']."</td></tr>\n";
-		if (isset($item['equal']))
-		{
-			$this->validator .= "if (form.".$item['name'].".value != form.".$item['equal'].
-				".value) {\nalert('". i18n('Пароль и подтверждение не совпадают!', __CLASS__) .
-				"');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].
-				".value = ''\nform.".$item['equal'].".select();\n} else ";
-		}
+		if (isset($item['equal'])) $this->validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -250,11 +227,7 @@ class Form
 	*/
 	function render_checkbox($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td><input type="hidden" name="'.$item['name'].'" value="" /></td><td><input type="checkbox" name="'.$item['name'].'" value="'.($item['value'] ? $item['value'] : true).'" '.($item['value'] ? 'checked' : '').$this->attrs($item).' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$item['label']."</span></td></tr>\n";
 		return $result;
 	}
@@ -270,11 +243,7 @@ class Form
 	*/
 	function render_select($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><select name="'.$item['name'].'"'.$this->attrs($item).'>'."\n";
 		if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
 		for($i = 0; $i< count($item['items']); $i++) {
@@ -296,11 +265,7 @@ class Form
 	*/
 	function render_listbox($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><select multiple name="'.$item['name'].'[]"'.(isset($item['height'])?' size="'.$item['height'].'"':'').$this->attrs($item).">\n";
 		if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
 		for($i = 0; $i< count($item['items']); $i++) {
@@ -324,11 +289,7 @@ class Form
 	{
 		global $Eresus;
 
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		if (empty($item['width'])) $item['width'] = '100%';
 		if (strpos($item['width'], '%') === false) {
 			$cols = $item['width'];
@@ -359,11 +320,7 @@ class Form
 	{
 		global $Eresus;
 
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 
 		$result = '';
 		 $extension = $Eresus->extensions->load(
@@ -387,11 +344,7 @@ class Form
 	*/
 	function render_file($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-				$item['type'], $this->form['name']));
-		}
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td class="formLabel">'.$item['label']."</td><td><input type=\"file\" name=\"".$item['name']."\"".(isset($item['width']) ? ' size="'.$item['width'].'"':'').$this->attrs($item)." />".$item['comment']."</td></tr>\n";
 		$this->file = true;
 		return $result;
@@ -408,11 +361,8 @@ class Form
 	*/
 	function render_image($item)
 	{
-		if ($item['name'] === '')
-		{
-			ErrorMessage(sprintf(i18n('Не указано имя для поля типа "%s" в форме "%s"', __CLASS__),
-			$item['type'], $this->form['name']));
-		}
+
+		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		$result = "\t\t".'<tr><td class="formImage">'."</td><td><input type=\"image\" name=\"".$item['name']."\" src=\"".$item['src']."\" ".$this->attrs($item)." alt='".$item['label']."' />".$item['comment']."</td></tr>\n";
 		$this->file = true;
 		return $result;
@@ -433,6 +383,7 @@ class Form
 		$hidden = '';     # Скрытые поля???
 		$body = '';       # Тело таблицы-формы
 
+		if (empty($this->form['name'])) $result .= ErrorBox(errFormHasNoName);
 		if (count($this->form['fields'])) foreach($this->form['fields'] as $item) {
 			# Проверяем права доступа к элементу
 			if ((!isset($item['access'])) || (UserRights($item['access']))) {
@@ -442,11 +393,7 @@ class Form
 				if (method_exists($this, $control)) {
 					$result .= $this->$control($item);
 				}
-				else
-				{
-					ErrorMessage(sprintf(i18n('Неизвестный тип поля "%s" в форме "%s"', __CLASS__),
-						$item['type'], $this->form['name']));
-				}
+				else ErrorMessage(sprintf(errFormUnknownType, $item['type'], $this->form['name']));
 			}
 		}
 		$this->onsubmit .= $this->validator;
@@ -474,35 +421,16 @@ class Form
 			$result.
 			"\t\t<tr><td colspan=\"2\" class=\"ui-button-box\"><br />".
 			((isset($this->form['buttons']) && isset($this->form['buttons']['ok']))?'<button name="form_ok" type="submit">'.$this->form['buttons']['ok'].'</button> ':'').
-			(
-				!isset($this->form['buttons']) || in_array('ok', $this->form['buttons']) ?
-					"<button name=\"form_ok\" type=\"submit\">" . i18n('OK', __CLASS__) . "</button> " :
-					''
-			) .
+			(!isset($this->form['buttons']) || in_array('ok', $this->form['buttons'])?"<button name=\"form_ok\" type=\"submit\">".strOk."</button> ":'').
 
 			((isset($this->form['buttons']) && isset($this->form['buttons']['apply']))?'<button name="form_apply" type="submit" onclick="formApplyClick(\''.$this->form['name'].'\')">'.$this->form['buttons']['apply']."</button> ":'').
-			(
-				!isset($this->form['buttons']) || in_array('apply', $this->form['buttons']) ?
-					"<button name=\"form_apply\" type=\"submit\" onclick=\"formApplyClick('" .
-						$this->form['name'] . "')\">" . i18n('Применить', __CLASS__) . '</button> ' :
-					''
-			) .
+			(!isset($this->form['buttons']) || in_array('apply', $this->form['buttons'])?"<button name=\"form_apply\" type=\"submit\" onclick=\"formApplyClick('".$this->form['name']."')\">" . strApply . '</button> ':'').
 
 			((isset($this->form['buttons']) && isset($this->form['buttons']['reset']))?'<button name="form_reset" type="reset">'.$this->form['buttons']['reset'].'</button> ':'').
-
-			(
-				isset($this->form['buttons']) && in_array('reset', $this->form['buttons']) ?
-					"<button name=\"form_reset\" type=\"reset\">" . i18n('Вернуть', __CLASS__) . "</button> ":
-					''
-			) .
+			(isset($this->form['buttons']) && in_array('reset', $this->form['buttons'])?"<button name=\"form_reset\" type=\"reset\">".strReset."</button> ":'').
 
 			((isset($this->form['buttons']) && isset($this->form['buttons']['cancel']) && (!is_array($this->form['buttons']['cancel'])))?'<input name="form_cancel" type="button" onclick="javascript:history.back();">' . $this->form['buttons']['cancel'] . '</button>' : '').
-			(
-				(!isset($this->form['buttons']) || (in_array('cancel', $this->form['buttons']))) ?
-					"<button name=\"form_cancel\" type=\"button\" onclick=\"javascript:history.back();\">" .
-						i18n('Отменить', __CLASS__) . '</button>' :
-					''
-			) .
+			((!isset($this->form['buttons']) || (in_array('cancel', $this->form['buttons'])))?"<button name=\"form_cancel\" type=\"button\" onclick=\"javascript:history.back();\">".strCancel . '</button>' :'').
 			((isset($this->form['buttons']['cancel']) && (is_array($this->form['buttons']['cancel'])))?"<button name=\"form_cancel\" type=\"button\" onclick=\"window.location.href='".$this->form['buttons']['cancel']['url']."'\">" . $this->form['buttons']['cancel']['label'] . '</button>':'').
 
 			"</td>\n\t\t</tr>\n".

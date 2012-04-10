@@ -36,31 +36,26 @@
  * Упрвление темами оформления
  *
  * @package Eresus
+ * @author mekras
  */
 class TThemes
 {
 	/**
-	 * Уровень доступа к модулю
-	 * @var int
+	 * ???
+	 * @var unknown_type
 	 */
-	private $access = ADMIN;
-
-	/**
-	 * Управление шаблонами
-	 *
-	 * @var Templates
-	 */
-	private $templates;
+	public $access = ADMIN;
 
 	/**
 	 * ???
 	 * @var unknown_type
 	 */
 	public $tabs = array(
+		'width' => admThemesTabWidth,
 		'items' => array(
-			array('caption' => 'Шаблоны страниц'),
-			array('caption' => 'Стандартные шаблоны'),
-			array('caption' => 'Файлы стилей'),
+			array('caption' => admThemesTemplates),
+			array('caption' => admThemesStandard),
+			array('caption' => admThemesStyles),
 		),
 	);
 
@@ -69,17 +64,8 @@ class TThemes
 	 * @var unknown_type
 	 */
 	public $stdTemplates = array(
-		'SectionListItem' => array('caption' => 'Шаблон элемента списка разделов', 'hint' =>
-			'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок;
-			<strong>$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание;
-			<strong>$(hint)</strong> - подсказка; <strong>$(link)</strong> - ссылка.'),
-		'PageSelector' => array('caption' => 'Шаблон переключателя страниц',
-			'hint' => 'Шаблон состоит из 5-х секций, разделяемых тройным дефисом (---):<ol>
-				<li>Переключатель страниц, макрос $(pages) задаёт положение генерируемого содержимого.</li>
-				<li>Шаблон отдельной страницы, $(number) - номер страницы, $(href) - ссылка</li>
-				<li>Шаблон текущей страницы, $(number) - номер страницы, $(href) - ссылка</li>
-				<li>Шаблон перехода к первой странице, $(href) - ссылка</li>
-				<li>Шаблон перехода к последней странице, $(href) - ссылка</li></ol>'),
+		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
+		'PageSelector' => array('caption' => admTemplPageSelector, 'hint' => admTemplPageSelectorLabel),
 		'pagination' => array('caption' => 'Новый переключатель страниц',
 			'hint' => '<a href="http://wiki.dwoo.org/">Синтаксис</a>.
 			Переменная $pagination содержит массив страниц. У каждой страницы есть свойства: title &mdash;
@@ -105,60 +91,14 @@ class TThemes
 	);
 
 	/**
-	 * Конструктор
-	 *
-	 * @since 2.17
-	 */
-	public function __construct()
-	{
-		$this->templates = new Templates();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает разметку интерфейса
-	 *
-	 * @return string
-	 */
-	public function adminRender()
-	{
-		// FIXME Глобальные переменные использоваться не должны
-		global $page;
-
-		$result = '';
-		if (UserRights($this->access))
-		{
-			//FIXME: Временное решение #0000163
-			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
-			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
-			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
-			$result .= $page->renderTabs($this->tabs);
-			switch (arg('section'))
-			{
-				case 'css':
-					$result .= $this->sectionStyles();
-					break;
-
-				case 'std':
-					$result .= $this->sectionStd();
-					break;
-
-				case 'themes':
-				default:
-					$result .= $this->sectionTemplates();
-			}
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * ???
 	 * @return unknown_type
 	 */
 	public function sectionTemplatesInsert()
 	{
-		$this->templates->add(arg('name'), '', arg('code'), arg('desc'));
+		useLib('templates');
+		$templates = new Templates();
+		$templates->add(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -169,7 +109,9 @@ class TThemes
 	 */
 	public function sectionTemplatesUpdate()
 	{
-		$this->templates->update(arg('name'), '', arg('code'), arg('desc'));
+		useLib('templates');
+		$templates = new Templates();
+		$templates->update(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -182,7 +124,9 @@ class TThemes
 	{
 		global $page;
 
-		$this->templates->delete(arg('delete'));
+		useLib('templates');
+		$templates = new Templates();
+		$templates->delete(arg('delete'));
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -197,15 +141,13 @@ class TThemes
 
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title . ' - ' . i18n('Добавить', __CLASS__),
+			'caption' => $page->title.admTDiv.admAdd,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type' => 'edit', 'name' => 'name', 'label' => i18n('Имя файла', __CLASS__),
-					'width' => '200px', 'comment' => '.html'),
-				array('type' => 'edit', 'name' => 'desc', 'label' => i18n('Описание', __CLASS__),
-					'width' => '100%'),
+				array('type'=>'edit','name'=>'name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html'),
+				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok','cancel'),
@@ -223,19 +165,19 @@ class TThemes
 	{
 		global $page;
 
-		$item = $this->templates->get(arg('id'), '', true);
+		useLib('templates');
+		$templates = new Templates();
+		$item = $templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title. '-' . i18n('Изменить', __CLASS__),
+			'caption' => $page->title.admTDiv.admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type' => 'edit', 'name' => 'filename', 'label' => i18n('Имя файла', __CLASS__),
-					'width' => '200px', 'comment' => '.html', 'disabled' => true, 'value' => $item['name']),
-				array('type' => 'edit', 'name' => 'desc', 'label' => i18n('Описание', __CLASS__),
-					'width' => '100%'),
+				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html', 'disabled' => true, 'value' => $item['name']),
+				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -269,17 +211,15 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption' => i18n('Добавить', __CLASS__), 'name'=>'action', 'value'=>'add'),
+					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
-
-		$list = $this->templates->enum();
+		useLib('templates');
+		$templates = new Templates();
+		$list = $templates->enum();
 		$items = array();
-		foreach ($list as $key=>$value)
-		{
-			$items[] = array('filename' => $key, 'description' => $value);
-		}
+		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
@@ -291,37 +231,18 @@ class TThemes
 	 */
 	public function sectionTemplates()
 	{
-		global $page;
+	global $Eresus, $page;
 
-		$page->title .= ' - ' . i18n('Шаблоны страниц', __CLASS__);
+		$page->title .= admTDiv.admThemesTemplates;
 
-		switch (arg('action'))
-		{
-			case 'update':
-				$result = $this->sectionTemplatesUpdate();
-				break;
-
-			case 'insert':
-				$result = $this->sectionTemplatesInsert();
-				break;
-
-			case 'add':
-				$result = $this->sectionTemplatesAdd();
-				break;
-
+		switch(arg('action')) {
+			case 'update': $result = $this->sectionTemplatesUpdate(); break;
+			case 'insert': $result = $this->sectionTemplatesInsert(); break;
+			case 'add': $result = $this->sectionTemplatesAdd(); break;
 			default:
-				if (arg('delete'))
-				{
-					$result = $this->sectionTemplatesDelete();
-				}
-				elseif (arg('id'))
-				{
-					$result = $this->sectionTemplatesEdit();
-				}
-				else
-				{
-					$result = $this->sectionTemplatesList();
-				}
+				if (arg('delete')) $result = $this->sectionTemplatesDelete();
+				elseif (arg('id')) $result = $this->sectionTemplatesEdit();
+				else $result = $this->sectionTemplatesList();
 		}
 		return $result;
 	}
@@ -333,8 +254,9 @@ class TThemes
 	 */
 	public function sectionStdInsert()
 	{
-		$this->templates->add(arg('name'), 'std', arg('code'),
-			$this->stdTemplates[arg('name')]['caption']);
+		useLib('templates');
+		$templates = new Templates();
+		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -357,7 +279,9 @@ class TThemes
 	{
 		global $page;
 
-		$this->templates->delete(arg('delete'), 'std');
+		useLib('templates');
+		$templates = new Templates();
+		$templates->delete(arg('delete'), 'std');
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -373,12 +297,8 @@ class TThemes
 		$values = array();
 		$items = array();
 		$jsArray = "var aTemplates = Array();\n";
-		foreach ($this->stdTemplates as $key => $item)
-		{
-			if (!isset($hint))
-			{
-				$hint = isset($item['hint'])?$item['hint']:'';
-			}
+		foreach($this->stdTemplates as $key => $item) {
+			if (!isset($hint)) $hint = isset($item['hint'])?$item['hint']:'';
 			$values[] = $key;
 			$items[] = $item['caption'];
 			$jsArray .= "aTemplates['".$key."'] = '".(isset($item['hint'])?$item['hint']:'')."'\n";
@@ -387,19 +307,17 @@ class TThemes
 		$page->addScripts($jsArray."
 			function onTemplateNameChange()
 			{
-				document.getElementById('templateHint').innerHTML =
-					aTemplates[document.addForm.elements.namedItem('name').value];
+				document.getElementById('templateHint').innerHTML = aTemplates[document.addForm.elements.namedItem('name').value];
 			}
 		");
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title . ' - ' . i18n('Добавить', __CLASS__),
+			'caption' => $page->title.admTDiv.admAdd,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type' => 'select', 'name' => 'name', 'label' => i18n('Шаблон', __CLASS__),
-					'values' => $values, 'items' => $items, 'extra' => 'onchange="onTemplateNameChange()"'),
+				array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values, 'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
 				array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
@@ -418,23 +336,22 @@ class TThemes
 	{
 		global $page;
 
-		$item = $this->templates->get(arg('id'), 'std', true);
+		useLib('templates');
+		$templates = new Templates();
+		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title . ' - ' . i18n('Изменить', __CLASS__),
+			'caption' => $page->title . admTDiv . admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'_name','label' => i18n('Имя файла', __CLASS__),
+				array('type'=>'edit','name'=>'_name','label' => admThemesFilenameLabel,
 					'width' => '200px', 'comment' => '.tmpl (' .
 					$this->stdTemplates[$item['name']]['caption'].')',
 					'disabled' => true, 'value'=>$item['name']),
-				array('type'=>'text','name'=>'hint',
-					'value' => isset($this->stdTemplates[$item['name']]['hint']) ?
-						$this->stdTemplates[$item['name']]['hint'] :
-						'', 'extra' => 'id="templateHint"'),
+				array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -468,17 +385,15 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption' => i18n('Добавить', __CLASS__), 'name'=>'action', 'value'=>'add'),
+					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
-
-		$list = $this->templates->enum('std');
+		useLib('templates');
+		$templates = new Templates();
+		$list = $templates->enum('std');
 		$items = array();
-		foreach ($list as $key=>$value)
-		{
-			$items[] = array('filename' => $key, 'description' => $value);
-		}
+		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
 		$result = $page->renderTable($table, $items);
 		return $result;
 	}
@@ -492,35 +407,16 @@ class TThemes
 	{
 		global $page;
 
-		$page->title .= ' - ' . i18n('Стандартные шаблоны', __CLASS__);
+		$page->title .= admTDiv.admThemesStandard;
 
-		switch (arg('action'))
-		{
-			case 'update':
-				$result = $this->sectionStdUpdate();
-				break;
-
-			case 'insert':
-				$result = $this->sectionStdInsert();
-				break;
-
-			case 'add':
-				$result = $this->sectionStdAdd();
-				break;
-
+		switch(arg('action')) {
+			case 'update': $result = $this->sectionStdUpdate(); break;
+			case 'insert': $result = $this->sectionStdInsert(); break;
+			case 'add': $result = $this->sectionStdAdd(); break;
 			default:
-				if (arg('delete'))
-				{
-					$result = $this->sectionStdDelete();
-				}
-				if (arg('id'))
-				{
-					$result = $this->sectionStdEdit();
-				}
-				else
-				{
-					$result = $this->sectionStdList();
-				}
+				if (arg('delete')) $result = $this->sectionStdDelete();
+				if (arg('id')) $result = $this->sectionStdEdit();
+				else $result = $this->sectionStdList();
 		}
 		return $result;
 	}
@@ -560,10 +456,7 @@ class TThemes
 		global $page;
 
 		$filename = filesRoot.'style/'.arg('delete');
-		if (file_exists($filename))
-		{
-			unlink($filename);
-		}
+		if (file_exists($filename)) unlink($filename);
 		HTTP::redirect($page->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -578,15 +471,13 @@ class TThemes
 
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title . ' - ' . i18n('Добавить', __CLASS__),
+			'caption' => $page->title.admTDiv.admAdd,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type' => 'edit', 'name' => 'filename', 'label' => i18n('Имя файла', __CLASS__),
-					'width' => '200px', 'comment' => '.css'),
-				array('type' => 'edit', 'name' => 'description', 'label' => i18n('Описание', __CLASS__),
-					'width' => '100%'),
+				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css'),
+				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
 			'buttons' => array('ok','cancel'),
@@ -612,17 +503,14 @@ class TThemes
 		$item['html'] = trim(mb_substr($item['html'], mb_strpos($item['html'], "\n")));
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title.' - '.i18n('Изменить', __CLASS__),
+			'caption' => $page->title.admTDiv.admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'filename'),
-				array('type' => 'edit', 'name' => '_filename', 'label' => i18n('Имя файла', __CLASS__),
-					'width' => '200px', 'comment' => '.css', 'disabled' => true,
-					'value' => $item['filename']),
-				array('type' => 'edit', 'name' => 'description', 'label' => i18n('Описание', __CLASS__),
-					'width' => '100%'),
+				array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
+				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -656,25 +544,21 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption' => i18n('Добавить', __CLASS__), 'name'=>'action', 'value'=>'add'),
+					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
 		# Загружаем список шаблонов
 		$dir = filesRoot.'style/';
 		$hnd = opendir($dir);
-		while (($filename = readdir($hnd))!==false)
-		{
-			if (preg_match('/.*\.css$/', $filename))
-			{
-				$description = file_get_contents($dir.$filename);
-				preg_match('|/\*(.*?)\*/|', $description, $description);
-				$description = trim($description[1]);
-				$items[] = array(
-					'filename' => $filename,
-					'description' => $description,
-				);
-			}
+		while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.css$/', $filename)) {
+			$description = file_get_contents($dir.$filename);
+			preg_match('|/\*(.*?)\*/|', $description, $description);
+			$description = trim($description[1]);
+			$items[] = array(
+				'filename' => $filename,
+				'description' => $description,
+			);
 		}
 		closedir($hnd);
 		$result = $page->renderTable($table, $items);
@@ -688,39 +572,44 @@ class TThemes
 	 */
 	public function sectionStyles()
 	{
-		global $page;
+	global $page;
 
-		$page->title .= ' - ' . i18n('Файлы стилей', __CLASS__);
-		switch (arg('action'))
-		{
-			case 'update':
-				$result = $this->sectionStylesUpdate();
-				break;
-
-			case 'insert':
-				$result = $this->sectionStylesInsert();
-				break;
-
-			case 'add':
-				$result = $this->sectionStylesAdd();
-				break;
-
+		$page->title .= admTDiv.admThemesStyles;
+		switch(arg('action')) {
+			case 'update': $result = $this->sectionStylesUpdate(); break;
+			case 'insert': $result = $this->sectionStylesInsert(); break;
+			case 'add': $result = $this->sectionStylesAdd(); break;
 			default:
-				if (arg('delete'))
-				{
-					$result = $this->sectionStylesDelete();
-				}
-				elseif (arg('id'))
-				{
-					$result = $this->sectionStylesEdit();
-				}
-				else
-				{
-					$result = $this->sectionStylesList();
-				}
+				if (arg('delete')) $result = $this->sectionStylesDelete();
+				elseif (arg('id')) $result = $this->sectionStylesEdit();
+				else $result = $this->sectionStylesList();
 		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * ???
+	 * @return unknown_type
+	 */
+	public function adminRender()
+	{
+		global $page;
+
+		$result = '';
+		if (UserRights($this->access)) {
+			#FIXME: Временное решение #0000163
+			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
+			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
+			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
+			$result .= $page->renderTabs($this->tabs);
+			switch (arg('section')) {
+				case 'css': $result .= $this->sectionStyles(); break;
+				case 'std': $result .= $this->sectionStd(); break;
+				case 'themes': default: $result .= $this->sectionTemplates(); break;
+			}
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
 }

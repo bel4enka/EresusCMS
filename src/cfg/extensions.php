@@ -1,15 +1,12 @@
 <?php
 /**
- * ${product.title}
+ * ${product.title} ${product.version}
+ *
+ * ${product.description}
  *
  * Конфигурация расширений
  *
- * @version ${product.version}
- * @copyright ${product.copyright}
- * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
- *
- * Этот файл содержит список установленных расширений, а так же их настройки.
+ * Этот файл содержит список кстановленных расширений, а так же их настройки.
  * Расширения размещаются в директории ext-3rd, каждое в отдельной поддиректории.
  * В директории расширения должен находиться файл eresus-conntecor.php, обеспечивающий
  * взаимодействие этого расширения с Eresus.
@@ -20,6 +17,11 @@
  * Внутри расширяемой функции в виде ассоциативного массива перечисляются все установленные
  * расширения. В качестве ключа должно использоваться имя директории, в которой расположено
  * расширение. Формат данных пока не определён, используйте значение null.
+ *
+ * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @license ${license.uri} ${license.name}
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * @package Eresus
  *

@@ -102,8 +102,8 @@ function FatalError($msg)
 			"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
 			"<html>\n".
 			"<head>\n".
-			"  <title>". i18n('Ошибка') . "</title>\n".
-			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n".
+			"  <title>".errError."</title>\n".
+			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\">\n".
 			"</head>\n\n".
 			"<body>\n".
 			"  <div align=\"center\" style=\"font-family: Arial, Helvetica, sans-serif;\">\n".
@@ -111,8 +111,7 @@ function FatalError($msg)
 				"border-color: #e88 #800 #800 #e88; min-width: 500px;\">\n".
 			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
 				"border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; " .
-				"font-weight: bold; text-align: center; font-size: 10pt;\">" . i18n('Ошибка') .
-				"</td></tr>\n".
+				"font-weight: bold; text-align: center; font-size: 10pt;\">".errError."</td></tr>\n".
 			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
 				"border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; " .
 				"font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
@@ -120,8 +119,7 @@ function FatalError($msg)
 			"        <div align=\"center\"><br /><a href=\"javascript:history.back()\" " .
 				"style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; " .
 				"height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; " .
-				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">" . i18n('Вернуться') .
-				"</a></div>\n".
+				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
 			"      </td></tr>\n".
 			"    </table>\n".
 			"  </div>\n".
@@ -137,14 +135,9 @@ function FatalError($msg)
  *
  * @param string $text     Текст сообщения
  * @param string $caption  Заголовок окна сообщения
- * @deprecated с 2.17
  */
-function ErrorBox($text, $caption = null)
+function ErrorBox($text, $caption=errError)
 {
-	if (is_null($caption))
-	{
-		$caption = i18n('Ошибка');
-	}
 	$result =
 		(empty($caption)?'':"<div class=\"errorBoxCap\">".$caption."</div>\n").
 		"<div class=\"errorBox\">\n".
@@ -157,12 +150,8 @@ function ErrorBox($text, $caption = null)
 /**
  * Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
  */
-function InfoBox($text, $caption = null)
+function InfoBox($text, $caption=strInformation)
 {
-	if (null === $caption)
-	{
-		$caption = i18n('Информация');
-	}
 	$result =
 		(empty($caption)?'':"<div class=\"infoBoxCap\">".$caption."</div>\n").
 		"<div class=\"infoBox\">\n".
@@ -174,13 +163,15 @@ function InfoBox($text, $caption = null)
 
 function ErrorMessage($message)
 {
-	$GLOBALS['Eresus']->session['msg']['errors'][] = $message;
+	global $Eresus;
+	$Eresus->session['msg']['errors'][] = $message;
 }
 //------------------------------------------------------------------------------
 
 function InfoMessage($message)
 {
-	$GLOBALS['Eresus']->session['msg']['information'][] = $message;
+	global $Eresus;
+	$Eresus->session['msg']['information'][] = $message;
 }
 //------------------------------------------------------------------------------
 
@@ -193,9 +184,9 @@ function UserRights($level)
 
 	return (
 		(
-			($Eresus->user) &&
-			($Eresus->user->access <= $level) &&
-			($Eresus->user->access != 0)
+			($Eresus->user['auth']) &&
+			($Eresus->user['access'] <= $level) &&
+			($Eresus->user['access'] != 0)
 		) ||
 		($level == GUEST)
 	);
@@ -226,6 +217,32 @@ function useLib($library)
 			$result = true;
 			break;
 		}
+	}
+	return $result;
+}
+//------------------------------------------------------------------------------
+
+/**
+ * Подключает описание класса
+ *
+ * @access  public
+ *
+ * @param  string  $className   Имя класса
+ *
+ * @return  bool  Результат выполнения
+ */
+function useClass($className)
+{
+	$result = false;
+	if (DIRECTORY_SEPARATOR != '/')
+	{
+		$className = str_replace('/', DIRECTORY_SEPARATOR, $className);
+	}
+	$filename = realpath(dirname(__FILE__)) . '/classes/' . $className.'.php';
+	if (is_file($filename))
+	{
+		include_once($filename);
+		$result = true;
 	}
 	return $result;
 }
@@ -264,7 +281,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		$replyTo = $fromAddr;
 	}
 
-	$charset = 'UTF-8';
+	$charset = CHARSET;
 
 	$sender = strlen($fromName) ? "=?".$charset."?B?".base64_encode($fromName)."?= <$fromAddr>" :
 		$fromAddr;
@@ -315,7 +332,23 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		$headers .= "Content-type: text/plain; charset=$charset\n";
 	}
 
-	return (mail($address, $subject, $text, $headers)===0);
+	if ($Eresus->conf['debug']['enable'] && $Eresus->conf['debug']['mail'] !== true)
+	{
+		if (is_string($Eresus->conf['debug']['mail']))
+		{
+			$hnd = @fopen($Eresus->conf['debug']['mail'], 'a');
+			if ($hnd)
+			{
+				fputs($hnd, "\n====================\n$headers\nTo: $address\nSubject: $subject\n\n$text\n");
+				fclose($hnd);
+			}
+			return true;
+		}
+	}
+	else
+	{
+		return (mail($address, $subject, $text, $headers)===0);
+	}
 }
 //-----------------------------------------------------------------------------
 
@@ -327,6 +360,48 @@ function gettime($format = 'Y-m-d H:i:s')
 	#$delta = (GMT_ZONE * 3600) - date('Z'); // Смещение на нужный часовой пояс
 	$delta = 0;
 	return date($format , time() + $delta); // Время, со смещением на наш часовой пояс
+}
+//-----------------------------------------------------------------------------
+
+/**
+ * Форматирование даты
+ *
+ * @param string $date    Дата в формате YYYY-MM-DD hh:mm:ss
+ * @param string $format  Правила форматирования даты
+ *
+ * @return string  отформатированная дата
+ */
+function FormatDate($date, $format = DATETIME_NORMAL)
+{
+	if (empty($date))
+	{
+		$result = DATETIME_UNKNOWN;
+	}
+	else
+	{
+		preg_match_all('/(?<!\\\)[hHisdDmMyY]/', $format, $m, PREG_OFFSET_CAPTURE);
+		$repl = array(
+			'Y' => substr($date, 0, 4),
+			'm' => substr($date, 5, 2),
+			'd' => substr($date, 8, 2),
+			'h' => substr($date, 11, 2),
+			'i' => substr($date, 14, 2),
+			's' => substr($date, 17, 2)
+		);
+		$repl['y'] = substr($repl['Y'], 2, 2);
+		$repl['M'] = constant('MONTH_'.$repl['m']);
+		$repl['D'] = $repl['d']{0} == '0' ? $repl['d']{1} : $repl['d'];
+		$repl['H'] = $repl['h']{0} == '0' ? $repl['h']{1} : $repl['h'];
+
+		$delta = 0;
+		for ($i = 0; $i<count($m[0]); $i++)
+		{
+			$format = substr_replace($format, $repl[$m[0][$i][0]], $m[0][$i][1]+$delta, 1);
+			$delta += mb_strlen($repl[$m[0][$i][0]]) - 1;
+		}
+		$result = $format;
+	}
+	return $result;
 }
 //-----------------------------------------------------------------------------
 
@@ -700,7 +775,7 @@ function upload($name, $filename, $overwrite = true)
 	if (substr($filename, -1) == '/')
 	{
 		$filename .= option('filesTranslitNames') ?
-			Eresus_Kernel::sc	()->i18n->translit($_FILES[$name]['name']) :
+			Translit($_FILES[$name]['name']) :
 			$_FILES[$name]['name'];
 		if (file_exists($filename) &&
 			((is_string($overwrite) && $filename != $overwrite ) || (is_bool($overwrite) && !$overwrite))
@@ -735,29 +810,23 @@ function upload($name, $filename, $overwrite = true)
 				}
 				else
 				{
-					ErrorMessage(sprintf(i18n('Не удается переместить файл "%s" в "%s"', 'upload'),
-						$_FILES[$name]['name'], $filename));
+					ErrorMessage(sprintf(errFileMove, $_FILES[$name]['name'], $filename));
 				}
 			}
 		break;
 		case UPLOAD_ERR_INI_SIZE:
-			ErrorMessage(sprintf(
-				i18n('Размер файла "%s" превышает максимально допустимый размер %s.', 'upload'),
-				$_FILES[$name]['name']), ini_get('upload_max_filesize'));
+			ErrorMessage(sprintf(errUploadSizeINI, $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_FORM_SIZE:
-			ErrorMessage(sprintf(
-				i18n('Размер файла "%s" превышает максимально допустимый размер указанный в форме.',
-					'upload'), $_FILES[$name]['name']));
+			ErrorMessage(sprintf(errUploadSizeFORM, $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_PARTIAL:
-			ErrorMessage(sprintf(i18n('Файл "%s" получен только частично.', 'upload'),
-				$_FILES[$name]['name']));
+			ErrorMessage(sprintf(errUploadPartial, $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_NO_FILE:
 			if (strlen($_FILES[$name]['name']))
 			{
-				ErrorMessage(sprintf(i18n('Файл "%s" не был загружен.', 'upload'), $_FILES[$name]['name']));
+				ErrorMessage(sprintf(errUploadNoFile, $_FILES[$name]['name']));
 			}
 		break;
 	}
@@ -765,19 +834,9 @@ function upload($name, $filename, $overwrite = true)
 }
 //-----------------------------------------------------------------------------
 
-/**
- *
- * @param unknown_type $answer
- *
- * @return void
- *
- * @since ?.??
- *
- * @deprecated с 2.17
- */
 function HttpAnswer($answer)
 {
-	Header('Content-type: text/html; charset=UTF-8');
+	Header('Content-type: text/html; charset='.CHARSET);
 	echo $answer;
 	exit;
 }
@@ -785,13 +844,11 @@ function HttpAnswer($answer)
 
 /**
  * Отправляет браузеру XML
- *
- * @deprecated с 2.17
  */
 function SendXML($data)
 {
 	Header('Content-Type: text/xml');
-	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n<root>".$data."</root>";
+	echo '<?xml version="1.0" encoding="'.CHARSET.'"?>'."\n<root>".$data."</root>";
 	exit;
 }
 //-----------------------------------------------------------------------------
@@ -936,6 +993,19 @@ function FormatSize($size)
 }
 //-----------------------------------------------------------------------------
 
+function Translit($s) #: String
+{
+	$s = strtr($s, $GLOBALS['translit_table']);
+	$s = str_replace(
+		array(' ','/','?'),
+		array('_','-','7'),
+		$s
+	);
+	$s = preg_replace('/(\s|_)+/', '$1', $s);
+	return $s;
+}
+//-----------------------------------------------------------------------------
+
 function __clearargs($args)
 {
 	global $Eresus;
@@ -950,7 +1020,7 @@ function __clearargs($args)
 			}
 			else
 			{
-				if (version_compare(PHP_VERSION, '5.3', '<'))
+				if ( ! PHP::checkVersion('5.3') )
 				{
 					if (get_magic_quotes_gpc())
 					{
@@ -1039,7 +1109,29 @@ class Eresus
 	 * @var array
 	 */
 	var $conf = array(
+		'lang' => 'ru',
+		'timezone' => '',
+		'db' => array(
+			'engine'   => 'mysql',
+			'host'     => 'localhost',
+			'user'     => '',
+			'password' => '',
+			'name'     => '',
+			'prefix'   => '',
+		),
+		'session' => array(
+			'timeout' => 30,
+		),
 		'extensions' => array(),
+		'backward' => array(
+			'TPlugin' => false,
+			'TContentPlugin' => false,
+			'TListContentPlugin' => false,
+		),
+		'debug' => array(
+			'enable' => false,
+			'mail' => true,
+		),
 	);
 
 	/**
@@ -1092,6 +1184,87 @@ class Eresus
 	var $request;
 	var $sections;
 
+	//------------------------------------------------------------------------------
+	// Информация о системе
+	//------------------------------------------------------------------------------
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isWin32()
+	{
+		return System::isWindows();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isUnix()
+	{
+		return System::isUnixLike();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isMac()
+	{
+		return System::isMac();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isModule()
+	{
+		return PHP::isModule();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isCgi()
+	{
+		return PHP::isCGI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * @deprecated since 2.14
+	 */
+	function isCli()
+	{
+		return PHP::isCLI();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Читает и применяет конфигурационный файл
+	 */
+	private function init_config()
+	{
+		/*
+		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
+		 * мог записывать в неё свои значения.
+		 */
+		global $Eresus;
+
+		$filename = Eresus_Kernel::app()->getFsRoot() . '/cfg/main.php';
+		$nativeFilename = FS::nativeForm($filename);
+		if (FS::isFile($filename))
+		{
+			include_once $nativeFilename;
+		}
+		else
+		{
+			FatalError("Main config file '$nativeFilename' not found!");
+		}
+	}
+	//-----------------------------------------------------------------------------
+
 	/**
 	 * Инициирует сессии
 	 */
@@ -1122,7 +1295,7 @@ class Eresus
 	{
 		if (is_null($this->froot))
 		{
-			$this->froot = Eresus_Kernel::sc()->app->getRootDir() . '/';
+			$this->froot = FS::nativeForm(Eresus_Kernel::app()->getFsRoot() . '/');
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
@@ -1132,6 +1305,7 @@ class Eresus
 		{
 			$s = $this->froot;
 			$s = substr(dirname($_SERVER['SCRIPT_FILENAME']), strlen($_SERVER['DOCUMENT_ROOT']));
+			$s = FS::canonicalForm($s);
 			if (strlen($s) == 0 || substr($s, -1) != '/')
 			{
 				$s .= '/';
@@ -1228,8 +1402,7 @@ class Eresus
 		if (is_null($this->path))
 		{
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT'])) -
-				(Eresus_Kernel::isWindows() ? 2 : 0));
+			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
 			if (!strlen($s) || sbstr($s, -1) != '/')
 			{
 				$s .= '/';
@@ -1273,6 +1446,31 @@ class Eresus
 	//------------------------------------------------------------------------------
 
 	/**
+	 * Инициализация локали
+	 *
+	 * @access private
+	 */
+	function init_locale()
+	{
+		global $locale;
+
+		$locale['lang'] = $this->conf['lang'];
+		$locale['prefix'] = '';
+
+		# Подключение строковых данных
+		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
+		if (is_file($filename))
+		{
+			include_once($filename);
+		}
+		else
+		{
+			FatalError("Locale file '$filename' not found!");
+		}
+	}
+	//------------------------------------------------------------------------------
+
+	/**
 	 * Подключение базовых классов
 	 *
 	 * @access private
@@ -1288,6 +1486,18 @@ class Eresus
 		else
 		{
 			FatalError("Classes file '$filename' not found!");
+		}
+		if ($this->conf['backward']['TListContentPlugin'])
+		{
+			useClass('backward/TListContentPlugin');
+		}
+		elseif ($this->conf['backward']['TContentPlugin'])
+		{
+			useClass('backward/TContentPlugin');
+		}
+		elseif ($this->conf['backward']['TPlugin'])
+		{
+			useClass('backward/TPlugin');
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1306,6 +1516,36 @@ class Eresus
 		$this->extensions = new EresusExtensions();
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Подключение к источнику данных
+	 *
+	 * @access private
+	 */
+	function init_datasource()
+	{
+		if (useLib($this->conf['db']['engine']))
+		{
+			$this->db = new $this->conf['db']['engine'];
+			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
+				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
+		}
+		else
+		{
+			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+		}
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Инициализация механизма плагинов
+	 */
+	function init_plugins()
+	{
+		$this->plugins = new Plugins;
+		$this->plugins->init();
+	}
+	//------------------------------------------------------------------------------
 
 	/**
 	 * Инициализация учётной записи пользователя
@@ -1327,9 +1567,8 @@ class Eresus
 		if (isset($this->session['time']))
 		{
 			if (
-				(time() - $this->session['time'] >
-					Eresus_Config::get('eresus.cms.session.timeout', 30) * 3600) &&
-				$this->user
+				(time() - $this->session['time'] > $this->conf['session']['timeout']*3600) &&
+				($this->user['auth'])
 			)
 			{
 				$this->logout(false);
@@ -1367,7 +1606,7 @@ class Eresus
 	 */
 	function check_cookies()
 	{
-		if (!$this->user && isset($_COOKIE['eresus_login']))
+		if (!$this->user['auth'] && isset($_COOKIE['eresus_login']))
 		{
 			if (!$this->login($_COOKIE['eresus_login'], $_COOKIE['eresus_key'], true, true))
 			{
@@ -1382,20 +1621,24 @@ class Eresus
 	 */
 	function reset_login()
 	{
-		if ($this->user)
+		$this->user['auth'] = isset($this->user['auth']) ? $this->user['auth'] : false;
+		if ($this->user['auth'])
 		{
-			$item = Doctrine_Core::getTable('Eresus_Entity_User')->find($this->user->id);
-			if ($item)
+			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
+			if (!is_null($item))
 			{
 				# Если такой пользователь есть...
-				if ($item->active)
+				if ($item['active'])
 				{
 					# Если учетная запись активна...
-					$this->user = $item;
+					$this->user['name'] = $item['name'];
+					$this->user['mail'] = $item['mail'];
+					$this->user['access'] = $item['access'];
+					$this->user['profile'] = decodeOptions($item['profile']);
 				}
 				else
 				{
-					ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
+					ErrorMessage(sprintf(errAccountNotActive, $item['login']));
 					$this->logout();
 				}
 			}
@@ -1406,7 +1649,7 @@ class Eresus
 		}
 		else
 		{
-			$this->user->access = GUEST;
+			$this->user['access'] = GUEST;
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1418,6 +1661,17 @@ class Eresus
 	 */
 	function init()
 	{
+		// Отключение закавычивания передаваемых данных
+		if (!PHP::checkVersion('5.3'))
+		{
+			set_magic_quotes_runtime(0);
+		}
+		# Читаем конфигурацию
+		$this->init_config();
+		if ($this->conf['timezone'])
+		{
+			date_default_timezone_set($this->conf['timezone']);
+		}
 		# Определение путей
 		$this->init_resolve();
 		# Инициализация сессии
@@ -1428,10 +1682,16 @@ class Eresus
 		$this->init_settings();
 		# Первичный разбор запроса
 		$this->init_request();
+		# Настройка локали
+		$this->init_locale();
 		# Подключение базовых классов
 		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
+		# Подключение к источнику данных
+		$this->init_datasource();
+		# Инициализация механизма плагинов
+		$this->init_plugins();
 		# Инициализация учётной записи пользователя
 		$this->init_user();
 		# Проверка сессии
@@ -1457,7 +1717,11 @@ class Eresus
 	 */
 	function password_hash($password)
 	{
-		$result = md5(md5($password));
+		$result = md5($password);
+		if (!$this->conf['backward']['weak_password'])
+		{
+			$result = md5($result);
+		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -1503,19 +1767,22 @@ class Eresus
 
 		if ($login != $unsafeLogin)
 		{
-			ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
+			ErrorMessage(errInvalidPassword);
 			return false;
 		}
 
-		$user = Doctrine_Core::getTable('Eresus_Entity_User')->findOneBy('username', $login);
-		if ($user !== false)
+		$item = $this->db->selectItem('users', "`login`='$login'");
+		if (!is_null($item))
 		{
-			if ($user->active)
+			// Если такой пользователь есть...
+			if ($item['active'])
 			{
-				if (time() - $user->lastLoginTime > $user->loginErrors)
+				// Если учетная запись активна...
+				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
 				{
-					if ($key == $user->password)
+					if ($key == $item['hash'])
 					{
+						// Если пароль верен...
 						if ($auto)
 						{
 							$this->set_login_cookies($login, $key);
@@ -1524,15 +1791,19 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = (! isset($this->uset['id'])) || (! (bool) $this->user->id);
-						$this->user = $user;
+						$setVisitTime = (! isset($this->uset['id'])) || (! (bool) $this->user['id']);
+						$this->user = $item;
+						$this->user['profile'] = decodeOptions($this->user['profile']);
+						$this->user['auth'] = true; # Устанавливаем флаг авторизации
+						// Хэш пароля используется для подтверждения аутентификации
+						$this->user['hash'] = $item['hash'];
 						if ($setVisitTime)
 						{
-							$user->lastVisit = date('Y-m-d H:i:s');
+							$item['lastVisit'] = gettime(); # Записываем время последнего входа
 						}
-						$user->lastLoginTime = time();
-						$user->loginErrors = 0;
-						$user->save();
+						$item['lastLoginTime'] = time();
+						$item['loginErrors'] = 0;
+						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
@@ -1541,31 +1812,29 @@ class Eresus
 						// Если пароль не верен...
 						if (!$cookie)
 						{
-							ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
-							$user->lastLoginTime = time();
-							$user->loginErrors++;
-							$user->save();
+							ErrorMessage(errInvalidPassword);
+							$item['lastLoginTime'] = time();
+							$item['loginErrors']++;
+							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 						}
 					}
 				}
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(
-						i18n('Перед попыткой повторного логина должно пройти не менее %s секунд!', __CLASS__),
-						$user->loginErrors));
-						$user->lastLoginTime = time();
-						$user->save();
+					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
+					$item['lastLoginTime'] = time();
+					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 				}
 			}
 			else
 			{
-				ErrorMessage(sprintf(i18n('Неверное имя пользователя или пароль', __CLASS__), $login));
+				ErrorMessage(sprintf(errAccountNotActive, $login));
 			}
 		}
 		else
 		{
-			ErrorMessage(i18n('Неверное имя пользователя или пароль', __CLASS__));
+			ErrorMessage(errInvalidPassword);
 		}
 		return $result;
 	}
@@ -1578,7 +1847,9 @@ class Eresus
 	 */
 	public function logout($clearCookies=true)
 	{
-		$this->user = null;
+		$this->user['id'] = null;
+		$this->user['auth'] = false;
+		$this->user['access'] = GUEST;
 		if ($clearCookies)
 		{
 			$this->clear_login_cookies();

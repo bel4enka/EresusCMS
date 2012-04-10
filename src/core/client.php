@@ -93,17 +93,6 @@ class TClientUI extends WebPage
 		}
 		$section = strip_tags(implode($section, option('siteTitleDivider')));
 
-		$accessLevels = array(
-			i18n('Неизвестный уровень доступа'),
-			i18n('Главный администратор'),
-			i18n('Администратор'),
-			i18n('Редактор'),
-			i18n('Пользователь'),
-			i18n('Гость'),
-		);
-		$accessLevelName = isset($accessLevels[$this->access]) ? $accessLevels[$this->access] : '';
-
-
 		$result = str_replace(
 			array(
 				'$(httpHost)',
@@ -149,7 +138,7 @@ class TClientUI extends WebPage
 				$this->description,
 				$this->keywords,
 				$this->access,
-				$accessLevelName,
+				constant('ACCESSLEVEL'.$this->access),
 				$section,
 			),
 			$text
@@ -218,8 +207,8 @@ class TClientUI extends WebPage
 		$url = '';
 		do
 		{
-			$items = $Eresus->sections->children($item['id'], $Eresus->user ? $Eresus->user->access :
-				GUEST, SECTIONS_ACTIVE);
+			$items = $Eresus->sections->children($item['id'], $Eresus->user['auth'] ?
+				$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
 			$item = false;
 			for ($i=0; $i<count($items); $i++)
 			{
@@ -452,12 +441,12 @@ class TClientUI extends WebPage
 		}
 
 		$result = $Eresus->plugins->clientBeforeSend($result);
-		if (!Eresus_Config::get('eresus.cms.debug'))
+		if (!$Eresus->conf['debug']['enable'])
 		{
 			ob_start('ob_gzhandler');
 		}
 		echo $result;
-		if (!Eresus_Config::get('eresus.cms.debug'))
+		if (!$Eresus->conf['debug']['enable'])
 		{
 			ob_end_flush();
 		}
@@ -515,13 +504,13 @@ class TClientUI extends WebPage
 					}
 					if ($for_from != $pagesCount)
 					{
-						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"" .
-							i18n('Последняя страница', __CLASS__) . "\">&nbsp;&laquo;&nbsp;</a>";
+						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage.
+							"\">&nbsp;&laquo;&nbsp;</a>";
 					}
 					if ($for_to != 0)
 					{
-						$side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"" .
-							i18n('Первая страница', __CLASS__) . "\">&nbsp;&raquo;&nbsp;</a>";
+						$side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage.
+							"\">&nbsp;&raquo;&nbsp;</a>";
 					}
 				}
 				# Если установлен прямой порядок страниц
@@ -538,17 +527,17 @@ class TClientUI extends WebPage
 					$for_to = $for_from + $at_once;
 					if ($for_from != 1)
 					{
-						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"" .
-							i18n('Первая страница', __CLASS__) . "\">&nbsp;&laquo;&nbsp;</a>";
+						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage.
+							"\">&nbsp;&laquo;&nbsp;</a>";
 					}
 					if ($for_to < $pagesCount)
 					{
 						$side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".
-							i18n('Последняя страница', __CLASS__) . "\">&nbsp;&raquo;&nbsp;</a>";
+							strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
 					}
 				}
 			}
-			$result = '<div class="pages">' . i18n('Страницы: ', __CLASS__);
+			$result = '<div class="pages">'.strPages;
 			$result .= $side_left;
 			for ($i = $for_from; $i != $for_to; $i += $for_delta)
 			{

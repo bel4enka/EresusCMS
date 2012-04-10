@@ -31,6 +31,124 @@
  */
 
 
+/**
+ * Тема оформления административного интерфейса
+ *
+ * Экземпляр этого класса доступен через переменную {$theme} в шаблонах и может быть использован
+ * для определения путей к файлам темы, вызова помощников (helpers) и других вспомогательных
+ * функций.
+ *
+ * Автор темы может создать потомка этого класса, размещённого в файле theme.php в корне темы.
+ * В этом случае его класс будет использован вместо стандартного.
+ *
+ * @package Eresus
+ */
+class AdminUITheme
+{
+	/**
+	 * Путь к директории тем относительно корня сайта
+	 *
+	 * @var string
+	 */
+	protected $prefix = 'admin/themes';
+
+	/**
+	 * Внутреннее имя темы
+	 *
+	 * Должно совпадать с именем директории темы.
+	 *
+	 * @var string
+	 * @see getName
+	 */
+	protected $name = 'default';
+
+	/**
+	 * Конструктор
+	 *
+	 * @param string $name  Внутреннее имя темы (директория внутри themes)
+	 *
+	 * @return AdminUITheme
+	 */
+	public function __construct($name = null)
+	{
+		if ($name)
+		{
+			$this->name = $name;
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает внутреннее имя темы
+	 *
+	 * @return string
+	 * @see $name
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает адрес ресурса относительно корня сайта
+	 *
+	 * @param string $path
+	 *
+	 * @return string
+	 */
+	public function getResource($path)
+	{
+		return $this->prefix . '/' . $this->getName() . '/' . $path;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает адрес картинки относительно корня сайта
+	 *
+	 * @param string $image
+	 *
+	 * @return string
+	 */
+	public function getImage($image)
+	{
+		return $this->getResource('img/' . $image);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает адрес иконки относительно корня сайта
+	 *
+	 * @param string $icon             Имя иконки
+	 * @param string $size [optional]  Размер иконки. По умолчанию 'medium'
+	 *
+	 * @return string
+	 */
+	public function getIcon($icon, $size = 'medium')
+	{
+		return $this->getResource('img/' . $size . '/' . $icon);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает шаблон
+	 *
+	 * @param string $name
+	 *
+	 * @return Template
+	 */
+	public function getTemplate($name)
+	{
+		$filename = $this->getResource($name);
+		$template = new Template($filename);
+		return $template;
+	}
+	//-----------------------------------------------------------------------------
+}
+
+
+
+
 define('ADMINUI', true);
 
 /**
@@ -51,7 +169,7 @@ class TAdminUI extends WebPage
 	/**
 	 * Тема оформления
 	 *
-	 * @var Eresus_UI_Admin_Theme
+	 * @var AdminUITheme
 	 */
 	protected $uiTheme;
 
@@ -67,11 +185,11 @@ class TAdminUI extends WebPage
 
 		parent::__construct();
 
-		$theme = new Eresus_UI_Admin_Theme(Eresus_Config::get('eresus.cms.admin.theme', 'default'));
+		$theme = new AdminUITheme();
 		$this->setUITheme($theme);
-		Eresus_Template::setGlobalValue('theme', $theme);
+		TemplateSettings::setGlobalValue('theme', $theme);
 
-		$this->title = i18n('Управление', __CLASS__);
+		$this->title = admControls;
 		/* Определяем уровень вложенности */
 		do
 		{
@@ -85,21 +203,21 @@ class TAdminUI extends WebPage
 		/* Создаем меню */
 		$this->menu = array(
 			array(
-				'access'  => EDITOR,
-				'caption' => i18n('Управление', __CLASS__),
-				'items' => array(
-					array('link' => 'pages', 'caption' => i18n('Разделы сайта', __CLASS__),
-						'hint' => i18n('Управление структурой разделов', __CLASS__), 'access' => ADMIN),
-					array('link' => 'files', 'caption' => i18n('Файловый менеджер', __CLASS__),
-						'hint' => i18n('Управление файлами данных', __CLASS__), 'access' => EDITOR),
-					array ('link' => 'plgmgr', 'caption' => i18n('Модули расширения', __CLASS__),
-						'hint' => i18n('Управление модулями расширения', __CLASS__), 'access' => ADMIN),
-					array('link' => 'themes', 'caption' => i18n('Оформление', __CLASS__),
-						'hint' => i18n('Управление шаблонами страниц и стилями', __CLASS__), 'access' => ADMIN),
-					array('link' => 'users', 'caption' => i18n('Пользователи', __CLASS__),
-						'hint' => i18n('Управление пользователями', __CLASS__), 'access' => ADMIN),
-					array('link' => 'settings', 'caption' => i18n('Настройки сайта', __CLASS__),
-						'hint' => i18n('Основные настройки сайта', __CLASS__), 'access' => ADMIN),
+				"access"  => EDITOR,
+				"caption" => admControls,
+				"items" => array (
+					array ("link" => "pages", "caption"  => admStructure, "hint"  => admStructureHint,
+						'access'=>ADMIN),
+					array ("link" => "files", "caption"  => admFileManager, "hint"  => admFileManagerHint,
+						'access'=>EDITOR),
+					array ("link" => "plgmgr", "caption"  => admPlugins, "hint"  => admPluginsHint,
+						'access'=>ADMIN),
+					array ("link" => "themes", "caption"  => admThemes, "hint"  => admThemesHint,
+						'access'=>ADMIN),
+					array ("link" => "users", "caption"  => admUsers, "hint"  => admUsersHint,
+						'access'=>ADMIN),
+					array ("link" => "settings", "caption"  => admConfiguration,
+						"hint"  => admConfigurationHint, 'access'=>ADMIN),
 				)
 			),
 		);
@@ -108,7 +226,7 @@ class TAdminUI extends WebPage
 
 	/**
 	 * Возвращает объект текущей темы оформления
-	 * @return Eresus_UI_Admin_Theme
+	 * @return AdminUITheme
 	 */
 	public function getUITheme()
 	{
@@ -118,10 +236,10 @@ class TAdminUI extends WebPage
 
 	/**
 	 * Устанавливает новую тему оформления
-	 * @param Eresus_UI_Admin_Theme $theme
+	 * @param AdminUITheme $theme
 	 * @return void
 	 */
-	public function setUITheme(Eresus_UI_Admin_Theme $theme)
+	public function setUITheme(AdminUITheme $theme)
 	{
 		$this->uiTheme = $theme;
 	}
@@ -298,21 +416,21 @@ class TAdminUI extends WebPage
 			case 'add':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-add.png',
-					'title' => i18n('Добавить', __CLASS__),
+					'title' => strAdd,
 					'alt' => '+',
 				);
 			break;
 			case 'edit':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-edit.png',
-					'title' => i18n('Изменить', __CLASS__),
+					'title' => strEdit,
 					'alt' => '&plusmn;',
 				);
 			break;
 			case 'delete':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-delete.png',
-					'title' => i18n('Удалить', __CLASS__),
+					'title' => strDelete,
 					'alt' => 'X',
 					'onclick' => 'return askdel(this)',
 				);
@@ -320,21 +438,21 @@ class TAdminUI extends WebPage
 			case 'setup':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-config.png',
-					'title' => i18n('Свойства', __CLASS__),
+					'title' => strProperties,
 					'alt' => '*',
 				);
 			break;
 			case 'move':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/item-move.png',
-					'title' => i18n('Переместить', __CLASS__),
+					'title' => strMove,
 					'alt' => '-&gt;',
 				);
 			break;
 			case 'position':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/move-up.png',
-					'title' => i18n('Вверх', __CLASS__),
+					'title' => admUp,
 					'alt' => '&uarr;',
 				);
 				$s = array_pop($href);
@@ -343,7 +461,7 @@ class TAdminUI extends WebPage
 			case 'position_down':
 				$control = array(
 					'image' => $Eresus->root.'admin/themes/default/img/medium/move-down.png',
-					'title' => i18n('Вниз', __CLASS__),
+					'title' => admDown,
 					'alt' => '&darr;',
 				);
 			break;
@@ -376,19 +494,52 @@ class TAdminUI extends WebPage
 	 * @param array $tabs
 	 *
 	 * @return string  HTML
-	 *
-	 * @deprecated с 2.17
 	 */
-	public function renderTabs($tabs)
+	function renderTabs($tabs)
 	{
-		$html = '';
+		global $Eresus, $page;
+
 		if (count($tabs))
 		{
-			$tabs['baseURL'] = $GLOBALS['Eresus']->request['link'];
-			$tmpl = Eresus_Template::fromFile('core/templates/legacy/tabs.html');
-			$html = $tmpl->compile($tabs);
+			$result = '<div class="legacy-tabs ui-helper-clearfix">';
+			$width = empty($tabs['width']) ?
+				'' :
+				' style="width: ' . $tabs['width'] . '"';
+			if (
+				isset($tabs['items']) &&
+				count($tabs['items'])
+			)
+			{
+				foreach ($tabs['items'] as $item)
+				{
+					if (isset($item['url']))
+					{
+						$url = $item['url'];
+					}
+					else
+					{
+						$url = $Eresus->request['url'];
+						if (isset($item['name']))
+						{
+							if (($p = strpos($url, $item['name'].'=')) !== false)
+							{
+								$url = substr($url, 0, $p-1);
+							}
+							$url .= (strpos($url, '?') !== false ? '&' : '?') . $item['name'].'='.$item['value'];
+						}
+						else
+						{
+							$url = $page->url();
+						}
+					}
+					$url = preg_replace('/&(?!amp;)/', '&amp;', $url);
+					$result .= '<a'.$width.(isset($item['class'])?' class="'.$item['class'].'"':'').
+						' href="'.$url.'">'.$item['caption'].'</a>';
+				}
+			}
+			$result .= "</div>\n";
 		}
-		return $html;
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -397,7 +548,7 @@ class TAdminUI extends WebPage
 		$prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
 		if ($itemsCount > $itemsPerPage)
 		{
-			$result = '<div class="admListPages">' . i18n('Страницы: ', __CLASS__);
+			$result = '<div class="admListPages">'.strPages;
 			if ($Descending)
 			{
 				$forFrom = $pageCount;
@@ -503,12 +654,11 @@ class TAdminUI extends WebPage
 			$result .= $pages;
 		}
 		$result .= "<table class=\"admList\">\n".
-			'<tr><th style="width: 100px;">' . i18n('Управление', __CLASS__) .
+			'<tr><th style="width: 100px;">'.admControls.
 			(isset($table['controls']['position'])?' <a href="'.
 			$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.
-			i18n('По порядку', __CLASS__) . '">'.
-			img('admin/themes/default/img/ard.gif', i18n('По порядку', __CLASS__),
-				i18n('По порядку', __CLASS__)).'</a>':'').
+			admSortPosition.'">'.
+			img('admin/themes/default/img/ard.gif', admSortPosition, admSortPosition).'</a>':'').
 			"</th>";
 		if (count($table['columns']))
 		{
@@ -520,13 +670,12 @@ class TAdminUI extends WebPage
 					'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
 					(isset($table['name'])?
 					' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).
-					'" title="' . i18n('По возрастанию', __CLASS__) . '">'.
-					img('admin/themes/default/img/ard.gif', i18n('По возрастанию', __CLASS__),
-						i18n('По возрастанию', __CLASS__)).'</a> '.
+					'" title="'.admSortAscending.'">'.
+					img('admin/themes/default/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
 					'<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).
-					'" title="' . i18n('По убыванию', __CLASS__) . '">'.
-					img('admin/themes/default/img/aru.gif', i18n('По убыванию', __CLASS__),
-						i18n('По убыванию', __CLASS__)). '</a></th>':'');
+					'" title="'.admSortDescending.'">'.
+					img('admin/themes/default/img/aru.gif', admSortDescending, admSortDescending).
+					'</a></th>':'');
 			}
 		}
 		$result .= "</tr>\n";
@@ -550,9 +699,8 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_delete, $item[$table['key']]) . '" title="' .
-						i18n('Удалить', __CLASS__) . '" onclick="return askdel(this)">' .
-						img('admin/themes/default/img/medium/item-delete.png', i18n('Удалить', __CLASS__),
-							i18n('Удалить', __CLASS__), 16, 16).
+						admDelete . '" onclick="return askdel(this)">' .
+						img('admin/themes/default/img/medium/item-delete.png', admDelete, admDelete, 16, 16).
 						'</a>';
 				}
 
@@ -566,9 +714,8 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_edit, $item[$table['key']]) . '" title="' .
-						i18n('Изменить', __CLASS__) .	'">' .
-						img('admin/themes/default/img/medium/item-edit.png', i18n('Изменить', __CLASS__),
-							i18n('Изменить', __CLASS__), 16, 16).'</a>';
+						admEdit .	'">' .
+						img('admin/themes/default/img/medium/item-edit.png', admEdit, admEdit, 16, 16).'</a>';
 				}
 
 				/* Вверх/вниз */
@@ -582,13 +729,11 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_position, 'up', $item[$table['key']]) .
-						'" title="' . i18n('Вверх', __CLASS__) . '">' .
-						img('admin/themes/default/img/medium/move-up.png', i18n('Вверх', __CLASS__),
-							i18n('Вверх', __CLASS__)).'</a>';
+						'" title="' . admUp . '">' .
+						img('admin/themes/default/img/medium/move-up.png', admUp, admUp).'</a>';
 					$result .= ' <a href="' . sprintf($url_position, 'down', $item[$table['key']]) .
-						'" title="' . i18n('Вниз', __CLASS__) . '">' .
-						img('admin/themes/default/img/medium/move-down.png', i18n('Вниз', __CLASS__),
-							i18n('Вниз', __CLASS__)).'</a>';
+						'" title="' . admDown . '">' .
+						img('admin/themes/default/img/medium/move-down.png', admDown, admDown).'</a>';
 				}
 
 				/* Активность */
@@ -601,10 +746,10 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_toggle, $item[$table['key']]) . '" title="' .
-						($item['active'] ? i18n('Отключить', __CLASS__) : i18n('Включить', __CLASS__)) . '">' .
+						($item['active'] ? admDeactivate : admActivate) . '">' .
 						img('admin/themes/default/img/medium/item-' . ($item['active'] ? 'active':'inactive').
-						'.png', $item['active'] ? i18n('Отключить', __CLASS__) : i18n('Включить', __CLASS__),
-						$item['active'] ? i18n('Отключить', __CLASS__) : i18n('Включить', __CLASS__)).'</a>';
+						'.png', $item['active']?admDeactivate:admActivate,
+						$item['active']?admDeactivate:admActivate).'</a>';
 				}
 
 				$result .= '</td>';
@@ -646,16 +791,16 @@ class TAdminUI extends WebPage
 							switch ($column['function'])
 							{
 								case 'isEmpty':
-									$value = empty($value)? i18n('Да') : i18n('Нет');
+									$value = empty($value)?strYes:strNo;
 								break;
 								case 'isNotEmpty':
-									$value = empty($value)? i18n('Нет') : i18n('Да');
+									$value = empty($value)?strNo:strYes;
 								break;
 								case 'isNull':
-									$value = is_null($value)? i18n('Да') : i18n('Нет');
+									$value = is_null($value)?strYes:strNo;
 								break;
 								case 'isNotNull':
-									$value = is_null($value)? i18n('Нет') : i18n('Да');
+									$value = is_null($value)?strNo:strYes;
 								break;
 								case 'length':
 									$value = mb_strlen($value);
@@ -724,7 +869,7 @@ class TAdminUI extends WebPage
 			$module = arg('mod', '/[^\w-]/');
 			if (file_exists($GLOBALS['Eresus']->froot . "core/$module.php"))
 			{
-				include $Eresus->froot . "core/$module.php";
+				Core::safeInclude($Eresus->froot . "core/$module.php");
 				$class = "T$module";
 				$this->module = new $class;
 			}
@@ -735,8 +880,7 @@ class TAdminUI extends WebPage
 			}
 			else
 			{
-				ErrorMessage(i18n('Файл не найден') . ': "' . $GLOBALS['Eresus']->froot .
-					"core/$module.php'");
+				ErrorMessage(errFileNotFound.': "' . $GLOBALS['Eresus']->froot . "core/$module.php'");
 			}
 
 			/*
@@ -750,75 +894,65 @@ class TAdminUI extends WebPage
 					{
 						$result .= $this->module->adminRender();
 					}
-					catch (Eresus_CMS_Exception_NotFound $e)
-					{
-						header('Not Found', true, 404);
-						return i18n('Страница не найдена');
-					}
 					catch (Exception $e)
 					{
 						if (isset($name))
 						{
-							$desc = i18n('В расширении "%s" произошла ошибка.');
-							$desc = sprintf($desc, $name);
+							$logMsg = 'Error in plugin "' . $name . '"';
+							$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+							$msg = sprintf($msg, $name);
 						}
 						else
 						{
-							$desc = i18n('В подсистеме "%s" произошла ошибка.');
-							$desc = sprintf($desc, $module);
+							$logMsg = 'Error in module "' . $module . '"';
+							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
+							$msg = sprintf($msg, $module);
 						}
 
-						Eresus_Logger::exception($e);
+						Core::logException($e, $logMsg);
 
-						$tmplFile = 'core/templates/exception' .
-							(Eresus_Config::get('eresus.cms.debug') ? '.debug' : '') . '.html';
-						$tmpl = Eresus_Template::fromFile($tmplFile);
-						$msg = $tmpl->compile(array(
-							'description' => $desc,
-							'e' => $e,
-							'source' => Eresus_Kernel::sc()->app->getExceptionSource($e)
-						));
-						ErrorMessage($msg);
+						$msg .= '<br />' . $e->getMessage();
+						if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)
+						{
+							$msg .= '<br />' . $e->getDescription();
+						}
+						$result .= ErrorBox($msg);
 					}
 				}
 				else
 				{
-					$result .= ErrorMessage(sprintf(i18n('Метод "%s" не найден в классе "%s".'),
-						'adminRender', get_class($this->module)));
+					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
 				}
 			}
 			else
 			{
 				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
-				$msg = i18n('Модуль расширения "%s" не установлен или отключен.', __CLASS__);
-				ErrorMessage(sprintf($msg, isset($name) ? $name : $module));
+				$msg = I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
+				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
-
-		$session =& $Eresus->session;
-		$tmpl = Eresus_Template::fromFile('core/templates/message.html');
-
 		if (
-			isset($session['msg']['information']) && count($session['msg']['information'])
+			isset($Eresus->session['msg']['information']) &&
+			count($Eresus->session['msg']['information'])
 		)
 		{
 			$messages = '';
-			foreach ($session['msg']['information'] as $message)
+			foreach ($Eresus->session['msg']['information'] as $message)
 			{
-				$messages .= $tmpl->compile(array('text' => $message, 'type' => 'info'));
+				$messages .= InfoBox($message);
 			}
-			$result = $messages . $result;
-			$session['msg']['information'] = array();
+			$result = $messages.$result;
+			$Eresus->session['msg']['information'] = array();
 		}
-		if (isset($session['msg']['errors']) && count($session['msg']['errors']))
+		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
 		{
 			$messages = '';
-			foreach ($session['msg']['errors'] as $message)
+			foreach ($Eresus->session['msg']['errors'] as $message)
 			{
-				$messages .= $tmpl->compile(array('text' => $message, 'type' => 'error'));
+				$messages .= ErrorBox($message);
 			}
-			$result = $messages . $result;
-			$session['msg']['errors'] = array();
+			$result = $messages.$result;
+			$Eresus->session['msg']['errors'] = array();
 		}
 		return $result;
 	}
@@ -838,7 +972,7 @@ class TAdminUI extends WebPage
 		$theme = $this->getUITheme();
 
 		$result = '';
-		$items = $Eresus->sections->children($owner, $Eresus->user->access, SECTIONS_ACTIVE);
+		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
 
 		if (count($items))
 		{
@@ -846,7 +980,7 @@ class TAdminUI extends WebPage
 			{
 				if (empty($item['caption']))
 				{
-					$item['caption'] = i18n('(не задано)', __CLASS__);
+					$item['caption'] = admNA;
 				}
 
 				if (
@@ -930,7 +1064,7 @@ class TAdminUI extends WebPage
 	{
 		global $Eresus;
 
-		//TODO $Eresus->plugins->adminOnMenuRender();
+		$Eresus->plugins->adminOnMenuRender();
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)
@@ -938,7 +1072,7 @@ class TAdminUI extends WebPage
 			if (UserRights($this->extmenu[$section]['access']))
 			{
 				$menu .= '<div class="header">' . $this->extmenu[$section]['caption'] .
-					'</div><div class="content"><ul class="nav-main">';
+					'</div><div class="content">';
 				foreach ($this->extmenu[$section]['items'] as $item)
 				{
 					if (
@@ -952,13 +1086,12 @@ class TAdminUI extends WebPage
 						{
 							$this->title = $item['caption'];
 						}
-						$menu .= '<li class="nav-main__item' .
-							($item['link'] == arg('mod') ? ' nav-main__item_state_current' : '') .
-							'"><a href="' . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
-							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></li>\n";
+						$menu .= '<div ' . ($item['link'] == arg('mod') ? 'class="selected"' : '') .
+							"><a href=\"" . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
+							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
 					}
 				}
-				$menu .= "</ul></div>\n";
+				$menu .= "</div>\n";
 			}
 		}
 
@@ -966,9 +1099,8 @@ class TAdminUI extends WebPage
 		{
 			if (UserRights($this->menu[$section]['access']))
 			{
-				$menu .=
-					'<div class="block__header">' . $this->menu[$section]['caption'] . '</div>' .
-					'<ul class="nav-main">';
+				$menu .= '<div class="header">' . $this->menu[$section]['caption'] .
+					'</div><div class="content">';
 				foreach ($this->menu[$section]['items'] as $item)
 				{
 					if (
@@ -982,14 +1114,12 @@ class TAdminUI extends WebPage
 						{
 							$this->title = $item['caption'];
 						}
-						$menu .= '<li class="nav-main__item' .
-							($item['link'] == arg('mod') ? ' nav-main__item_state_current' : '') .
-							'"><a href="' . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
-							'" title="' .	$item['hint'] . '" class="nav-main__item-caption">' . $item['caption'] .
-							"</a></li>\n";
+						$menu .= '<div '.($item['link'] == arg('mod') ?'class="selected"':'') .
+							"><a href=\"" . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
+							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
 					}
 				}
-				$menu .= "</ul>\n";
+				$menu .= "</div>\n";
 			}
 		}
 
@@ -998,23 +1128,66 @@ class TAdminUI extends WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает разметку страницы или отправляет её пользователю.
+	 * Отправляет созданную страницу пользователю
 	 *
-	 * @return string
+	 * @return void
 	 */
-	public function render()
+	function render()
 	{
+		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверям права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
-			$ctrl = new Eresus_Admin_Controller_Auth(Eresus_Kernel::sc());
-			$html = $ctrl->authAction();
+			$this->auth();
 		}
 		else
 		{
-			$html = $this->renderUI();
+			$this->renderUI();
 		}
-		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Отрисовка и вывод страницы аутентификации
+	 *
+	 * Авторизация проводится методом {@see Eresus::login()}.
+	 *
+	 * @return void
+	 */
+	private function auth()
+	{
+		global $Eresus;
+
+		$req = HTTP::request();
+		$user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
+		$password = $req->arg('password');
+		$autologin = $req->arg('autologin');
+
+		$data = array('errors' => array());
+		$data['user'] = $user;
+		$data['autologin'] = $autologin;
+
+		if ($req->getMethod() == 'POST')
+		{
+			if ($Eresus->login($req->arg('user'), $Eresus->password_hash($password), $autologin))
+			{
+				HTTP::redirect('./admin.php');
+			}
+		}
+
+		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
+		{
+			foreach ($Eresus->session['msg']['errors'] as $message)
+			{
+				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
+			}
+
+			$Eresus->session['msg']['errors'] = array();
+		}
+
+		$tmpl = $this->getUITheme()->getTemplate('auth.html');
+		$html = $tmpl->compile($data);
+		echo $html;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1043,7 +1216,7 @@ class TAdminUI extends WebPage
 		$data['controlMenu'] = $this->renderControlMenu();
 		$data['user'] = $Eresus->user;
 
-		$tmpl = Eresus_Template::fromFile('core/templates/page.default.html');
+		$tmpl = new Template('admin/themes/default/page.default.html');
 		$html = $tmpl->compile($data);
 
 		if (count($this->headers))
