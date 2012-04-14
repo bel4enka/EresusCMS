@@ -431,7 +431,7 @@ class Plugins
 
 		if ($this->load($pluginName))
 		{
-			$filename = $GLOBALS['Eresus']->root . 'ext/' . $pluginName . '/classes/' .
+			$filename = Eresus_Kernel::app()->getFsRoot() . '/ext/' . $pluginName . '/classes/' .
 					str_replace('_', '/', substr($className, strlen($pluginName) + 1)) . '.php';
 			if (file_exists($filename))
 			{

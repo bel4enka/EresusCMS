@@ -39,3 +39,32 @@ define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
 require_once __DIR__ . '/stubs.php';
 
 require_once TESTS_SRC_DIR . '/lang/ru.php';
+
+/**
+ * Вспомогательный инструментарий для тестов
+ *
+ * @package Eresus
+ * @subpackage Tests
+ * @since 3.00
+ */
+class Eresus_Tests
+{
+	/**
+	 * Устанавливает статическое приватное свойство класса
+	 *
+	 * @param string $className
+	 * @param mixed  $value
+	 * @param string $propertyName
+	 *
+	 * @return void
+	 *
+	 * @since 3.00
+	 */
+	public static function setStatic($className, $value, $propertyName = 'instance')
+	{
+		$property = new ReflectionProperty($className, $propertyName);
+		$property->setAccessible(true);
+		$property->setValue($className, $value);
+	}
+	//-----------------------------------------------------------------------------
+}
