@@ -413,6 +413,35 @@ class Plugins
 				$this->items[$plugin]->ajaxOnRequest();
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Автозагрузка классов плагинов
+	 *
+	 * @param string $className
+	 *
+	 * @return boolean
+	 *
+	 * @since 3.00
+	 */
+	public function autoload($className)
+	{
+		$pluginName = strtolower(substr($className, 0, strpos($className, '_')));
+
+		if (array_key_exists($pluginName, $this->list))
+		{
+			$filename = $GLOBALS['Eresus']->root . 'ext/' . $pluginName . '/classes/' .
+					str_replace('_', '/', substr($className, strlen($pluginName) + 1)) . '.php';
+			if (file_exists($filename))
+			{
+				include $filename;
+				return Eresus_Kernel::classExists($className);
+			}
+		}
+
+		return false;
+	}
+	//-----------------------------------------------------------------------------
+
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
