@@ -45,16 +45,22 @@ class Plugins_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_autoload()
 	{
-		$plugins = new Plugins;
-		$plugins->list['foo'] = array();
+		$plugins = $this->getMock('Plugins', array('load'));
+		$plugins->expects($this->any())->method('load')->
+			will($this->returnCallback(function ($a) { return 'foo' == $a;}));
 
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->root = TESTS_FIXT_DIR . '/core/Plugins/';
 
+		// Нет такого файла
+		$this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
+
+		// Файл есть, но плагин не активирован
+		$this->assertFalse($plugins->autoload('Bar_Foo_Baz'));
+
+		// Файл есть и плагин активирован
 		$this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
 		$this->assertTrue(class_exists('Foo_Bar_Baz', false));
-
-		$this->assertFalse($plugins->autoload('Foo_Bar'));
 	}
 	//-----------------------------------------------------------------------------
 

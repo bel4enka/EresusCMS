@@ -49,7 +49,7 @@ class EresusSourceParseException extends EresusRuntimeException {};
 class Plugins
 {
 	/**
-	 * Список всех плагинов
+	 * Список всех активированных плагинов
 	 *
 	 * @var array
 	 * @todo сделать private
@@ -124,6 +124,8 @@ class Plugins
 				$this->load($item['name']);
 			}
 		}
+
+		spl_autoload_register(array($this, 'autoload'));
 	}
 	//-----------------------------------------------------------------------------
 
@@ -427,7 +429,7 @@ class Plugins
 	{
 		$pluginName = strtolower(substr($className, 0, strpos($className, '_')));
 
-		if (array_key_exists($pluginName, $this->list))
+		if ($this->load($pluginName))
 		{
 			$filename = $GLOBALS['Eresus']->root . 'ext/' . $pluginName . '/classes/' .
 					str_replace('_', '/', substr($className, strlen($pluginName) + 1)) . '.php';
