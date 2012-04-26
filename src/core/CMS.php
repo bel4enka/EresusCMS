@@ -94,7 +94,6 @@ class Eresus_CMS extends EresusApplication
 			else
 			{
 				$this->runWeb();
-				return 0;
 			}
 		}
 		catch (Exception $e)
@@ -103,7 +102,7 @@ class Eresus_CMS extends EresusApplication
 			ob_end_clean();
 			$this->fatalError($e, false);
 		}
-
+		return 0;
 	}
 	//-----------------------------------------------------------------------------
 
