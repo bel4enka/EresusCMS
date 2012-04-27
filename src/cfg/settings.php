@@ -15,4 +15,3 @@
   define('filesTranslitNames', true);
   define('contentTypeDefault', 'html');
   define('pageTemplateDefault', 'default');
-?>

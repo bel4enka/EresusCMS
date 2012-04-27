@@ -63,8 +63,7 @@ function keyboardEvents()
 
 function getCurrentFolder()
 {
-	var folder = $('tr', objRowSel.closest('table')).eq(0).text().substr(2);
-	return folder;
+	return $('tr', objRowSel.closest('table')).eq(0).text().substr(2);
 }
 
 

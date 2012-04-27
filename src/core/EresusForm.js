@@ -149,9 +149,7 @@ function EresusForm(id)
 		this.clearMessages();
 		$('#' + this.id + ' .data-error').removeClass('data-error');
 
-		checksPassed = this.autoValidate ? this.validate(true, true) : true;
-
-		return checksPassed;
+		return this.autoValidate ? this.validate(true, true) : true;
 	};
 	//-----------------------------------------------------------------------------
 
@@ -220,7 +218,7 @@ function EresusForm(id)
 	 */
 	this.addValidator = function (type)
 	{
-		var validator;
+		var validator, i;
 		var identifier = type + '|' + String(arguments[1]).substr(0, 50);
 
 		for (i = 0; i < this.validators.length; i++) {
@@ -258,7 +256,7 @@ function EresusForm(id)
 	 */
 	this.removeValidator = function (type)
 	{
-		var validator;
+		var validator, i;
 
 		var identifier = type + '|' + String(arguments[1]).substr(0, 50);
 
@@ -310,27 +308,26 @@ function EresusForm(id)
 	this.showFormMessages = function()
 	{
 		if (this.hasTabs) {
-			var i = 0;
 			var tabMessage = '';
 			var selected = true;
 			var node = false;
 			var name = false;
 			var nodes = $('#tabs ul li a');
 
-			for (i = 0; i < nodes.length; i++) {
-
+			for (var i = 0; i < nodes.length; i++)
+			{
 				node = nodes.eq(i);
 				name = node.attr('href').substr(1);
 
-				if (this.tabsHasMessages[name]) {
-
-					if (selected) {
+				if (this.tabsHasMessages[name])
+				{
+					if (selected)
+					{
 						$('#tabs').tabs('select', name);
 						selected = false;
 					}
 					tabMessage +=	this.tabsHasMessages[name];
 				}
-
 			}
 			this.addFormMessage(tabMessage);
 		}
@@ -389,7 +386,7 @@ function EresusForm(id)
 	{
 		$('#' + this.id + ' .form-messages').text('');
 		$('#' + this.id + ' .tab-messages').text('');
-		this.tabsHasMessages = Array();
+		this.tabsHasMessages = new Array();
 	};
 	//-----------------------------------------------------------------------------
 
@@ -808,15 +805,13 @@ function RegExpValidator(form, id, pattern)
 	 */
 	this.markInvalid = function (Node)
 	{
-		var message = '';
-
 		/*
 		 * Устанавливаем выделение ошибочному полю.
 		 */
 		$(Node).addClass('data-error');
 
 		var labelText = this.form.getLabelByField($(Node)).text();
-		message = 'Неправильно заполнено поле ' + labelText;
+		var message = 'Неправильно заполнено поле ' + labelText;
 
 		var tabName = this.form.getTabNameByNode(Node);
 		this.form.addTabMessage(message, tabName);
@@ -906,15 +901,13 @@ function EmailValidator(form, id, message)
 	 */
 	this.markInvalid = function (Node)
 	{
-		var message = '';
-
 		/*
 		 * Устанавливаем выделение ошибочному полю.
 		 */
 		$(Node).addClass('data-error');
 
 		var labelText = this.form.getLabelByField($(Node)).text();
-		message = 'Неправильно указан адрес e-mail в поле ' + labelText;
+		var message = 'Неправильно указан адрес e-mail в поле ' + labelText;
 
 		var tabName = this.form.getTabNameByNode(Node);
 		this.form.addTabMessage(message, tabName);
@@ -943,11 +936,3 @@ function CustomValidator(form, callback)
 	this.validate = callback;
 }
 //-----------------------------------------------------------------------------
-
-
-if (false) {
-	/*
-	 * Этот код вставлен только для отладки
-	 */
-	var dummy = new EresusForm('dummy');
-}

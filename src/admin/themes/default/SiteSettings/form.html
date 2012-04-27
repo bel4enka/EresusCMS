@@ -218,7 +218,7 @@
 				if (event.keyCode == 9)
 				{
 					$("#settingsFormTabs").tabs("select", 1);
-					setTimeout(function()\{$("#settingsForm input[name=mailFromAddr]").focus();}, 10);
+				 setTimeout(function()\{$("#settingsForm input[name=mailFromAddr]").focus();}, 10);
 				}
 			});
 
@@ -226,7 +226,7 @@
 				if (event.keyCode == 9)
 				{
 					$("#settingsFormTabs").tabs("select", 2);
-					setTimeout(function()\{$("#settingsForm input[name=filesModeSetOnUpload]").focus();}, 10);
+				 setTimeout(function()\{$("#settingsForm input[name=filesModeSetOnUpload]").focus();}, 10);
 				}
 			});
 
@@ -234,7 +234,9 @@
 				if (event.keyCode == 9)
 				{
 					$("#settingsFormTabs").tabs("select", 3);
-					setTimeout(function()\{$("#settingsForm select[name=contentTypeDefault]").focus();}, 10);
+					//noinspection UnterminatedStatementJS
+				 setTimeout(function()\{$("#settingsForm select[name=contentTypeDefault]").focus();}, //noinspection UnterminatedStatementJS
+				 10);
 				}
 			});
 

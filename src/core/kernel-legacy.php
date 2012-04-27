@@ -1529,7 +1529,8 @@ class Eresus
 	{
 		if (useLib($this->conf['db']['engine']))
 		{
-			$this->db = new $this->conf['db']['engine'];
+			$className = $this->conf['db']['engine'];
+			$this->db = new $className;
 			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
 				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
 		}

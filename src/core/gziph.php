@@ -31,7 +31,6 @@
  */
 
 error_reporting(0);
-set_magic_quotes_runtime(0);
 
 /**
  * Отправляет заголовок кода результата
