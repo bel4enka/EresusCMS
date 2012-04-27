@@ -555,6 +555,10 @@ class TClientUI extends WebPage
 			$result .= "</div>\n";
 			return $result;
 		}
+		else
+		{
+			return '';
+		}
 	}
 	//-----------------------------------------------------------------------------
 }

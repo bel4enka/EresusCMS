@@ -250,6 +250,8 @@ function useClass($className)
 
 /**
  * Функция отсылает письмо по указанному адресу
+ *
+ * @return bool
  */
 function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='',
 	$fromSign='', $replyTo='')
@@ -349,6 +351,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	{
 		return (mail($address, $subject, $text, $headers)===0);
 	}
+	return false;
 }
 //-----------------------------------------------------------------------------
 

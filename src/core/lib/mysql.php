@@ -449,7 +449,7 @@ class MySQL
 	 * @param string $table
 	 * @param array  $item
 	 * @param string $condition
-	 * @return void
+	 * @return bool
 	 * @deprecated
 	 */
 	public function updateItem($table, $item, $condition)

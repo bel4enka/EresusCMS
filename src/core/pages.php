@@ -284,6 +284,7 @@ class TPages
 			$result = $page->renderForm($form);
 			return $result;
 		}
+		return '';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -631,6 +632,10 @@ class TPages
 				$result = $this->sectionIndex();
 			}
 			return $result;
+		}
+		else
+		{
+			return '';
 		}
 	}
 	//-----------------------------------------------------------------------------

@@ -429,7 +429,7 @@ class Eresus_Feed_Writer
 	/**
 	 * Prints formatted feed items
 	 *
-	 * @return   void
+	 * @return string
 	 */
 	private function generateItems()
 	{
@@ -455,7 +455,7 @@ class Eresus_Feed_Writer
 	 * Make the starting tag of channels
 	 *
 	 * @param    srting  The vale of about tag which is used for only RSS 1.0
-	 * @return   void
+	 * @return string
 	 */
 	private function startItem($about = false)
 	{
@@ -487,7 +487,7 @@ class Eresus_Feed_Writer
 	/**
 	 * Closes feed item tag
 	 *
-	 * @return   void
+	 * @return string
 	 */
 	private function endItem()
 	{

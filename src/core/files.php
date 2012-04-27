@@ -399,5 +399,6 @@ class TFiles
 				"--></script>\n";
 			return $result;
 		}
+		return '';
 	}
 }

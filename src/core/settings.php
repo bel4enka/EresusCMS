@@ -198,10 +198,14 @@ class TSettings
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		if (!UserRights($this->access))
-			return;
+		{
+			return '';
+		}
 
 		if (HTTP::request()->getMethod() == 'POST')
+		{
 			$this->update();
+		}
 
 		$html = $this->renderForm();
 		return $html;

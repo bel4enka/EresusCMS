@@ -779,6 +779,7 @@ class EresusForm
 		else
 		{
 			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
+			return $node;
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -1384,16 +1385,15 @@ class EresusForm
 				{
 					case 'checkbox':
 						return $node->getAttribute('checked') ? $node->getAttribute('value') : false;
-					break;
+						break;
 
-					default: return $node->getAttribute('value');
+					default:
+						return $node->getAttribute('value');
 				}
 
 			break;
-
-			default: return null;
-
 		}
+		return null
 	}
 	//-----------------------------------------------------------------------------
 
