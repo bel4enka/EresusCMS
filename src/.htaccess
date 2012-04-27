@@ -35,7 +35,7 @@ Options -Indexes +FollowSymLinks
 # Отключаем установку кодировки по умолчанию
 AddDefaultCharset Off
 
-<IfModule mod_charset.>
+<IfModule mod_charset.c>
 	CharsetDisable On
 </IfModule>
 
