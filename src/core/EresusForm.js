@@ -59,7 +59,7 @@ function EresusForm(id)
 	 */
 
 	/**
-	 * Если установлен в true, то после вызова onsubmit происходит отправка данных
+	 * Если установлен в true, то после вызова onSubmit происходит отправка данных
 	 *
 	 * @var Bool
 	 */
@@ -155,11 +155,9 @@ function EresusForm(id)
 	/**
 	 * Обработчик отправки формы
 	 *
-	 * @param {Event} e  Событие отправки формы
-	 *
 	 * @return bool
 	 */
-	this.onsubmit = function (e)
+	this.onsubmit = function ()
 	{
 		return this.check() && this.updatePage;
 	};
@@ -255,7 +253,7 @@ function EresusForm(id)
 	 */
 	this.removeValidator = function (type)
 	{
-		var validator, i;
+		var i;
 
 		var identifier = type + '|' + String(arguments[1]).substr(0, 50);
 
@@ -299,7 +297,7 @@ function EresusForm(id)
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Вызывается после добавления всех собщений.
+	 * Вызывается после добавления всех сообщений.
 	 * Добавляет сообщения об ошибках на вкладках и обрамляем код сообщений дивом.
 	 *
 	 * Выводит сообщения об ошибках на вкладках и активирует вкладку.
@@ -369,7 +367,7 @@ function EresusForm(id)
 	 * Добавить сообщение вкладки
 	 *
 	 * @param {String}         msg   Текст сообщения
-	 * @param {DOMNode|String} Node  Узел
+	 * @param {HtmlElement|String} Node  Узел
 	 */
 	this.addTabMessageByNode = function(msg, Node)
 	{
@@ -392,7 +390,7 @@ function EresusForm(id)
 	/**
 	 * Получение имени вкладки по узлу внутри неё
 	 *
-	 * @param {DOMNode|String} Node  Узел
+	 * @param {HtmlElement|String} Node  Узел
 	 * @return String
 	 */
 	this.getTabNameByNode = function(Node)
@@ -407,7 +405,7 @@ function EresusForm(id)
 	 * //TODO эта функция аналогична getTabNameByNode
 	 * и отличается только тем, что getTabNameByNode у меня не работала (ghost)
 	 *
-	 * @param {DOMNode|String} Node  Узел
+	 * @param {HtmlElement|String} Node  Узел
 	 * @return String
 	 */
 	this.getTabIdByNode = function(Node)
@@ -570,7 +568,7 @@ function RequiredValidator(form, selector, message)
 	/**
 	 * Проверка одного элемента
 	 *
-	 * @param {DOMNode} Node
+	 * @param {HtmlElement} Node
 	 * @return Boolean
 	 */
 	this.validateElement = function (Node)
@@ -623,7 +621,7 @@ function RequiredValidator(form, selector, message)
 	/**
 	 * Пометить элемент как неправилный
 	 *
-	 * @param {DOMNode|String} Node
+	 * @param {HtmlElement|String} Node
 	 */
 	this.markInvalid = function (Node)
 	{
@@ -800,7 +798,7 @@ function RegExpValidator(form, id, pattern)
 	/**
 	 * Пометить элемент как неправилный
 	 *
-	 * @param {DOMNode|String} Node
+	 * @param {HtmlElement|String} Node
 	 */
 	this.markInvalid = function (Node)
 	{
@@ -896,7 +894,7 @@ function EmailValidator(form, id, message)
 	/**
 	 * Пометить элемент как неправилный
 	 *
-	 * @param {DOMNode|String} Node
+	 * @param {HtmlElement|String} Node
 	 */
 	this.markInvalid = function (Node)
 	{
@@ -925,7 +923,7 @@ function EmailValidator(form, id, message)
  * правильно и false в противном случае.
  *
  * @param {EresusForm} form      Компонент формы
- * @param {Callback}   callback  Callback-функция проверки
+ * @param {Function}   callback  Callback-функция проверки
  *
  * @author mekras
  */
