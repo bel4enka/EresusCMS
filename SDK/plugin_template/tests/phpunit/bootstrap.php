@@ -35,8 +35,6 @@
 
 define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 
-PHP_CodeCoverage_Filter::getInstance()->addDirectoryToWhitelist(TESTS_SRC_DIR);
-
 /**
  * Универсальная заглушка
  *
@@ -126,7 +124,7 @@ class MockFacade
 	 * @param string $method
 	 * @param array  $args
 	 *
-	 * @return void
+	 * @return mixed
 	 *
 	 * @since 2.16
 	 */

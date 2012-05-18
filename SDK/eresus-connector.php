@@ -47,7 +47,7 @@
  *
  * @package [Название пакета]
  */
-class ExntensionNameConntector extends EresusExtensionConnector
+class ExtensionNameConnector extends EresusExtensionConnector
 {
 
 }
