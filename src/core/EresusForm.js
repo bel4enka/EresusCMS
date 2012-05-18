@@ -49,10 +49,19 @@ function EresusForm(id)
 {
 
 	/*
-	 * Все свойства и методы компонента будут встроены в форму
+	 * Все свойства и методы компонента будут встроены в форму.
+	 * Для этого, проверяем, если this — не узел DOM, вызываем EresusForm как метод узла с указанным
+	 * идентификатором.
 	 */
-	if (!this.id)
+	if (undefined === this.nodeName)
+	{
 		return EresusForm.call(document.getElementById(id), id);
+	}
+	else
+	{
+		// Сохраняем ID
+		this.formId = id;
+	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Объявление свойств
@@ -104,14 +113,6 @@ function EresusForm(id)
 	EresusFormRegistry[id] = this;
 
 
-	// FIXME этот код вызывал ошибку в IE6 в формах добавления и редактировани,
-	// и без него все работает. если этот код нужен, его следует переписать
-	// $('#' + id).submit(function (e) {
-	// 	return FormComponentRegistry[this.id].onsubmit(e);
-	// });
-
-
-
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Объявление методов
 	 */
@@ -146,7 +147,7 @@ function EresusForm(id)
 		 * неправильно заполненных полей
 		 */
 		this.clearMessages();
-		$('#' + this.id + ' .data-error').removeClass('data-error');
+		$('#' + this.formId + ' .data-error').removeClass('data-error');
 
 		return this.autoValidate ? this.validate(true, true) : true;
 	};
@@ -291,7 +292,7 @@ function EresusForm(id)
 	this.addFormMessage = function(msg)
 	{
 		if (msg !== '') {
-			$('#' + this.id + ' .form-messages').append('<p>' + msg + '</p>');
+			$('#' + this.formId + ' .form-messages').append('<p>' + msg + '</p>');
 		}
 	};
 	//-----------------------------------------------------------------------------
@@ -333,9 +334,9 @@ function EresusForm(id)
 		 * После того, как все сообщения формы и вкладок добавлены,
 		 * обрамляем сообщение формы дивом. Это нужно для верстки.
 		 */
-		if ($('#' + this.id + ' .form-messages').html() !== '') {
+		if ($('#' + this.formId + ' .form-messages').html() !== '') {
 
-			var formMessages = $('#' + this.id + ' .form-messages').eq(0);
+			var formMessages = $('#' + this.formId + ' .form-messages').eq(0);
 			formMessages.html('<div>' + formMessages.html() + '</div>');
 			window.scrollTo(formMessages.position().left, formMessages.position().top);
 
@@ -381,8 +382,8 @@ function EresusForm(id)
 	 */
 	this.clearMessages = function()
 	{
-		$('#' + this.id + ' .form-messages').text('');
-		$('#' + this.id + ' .tab-messages').text('');
+		$('#' + this.formId + ' .form-messages').text('');
+		$('#' + this.formId + ' .tab-messages').text('');
 		this.tabsHasMessages = new Array();
 	};
 	//-----------------------------------------------------------------------------
@@ -500,8 +501,8 @@ function RequiredValidator(form, selector, message)
 		id = $(this.selector).eq(0).attr('name');
 
 	if (id) {
-		this.prevLabelHtml = $('#' + this.form.id +' label[for=' + id + ']').eq(0).html();
-		$('#' + this.form.id +' label[for=' + id + ']').append('<sup>*</sup>');
+		this.prevLabelHtml = $('#' + this.form.formId +' label[for=' + id + ']').eq(0).html();
+		$('#' + this.form.formId +' label[for=' + id + ']').append('<sup>*</sup>');
 	}
 
 	/**
@@ -664,7 +665,7 @@ function RequiredValidator(form, selector, message)
 		else
 			id = $(this.selector).eq(0).attr('name');
 
-		$('#' + this.form.id +' label[for=' + id + ']').eq(0).html(this.prevLabelHtml);
+		$('#' + this.form.formId +' label[for=' + id + ']').eq(0).html(this.prevLabelHtml);
 	};
 
 }
