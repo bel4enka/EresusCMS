@@ -499,7 +499,7 @@ var ImagesDialog =
 			data: "action=showtree&path="+path.path+"&type="+path.type,
 			success: function(data)
 			{
-				//$('#loader').hide();
+				$('#loader').hide();
 				$('#tree').html(data);
 			}
 		});

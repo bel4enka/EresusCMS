@@ -206,7 +206,7 @@ class Image_Toolbox {
 				unset($this->_img['operator']);
 				return true;
 			} else {
-				trigger_error($this->_error_prefix . 'No appropriate constructor found.', E_USER_ERROR);
+				//trigger_error($this->_error_prefix . 'No appropriate constructor found.', E_USER_ERROR);
 				return null;
 			}
 		}
@@ -258,7 +258,7 @@ class Image_Toolbox {
 			unset($this->_img['operator']);
 			return true;
 		} else {
-			trigger_error($this->_error_prefix . 'No appropriate constructor found.', E_USER_ERROR);
+			//trigger_error($this->_error_prefix . 'No appropriate constructor found.', E_USER_ERROR);
 			return null;
 		}
 	}
@@ -445,7 +445,7 @@ class Image_Toolbox {
 			$filedata['type'] = $info[2];
 
 			if ($this->_types[$filedata['type']]['supported'] < 1) {
-				trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$filedata['type']]['ext'].') not supported for reading.', E_USER_ERROR);
+				//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$filedata['type']]['ext'].') not supported for reading.', E_USER_ERROR);
 				return null;
 			}
 			switch ($filedata['type']) {
@@ -474,12 +474,12 @@ class Image_Toolbox {
 					break;
 
 				default:
-					trigger_error($this->_error_prefix . 'Imagetype not supported.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype not supported.', E_USER_ERROR);
 					return null;
 			}
 			return $filedata;
 		} else {
-			trigger_error($this->_error_prefix . 'Imagefile (' . $filename . ') does not exist.', E_USER_ERROR);
+			//trigger_error($this->_error_prefix . 'Imagefile (' . $filename . ') does not exist.', E_USER_ERROR);
 			return null;
 		}
 	}
@@ -514,7 +514,7 @@ class Image_Toolbox {
 			case 'gif':
 			case 'GIF':
 				if ($this->_types[1]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				header ('Content-type: ' . $this->_types[$output_type]['mime']);
@@ -542,7 +542,7 @@ class Image_Toolbox {
 			case 'JPG':
 			case 'JPEG':
 				if ($this->_types[2]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				header ('Content-type: ' . $this->_types[$output_type]['mime']);
@@ -559,7 +559,7 @@ class Image_Toolbox {
 			case 'png24':
 			case 'PNG24':
 				if ($this->_types[3]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				header ('Content-type: ' . $this->_types[$output_type]['mime']);
@@ -571,7 +571,7 @@ class Image_Toolbox {
 			case 'png8':
 			case 'PNG8':
 				if ($this->_types[3]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				header ('Content-type: ' . $this->_types[$output_type]['mime']);
@@ -593,7 +593,7 @@ class Image_Toolbox {
 				break;
 
 			default:
-				trigger_error($this->_error_prefix . 'Output-Imagetype not supported.', E_USER_ERROR);
+				//trigger_error($this->_error_prefix . 'Output-Imagetype not supported.', E_USER_ERROR);
 				return null;
 		}
 		return true;
@@ -630,7 +630,7 @@ class Image_Toolbox {
 			case 'gif':
 			case 'GIF':
 				if ($this->_types[1]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				if ($this->_gd_version >= 2) {
@@ -657,7 +657,7 @@ class Image_Toolbox {
 			case 'JPG':
 			case 'JPEG':
 				if ($this->_types[2]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				if ($output_quality === false) {
@@ -673,7 +673,7 @@ class Image_Toolbox {
 			case 'png24':
 			case 'PNG24':
 				if ($this->_types[3]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				header ('Content-type: ' . $this->_types[$output_type]['mime']);
@@ -685,7 +685,7 @@ class Image_Toolbox {
 			case 'png8':
 			case 'PNG8':
 				if ($this->_types[3]['supported'] < 2) {
-					trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
+					//trigger_error($this->_error_prefix . 'Imagetype ('.$this->_types[$output_type]['ext'].') not supported for creating/writing.', E_USER_ERROR);
 					return null;
 				}
 				if ($this->_gd_version >= 2) {
@@ -706,7 +706,7 @@ class Image_Toolbox {
 				break;
 
 			default:
-				trigger_error($this->_error_prefix . 'Output-Imagetype not supported.', E_USER_ERROR);
+				//trigger_error($this->_error_prefix . 'Output-Imagetype not supported.', E_USER_ERROR);
 				return null;
 		}
 		return true;
@@ -761,7 +761,7 @@ class Image_Toolbox {
 				break;
 
 			default:
-				trigger_error($this->_error_prefix . 'Resizemethod not supported.', E_USER_ERROR);
+				//trigger_error($this->_error_prefix . 'Resizemethod not supported.', E_USER_ERROR);
 				return null;
 		}
 		return true;
@@ -882,7 +882,7 @@ class Image_Toolbox {
 			$cpy_w_offset = 0;
 			$cpy_h_offset = 0;
 		} else {
-			trigger_error($this->_error_prefix . 'Outputwidth and -height must be integers greater zero.', E_USER_ERROR);
+			//trigger_error($this->_error_prefix . 'Outputwidth and -height must be integers greater zero.', E_USER_ERROR);
 			return null;
 		}
 
@@ -935,7 +935,7 @@ class Image_Toolbox {
 		if ($this->_addImage($argc, $args)) {
 			return true;
 		} else {
-			trigger_error($this->_error_prefix . 'failed to add image.', E_USER_ERROR);
+			//trigger_error($this->_error_prefix . 'failed to add image.', E_USER_ERROR);
 			return false;
 		}
 	}

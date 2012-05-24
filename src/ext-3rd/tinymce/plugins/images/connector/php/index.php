@@ -52,7 +52,8 @@ class TinyImageManager
 						if(is_dir($dir.'/'.$_POST['name'])) {
 							$result['error'] = 'Такая папка уже есть';
 						} else {
-							if(mkdir($dir.'/'.$_POST['name'])) {
+							$umask = umask(0000);
+							if(mkdir($dir.'/'.$_POST['name'], 0777)) {
 								$result['tree']  = $this->DirStructure('images', 'first', $dir.'/'.$_POST['name']);
 								$result['tree'] .= $this->DirStructure('files', 'first', $dir.'/'.$_POST['name']);
 								$result['addr'] = $this->DirPath($_POST['type'], $this->AccessDir($_POST['path'].'/'.$_POST['name'], $_POST['type']));
@@ -60,6 +61,7 @@ class TinyImageManager
 							} else {
 								$result['error'] = 'Ошибка создания папки';
 							}
+							umask($umask);
 						}
 					} else {
 						$result['error'] = 'Название папки может содержать только латинские буквы, цифры, тире и знак подчеркивания';
@@ -342,7 +344,7 @@ class TinyImageManager
 		if (!is_dir($dir.'/.thumbs'))
 		{
 			$umask = umask(0000);
-			mkdir($dir.'/.thumbs');
+			mkdir($dir.'/.thumbs', 0777);
 			umask($umask);
 		}
 
@@ -462,7 +464,9 @@ class TinyImageManager
 
 		if (!is_dir($dir.'/.thumbs'))
 		{
-			mkdir($dir.'/.thumbs');
+			$umask = umask(0000);
+			mkdir($dir.'/.thumbs', 0777);
+			umask($umask);
 		}
 
 		$dbfile = $dir.'/.thumbs/.db';
