@@ -62,7 +62,7 @@ class Eresus_CMS extends EresusApplication
 			EresusClassAutoloader::add('core/cms.autoload.php');
 
 			/* Общая инициализация */
-			$this->checkEnviroment();
+			$this->checkEnvironment();
 			$this->createFileStructure();
 
 			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
@@ -124,11 +124,26 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает экземпляр класса Eresus
+	 *
+	 * Метод нужен до отказа от класса Eresus
+	 *
+	 * @return Eresus
+	 *
+	 * @since 3.00
+	 */
+	public function getLegacyKernel()
+	{
+		return $GLOBALS['Eresus'];
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Проверка окружения
 	 *
 	 * @return void
 	 */
-	protected function checkEnviroment()
+	protected function checkEnvironment()
 	{
 		$errors = array();
 
@@ -298,6 +313,8 @@ class Eresus_CMS extends EresusApplication
 
 	/**
 	 * Выполнение в режиме CLI
+	 *
+	 * @return int
 	 */
 	protected function runCLI()
 	{
