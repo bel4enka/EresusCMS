@@ -1156,10 +1156,6 @@ class Eresus
 
 	var $host;
 
-	/**
-	 * @deprecated since 2.11
-	 */
-	var $https;
 	var $path;
 	var $root; # Корневой URL
 	var $data; # URL данных
@@ -1429,8 +1425,6 @@ class Eresus
 		define('dataRoot', $this->data);
 		define('cookieHost', $this->host);
 		define('cookiePath', $this->path);
-		# 2.10
-		$this->https = $request['scheme'] == 'https';
 	}
 	//------------------------------------------------------------------------------
 
