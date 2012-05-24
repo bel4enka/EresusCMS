@@ -1132,7 +1132,7 @@ class Eresus
 	/**
 	 * Интерфейс к расширениям системы
 	 *
-	 * @var unknown_type
+	 * @var EresusExtensions
 	 */
 	var $extensions;
 
@@ -1151,7 +1151,7 @@ class Eresus
 	/**
 	 * Учётная запись пользователя
 	 *
-	 * @var EresusAccount
+	 * @var array
 	 */
 	var $user;
 
