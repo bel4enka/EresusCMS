@@ -440,7 +440,7 @@ function decodeHTML($text)
  * Разбивает текст на строки и возвращает массив из них
  *
  * @param string $value
- * @param bool   $assoc[optional]
+ * @param bool   $assoc
  * @return array
  */
 function text2array($value, $assoc = false)
@@ -452,6 +452,7 @@ function text2array($value, $assoc = false)
 		$result = explode("\n", $result);
 		if ($assoc && count($result))
 		{
+			$items = array();
 			foreach ($result as $item)
 			{
 				$item = explode('=', $item);
@@ -1335,7 +1336,7 @@ class Eresus
 			$s = $this->froot;
 			$s = substr($s,
 				strlen(realpath($_SERVER['DOCUMENT_ROOT'])) - (System::isWindows() ? 2 : 0));
-			if (!strlen($s) || sbstr($s, -1) != '/')
+			if (!strlen($s) || substr($s, -1) != '/')
 			{
 				$s .= '/';
 			}
