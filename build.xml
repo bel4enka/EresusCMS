@@ -169,6 +169,10 @@
 	-->
 	<target name="build" description="Build basic set of modules">
 
+		<php function="date" returnProperty="build.date">
+			<param value="d.m.y" />
+		</php>
+
 		<!-- Копирование основных файлов -->
 		<copy todir="${build.dir}">
 			<fileset refid="files.sources" />
@@ -265,7 +269,7 @@
 		<phpdoc
 			title="Eresus ${product.version} API"
 			destdir="${docs.dir}"
-			sourcecode="no"
+			sourcecode="false"
 			parseprivate="false"
 			output="${docs.converter}">
 			<fileset dir=".">

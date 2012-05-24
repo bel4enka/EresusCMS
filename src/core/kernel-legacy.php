@@ -39,7 +39,7 @@ define('CMSVERSION', '${product.version}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '${builddate}'); # Дата обновления ядра
+define('KERNELDATE', '${build.date}'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
