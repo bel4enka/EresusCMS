@@ -195,6 +195,12 @@
 			</filterchain>
 		</copy>
 
+		<patch
+			patchfile="${project.basedir}/patches/issue832.patch"
+			dir="${build.dir}"
+			strip="0"
+		/>
+
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/botobor">
 			<fileset refid="files.3rd.botobor" />
@@ -236,7 +242,16 @@
 		  </filterchain>
 		</copy>
 
-  </target>
+		<!--
+			Удаляем файлы *.orig (остаются от применения патчей под FreeBSD)
+		-->
+		<delete>
+			<fileset dir="${build.dir}">
+				<include name="**/*.orig" />
+			</fileset>
+		</delete>
+
+	</target>
 
 	<!--
 	=====================================================================
