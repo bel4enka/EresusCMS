@@ -690,29 +690,6 @@ function dbReorderItems($table, $condition='', $id='id')
 //------------------------------------------------------------------------------
 
 /**
- * Сдвиг позиций элементов
- *
- * @param string $table      Таблица
- * @param string $condition  Условие
- * @param string $delta      Величина сдвига
- * @param string $id
- *
- * @deprecated
- *  */
-function dbShiftItems($table, $condition, $delta, $id='id')
-{
-	global $Eresus;
-
-	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', $id);
-	for ($i=0; $i<count($items); $i++)
-	{
-		$Eresus->db->update($table, "`position` = `position` + $delta",
-			"`".$id."`='".$items[$i][$id]."'");
-	}
-}
-//------------------------------------------------------------------------------
-
-/**
  * Чтение файла
  *
  * @param string $filename Имя файла
