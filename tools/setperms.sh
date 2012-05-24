@@ -2,7 +2,7 @@
 #
 # Set required file permissions
 #
-# @author Mikhail Krasilnikov <mk@procreat.ru>
+# @author Михаил Красильников <mihalych@vsepofigu.ru>
 #
 # $Id$
 #

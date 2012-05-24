@@ -18,10 +18,10 @@
  * расширения. В качестве ключа должно использоваться имя директории, в которой расположено
  * расширение. Формат данных пока не определён, используйте значение null.
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * @package Eresus
  *

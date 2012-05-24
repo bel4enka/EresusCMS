@@ -8,7 +8,7 @@
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@eresus.ru>
+ * @author Михаил Красильников <mk@eresus.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с

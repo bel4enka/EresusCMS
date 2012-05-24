@@ -3,10 +3,10 @@
  *
  * ${product.description}
  *
- * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2004-2007, Михаил Красильников <mihalych@vsepofigu.ru>
  * @copyright 2007-2008, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с

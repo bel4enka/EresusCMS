@@ -2,7 +2,7 @@
  *
  * @copyright 2008-2009, Antonov A Andrey, All rights reserved.
  * @author Antonov Andrey http://dustweb.ru/
- * @author Mikhail Krasilnikov <mk@3wstyle.ru
+ * @author Михаил Красильников <mk@3wstyle.ru
  */
 
 /**

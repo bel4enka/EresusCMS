@@ -6,7 +6,7 @@
  *
  * @version ${product.version}
  *
- * @copyright 2004, ProCreat Systems, http://procreat.ru/
+ * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
