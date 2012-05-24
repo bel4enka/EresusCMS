@@ -1723,7 +1723,7 @@ class Eresus
 						{
 							$this->clear_login_cookies();
 						}
-						$setVisitTime = (! isset($this->uset['id'])) || (! (bool) $this->user['id']);
+						$setVisitTime = (! isset($this->user['id'])) || (! (bool) $this->user['id']);
 						$this->user = $item;
 						$this->user['profile'] = decodeOptions($this->user['profile']);
 						$this->user['auth'] = true; # Устанавливаем флаг авторизации
