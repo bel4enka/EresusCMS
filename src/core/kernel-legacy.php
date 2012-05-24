@@ -1172,60 +1172,6 @@ class Eresus
 	//------------------------------------------------------------------------------
 
 	/**
-	 * @deprecated since 2.14
-	 */
-	function isWin32()
-	{
-		return System::isWindows();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isUnix()
-	{
-		return System::isUnixLike();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isMac()
-	{
-		return System::isMac();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isModule()
-	{
-		return PHP::isModule();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isCgi()
-	{
-		return PHP::isCGI();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @deprecated since 2.14
-	 */
-	function isCli()
-	{
-		return PHP::isCLI();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Читает и применяет конфигурационный файл
 	 */
 	private function init_config()
@@ -1387,7 +1333,8 @@ class Eresus
 		if (is_null($this->path))
 		{
 			$s = $this->froot;
-			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
+			$s = substr($s,
+				strlen(realpath($_SERVER['DOCUMENT_ROOT'])) - (System::isWindows() ? 2 : 0));
 			if (!strlen($s) || sbstr($s, -1) != '/')
 			{
 				$s .= '/';
