@@ -48,7 +48,7 @@ AddDefaultCharset Off
 	### БЕЗОПАСНОСТЬ ###
 
 	# Запрещаем запуск потенциально опасных файлов из недоверенных директорий
-	RewriteRule ^(data|style)/.*\.(ph(p[2-6]?|tml)|pl)$ - [forbidden]
+	RewriteRule ^(data|style)/((.*/)?\.[^/]$|.*\.(ph(p[2-6]?|tml)|pl)$) - [forbidden]
 
 	# Проксируем все запросы к сторонним расширениям через их коннекторы
 	RewriteRule ^ext-3rd/.* index.php [last]
