@@ -135,8 +135,10 @@ function FatalError($msg)
  *
  * @param string $text     Текст сообщения
  * @param string $caption  Заголовок окна сообщения
+ *
+ * @return string
  */
-function ErrorBox($text, $caption=errError)
+function ErrorBox($text, $caption = errError)
 {
 	$result =
 		(empty($caption)?'':"<div class=\"errorBoxCap\">".$caption."</div>\n").
@@ -149,6 +151,11 @@ function ErrorBox($text, $caption=errError)
 
 /**
  * Функция выводит сообщение о пользовательской ошибке, но НЕ прекращает работу скрипта.
+ *
+ * @param string $text
+ * @param string $caption
+ *
+ * @return string
  */
 function InfoBox($text, $caption=strInformation)
 {
@@ -177,6 +184,10 @@ function InfoMessage($message)
 
 /**
  * Функция проверяет права пользователя на соответствие заданной маске
+ *
+ * @param int $level
+ *
+ * @return bool
  */
 function UserRights($level)
 {
@@ -196,7 +207,7 @@ function UserRights($level)
 /**
  * Подключение библиотеки
  *
- * @param  string  $libaray  Имя библиотеки
+ * @param  string  $library  Имя библиотеки
  *
  * @return  bool  Результат
  */
@@ -250,6 +261,16 @@ function useClass($className)
 
 /**
  * Функция отсылает письмо по указанному адресу
+ *
+ * @param string $address
+ * @param string $subject
+ * @param string $text
+ * @param bool   $html
+ * @param string $fromName
+ * @param string $fromAddr
+ * @param string $fromOrg
+ * @param string $fromSign
+ * @param string $replyTo
  *
  * @return bool
  */
@@ -357,6 +378,10 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 
 /**
  * Возвращает время с учетом смещения
+ *
+ * @param string $format
+ *
+ * @return string
  */
 function gettime($format = 'Y-m-d H:i:s')
 {
@@ -436,6 +461,10 @@ function encodeHTML($source)
 
 /**
  * Декодирует спецсимволы HTML
+ *
+ * @param string $text
+ *
+ * @return string
  */
 function decodeHTML($text)
 {
@@ -488,8 +517,10 @@ function text2array($value, $assoc = false)
 
 /**
  * Собирает текст из массива
- * @param string $value
- * @param bool   $assoc[optional]
+ *
+ * @param array $items
+ * @param bool  $assoc
+ *
  * @return string
  */
 function array2text($items, $assoc = false)
@@ -516,6 +547,10 @@ function array2text($items, $assoc = false)
 
 /**
  * Собирает настройки из массива в строку
+ *
+ * @param array $options
+ *
+ * @return string
  */
 function encodeOptions($options)
 {
@@ -526,6 +561,11 @@ function encodeOptions($options)
 
 /**
  * Функция разбивает записанные в строковом виде опции на массив
+ *
+ * @param string $options
+ * @param array  $defaults
+ *
+ * @return array
  */
 function decodeOptions($options, $defaults = array())
 {
@@ -563,7 +603,8 @@ function decodeOptions($options, $defaults = array())
  *
  * @param string $template  Шаблон
  * @param mixed  $source    Источник для замены
- * @return Обработанный текст
+ *
+ * @return string Обработанный текст
  *
  * @see __propery
  */
@@ -696,6 +737,7 @@ function dbReorderItems($table, $condition='', $id='id')
  * @param string $table      Таблица
  * @param string $condition  Условие
  * @param string $delta      Величина сдвига
+ * @param string $id
  *
  * @deprecated
  *  */
@@ -847,6 +889,8 @@ function HttpAnswer($answer)
 
 /**
  * Отправляет браузеру XML
+ *
+ * @param string $data
  */
 function SendXML($data)
 {
@@ -864,9 +908,14 @@ function option($name)
 //-----------------------------------------------------------------------------
 
 /**
+ * Функция возвращает заполненный тэг <img>
+ *
  * function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
  * function img($imagename, $params=array())
- * Функция возвращает заполненный тэг <img>
+ *
+ * @param string $imagename
+ *
+ * @return string
  */
 function img($imagename)
 {
@@ -1190,6 +1239,7 @@ class Eresus
 	//------------------------------------------------------------------------------
 	// Информация о системе
 	//------------------------------------------------------------------------------
+
 	/**
 	 * @deprecated since 2.14
 	 */
@@ -1254,6 +1304,7 @@ class Eresus
 		 * мог записывать в неё свои значения.
 		 */
 		global $Eresus;
+
 
 		$filename = Eresus_Kernel::app()->getFsRoot() . '/cfg/main.php';
 		$nativeFilename = FS::nativeForm($filename);
