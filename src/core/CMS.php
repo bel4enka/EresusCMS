@@ -188,8 +188,6 @@ class Eresus_CMS extends EresusApplication
 			'/var/cache/templates',
 		);
 
-		$errors = array();
-
 		foreach ($dirs as $dir)
 		{
 			if (!FS::exists($this->getFsRoot() . $dir))
