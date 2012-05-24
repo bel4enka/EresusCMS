@@ -392,48 +392,6 @@ function gettime($format = 'Y-m-d H:i:s')
 //-----------------------------------------------------------------------------
 
 /**
- * Форматирование даты
- *
- * @param string $date    Дата в формате YYYY-MM-DD hh:mm:ss
- * @param string $format  Правила форматирования даты
- *
- * @return string  отформатированная дата
- */
-function FormatDate($date, $format = DATETIME_NORMAL)
-{
-	if (empty($date))
-	{
-		$result = DATETIME_UNKNOWN;
-	}
-	else
-	{
-		preg_match_all('/(?<!\\\)[hHisdDmMyY]/', $format, $m, PREG_OFFSET_CAPTURE);
-		$repl = array(
-			'Y' => substr($date, 0, 4),
-			'm' => substr($date, 5, 2),
-			'd' => substr($date, 8, 2),
-			'h' => substr($date, 11, 2),
-			'i' => substr($date, 14, 2),
-			's' => substr($date, 17, 2)
-		);
-		$repl['y'] = substr($repl['Y'], 2, 2);
-		$repl['M'] = constant('MONTH_'.$repl['m']);
-		$repl['D'] = $repl['d']{0} == '0' ? $repl['d']{1} : $repl['d'];
-		$repl['H'] = $repl['h']{0} == '0' ? $repl['h']{1} : $repl['h'];
-
-		$delta = 0;
-		for ($i = 0; $i<count($m[0]); $i++)
-		{
-			$format = substr_replace($format, $repl[$m[0][$i][0]], $m[0][$i][1]+$delta, 1);
-			$delta += mb_strlen($repl[$m[0][$i][0]]) - 1;
-		}
-		$result = $format;
-	}
-	return $result;
-}
-//-----------------------------------------------------------------------------
-
-/**
  * Кодирует спецсимволы HTML
  *
  * @param mixed $source
