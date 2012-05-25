@@ -287,8 +287,6 @@ class Form
 	*/
 	function render_memo($item)
 	{
-		global $Eresus;
-
 		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		if (empty($item['width'])) $item['width'] = '100%';
 		if (strpos($item['width'], '%') === false) {
@@ -296,7 +294,7 @@ class Form
 			$item['width'] = '';
 		} else $cols = '50';
 		if (isset($item['syntax'])) {
-			$extension = $Eresus->extensions->load(
+			$extension = Eresus_CMS::getLegacyKernel()->extensions->load(
 				'forms',
 				'memo_syntax',
 				isset($item['syntax_extension']) ? $item['syntax_extension'] : null
@@ -318,12 +316,10 @@ class Form
 	*/
 	function render_html($item)
 	{
-		global $Eresus;
-
 		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 
 		$result = '';
-		 $extension = $Eresus->extensions->load(
+		 $extension = Eresus_CMS::getLegacyKernel()->extensions->load(
 			 'forms',
 			 'html',
 			 isset($item['html_extension']) ? $item['html_extension'] : null

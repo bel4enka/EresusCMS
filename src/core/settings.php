@@ -51,10 +51,6 @@ class TSettings
 	 */
 	private function mkstr($name, $type = 'string', $options = array())
 	{
-		global $Eresus;
-
-		$req = HTTP::request();
-
 		$result = "  define('$name', ";
 		$quot = "'";
 		$value = isset($_POST[$name]) ? $_POST[$name] : null;
@@ -133,7 +129,7 @@ class TSettings
 	 */
 	private function renderForm()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$template = $page->getUITheme()->getResource('SiteSettings/form.html');
 		$form = new EresusForm($template, LOCALE_CHARSET);
@@ -162,7 +158,7 @@ class TSettings
 			array('name' => 'url','caption' => admPagesContentURL)
 		);
 
-		foreach ($Eresus->plugins->items as $plugin)
+		foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
 		{
 			if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
 			{

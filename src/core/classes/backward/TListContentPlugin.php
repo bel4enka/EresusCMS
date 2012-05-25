@@ -55,80 +55,76 @@ function uninstall()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function createTable($table)
 {
-	global $Eresus;
-
-	$Eresus->db->query('CREATE TABLE IF NOT EXISTS `'.$Eresus->db->prefix.$table['name'].'`'.$table['sql']);
+	Eresus_CMS::getLegacyKernel()->db->query('CREATE TABLE IF NOT EXISTS `'.Eresus_CMS::getLegacyKernel()->db->prefix.$table['name'].'`'.$table['sql']);
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function dropTable($table)
 {
-	global $Eresus;
-
-	$Eresus->db->query("DROP TABLE IF EXISTS `".$Eresus->db->prefix.$table['name']."`;");
+	Eresus_CMS::getLegacyKernel()->db->query("DROP TABLE IF EXISTS `".Eresus_CMS::getLegacyKernel()->db->prefix.$table['name']."`;");
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function toggle($id)
 {
-	global $Eresus, $page;
+	global $page;
 
-	$Eresus->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
-	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	Eresus_CMS::getLegacyKernel()->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
+	Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function delete($id)
 {
-	global $Eresus, $page;
+	global $page;
 
-	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	$Eresus->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	Eresus_CMS::getLegacyKernel()->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
 {
-	global $Eresus, $page;
+	global $page;
 
 	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
 	dbReorderItems($this->table['name'], $sql_prefix);
 	# FIXME: Escaping
-	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	$item = Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	if ($item['position'] > 0) {
-			$temp = $Eresus->db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
+			$temp = Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']-1)."')");
 		$temp['position'] = $item['position'];
 		$item['position']--;
-		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
-		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
+		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
+		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
 	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
 {
-	global $Eresus, $page;
+	global $page;
 
 	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
 	dbReorderItems($this->table['name'], $sql_prefix);
-	$count = $Eresus->db->count($this->table['name'], $sql_prefix);
+	$count = Eresus_CMS::getLegacyKernel()->db->count($this->table['name'], $sql_prefix);
 	#FIXME: Escaping
-	$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
+	$item = Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	if ($item['position'] < $count-1) {
-			$temp = $Eresus->db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
+			$temp = Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'],"$sql_prefix AND (`position`='".($item['position']+1)."')");
 		$temp['position'] = $item['position'];
 		$item['position']++;
-		$Eresus->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
-		$Eresus->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
+		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
+		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
 	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function adminRenderContent()
 {
-global $Eresus, $page;
+global $page;
 
 	$result = '';
 	if (!is_null(arg('id'))) {
-		$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
 		$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
 	}
 	switch (true) {
@@ -171,13 +167,13 @@ global $Eresus, $page;
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderContent()
 {
-	global $Eresus, $page;
+	global $page;
 
 	$result = '';
 	if (!isset($this->settings['itemsPerPage'])) $this->settings['itemsPerPage'] = 0;
 	if ($page->topic) $result = $this->clientRenderItem(); else {
-		$this->table['fields'] = $Eresus->db->fields($this->table['name']);
-		$this->itemsCount = $Eresus->db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
+		$this->table['fields'] = Eresus_CMS::getLegacyKernel()->db->fields($this->table['name']);
+		$this->itemsCount = Eresus_CMS::getLegacyKernel()->db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
 		if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
 		if (!$page->subpage) $page->subpage = $this->table['sortDesc']?$this->pagesCount:1;
 		if ($this->itemsCount && ($page->subpage > $this->pagesCount)) {
@@ -190,14 +186,14 @@ function clientRenderContent()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderList($options = null)
 {
-	global $Eresus, $page;
+	global $page;
 
 	if (is_null($options)) $options = array();
 	$options['pages'] = isset($options['pages']) ? $options['pages'] : true;
 	$options['oldordering'] = isset($options['oldordering']) ? $options['oldordering'] : true;
 
 	$result = '';
-	$items = $Eresus->db->select(
+	$items = Eresus_CMS::getLegacyKernel()->db->select(
 		$this->table['name'],
 		"(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
 		($this->table['sortDesc'] ? '-' : '+').$this->table['sortMode'],

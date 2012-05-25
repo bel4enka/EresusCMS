@@ -193,36 +193,36 @@ class TClientUI extends WebPage
 	 */
 	function loadPage()
 	{
-		global $Eresus;
-
 		$result = false;
 		$main_fake = false;
-		if (!count($Eresus->request['params']) || $Eresus->request['params'][0] != 'main')
+		if (!count(Eresus_CMS::getLegacyKernel()->request['params']) ||
+			Eresus_CMS::getLegacyKernel()->request['params'][0] != 'main')
 		{
-			array_unshift($Eresus->request['params'], 'main');
+			array_unshift(Eresus_CMS::getLegacyKernel()->request['params'], 'main');
 			$main_fake = true;
 		}
-		reset($Eresus->request['params']);
+		reset(Eresus_CMS::getLegacyKernel()->request['params']);
 		$item['id'] = 0;
 		$url = '';
 		do
 		{
-			$items = $Eresus->sections->children($item['id'], $Eresus->user['auth'] ?
-				$Eresus->user['access']:GUEST, SECTIONS_ACTIVE);
+			$items = Eresus_CMS::getLegacyKernel()->sections->children($item['id'],
+				Eresus_CMS::getLegacyKernel()->user['auth'] ?
+					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, SECTIONS_ACTIVE);
 			$item = false;
 			for ($i=0; $i<count($items); $i++)
 			{
-				if ($items[$i]['name'] == current($Eresus->request['params']))
+				if ($items[$i]['name'] == current(Eresus_CMS::getLegacyKernel()->request['params']))
 				{
 					$result = $item = $items[$i];
 					if ($item['id'] != 1 || !$main_fake)
 					{
 						$url .= $item['name'].'/';
 					}
-					$Eresus->plugins->clientOnURLSplit($item, $url);
+					Eresus_CMS::getLegacyKernel()->plugins->clientOnURLSplit($item, $url);
 					$this->section[] = $item['title'];
-					next($Eresus->request['params']);
-					array_shift($Eresus->request['params']);
+					next(Eresus_CMS::getLegacyKernel()->request['params']);
+					array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
 					break;
 				}
 			}
@@ -231,36 +231,37 @@ class TClientUI extends WebPage
 				$item['id'] = 0;
 			}
 		}
-		while ($item && current($Eresus->request['params']));
-		$Eresus->request['path'] = $Eresus->request['path'] = $Eresus->root.$url;
+		while ($item && current(Eresus_CMS::getLegacyKernel()->request['params']));
+		Eresus_CMS::getLegacyKernel()->request['path'] =
+		Eresus_CMS::getLegacyKernel()->request['path'] = Eresus_CMS::getLegacyKernel()->root . $url;
 		if ($result)
 		{
-			$result = $Eresus->sections->get($result['id']);
+			$result = Eresus_CMS::getLegacyKernel()->sections->get($result['id']);
 		}
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
-	# Проводит инициализацию страницы
-	function init()
+	/**
+	 * Проводит инициализацию страницы
+	 */
+	public function init()
 	{
-		global $Eresus;
-
-		$Eresus->plugins->clientOnStart();
+		Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
 
 		$item = $this->loadPage();
 		if ($item)
 		{
-			if (count($Eresus->request['params']))
+			if (count(Eresus_CMS::getLegacyKernel()->request['params']))
 			{
-				if (preg_match('/p[\d]+/i', $Eresus->request['params'][0]))
+				if (preg_match('/p[\d]+/i', Eresus_CMS::getLegacyKernel()->request['params'][0]))
 				{
-					$this->subpage = substr(array_shift($Eresus->request['params']), 1);
+					$this->subpage = substr(array_shift(Eresus_CMS::getLegacyKernel()->request['params']), 1);
 				}
 
-				if (count($Eresus->request['params']))
+				if (count(Eresus_CMS::getLegacyKernel()->request['params']))
 				{
-					$this->topic = array_shift($Eresus->request['params']);
+					$this->topic = array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
 				}
 			}
 			$this->dbItem = $item;
@@ -366,50 +367,42 @@ class TClientUI extends WebPage
 	 */
 	function render()
 	{
-		global $Eresus, $KERNEL;
-
 		if (arg('HTTP_ERROR'))
 		{
 			$this->httpError(arg('HTTP_ERROR', 'int'));
 		}
 		# Отрисовываем контент
-		$content = $Eresus->plugins->clientRenderContent();
-		#$this->updated = mktime(substr($this->updated, 11, 2), substr($this->updated, 14, 29),
-		// substr($this->updated, 17, 2), substr($this->updated, 5, 2), substr($this->updated, 8, 2),
-		//substr($this->updated, 0, 4));
-		#if ($this->updated < 0) $this->updated = 0;
-		#$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $this->updated) . ' GMT';
-		#$this->headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
+		$content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
 		useLib('templates');
 		$templates = new Templates;
 		$this->template = $templates->get($this->template);
-		$content = $Eresus->plugins->clientOnContentRender($content);
+		$content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
 
 		if (
-			isset($Eresus->session['msg']['information']) &&
-			count($Eresus->session['msg']['information'])
+			isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
 		)
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['information'] as $message)
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['information'] as $message)
 			{
 				$messages .= InfoBox($message);
 			}
 			$content = $messages.$content;
-			$Eresus->session['msg']['information'] = array();
+			Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
 		}
 		if (
-			isset($Eresus->session['msg']['errors']) &&
-			count($Eresus->session['msg']['errors'])
+			isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['errors'])
 		)
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['errors'] as $message)
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
 			{
 				$messages .= ErrorBox($message);
 			}
 			$content = $messages.$content;
-			$Eresus->session['msg']['errors'] = array();
+			Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
 		}
 		$result = str_replace('$(Content)', $content, $this->template);
 
@@ -419,7 +412,7 @@ class TClientUI extends WebPage
 			$this->addStyles($this->styles);
 		}
 
-		$result = $Eresus->plugins->clientOnPageRender($result);
+		$result = Eresus_CMS::getLegacyKernel()->plugins->clientOnPageRender($result);
 
 		// FIXME: Обратная совместимость
 		if (!empty($this->scripts))
@@ -440,13 +433,13 @@ class TClientUI extends WebPage
 			}
 		}
 
-		$result = $Eresus->plugins->clientBeforeSend($result);
-		if (!$Eresus->conf['debug']['enable'])
+		$result = Eresus_CMS::getLegacyKernel()->plugins->clientBeforeSend($result);
+		if (!Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
 		{
 			ob_start('ob_gzhandler');
 		}
 		echo $result;
-		if (!$Eresus->conf['debug']['enable'])
+		if (!Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
 		{
 			ob_end_flush();
 		}
@@ -464,7 +457,7 @@ class TClientUI extends WebPage
 	 */
 	function pages($pagesCount, $itemsPerPage, $reverse = false)
 	{
-		global $Eresus;
+		$eresus = Eresus_CMS::getLegacyKernel();
 
 		if ($pagesCount>1)
 		{
@@ -504,12 +497,12 @@ class TClientUI extends WebPage
 					}
 					if ($for_from != $pagesCount)
 					{
-						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strLastPage.
+						$side_left = "<a href=\"".$eresus->request['path']."\" title=\"".strLastPage.
 							"\">&nbsp;&laquo;&nbsp;</a>";
 					}
 					if ($for_to != 0)
 					{
-						$side_right = "<a href=\"".$Eresus->request['path']."p1/\" title=\"".strFirstPage.
+						$side_right = "<a href=\"".$eresus->request['path']."p1/\" title=\"".strFirstPage.
 							"\">&nbsp;&raquo;&nbsp;</a>";
 					}
 				}
@@ -527,12 +520,12 @@ class TClientUI extends WebPage
 					$for_to = $for_from + $at_once;
 					if ($for_from != 1)
 					{
-						$side_left = "<a href=\"".$Eresus->request['path']."\" title=\"".strFirstPage.
+						$side_left = "<a href=\"".$eresus->request['path']."\" title=\"".strFirstPage.
 							"\">&nbsp;&laquo;&nbsp;</a>";
 					}
 					if ($for_to < $pagesCount)
 					{
-						$side_right = "<a href=\"".$Eresus->request['path']."p".$pagesCount."/\" title=\"".
+						$side_right = "<a href=\"".$eresus->request['path']."p".$pagesCount."/\" title=\"".
 							strLastPage."\">&nbsp;&raquo;&nbsp;</a>";
 					}
 				}
@@ -547,7 +540,7 @@ class TClientUI extends WebPage
 				}
 				else
 				{
-					$result .= '<a href="'.$Eresus->request['path'].($i==$default?'':'p'.$i.'/').
+					$result .= '<a href="'.$eresus->request['path'].($i==$default?'':'p'.$i.'/').
 						'">&nbsp;'.$i.'&nbsp;</a>';
 				}
 			}

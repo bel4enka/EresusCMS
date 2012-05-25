@@ -436,7 +436,7 @@ implements Iterator, Countable
 	{
 		if (!$this->urlTemplate)
 		{
-			$this->urlTemplate = $GLOBALS['Eresus']->request['path'] . 'p%d/';
+			$this->urlTemplate = Eresus_CMS::getLegacyKernel()->request['path'] . 'p%d/';
 		}
 	}
 	//-----------------------------------------------------------------------------

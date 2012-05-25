@@ -170,15 +170,13 @@ function InfoBox($text, $caption=strInformation)
 
 function ErrorMessage($message)
 {
-	global $Eresus;
-	$Eresus->session['msg']['errors'][] = $message;
+	Eresus_CMS::getLegacyKernel()->session['msg']['errors'][] = $message;
 }
 //------------------------------------------------------------------------------
 
 function InfoMessage($message)
 {
-	global $Eresus;
-	$Eresus->session['msg']['information'][] = $message;
+	Eresus_CMS::getLegacyKernel()->session['msg']['information'][] = $message;
 }
 //------------------------------------------------------------------------------
 
@@ -191,13 +189,12 @@ function InfoMessage($message)
  */
 function UserRights($level)
 {
-	global $Eresus;
-
+	$user = Eresus_CMS::getLegacyKernel()->user;
 	return (
 		(
-			($Eresus->user['auth']) &&
-			($Eresus->user['access'] <= $level) &&
-			($Eresus->user['access'] != 0)
+			($user['auth']) &&
+			($user['access'] <= $level) &&
+			($user['access'] != 0)
 		) ||
 		($level == GUEST)
 	);
@@ -277,8 +274,6 @@ function useClass($className)
 function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='',
 	$fromSign='', $replyTo='')
 {
-	global $Eresus;
-
 	if (empty($fromName))
 	{
 		$fromName = option('mailFromName');
@@ -355,11 +350,12 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		$headers .= "Content-type: text/plain; charset=$charset\n";
 	}
 
-	if ($Eresus->conf['debug']['enable'] && $Eresus->conf['debug']['mail'] !== true)
+	$conf = Eresus_CMS::getLegacyKernel()->conf;
+	if ($conf['debug']['enable'] && $conf['debug']['mail'] !== true)
 	{
-		if (is_string($Eresus->conf['debug']['mail']))
+		if (is_string($conf['debug']['mail']))
 		{
-			$hnd = @fopen($Eresus->conf['debug']['mail'], 'a');
+			$hnd = @fopen($conf['debug']['mail'], 'a');
 			if ($hnd)
 			{
 				fputs($hnd, "\n====================\n$headers\nTo: $address\nSubject: $subject\n\n$text\n");
@@ -609,10 +605,9 @@ function replaceMacros($template, $source)
  */
 function arg($arg, $filter = null)
 {
-	global $Eresus;
-
-	$arg = isset($Eresus->request['arg'][$arg]) ?
-		$Eresus->request['arg'][$arg] :
+	$request = Eresus_CMS::getLegacyKernel()->request;
+	$arg = isset($request['arg'][$arg]) ?
+		$request['arg'][$arg] :
 		null;
 
 	if ($arg !== false && !is_null($filter))
@@ -620,7 +615,7 @@ function arg($arg, $filter = null)
 		switch ($filter)
 		{
 			case 'dbsafe':
-				$arg = $Eresus->db->escape($arg);
+				$arg = Eresus_CMS::getLegacyKernel()->db->escape($arg);
 			break;
 
 			case 'int':
@@ -650,8 +645,7 @@ function arg($arg, $filter = null)
  */
 function saveRequest()
 {
-	global $Eresus;
-	$Eresus->session['request'] = $Eresus->request;
+	Eresus_CMS::getLegacyKernel()->session['request'] = Eresus_CMS::getLegacyKernel()->request;
 }
 //-----------------------------------------------------------------------------
 
@@ -660,11 +654,10 @@ function saveRequest()
  */
 function restoreRequest()
 {
-	global $Eresus;
-	if (isset($Eresus->session['request']))
+	if (isset(Eresus_CMS::getLegacyKernel()->session['request']))
 	{
-		$Eresus->request = $Eresus->session['request'];
-		unset($Eresus->session['request']);
+		Eresus_CMS::getLegacyKernel()->request = Eresus_CMS::getLegacyKernel()->session['request'];
+		unset(Eresus_CMS::getLegacyKernel()->session['request']);
 	}
 }
 //-----------------------------------------------------------------------------
@@ -680,12 +673,12 @@ function restoreRequest()
  */
 function dbReorderItems($table, $condition='', $id='id')
 {
-	global $Eresus;
-
-	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', $id);
+	$items = Eresus_CMS::getLegacyKernel()->db->
+		select("`".$table."`", $condition, '`position`', $id);
 	for ($i=0; $i<count($items); $i++)
 	{
-		$Eresus->db->update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
+		Eresus_CMS::getLegacyKernel()->db->
+			update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 	}
 }
 //------------------------------------------------------------------------------
@@ -996,8 +989,6 @@ function Translit($s) #: String
 
 function __clearargs($args)
 {
-	global $Eresus;
-
 	if (count($args))
 	{
 		foreach ($args as $key => $value)
@@ -1021,7 +1012,7 @@ function __clearargs($args)
 					$key = substr($key, 7);
 					$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
 					$value = str_replace(array('%28', '%29'), array('(',')'), $value);
-					$value = str_replace($Eresus->root, '$(httpRoot)', $value);
+					$value = str_replace(Eresus_CMS::getLegacyKernel()->root, '$(httpRoot)', $value);
 					preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
 					if (count($images[0]))
 					{
@@ -1167,35 +1158,6 @@ class Eresus
 
 	var $request;
 	var $sections;
-
-	//------------------------------------------------------------------------------
-	// Информация о системе
-	//------------------------------------------------------------------------------
-
-	/**
-	 * Читает и применяет конфигурационный файл
-	 */
-	private function init_config()
-	{
-		/*
-		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
-		 * мог записывать в неё свои значения.
-		 */
-		global $Eresus;
-
-
-		$filename = Eresus_Kernel::app()->getFsRoot() . '/cfg/main.php';
-		$nativeFilename = FS::nativeForm($filename);
-		if (FS::isFile($filename))
-		{
-			include_once $nativeFilename;
-		}
-		else
-		{
-			FatalError("Main config file '$nativeFilename' not found!");
-		}
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициирует сессии
@@ -1598,8 +1560,6 @@ class Eresus
 		{
 			set_magic_quotes_runtime(0);
 		}
-		# Читаем конфигурацию
-		$this->init_config();
 		if ($this->conf['timezone'])
 		{
 			date_default_timezone_set($this->conf['timezone']);

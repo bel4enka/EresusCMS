@@ -68,11 +68,11 @@ class TContentPlugin extends TPlugin
 */
 function updateContent($content)
 {
-	global $Eresus, $page;
+	global $page;
 
-  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+  $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
   $item['content'] = $content;
-  $Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+	Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".$page->id."'");
 }
 //------------------------------------------------------------------------------
 /**
@@ -103,9 +103,9 @@ function clientRenderContent()
 */
 function adminRenderContent()
 {
-	global $page, $Eresus;
+	global $page;
 
-  $item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+  $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
   $form = array(
     'name' => 'content',
     'caption' => $page->title,

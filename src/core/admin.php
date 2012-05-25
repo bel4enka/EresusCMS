@@ -179,8 +179,6 @@ class TAdminUI extends WebPage
 	 */
 	public function __construct()
 	{
-		global $Eresus;
-
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		parent::__construct();
@@ -194,7 +192,8 @@ class TAdminUI extends WebPage
 		do
 		{
 			$this->sub++;
-			$i = strpos($Eresus->request['url'], str_repeat('sub_', $this->sub).'id');
+			$i = strpos(Eresus_CMS::getLegacyKernel()->request['url'],
+				str_repeat('sub_', $this->sub) . 'id');
 		}
 		while ($i !== false);
 
@@ -268,7 +267,7 @@ class TAdminUI extends WebPage
 			array(
 				httpHost,
 				httpPath,
-				$GLOBALS['Eresus']->root,
+				Eresus_CMS::getLegacyKernel()->root,
 				styleRoot,
 				dataRoot,
 
@@ -288,13 +287,11 @@ class TAdminUI extends WebPage
 
 	function url($args = null, $clear = false)
 	{
-		global $Eresus;
-
 		$basics = array('mod','section','id','sort','desc','pg');
 		$result = '';
-		if (count($Eresus->request['arg']))
+		if (count(Eresus_CMS::getLegacyKernel()->request['arg']))
 		{
-			foreach ($Eresus->request['arg'] as $key => $value)
+			foreach (Eresus_CMS::getLegacyKernel()->request['arg'] as $key => $value)
 			{
 				if (in_array($key,$basics)|| strpos($key, 'sub_')===0)
 				{
@@ -325,7 +322,7 @@ class TAdminUI extends WebPage
 		}
 		// См. баг http://bugs.eresus.ru/view.php?id=365
 		//$result = str_replace('&', '&amp;', $result);
-		$result = $GLOBALS['Eresus']->root . 'admin.php' . $result;
+		$result = Eresus_CMS::getLegacyKernel()->root . 'admin.php' . $result;
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -409,27 +406,28 @@ class TAdminUI extends WebPage
 	 */
 	function control($type, $href, $custom = array())
 	{
-		global $Eresus;
-
 		switch ($type)
 		{
 			case 'add':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/item-add.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/item-add.png',
 					'title' => strAdd,
 					'alt' => '+',
 				);
 			break;
 			case 'edit':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/item-edit.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/item-edit.png',
 					'title' => strEdit,
 					'alt' => '&plusmn;',
 				);
 			break;
 			case 'delete':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/item-delete.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/item-delete.png',
 					'title' => strDelete,
 					'alt' => 'X',
 					'onclick' => 'return askdel(this)',
@@ -437,21 +435,24 @@ class TAdminUI extends WebPage
 			break;
 			case 'setup':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/item-config.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/item-config.png',
 					'title' => strProperties,
 					'alt' => '*',
 				);
 			break;
 			case 'move':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/item-move.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/item-move.png',
 					'title' => strMove,
 					'alt' => '-&gt;',
 				);
 			break;
 			case 'position':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/move-up.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/move-up.png',
 					'title' => admUp,
 					'alt' => '&uarr;',
 				);
@@ -460,7 +461,8 @@ class TAdminUI extends WebPage
 			break;
 			case 'position_down':
 				$control = array(
-					'image' => $Eresus->root.'admin/themes/default/img/medium/move-down.png',
+					'image' => Eresus_CMS::getLegacyKernel()->root .
+						'admin/themes/default/img/medium/move-down.png',
 					'title' => admDown,
 					'alt' => '&darr;',
 				);
@@ -497,7 +499,7 @@ class TAdminUI extends WebPage
 	 */
 	function renderTabs($tabs)
 	{
-		global $Eresus, $page;
+		global $page;
 
 		if (count($tabs))
 		{
@@ -518,7 +520,7 @@ class TAdminUI extends WebPage
 					}
 					else
 					{
-						$url = $Eresus->request['url'];
+						$url = Eresus_CMS::getLegacyKernel()->request['url'];
 						if (isset($item['name']))
 						{
 							if (($p = strpos($url, $item['name'].'=')) !== false)
@@ -592,8 +594,6 @@ class TAdminUI extends WebPage
 	 */
 	function renderTable($table, $values=null, $sub_prefix='')
 	{
-		global $Eresus;
-
 		$result = '';
 		$prefix = empty($sub_prefix) ? str_repeat('sub_', $this->sub) : $sub_prefix;
 		$itemsPerPage = isset($table['itemsPerPage']) ?
@@ -618,7 +618,7 @@ class TAdminUI extends WebPage
 			(arg($prefix.'sort')?'':(isset($table['sortDesc'])?$table['sortDesc']:false));
 		if (is_null($values))
 		{
-			$count = $Eresus->db->count($table['name'],
+			$count = Eresus_CMS::getLegacyKernel()->db->count($table['name'],
 				isset($table['condition'])?$table['condition']:'');
 			if ($itemsPerPage)
 			{
@@ -639,7 +639,7 @@ class TAdminUI extends WebPage
 				$pages = '';
 				$page = 1;
 			}
-			$items = $Eresus->db->select(
+			$items = Eresus_CMS::getLegacyKernel()->db->select(
 				$table['name'],
 				isset($table['condition'])?$table['condition']:'',
 				($sortDesc ? '-' : '').$sortMode,
@@ -862,8 +862,6 @@ class TAdminUI extends WebPage
 
 	function renderContent()
 	{
-		global $Eresus;
-
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$req = HTTP::request();
@@ -871,20 +869,20 @@ class TAdminUI extends WebPage
 		if (arg('mod'))
 		{
 			$module = arg('mod', '/[^\w-]/');
-			if (file_exists($GLOBALS['Eresus']->froot . "core/$module.php"))
+			if (file_exists(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php"))
 			{
-				Core::safeInclude($Eresus->froot . "core/$module.php");
+				Core::safeInclude(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php");
 				$class = "T$module";
 				$this->module = new $class;
 			}
 			elseif (substr($module, 0, 4) == 'ext-')
 			{
 				$name = substr($module, 4);
-				$this->module = $Eresus->plugins->load($name);
+				$this->module = Eresus_CMS::getLegacyKernel()->plugins->load($name);
 			}
 			else
 			{
-				ErrorMessage(errFileNotFound.': "' . $GLOBALS['Eresus']->froot . "core/$module.php'");
+				ErrorMessage(errFileNotFound.': "' . Eresus_CMS::getLegacyKernel()->froot . "core/$module.php'");
 			}
 
 			/*
@@ -936,27 +934,29 @@ class TAdminUI extends WebPage
 			}
 		}
 		if (
-			isset($Eresus->session['msg']['information']) &&
-			count($Eresus->session['msg']['information'])
+			isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
 		)
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['information'] as $message)
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['information'] as $message)
 			{
 				$messages .= InfoBox($message);
 			}
-			$result = $messages.$result;
-			$Eresus->session['msg']['information'] = array();
+			$result = $messages . $result;
+			Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
 		}
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
+		if (
+			isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))
 		{
 			$messages = '';
-			foreach ($Eresus->session['msg']['errors'] as $message)
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
 			{
 				$messages .= ErrorBox($message);
 			}
-			$result = $messages.$result;
-			$Eresus->session['msg']['errors'] = array();
+			$result = $messages . $result;
+			Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
 		}
 		return $result;
 	}
@@ -971,12 +971,11 @@ class TAdminUI extends WebPage
 	 */
 	private function renderPagesMenu(&$opened, $owner = 0, $level = 0)
 	{
-		global $Eresus;
-
 		$theme = $this->getUITheme();
 
 		$result = '';
-		$items = $Eresus->sections->children($owner, $Eresus->user['access'], SECTIONS_ACTIVE);
+		$items = Eresus_CMS::getLegacyKernel()->
+			sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'], SECTIONS_ACTIVE);
 
 		if (count($items))
 		{
@@ -988,7 +987,7 @@ class TAdminUI extends WebPage
 				}
 
 				if (
-					isset($Eresus->request['arg']['section']) &&
+					isset(Eresus_CMS::getLegacyKernel()->request['arg']['section']) &&
 					$item['id'] == arg('section')
 				)
 				{
@@ -1042,9 +1041,9 @@ class TAdminUI extends WebPage
 
 				$result .=
 					'<li' . ($classes ? ' class="' . $classes . '"' : '') . '>' .
-						'<img src="' . $GLOBALS['Eresus']->root . $theme->getImage('dot.gif') . '" alt="' .
+						'<img src="' . Eresus_CMS::getLegacyKernel()->root . $theme->getImage('dot.gif') . '" alt="' .
 						$alt . '" title="' . $title . '" /> ' .
-						'<a href="' . $GLOBALS['Eresus']->root . 'admin.php?mod=content&amp;section=' .
+						'<a href="' . Eresus_CMS::getLegacyKernel()->root . 'admin.php?mod=content&amp;section=' .
 						$item['id'] .
 						'" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
 
@@ -1066,9 +1065,7 @@ class TAdminUI extends WebPage
 	 */
 	private function renderControlMenu()
 	{
-		global $Eresus;
-
-		$Eresus->plugins->adminOnMenuRender();
+		Eresus_CMS::getLegacyKernel()->plugins->adminOnMenuRender();
 
 		$menu = '';
 		for ($section = 0; $section < count($this->extmenu); $section++)
@@ -1091,7 +1088,7 @@ class TAdminUI extends WebPage
 							$this->title = $item['caption'];
 						}
 						$menu .= '<div ' . ($item['link'] == arg('mod') ? 'class="selected"' : '') .
-							"><a href=\"" . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
+							"><a href=\"" . Eresus_CMS::getLegacyKernel()->root . "admin.php?mod=" . $item['link'] .
 							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
 					}
 				}
@@ -1119,7 +1116,7 @@ class TAdminUI extends WebPage
 							$this->title = $item['caption'];
 						}
 						$menu .= '<div '.($item['link'] == arg('mod') ?'class="selected"':'') .
-							"><a href=\"" . $GLOBALS['Eresus']->root . "admin.php?mod=" . $item['link'] .
+							"><a href=\"" . Eresus_CMS::getLegacyKernel()->root . "admin.php?mod=" . $item['link'] .
 							"\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
 					}
 				}
@@ -1160,8 +1157,6 @@ class TAdminUI extends WebPage
 	 */
 	private function auth()
 	{
-		global $Eresus;
-
 		$req = HTTP::request();
 		$user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
 		$password = $req->arg('password');
@@ -1173,20 +1168,22 @@ class TAdminUI extends WebPage
 
 		if ($req->getMethod() == 'POST')
 		{
-			if ($Eresus->login($req->arg('user'), $Eresus->password_hash($password), $autologin))
+			if (Eresus_CMS::getLegacyKernel()->login($req->arg('user'),
+				Eresus_CMS::getLegacyKernel()->password_hash($password), $autologin))
 			{
 				HTTP::redirect('./admin.php');
 			}
 		}
 
-		if (isset($Eresus->session['msg']['errors']) && count($Eresus->session['msg']['errors']))
+		if (isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))
 		{
-			foreach ($Eresus->session['msg']['errors'] as $message)
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
 			{
 				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
 			}
 
-			$Eresus->session['msg']['errors'] = array();
+			Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
 		}
 
 		$tmpl = $this->getUITheme()->getTemplate('auth.html');
@@ -1201,8 +1198,6 @@ class TAdminUI extends WebPage
 	 */
 	private function renderUI()
 	{
-		global $Eresus;
-
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		$data = array();
 
@@ -1218,7 +1213,7 @@ class TAdminUI extends WebPage
 		$opened = -1;
 		$data['sectionMenu'] = $this->renderPagesMenu($opened);
 		$data['controlMenu'] = $this->renderControlMenu();
-		$data['user'] = $Eresus->user;
+		$data['user'] = Eresus_CMS::getLegacyKernel()->user;
 
 		$tmpl = new Template('admin/themes/default/page.default.html');
 		$html = $tmpl->compile($data);

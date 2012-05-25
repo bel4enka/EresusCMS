@@ -60,8 +60,6 @@ class AdminList {
 	 */
 	function control($type, $href, $custom = array())
 	{
-		global $Eresus;
-
 		if (isset($this->__controls[$type])) $control = $this->__controls[$type];
 		switch($type) {
 			case 'position':
@@ -69,8 +67,14 @@ class AdminList {
 				$href = $href[0];
 			break;
 		}
-		foreach($custom as $key => $value) $control[$key] = $value;
-		$result = '<a href="'.$href.'"'.(isset($control['onclick'])?' onclick="'.$control['onclick'].'"':'').'><img src="'.$Eresus->root.$control['image'].'" alt="'.$control['alt'].'" title="'.$control['title'].'" /></a>';
+		foreach ($custom as $key => $value)
+		{
+			$control[$key] = $value;
+		}
+		$result = '<a href="' . $href . '"' . (isset($control['onclick']) ?
+			' onclick="' . $control['onclick'] . '"' : '') . '><img src="' .
+			Eresus_CMS::getLegacyKernel()->root . $control['image'] . '" alt="' .
+			$control['alt'].'" title="'.$control['title'].'" /></a>';
 		if ($type == 'position') $result .= ' '.$this->control('position_down', $s, $custom);
 		return $result;
 	}

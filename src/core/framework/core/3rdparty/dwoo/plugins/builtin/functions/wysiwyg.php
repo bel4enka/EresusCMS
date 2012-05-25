@@ -12,7 +12,7 @@
  */
 function Dwoo_Plugin_wysiwyg(Dwoo $dwoo, $name, $value = '', $height = 200)
 {
-	$wysiwyg = $GLOBALS['Eresus']->extensions->load('forms', 'html');
+	$wysiwyg = Eresus_CMS::getLegacyKernel()->extensions->load('forms', 'html');
 	$field = array(
 		'name' => $name,
 		'value' => $value,

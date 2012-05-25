@@ -748,7 +748,7 @@ class TinyImageManager
    <table class="imageBlock0" cellpadding="0" cellspacing="0" filename="'.$v['general']['filename'].'" fname="'.$v['general']['name'].'" ext="'.strtoupper($v['general']['ext']).'" path="'.$v['general']['path'].'" linkto="'.$v['general']['link'].'" fsize="'.$v['general']['size'].'" date="'.date('d.m.Y H:i',$v['general']['date']).'" fwidth="'.$v['general']['width'].'" fheight="'.$v['general']['height'].'" md5="'.$v['general']['md5'].'" '.$middle_thumb_attr.'><tr><td valign="bottom" align="center">
     <div class="imageBlock1">
      <div class="imageImage">
-      <img src="'. substr($GLOBALS['Eresus']->root, 0, -1) . $thumb.'" width="100" height="100" alt="'.$v['general']['name'].'" />
+      <img src="'. substr(Eresus_CMS::getLegacyKernel()->root, 0, -1) . $thumb.'" width="100" height="100" alt="'.$v['general']['name'].'" />
      </div>
      <div class="imageName">'.$v['general']['name'].'</div>
     </div>

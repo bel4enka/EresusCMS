@@ -43,10 +43,10 @@ class TAbout
 	 */
 	public function adminRender()
 	{
-		global $Eresus, $page, $locale;
+		global $page, $locale;
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
-		$xml->load($Eresus->froot . 'core/about.xml');
+		$xml->load(Eresus_CMS::getLegacyKernel()->froot . 'core/about.xml');
 
 		$data = array();
 

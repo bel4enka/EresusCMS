@@ -227,11 +227,11 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionTemplates()
 	{
-	global $Eresus, $page;
+		global $page;
 
 		$page->title .= admTDiv.admThemesTemplates;
 
@@ -441,8 +441,7 @@ class TThemes
 	 */
 	public function sectionStylesUpdate()
 	{
-		global $Eresus;
-		$Eresus->request['update'] = true;
+		Eresus_CMS::getLegacyKernel()->request['update'] = true;
 		$this->sectionStylesInsert();
 	}
 	//-----------------------------------------------------------------------------

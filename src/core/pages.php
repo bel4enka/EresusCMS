@@ -55,7 +55,7 @@ class TPages
 	 */
 	function insert()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$item = array();
 		$item['owner'] = arg('owner', 'int');
@@ -74,11 +74,11 @@ class TPages
 		$item['options'] = arg('options');
 		$item['created'] = $item['updated'] = gettime('Y-m-d H:i:s');
 
-		$temp = $Eresus->sections->get("(`name`='" . $item['name'] . "') AND (`owner`='" .
-			$item['owner'] . "')");
+		$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
+			"') AND (`owner`='" . $item['owner'] . "')");
 		if (count($temp) == 0)
 		{
-			$item = $Eresus->sections->add($item);
+			Eresus_CMS::getLegacyKernel()->sections->add($item);
 			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
 			HTTP::redirect($page->url(array('id'=>'')));
 		}
@@ -86,7 +86,7 @@ class TPages
 		{
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			HTTP::redirect($Eresus->request['referer']);
+			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -97,9 +97,7 @@ class TPages
 	 */
 	function update()
 	{
-		global $Eresus, $page;
-
-		$old = $Eresus->sections->get(arg('update', 'int'));
+		$old = Eresus_CMS::getLegacyKernel()->sections->get(arg('update', 'int'));
 		$item = $old;
 
 		$item['name'] = arg('name', '/[^a-z0-9_]/i');
@@ -116,13 +114,13 @@ class TPages
 		$item['position'] = arg('position', 'int');
 		$item['options'] = text2array(arg('options'), true);
 
-		$temp = $Eresus->sections->get("(`name`='" . $item['name'] . "') AND (`owner`='" .
-			$item['owner'] . "' AND `id` <> " . $item['id'] . ")");
+		$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
+			"') AND (`owner`='" . $item['owner'] . "' AND `id` <> " . $item['id'] . ")");
 		if (count($temp) > 0)
 		{
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			HTTP::redirect($Eresus->request['referer']);
+			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 
 		if (arg('created'))
@@ -135,7 +133,7 @@ class TPages
 			$item['updated'] = gettime('Y-m-d H:i:s');
 		}
 
-		$Eresus->sections->update($item);
+		Eresus_CMS::getLegacyKernel()->sections->update($item);
 
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -150,9 +148,8 @@ class TPages
 	 */
 	function selectList($skip=0, $owner = 0, $level = 0)
 	{
-		global $Eresus;
-
-		$items = $Eresus->sections->children($owner, $Eresus->user['access']);
+		$items = Eresus_CMS::getLegacyKernel()->sections->
+			children($owner, Eresus_CMS::getLegacyKernel()->user['access']);
 		$result = array(array(), array());
 		foreach ($items as $item)
 		{
@@ -176,26 +173,27 @@ class TPages
 
 	/**
 	 * Функция перемещает страницу вверх в списке
-	 * @return unknown_type
+	 * @return void
 	 */
 	function moveUp()
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->sections->get(arg('id', 'int'));
+		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		$item = $Eresus->sections->get(arg('id', 'int'));
+		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		if ($item['position'] > 0)
 		{
-			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".
+			$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`owner`='".$item['owner'].
+				"') AND (`position`='".
 				($item['position']-1)."')");
 			if (count($temp))
 			{
 				$temp = $temp[0];
 				$item['position']--;
 				$temp['position']++;
-				$Eresus->sections->update($item);
-				$Eresus->sections->update($temp);
+				Eresus_CMS::getLegacyKernel()->sections->update($item);
+				Eresus_CMS::getLegacyKernel()->sections->update($temp);
 			}
 		}
 		HTTP::redirect($page->url(array('id'=>'')));
@@ -204,26 +202,28 @@ class TPages
 
 	/**
 	 * Функция перемещает страницу вниз в списке
-	 * @return unknown_type
+	 * @return void
 	 */
 	function moveDown()
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->sections->get(arg('id', 'int'));
+		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		if ($item['position'] < count($Eresus->sections->children($item['owner'])))
+		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+		if ($item['position'] <
+			count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner'])))
 		{
-			$temp = $Eresus->sections->get("(`owner`='".$item['owner']."') AND (`position`='".
+			$temp = Eresus_CMS::getLegacyKernel()->sections->
+				get("(`owner`='".$item['owner']."') AND (`position`='".
 				($item['position']+1)."')");
 			if ($temp)
 			{
 				$temp = $temp[0];
 				$item['position']++;
 				$temp['position']--;
-				$Eresus->sections->update($item);
-				$Eresus->sections->update($temp);
+				Eresus_CMS::getLegacyKernel()->sections->update($item);
+				Eresus_CMS::getLegacyKernel()->sections->update($temp);
 			}
 		}
 		HTTP::redirect($page->url(array('id'=>'')));
@@ -237,15 +237,15 @@ class TPages
 	 */
 	function move()
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->sections->get(arg('id', 'int'));
+		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		if (!is_null(arg('to')))
 		{
 			$item['owner'] = arg('to', 'int');
-			$item['position'] = count($Eresus->sections->children($item['owner']));
+			$item['position'] = count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner']));
 
-			/* Проверяем, нет ли в разделе назанчения раздела с таким же именем */
+			/* Проверяем, нет ли в разделе назначения раздела с таким же именем */
 			$q = DB::createSelectQuery();
 			$e = $q->expr;
 			$q->select($q->alias($e->count('id'), 'count'))
@@ -261,7 +261,7 @@ class TPages
 				HTTP::goback();
 			}
 
-			$Eresus->sections->update($item);
+			Eresus_CMS::getLegacyKernel()->sections->update($item);
 			HTTP::redirect($page->url(array('id'=>'')));
 		}
 		else
@@ -295,22 +295,22 @@ class TPages
 	 */
 	function deleteBranch($id)
 	{
-		global $Eresus;
-
-		$item = $Eresus->db->selectItem('pages', "`id`='".$id."'");
-		if ($Eresus->plugins->load($item['type']))
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$id."'");
+		if (Eresus_CMS::getLegacyKernel()->plugins->load($item['type']))
 		{
-			if (isset($Eresus->plugins->items[$item['type']]->table))
+			if (isset(Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->table))
 			{
-				$fields = $Eresus->db->fields($Eresus->plugins->items[$item['type']]->table['name']);
+				$fields = Eresus_CMS::getLegacyKernel()->db->
+					fields(Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->table['name']);
 				if (in_array('section', $fields))
 				{
-					$Eresus->db->delete($Eresus->plugins->items[$item['type']]->table['name'],
+					Eresus_CMS::getLegacyKernel()->db->
+						delete(Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->table['name'],
 						"`section`='".$item['id']."'");
 				}
 			}
 		}
-		$items = $Eresus->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
+		$items = Eresus_CMS::getLegacyKernel()->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
 		if (count($items))
 		{
 			foreach ($items as $item)
@@ -318,20 +318,20 @@ class TPages
 				$this->deleteBranch($item['id']);
 			}
 		}
-		$Eresus->db->delete('pages', "`id`='".$id."'");
+		Eresus_CMS::getLegacyKernel()->db->delete('pages', "`id`='".$id."'");
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * Удаляет страницу
-	 * @return unknown_type
+	 * @return void
 	 */
 	function delete()
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->sections->get(arg('id', 'int'));
-		$Eresus->sections->delete(arg('id', 'int'));
+		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+		Eresus_CMS::getLegacyKernel()->sections->delete(arg('id', 'int'));
 		dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		HTTP::redirect($page->url(array('id'=>'')));
 	}
@@ -344,8 +344,6 @@ class TPages
 	 */
 	private function loadContentTypes()
 	{
-		global $Eresus;
-
 		$result[0] = array();
 		$result[1] = array();
 
@@ -364,9 +362,9 @@ class TPages
 		/*
 		 * Типы контентов из плагинов
 		 */
-		if (count($Eresus->plugins->items))
+		if (count(Eresus_CMS::getLegacyKernel()->plugins->items))
 		{
-			foreach ($Eresus->plugins->items as $plugin)
+			foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
 			{
 				if (
 					$plugin instanceof ContentPlugin ||
@@ -406,7 +404,7 @@ class TPages
 	 */
 	function create()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$content = $this->loadContentTypes();
 		$templates = $this->loadTemplates();
@@ -446,7 +444,7 @@ class TPages
 			'buttons' => array('ok', 'cancel'),
 		);
 
-		$result = $page->renderForm($form, $Eresus->request['arg']);
+		$result = $page->renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -459,9 +457,9 @@ class TPages
 	 */
 	private function edit($id)
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->sections->get($id);
+		$item = Eresus_CMS::getLegacyKernel()->sections->get($id);
 		$content = $this->loadContentTypes();
 		$templates = $this->loadTemplates();
 		$item['options'] = array2text($item['options'], true);
@@ -524,11 +522,10 @@ class TPages
 	 */
 	function sectionIndexBranch($owner=0, $level=0)
 	{
-		global $Eresus;
-
 		$result = array();
-		$items = $Eresus->sections->children($owner,
-			$Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
+		$items = Eresus_CMS::getLegacyKernel()->sections->children($owner,
+			Eresus_CMS::getLegacyKernel()->user['auth'] ?
+				Eresus_CMS::getLegacyKernel()->user['access'] : GUEST);
 		for ($i=0; $i<count($items); $i++)
 		{
 			$content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?
@@ -536,7 +533,8 @@ class TPages
 				'<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
 			$row = array();
 			$row[] = array('text' => $items[$i]['caption'], 'style'=>"padding-left: {$level}em;",
-				'href'=>$Eresus->root.'admin.php?mod=content&amp;section='.$items[$i]['id']);
+				'href'=>Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=content&amp;section='.
+					$items[$i]['id']);
 			$row[] = $items[$i]['name'];
 			$row[] = array('text' => $content_type, 'align' => 'center');
 			$row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
@@ -559,9 +557,9 @@ class TPages
 	 */
 	function sectionIndex()
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$root = $Eresus->root.'admin.php?mod=pages&amp;';
+		$root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
 		$this->cache['index_controls'] =
 			$page->control('setup', $root.'id=%d').' '.
 			$page->control('position', array($root.'action=up&amp;id=%d',$root.'action=down&amp;id=%d')).
@@ -591,8 +589,6 @@ class TPages
 	 */
 	function adminRender()
 	{
-		global $Eresus, $page;
-
 		if (UserRights($this->access))
 		{
 			$result = '';
@@ -623,7 +619,7 @@ class TPages
 					break;
 				}
 			}
-			elseif (isset($Eresus->request['arg']['id']))
+			elseif (isset(Eresus_CMS::getLegacyKernel()->request['arg']['id']))
 			{
 				$result = $this->edit(arg('id', 'int'));
 			}

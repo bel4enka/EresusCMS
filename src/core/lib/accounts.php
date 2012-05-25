@@ -35,51 +35,80 @@
  * Работа с учётными записями пользователей
  * @package Eresus
  */
-class EresusAccounts {
-	var $table = 'users';
-	var $cache = array();
- /**
-	* Возвращает список полей
-	*
-	* @access public
-	*
-	* @return array Список полей
-	*/
-	function fields()
-	{
-		global $Eresus;
+class EresusAccounts
+{
+	/**
+	 * string
+	 */
+	private $table = 'users';
 
-		if (isset($this->cache['fields'])) $result = $this->cache['fields']; else {
-			$result = $Eresus->db->fields($this->table);
+	/**
+	 * @var array
+	 */
+	private $cache = array();
+
+	/**
+	 * Возвращает список полей
+	 *
+	 * @access public
+	 *
+	 * @return array Список полей
+	 */
+	public function fields()
+	{
+		if (isset($this->cache['fields']))
+		{
+			$result = $this->cache['fields'];
+		}
+		else
+		{
+			$result = Eresus_CMS::getLegacyKernel()->db->fields($this->table);
 			$this->cache['fields'] = $result;
 		}
 		return $result;
 	}
 	//------------------------------------------------------------------------------
- /**
-	* Возвращает учётную запись или список записей
-	*
-	* @access public
-	*
-	* @param int    $id  ID пользователя
-	*	или
-	*	@param array  $id  Список идентификаторов
-	*	или
-	*	@param string $id  SQL-условие
-	*
-	* @return array
-	*/
-	function	get($id)
-	{
-		global	$Eresus;
 
-		if	(is_array($id))	$what	=	"FIND_IN_SET(`id`,	'".implode(',',	$id)."')";
-		elseif	(is_numeric($id))	$what	=	"`id`=$id";
-		else	$what	=	$id;
-		$result	=	$Eresus->db->select($this->table,	$what);
-		if	($result)	for($i=0;	$i<count($result);	$i++)	$result[$i]['profile']	=	decodeOptions($result[$i]['profile']);
-		if	(is_numeric($id)	&&	$result	&&	count($result))	$result	=	$result[0];
-		return	$result;
+	/**
+	 * Возвращает учётную запись или список записей
+	 *
+	 * @access public
+	 *
+	 * @param int    $id  ID пользователя
+	 *	или
+	 *	@param array  $id  Список идентификаторов
+	 *	или
+	 *	@param string $id  SQL-условие
+	 *
+	 * @return array
+	 */
+	public function get($id)
+	{
+		if (is_array($id))
+		{
+			$what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
+		}
+		elseif (is_numeric($id))
+		{
+			$what = "`id`=$id";
+		}
+		else
+		{
+			$what = $id;
+		}
+		$result = Eresus_CMS::getLegacyKernel()->db->select($this->table, $what);
+		if ($result)
+		{
+			for ($i=0; $i<count($result); $i++)
+			{
+				$result[$i]['profile'] = decodeOptions($result[$i]['profile']);
+			}
+		}
+		if (is_numeric($id) && $result && count($result))
+		{
+			$result = $result[0];
+		}
+		return $result;
 	}
 	//------------------------------------------------------------------------------
 	function getByName($name)
@@ -96,16 +125,14 @@ class EresusAccounts {
 	*
 	*	@return	mixed	Описание	записи	или	false	в	случае	неудачи
 	*/
-	function	add($item)
+	function add($item)
 	{
-		global	$Eresus;
-
 		$result	=	false;
 		if	(isset($item['id']))	unset($item['id']);
 		if	(!isset($item['profile']))	$item['profile']	=	array();
 		$item['profile']	=	encodeOptions($item['profile']);
-		if	($Eresus->db->insert($this->table,	$item))
-			$result	=	$this->get($Eresus->db->getInsertedId());
+		if (Eresus_CMS::getLegacyKernel()->db->insert($this->table,	$item))
+			$result	=	$this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
 		return	$result;
 	}
 	//------------------------------------------------------------------------------
@@ -118,14 +145,12 @@ class EresusAccounts {
 	*
 	*	@return	mixed	Описание	изменённой	записи	или	false	в	случае	неудачи
 	*/
-	function	update($item)
+	function update($item)
 	{
-		global	$Eresus;
-
-		$result	=	false;
-		$item['profile']	=	encodeOptions($item['profile']);
-		$result	=	$Eresus->db->updateItem($this->table,	$item,	"`id`={$item['id']}");
-		return	$result;
+		$item['profile'] = encodeOptions($item['profile']);
+		$result	=	Eresus_CMS::getLegacyKernel()->db->
+			updateItem($this->table, $item, "`id`={$item['id']}");
+		return $result;
 	}
 	//------------------------------------------------------------------------------
 	/**
@@ -137,12 +162,10 @@ class EresusAccounts {
 	*
 	*	@return	bool	Результат	операции
 	*/
-	function	delete($id)
+	function delete($id)
 	{
-		global	$Eresus;
-
-		$result	=	$Eresus->db->delete($this->table,	"`id`=$id");
-		return	$result;
+		$result	=	Eresus_CMS::getLegacyKernel()->db->delete($this->table,	"`id`=$id");
+		return $result;
 	}
 	//------------------------------------------------------------------------------
 }
@@ -152,4 +175,4 @@ class EresusAccounts {
  *
  * @package Eresus
  */
-class	Accounts extends EresusAccounts {}
+class Accounts extends EresusAccounts {}

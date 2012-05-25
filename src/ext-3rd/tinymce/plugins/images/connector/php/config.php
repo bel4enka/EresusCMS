@@ -1,7 +1,7 @@
 <?php
 
 //Корневая директория сайта
-define('DIR_ROOT',		$GLOBALS['Eresus']->froot);
+define('DIR_ROOT',		Eresus_CMS::getLegacyKernel()->froot);
 //Директория с изображениями (относительно корневой)
 define('DIR_IMAGES',	'/data');
 //Директория с файлами (относительно корневой)

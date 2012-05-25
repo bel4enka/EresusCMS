@@ -49,7 +49,7 @@ class TPlgMgr
 	 */
 	private function toggle()
 	{
-		global $page, $Eresus;
+		global $page;
 
 		$q = DB::getHandler()->createUpdateQuery();
 		$e = $q->expr;
@@ -66,20 +66,21 @@ class TPlgMgr
 
 	private function delete()
 	{
-	global $page, $Eresus;
+		global $page;
 
-		$Eresus->plugins->load($Eresus->request['arg']['delete']);
-		$Eresus->plugins->uninstall($Eresus->request['arg']['delete']);
+		Eresus_CMS::getLegacyKernel()->plugins->load(arg('delete'));
+		Eresus_CMS::getLegacyKernel()->plugins->uninstall(arg('delete'));
 		HTTP::redirect($page->url());
 	}
 
 	private function edit()
 	{
-	global $page, $Eresus;
+		global $page;
 
-		$Eresus->plugins->load($Eresus->request['arg']['id']);
-		if (method_exists($Eresus->plugins->items[$Eresus->request['arg']['id']], 'settings')) {
-			$result = $Eresus->plugins->items[arg('id', 'word')]->settings();
+		Eresus_CMS::getLegacyKernel()->plugins->load(arg('id'));
+		if (method_exists(Eresus_CMS::getLegacyKernel()->plugins->items[arg('id')], 'settings'))
+		{
+			$result = Eresus_CMS::getLegacyKernel()->plugins->items[arg('id', 'word')]->settings();
 		} else {
 			$form = array(
 				'name' => 'InfoWindow',
@@ -97,11 +98,9 @@ class TPlgMgr
 
 	private function update()
 	{
-	global $page, $Eresus;
-
-		$Eresus->plugins->load($Eresus->request['arg']['update']);
-		$Eresus->plugins->items[$Eresus->request['arg']['update']]->updateSettings();
-		HTTP::redirect($Eresus->request['arg']['submitURL']);
+		Eresus_CMS::getLegacyKernel()->plugins->load(arg('update'));
+		Eresus_CMS::getLegacyKernel()->plugins->items[arg('update')]->updateSettings();
+		HTTP::redirect(arg('submitURL'));
 	}
 
 	/**
@@ -112,8 +111,6 @@ class TPlgMgr
 	 */
 	private function insert()
 	{
-		global $page, $Eresus;
-
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$files = arg('files');
@@ -125,7 +122,7 @@ class TPlgMgr
 				{
 					try
 					{
-						$Eresus->plugins->install($plugin);
+						Eresus_CMS::getLegacyKernel()->plugins->install($plugin);
 					}
 					catch (DomainException $e)
 					{
@@ -146,25 +143,25 @@ class TPlgMgr
 	 */
 	private function add()
 	{
-		global $page, $Eresus;
+		global $page;
 
 		$data = array();
 
 		/* Составляем список доступных плагинов */
-		$files = glob($Eresus->froot . 'ext/*.php');
+		$files = glob(Eresus_CMS::getLegacyKernel()->froot . 'ext/*.php');
 		if (false === $files)
 		{
 			$files = array();
 		}
 
-		/* Составляем списки доступынх и установленных плагинов */
-		$items = $Eresus->db->select('plugins', '', 'name, version');
+		/* Составляем списки доступных и установленных плагинов */
+		$items = Eresus_CMS::getLegacyKernel()->db->select('plugins', '', 'name, version');
 		$available = array();
 		$installed = array();
 		foreach ($items as $item)
 		{
 			$available[$item['name']] = $item['version'];
-			$installed []= $Eresus->froot . 'ext/' . $item['name'] . '.php';
+			$installed []= Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $item['name'] . '.php';
 		}
 
 		// Оставляем только неустановленные
@@ -253,11 +250,12 @@ class TPlgMgr
 	 */
 	public function adminRender()
 	{
-		global $page, $Eresus;
+		global $page;
 
 		if (!UserRights($this->access))
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"', $Eresus->user['name']);
+			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
+				Eresus_CMS::getLegacyKernel()->user['name']);
 			return '';
 		}
 

@@ -82,14 +82,14 @@ class TPlugin
 	 */
 	public function __construct()
 	{
-		global $Eresus, $locale;
+		global $locale;
 
-		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
+		if (!empty($this->name) && isset(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]))
 		{
-			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+			$this->settings = decodeOptions(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['settings'], $this->settings);
 			# Если установлена версия плагина отличная от установленной ранее
 			# то необходимо произвести обновление информации о плагине в БД
-			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
+			if ($this->version != Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['version'])
 				$this->resetPlugin();
 		}
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
@@ -107,12 +107,10 @@ class TPlugin
 	 */
 	function __item($item = null)
 	{
-		global $Eresus;
-
 		$result['name'] = $this->name;
 		$result['content'] = false;
 		$result['active'] = is_null($item) ? true : $item['active'];
-		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+		$result['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
 		$result['title'] = $this->title;
 		$result['version'] = $this->version;
 		$result['description'] = $this->description;
@@ -127,8 +125,7 @@ class TPlugin
 */
 function loadSettings()
 {
-	global $Eresus;
-	$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
+	$result = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='".$this->name."'");
 	if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
 	return (bool)$result;
 }
@@ -140,11 +137,10 @@ function loadSettings()
 */
 function saveSettings()
 {
-	global $Eresus;
-	$item = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
+	$item = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='{$this->name}'");
 	$item = $this->__item($item);
-	$item['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
-	$result = $Eresus->db->updateItem('plugins', $item, "`name`='".$this->name."'");
+	$item['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(encodeOptions($this->settings));
+	$result = Eresus_CMS::getLegacyKernel()->db->updateItem('plugins', $item, "`name`='".$this->name."'");
 	return $result;
 }
 //------------------------------------------------------------------------------
@@ -177,8 +173,6 @@ function onSettingsUpdate() {}
 */
 function updateSettings()
 {
-	global $Eresus;
-
 	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
 	$this->onSettingsUpdate();
 	$this->saveSettings();

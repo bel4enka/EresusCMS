@@ -567,22 +567,22 @@ class WebPage
 			case 'jquery':
 				if (in_array('ui', $args))
 				{
-					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery-ui.min.js', 'top');
+					$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/jquery/jquery-ui.min.js', 'top');
 				}
 				if (in_array('cookie', $args))
 				{
-					$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.cookie.js', 'top');
+					$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/jquery/jquery.cookie.js', 'top');
 				}
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js', 'top');
+				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/jquery/jquery.min.js', 'top');
 			break;
 
 			case 'modernizr':
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/modernizr/modernizr.min.js', 'top');
+				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/js/modernizr/modernizr.min.js', 'top');
 			break;
 
 			case 'webshims':
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/custom.js', 'top');
-				$this->linkScripts($GLOBALS['Eresus']->root . 'core/js/webshims/polyfiller.js', 'top');
+				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/js/webshims/custom.js', 'top');
+				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/js/webshims/polyfiller.js', 'top');
 				$this->linkJsLib('modernizr');
 				$this->linkJsLib('jquery');
 			break;
@@ -717,7 +717,7 @@ class WebPage
 		}
 
 		$result = implode('&amp;', $result);
-		$result = $Eresus->request['path'].'?'.$result;
+		$result = Eresus_CMS::getLegacyKernel()->request['path'] .'?'.$result;
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -730,9 +730,7 @@ class WebPage
 	 */
 	public function clientURL($id)
 	{
-		global $Eresus;
-
-		$parents = $Eresus->sections->parents($id);
+		$parents = Eresus_CMS::getLegacyKernel()->sections->parents($id);
 
 		if (is_null($parents))
 		{
@@ -740,14 +738,14 @@ class WebPage
 		}
 
 		array_push($parents, $id);
-		$items = $Eresus->sections->get( $parents);
+		$items = Eresus_CMS::getLegacyKernel()->sections->get( $parents);
 
 		$list = array();
 		for ($i = 0; $i < count($items); $i++)
 		{
 			$list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
 		}
-		$result = $Eresus->root;
+		$result = Eresus_CMS::getLegacyKernel()->root;
 		for ($i = 0; $i < count($list); $i++)
 		{
 			$result .= $list[$i].'/';
@@ -768,8 +766,6 @@ class WebPage
 	 */
 	public function pageSelector($total, $current, $url = null, $templates = null)
 	{
-		global $Eresus;
-
 		$result = '';
 		# Загрузка шаблонов
 		if (!is_array($templates))
@@ -786,7 +782,7 @@ class WebPage
 
 		if (is_null($url))
 		{
-			$url = $Eresus->request['path'].'p%d/';
+			$url = Eresus_CMS::getLegacyKernel()->request['path'].'p%d/';
 		}
 
 		$pages = array(); # Отображаемые страницы

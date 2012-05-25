@@ -75,7 +75,7 @@ class Eresus_CMS extends EresusApplication
 			 */
 			$GLOBALS['Eresus'] = new Eresus;
 			$this->initConf();
-			if ($GLOBALS['Eresus']->conf['debug']['enable'])
+			if (Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
 			{
 				include_once 'debug.php';
 			}
@@ -84,8 +84,8 @@ class Eresus_CMS extends EresusApplication
 			TemplateSettings::setGlobalValue('i18n', $i18n);
 			//$this->initDB();
 			//$this->initSession();
-			$GLOBALS['Eresus']->init();
-			TemplateSettings::setGlobalValue('Eresus', $GLOBALS['Eresus']);
+			Eresus_CMS::getLegacyKernel()->init();
+			TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
 
 			if (PHP::isCLI())
 			{
@@ -132,7 +132,7 @@ class Eresus_CMS extends EresusApplication
 	 *
 	 * @since 3.00
 	 */
-	public function getLegacyKernel()
+	public static function getLegacyKernel()
 	{
 		return $GLOBALS['Eresus'];
 	}
@@ -339,11 +339,23 @@ class Eresus_CMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+		/*
+		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
+		 * мог записывать в неё свои значения.
+		 * TODO
+		 */
+		global $Eresus;
 
-		@include_once $this->getFsRoot() . '/cfg/main.php';
-
-		// TODO: Сделать проверку успешного подключения файла
+		$filename = $this->getFsRoot() . '/cfg/main.php';
+		if (file_exists($filename))
+		{
+			include $filename;
+			// TODO: Сделать проверку успешного подключения файла
+		}
+		else
+		{
+			$this->fatalError("Main config file '$filename' not found!");
+		}
 	}
 	//-----------------------------------------------------------------------------
 

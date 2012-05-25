@@ -81,7 +81,7 @@ class Plugins
 	 */
 	public function init()
 	{
-		$items = $GLOBALS['Eresus']->db->select('plugins', 'active = 1');
+		$items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
 		if ($items)
 		{
 			foreach ($items as &$item)
@@ -140,8 +140,6 @@ class Plugins
 	 */
 	public function install($name)
 	{
-		global $Eresus;
-
 		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
 		$filename = filesRoot.'ext/'.$name.'.php';
@@ -177,11 +175,11 @@ class Plugins
 				$this->items[$name]->install();
 				$item = $this->items[$name]->__item();
 				$item['info'] = serialize($info);
-				$Eresus->db->insert('plugins', $item);
+				Eresus_CMS::getLegacyKernel()->db->insert('plugins', $item);
 			}
 			else
 			{
-				FatalError(sprintf(errClassNotFound, $ClassName));
+				FatalError(sprintf(errClassNotFound, $className));
 			}
 		}
 		else
@@ -202,8 +200,6 @@ class Plugins
 	 */
 	public function uninstall($name)
 	{
-		global $Eresus;
-
 		if (!isset($this->items[$name]))
 		{
 			$this->load($name);
@@ -212,13 +208,13 @@ class Plugins
 		{
 			$this->items[$name]->uninstall();
 		}
-		$item = $Eresus->db->selectItem('plugins', "`name`='".$name."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='".$name."'");
 		if (!is_null($item))
 		{
-			$Eresus->db->delete('plugins', "`name`='".$name."'");
+			Eresus_CMS::getLegacyKernel()->db->delete('plugins', "`name`='".$name."'");
 		}
-		$filename = filesRoot.'ext/'.$name.'.php';
-		#if (file_exists($filename)) unlink($filename);
+		//$filename = filesRoot.'ext/'.$name.'.php';
+		//if (file_exists($filename)) unlink($filename);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -288,7 +284,7 @@ class Plugins
 	 */
 	function clientRenderContent()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$result = '';
 		switch ($page->type)
@@ -301,11 +297,20 @@ class Plugins
 
 			case 'list':
 				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-				if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+				if (Eresus_CMS::getLegacyKernel()->request['file'] ||
+					Eresus_CMS::getLegacyKernel()->request['query'] || $page->subpage || $page->topic)
+				{
 					$page->httpError(404);
+				}
 
-				$subitems = $Eresus->db->select('pages', "(`owner`='".$page->id."') AND (`active`='1') AND (`access` >= '".($Eresus->user['auth'] ? $Eresus->user['access'] : GUEST)."')", "`position`");
-				if (empty($page->content)) $page->content = '$(items)';
+				$subitems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" . $page->id .
+					"') AND (`active`='1') AND (`access` >= '" .
+					(Eresus_CMS::getLegacyKernel()->user['auth'] ?
+					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST)."')", "`position`");
+				if (empty($page->content))
+				{
+					$page->content = '$(items)';
+				}
 				useLib('templates');
 				$templates = new Templates();
 				$template = $templates->get('SectionListItem', 'std');
@@ -333,7 +338,8 @@ class Plugins
 							$item['caption'],
 							$item['description'],
 							$item['hint'],
-							$Eresus->request['url'].($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
+							Eresus_CMS::getLegacyKernel()->request['url'] .
+								($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
 						),
 						$template
 					);
@@ -564,7 +570,6 @@ class Plugin
 	 *
 	 * Производит чтение настроек плагина и подключение языковых файлов
 	 *
-	 * @uses $Eresus
 	 * @uses $locale
 	 * @uses FS::isFile
 	 * @uses Core::safeInclude
@@ -572,26 +577,30 @@ class Plugin
 	 */
 	public function __construct()
 	{
-		global $Eresus, $locale;
+		global $locale;
 
 		$this->name = strtolower(get_class($this));
-		if (!empty($this->name) && isset($Eresus->plugins->list[$this->name]))
+		if (!empty($this->name) && isset(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]))
 		{
-			$this->settings = decodeOptions($Eresus->plugins->list[$this->name]['settings'], $this->settings);
+			$this->settings =
+				decodeOptions(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['settings'],
+				$this->settings);
 			# Если установлена версия плагина отличная от установленной ранее
 			# то необходимо произвести обновление информации о плагине в БД
-			if ($this->version != $Eresus->plugins->list[$this->name]['version'])
+			if ($this->version != Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['version'])
 				$this->resetPlugin();
 		}
-		$this->dirData = $Eresus->fdata.$this->name.'/';
-		$this->urlData = $Eresus->data.$this->name.'/';
-		$this->dirCode = $Eresus->froot.'ext/'.$this->name.'/';
-		$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
-		$this->dirStyle = $Eresus->fstyle.$this->name.'/';
-		$this->urlStyle = $Eresus->style.$this->name.'/';
-		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
+		$this->dirData = Eresus_CMS::getLegacyKernel()->fdata . $this->name . '/';
+		$this->urlData = Eresus_CMS::getLegacyKernel()->data . $this->name . '/';
+		$this->dirCode = Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $this->name . '/';
+		$this->urlCode = Eresus_CMS::getLegacyKernel()->root . 'ext/' . $this->name . '/';
+		$this->dirStyle = Eresus_CMS::getLegacyKernel()->fstyle . $this->name . '/';
+		$this->urlStyle = Eresus_CMS::getLegacyKernel()->style . $this->name . '/';
+		$filename = filesRoot . 'lang/' . $this->name . '/' . $locale['lang'] . '.php';
 		if (FS::isFile($filename))
+		{
 			Core::safeInclude($filename);
+		}
 	}
 	//------------------------------------------------------------------------------
 
@@ -604,12 +613,11 @@ class Plugin
 	 */
 	public function __item($item = null)
 	{
-		global $Eresus;
-
 		$result['name'] = $this->name;
 		$result['content'] = false;
 		$result['active'] = is_null($item)? true : $item['active'];
-		$result['settings'] = $Eresus->db->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+		$result['settings'] = Eresus_CMS::getLegacyKernel()->db->
+			escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
 		$result['title'] = $this->title;
 		$result['version'] = $this->version;
 		$result['description'] = $this->description;
@@ -677,12 +685,13 @@ class Plugin
 	 */
 	protected function loadSettings()
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->selectItem('plugins', "`name`='".$this->name."'");
+		$result = Eresus_CMS::getLegacyKernel()->db->
+			selectItem('plugins', "`name`='".$this->name."'");
 		if ($result)
+		{
 			$this->settings = decodeOptions($result['settings'], $this->settings);
-		return (bool)$result;
+		}
+		return (bool) $result;
 	}
 	//------------------------------------------------------------------------------
 
@@ -693,12 +702,11 @@ class Plugin
 	 */
 	protected function saveSettings()
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->selectItem('plugins', "`name`='{$this->name}'");
+		$result = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='{$this->name}'");
 		$result = $this->__item($result);
-		$result['settings'] = $Eresus->db->escape(encodeOptions($this->settings));
-		$result = $Eresus->db->updateItem('plugins', $result, "`name`='".$this->name."'");
+		$result['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(encodeOptions($this->settings));
+		$result = Eresus_CMS::getLegacyKernel()->db->
+			updateItem('plugins', $result, "`name`='".$this->name."'");
 
 		return $result;
 	}
@@ -725,20 +733,24 @@ class Plugin
 	 */
 	public function uninstall()
 	{
-		global $Eresus;
-
 		# TODO: Перенести в IDataSource
-		$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
-		$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
+		$tables = Eresus_CMS::getLegacyKernel()->db->
+			query_array("SHOW TABLES LIKE '{Eresus_CMS::getLegacyKernel()->db->prefix}{$this->name}_%'");
+		$tables = array_merge($tables, Eresus_CMS::getLegacyKernel()->db->
+				query_array("SHOW TABLES LIKE '{Eresus_CMS::getLegacyKernel()->db->prefix}{$this->name}'"));
 		for ($i=0; $i < count($tables); $i++)
+		{
 			$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
+		}
 	}
 	//------------------------------------------------------------------------------
 
 	/**
 	 * Действия при изменении настроек
 	 */
-	public function onSettingsUpdate() {}
+	public function onSettingsUpdate()
+	{
+	}
 	//------------------------------------------------------------------------------
 
 	/**
@@ -746,11 +758,13 @@ class Plugin
 	 */
 	public function updateSettings()
 	{
-		global $Eresus;
-
 		foreach ($this->settings as $key => $value)
+		{
 			if (!is_null(arg($key)))
+			{
 				$this->settings[$key] = arg($key);
+			}
+		}
 		$this->onSettingsUpdate();
 		$this->saveSettings();
 	}
@@ -848,9 +862,7 @@ class Plugin
 	 */
 	protected function dbCreateTable($SQL, $name = '')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->create($this->__table($name), $SQL);
+		$result = Eresus_CMS::getLegacyKernel()->db->create($this->__table($name), $SQL);
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -860,13 +872,11 @@ class Plugin
 	 *
 	 * @param string $name Имя таблицы
 	 *
-	 * @return bool Результат выполенения
+	 * @return bool Результат выполнения
 	 */
 	protected function dbDropTable($name = '')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->drop($this->__table($name));
+		$result = Eresus_CMS::getLegacyKernel()->db->drop($this->__table($name));
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -887,10 +897,8 @@ class Plugin
 	public function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0,
 		$offset = 0, $group = '', $distinct = false)
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->select($this->__table($table), $condition, $order, $fields, $limit,
-			$offset, $group, $distinct);
+		$result = Eresus_CMS::getLegacyKernel()->db->select($this->__table($table), $condition, $order,
+			$fields, $limit, $offset, $group, $distinct);
 
 		return $result;
 	}
@@ -907,9 +915,8 @@ class Plugin
 	 */
 	public function dbItem($table, $id, $key = 'id')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->selectItem($this->__table($table), "`$key` = '$id'");
+		$result = Eresus_CMS::getLegacyKernel()->db->selectItem($this->__table($table),
+			"`$key` = '$id'");
 
 		return $result;
 	}
@@ -924,10 +931,8 @@ class Plugin
 	 */
 	public function dbInsert($table, $item, $key = 'id')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->insert($this->__table($table), $item);
-		$result = $this->dbItem($table, $Eresus->db->getInsertedId(), $key);
+		Eresus_CMS::getLegacyKernel()->db->insert($this->__table($table), $item);
+		$result = $this->dbItem($table, Eresus_CMS::getLegacyKernel()->db->getInsertedId(), $key);
 
 		return $result;
 	}
@@ -944,13 +949,16 @@ class Plugin
 	 */
 	public function dbUpdate($table, $data, $condition = '')
 	{
-		global $Eresus;
-
-		if (is_array($data)) {
+		if (is_array($data))
+		{
 			if (empty($condition)) $condition = 'id';
-			$result = $Eresus->db->updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
-		} elseif (is_string($data)) {
-			$result = $Eresus->db->update($this->__table($table), $data, $condition);
+			$result = Eresus_CMS::getLegacyKernel()->db->
+				updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
+		}
+		elseif (is_string($data))
+		{
+			$result = Eresus_CMS::getLegacyKernel()->db->
+				update($this->__table($table), $data, $condition);
 		}
 
 		return $result;
@@ -968,9 +976,8 @@ class Plugin
 	 */
 	public function dbDelete($table, $item, $key = 'id')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
+		$result = Eresus_CMS::getLegacyKernel()->db->
+			delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
 
 		return $result;
 	}
@@ -986,9 +993,7 @@ class Plugin
 	 */
 	public function dbCount($table, $condition = '')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->count($this->__table($table), $condition);
+		$result = Eresus_CMS::getLegacyKernel()->db->count($this->__table($table), $condition);
 
 		return $result;
 	}
@@ -1004,9 +1009,7 @@ class Plugin
 	 */
 	public function dbTable($table, $param = '')
 	{
-		global $Eresus;
-
-		$result = $Eresus->db->tableStatus($this->__table($table), $param);
+		$result = Eresus_CMS::getLegacyKernel()->db->tableStatus($this->__table($table), $param);
 
 		return $result;
 	}
@@ -1021,10 +1024,10 @@ class Plugin
 	 */
 	protected function listenEvents()
 	{
-		global $Eresus;
-
-		for($i=0; $i < func_num_args(); $i++)
-			$Eresus->plugins->events[func_get_arg($i)][] = $this->name;
+		for ($i=0; $i < func_num_args(); $i++)
+		{
+			Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->name;
+		}
 	}
 	//------------------------------------------------------------------------------
 }
@@ -1090,11 +1093,11 @@ class ContentPlugin extends Plugin
 	 */
 	public function updateContent($content)
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
 		$item['content'] = $content;
-		$Eresus->db->updateItem('pages', $item, "`id`='".$page->id."'");
+		Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".$page->id."'");
 	}
 	//------------------------------------------------------------------------------
 
@@ -1115,11 +1118,14 @@ class ContentPlugin extends Plugin
 	 */
 	public function clientRenderContent()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-		if ($Eresus->request['file'] || $Eresus->request['query'] || $page->subpage || $page->topic)
+		if (Eresus_CMS::getLegacyKernel()->request['file'] ||
+			Eresus_CMS::getLegacyKernel()->request['query'] || $page->subpage || $page->topic)
+		{
 			$page->httpError(404);
+		}
 
 		return $page->content;
 	}
@@ -1132,10 +1138,10 @@ class ContentPlugin extends Plugin
 	 */
 	public function adminRenderContent()
 	{
-		global $page, $Eresus;
+		global $page;
 
 		if (arg('action') == 'update') $this->adminUpdate();
-		$item = $Eresus->db->selectItem('pages', "`id`='".$page->id."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
 		$form = array(
 			'name' => 'editForm',
 			'caption' => $page->title,
@@ -1181,11 +1187,9 @@ class EresusExtensionConnector
 	 */
 	function __construct()
 	{
-		global $Eresus;
-
 		$name = strtolower(substr(get_class($this), 0, -9));
-		$this->root = $Eresus->root.'ext-3rd/'.$name.'/';
-		$this->froot = $Eresus->froot.'ext-3rd/'.$name.'/';
+		$this->root = Eresus_CMS::getLegacyKernel()->root.'ext-3rd/'.$name.'/';
+		$this->froot = Eresus_CMS::getLegacyKernel()->froot.'ext-3rd/'.$name.'/';
 	}
 	//-----------------------------------------------------------------------------
 
@@ -1197,8 +1201,6 @@ class EresusExtensionConnector
 	 */
 	protected function replaceMacros($text)
 	{
-		global $Eresus;
-
 		$text = str_replace(
 			array(
 				'$(httpHost)',
@@ -1208,11 +1210,11 @@ class EresusExtensionConnector
 				'$(dataRoot)',
 			),
 			array(
-				$Eresus->host,
-				$Eresus->path,
-				$Eresus->root,
-				$Eresus->style,
-				$Eresus->data
+				Eresus_CMS::getLegacyKernel()->host,
+				Eresus_CMS::getLegacyKernel()->path,
+				Eresus_CMS::getLegacyKernel()->root,
+				Eresus_CMS::getLegacyKernel()->style,
+				Eresus_CMS::getLegacyKernel()->data
 			),
 			$text
 		);
@@ -1227,13 +1229,13 @@ class EresusExtensionConnector
 	 */
 	function proxy()
 	{
-		global $Eresus;
-
 		if (!UserRights(EDITOR))
 			die;
 
-		$filename = $Eresus->request['path'] . $Eresus->request['file'];
-		$filename = $Eresus->froot . substr($filename, strlen($Eresus->root));
+		$filename = Eresus_CMS::getLegacyKernel()->request['path'] .
+			Eresus_CMS::getLegacyKernel()->request['file'];
+		$filename = Eresus_CMS::getLegacyKernel()->froot . substr($filename,
+			strlen(Eresus_CMS::getLegacyKernel()->root));
 
 		if (FS::isDir($filename))
 		{
@@ -1279,7 +1281,7 @@ class EresusExtensionConnector
 			break;
 
 			case $ext == 'php':
-				$Eresus->conf['debug']['enable'] = false;
+				Eresus_CMS::getLegacyKernel()->conf['debug']['enable'] = false;
 				restore_error_handler();
 				chdir(dirname($filename));
 				require $filename;
@@ -1315,13 +1317,14 @@ class EresusExtensions
 	*/
 	function get_name($class, $function, $name = null)
 	{
-		global $Eresus;
-
 		$result = false;
-		if (isset($Eresus->conf['extensions'])) {
-			if (isset($Eresus->conf['extensions'][$class])) {
-				if (isset($Eresus->conf['extensions'][$class][$function])) {
-					$items = $Eresus->conf['extensions'][$class][$function];
+		if (isset(Eresus_CMS::getLegacyKernel()->conf['extensions']))
+		{
+			if (isset(Eresus_CMS::getLegacyKernel()->conf['extensions'][$class]))
+			{
+				if (isset(Eresus_CMS::getLegacyKernel()->conf['extensions'][$class][$function]))
+				{
+					$items = Eresus_CMS::getLegacyKernel()->conf['extensions'][$class][$function];
 					reset($items);
 					$result = isset($items[$name]) ? $name : key($items);
 				}
@@ -1342,8 +1345,6 @@ class EresusExtensions
 	*/
 	function load($class, $function, $name = null)
 	{
-		global $Eresus;
-
 		$result = false;
 		$name = $this->get_name($class, $function, $name);
 
@@ -1353,11 +1354,14 @@ class EresusExtensions
 		}
 			else
 		{
-			$filename = $Eresus->froot.'ext-3rd/'.$name.'/eresus-connector.php';
-			if (is_file($filename)) {
+			$filename = Eresus_CMS::getLegacyKernel()->froot.'ext-3rd/' . $name .
+				'/eresus-connector.php';
+			if (is_file($filename))
+			{
 				include_once $filename;
 				$class = $name.'Connector';
-				if (class_exists($class)) {
+				if (class_exists($class))
+				{
 					$this->items[$name] = new $class();
 					$result = $this->items[$name];
 				}

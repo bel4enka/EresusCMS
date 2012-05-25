@@ -81,11 +81,10 @@ class Sections
 	 */
 	private function index($force = false)
 	{
-		global $Eresus;
-
 		if ($force || !$this->index)
 		{
-			$items = $Eresus->db->select($this->table, '', '`position`', '`id`,`owner`');
+			$items = Eresus_CMS::getLegacyKernel()->db->
+				select($this->table, '', '`position`', '`id`,`owner`');
 			if ($items)
 			{
 				$this->index = array();
@@ -134,8 +133,6 @@ class Sections
 	 */
 	public function branch($owner, $access = GUEST, $flags = 0)
 	{
-		global $Eresus;
-
 		$result = array();
 		// Создаём индекс
 		if (!$this->index)
@@ -162,7 +159,7 @@ class Sections
 				$fieldset = '';//implode(',', array_diff($this->fields(), array('content')));
 				/* Читаем из БД */
 				$set = implode(',', $set);
-				$items = $Eresus->db->select($this->table,
+				$items = Eresus_CMS::getLegacyKernel()->db->select($this->table,
 					"FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
 				for ($i=0; $i<count($items); $i++)
 				{
@@ -264,15 +261,13 @@ class Sections
 	 */
 	public function fields()
 	{
-		global $Eresus;
-
 		if (isset($this->cache['fields']))
 		{
 			$result = $this->cache['fields'];
 		}
 		else
 		{
-			$result = $Eresus->db->fields($this->table);
+			$result = Eresus_CMS::getLegacyKernel()->db->fields($this->table);
 			$this->cache['fields'] = $result;
 		}
 		return $result;
@@ -288,8 +283,6 @@ class Sections
 	 */
 	public function get($id)
 	{
-		global $Eresus;
-
 		if (is_array($id))
 		{
 			$what = "FIND_IN_SET(`id`, '".implode(',', $id)."')";
@@ -302,7 +295,7 @@ class Sections
 		{
 			$what = $id;
 		}
-		$result = $Eresus->db->select($this->table, $what);
+		$result = Eresus_CMS::getLegacyKernel()->db->select($this->table, $what);
 		if ($result)
 		{
 			for ($i=0; $i<count($result); $i++)
@@ -327,8 +320,6 @@ class Sections
 	 */
 	public function add($item)
 	{
-		global $Eresus;
-
 		if (!$this->index)
 		{
 			$this->index();
@@ -356,9 +347,9 @@ class Sections
 			$item['position'] = isset($this->index[$item['owner']]) ?
 				count($this->index[$item['owner']]) : 0;
 		}
-		if ($Eresus->db->insert($this->table, $item))
+		if (Eresus_CMS::getLegacyKernel()->db->insert($this->table, $item))
 		{
-			$result = $this->get($Eresus->db->getInsertedId());
+			$result = $this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
 		}
 		return $result;
 	}
@@ -373,19 +364,16 @@ class Sections
 	 */
 	public function update($item)
 	{
-		global $Eresus;
-
-		$result = false;
 		$item['updated'] = gettime('Y-m-d H:i:s');
 		$item['options'] = encodeOptions($item['options']);
-		$item['title'] = $Eresus->db->escape($item['title']);
-		$item['caption'] = $Eresus->db->escape($item['caption']);
-		$item['description'] = $Eresus->db->escape($item['description']);
-		$item['hint'] = $Eresus->db->escape($item['hint']);
-		$item['keywords'] = $Eresus->db->escape($item['keywords']);
-		$item['content'] = $Eresus->db->escape($item['content']);
-		$item['options'] = $Eresus->db->escape($item['options']);
-		$result = $Eresus->db->updateItem($this->table, $item, "`id`={$item['id']}");
+		$item['title'] = Eresus_CMS::getLegacyKernel()->db->escape($item['title']);
+		$item['caption'] = Eresus_CMS::getLegacyKernel()->db->escape($item['caption']);
+		$item['description'] = Eresus_CMS::getLegacyKernel()->db->escape($item['description']);
+		$item['hint'] = Eresus_CMS::getLegacyKernel()->db->escape($item['hint']);
+		$item['keywords'] = Eresus_CMS::getLegacyKernel()->db->escape($item['keywords']);
+		$item['content'] = Eresus_CMS::getLegacyKernel()->db->escape($item['content']);
+		$item['options'] = Eresus_CMS::getLegacyKernel()->db->escape($item['options']);
+		$result = Eresus_CMS::getLegacyKernel()->db->updateItem($this->table, $item, "`id`={$item['id']}");
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -399,8 +387,6 @@ class Sections
 	 */
 	public function delete($id)
 	{
-		global $Eresus;
-
 		$result = true;
 		$children = $this->children($id);
 		/* Удаляем подразделы */
@@ -421,14 +407,14 @@ class Sections
 		if ($result)
 		{
 			$section = $this->get($id);
-			if ($plugin = $Eresus->plugins->load($section['type']))
+			if ($plugin = Eresus_CMS::getLegacyKernel()->plugins->load($section['type']))
 			{
 				if (method_exists($plugin, 'onSectionDelete'))
 				{
 					$plugin->onSectionDelete($id);
 				}
 			}
-			$Eresus->db->delete($this->table, "`id`=$id");
+			Eresus_CMS::getLegacyKernel()->db->delete($this->table, "`id`=$id");
 		}
 		return $result;
 	}

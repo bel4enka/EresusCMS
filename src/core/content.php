@@ -45,7 +45,7 @@ class TContent
 	 */
 	public function adminRender()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		if (!UserRights(EDITOR))
 		{
@@ -56,7 +56,7 @@ class TContent
 		$item = $sections->get(arg('section', 'int'));
 
 		$page->id = $item['id'];
-		if (!array_key_exists($item['type'], $Eresus->plugins->list))
+		if (!array_key_exists($item['type'], Eresus_CMS::getLegacyKernel()->plugins->list))
 		{
 			switch ($item['type'])
 			{
@@ -69,9 +69,8 @@ class TContent
 				case 'list':
 					if (arg('update'))
 					{
-						$original = $item['content'];
 						$item['content'] = arg('content', 'dbsafe');
-						$Eresus->sections->update($item);
+						Eresus_CMS::getLegacyKernel()->sections->update($item);
 						HTTP::redirect(arg('submitURL'));
 					}
 					else
@@ -93,9 +92,8 @@ class TContent
 				case 'url':
 					if (arg('update'))
 					{
-						$original = $item['content'];
 						$item['content'] = arg('url', 'dbsafe');
-						$Eresus->sections->update($item);
+						Eresus_CMS::getLegacyKernel()->sections->update($item);
 						HTTP::redirect(arg('submitURL'));
 					}
 					else
@@ -121,9 +119,9 @@ class TContent
 		}
 		else
 		{
-			$Eresus->plugins->load($item['type']);
-			$page->module = $Eresus->plugins->items[$item['type']];
-			$result = $Eresus->plugins->items[$item['type']]->adminRenderContent();
+			Eresus_CMS::getLegacyKernel()->plugins->load($item['type']);
+			$page->module = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
+			$result = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->adminRenderContent();
 		}
 		return $result;
 	}

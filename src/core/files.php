@@ -78,11 +78,17 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function url($args = null)
 	{
-		global $Eresus;
-
 		$basics = array('lf','rf','sp');
 		$result = '';
-		if (count($Eresus->request['arg'])) foreach($Eresus->request['arg'] as $key => $value) if (in_array($key,$basics)) $arg[$key] = $value;
+		if (count(Eresus_CMS::getLegacyKernel()->request['arg']))
+		{
+			foreach (Eresus_CMS::getLegacyKernel()->request['arg'] as $key => $value)
+			{
+				if (in_array($key,$basics))
+				{
+					$arg[$key] = $value;
+				}
+			}
 		if (count($args)) foreach($args as $key => $value) $arg[$key] = $value;
 		if (count($arg)) foreach($arg as $key => $value) if (!empty($value)) $result .= '&amp;'.$key.'='.$value;
 		$result = httpRoot.'admin.php?mod=files'.$result;
@@ -148,8 +154,6 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function buildFileList($dir)
 	{
-		global $Eresus;
-
 		$result = array();
 		@$hnd=opendir(filesRoot.$this->root.$dir);
 		if ($hnd) {
@@ -170,7 +174,7 @@ class TFiles
 					$x = ($x - ($x % 2)) / 2;
 					$result[$i]['perm'] = (($x % 2 == 1)?'r':'-').$result[$i]['perm'];
 				}
-				if (function_exists('posix_getpwuid') && !$Eresus->isWin32()) {
+				if (function_exists('posix_getpwuid') && !System::isWindows()) {
 					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
 				} else $result[$i]['owner'] = 'unknown';
@@ -239,10 +243,10 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function renderControls()
 	{
-		global $Eresus;
 		$result =
 			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
-			"<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".$Eresus->request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><div id=\"fm_upload\"><input type=\"file\" name=\"upload\" size=\"50\"><input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</div></form></td></tr>".
+			"<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".
+				Eresus_CMS::getLegacyKernel()->request['url']."\" method=\"post\" enctype=\"multipart/form-data\"><div id=\"fm_upload\"><input type=\"file\" name=\"upload\" size=\"50\"><input type=\"submit\" value=\"Загрузить\"> Максимальный размер файла: ".ini_get('upload_max_filesize')."</div></form></td></tr>".
 			"<tr><td align=\"center\"><a href=\"javascript:Copy('SelFileName');\">Скопировать имя</a></td><td style=\"width: 100%;\"><input type=\"text\" id=\"SelFileName\" value=\"Нет выбранных объектов\" style=\"width: 100%;\"></td></tr>".
 			"</table>";
 		return $result;
@@ -259,8 +263,6 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function upload()
 	{
-	global $Eresus;
-
 		foreach($_FILES as $name => $file) upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
 		HTTP::goback();
 	}
@@ -358,7 +360,7 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function adminRender()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$this->root = 'data/';
 
@@ -383,7 +385,7 @@ class TFiles
 		elseif (arg('movefile')) $this->moveFile();
 		elseif (arg('delete')) $this->deleteFile();
 		else {
-			$page->linkScripts($Eresus->root . 'core/files.js');
+			$page->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/files.js');
 			$result =
 				"<table id=\"fileManager\">\n".
 				'<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".

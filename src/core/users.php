@@ -95,14 +95,13 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function check_for_edit($item)
 	{
-		global $Eresus;
-
-		return (($item['access'] != ROOT)||($Eresus->user['id'] == $item['id'])) && UserRights(ADMIN);
+		return (($item['access'] != ROOT)||
+			(Eresus_CMS::getLegacyKernel()->user['id'] == $item['id'])) && UserRights(ADMIN);
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function toggle()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$item = $this->accounts->get(arg('toggle', 'int'));
 		$item['active'] = !$item['active'];
@@ -112,18 +111,22 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * @param void $dummy  Используется для совместимости с родительтским методом
+	 * @param void $dummy  Используется для совместимости с родительским методом
 	 * @see main/core/lib/EresusAccounts#update($item)
 	 */
 	function update($dummy)
 	{
-		global $Eresus, $page;
-
 		$item = $this->accounts->get(arg('update', 'int'));
-		$old = $item;
-		foreach ($item as $key => $value) if (isset($Eresus->request['arg'][$key])) $item[$key] = arg($key, 'dbsafe');
-		$item['active'] = $Eresus->request['arg']['active'] || ($Eresus->user['id'] == $item['id']);
-		if ($this->checkMail($item['mail'])) {
+		foreach ($item as $key => $value)
+		{
+			if (isset(Eresus_CMS::getLegacyKernel()->request['arg'][$key]))
+			{
+				$item[$key] = arg($key, 'dbsafe');
+			}
+		}
+		$item['active'] = arg('active') || (Eresus_CMS::getLegacyKernel()->user['id'] == $item['id']);
+		if ($this->checkMail($item['mail']))
+		{
 			$this->accounts->update($item);
 		};
 		HTTP::redirect(arg('submitURL'));
@@ -134,14 +137,12 @@ class TUsers extends Accounts
 	*/
 	function insert()
 	{
-		global $Eresus, $page;
-
 		# Получение данных
 		$item = array(
 			'name' => arg('name', 'dbsafe'),
 			'login' => arg('login', '/[^a-z0-9_]/'),
 			'access' => arg('access', 'int'),
-			'hash' => $Eresus->password_hash(arg('pswd1')),
+			'hash' => Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd1')),
 			'mail' => arg('mail', 'dbsafe'),
 		);
 		# Проверка входных данных
@@ -149,13 +150,17 @@ class TUsers extends Accounts
 		if (empty($item['name'])) { ErrorMessage(admUsersNameInvalid); $error = true;}
 		if (empty($item['login'])) { ErrorMessage(admUsersLoginInvalid); $error = true;}
 		if ($item['access'] <= ROOT) { ErrorMessage('Invalid access level!'); $error = true;}
-		if ($item['hash'] != $Eresus->password_hash(arg('pswd2'))) { ErrorMessage(admUsersConfirmInvalid); $error = true;}
+		if ($item['hash'] != Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd2')))
+		{
+			ErrorMessage(admUsersConfirmInvalid);
+			$error = true;
+		}
 		# Проверка данных на уникальность
 		$check = $this->accounts->get("`login` = '{$item['login']}'");
 		if ($check) { ErrorMessage(admUsersLoginExists); $error = true;}
 		if ($error) {
 			saveRequest();
-			HTTP::redirect($Eresus->request['referer']);
+			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 		if (!$this->accounts->add($item))
 			ErrorMessage('Error creating user account');
@@ -169,20 +174,18 @@ class TUsers extends Accounts
 	 */
 	function delete($dummy)
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $this->accounts->get(arg('delete', 'int'));
+		$this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
 		HTTP::redirect($page->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function password()
 	{
-		global $Eresus, $page;
-
 		$item = $this->accounts->get(arg('password', 'int'));
 		if (arg('pswd1') == arg('pswd2')) {
-			$item['hash'] = $Eresus->password_hash(arg('pswd1'));
+			$item['hash'] = Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd1'));
 			$this->accounts->update($item);
 		}
 		HTTP::redirect(arg('submitURL'));
@@ -190,9 +193,9 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function edit()
 	{
-		global $Eresus, $page;
+		global $page;
 
-		$item = $Eresus->db->selectItem('users', "`id`='".arg('id')."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('users', "`id`='".arg('id')."'");
 		$form = array(
 			'name' => 'UserForm',
 			'caption' => admUsersChangeUser.' №'.$item['id'],
@@ -227,7 +230,7 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function create()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		restoreRequest();
 		$form = array(
@@ -248,7 +251,7 @@ class TUsers extends Accounts
 			),
 			'buttons'=>array('ok', 'cancel')
 		);
-		$result = $page->renderForm($form, $Eresus->request['arg']);
+		$result = $page->renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -259,27 +262,35 @@ class TUsers extends Accounts
 	 */
 	public function adminRender()
 	{
-		global $Eresus, $page;
+		global $page;
 
 		$result = '';
+		$request = Eresus_CMS::getLegacyKernel()->request;
 		$granted = false;
 		if (UserRights($this->access))
 			$granted = true;
 			else
 		{
-			if (arg('id') == $Eresus->user['id']) {
-				if (!arg('password') || (arg('password') == $Eresus->user['id'])) $granted = true;
-				if (!arg('update') || (arg('update') == $Eresus->user['id'])) $granted = true;
+			if (arg('id') == Eresus_CMS::getLegacyKernel()->user['id'])
+			{
+				if (!arg('password') || (arg('password') == Eresus_CMS::getLegacyKernel()->user['id']))
+				{
+					$granted = true;
+				}
+				if (!arg('update') || (arg('update') == Eresus_CMS::getLegacyKernel()->user['id']))
+				{
+					$granted = true;
+				}
 			}
 		}
 		if ($granted)
 		{
 			if (arg('update')) $this->update(null);
-			elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
-			elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
-			elseif (isset($Eresus->request['arg']['delete'])) $this->delete(null);
-			elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
-			elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
+			elseif (isset($request['arg']['password'])  && (!isset($request['arg']['action']) || ($request['arg']['action'] != 'login'))) $this->password();
+			elseif (isset($request['arg']['toggle'])) $this->toggle();
+			elseif (isset($request['arg']['delete'])) $this->delete(null);
+			elseif (isset($request['arg']['id'])) $result = $this->edit();
+			elseif (isset($request['arg']['action'])) switch(arg('action')) {
 				case 'create': $result = $this->create(); break;
 				case 'insert': $this->insert(); break;
 			} else {
