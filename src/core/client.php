@@ -47,7 +47,6 @@ class TClientUI extends WebPage
 	var $dbItem = array(); # Информация о странице из БД
 	var $name = ''; # Имя страницы
 	var $owner = 0; # Идентификатор родительской страницы
-	var $title = ''; # Заголовок страницы
 	var $section = array(); # Массив заголовков страниц
 	var $caption = ''; # Название страницы
 	var $hint = ''; # Подсказка с описанием страницы

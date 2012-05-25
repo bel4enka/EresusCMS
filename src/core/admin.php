@@ -159,7 +159,6 @@ define('ADMINUI', true);
 class TAdminUI extends WebPage
 {
 	var $module; # Загружаемый модуль
-	var $title; # Заголовок страницы
 	var $menu; # Меню администратора
 	var $extmenu; # Меню раширений
 	var $sub; # Уровень вложенности

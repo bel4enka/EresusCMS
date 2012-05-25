@@ -239,6 +239,13 @@ class WebPage
 	public $id = 0;
 
 	/**
+	 * Заголовок страницы
+	 *
+	 * @var string
+	 */
+	public $title;
+
+	/**
 	 * HTTP-заголовки ответа
 	 *
 	 * @var array

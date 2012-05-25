@@ -1087,7 +1087,7 @@ class Eresus
 	 *
 	 * @var array
 	 */
-	var $conf = array(
+	public $conf = array(
 		'lang' => 'ru',
 		'timezone' => '',
 		'db' => array(
@@ -1118,18 +1118,19 @@ class Eresus
 	 *
 	 * @var array
 	 */
-	var $session;
+	public $session;
 
 	/**
 	 * Интерфейс к расширениям системы
 	 *
 	 * @var EresusExtensions
 	 */
-	var $extensions;
+	public $extensions;
 
 	/**
 	 * Интерфейс к БД
 	 * @var MySQL
+	 * @deprecated с 3.00, используйте DB
 	 */
 	public $db;
 
@@ -1144,20 +1145,66 @@ class Eresus
 	 *
 	 * @var array
 	 */
-	var $user;
+	public $user;
 
-	var $host;
+	/**
+	 * @var string
+	 * @deprecated с 3.00, используйте Eresus::$request
+	 */
+	public $host;
 
-	var $path;
-	var $root; # Корневой URL
-	var $data; # URL данных
-	var $style; # URL стилей
-	var $froot; # Корневая директория
-	var $fdata; # Директория данных
-	var $fstyle; # Директория стилей
+	/**
+	 * @var string
+	 * @deprecated с 3.00, используйте Eresus::$request
+	 */
+	public $path;
 
-	var $request;
-	var $sections;
+	/**
+	 * Корневой URL
+	 * @var string
+	 */
+	public $root;
+
+	/**
+	 * URL данных
+	 * @var string
+	 */
+	public $data;
+
+	/**
+	 * URL стилей
+	 * @var string
+	 */
+	public $style;
+
+	/**
+	 * Корневая директория
+	 * @var string
+	 */
+	public $froot;
+
+	/**
+	 * Директория данных
+	 * @var string
+	 */
+	public $fdata;
+
+	/**
+	 *
+	 * @var string
+	 */
+	public $fstyle; # Директория стилей
+
+	/**
+	 * Запрос HTTP
+	 * @var array
+	 */
+	public $request;
+
+	/**
+	 * @var Sections
+	 */
+	public $sections;
 
 	/**
 	 * Инициирует сессии
