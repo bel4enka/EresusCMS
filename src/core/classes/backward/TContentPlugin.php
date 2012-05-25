@@ -45,20 +45,15 @@ class TContentPlugin extends TPlugin
 	 */
 	function __construct()
 	{
-		global $page;
-
 	  parent::__construct();
-	  if (isset($page))
-	  {
-	    $page->plugin = $this->name;
-	    if (count($page->options))
-	    {
-	    	foreach ($page->options as $key=>$value)
-	    	{
-	    		$this->settings[$key] = $value;
-	    	}
-	    }
-	  }
+		Eresus_Kernel::app()->getPage()->plugin = $this->name;
+    if (count(Eresus_Kernel::app()->getPage()->options))
+    {
+      foreach (Eresus_Kernel::app()->getPage()->options as $key=>$value)
+      {
+        $this->settings[$key] = $value;
+      }
+    }
 	}
 	//------------------------------------------------------------------------------
 /**
@@ -68,11 +63,11 @@ class TContentPlugin extends TPlugin
 */
 function updateContent($content)
 {
-	global $page;
-
-  $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
+  $item = Eresus_CMS::getLegacyKernel()->db->
+	  selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
   $item['content'] = $content;
-	Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".$page->id."'");
+	Eresus_CMS::getLegacyKernel()->db->
+		updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
 }
 //------------------------------------------------------------------------------
 /**
@@ -91,9 +86,7 @@ function update()
 */
 function clientRenderContent()
 {
-	global $page;
-
-  return $page->content;
+  return Eresus_Kernel::app()->getPage()->content;
 }
 //------------------------------------------------------------------------------
 /**
@@ -103,12 +96,11 @@ function clientRenderContent()
 */
 function adminRenderContent()
 {
-	global $page;
-
-  $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
+  $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".
+	  Eresus_Kernel::app()->getPage()->id."'");
   $form = array(
     'name' => 'content',
-    'caption' => $page->title,
+    'caption' => Eresus_Kernel::app()->getPage()->title,
     'width' => '100%',
     'fields' => array (
       array ('type'=>'hidden','name'=>'update'),
@@ -117,7 +109,7 @@ function adminRenderContent()
     'buttons' => array('apply', 'reset'),
   );
 
-  $result = $page->renderForm($form, $item);
+  $result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
   return $result;
 }
 //------------------------------------------------------------------------------

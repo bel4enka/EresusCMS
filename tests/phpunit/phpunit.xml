@@ -11,6 +11,10 @@
 				<directory>../../src/core/framework</directory>
 				<file>../../src/core/gziph.php</file>
 				<directory>../../src/ext-3rd</directory>
+				<directory>../../src/lang</directory>
+				<directory>../../src/style</directory>
+				<directory>../../src/templates</directory>
+				<directory>../../src/var</directory>
 				<file>../../src/index.php</file>
 			</exclude>
 		</whitelist>

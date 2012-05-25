@@ -65,26 +65,20 @@ function dropTable($table)
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function toggle($id)
 {
-	global $page;
-
 	Eresus_CMS::getLegacyKernel()->db->update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id."'");
 	Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
+	HTTP::redirect(str_replace('&amp;', '&', Eresus_Kernel::app()->getPage()->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function delete($id)
 {
-	global $page;
-
 	Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."`='".$id."'");
 	Eresus_CMS::getLegacyKernel()->db->delete($this->table['name'], "`".$this->table['key']."`='".$id."'");
-	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
+	HTTP::redirect(str_replace('&amp;', '&', Eresus_Kernel::app()->getPage()->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function up($id)
 {
-	global $page;
-
 	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
 	dbReorderItems($this->table['name'], $sql_prefix);
 	# FIXME: Escaping
@@ -96,13 +90,11 @@ function up($id)
 		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
+	HTTP::redirect(str_replace('&amp;', '&', Eresus_Kernel::app()->getPage()->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function down($id)
 {
-	global $page;
-
 	$sql_prefix = strpos($this->table['sql'], '`section`') ? "(`section`=".arg('section', 'int').") " : 'TRUE';
 	dbReorderItems($this->table['name'], $sql_prefix);
 	$count = Eresus_CMS::getLegacyKernel()->db->count($this->table['name'], $sql_prefix);
@@ -115,17 +107,15 @@ function down($id)
 		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $item, "`".$this->table['key']."`='".$item['id']."'");
 		Eresus_CMS::getLegacyKernel()->db->updateItem($this->table['name'], $temp, "`".$this->table['key']."`='".$temp['id']."'");
 	}
-	HTTP::redirect(str_replace('&amp;', '&', $page->url()));
+	HTTP::redirect(str_replace('&amp;', '&', Eresus_Kernel::app()->getPage()->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function adminRenderContent()
 {
-global $page;
-
 	$result = '';
 	if (!is_null(arg('id'))) {
 		$item = Eresus_CMS::getLegacyKernel()->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
-		$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
+		Eresus_Kernel::app()->getPage()->title .= empty($item['caption'])?'':' - '.$item['caption'];
 	}
 	switch (true) {
 		case !is_null(arg('update')) && isset($this->table['controls']['edit']):
@@ -160,24 +150,23 @@ global $page;
 		break;
 		default:
 			if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section', 'int')."'";
-			$result = $page->renderTable($this->table);
+			$result = Eresus_Kernel::app()->getPage()->renderTable($this->table);
 	}
 	return $result;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderContent()
 {
-	global $page;
-
 	$result = '';
 	if (!isset($this->settings['itemsPerPage'])) $this->settings['itemsPerPage'] = 0;
-	if ($page->topic) $result = $this->clientRenderItem(); else {
+	if (Eresus_Kernel::app()->getPage()->topic) $result = $this->clientRenderItem(); else {
 		$this->table['fields'] = Eresus_CMS::getLegacyKernel()->db->fields($this->table['name']);
-		$this->itemsCount = Eresus_CMS::getLegacyKernel()->db->count($this->table['name'], "(`section`='".$page->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
+		$this->itemsCount = Eresus_CMS::getLegacyKernel()->db->count($this->table['name'], "(`section`='".
+			Eresus_Kernel::app()->getPage()->id."')".(in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
 		if ($this->itemsCount) $this->pagesCount = $this->settings['itemsPerPage']?((integer)($this->itemsCount / $this->settings['itemsPerPage'])+(($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
-		if (!$page->subpage) $page->subpage = $this->table['sortDesc']?$this->pagesCount:1;
-		if ($this->itemsCount && ($page->subpage > $this->pagesCount)) {
-			$item = $page->httpError(404);
+		if (!Eresus_Kernel::app()->getPage()->subpage) Eresus_Kernel::app()->getPage()->subpage = $this->table['sortDesc']?$this->pagesCount:1;
+		if ($this->itemsCount && (Eresus_Kernel::app()->getPage()->subpage > $this->pagesCount)) {
+			$item = Eresus_Kernel::app()->getPage()->httpError(404);
 			$result = $item['content'];
 		} else $result .= $this->clientRenderList();
 	}
@@ -186,8 +175,6 @@ function clientRenderContent()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderList($options = null)
 {
-	global $page;
-
 	if (is_null($options)) $options = array();
 	$options['pages'] = isset($options['pages']) ? $options['pages'] : true;
 	$options['oldordering'] = isset($options['oldordering']) ? $options['oldordering'] : true;
@@ -195,13 +182,14 @@ function clientRenderList($options = null)
 	$result = '';
 	$items = Eresus_CMS::getLegacyKernel()->db->select(
 		$this->table['name'],
-		"(`section`='".$page->id."')".(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
+		"(`section`='".Eresus_Kernel::app()->getPage()->id."')".
+		(strpos($this->table['sql'], '`active`')!==false?"AND(`active`='1')":''),
 		($this->table['sortDesc'] ? '-' : '+').$this->table['sortMode'],
 		'',
 		$this->settings['itemsPerPage'],
 		$this->table['sortDesc'] && $options['oldordering']
-			?(($this->pagesCount-$page->subpage)*$this->settings['itemsPerPage'])
-			:(($page->subpage-1)*$this->settings['itemsPerPage'])
+			?(($this->pagesCount-Eresus_Kernel::app()->getPage()->subpage)*$this->settings['itemsPerPage'])
+			:((Eresus_Kernel::app()->getPage()->subpage-1)*$this->settings['itemsPerPage'])
 	);
 	if (count($items)) foreach($items as $item) $result .= $this->clientRenderListItem($item);
 	if ($options['pages']) {
@@ -223,9 +211,8 @@ function clientRenderItem()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function clientRenderPages()
 {
-	global $page;
-
-	$result = $page->pages($this->pagesCount, $this->settings['itemsPerPage'], $this->table['sortDesc']);
+	$result = Eresus_Kernel::app()->getPage()->
+		pages($this->pagesCount, $this->settings['itemsPerPage'], $this->table['sortDesc']);
 	return $result;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#

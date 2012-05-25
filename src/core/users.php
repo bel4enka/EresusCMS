@@ -101,12 +101,10 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function toggle()
 	{
-		global $page;
-
 		$item = $this->accounts->get(arg('toggle', 'int'));
 		$item['active'] = !$item['active'];
 		$this->accounts->update($item);
-		HTTP::redirect($page->url());
+		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -174,11 +172,9 @@ class TUsers extends Accounts
 	 */
 	function delete($dummy)
 	{
-		global $page;
-
 		$this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
-		HTTP::redirect($page->url());
+		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function password()
@@ -193,8 +189,6 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function edit()
 	{
-		global $page;
-
 		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('users', "`id`='".arg('id')."'");
 		$form = array(
 			'name' => 'UserForm',
@@ -224,14 +218,13 @@ class TUsers extends Accounts
 			'buttons' => array(UserRights($this->access)?'ok':'apply', 'cancel'),
 		);
 
-		$result = $page->renderForm($form)."<br />\n".$page->renderForm($pswd);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form)."<br />\n".
+			Eresus_Kernel::app()->getPage()->renderForm($pswd);
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function create()
 	{
-		global $page;
-
 		restoreRequest();
 		$form = array(
 			'name'=>'UserForm',
@@ -251,7 +244,8 @@ class TUsers extends Accounts
 			),
 			'buttons'=>array('ok', 'cancel')
 		);
-		$result = $page->renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
+		$result = Eresus_Kernel::app()->getPage()->
+			renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
 		return $result;
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -262,8 +256,6 @@ class TUsers extends Accounts
 	 */
 	public function adminRender()
 	{
-		global $page;
-
 		$result = '';
 		$request = Eresus_CMS::getLegacyKernel()->request;
 		$granted = false;
@@ -326,7 +318,7 @@ class TUsers extends Accounts
 						)
 					)
 				);
-				$result = $page->renderTable($table);
+				$result = Eresus_Kernel::app()->getPage()->renderTable($table);
 			}
 			return $result;
 		}

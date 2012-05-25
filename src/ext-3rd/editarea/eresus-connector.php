@@ -47,13 +47,11 @@ class EditAreaConnector extends EresusExtensionConnector
 	 */
 	public function forms_memo_syntax($form, $field)
 	{
-		global $page;
-
 		// Проверяем, не были ли уже выполнены эти действия ранее
 		if (!isset($form->options['editarea']))
 		{
 	    // Подключаем EditArea
-	    $page->linkScripts($this->root . 'edit_area_full.js');
+			Eresus_Kernel::app()->getPage()->linkScripts($this->root . 'edit_area_full.js');
 
 	    $form->options['editarea'] = true;
 		}
@@ -63,7 +61,7 @@ class EditAreaConnector extends EresusExtensionConnector
 			$field['id'] = $form->form['name'] . '_' . $field['name'];
 		}
 
-		$page->addScripts("
+		Eresus_Kernel::app()->getPage()->addScripts("
 			editAreaLoader.init({
 				id : '{$field['id']}',
 				syntax: '{$field['syntax']}',

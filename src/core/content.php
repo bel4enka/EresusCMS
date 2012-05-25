@@ -45,8 +45,6 @@ class TContent
 	 */
 	public function adminRender()
 	{
-		global $page;
-
 		if (!UserRights(EDITOR))
 		{
 			return '';
@@ -55,7 +53,7 @@ class TContent
 		$sections = new Sections();
 		$item = $sections->get(arg('section', 'int'));
 
-		$page->id = $item['id'];
+		Eresus_Kernel::app()->getPage()->id = $item['id'];
 		if (!array_key_exists($item['type'], Eresus_CMS::getLegacyKernel()->plugins->list))
 		{
 			switch ($item['type'])
@@ -85,7 +83,7 @@ class TContent
 							),
 							'buttons' => array('apply', 'cancel'),
 						);
-						$result = $page->renderForm($form);
+						$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 					}
 				break;
 
@@ -108,19 +106,20 @@ class TContent
 							),
 							'buttons' => array('apply', 'cancel'),
 						);
-						$result = $page->renderForm($form);
+						$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 					}
 				break;
 
 				default:
-					$result = $page->box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
+					$result = Eresus_Kernel::app()->getPage()->
+						box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
 				break;
 			}
 		}
 		else
 		{
 			Eresus_CMS::getLegacyKernel()->plugins->load($item['type']);
-			$page->module = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
+			Eresus_Kernel::app()->getPage()->module = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
 			$result = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->adminRenderContent();
 		}
 		return $result;

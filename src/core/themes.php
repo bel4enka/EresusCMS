@@ -122,12 +122,10 @@ class TThemes
 	 */
 	public function sectionTemplatesDelete()
 	{
-		global $page;
-
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'));
-		HTTP::redirect($page->url());
+		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -137,11 +135,9 @@ class TThemes
 	 */
 	public function sectionTemplatesAdd()
 	{
-		global $page;
-
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title.admTDiv.admAdd,
+			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admAdd,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
@@ -152,7 +148,7 @@ class TThemes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		$result = $page->renderForm($form);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -163,14 +159,12 @@ class TThemes
 	 */
 	public function sectionTemplatesEdit()
 	{
-		global $page;
-
 		useLib('templates');
 		$templates = new Templates();
 		$item = $templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title.admTDiv.admEdit,
+			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
@@ -182,7 +176,7 @@ class TThemes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		$result = $page->renderForm($form, $item);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -193,8 +187,6 @@ class TThemes
 	 */
 	public function sectionTemplatesList()
 	{
-		global $page;
-
 		$table = array(
 			'name' => 'templates',
 			'key'=> 'filename',
@@ -220,7 +212,7 @@ class TThemes
 		$list = $templates->enum();
 		$items = array();
 		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
-		$result = $page->renderTable($table, $items);
+		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -231,9 +223,7 @@ class TThemes
 	 */
 	public function sectionTemplates()
 	{
-		global $page;
-
-		$page->title .= admTDiv.admThemesTemplates;
+		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesTemplates;
 
 		switch(arg('action')) {
 			case 'update': $result = $this->sectionTemplatesUpdate(); break;
@@ -277,12 +267,10 @@ class TThemes
 	 */
 	public function sectionStdDelete()
 	{
-		global $page;
-
 		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'), 'std');
-		HTTP::redirect($page->url());
+		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -292,8 +280,6 @@ class TThemes
 	 */
 	public function sectionStdAdd()
 	{
-		global $page;
-
 		$values = array();
 		$items = array();
 		$jsArray = "var aTemplates = Array();\n";
@@ -304,7 +290,7 @@ class TThemes
 			$jsArray .= "aTemplates['".$key."'] = '".(isset($item['hint'])?$item['hint']:'')."'\n";
 		}
 
-		$page->addScripts($jsArray."
+		Eresus_Kernel::app()->getPage()->addScripts($jsArray."
 			function onTemplateNameChange()
 			{
 				document.getElementById('templateHint').innerHTML = aTemplates[document.addForm.elements.namedItem('name').value];
@@ -312,7 +298,7 @@ class TThemes
 		");
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title.admTDiv.admAdd,
+			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admAdd,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
@@ -323,7 +309,7 @@ class TThemes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		$result = $page->renderForm($form);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -334,14 +320,12 @@ class TThemes
 	 */
 	public function sectionStdEdit()
 	{
-		global $page;
-
 		useLib('templates');
 		$templates = new Templates();
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title . admTDiv . admEdit,
+			'caption' => Eresus_Kernel::app()->getPage()->title . admTDiv . admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
@@ -356,7 +340,7 @@ class TThemes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		$result = $page->renderForm($form, $item);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -367,8 +351,6 @@ class TThemes
 	 */
 	public function sectionStdList()
 	{
-		global $page;
-
 		$table = array(
 			'name' => 'templates',
 			'key'=> 'filename',
@@ -394,7 +376,7 @@ class TThemes
 		$list = $templates->enum('std');
 		$items = array();
 		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
-		$result = $page->renderTable($table, $items);
+		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -405,9 +387,7 @@ class TThemes
 	 */
 	public function sectionStd()
 	{
-		global $page;
-
-		$page->title .= admTDiv.admThemesStandard;
+		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStandard;
 
 		switch(arg('action')) {
 			case 'update': $result = $this->sectionStdUpdate(); break;
@@ -452,11 +432,9 @@ class TThemes
 	 */
 	public function sectionStylesDelete()
 	{
-		global $page;
-
 		$filename = filesRoot.'style/'.arg('delete');
 		if (file_exists($filename)) unlink($filename);
-		HTTP::redirect($page->url());
+		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	//-----------------------------------------------------------------------------
 
@@ -466,11 +444,9 @@ class TThemes
 	 */
 	public function sectionStylesAdd()
 	{
-		global $page;
-
 		$form = array(
 			'name' => 'addForm',
-			'caption' => $page->title.admTDiv.admAdd,
+			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admAdd,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
@@ -481,7 +457,7 @@ class TThemes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		$result = $page->renderForm($form);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -492,8 +468,6 @@ class TThemes
 	 */
 	public function sectionStylesEdit()
 	{
-		global $page;
-
 		$item['filename'] = arg('id');
 		$item['html'] = trim(file_get_contents(filesRoot.'style/'.$item['filename']));
 		preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
@@ -502,7 +476,7 @@ class TThemes
 		$item['html'] = trim(mb_substr($item['html'], mb_strpos($item['html'], "\n")));
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title.admTDiv.admEdit,
+			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admEdit,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
@@ -514,7 +488,7 @@ class TThemes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		$result = $page->renderForm($form, $item);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -525,8 +499,6 @@ class TThemes
 	 */
 	public function sectionStylesList()
 	{
-		global $page;
-
 		$table = array(
 			'name' => 'Styles',
 			'key'=> 'filename',
@@ -560,7 +532,7 @@ class TThemes
 			);
 		}
 		closedir($hnd);
-		$result = $page->renderTable($table, $items);
+		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -571,9 +543,7 @@ class TThemes
 	 */
 	public function sectionStyles()
 	{
-	global $page;
-
-		$page->title .= admTDiv.admThemesStyles;
+		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStyles;
 		switch(arg('action')) {
 			case 'update': $result = $this->sectionStylesUpdate(); break;
 			case 'insert': $result = $this->sectionStylesInsert(); break;
@@ -593,15 +563,16 @@ class TThemes
 	 */
 	public function adminRender()
 	{
-		global $page;
-
 		$result = '';
 		if (UserRights($this->access)) {
 			#FIXME: Временное решение #0000163
-			$this->tabs['items'][0]['url'] = $page->url(array('id' => '', 'section' => 'templates'));
-			$this->tabs['items'][1]['url'] = $page->url(array('id' => '', 'section' => 'std'));
-			$this->tabs['items'][2]['url'] = $page->url(array('id' => '', 'section' => 'css'));
-			$result .= $page->renderTabs($this->tabs);
+			$this->tabs['items'][0]['url'] =
+				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'templates'));
+			$this->tabs['items'][1]['url'] =
+				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'std'));
+			$this->tabs['items'][2]['url'] =
+				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'css'));
+			$result .= Eresus_Kernel::app()->getPage()->renderTabs($this->tabs);
 			switch (arg('section')) {
 				case 'css': $result .= $this->sectionStyles(); break;
 				case 'std': $result .= $this->sectionStd(); break;

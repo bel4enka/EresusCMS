@@ -55,8 +55,6 @@ class TinyMCEConnector extends EresusExtensionConnector
 	 */
 	function forms_html($form, $field)
 	{
-		global $page;
-
 		$value = isset($form->values[$field['name']]) ?
 			$form->values[$field['name']] :
 			(isset($field['value'])?$field['value']:'');
@@ -69,8 +67,8 @@ class TinyMCEConnector extends EresusExtensionConnector
 
 		if (!self::$scriptsInstalled)
 		{
-			$page->linkScripts($this->root.'tiny_mce.js');
-			$page->linkScripts($this->root.'presets/'.$preset.'.js');
+			Eresus_Kernel::app()->getPage()->linkScripts($this->root.'tiny_mce.js');
+			Eresus_Kernel::app()->getPage()->linkScripts($this->root.'presets/'.$preset.'.js');
 			self::$scriptsInstalled = true;
 		}
 

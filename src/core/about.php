@@ -43,7 +43,7 @@ class TAbout
 	 */
 	public function adminRender()
 	{
-		global $page, $locale;
+		global $locale;
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 		$xml->load(Eresus_CMS::getLegacyKernel()->froot . 'core/about.xml');
@@ -70,7 +70,7 @@ class TAbout
 		$data['license'] = array();
 		$data['license']['text'] = $license->getElementsByTagName($locale['lang'])->item(0)->textContent;
 
-		$tmpl = $page->getUITheme()->getTemplate('misc/about.html');
+		$tmpl = Eresus_Kernel::app()->getPage()->getUITheme()->getTemplate('misc/about.html');
 		$html = $tmpl->compile($data);
 
 		return $html;

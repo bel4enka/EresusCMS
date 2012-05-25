@@ -373,11 +373,7 @@ class Form
 	*/
 	function render()
 	{
-		global $page;
-
 		$result = '';     # Выходной код
-		$hidden = '';     # Скрытые поля???
-		$body = '';       # Тело таблицы-формы
 
 		if (empty($this->form['name'])) $result .= ErrorBox(errFormHasNoName);
 		if (count($this->form['fields'])) foreach($this->form['fields'] as $item) {
@@ -395,7 +391,7 @@ class Form
 		$this->onsubmit .= $this->validator;
 		if (!empty($this->onsubmit))
 		{
-			$page->addScripts("
+			Eresus_Kernel::app()->getPage()->addScripts("
 				function ".$this->form['name']."Submit()
 				{
 					var result = true;
@@ -406,11 +402,14 @@ class Form
 			");
 		}
 		# FIXME: sub_id - устаревший элемент
-		$referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
+		$referer = arg('sub_id') ?
+			Eresus_Kernel::app()->getPage()->url(array('sub_id'=>'')) :
+			Eresus_Kernel::app()->getPage()->url(array('id'=>''));
 		$this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
 		$this->hidden = "\t<div class=\"hidden\">\n\t\t{$this->hidden}\n\t</div>";
 		$result =
-			"<form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".$page->url()."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
+			"<form ".(empty($this->form['name'])?'':'name="'.$this->form['name'].'" id="'.$this->form['name'].'" ')."action=\"".
+				Eresus_Kernel::app()->getPage()->url()."\" method=\"post\"".(empty($this->onsubmit)?'':' onsubmit="return '.$this->form['name'].'Submit();"').($this->file?' enctype="multipart/form-data"':'').">\n".
 			$this->hidden.
 			"\n\t<table width=\"100%\">\n".
 			"\t\t<tr><td style=\"height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td><td style=\"width: 100%; height: 0px; font-size: 0px; padding: 0px;\">".img('style/dot.gif')."</td>\n\t\t</tr>\n".

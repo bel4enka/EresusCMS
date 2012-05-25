@@ -284,10 +284,8 @@ class Plugins
 	 */
 	function clientRenderContent()
 	{
-		global $page;
-
 		$result = '';
-		switch ($page->type)
+		switch (Eresus_Kernel::app()->getPage()->type)
 		{
 
 			case 'default':
@@ -298,18 +296,21 @@ class Plugins
 			case 'list':
 				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
 				if (Eresus_CMS::getLegacyKernel()->request['file'] ||
-					Eresus_CMS::getLegacyKernel()->request['query'] || $page->subpage || $page->topic)
+					Eresus_CMS::getLegacyKernel()->request['query'] ||
+					Eresus_Kernel::app()->getPage()->subpage ||
+					Eresus_Kernel::app()->getPage()->topic)
 				{
-					$page->httpError(404);
+					Eresus_Kernel::app()->getPage()->httpError(404);
 				}
 
-				$subitems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" . $page->id .
+				$subitems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" .
+					Eresus_Kernel::app()->getPage()->id .
 					"') AND (`active`='1') AND (`access` >= '" .
 					(Eresus_CMS::getLegacyKernel()->user['auth'] ?
 					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST)."')", "`position`");
-				if (empty($page->content))
+				if (empty(Eresus_Kernel::app()->getPage()->content))
 				{
-					$page->content = '$(items)';
+					Eresus_Kernel::app()->getPage()->content = '$(items)';
 				}
 				useLib('templates');
 				$templates = new Templates();
@@ -339,23 +340,27 @@ class Plugins
 							$item['description'],
 							$item['hint'],
 							Eresus_CMS::getLegacyKernel()->request['url'] .
-								($page->name == 'main' && !$page->owner ? 'main/' : '').$item['name'].'/',
+								(Eresus_Kernel::app()->getPage()->name == 'main' &&
+									!Eresus_Kernel::app()->getPage()->owner ? 'main/' : '').$item['name'].'/',
 						),
 						$template
 					);
 				}
-				$result = str_replace('$(items)', $items, $page->content);
+				$result = str_replace('$(items)', $items, Eresus_Kernel::app()->getPage()->content);
 			break;
 
 			case 'url':
-				HTTP::redirect($page->replaceMacros($page->content));
+				HTTP::redirect(Eresus_Kernel::app()->getPage()->
+					replaceMacros(Eresus_Kernel::app()->getPage()->content));
 			break;
 			default:
-			if ($this->load($page->type)) {
-				if (method_exists($this->items[$page->type], 'clientRenderContent'))
-					$result = $this->items[$page->type]->clientRenderContent();
-				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent', get_class($this->items[$page->type])));
-			} else ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
+			if ($this->load(Eresus_Kernel::app()->getPage()->type))
+			{
+				if (method_exists($this->items[Eresus_Kernel::app()->getPage()->type], 'clientRenderContent'))
+					$result = $this->items[Eresus_Kernel::app()->getPage()->type]->clientRenderContent();
+				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent',
+					get_class($this->items[Eresus_Kernel::app()->getPage()->type])));
+			} else ErrorMessage(sprintf(errContentPluginNotFound, Eresus_Kernel::app()->getPage()->type));
 		}
 		return $result;
 	}
@@ -372,7 +377,6 @@ class Plugins
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function clientOnTopicRender($text, $topic = null)
 	{
-		global $page;
 		if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
 		return $text;
 	}
@@ -1046,16 +1050,11 @@ class ContentPlugin extends Plugin
 	 */
 	public function __construct()
 	{
-		global $page;
-
 		parent::__construct();
-		if (isset($page))
-		{
-			$page->plugin = $this->name;
-			if (isset($page->options) && count($page->options))
-				foreach ($page->options as $key=>$value)
-					$this->settings[$key] = $value;
-		}
+		Eresus_Kernel::app()->getPage()->plugin = $this->name;
+		if (isset(Eresus_Kernel::app()->getPage()->options) && count(Eresus_Kernel::app()->getPage()->options))
+			foreach (Eresus_Kernel::app()->getPage()->options as $key=>$value)
+				$this->settings[$key] = $value;
 	}
 	//------------------------------------------------------------------------------
 
@@ -1093,11 +1092,9 @@ class ContentPlugin extends Plugin
 	 */
 	public function updateContent($content)
 	{
-		global $page;
-
-		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
 		$item['content'] = $content;
-		Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".$page->id."'");
+		Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
 	}
 	//------------------------------------------------------------------------------
 
@@ -1118,16 +1115,15 @@ class ContentPlugin extends Plugin
 	 */
 	public function clientRenderContent()
 	{
-		global $page;
-
 		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
 		if (Eresus_CMS::getLegacyKernel()->request['file'] ||
-			Eresus_CMS::getLegacyKernel()->request['query'] || $page->subpage || $page->topic)
+			Eresus_CMS::getLegacyKernel()->request['query'] ||
+			Eresus_Kernel::app()->getPage()->subpage || Eresus_Kernel::app()->getPage()->topic)
 		{
-			$page->httpError(404);
+			Eresus_Kernel::app()->getPage()->httpError(404);
 		}
 
-		return $page->content;
+		return Eresus_Kernel::app()->getPage()->content;
 	}
 	//------------------------------------------------------------------------------
 
@@ -1138,13 +1134,12 @@ class ContentPlugin extends Plugin
 	 */
 	public function adminRenderContent()
 	{
-		global $page;
-
 		if (arg('action') == 'update') $this->adminUpdate();
-		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$page->id."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".
+			Eresus_Kernel::app()->getPage()->id."'");
 		$form = array(
 			'name' => 'editForm',
-			'caption' => $page->title,
+			'caption' => Eresus_Kernel::app()->getPage()->title,
 			'width' => '100%',
 			'fields' => array (
 				array ('type'=>'hidden','name'=>'action', 'value' => 'update'),
@@ -1153,7 +1148,7 @@ class ContentPlugin extends Plugin
 			'buttons' => array('apply', 'reset'),
 		);
 
-		$result = $page->renderForm($form, $item);
+		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
 		return $result;
 	}
 	//------------------------------------------------------------------------------

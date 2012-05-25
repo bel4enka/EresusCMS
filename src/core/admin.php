@@ -499,8 +499,6 @@ class TAdminUI extends WebPage
 	 */
 	function renderTabs($tabs)
 	{
-		global $page;
-
 		if (count($tabs))
 		{
 			$result = '<div class="legacy-tabs ui-helper-clearfix">';
@@ -531,7 +529,7 @@ class TAdminUI extends WebPage
 						}
 						else
 						{
-							$url = $page->url();
+							$url = Eresus_Kernel::app()->getPage()->url();
 						}
 					}
 					$url = preg_replace('/&(?!amp;)/', '&amp;', $url);

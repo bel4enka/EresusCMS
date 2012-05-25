@@ -89,6 +89,7 @@ class TFiles
 					$arg[$key] = $value;
 				}
 			}
+		}
 		if (count($args)) foreach($args as $key => $value) $arg[$key] = $value;
 		if (count($arg)) foreach($arg as $key => $value) if (!empty($value)) $result .= '&amp;'.$key.'='.$value;
 		$result = httpRoot.'admin.php?mod=files'.$result;
@@ -360,8 +361,6 @@ class TFiles
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 	function adminRender()
 	{
-		global $page;
-
 		$this->root = 'data/';
 
 		$this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
@@ -385,7 +384,8 @@ class TFiles
 		elseif (arg('movefile')) $this->moveFile();
 		elseif (arg('delete')) $this->deleteFile();
 		else {
-			$page->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/files.js');
+			Eresus_Kernel::app()->getPage()->
+				linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/files.js');
 			$result =
 				"<table id=\"fileManager\">\n".
 				'<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".

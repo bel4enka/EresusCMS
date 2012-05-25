@@ -37,13 +37,18 @@
  */
 class Eresus_CMS extends EresusApplication
 {
-
 	/**
 	 * HTTP-запрос
 	 *
 	 * @var HttpRequest
 	 */
 	protected $request;
+
+	/**
+	 * @var WebPage
+	 * @since 3.00
+	 */
+	protected $page;
 
 	/**
 	 * Основной метод приложения
@@ -135,6 +140,21 @@ class Eresus_CMS extends EresusApplication
 	public static function getLegacyKernel()
 	{
 		return $GLOBALS['Eresus'];
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает экземпляр класса TClientUI или TAdminUI
+	 *
+	 * Метод нужен до отказа от переменной $page
+	 *
+	 * @return WebPage
+	 *
+	 * @since 3.00
+	 */
+	public function getPage()
+	{
+		return $this->page;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -255,15 +275,13 @@ class Eresus_CMS extends EresusApplication
 	 */
 	protected function runWebClientUI()
 	{
-		global $page;
-
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		include_once 'client.php';
+		include 'client.php';
 
-		$page = new TClientUI();
-		$page->init();
-		/*return */$page->render();
+		$GLOBALS['page'] = $this->page = new TClientUI();
+		$this->page->init();
+		/*return */$this->page->render();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -274,14 +292,12 @@ class Eresus_CMS extends EresusApplication
 	 */
 	protected function runWebAdminUI()
 	{
-		global $page;
-
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		include_once 'admin.php';
+		include 'admin.php';
 
-		$page = new TAdminUI();
-		/*return */$page->render();
+		$GLOBALS['page'] = $this->page = new TAdminUI();
+		/*return */$this->page->render();
 	}
 	//-----------------------------------------------------------------------------
 

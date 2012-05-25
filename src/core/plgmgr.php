@@ -49,8 +49,6 @@ class TPlgMgr
 	 */
 	private function toggle()
 	{
-		global $page;
-
 		$q = DB::getHandler()->createUpdateQuery();
 		$e = $q->expr;
 		$q->update('plugins')
@@ -60,23 +58,19 @@ class TPlgMgr
 			);
 		DB::execute($q);
 
-		HttpResponse::redirect($page->url());
+		HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	//-----------------------------------------------------------------------------
 
 	private function delete()
 	{
-		global $page;
-
 		Eresus_CMS::getLegacyKernel()->plugins->load(arg('delete'));
 		Eresus_CMS::getLegacyKernel()->plugins->uninstall(arg('delete'));
-		HTTP::redirect($page->url());
+		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 
 	private function edit()
 	{
-		global $page;
-
 		Eresus_CMS::getLegacyKernel()->plugins->load(arg('id'));
 		if (method_exists(Eresus_CMS::getLegacyKernel()->plugins->items[arg('id')], 'settings'))
 		{
@@ -84,14 +78,14 @@ class TPlgMgr
 		} else {
 			$form = array(
 				'name' => 'InfoWindow',
-				'caption' => $page->title,
+				'caption' => Eresus_Kernel::app()->getPage()->title,
 				'width' => '300px',
 				'fields' => array (
 					array('type'=>'text','value'=>'<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
 				),
 				'buttons' => array('cancel'),
 			);
-			$result = $page->renderForm($form);
+			$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 		}
 		return $result;
 	}
@@ -143,8 +137,6 @@ class TPlgMgr
 	 */
 	private function add()
 	{
-		global $page;
-
 		$data = array();
 
 		/* Составляем список доступных плагинов */
@@ -236,7 +228,8 @@ class TPlgMgr
 
 		ksort($data['plugins']);
 
-		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
+		$tmpl = Eresus_Kernel::app()->getPage()->getUITheme()->
+			getTemplate('PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
 
 		return $html;
@@ -250,8 +243,6 @@ class TPlgMgr
 	 */
 	public function adminRender()
 	{
-		global $page;
-
 		if (!UserRights($this->access))
 		{
 			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
@@ -262,7 +253,7 @@ class TPlgMgr
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
-		$page->title = admPlugins;
+		Eresus_Kernel::app()->getPage()->title = admPlugins;
 
 		switch (true)
 		{
@@ -312,7 +303,7 @@ class TPlgMgr
 						)
 					)
 				);
-				$result = $page->renderTable($table);
+				$result = Eresus_Kernel::app()->getPage()->renderTable($table);
 			break;
 		}
 		return $result;

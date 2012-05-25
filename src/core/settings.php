@@ -129,9 +129,8 @@ class TSettings
 	 */
 	private function renderForm()
 	{
-		global $page;
-
-		$template = $page->getUITheme()->getResource('SiteSettings/form.html');
+		$template = Eresus_Kernel::app()->getPage()->getUITheme()->
+			getResource('SiteSettings/form.html');
 		$form = new EresusForm($template, LOCALE_CHARSET);
 		/* Основные */
 		$form->setValue('siteName', option('siteName'));
