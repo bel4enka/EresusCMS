@@ -146,16 +146,13 @@ class TPlgMgr
 			$files = array();
 		}
 
-		/* Составляем списки доступных и установленных плагинов */
+		/* Составляем список установленных плагинов */
 		$items = Eresus_CMS::getLegacyKernel()->db->select('plugins', '', 'name, version');
-		$available = array();
 		$installed = array();
 		foreach ($items as $item)
 		{
-			$available[$item['name']] = $item['version'];
 			$installed []= Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $item['name'] . '.php';
 		}
-
 		// Оставляем только неустановленные
 		$files = array_diff($files, $installed);
 
@@ -201,6 +198,7 @@ class TPlgMgr
 			}
 		}
 
+		$plugins = Eresus_CMS::getLegacyKernel()->plugins;
 
 		foreach ($data['plugins'] as &$item)
 		{
@@ -211,9 +209,9 @@ class TPlgMgr
 				{
 					list ($name, $minVer, $maxVer) = $plugin;
 					if (
-						!isset($installed[$name]) ||
-						($minVer && version_compare($installed[$name], $minVer, '<')) ||
-						($maxVer && version_compare($installed[$name], $maxVer, '>'))
+						!isset($plugins->items[$name]) ||
+						($minVer && version_compare($plugins->items[$name]->version, $minVer, '<')) ||
+						($maxVer && version_compare($plugins->items[$name]->version, $maxVer, '>'))
 					)
 					{
 						{
