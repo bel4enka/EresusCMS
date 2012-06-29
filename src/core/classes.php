@@ -749,10 +749,10 @@ class Plugin
 	public function uninstall()
 	{
 		# TODO: Перенести в IDataSource
-		$tables = Eresus_CMS::getLegacyKernel()->db->
-			query_array("SHOW TABLES LIKE '{Eresus_CMS::getLegacyKernel()->db->prefix}{$this->name}_%'");
-		$tables = array_merge($tables, Eresus_CMS::getLegacyKernel()->db->
-				query_array("SHOW TABLES LIKE '{Eresus_CMS::getLegacyKernel()->db->prefix}{$this->name}'"));
+		$eresus = Eresus_CMS::getLegacyKernel();
+		$tables = $eresus->db->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}_%'");
+		$tables = array_merge($tables, $eresus->db->
+				query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}'"));
 		for ($i=0; $i < count($tables); $i++)
 		{
 			$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
