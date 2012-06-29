@@ -74,11 +74,7 @@ class EresusAccounts
 	 *
 	 * @access public
 	 *
-	 * @param int    $id  ID пользователя
-	 *	или
-	 *	@param array  $id  Список идентификаторов
-	 *	или
-	 *	@param string $id  SQL-условие
+	 * @param int|array|string $id  ID пользователя, список идентификаторов или SQL-условие
 	 *
 	 * @return array
 	 */

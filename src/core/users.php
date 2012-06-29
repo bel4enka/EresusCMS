@@ -109,10 +109,13 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * @param void $dummy  Используется для совместимости с родительским методом
-	 * @see main/core/lib/EresusAccounts#update($item)
+	 * @param mixed $dummy  Используется для совместимости с родительским методом
+	 *
+	 * @return mixed  void
+	 *
+	 * @see EresusAccounts::update()
 	 */
-	function update($dummy)
+	public function update($dummy)
 	{
 		$item = $this->accounts->get(arg('update', 'int'));
 		foreach ($item as $key => $value)
@@ -167,10 +170,13 @@ class TUsers extends Accounts
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * @param void $dummy  Используется для совместимости с родительтским методом
-	 * @see main/core/lib/EresusAccounts#delete($id)
+	 * @param mixed $dummy  Используется для совместимости с родительским методом
+	 *
+	 * @return mixed void
+	 *
+	 * @see EresusAccounts::delete()
 	 */
-	function delete($dummy)
+	public function delete($dummy)
 	{
 		$this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));

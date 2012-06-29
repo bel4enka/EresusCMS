@@ -9,6 +9,11 @@
  * $Id$
  */
 
+/**
+ * @var Eresus $Eresus;
+ * @global
+ */
+
 // Включить или выключить режим отладки. По умолчанию: false
 $Eresus->conf['debug']['enable'] = false;
 

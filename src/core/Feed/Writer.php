@@ -86,7 +86,7 @@ class Eresus_Feed_Writer
 	/**
 	 * Constructor
 	 *
-	 * @param string  the version constant (RSS1/RSS2/ATOM).
+	 * @param string $version  the version constant (RSS1/RSS2/ATOM).
 	 */
 	function __construct($version = self::RSS2)
 	{
@@ -96,7 +96,7 @@ class Eresus_Feed_Writer
 	/**
 	 * Set a channel element
 	 *
-	 * @param srting $elementName  name of the channel tag
+	 * @param string $elementName  name of the channel tag
 	 * @param string $content  content of the channel tag
 	 *
 	 * @return void
@@ -315,6 +315,10 @@ class Eresus_Feed_Writer
 		elseif ($this->version == self::ATOM)
 		{
 			$out = '</feed>';
+		}
+		else
+		{
+			$out = '';
 		}
 		return $out;
 	}

@@ -39,7 +39,9 @@
  */
 function files_compare($a, $b)
 {
-	if ($a['filename'] == $b['filename']) return 0;
+	if ($a['filename'] == $b['filename']) {
+		return 0;
+	}
 	return ($a['filename'] < $b['filename']) ? -1 : 1;
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -75,11 +77,17 @@ class TFiles
 	var $root;
 	var $panels = array('l'=>'', 'r'=>'');
 	var $sp = 'l';
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function url($args = null)
+
+	/**
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	private function url(array $args = null)
 	{
 		$basics = array('lf','rf','sp');
 		$result = '';
+		$arg = array();
 		if (count(Eresus_CMS::getLegacyKernel()->request['arg']))
 		{
 			foreach (Eresus_CMS::getLegacyKernel()->request['arg'] as $key => $value)
@@ -90,12 +98,27 @@ class TFiles
 				}
 			}
 		}
-		if (count($args)) foreach($args as $key => $value) $arg[$key] = $value;
-		if (count($arg)) foreach($arg as $key => $value) if (!empty($value)) $result .= '&amp;'.$key.'='.$value;
-		$result = httpRoot.'admin.php?mod=files'.$result;
+		if (count($args))
+		{
+			foreach ($args as $key => $value)
+			{
+				$arg[$key] = $value;
+			}
+		}
+		if (count($arg))
+		{
+			foreach ($arg as $key => $value)
+			{
+				if (!empty($value))
+				{
+					$result .= '&amp;' . $key . '=' . $value;
+				}
+			}
+		}
+		$result = httpRoot . 'admin.php?mod=files' . $result;
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function renderMenu()
 	{
 		$menu = array (
@@ -160,11 +183,15 @@ class TFiles
 		if ($hnd) {
 			$i = 0;
 			while (($name = readdir($hnd))!==false) if ($name != '.') {
-				if (empty($dir) && $name == '..') continue;
+				if (empty($dir) && $name == '..') {
+					continue;
+				}
 				$result[$i]['filename'] = $name;
 				$perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
 				$perm = $perm - 32768;
-				if ($perm < 0) $perm += 16384;
+				if ($perm < 0) {
+					$perm += 16384;
+				}
 				$result[$i]['perm'] = '';
 				for($j=0; $j<3; $j++) {
 					$x = $perm % 8;
@@ -178,7 +205,10 @@ class TFiles
 				if (function_exists('posix_getpwuid') && !System::isWindows()) {
 					$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
 					$result[$i]['owner'] = $result[$i]['owner']['name'];
-				} else $result[$i]['owner'] = 'unknown';
+				}
+				else {
+					$result[$i]['owner'] = 'unknown';
+				}
 				switch (filetype(filesRoot.$this->root.$dir . $name))
 				{
 					case 'dir':
@@ -192,9 +222,13 @@ class TFiles
 						$result[$i]['size'] = number_format(filesize(filesRoot . $this->root . $dir . $name));
 						$result[$i]['action'] = 'new';
 						$result[$i]['icon'] = 'application-octet-stream';
-						if (count($this->icons)) foreach($this->icons as $item) if (preg_match('/\.('.$item['ext'].')$/i', $name)) {
-							$result[$i]['icon'] = $item['icon'];
-							break;
+						if (count($this->icons)) {
+							foreach ($this->icons as $item)
+								if (preg_match('/\.(' . $item['ext'] . ')$/i', $name))
+								{
+									$result[$i]['icon'] = $item['icon'];
+									break;
+								}
 						}
 					break;
 				}
@@ -308,7 +342,9 @@ class TFiles
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
 		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
-			if (file_exists($filename)) rename($filename, $newname);
+		if (file_exists($filename)) {
+			rename($filename, $newname);
+		}
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -326,8 +362,11 @@ class TFiles
 	{
 		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
 		$dest = filesRoot . $this->root . $this->pannels[$this->sp=='l'?'r':'l'].arg('copyfile', FILES_FILTER);
-		if (is_file($filename)) copy($filename, $dest);
-		elseif (is_dir($filename)) {
+		if (is_file($filename)) {
+			copy($filename, $dest);
+		}
+		elseif (is_dir($filename))
+		{
 		}
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
@@ -337,9 +376,12 @@ class TFiles
 		#if (UserRights(ADMIN)) {
 			$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('movefile', FILES_FILTER);
 			$dest = filesRoot.$this->root.$this->pannels[$this->sp=='l'?'r':'l'].arg('movefile', FILES_FILTER);
-			if (is_file($filename)) rename($filename, $dest);
-			elseif (is_dir($filename)) {
-			}
+		if (is_file($filename)) {
+			rename($filename, $dest);
+		}
+		elseif (is_dir($filename))
+		{
+		}
 		#}
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
@@ -348,11 +390,14 @@ class TFiles
 	{
 		#if (UserRights(ADMIN)) {
 			$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('delete', FILES_FILTER);
-			if (is_file($filename)) unlink($filename);
-			elseif (is_dir($filename)) {
-				$this->rmDir($filename);
-				rmdir($filename);
-			}
+		if (is_file($filename)) {
+			unlink($filename);
+		}
+		elseif (is_dir($filename))
+		{
+			$this->rmDir($filename);
+			rmdir($filename);
+		}
 		#}
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
@@ -376,29 +421,44 @@ class TFiles
 		{
 			$this->sp = 'l';
 		}
-		if (count($_FILES)) $this->upload();
-		elseif (arg('mkdir')) $this->mkDir();
-		elseif (arg('rename')) $this->renameEntry();
-		elseif (arg('chmod')) $this->chmodEntry();
-		elseif (arg('copyfile')) $this->copyFile();
-		elseif (arg('movefile')) $this->moveFile();
-		elseif (arg('delete')) $this->deleteFile();
-		else {
+		if (count($_FILES)) {
+			$this->upload();
+		}
+		elseif (arg('mkdir')) {
+			$this->mkDir();
+		}
+		elseif (arg('rename')) {
+			$this->renameEntry();
+		}
+		elseif (arg('chmod')) {
+			$this->chmodEntry();
+		}
+		elseif (arg('copyfile')) {
+			$this->copyFile();
+		}
+		elseif (arg('movefile')) {
+			$this->moveFile();
+		}
+		elseif (arg('delete')) {
+			$this->deleteFile();
+		}
+		else
+		{
 			Eresus_Kernel::app()->getPage()->
 				linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/files.js');
 			$result =
-				"<table id=\"fileManager\">\n".
-				'<tr><td colspan="2" class="filesMenu">'.$this->renderMenu()."</td></tr>\n".
-				'<tr><td colspan="2" class="filesControls">'.$this->renderControls()."</td></tr>".
-				'<tr>'.
-				'<td valign="top" class="filesPanel">'.$this->renderFileList('l')."</td>\n".
-				'<td valign="top" class="filesPanel">'.$this->renderFileList('r')."</td>\n".
-				"</tr>\n".
-				'<tr><td colspan="2" class="filesControls">'.$this->renderStatus()."</td></tr>".
-				"</table>".
-				"<script type=\"text/javascript\"><!--\n".
-				" filesInit('".httpRoot.$this->root."', '".$this->sp."');\n".
-				"--></script>\n";
+				"<table id=\"fileManager\">\n" .
+					'<tr><td colspan="2" class="filesMenu">' . $this->renderMenu() . "</td></tr>\n" .
+					'<tr><td colspan="2" class="filesControls">' . $this->renderControls() . "</td></tr>" .
+					'<tr>' .
+					'<td valign="top" class="filesPanel">' . $this->renderFileList('l') . "</td>\n" .
+					'<td valign="top" class="filesPanel">' . $this->renderFileList('r') . "</td>\n" .
+					"</tr>\n" .
+					'<tr><td colspan="2" class="filesControls">' . $this->renderStatus() . "</td></tr>" .
+					"</table>" .
+					"<script type=\"text/javascript\"><!--\n" .
+					" filesInit('" . httpRoot . $this->root . "', '" . $this->sp . "');\n" .
+					"--></script>\n";
 			return $result;
 		}
 		return '';

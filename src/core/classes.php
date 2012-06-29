@@ -280,12 +280,14 @@ class Plugins
 	/**
 	 * Отрисовка контента раздела
 	 *
-	 * @return stirng  Контент
+	 * @return string  Контент
 	 */
 	function clientRenderContent()
 	{
+		/* @var TClientUI $page */
+		$page = Eresus_Kernel::app()->getPage();
 		$result = '';
-		switch (Eresus_Kernel::app()->getPage()->type)
+		switch ($page->type)
 		{
 
 			case 'default':
@@ -297,20 +299,20 @@ class Plugins
 				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
 				if (Eresus_CMS::getLegacyKernel()->request['file'] ||
 					Eresus_CMS::getLegacyKernel()->request['query'] ||
-					Eresus_Kernel::app()->getPage()->subpage ||
-					Eresus_Kernel::app()->getPage()->topic)
+					$page->subpage ||
+					$page->topic)
 				{
 					Eresus_Kernel::app()->getPage()->httpError(404);
 				}
 
 				$subitems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" .
-					Eresus_Kernel::app()->getPage()->id .
+					$page->id .
 					"') AND (`active`='1') AND (`access` >= '" .
 					(Eresus_CMS::getLegacyKernel()->user['auth'] ?
 					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST)."')", "`position`");
-				if (empty(Eresus_Kernel::app()->getPage()->content))
+				if (empty($page->content))
 				{
-					Eresus_Kernel::app()->getPage()->content = '$(items)';
+					$page->content = '$(items)';
 				}
 				useLib('templates');
 				$templates = new Templates();
@@ -340,27 +342,36 @@ class Plugins
 							$item['description'],
 							$item['hint'],
 							Eresus_CMS::getLegacyKernel()->request['url'] .
-								(Eresus_Kernel::app()->getPage()->name == 'main' &&
-									!Eresus_Kernel::app()->getPage()->owner ? 'main/' : '').$item['name'].'/',
+								($page->name == 'main' &&
+									!$page->owner ? 'main/' : '').$item['name'].'/',
 						),
 						$template
 					);
 				}
-				$result = str_replace('$(items)', $items, Eresus_Kernel::app()->getPage()->content);
-			break;
+				$result = str_replace('$(items)', $items, $page->content);
+				break;
 
 			case 'url':
-				HTTP::redirect(Eresus_Kernel::app()->getPage()->
-					replaceMacros(Eresus_Kernel::app()->getPage()->content));
-			break;
+				HTTP::redirect($page->replaceMacros($page->content));
+				break;
+
 			default:
-			if ($this->load(Eresus_Kernel::app()->getPage()->type))
-			{
-				if (method_exists($this->items[Eresus_Kernel::app()->getPage()->type], 'clientRenderContent'))
-					$result = $this->items[Eresus_Kernel::app()->getPage()->type]->clientRenderContent();
-				else ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent',
-					get_class($this->items[Eresus_Kernel::app()->getPage()->type])));
-			} else ErrorMessage(sprintf(errContentPluginNotFound, Eresus_Kernel::app()->getPage()->type));
+				if ($this->load($page->type))
+				{
+					if (method_exists($this->items[$page->type], 'clientRenderContent'))
+					{
+						$result = $this->items[$page->type]->clientRenderContent();
+					}
+					else
+					{
+						ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent',
+						get_class($this->items[$page->type])));
+					}
+				}
+				else
+				{
+					ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
+				}
 		}
 		return $result;
 	}
@@ -964,6 +975,10 @@ class Plugin
 			$result = Eresus_CMS::getLegacyKernel()->db->
 				update($this->__table($table), $data, $condition);
 		}
+		else
+		{
+			$result = false;
+		}
 
 		return $result;
 	}
@@ -1007,7 +1022,7 @@ class Plugin
 	 * Получение информации о таблицах
 	 *
 	 * @param string $table  Маска имени таблицы
-	 * @param string $param  Вернуть только указанный парамер
+	 * @param string $param  Вернуть только указанный параметр
 	 *
 	 * @return mixed
 	 */
@@ -1051,10 +1066,20 @@ class ContentPlugin extends Plugin
 	public function __construct()
 	{
 		parent::__construct();
-		Eresus_Kernel::app()->getPage()->plugin = $this->name;
-		if (isset(Eresus_Kernel::app()->getPage()->options) && count(Eresus_Kernel::app()->getPage()->options))
-			foreach (Eresus_Kernel::app()->getPage()->options as $key=>$value)
-				$this->settings[$key] = $value;
+
+		/* @var TClientUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		if ($page instanceof TClientUI)
+		{
+			$page->plugin = $this->name;
+			if (isset($page->options) && count($page->options))
+			{
+				foreach ($page->options as $key=>$value)
+				{
+					$this->settings[$key] = $value;
+				}
+			}
+		}
 	}
 	//------------------------------------------------------------------------------
 

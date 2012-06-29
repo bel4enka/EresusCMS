@@ -82,6 +82,7 @@ class MySQL
 	 * @param string $username  Имя пользователя для доступа к серверу
 	 * @param string $password  Пароль пользователя
 	 * @param string $source    Имя источника данных
+	 * @param string $prefix
 	 *
 	 * @return bool  Результат соединения
 	 * @deprecated
@@ -94,15 +95,14 @@ class MySQL
 		try
 		{
 			$db = DB::connect($dsn);
+			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+			$db->setOptions($options);
 		}
 		catch (DBRuntimeException $e)
 		{
 			Core::logException($e);
 			FatalError("Can not connect to MySQL server. See log for more info.");
 		}
-
-		$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
-		$db->setOptions($options);
 
 		return true;
 	}
@@ -535,9 +535,10 @@ class MySQL
 
 	/**
 	 *
-	 * @param unknown_type $table
-	 * @param unknown_type $param
-	 * @return unknown_type
+	 * @param string $table
+	 * @param string $param
+	 *
+	 * @return array|string
 	 * @deprecated
 	 */
 	public function tableStatus($table, $param='')

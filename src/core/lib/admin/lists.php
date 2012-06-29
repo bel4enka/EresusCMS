@@ -50,16 +50,19 @@ class AdminList {
 		'position'      => array('image' => 'admin/themes/default/img/medium/move-up.png', 'title' => admUp, 'alt' => '&uarr;'),
 		'position_down' => array('image' => 'admin/themes/default/img/medium/move-down.png', 'title' => admDown, 'alt' => '&darr;'),
 		);
+
 	/**
 	 * Отрисовывает элемент управления
 	 *
 	 * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
 	 * @param string $href    Ссылка
-	 * @param string $custom  Индивидуальные настройки
-	 * @return  string  Отрисованный ЭУ
+	 * @param array  $custom  Индивидуальные настройки
+	 *
+	 * @return string  HTML
 	 */
 	function control($type, $href, $custom = array())
 	{
+		$s = '';
 		if (isset($this->__controls[$type])) $control = $this->__controls[$type];
 		switch($type) {
 			case 'position':

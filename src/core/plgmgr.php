@@ -193,7 +193,7 @@ class TPlgMgr
 				catch (RuntimeException $e)
 				{
 					$errors []= $e->getMessage();
-					$info = new stdClass();
+					$info = new Plugin();
 					$info->title = $info->name = basename($file, '.php');
 					$info->version = '';
 				}

@@ -158,12 +158,47 @@ define('ADMINUI', true);
  */
 class TAdminUI extends WebPage
 {
-	var $module; # Загружаемый модуль
-	var $menu; # Меню администратора
-	var $extmenu; # Меню раширений
-	var $sub; # Уровень вложенности
-	var $headers; # Заголовки ответа сервера
-	var $options; # Для совместимости с TClientUI
+	/**
+	 * Загружаемый модуль
+	 *
+	 * @var object
+	 */
+	public $module;
+
+	/**
+	 * Меню администратора
+	 *
+	 * @var array
+	 */
+	public $menu;
+
+	/**
+	 * Меню расширений
+	 *
+	 * @var array
+	 */
+	public $extmenu;
+
+	/**
+	 * Уровень вложенности
+	 *
+	 * @var int
+	 */
+	public $sub;
+
+	/**
+	 * Заголовки ответа сервера
+	 *
+	 * @var array
+	 */
+	public $headers;
+
+	/**
+	 * Для совместимости с TClientUI
+	 *
+	 * @var array
+	 */
+	public $options = array();
 
 	/**
 	 * Тема оформления
@@ -245,8 +280,10 @@ class TAdminUI extends WebPage
 
 	/**
 	 * Подставляет значения макросов
-	 * @param $text
-	 * @return unknown_type
+	 *
+	 * @param string $text
+	 *
+	 * @return string
 	 */
 	function replaceMacros($text)
 	{
@@ -284,10 +321,11 @@ class TAdminUI extends WebPage
 	}
 	//-----------------------------------------------------------------------------
 
-	function url($args = null, $clear = false)
+	public function url($args = null, $clear = false)
 	{
 		$basics = array('mod','section','id','sort','desc','pg');
 		$result = '';
+		$arg = array();
 		if (count(Eresus_CMS::getLegacyKernel()->request['arg']))
 		{
 			foreach (Eresus_CMS::getLegacyKernel()->request['arg'] as $key => $value)
@@ -395,16 +433,15 @@ class TAdminUI extends WebPage
 	/**
 	 * Отрисовывает элемент управления
 	 *
-	 * @access  public
+	 * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
+	 * @param string $href    Ссылка
+	 * @param string $custom  Индивидуальные настройки
 	 *
-	 * @param  string  $type    Тип ЭУ (delete,toggle,move,custom...)
-	 * @param  string  $href    Ссылка
-	 * @param  string  $custom  Индивидуальные настройки
-	 *
-	 * @return  string  Отрисованный ЭУ
+	 * @return  string  HTML
 	 */
-	function control($type, $href, $custom = array())
+	public function control($type, $href, $custom = array())
 	{
+		$s = '';
 		switch ($type)
 		{
 			case 'add':
@@ -498,6 +535,7 @@ class TAdminUI extends WebPage
 	 */
 	function renderTabs($tabs)
 	{
+		$result = '';
 		if (count($tabs))
 		{
 			$result = '<div class="legacy-tabs ui-helper-clearfix">';

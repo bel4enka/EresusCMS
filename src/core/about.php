@@ -50,6 +50,7 @@ class TAbout
 
 		$data = array();
 
+		/* @var DOMElement $product */
 		$product = $xml->getElementsByTagName('product')->item(0);
 		$data['product'] = array();
 		$data['product']['title'] = $product->getAttribute('title');
@@ -59,10 +60,12 @@ class TAbout
 		$copyrights = $product->getElementsByTagName('copyright');
 		for ($i = 0; $i < $copyrights->length; $i++)
 		{
+			/* @var DOMElement $copyright */
+			$copyright = $copyrights->item($i);
 			$data['product']['copyrights'] []= array(
-				'year' => $copyrights->item($i)->getAttribute('year'),
-				'owner' => $copyrights->item($i)->getAttribute('owner'),
-				'url' => $copyrights->item($i)->getAttribute('url'),
+				'year' => $copyright->getAttribute('year'),
+				'owner' => $copyright->getAttribute('owner'),
+				'url' => $copyright->getAttribute('url'),
 			);
 		}
 

@@ -603,6 +603,7 @@ class EresusForm
 					$attrs = $node->attributes;
 					for ($j = 0; $j < $attrs->length; $j++)
 					{
+						/* @var DOMAttr $attr */
 						$attr = $attrs->item($j);
 						if ($attr->namespaceURI == self::NS)
 						{
@@ -787,9 +788,11 @@ class EresusForm
 	/**
 	 * Обработка тега "wysiwyg"
 	 *
-	 * @param DOMNode $node  Элемент
+	 * @param DOMElement $node  Элемент
+	 *
+	 * @return DOMElement
 	 */
-	protected function extendedNodeWysiwyg(DOMNode $node)
+	protected function extendedNodeWysiwyg(DOMElement $node)
 	{
 		$parent = $node->parentNode;
 		//$id = $node->getAttribute('id');

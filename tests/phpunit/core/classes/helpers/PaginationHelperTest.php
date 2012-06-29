@@ -433,13 +433,13 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 				break;
 
 				case $i > 1 && $i < 4:
-					$this->assertEquals($i, $page['title'], 'Ivalid page number');
-					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid last page url');
+					$this->assertEquals($i, $page['title'], 'Invalid page number');
+					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Invalid last page url');
 				break;
 
 				case $i == 4:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
-					$this->assertEquals('/root/p4/', $page['url'], 'Ivalid last page url');
+					$this->assertEquals('/root/p4/', $page['url'], 'Invalid last page url');
 				break;
 
 			}
@@ -450,14 +450,4 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	//-----------------------------------------------------------------------------
 
 	/* */
-}
-
-
-class Template
-{
-	public function compile($data)
-	{
-		return $data;
-	}
-	//-----------------------------------------------------------------------------
 }

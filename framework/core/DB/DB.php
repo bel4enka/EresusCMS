@@ -300,7 +300,11 @@ class DB implements ezcBaseConfigurationInitializer
 
 	/**
 	 * Execute query
-	 * @param ezQuery $query
+	 *
+	 * @param ezcQuery $query
+	 *
+	 * @throws DBQueryException
+	 *
 	 * @return mixed
 	 */
 	public static function execute($query)

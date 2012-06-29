@@ -33,7 +33,7 @@
 #TODO: Проверить нет ли доступа к внешним директориям
 
 /**
- * Упрвление темами оформления
+ * Управление темами оформления
  *
  * @package Eresus
  * @author mekras
@@ -42,13 +42,13 @@ class TThemes
 {
 	/**
 	 * ???
-	 * @var unknown_type
+	 * @var int
 	 */
 	public $access = ADMIN;
 
 	/**
 	 * ???
-	 * @var unknown_type
+	 * @var array
 	 */
 	public $tabs = array(
 		'width' => admThemesTabWidth,
@@ -61,7 +61,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @var unknown_type
+	 * @var array
 	 */
 	public $stdTemplates = array(
 		'SectionListItem' => array('caption' => admTemplList, 'hint' => admTemplListItemLabel),
@@ -92,7 +92,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionTemplatesInsert()
 	{
@@ -105,7 +105,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionTemplatesUpdate()
 	{
@@ -225,14 +225,25 @@ class TThemes
 	{
 		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesTemplates;
 
-		switch(arg('action')) {
-			case 'update': $result = $this->sectionTemplatesUpdate(); break;
-			case 'insert': $result = $this->sectionTemplatesInsert(); break;
+		$result = '';
+		switch (arg('action'))
+		{
+			case 'update': $this->sectionTemplatesUpdate(); break;
+			case 'insert': $this->sectionTemplatesInsert(); break;
 			case 'add': $result = $this->sectionTemplatesAdd(); break;
 			default:
-				if (arg('delete')) $result = $this->sectionTemplatesDelete();
-				elseif (arg('id')) $result = $this->sectionTemplatesEdit();
-				else $result = $this->sectionTemplatesList();
+				if (arg('delete'))
+				{
+					$result = $this->sectionTemplatesDelete();
+				}
+				elseif (arg('id'))
+				{
+					$result = $this->sectionTemplatesEdit();
+				}
+				else
+				{
+					$result = $this->sectionTemplatesList();
+				}
 		}
 		return $result;
 	}
@@ -276,18 +287,26 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionStdAdd()
 	{
 		$values = array();
 		$items = array();
 		$jsArray = "var aTemplates = Array();\n";
-		foreach($this->stdTemplates as $key => $item) {
-			if (!isset($hint)) $hint = isset($item['hint'])?$item['hint']:'';
+		foreach ($this->stdTemplates as $key => $item)
+		{
+			if (!isset($hint))
+			{
+				$hint = isset($item['hint']) ? $item['hint'] : '';
+			}
 			$values[] = $key;
 			$items[] = $item['caption'];
 			$jsArray .= "aTemplates['".$key."'] = '".(isset($item['hint'])?$item['hint']:'')."'\n";
+		}
+		if (!isset($hint))
+		{
+			$hint = '';
 		}
 
 		Eresus_Kernel::app()->getPage()->addScripts($jsArray."
@@ -309,14 +328,16 @@ class TThemes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form);
+		/* @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderForm($form);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionStdEdit()
 	{
@@ -495,7 +516,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionStylesList()
 	{
@@ -522,36 +543,63 @@ class TThemes
 		# Загружаем список шаблонов
 		$dir = filesRoot.'style/';
 		$hnd = opendir($dir);
-		while (($filename = readdir($hnd))!==false) if (preg_match('/.*\.css$/', $filename)) {
-			$description = file_get_contents($dir.$filename);
-			preg_match('|/\*(.*?)\*/|', $description, $description);
-			$description = trim($description[1]);
-			$items[] = array(
-				'filename' => $filename,
-				'description' => $description,
-			);
+		$items = array();
+		while (($filename = readdir($hnd))!==false)
+		{
+			if (preg_match('/.*\.css$/', $filename))
+			{
+				$description = file_get_contents($dir.$filename);
+				preg_match('|/\*(.*?)\*/|', $description, $description);
+				$description = trim($description[1]);
+				$items[] = array(
+					'filename' => $filename,
+					'description' => $description,
+				);
+			}
 		}
 		closedir($hnd);
-		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
+		/* @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderTable($table, $items);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function sectionStyles()
 	{
-		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStyles;
-		switch(arg('action')) {
-			case 'update': $result = $this->sectionStylesUpdate(); break;
-			case 'insert': $result = $this->sectionStylesInsert(); break;
-			case 'add': $result = $this->sectionStylesAdd(); break;
+		$result = '';
+			Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStyles;
+		switch (arg('action'))
+		{
+			case 'update':
+				$this->sectionStylesUpdate();
+				break;
+
+			case 'insert':
+				$result = $this->sectionStylesInsert();
+				break;
+
+			case 'add':
+				$result = $this->sectionStylesAdd();
+				break;
+
 			default:
-				if (arg('delete')) $result = $this->sectionStylesDelete();
-				elseif (arg('id')) $result = $this->sectionStylesEdit();
-				else $result = $this->sectionStylesList();
+				if (arg('delete'))
+				{
+					$result = $this->sectionStylesDelete();
+				}
+				elseif (arg('id'))
+				{
+					$result = $this->sectionStylesEdit();
+				}
+				else
+				{
+					$result = $this->sectionStylesList();
+				}
 		}
 		return $result;
 	}

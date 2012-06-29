@@ -52,7 +52,7 @@ function getErrorMessage($messages, $file, $problem)
 {
 	$message = isset($messages[$problem]) ?
 		$messages[$problem] :
-		'Problem: ' . $prblem . '. File: %s';
+		'Problem: ' . $problem . '. File: %s';
 
 	if (isset($messages['custom'][$file][$problem]))
 		$message = $messages['custom'][$file][$problem];
@@ -106,8 +106,13 @@ function getErrorMessage($messages, $file, $problem)
 	<ul>
 	<?php
 
-		foreach ($errors as $error)
-			echo '<li>' . getErrorMessage($messages, $error['file'], $error['problem']) . '</li>';
+		if (isset($errors))
+		{
+			foreach ($errors as $error)
+			{
+				echo '<li>' . getErrorMessage($messages, $error['file'], $error['problem']) . '</li>';
+			}
+		}
 
 	?>
 	</ul>

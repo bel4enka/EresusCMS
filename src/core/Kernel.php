@@ -279,14 +279,15 @@ class Eresus_Kernel
 			switch (strtolower($m[1]))
 			{
 				case 'fatal':
-					$priority = LOG_CRIT;
 					$message = 'FATAL ERROR';
 				break;
 
 				case 'parse':
-					$priority = LOG_EMERG;
 					$message = 'PARSE ERROR';
 				break;
+
+				default:
+					$message = 'ERROR:';
 			}
 
 			//Eresus_Logger::log(__FUNCTION__, $priority, trim($output));

@@ -45,13 +45,13 @@ class TPages
 
 	/**
 	 * ???
-	 * @var unknown_type
+	 * @var array
 	 */
 	public $cache;
 
 	/**
 	 * Запись новой страницы в БД
-	 * @return unknown_type
+	 * @return void
 	 */
 	function insert()
 	{
@@ -91,7 +91,7 @@ class TPages
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	function update()
 	{

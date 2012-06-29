@@ -320,7 +320,7 @@ class Eresus_PluginInfo
 					break;
 
 					case T_STRING == $id && 'class_name' == $state && trim($text) != '':
-						$info->name = basename($filename, '.php'); //strtolower($text);
+						$info->name = basename($filename, '.php');
 						$state = 'prop_name';
 					break;
 
@@ -330,18 +330,21 @@ class Eresus_PluginInfo
 					break;
 
 					case T_CONSTANT_ENCAPSED_STRING == $id && 'prop_value' == $state:
-						$value = substr($text, 1, -1);
-						if ('kernel' == $property)
+						if (isset($property))
 						{
-							$value = explode('/', $value);
-							$info->requiredKernel = array(
-								$value[0],
-								isset($value[1]) ? $value[1] : null
-							);
-						}
-						else
-						{
-							$info->$property = $value;
+							$value = substr($text, 1, -1);
+							if ('kernel' == $property)
+							{
+								$value = explode('/', $value);
+								$info->requiredKernel = array(
+									$value[0],
+									isset($value[1]) ? $value[1] : null
+								);
+							}
+							else
+							{
+								$info->$property = $value;
+							}
 						}
 						$state = 'prop_name';
 					break;

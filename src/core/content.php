@@ -49,6 +49,7 @@ class TContent
 		{
 			return '';
 		}
+		$result = '';
 		useLib('sections');
 		$sections = new Sections();
 		$item = $sections->get(arg('section', 'int'));
@@ -60,8 +61,14 @@ class TContent
 			{
 				case 'default':
 					$editor = new ContentPlugin();
-					if (arg('update')) $editor->update();
-					else $result = $editor->adminRenderContent();
+					if (arg('update'))
+					{
+						$editor->update();
+					}
+					else
+					{
+						$result = $editor->adminRenderContent();
+					}
 				break;
 
 				case 'list':

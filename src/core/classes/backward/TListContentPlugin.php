@@ -110,7 +110,8 @@ function down($id)
 	HTTP::redirect(str_replace('&amp;', '&', Eresus_Kernel::app()->getPage()->url()));
 }
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-function adminRenderContent()
+
+public function adminRenderContent()
 {
 	$result = '';
 	if (!is_null(arg('id'))) {
@@ -131,7 +132,21 @@ function adminRenderContent()
 			if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up', 'dbsafe')):$this->up(arg('up', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
 		break;
 		case !is_null(arg('down')) && isset($this->table['controls']['position']):
-			if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arg('down', 'dbsafe')):$this->down(arg('down', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
+			if (method_exists($this, 'down'))
+			{
+				if ($this->table['sortDesc'])
+				{
+					$this->up(arg('down', 'dbsafe'));
+				}
+				else
+				{
+					$this->down(arg('down', 'dbsafe'));
+				}
+			}
+			else
+			{
+				ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
+			}
 		break;
 		case !is_null(arg('id')) && isset($this->table['controls']['edit']):
 			if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else ErrorMessage(sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));

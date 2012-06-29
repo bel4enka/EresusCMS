@@ -60,10 +60,10 @@ class Eresus_Feed_Writer_Item
 	/**
 	 * Add an element to elements array
 	 *
-	 * @param    srting  The tag name of an element
-	 * @param    srting  The content of tag
-	 * @param    array   Attributes(if any) in 'attrName' => 'attrValue' format
-	 * @return   void
+	 * @param string $elementName  The tag name of an element
+	 * @param string $content      The content of tag
+	 * @param array  $attributes   Attributes(if any) in 'attrName' => 'attrValue' format
+	 * @return void
 	 */
 	public function addElement($elementName, $content, $attributes = null)
 	{
@@ -105,9 +105,9 @@ class Eresus_Feed_Writer_Item
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Set the 'dscription' element of feed item
+	 * Set the 'description' element of feed item
 	 *
-	 * @param    string  The content of 'description' element
+	 * @param string $description  The content of 'description' element
 	 * @return   void
 	 */
 	public function setDescription($description)
