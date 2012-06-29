@@ -163,7 +163,6 @@ class TPlgMgr
 		 * Собираем информацию о неустановленных плагинах
 		 */
 		$data['plugins'] = array();
-		$features = array();
 		if (count($files))
 		{
 			foreach ($files as $file)
@@ -212,9 +211,9 @@ class TPlgMgr
 				{
 					list ($name, $minVer, $maxVer) = $plugin;
 					if (
-						!isset($available[$name]) ||
-						($minVer && version_compare($available[$name], $minVer, '<')) ||
-						($maxVer && version_compare($available[$name], $maxVer, '>'))
+						!isset($installed[$name]) ||
+						($minVer && version_compare($installed[$name], $minVer, '<')) ||
+						($maxVer && version_compare($installed[$name], $maxVer, '>'))
 					)
 					{
 						{
@@ -228,8 +227,9 @@ class TPlgMgr
 
 		ksort($data['plugins']);
 
-		$tmpl = Eresus_Kernel::app()->getPage()->getUITheme()->
-			getTemplate('PluginManager/add-dialog.html');
+		/* @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
 
 		return $html;
