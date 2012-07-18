@@ -105,12 +105,18 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_gettime()
 	{
-		$this->assertEquals(date('Y-m-d H:i:s'),gettime('Y-m-d H:i:s')); 
-		$this->assertEquals(date('H:i:s Y-m-d'),gettime('H:i:s Y-m-d'));
-	/*	$this->assertEquals("<div class=\"infoBox\">\nтекст</div>\n", InfoBox('текст',''));
-		$this->assertEquals(
-			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\n</div>\n",
-			InfoBox('','заголовок'));*/
+		$this->assertEquals(date('Y-m-d'),gettime('Y-m-d')); 
 	}
 	
+	/**
+	 *  
+	 */
+	public function test_encodeHTML()
+	{
+		$test_encodeHTML_str='<a href="#">foo</a>';
+		$test_encodeHTML_mas_in= array('<a href="#">foo</a>');
+		$test_encodeHTML_mas_out= array ('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;');
+		$this->assertEquals('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;',encodeHTML($test_encodeHTML_str)); 
+		$this->assertEquals($test_encodeHTML_mas_out, encodeHTML($test_encodeHTML_mas_in));
+	}
 }
