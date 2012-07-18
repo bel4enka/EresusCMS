@@ -86,6 +86,18 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 			ErrorBox('','заголовок'));
 	}
         
-        
+	/**
+	 *  
+	 */
+	public function test_InfoBox()
+	{
+		$this->assertEquals(
+			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\nтекст</div>\n",
+			InfoBox('текст','заголовок')); 
+		$this->assertEquals("<div class=\"infoBox\">\nтекст</div>\n", InfoBox('текст',''));
+		$this->assertEquals(
+			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\n</div>\n",
+			InfoBox('','заголовок'));
+	}
         
 }
