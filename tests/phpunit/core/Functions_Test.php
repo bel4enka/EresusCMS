@@ -66,10 +66,26 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_FormatSize()
 	{
-           $this->assertEquals('1 023 Байт', FormatSize(1023)); 
-           $this->assertEquals('1.00 Кб', FormatSize(1025)); 
-           $this->assertEquals('1.00 Мб', FormatSize(1048577)); 
-           $this->assertEquals('1.00 Гб', FormatSize(1073741825)); 
+		$this->assertEquals('1 023 Байт', FormatSize(1023)); 
+		$this->assertEquals('1.00 Кб', FormatSize(1025)); 
+		$this->assertEquals('1.00 Мб', FormatSize(1048577)); 
+		$this->assertEquals('1.00 Гб', FormatSize(1073741825)); 
 	}
-
+        
+	/**
+	 * @group development 
+	 */
+	public function test_ErrorBox()
+	{
+		$this->assertEquals(
+			"<div class=\"errorBoxCap\">заголовок</div>\n<div class=\"errorBox\">\nтекст</div>\n",
+			ErrorBox('текст','заголовок')); 
+		$this->assertEquals("<div class=\"errorBox\">\nтекст</div>\n", ErrorBox('текст',''));
+		$this->assertEquals(
+			"<div class=\"errorBoxCap\">заголовок</div>\n<div class=\"errorBox\">\n</div>\n",
+			ErrorBox('','заголовок'));
+	}
+        
+        
+        
 }
