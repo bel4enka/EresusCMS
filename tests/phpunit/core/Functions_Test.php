@@ -131,20 +131,39 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 *  @group development
+	 *  
 	 */
 	public function test_text2array()
 	{
-		$test_text2array_mas1 = array
+		$test_mas1 = array
 			(
 				'foo'=>'bar',
 				'key'=>'value'
 			);
-		$test_text2array_mas2 =	array('foo=bar', 'key=value');	
-		$test_text2array_mas3 =	array();
-		$this->assertEquals($test_text2array_mas1, text2array("foo=bar\nkey=value", true)); 
-		$this->assertEquals($test_text2array_mas2, text2array("foo=bar\nkey=value"));
-		$this->assertEquals($test_text2array_mas3, text2array(""));
+		$test_mas2 =	array('foo=bar', 'key=value');	
+		$test_mas3 =	array();
+		$this->assertEquals($test_mas1, text2array("foo=bar\nkey=value", true)); 
+		$this->assertEquals($test_mas2, text2array("foo=bar\nkey=value"));
+		$this->assertEquals($test_mas3, text2array(""));
 	}
+	
+		/**
+	 *  
+	 */
+	public function test_array2text()
+	{
+		$test_mas1 = array
+			(
+				'foo'=>'bar',
+				'key'=>'value'
+			);
+		$test_mas2 =	array('foo=bar', 'key=value');	
+		$test_mas3 =	array();
+		$this->assertEquals("foo=bar\nkey=value", array2text($test_mas1, true)); 
+		$this->assertEquals("foo=bar\nkey=value", array2text($test_mas2));
+		$this->assertEquals("", array2text($test_mas3));
+	}
+	
+	
 	
 }
