@@ -73,7 +73,11 @@ class WebServerTest extends PHPUnit_Framework_TestCase
 		$dir = dirname(__FILE__);
 		$_SERVER['DOCUMENT_ROOT'] = $dir;
 		$server = WebServer::getInstance();
-		$this->assertEquals($dir, $server->getDocumentRoot());
+		$docRoot = $server->getDocumentRoot();
+		// Проверяем наличие прямых слэшей
+		$this->assertRegExp('/^.*\/.*$/', $docRoot);
+		// realpath необходим под Windows для приведения пути к системному виду
+		$this->assertEquals($dir, realpath($docRoot));
 	}
 	//-----------------------------------------------------------------------------
 

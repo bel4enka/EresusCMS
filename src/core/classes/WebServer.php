@@ -98,7 +98,11 @@ class WebServer
 	private function __construct()
 	{
 		$path = realpath($_SERVER['DOCUMENT_ROOT']);
-		$this->documentRoot = FS::canonicalForm($path);
+		if (DIRECTORY_SEPARATOR != '/')
+		{
+			$path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+		}
+		$this->documentRoot = $path;
 	}
 	//-----------------------------------------------------------------------------
 
