@@ -116,7 +116,18 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$test_encodeHTML_str='<a href="#">foo</a>';
 		$test_encodeHTML_mas_in= array('<a href="#">foo</a>');
 		$test_encodeHTML_mas_out= array ('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;');
-		$this->assertEquals('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;',encodeHTML($test_encodeHTML_str)); 
+		$this->assertEquals('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;',
+			encodeHTML($test_encodeHTML_str)); 
 		$this->assertEquals($test_encodeHTML_mas_out, encodeHTML($test_encodeHTML_mas_in));
 	}
+	
+	/**
+	 *  
+	 */
+	public function test_decodeHTML()
+	{
+		$this->assertEquals('(<a href="#">foo</a>)',
+			decodeHTML('%28&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;%29')); 
+	}
+	
 }
