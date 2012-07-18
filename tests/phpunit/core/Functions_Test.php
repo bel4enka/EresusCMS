@@ -130,4 +130,21 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 			decodeHTML('%28&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;%29')); 
 	}
 	
+	/**
+	 *  @group development
+	 */
+	public function test_text2array()
+	{
+		$test_text2array_mas1 = array
+			(
+				'foo'=>'bar',
+				'key'=>'value'
+			);
+		$test_text2array_mas2 =	array('foo=bar', 'key=value');	
+		$test_text2array_mas3 =	array();
+		$this->assertEquals($test_text2array_mas1, text2array("foo=bar\nkey=value", true)); 
+		$this->assertEquals($test_text2array_mas2, text2array("foo=bar\nkey=value"));
+		$this->assertEquals($test_text2array_mas3, text2array(""));
+	}
+	
 }
