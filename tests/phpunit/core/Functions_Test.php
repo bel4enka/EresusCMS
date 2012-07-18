@@ -99,5 +99,18 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\n</div>\n",
 			InfoBox('','заголовок'));
 	}
-        
+    
+	/**
+	 *  
+	 */
+	public function test_gettime()
+	{
+		$this->assertEquals(date('Y-m-d H:i:s'),gettime('Y-m-d H:i:s')); 
+		$this->assertEquals(date('H:i:s Y-m-d'),gettime('H:i:s Y-m-d'));
+	/*	$this->assertEquals("<div class=\"infoBox\">\nтекст</div>\n", InfoBox('текст',''));
+		$this->assertEquals(
+			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\n</div>\n",
+			InfoBox('','заголовок'));*/
+	}
+	
 }
