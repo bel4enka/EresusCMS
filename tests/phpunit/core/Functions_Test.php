@@ -60,4 +60,16 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('barbaz', __macroVar(array(null, null, 'Functions_Test_Foo', '."baz"')));
 	}
 	//-----------------------------------------------------------------------------
+
+       	/**
+	 * 
+	 */
+	public function test_FormatSize()
+	{
+           $this->assertEquals('1 023 Байт', FormatSize(1023)); 
+           $this->assertEquals('1.00 Кб', FormatSize(1025)); 
+           $this->assertEquals('1.00 Мб', FormatSize(1048577)); 
+           $this->assertEquals('1.00 Гб', FormatSize(1073741825)); 
+	}
+
 }
