@@ -180,4 +180,24 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($options, decodeOptions('', $options));
 		$this->assertEquals($options, decodeOptions('foo' . $encoded, $options));
 	}
+	
+	/**
+	 *  
+	 */
+	public function test___isset()
+	{	
+		$myTestMas = array('foo' => 'bar');
+		$this->assertEquals(true, __isset($myTestMas, 'foo'));
+		$this->assertEquals(false, __isset($myTestMas, 'bar'));
+		
+		$myTestVariable = 5;
+		$this->assertEquals(false, __isset($myTestVariable, ''));
+		
+		$x = new stdClass;
+		$x->foo = 'bar';
+		$this->assertEquals(true, __isset($x, 'foo'));
+		$this->assertEquals(false, __isset($x, 'bar'));
+	}
+	
+	
 }
