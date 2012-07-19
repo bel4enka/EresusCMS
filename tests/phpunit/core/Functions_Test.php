@@ -147,7 +147,7 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($test_mas3, text2array(""));
 	}
 	
-		/**
+	/**
 	 *  
 	 */
 	public function test_array2text()
