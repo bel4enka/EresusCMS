@@ -216,4 +216,16 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	
+	/**
+	 * 
+	 */
+	public function test__replaceMacros()
+	{	
+		$this->assertEquals('foobar', replaceMacros('foo$(foo)', array('foo' => 'bar')));
+		
+		$this->assertEquals('b', replaceMacros('$(a?b:c)', array('a' => true)));
+		$this->assertEquals('c', replaceMacros('$(a?b:c)', array('a' => false)));
+	}
+	
+	
 }
