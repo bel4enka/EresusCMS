@@ -165,7 +165,7 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @group development 
+	 *  
 	 */
 	public function test_encodeOptions()
 	{	
