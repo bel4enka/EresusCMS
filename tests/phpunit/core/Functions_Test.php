@@ -165,15 +165,19 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 *  
+	 *  @group development
 	 */
-	public function test_encodeOptions()
+	public function test_encodeOptions_decodeOptions()
 	{	
-		$mas = array(333, 22, 1, 'a','b','c', true);
-		$this->assertEquals('s:5:"a b c";', encodeOptions('a b c')); 
-		$this->assertEquals(
-			'a:7:{i:0;i:333;i:1;i:22;i:2;i:1;i:3;s:1:"a";i:4;s:1:"b";i:5;s:1:"c";i:6;b:1;}', 
-			encodeOptions($mas));
+		$options = array('foo' => 'bar', 'baz' => false);
+		$encoded = encodeOptions($options);
+		$actual = decodeOptions($encoded);
+		$this->assertEquals($options, $actual); 
+		
+		$options['key'] = 'value';
+		$actual = decodeOptions($encoded, array('key' => 'value'));
+		$this->assertEquals($options, $actual); 
+		$this->assertEquals($options, decodeOptions('', $options));
+		$this->assertEquals($options, decodeOptions('foo' . $encoded, $options));
 	}
-	
 }
