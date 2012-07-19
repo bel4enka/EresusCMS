@@ -199,5 +199,21 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(false, __isset($x, 'bar'));
 	}
 	
+	/**
+	 *  
+	 */
+	public function test__property()
+	{	
+		$x = new stdClass;
+		$x->foo = 'bar';
+		$this->assertEquals('bar', __property($x, 'foo'));
+		
+		$myTestMas = array('foo' => 'bar');
+		$this->assertEquals('bar', __property($myTestMas, 'foo'));
+			
+		$myTestVariable = 5;
+		$this->assertEquals('', __property($myTestVariable, ''));		
+	}
+	
 	
 }
