@@ -142,7 +142,8 @@ class TThemes
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'edit','name'=>'name','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html'),
+				array('type'=>'edit','name'=>'name','label'=>admThemesFilenameLabel, 'width'=>'200px',
+					'comment'=>'.html'),
 				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
@@ -170,7 +171,8 @@ class TThemes
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.html', 'disabled' => true, 'value' => $item['name']),
+				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px',
+					'comment'=>'.html', 'disabled' => true, 'value' => $item['name']),
 				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
@@ -211,7 +213,10 @@ class TThemes
 		$templates = new Templates();
 		$list = $templates->enum();
 		$items = array();
-		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
+		foreach ($list as $key=>$value)
+		{
+			$items[] = array('filename' => $key, 'description' => $value);
+		}
 		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
 		return $result;
 	}
@@ -228,9 +233,15 @@ class TThemes
 		$result = '';
 		switch (arg('action'))
 		{
-			case 'update': $this->sectionTemplatesUpdate(); break;
-			case 'insert': $this->sectionTemplatesInsert(); break;
-			case 'add': $result = $this->sectionTemplatesAdd(); break;
+			case 'update':
+				$this->sectionTemplatesUpdate();
+				break;
+			case 'insert':
+				$this->sectionTemplatesInsert();
+				break;
+			case 'add':
+				$result = $this->sectionTemplatesAdd();
+				break;
 			default:
 				if (arg('delete'))
 				{
@@ -312,7 +323,8 @@ class TThemes
 		Eresus_Kernel::app()->getPage()->addScripts($jsArray."
 			function onTemplateNameChange()
 			{
-				document.getElementById('templateHint').innerHTML = aTemplates[document.addForm.elements.namedItem('name').value];
+				document.getElementById('templateHint').innerHTML =
+					aTemplates[document.addForm.elements.namedItem('name').value];
 			}
 		");
 		$form = array(
@@ -322,7 +334,8 @@ class TThemes
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values, 'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
+				array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values,
+					'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
 				array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
@@ -356,7 +369,9 @@ class TThemes
 					'width' => '200px', 'comment' => '.tmpl (' .
 					$this->stdTemplates[$item['name']]['caption'].')',
 					'disabled' => true, 'value'=>$item['name']),
-				array('type'=>'text','name'=>'hint', 'value' => isset($this->stdTemplates[$item['name']]['hint'])?$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
+				array('type'=>'text','name'=>'hint', 'value' =>
+					isset($this->stdTemplates[$item['name']]['hint']) ?
+						$this->stdTemplates[$item['name']]['hint']:'', 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -396,7 +411,10 @@ class TThemes
 		$templates = new Templates();
 		$list = $templates->enum('std');
 		$items = array();
-		foreach($list as $key=>$value) $items[] = array('filename' => $key, 'description' => $value);
+		foreach ($list as $key=>$value)
+		{
+			$items[] = array('filename' => $key, 'description' => $value);
+		}
 		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
 		return $result;
 	}
@@ -410,14 +428,30 @@ class TThemes
 	{
 		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStandard;
 
-		switch(arg('action')) {
-			case 'update': $result = $this->sectionStdUpdate(); break;
-			case 'insert': $result = $this->sectionStdInsert(); break;
-			case 'add': $result = $this->sectionStdAdd(); break;
+		switch (arg('action'))
+		{
+			case 'update':
+				$result = $this->sectionStdUpdate();
+				break;
+			case 'insert':
+				$result = $this->sectionStdInsert();
+				break;
+			case 'add':
+				$result = $this->sectionStdAdd();
+				break;
 			default:
-				if (arg('delete')) $result = $this->sectionStdDelete();
-				if (arg('id')) $result = $this->sectionStdEdit();
-				else $result = $this->sectionStdList();
+				if (arg('delete'))
+				{
+					$result = $this->sectionStdDelete();
+				}
+				if (arg('id'))
+				{
+					$result = $this->sectionStdEdit();
+				}
+				else
+				{
+					$result = $this->sectionStdList();
+				}
 		}
 		return $result;
 	}
@@ -449,12 +483,15 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionStylesDelete()
 	{
 		$filename = filesRoot.'style/'.arg('delete');
-		if (file_exists($filename)) unlink($filename);
+		if (file_exists($filename))
+		{
+			unlink($filename);
+		}
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
 	//-----------------------------------------------------------------------------
@@ -472,8 +509,10 @@ class TThemes
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css'),
-				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px',
+					'comment'=>'.css'),
+				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel,
+					'width'=>'100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
 			'buttons' => array('ok','cancel'),
@@ -503,8 +542,10 @@ class TThemes
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'filename'),
-				array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
-				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px',
+					'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
+				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel,
+					'width'=>'100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -607,12 +648,13 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	public function adminRender()
 	{
 		$result = '';
-		if (UserRights($this->access)) {
+		if (UserRights($this->access))
+		{
 			#FIXME: Временное решение #0000163
 			$this->tabs['items'][0]['url'] =
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'templates'));
@@ -621,10 +663,18 @@ class TThemes
 			$this->tabs['items'][2]['url'] =
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'css'));
 			$result .= Eresus_Kernel::app()->getPage()->renderTabs($this->tabs);
-			switch (arg('section')) {
-				case 'css': $result .= $this->sectionStyles(); break;
-				case 'std': $result .= $this->sectionStd(); break;
-				case 'themes': default: $result .= $this->sectionTemplates(); break;
+			switch (arg('section'))
+			{
+				case 'css':
+					$result .= $this->sectionStyles();
+					break;
+				case 'std':
+					$result .= $this->sectionStd();
+					break;
+				case 'themes':
+				default:
+					$result .= $this->sectionTemplates();
+					break;
 			}
 		}
 		return $result;

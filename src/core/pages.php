@@ -589,7 +589,8 @@ class TPages
 			}
 			elseif (arg('action'))
 			{
-				switch(arg('action')) {
+				switch (arg('action'))
+				{
 					case 'up':
 						$this->moveUp();
 					break;

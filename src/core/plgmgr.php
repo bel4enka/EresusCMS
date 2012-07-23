@@ -75,13 +75,16 @@ class TPlgMgr
 		if (method_exists(Eresus_CMS::getLegacyKernel()->plugins->items[arg('id')], 'settings'))
 		{
 			$result = Eresus_CMS::getLegacyKernel()->plugins->items[arg('id', 'word')]->settings();
-		} else {
+		}
+		else
+		{
 			$form = array(
 				'name' => 'InfoWindow',
 				'caption' => Eresus_Kernel::app()->getPage()->title,
 				'width' => '300px',
 				'fields' => array (
-					array('type'=>'text','value'=>'<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
+					array('type'=>'text','value'=>
+					'<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
 				),
 				'buttons' => array('cancel'),
 			);

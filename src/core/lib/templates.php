@@ -49,16 +49,28 @@ class Templates
 	{
 		$result = array();
 		$dir = filesRoot.'templates/';
-		if ($type) $dir .= "$type/";
+		if ($type)
+		{
+			$dir .= "$type/";
+		}
 		$list = glob("$dir*.html");
-		if ($list) foreach($list as $filename) {
-			$file = file_get_contents($filename);
-			$title = trim(mb_substr($file, 0, mb_strpos($file, "\n")));
-			if (preg_match('/^<!-- (.+) -->/', $title, $title)) {
-				$file = trim(mb_substr($file, mb_strpos($file, "\n")));
-				$title = $title[1];
-			} else $title = admNoTitle;
-			$result[basename($filename, '.html')] = $title;
+		if ($list)
+		{
+			foreach ($list as $filename)
+			{
+				$file = file_get_contents($filename);
+				$title = trim(mb_substr($file, 0, mb_strpos($file, "\n")));
+				if (preg_match('/^<!-- (.+) -->/', $title, $title))
+				{
+					$file = trim(mb_substr($file, mb_strpos($file, "\n")));
+					$title = $title[1];
+				}
+				else
+				{
+					$title = admNoTitle;
+				}
+				$result[basename($filename, '.html')] = $title;
+			}
 		}
 		return $result;
 	}
@@ -74,30 +86,47 @@ class Templates
 	 */
 	function get($name = '', $type = '', $array = false)
 	{
-		$result = false;
-		if (empty($name)) $name = 'default';
+		if (empty($name))
+		{
+			$name = 'default';
+		}
 		$filename = filesRoot.'templates/';
-		if ($type) $filename .= "$type/";
+		if ($type)
+		{
+			$filename .= "$type/";
+		}
 		$filename .= "$name.html";
 		$result = fileread($filename);
-		if ($result) {
-			if ($array) {
+		if ($result)
+		{
+			if ($array)
+			{
 				$desc = preg_match($this->pattern, $result);
 				$result = array(
 					'name' => $name,
 					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : admNA,
 					'code' => $desc ? trim(mb_substr($result, mb_strpos($result, "\n"))) : $result,
 				);
-			} else {
+			}
+			else
+			{
 				if (preg_match($this->pattern, $result))
 				{
 					$result = trim(mb_substr($result, mb_strpos($result, "\n")));
 				}
 			}
-		} else {
-			if (empty($type) && $name != 'default') $result = $this->get('default', $type);
+		}
+		else
+		{
+			if (empty($type) && $name != 'default')
+			{
+				$result = $this->get('default', $type);
+			}
 			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
-			if (!$result) $result = '';
+			if (!$result)
+			{
+				$result = '';
+			}
 		}
 		return $result;
 	}
@@ -110,13 +139,16 @@ class Templates
 	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
 	 * @param string $code Содержимое шаблона
 	 * @param string $desc Описание шаблона (необязательно)
-	 * @return bool Результат выполенния
+	 * @return bool Результат выполнения
 	 */
 	function add($name, $type, $code, $desc = '')
 	{
 		$result = false;
 		$filename = filesRoot.'templates/';
-		if ($type) $filename .= "$type/";
+		if ($type)
+		{
+			$filename .= "$type/";
+		}
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
 		$result = filewrite($filename, $content);
@@ -131,17 +163,23 @@ class Templates
 	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
 	 * @param string $code Содержимое шаблона
 	 * @param string $desc Описание шаблона (необязательно)
-	 * @return bool Результат выполенния
+	 * @return bool Результат выполнения
 	 */
 	function update($name, $type, $code, $desc = null)
 	{
 		$result = false;
 		$filename = filesRoot.'templates/';
-		if ($type) $filename .= "$type/";
+		if ($type)
+		{
+			$filename .= "$type/";
+		}
 		$filename .= "$name.html";
 		$item = $this->get($name, $type, true);
 		$item['code'] = $code;
-		if (!is_null($desc)) $item['desc'] = $desc;
+		if (!is_null($desc))
+		{
+			$item['desc'] = $desc;
+		}
 		$content = "<!-- {$item['desc']} -->\n\n{$item['code']}";
 		$result = filewrite($filename, $content);
 		return $result;
@@ -152,13 +190,15 @@ class Templates
 	 *
 	 * @param string $name Имя шаблона
 	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-	 * @return bool Результат выполенния
+	 * @return bool Результат выполнения
 	 */
 	function delete($name, $type = '')
 	{
-		$result = false;
 		$filename = filesRoot.'templates/';
-		if ($type) $filename .= "$type/";
+		if ($type)
+		{
+			$filename .= "$type/";
+		}
 		$filename .= "$name.html";
 		$result = filedelete($filename);
 		return $result;

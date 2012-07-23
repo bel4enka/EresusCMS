@@ -47,58 +47,82 @@ class TUsers extends Accounts
 
 	private $pagesDesc = false;
 
- /**
-	* Конструктор
-	*
-	* @return TUsers
-	*/
+	/**
+	 * Конструктор
+	 *
+	 * @return TUsers
+	 */
 	function __construct()
 	{
 		$this->accounts = new Accounts();
 	}
-	//-----------------------------------------------------------------------------
+
 	function checkMail($mail)
 	{
 		$host = substr($mail, strpos($mail, '@')+1);
 		$ip = gethostbyname($host);
-		if ($ip == $host) {
+		if ($ip == $host)
+		{
 			ErrorMessage(sprintf(errNonexistedDomain, $host));
 			return false;
 		}
 		return true;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function notifyMessage($new, $old=null)
 	{
 		$result = '';
-		if (is_null($old)) {
+		if (is_null($old))
+		{
 			$result .= admUsersName.": ".$new['name']."\n";
 			$result .= admUsersLogin.": ".$new['login']."\n";
 			$result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$new['access'])."\n";
 			$result .= admUsersMail.": ".$new['mail']."\n";
-		} else {
+		}
+		else
+		{
 			$result = "ID ".$new['id']." - <strong>".$old['name']."</strong>\n".admChanges.":\n";
-			if ($new['name'] != $old['name']) $result .= admUsersName.": ".$old['name']." &rarr; ".$new['name']."\n";
-			if ($new['login'] != $old['login']) $result .= admUsersLogin.": ".$old['login']." &rarr; ".$new['login']."\n";
-			if ($new['active'] != $old['active']) $result .= admUsersAccountState.": ".($old['active']?strYes:strNo)." &rarr; ".($new['active']?strYes:strNo)."\n";
-			if ($new['loginErrors'] != $old['loginErrors']) $result .= admUsersLoginErrors.": ".$old['loginErrors']." &rarr; ".$new['loginErrors']."\n";
-			if ($new['access'] != $old['access']) $result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$old['access'])." &rarr; ".constant('ACCESSLEVEL'.$new['access'])."\n";
-			if ($new['mail'] != $old['mail']) $result .= admUsersMail.": ".$old['mail']." &rarr; ".$new['mail']."\n";
+			if ($new['name'] != $old['name'])
+			{
+				$result .= admUsersName.": ".$old['name']." &rarr; ".$new['name']."\n";
+			}
+			if ($new['login'] != $old['login'])
+			{
+				$result .= admUsersLogin.": ".$old['login']." &rarr; ".$new['login']."\n";
+			}
+			if ($new['active'] != $old['active'])
+			{
+				$result .= admUsersAccountState.": ".($old['active']?strYes:strNo)." &rarr; ".
+					($new['active']?strYes:strNo)."\n";
+			}
+			if ($new['loginErrors'] != $old['loginErrors'])
+			{
+				$result .= admUsersLoginErrors.": ".$old['loginErrors']." &rarr; ".$new['loginErrors']."\n";
+			}
+			if ($new['access'] != $old['access'])
+			{
+				$result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$old['access'])." &rarr; ".
+					constant('ACCESSLEVEL'.$new['access'])."\n";
+			}
+			if ($new['mail'] != $old['mail'])
+			{
+				$result .= admUsersMail.": ".$old['mail']." &rarr; ".$new['mail']."\n";
+			}
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function check_for_root($item)
 	{
 		return ($item['access'] != ROOT);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function check_for_edit($item)
 	{
 		return (($item['access'] != ROOT)||
 			(Eresus_CMS::getLegacyKernel()->user['id'] == $item['id'])) && UserRights(ADMIN);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function toggle()
 	{
 		$item = $this->accounts->get(arg('toggle', 'int'));
@@ -106,7 +130,7 @@ class TUsers extends Accounts
 		$this->accounts->update($item);
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 
 	/**
 	 * @param mixed $dummy  Используется для совместимости с родительским методом
@@ -132,10 +156,10 @@ class TUsers extends Accounts
 		};
 		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
- /**
-	* Создание учётной записи
-	*/
+	
+	/**
+	 * Создание учётной записи
+	 */
 	function insert()
 	{
 		# Получение данных
@@ -148,9 +172,21 @@ class TUsers extends Accounts
 		);
 		# Проверка входных данных
 		$error = false;
-		if (empty($item['name'])) { ErrorMessage(admUsersNameInvalid); $error = true;}
-		if (empty($item['login'])) { ErrorMessage(admUsersLoginInvalid); $error = true;}
-		if ($item['access'] <= ROOT) { ErrorMessage('Invalid access level!'); $error = true;}
+		if (empty($item['name']))
+		{
+			ErrorMessage(admUsersNameInvalid);
+			$error = true;
+		}
+		if (empty($item['login']))
+		{
+			ErrorMessage(admUsersLoginInvalid);
+			$error = true;
+		}
+		if ($item['access'] <= ROOT)
+		{
+			ErrorMessage('Invalid access level!');
+			$error = true;
+		}
 		if ($item['hash'] != Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd2')))
 		{
 			ErrorMessage(admUsersConfirmInvalid);
@@ -158,16 +194,23 @@ class TUsers extends Accounts
 		}
 		# Проверка данных на уникальность
 		$check = $this->accounts->get("`login` = '{$item['login']}'");
-		if ($check) { ErrorMessage(admUsersLoginExists); $error = true;}
-		if ($error) {
+		if ($check)
+		{
+			ErrorMessage(admUsersLoginExists);
+			$error = true;
+		}
+		if ($error)
+		{
 			saveRequest();
 			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 		if (!$this->accounts->add($item))
+		{
 			ErrorMessage('Error creating user account');
+		}
 		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 
 	/**
 	 * @param mixed $dummy  Используется для совместимости с родительским методом
@@ -182,17 +225,18 @@ class TUsers extends Accounts
 		$this->accounts->delete(arg('delete', 'int'));
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function password()
 	{
 		$item = $this->accounts->get(arg('password', 'int'));
-		if (arg('pswd1') == arg('pswd2')) {
+		if (arg('pswd1') == arg('pswd2'))
+		{
 			$item['hash'] = Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd1'));
 			$this->accounts->update($item);
 		}
 		HTTP::redirect(arg('submitURL'));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function edit()
 	{
 		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('users', "`id`='".arg('id')."'");
@@ -202,12 +246,21 @@ class TUsers extends Accounts
 			'width' => '400px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%','value'=>$item['name'], 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
-				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%','value'=>$item['login'], 'pattern'=>'/^[a-z\d_]+$/', 'errormsg'=>admUsersLoginInvalid, 'access'=>ADMIN),
-				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2, ACCESSLEVEL3, ACCESSLEVEL4), 'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
-				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState,'value'=>$item['active'], 'access'=>ADMIN),
-				array('type'=>'edit','name'=>'loginErrors','label'=>admUsersLoginErrors,'maxlength'=>2,'width'=>'30px','value'=>$item['loginErrors'], 'access'=>ADMIN),
-				array('type'=>'edit','name'=>'mail','label'=>admUsersMail,'maxlength'=>32,'width'=>'100%','value'=>$item['mail'], 'pattern'=>'/^[\w]+[\w\d_\.\-]+@[\w\d\-]{2,}\.[a-z]{2,5}$/i', 'errormsg'=>admUsersMailInvalid, 'access'=>ADMIN),
+				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%',
+					'value'=>$item['name'], 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
+				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%',
+					'value'=>$item['login'], 'pattern'=>'/^[a-z\d_]+$/', 'errormsg'=>admUsersLoginInvalid,
+					'access'=>ADMIN),
+				array('type'=>'select','name'=>'access','label'=>admAccessLevel,
+					'values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2, ACCESSLEVEL3, ACCESSLEVEL4),
+					'value'=>$item['access'], 'disabled'=>$item['access'] == ROOT, 'access'=>ADMIN),
+				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState,
+					'value'=>$item['active'], 'access'=>ADMIN),
+				array('type'=>'edit','name'=>'loginErrors','label'=>admUsersLoginErrors,'maxlength'=>2,
+					'width'=>'30px','value'=>$item['loginErrors'], 'access'=>ADMIN),
+				array('type'=>'edit','name'=>'mail','label'=>admUsersMail,'maxlength'=>32,'width'=>'100%',
+					'value'=>$item['mail'], 'pattern'=>'/^[\w]+[\w\d_\.\-]+@[\w\d\-]{2,}\.[a-z]{2,5}$/i',
+					'errormsg'=>admUsersMailInvalid, 'access'=>ADMIN),
 			),
 			'buttons' => array(UserRights($this->access)?'ok':'', 'apply', 'cancel'),
 		);
@@ -218,8 +271,10 @@ class TUsers extends Accounts
 			'width' => '400px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'password', 'value'=>$item['id']),
-				array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,'width'=>'100%'),
-				array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
+				array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,
+					'width'=>'100%'),
+				array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,
+					'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
 			),
 			'buttons' => array(UserRights($this->access)?'ok':'apply', 'cancel'),
 		);
@@ -228,7 +283,7 @@ class TUsers extends Accounts
 			Eresus_Kernel::app()->getPage()->renderForm($pswd);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 	function create()
 	{
 		restoreRequest();
@@ -238,13 +293,19 @@ class TUsers extends Accounts
 			'width' => '400px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action','value'=>'insert'),
-				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%', 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
-				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admUsersLoginInvalid),
-				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'width'=>'100%','values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4), 'default' => USER),
+				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%',
+					'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
+				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%',
+					'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admUsersLoginInvalid),
+				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'width'=>'100%',
+					'values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4),
+					'default' => USER),
 				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState, 'default' => true),
 				array('type'=>'divider'),
-				array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,'width'=>'100%'),
-				array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
+				array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,
+					'width'=>'100%'),
+				array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,
+					'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
 				array('type'=>'divider'),
 				array('type'=>'edit','name'=>'mail','label'=>admUsersMail,'maxlength'=>32,'width'=>'100%'),
 			),
@@ -254,7 +315,7 @@ class TUsers extends Accounts
 			renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	
 
 	/**
 	 *
@@ -266,8 +327,10 @@ class TUsers extends Accounts
 		$request = Eresus_CMS::getLegacyKernel()->request;
 		$granted = false;
 		if (UserRights($this->access))
+		{
 			$granted = true;
-			else
+		}
+		else
 		{
 			if (arg('id') == Eresus_CMS::getLegacyKernel()->user['id'])
 			{
@@ -283,15 +346,41 @@ class TUsers extends Accounts
 		}
 		if ($granted)
 		{
-			if (arg('update')) $this->update(null);
-			elseif (isset($request['arg']['password'])  && (!isset($request['arg']['action']) || ($request['arg']['action'] != 'login'))) $this->password();
-			elseif (isset($request['arg']['toggle'])) $this->toggle();
-			elseif (isset($request['arg']['delete'])) $this->delete(null);
-			elseif (isset($request['arg']['id'])) $result = $this->edit();
-			elseif (isset($request['arg']['action'])) switch(arg('action')) {
-				case 'create': $result = $this->create(); break;
-				case 'insert': $this->insert(); break;
-			} else {
+			if (arg('update'))
+			{
+				$this->update(null);
+			}
+			elseif (isset($request['arg']['password']) && (!isset($request['arg']['action']) ||
+				($request['arg']['action'] != 'login')))
+			{
+				$this->password();
+			}
+			elseif (isset($request['arg']['toggle']))
+			{
+				$this->toggle();
+			}
+			elseif (isset($request['arg']['delete']))
+			{
+				$this->delete(null);
+			}
+			elseif (isset($request['arg']['id']))
+			{
+				$result = $this->edit();
+			}
+			elseif (isset($request['arg']['action']))
+			{
+				switch (arg('action'))
+				{
+					case 'create':
+						$result = $this->create();
+						break;
+					case 'insert':
+						$this->insert();
+						break;
+				}
+			}
+			else
+			{
 				$table = array (
 					'name' => 'users',
 					'key'=>'id',
@@ -299,16 +388,20 @@ class TUsers extends Accounts
 					'columns' => array(
 						array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
 						array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
-						array('name' => 'access', 'caption' => admUsersAccessLevelShort, 'align' => 'center', 'width' => '70px', 'replace' => array (
+						array('name' => 'access', 'caption' => admUsersAccessLevelShort, 'align' => 'center',
+							'width' => '70px', 'replace' => array (
 							'1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
 							'2' => '<span style="font-weight: bold; color: red;">admin</span>',
 							'3' => '<span style="font-weight: bold; color: blue;">editor</span>',
 							'4' => 'user'
 						)),
 						array('name' => 'login', 'caption' => admUsersLogin, 'align' => 'left'),
-						array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center', 'macros'=>true, 'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
-						array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort, 'align' => 'center', 'width' => '140px'),
-						array('name' => 'loginErrors', 'caption' => admUsersLoginErrorsShort, 'align' => 'center', 'replace' => array (
+						array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center', 'macros'=>true,
+							'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
+						array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort, 'align' => 'center',
+							'width' => '140px'),
+						array('name' => 'loginErrors', 'caption' => admUsersLoginErrorsShort,
+							'align' => 'center', 'replace' => array (
 							'0' => '',
 						)),
 					),
@@ -320,7 +413,7 @@ class TUsers extends Accounts
 					'tabs' => array(
 						'width'=>'180px',
 						'items'=>array(
-						 array('caption'=>admUsersCreate, 'name'=>'action', 'value'=>'create')
+							array('caption'=>admUsersCreate, 'name'=>'action', 'value'=>'create')
 						)
 					)
 				);
