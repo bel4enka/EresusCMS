@@ -36,18 +36,19 @@
 class TSettings
 {
 	/**
-	 * Минимальный требуемый уровнеь доступа
+	 * Минимальный требуемый уровень доступа
 	 * @var int
 	 */
 	private $access = ADMIN;
 
 	/**
 	 * Создаёт строку параметра для записи в файл
-	 * @param string $name     Имя параметра
-	 * @param string $type
-	 * @param array  $options
+	 *
+	 * @param string $name     имя параметра
+	 * @param string $type     тип: string, bool или int
+	 * @param array  $options  опции: nobr (true/false), savebr (true/false)
+	 *
 	 * @return string
-	 * @uses HTTP::request
 	 */
 	private function mkstr($name, $type = 'string', $options = array())
 	{

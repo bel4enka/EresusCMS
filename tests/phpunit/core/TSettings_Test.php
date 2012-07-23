@@ -49,17 +49,16 @@ class Eresus_TSettings_Test extends PHPUnit_Framework_TestCase
 		$settings = new TSettings('');
 		$this->assertEquals("  define('foo', '');\n", $mkstr->invoke($settings, 'foo'));
 		$this->assertEquals("  define('foo', false);\n", $mkstr->invoke($settings, 'foo', 'bool'));
-
 		$this->assertEquals("  define('foo', 0);\n", $mkstr->invoke($settings, 'foo', 'int'));
 
-		$_POST['foo']="goo '1 \ 2 \" 3 \n4 \r5 go";
+		$_POST['foo'] = "' \\ \" \r \n";
 
-		$options = array('nobr'=> true);
-		$this->assertEquals("  define('foo', 'goo \'1 \\\\ 2 \" 3  4  5 go');\n",
+		$options = array('nobr' => true);
+		$this->assertEquals("  define('foo', '\\' \\\\ \"    ');\n",
 			$mkstr->invoke($settings, "foo", 'string', $options));
 
 		$options = array('savebr' => true);
-		$this->assertEquals("  define('foo', \"goo '1 \\\\ 2 \\\\\\\" 3 \\\\n4 \\\\r5 go\");\n",
+		$this->assertEquals("  define('foo', \"' \\\\ \\\\\\\" \\\\r \\\\n\");\n",
 			$mkstr->invoke($settings, "foo", 'string', $options));
 	}
 	/* */
