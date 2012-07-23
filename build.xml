@@ -153,6 +153,7 @@
 		</if>
 
 		<phpcodesniffer
+			encoding="UTF-8"
 			standard="Eresus"
 			haltonerror="false"
 		>
