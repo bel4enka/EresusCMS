@@ -170,8 +170,12 @@ class Eresus_CMS extends EresusApplication
 		/* Проверяем наличие нужных файлов */
 		$required = array('cfg/main.php');
 		foreach ($required as $filename)
+		{
 			if (!FS::exists($filename))
+			{
 				$errors []= array('file' => $filename, 'problem' => 'missing');
+			}
+		}
 
 		/* Проверяем доступность для записи */
 		$writable = array(
@@ -182,15 +186,23 @@ class Eresus_CMS extends EresusApplication
 			'style'
 		);
 		foreach ($writable as $filename)
+		{
 			if (!FS::isWritable($filename))
+			{
 				$errors []= array('file' => $filename, 'problem' => 'non-writable');
+			}
+		}
 
 		if ($errors)
 		{
 			if (!PHP::isCLI())
+			{
 				require_once 'errors.html.php';
+			}
 			else
+			{
 				die("Errors...\n"); // TODO Доделать
+			}
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -381,8 +393,8 @@ class Eresus_CMS extends EresusApplication
 	protected function initDB()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-/*
-		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+		/*
+		global $Eresus;
 
 		// FIXME Использование устаревших настроек
 		$dsn = ($Eresus->conf['db']['engine'] ? $Eresus->conf['db']['engine'] : 'mysql') .
@@ -402,7 +414,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-/*		global $Eresus; // FIXME: Устаревшая переменная $Eresus
+		/*global $Eresus;
 
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
@@ -410,7 +422,8 @@ class Eresus_CMS extends EresusApplication
 
 		# Обратная совместимость
 		$Eresus->session = &$_SESSION['session'];
-		#if (!isset($Eresus->session['msg'])) $Eresus->session['msg'] = array('error' => array(), 'information' => array());
+		#if (!isset($Eresus->session['msg']))
+			$Eresus->session['msg'] = array('error' => array(), 'information' => array());
 		#$Eresus->user = &$_SESSION['user'];
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];*/
