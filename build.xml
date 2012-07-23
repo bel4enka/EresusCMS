@@ -84,9 +84,15 @@
 		<exclude name=".svn" />
 	</fileset>
 
+	<!-- Модульные тесты -->
+	<fileset dir="." id="files.tests.unit">
+		<include name="tests/phpunit/**.php" />
+		<exclude name=".svn" />
+	</fileset>
+
 	<!--
 	=====================================================================
-	Модульные тесы
+	Модульные тесты
 	=====================================================================
 	-->
 	<target name="tests" description="Run unit tests">
@@ -158,6 +164,7 @@
 				<include name="**/*.php" />
 				<exclude name="ext-3rd/**" />
 			</fileset>
+			<fileset refid="files.tests.unit" />
 		</phpcodesniffer>
 
 	</target>
