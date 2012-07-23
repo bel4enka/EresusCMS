@@ -39,7 +39,9 @@ define('filesRoot', '/home/exmaple.org/');
 define('httpRoot', 'http:///exmaple.org/');
 
 
-function eresus_log() {}
+function eresus_log()
+{
+}
 
 /**
  * @package Eresus
@@ -51,19 +53,21 @@ class FS
 	public static function canonicalForm($filename)
 	{
 		/* Convert slashes */
-    $filename = str_replace('\\', '/', $filename);
+		$filename = str_replace('\\', '/', $filename);
 
-    /* Prepend drive letter with slash if needed */
-    if (substr($filename, 1, 1) == ':')
-      $filename = '/' . $filename;
+		/* Prepend drive letter with slash if needed */
+		if (substr($filename, 1, 1) == ':')
+		{
+			$filename = '/' . $filename;
+		}
 
-    return $filename;
+		return $filename;
 	}
 	//-----------------------------------------------------------------------------
 
 	public static function isFile($filename)
 	{
-    return is_file($filename);
+		return is_file($filename);
 	}
 	//-----------------------------------------------------------------------------
 }
