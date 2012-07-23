@@ -118,80 +118,94 @@ class TPlugin
 	}
 	//------------------------------------------------------------------------------
 
-/**
-* Чтение настроек плагина из БД
-*
-* @return  bool  Результат выполнения
-*/
-function loadSettings()
-{
-	$result = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='".$this->name."'");
-	if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
-	return (bool)$result;
-}
-//------------------------------------------------------------------------------
-/**
-* Сохранение настроек плагина в БД
-*
-* @return  bool  Результат выполнения
-*/
-function saveSettings()
-{
-	$item = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='{$this->name}'");
-	$item = $this->__item($item);
-	$item['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(encodeOptions($this->settings));
-	$result = Eresus_CMS::getLegacyKernel()->db->updateItem('plugins', $item, "`name`='".$this->name."'");
-	return $result;
-}
-//------------------------------------------------------------------------------
-/**
-* Обновление данных о плагине в БД
-*/
-function resetPlugin()
-{
-	$this->loadSettings();
-	$this->saveSettings();
-}
-//------------------------------------------------------------------------------
-/**
-* Действия, выполняемые при инсталляции плагина
-*/
-function install() {}
-//------------------------------------------------------------------------------
-/**
-* Действия, выполняемые при деинсталляции плагина
-*/
-function uninstall() {}
-//------------------------------------------------------------------------------
-/**
-* Действия при изменении настроек
-*/
-function onSettingsUpdate() {}
-//------------------------------------------------------------------------------
-/**
-* Сохраняет в БД изменения настроек плагина
-*/
-function updateSettings()
-{
-	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
-	$this->onSettingsUpdate();
-	$this->saveSettings();
-}
-//------------------------------------------------------------------------------
-/**
-* Замена макросов
-*
-* @param  string  $template  Строка в которой требуется провести замену макросов
-* @param  arrya   $item      Ассоциативный массив со значениями для подстановки вместо макросов
-*
-* @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
-*/
-function replaceMacros($template, $item)
-{
-	preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-	if (count($matches[1])) foreach($matches[1] as $macros)
-		if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template);
-	return $template;
-}
-//------------------------------------------------------------------------------
+	/**
+	* Чтение настроек плагина из БД
+	*
+	* @return  bool  Результат выполнения
+	*/
+	function loadSettings()
+	{
+		$result = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='".$this->name."'");
+		if ($result) $this->settings = decodeOptions($result['settings'], $this->settings);
+		return (bool)$result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Сохранение настроек плагина в БД
+	*
+	* @return  bool  Результат выполнения
+	*/
+	function saveSettings()
+	{
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='{$this->name}'");
+		$item = $this->__item($item);
+		$item['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(encodeOptions($this->settings));
+		$result = Eresus_CMS::getLegacyKernel()->db->updateItem('plugins', $item, "`name`='".$this->name."'");
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Обновление данных о плагине в БД
+	*/
+	function resetPlugin()
+	{
+		$this->loadSettings();
+		$this->saveSettings();
+	}
+	//------------------------------------------------------------------------------
+
+	/**
+	 * Действия, выполняемые при инсталляции плагина
+	 */
+	public function install()
+	{
+	}
+
+	/**
+	 * Действия, выполняемые при деинсталляции плагина
+	 */
+	public function uninstall()
+	{
+	}
+
+	/**
+	 * Действия при изменении настроек
+	 */
+	public function onSettingsUpdate()
+	{
+
+	}
+
+	/**
+	 * Сохраняет в БД изменения настроек плагина
+	 */
+	public function updateSettings()
+	{
+		foreach ($this->settings as $key => $value)
+		{
+			if (!is_null(arg($key)))
+			{
+				$this->settings[$key] = arg($key);
+			}
+		}
+		$this->onSettingsUpdate();
+		$this->saveSettings();
+	}
+	//------------------------------------------------------------------------------
+	/**
+	* Замена макросов
+	*
+	* @param  string  $template  Строка в которой требуется провести замену макросов
+	* @param  arrya   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+	*
+	* @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
+	*/
+	function replaceMacros($template, $item)
+	{
+		preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
+		if (count($matches[1])) foreach($matches[1] as $macros)
+			if (isset($item[$macros])) $template = str_replace('$('.$macros.')', $item[$macros], $template);
+		return $template;
+	}
+	//------------------------------------------------------------------------------
 }
