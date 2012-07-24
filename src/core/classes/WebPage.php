@@ -301,11 +301,11 @@ class WebPage
 	 *
 	 * @return WebPage
 	 */
-  // @codeCoverageIgnoreStart
+	// @codeCoverageIgnoreStart
 	public function __construct()
 	{
 	}
-  // @codeCoverageIgnoreEnd
+	// @codeCoverageIgnoreEnd
 	//-----------------------------------------------------------------------------
 
 	/**
