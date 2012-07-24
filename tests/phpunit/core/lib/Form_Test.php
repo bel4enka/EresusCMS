@@ -87,23 +87,33 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
     $this->assertEquals(" id=\"1\" disabled=\"disabled\" class=\"bar\" style=\"width: 50\" foo", 
 			$Form->attrs($item));    
 
-		$item = array();		  
+		$item = array(
+			'id'=>'',
+			'disabled'=>'',
+			'class' => array(),
+		);		  
     $this->assertEquals(' ',	$Form->attrs($item));
 	}
 	/* */
-	
-	
-	
-	
+		
 	/**
 	 * @covers Form::render_divider
 	 * /
 	public function test_render_text()
 	{
     $Form = new Form(array());
-		$item= array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32);
-		  
-    $this->assertEquals("\t\t<tr><td colspan=\"2\"><hr class=\"formDivider\" /></td></tr>\n", 
+		$item = array(
+			'id'=> 1,
+			'disabled'=>'go',
+			'class' => array('foo'=>'bar'), 
+			'width' =>'50', 
+			'style'=> array(),
+			'extra'=>'foo'	
+		);
+		$html_tag='<tr><td colspan="2" class="formText"';
+		$resalt_attrs=" id=\"1\" disabled=\"disabled\" class=\"bar\" style=\"width: 50\" foo";
+		
+    $this->assertEquals("\t\t".$html_tag.$resalt_attrs.'>'.$item['value']."</td></tr>\n", 
 			$Form->render_text($item));           
 	}
 	/* */
