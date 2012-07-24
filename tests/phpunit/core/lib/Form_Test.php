@@ -99,8 +99,8 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 	/* */
 		
 	/**
-	 * @covers Form::render_divider
-	 * /
+	 * @covers Form::render_text
+	 */
 	public function test_render_text()
 	{
     $Form = new Form(array());
@@ -110,7 +110,8 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 			'class' => array('foo'=>'bar'), 
 			'width' =>'50', 
 			'style'=> array(),
-			'extra'=>'foo'	
+			'extra'=>'foo',
+			'value'=>'bar'	
 		);
 		$html_tag='<tr><td colspan="2" class="formText"';
 		$resalt_attrs=" id=\"1\" disabled=\"disabled\" class=\"bar\" style=\"width: 50\" foo";
