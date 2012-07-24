@@ -121,5 +121,27 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 	}
 	/* */
 	
+	/**
+	 * @covers Form::render_header
+	 */
+	public function test_render_header()
+	{
+    $Form = new Form(array());
+		$item = array(
+			'id'=> 1,
+			'disabled'=>'go',
+			'class' => array('foo'=>'bar'), 
+			'width' =>'50', 
+			'style'=> array(),
+			'extra'=>'foo',
+			'value'=>'bar'	
+		);
+		$html_tag='<tr><th colspan="2" class="formHeader"';
+		$resalt_attrs=" id=\"1\" disabled=\"disabled\" class=\"bar\" style=\"width: 50\" foo";
+		
+    $this->assertEquals("\t\t".$html_tag.$resalt_attrs.'>'.$item['value']."</th></tr>\n", 
+			$Form->render_header($item));           
+	}
+	/* */
 	
 }
