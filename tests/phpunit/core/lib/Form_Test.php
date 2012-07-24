@@ -43,14 +43,29 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test__construct()
 	{
+    $Form = new Form(array());
+		$values = array('foo' => 'bar');
+    $Form->__construct($values);
+    $this->assertEquals('bar', $Form->form['foo']);
+           
+    
+    $Form->__construct($values, $values);
+    $this->assertEquals('bar', $Form->form['foo']);
+    $this->assertEquals('bar', $Form->values['foo']);
+            
+	}
+	/* */
+	
+	/**
+	 * @covers Form::__construct
+	 */
+	public function test_render_divider()
+	{
     $Form = new Form('');
     $Form->__construct('foo');
     $this->assertEquals('foo', $Form->form);
            
-    $values = array('foo' => 'bar');
-    $Form->__construct('foo', $values);
-    $this->assertEquals('foo', $Form->form);
-    $this->assertEquals('bar', $Form->values['foo']);
+    
             
 	}
 	/* */
