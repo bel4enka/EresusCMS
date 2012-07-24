@@ -126,4 +126,61 @@ class WebPageTest extends PHPUnit_Framework_TestCase
      $this->assertEquals('foo', $head['meta-tags']['bar']);
 	}
 	/* */
+  
+  /* */
+  /**
+	 * @covers WebPage::linkStyles
+	 */
+	public function test_linkStyles()
+	{
+     $p_head = new ReflectionProperty('WebPage', 'head');
+     $p_head->setAccessible(true);
+
+     $page = new WebPage();
+     $page->linkStyles('foo', 'bar');
+
+     $head = $p_head->getValue($page);
+     
+     $this->assertCount(1, $head['link']);
+     $this->assertEquals('foo', $head['link'][0]['href']);
+     $this->assertEquals('bar', $head['link'][0]['media']);
+     
+     $page->linkStyles('bar', 'foo');
+     $head = $p_head->getValue($page);
+     
+     $page->linkStyles('foo', 'bar');
+     $head = $p_head->getValue($page);
+     
+     $this->assertCount(2, $head['link']);
+     
+	}
+	/* */
+  
+   /* */
+  /**
+	 * @covers WebPage::addStyles
+	 */
+	public function test_addStyles()
+	{
+     $p_head = new ReflectionProperty('WebPage', 'head');
+     $p_head->setAccessible(true);
+
+     $page = new WebPage();
+     $page->addStyles(' foo', 'bar');
+     $head = $p_head->getValue($page);
+     
+     $this->assertCount(1, $head['style']);
+     $this->assertEquals('		foo', $head['style'][0]['content']);
+     $this->assertEquals('bar', $head['style'][0]['media']);
+     
+     $page->addStyles('bar', 'foo');
+     $head = $p_head->getValue($page);
+     
+     $this->assertCount(2, $head['style']);
+     $this->assertEquals("	bar", $head['style'][1]['content']);
+     $this->assertEquals('foo', $head['style'][1]['media']);
+    
+     
+	}
+	/* */
 }
