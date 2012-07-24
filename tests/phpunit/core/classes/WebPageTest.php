@@ -97,8 +97,6 @@ class WebPageTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_setMetaHeader()
 	{
-     // $WebPage = new WebPage('');      
-     // $WebPage->setMetaHeader('REFRESH', '30');  
      $p_head = new ReflectionProperty('WebPage', 'head');
      $p_head->setAccessible(true);
 
@@ -109,6 +107,23 @@ class WebPageTest extends PHPUnit_Framework_TestCase
      
      $this->assertArrayHasKey('foo', $head['meta-http']);
      $this->assertEquals('bar', $head['meta-http']['foo']);
+	}
+	/* */
+  /**
+	 * @covers WebPage::setMetaTag
+	 */
+	public function test_setMetaTag()
+	{
+     $p_head = new ReflectionProperty('WebPage', 'head');
+     $p_head->setAccessible(true);
+
+     $page = new WebPage();
+     $page->setMetaTag('bar', 'foo');
+
+     $head = $p_head->getValue($page);
+     
+     $this->assertArrayHasKey('bar', $head['meta-tags']);
+     $this->assertEquals('foo', $head['meta-tags']['bar']);
 	}
 	/* */
 }
