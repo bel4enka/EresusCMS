@@ -43,9 +43,9 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test__construct()
 	{
-    $Form = new Form(array());
 		$values = array('foo' => 'bar');
-    $Form->__construct($values);
+    $Form = new Form($values);
+		
     $this->assertEquals('bar', $Form->form['foo']);
            
     
@@ -65,10 +65,48 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 		$item= array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32);
 		  
     $this->assertEquals("\t\t<tr><td colspan=\"2\"><hr class=\"formDivider\" /></td></tr>\n", 
-			$Form->render_divider($item));
-           
-    
-            
+			$Form->render_divider($item));           
 	}
 	/* */
+	
+	/**
+	 * @covers Form::attrs
+	 */
+	public function test_attrs()
+	{
+    $Form = new Form(array());
+		$item = array(
+			'id'=> 1,
+			'disabled'=>'go',
+			'class' => array('foo'=>'bar'), 
+			'width' =>'50', 
+			'style'=> array(),
+			'extra'=>'foo'	
+		);
+		  
+    $this->assertEquals(" id=\"1\" disabled=\"disabled\" class=\"bar\" style=\"width: 50\" foo", 
+			$Form->attrs($item));    
+
+		$item = array();		  
+    $this->assertEquals(' ',	$Form->attrs($item));
+	}
+	/* */
+	
+	
+	
+	
+	/**
+	 * @covers Form::render_divider
+	 * /
+	public function test_render_text()
+	{
+    $Form = new Form(array());
+		$item= array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32);
+		  
+    $this->assertEquals("\t\t<tr><td colspan=\"2\"><hr class=\"formDivider\" /></td></tr>\n", 
+			$Form->render_text($item));           
+	}
+	/* */
+	
+	
 }
