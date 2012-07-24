@@ -91,7 +91,8 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 			'id'=>'',
 			'disabled'=>'',
 			'class' => array(),
-			'style'=> array(),	
+			'style'=> array(),
+			'extra'=>''
 		);		  
     $this->assertEquals(' ',	$Form->attrs($item));
 	}
