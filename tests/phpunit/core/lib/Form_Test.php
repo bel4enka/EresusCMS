@@ -57,13 +57,15 @@ class Eresus_Form_Test extends PHPUnit_Framework_TestCase
 	/* */
 	
 	/**
-	 * @covers Form::__construct
+	 * @covers Form::render_divider
 	 */
 	public function test_render_divider()
 	{
-    $Form = new Form('');
-    $Form->__construct('foo');
-    $this->assertEquals('foo', $Form->form);
+    $Form = new Form(array());
+		$item= array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32);
+		  
+    $this->assertEquals("\t\t<tr><td colspan=\"2\"><hr class=\"formDivider\" /></td></tr>\n", 
+			$Form->render_divider($item));
            
     
             
