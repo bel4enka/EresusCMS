@@ -86,7 +86,6 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 			);
 		
 		$AdminList->addRows($rows);  
-	//	print_r($AdminList->body); die;
     $this->assertEquals(array(
 				0=>array(
 						0=>array('text'=>'foo'),
@@ -117,6 +116,23 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 		
 		$cell=array();  
     $this->assertEquals('<meta></meta>',	$AdminList->renderCell('meta', $cell));
+	}	
+
+	/**
+	 * @covers AdminList::setHead
+	 */
+	public function test_setHead()
+	{
+		$AdminList = new AdminList();
+
+		$AdminList->setHead('foo', array('bar','text'=>'go')); 
+    $this->assertEquals( array(array('text'=>'foo'), array('bar','text'=>'go')),	$AdminList->head); 
+		
+		$AdminList->setHead(); 
+		$this->assertEquals( array(),	$AdminList->head);
+		
+		$AdminList->setHead(1, 2, 3); 
+		$this->assertEquals( array(),	$AdminList->head);
 	}	
 
 	/* */
