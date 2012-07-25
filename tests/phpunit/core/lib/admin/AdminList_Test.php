@@ -53,5 +53,27 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
            
 	}
 	
+	/**
+	 * @covers AdminList::addRow
+	 */
+	public function test_addRow()
+	{
+		$AdminList = new AdminList();
+		$cells=array(
+				0=>'foo',
+				1=>array('bar'),
+				2=>array('text'=>'go')	
+			);
+		
+		$AdminList->addRow($cells);  
+	//	print_r($AdminList->body); die;
+    $this->assertEquals(array(
+				0=>array(
+						0=>array('text'=>'foo'),
+				    1=>array('text'=>'bar'),     
+			    	2=>array('text'=>'go')
+			)),$AdminList->body);          
+	}
+	
 	/* */
 }
