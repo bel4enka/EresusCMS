@@ -108,7 +108,7 @@ class WebPageTest extends PHPUnit_Framework_TestCase
      $this->assertArrayHasKey('foo', $head['meta-http']);
      $this->assertEquals('bar', $head['meta-http']['foo']);
 	}
-	/* */
+
   /**
 	 * @covers WebPage::setMetaTag
 	 */
@@ -125,9 +125,7 @@ class WebPageTest extends PHPUnit_Framework_TestCase
      $this->assertArrayHasKey('bar', $head['meta-tags']);
      $this->assertEquals('foo', $head['meta-tags']['bar']);
 	}
-	/* */
-  
-  /* */
+	
   /**
 	 * @covers WebPage::linkStyles
 	 */
@@ -154,9 +152,7 @@ class WebPageTest extends PHPUnit_Framework_TestCase
      $this->assertCount(2, $head['link']);
      
 	}
-	/* */
   
-   /* */
   /**
 	 * @covers WebPage::addStyles
 	 */
@@ -178,9 +174,8 @@ class WebPageTest extends PHPUnit_Framework_TestCase
      
      $this->assertCount(2, $head['style']);
      $this->assertEquals("	bar", $head['style'][1]['content']);
-     $this->assertEquals('foo', $head['style'][1]['media']);
-    
-     
+     $this->assertEquals('foo', $head['style'][1]['media']);   
 	}
 	/* */
-}
+  
+} 
