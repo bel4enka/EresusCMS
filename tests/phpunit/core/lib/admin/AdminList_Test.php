@@ -86,7 +86,7 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 			);
 		
 		$AdminList->addRows($rows);  
-		
+	//	print_r($AdminList->body); die;
     $this->assertEquals(array(
 				0=>array(
 						0=>array('text'=>'foo'),
@@ -98,6 +98,26 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 			    	2=>array('text'=>'go'))			
 			),$AdminList->body);          
 	}
+	
+	/**
+	 * @covers AdminList::renderCell
+	 */
+	public function test_renderCell()
+	{
+		$AdminList = new AdminList();
+		$cell=array(
+			'href'=>'foo',
+			'align'=>'bar',
+			'style'=>'go',
+			'text'=>'world'
+			);
+		  
+    $this->assertEquals('<meta style="text-align: bar;go"><a href="foo">world</a></meta>',
+			$AdminList->renderCell('meta', $cell));    
+		
+		$cell=array();  
+    $this->assertEquals('<meta></meta>',	$AdminList->renderCell('meta', $cell));
+	}	
 
 	/* */
 }
