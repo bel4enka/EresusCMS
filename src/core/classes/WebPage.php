@@ -77,8 +77,8 @@ class HtmlElement
 	/**
 	 * Устанавливает значение атрибута
 	 *
-	 * @param string $name              имя атрибута
-	 * @param string $value [optional]  значение атрибута
+	 * @param string $name   имя атрибута
+	 * @param mixed  $value  значение атрибута
 	 *
 	 * @return void
 	 *
@@ -402,8 +402,8 @@ class WebPage
 	 *
 	 * Если передан аргумент «top», то скрипт будет подключен в самом начале блока скриптов.
 	 *
-	 * @param string $url                     URL скрипта
-	 * @param string $ar1...$argN [optional]  Дополнительные параметры
+	 * @param string $url  URL скрипта
+	 * @param string ...   Дополнительные параметры
 	 */
 	public function linkScripts($url)
 	{
@@ -489,8 +489,8 @@ class WebPage
 	 * - head - вставить в секцию <head> (по умолчанию)
 	 * - body - вставить в секцию <body>
 	 *
-	 * @param string $code                    Код скрипта
-	 * @param string $ar1...$argN [optional]  Дополнительные параметры
+	 * @param string $code  Код скрипта
+	 * @param string ...    Дополнительные параметры
 	 */
 	public function addScripts($code)
 	{
@@ -642,6 +642,7 @@ class WebPage
 		 */
 		foreach ($this->head['scripts'] as $script)
 		{
+			/** @var HtmlScriptElement $script */
 			$result[] = $script->getHTML();
 		}
 
@@ -679,6 +680,7 @@ class WebPage
 		 */
 		foreach ($this->body['scripts'] as $script)
 		{
+			/** @var HtmlScriptElement $script */
 			$result[] = $script->getHTML();
 		}
 
@@ -778,7 +780,6 @@ class WebPage
 	 */
 	public function pageSelector($total, $current, $url = null, $templates = null)
 	{
-		$result = '';
 		# Загрузка шаблонов
 		if (!is_array($templates))
 		{
