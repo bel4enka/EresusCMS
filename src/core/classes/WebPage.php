@@ -553,15 +553,16 @@ class WebPage
 	 *
 	 * - jquery — {@link http://jquery.com/ jQuery}
 	 * - modernizr — {@link http://modernizr.com/ Modernizr}
-	 * - webshims — {@link http://afarkas.github.com/webshim/demos/ Webshims}
+	 * - webshim — {@link http://afarkas.github.com/webshim/demos/ Webshims}
+	 * - webshims — устаревший синоним для webshim
 	 *
 	 * Аргументы для библиотеки jquery:
 	 *
 	 * - ui — jQuery UI
 	 * - cookie — jQuery.Cookie
 	 *
-	 * @param string $library     имя библиотеки
-	 * @param string $arg1…$argN  дополнительные аргументы
+	 * @param string $library  имя библиотеки
+	 * @param ...              дополнительные аргументы
 	 *
 	 * @return void
 	 *
@@ -571,27 +572,29 @@ class WebPage
 	{
 		$args = func_get_args();
 		array_shift($args);
+		$root = Eresus_CMS::getLegacyKernel()->root;
 		switch ($library)
 		{
 			case 'jquery':
 				if (in_array('ui', $args))
 				{
-					$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/jquery/jquery-ui.min.js', 'top');
+					$this->linkScripts($root . 'core/jquery/jquery-ui.min.js', 'top');
 				}
 				if (in_array('cookie', $args))
 				{
-					$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/jquery/jquery.cookie.js', 'top');
+					$this->linkScripts($root . 'core/jquery/jquery.cookie.js', 'top');
 				}
-				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/jquery/jquery.min.js', 'top');
+				$this->linkScripts($root . 'core/jquery/jquery.min.js', 'top');
 			break;
 
 			case 'modernizr':
-				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/js/modernizr/modernizr.min.js', 'top');
+				$this->linkScripts($root . 'core/js/modernizr/modernizr.min.js', 'top');
 			break;
 
+			case 'webshim':
 			case 'webshims':
-				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/js/webshims/custom.js', 'top');
-				$this->linkScripts(Eresus_CMS::getLegacyKernel()->root . 'core/js/webshims/polyfiller.js', 'top');
+				$this->linkScripts($root . 'core/js/webshim/custom.js', 'top');
+				$this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'top');
 				$this->linkJsLib('modernizr');
 				$this->linkJsLib('jquery');
 			break;

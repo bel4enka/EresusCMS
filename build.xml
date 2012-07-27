@@ -48,12 +48,6 @@
 		<exclude name=".svn" />
 	</fileset>
 
-	<!-- 3rd party: Webshims -->
-	<fileset dir="3rdparty/webshims" id="files.3rd.webshims">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
 	<!-- 3rd party: Tiny MCE -->
 	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
 		<include name="**" />
@@ -227,8 +221,11 @@
 		</copy>
 
 		<!-- Webshims -->
-		<copy todir="${build.dir}/core/js/webshims">
-			<fileset refid="files.3rd.webshims" />
+		<copy todir="${build.dir}/core/js/webshim">
+			<fileset dir="3rdparty/webshim">
+				<include name="**" />
+				<exclude name=".svn" />
+			</fileset>
 		</copy>
 
 		<!-- Tiny MCE -->
