@@ -9,35 +9,28 @@ audio {
 }
 audio.webshims-controls,
 video {
-	display: block;
-	width: 300px;
-	height: 150px;
+	display: inline-block;
 	min-height: 45px;
 	min-width: 40px;
 }
-
+audio[controls] {
+	display: inline-block;
+	min-height: 45px;
+	min-width: 40px;
+}
 video *,
 audio * {
 	display: none !important;
-}
-audio.webshims-controls {
-	height: 45px;
-}
-audio[controls] {
-	display: block;
-	width: 300px;
-	height: 45px;
-	min-height: 45px;
 }
 .flashblocker-assumed {
 	min-height: 20px;
 	min-width: 20px;
 }
 mark {
-    background-color: #ff9;
-    color: #000; 
-    font-style: italic;
-    font-weight: bold;
+	background-color: #ff9;
+	color: #000; 
+	font-style: italic;
+	font-weight: bold;
 }
 
 /* reset */
@@ -113,6 +106,9 @@ output {
 }
 .placeholder-visible .placeholder-text {
 	display: inline-block;
+}
+.placeholder-focused.placeholder-visible {
+	color: #ccc;
 }
 .polyfill-important .placeholder-visible .placeholder-text {
 	display: inline-block !important;
@@ -252,7 +248,7 @@ img.ui-datepicker-trigger {
 	top: 0;
 	position: absolute;
 	display: block;
-	z-index: 10;
+	z-index: 4;
 	overflow: hidden;
 	margin: -5px 0 0 -8px;
 	height: 22px;
@@ -301,12 +297,6 @@ img.ui-datepicker-trigger {
 .input-range.ui-slider-horizontal .ui-slider-range-max {
 	right: 0;
 }
-
-.input-datetime-local-date.hasDatepicker,
-.input-date.hasDatepicker {
-	position: relative;
-	z-index: 100;
-}
 .input-date-datepicker-control {
 	position: absolute;
 	zoom: 1;
@@ -315,12 +305,13 @@ img.ui-datepicker-trigger {
 	z-index: 100;
 	overflow: visible;
 	padding: 5px;
-	font-family: "Lucida Grande", "MS Shell Dlg", "Calibri", sans-serif;
+	font-family: "MS Shell Dlg", "Lucida Grande", "Calibri", sans-serif;
 	font-size: 14px;
 	border: 1px solid #333;
-	box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
 }
-
+.polyfill-important .input-date-datepicker-control {
+	z-index: 999999999 !important;
+}
 .input-date-datepicker-control .ui-datepicker-header {
 	position: relative;
 	margin: 0 0 3px;
@@ -395,7 +386,6 @@ img.ui-datepicker-trigger {
 	background-color: #adf;
 	color: #000;
 	border-color: #06c;
-	box-shadow: 0 3px 9px rgba(255, 255, 255, 0.9) inset;
 }
 .input-date-datepicker-control td.ui-datepicker-today{
 	border-color: #06c;
@@ -411,7 +401,6 @@ img.ui-datepicker-trigger {
 .input-date-datepicker-control td:hover {
 	background-color: #bef;
 	border-color: #06c;
-	box-shadow: 0 3px 9px rgba(255, 255, 255, 0.9) inset;
 }
 .input-date-datepicker-control td.ui-state-disabled {
 	cursor: default;
@@ -424,15 +413,15 @@ img.ui-datepicker-trigger {
 	margin: 4px 0 0;
 }
 .input-date-datepicker-control .ui-datepicker-cover {
-    display: none; /*sorry for IE5*/
-    display/**/: block; /*sorry for IE5*/
-    position: absolute; /*must have*/
-    z-index: -1; /*must have*/
-    filter: mask(); /*must have*/
-    top: -4px; /*must have*/
-    left: -4px; /*must have*/
-    width: 200px; /*must have*/
-    height: 200px; /*must have*/
+	display: none; /*sorry for IE5*/
+	display/**/: block; /*sorry for IE5*/
+	position: absolute; /*must have*/
+	z-index: -1; /*must have*/
+	filter: mask(); /*must have*/
+	top: -4px; /*must have*/
+	left: -4px; /*must have*/
+	width: 200px; /*must have*/
+	height: 200px; /*must have*/
 }
 
 datalist {
@@ -445,19 +434,23 @@ datalist {
 	top: 0;
 	left: 0;
 	margin: 0;
-	padding: 0 !important;
-	border: 1px solid #333;
+	padding: 0;
 	display: none;
-	z-index: 1000;
+	z-index: 999999999;
+}
+.datalist-polyfill.datalist-visible{
+	display: block;
+}
+.datalist-polyfill div {
+	margin: 0;
+	padding: 0;
+}
+.datalist-polyfill .datalist-box {
+	border: 1px solid #333;
 	max-height: 200px;
 	overflow: hidden;
 	overflow-x: hidden !important;
 	overflow-y: auto;
-	
-	box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
-}
-.datalist-polyfill.datalist-visible{
-	display: block;
 }
 .datalist-polyfill ul,
 .datalist-polyfill li {
@@ -480,11 +473,24 @@ datalist {
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: default;
+	zoom: 1;
+	overflow: hidden;
 }
-.datalist-polyfill li.hidden-item {
+.datalist-polyfill .option-label {
+	display: inline-block;
+	float: left;
+	max-width: 100%;
+	text-overflow: ellipsis;
+}
+.datalist-polyfill .option-value {
+	display: none;
+	float: right;
+	text-overflow: ellipsis;
+}
+.datalist-polyfill .hidden-item {
 	display: none !important;
 }
-.datalist-polyfill li.active-item {
+.datalist-polyfill .active-item {
 	background-color: #39f;
 	color: #fff;
 	cursor: default;
@@ -494,7 +500,7 @@ datalist {
 	position: absolute !important;
 	overflow: hidden;
 	padding: 0 6px 6px 0;
-	z-index: 99999;
+	z-index: 1000000000;
 	
 }
 .validity-alert {
@@ -510,7 +516,6 @@ datalist {
 	border-radius: 2px;
 	zoom: 1 !important;
 	min-width: 60px;
-	box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
 }
 
 .validity-alert .va-arrow {
@@ -521,7 +526,7 @@ datalist {
 	width: 0;
 	height: 0;
 	border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
+	border-right: 9px solid transparent;
 	
 	border-bottom: 7px solid #000;
 	border-top: none;
@@ -545,7 +550,7 @@ html .validity-alert span.va-arrow {
 	width: 0;
 	height: 0;
 	border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
+	border-right: 9px solid transparent;
 	border-bottom: 7px solid #fafafa;
 	border-top: none;
 }
@@ -558,7 +563,7 @@ html .validity-alert span.va-arrow {
 	overflow: hidden; 
 	width: 215px; 
 	min-width: 215px !important;
-	z-index: 99999999999;
+	z-index: 2147483647;
 }
 #swflocalstorageshim-wrapper .polyfill-exceeded-message {
 	margin: 0 0 5px;
@@ -580,6 +585,7 @@ summary {
 .closed-details-child {
 	display: none !important;
 }
+
 .details-open-indicator {
 	margin: -1px 0 0;
 	display: inline-block;
