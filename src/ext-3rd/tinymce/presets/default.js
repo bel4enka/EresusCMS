@@ -3,7 +3,7 @@
  *
  * ${product.description}
  *
- * Пресет настроек для TinyMCE
+ * Набор настроек для TinyMCE
  *
  * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
  * @copyright 2007, Eresus Project, http://eresus.ru/
@@ -31,20 +31,23 @@
  * $Id$
  */
 
-/* Загружаем стили сайта, после чего инициализирцем редактор */
+var Eresus = Eresus || {siteRoot : '/'};
+
+/* Загружаем стили сайта, после чего инициализируем редактор */
 jQuery.ajax({
-	url: window.Eresus.siteRoot + "/style/styles.xml",
+	url: Eresus.siteRoot + "/style/styles.xml",
 	success: mceInit,
 	error: mceInit,
 	dataType: "xml"
 });
 
+//noinspection JSUnusedLocalSymbols
 /**
  * Инициализация редактора
  *
- * @param {DOMDocumet|XMLHttpRequrest} data
- * @param {String}                     textStatus
- * @param {XMLHttpRequest}             xhr
+ * @param {Document||XMLHttpRequest} data
+ * @param {String}                   textStatus
+ * @param {XMLHttpRequest}           xhr
  */
 function mceInit(data, textStatus, xhr)
 {
@@ -66,7 +69,7 @@ function mceInit(data, textStatus, xhr)
 
 	if (textStatus == "success")
 	{
-		var styles = data.childNodes[0].childNodes;
+		var styles = data.getElementsByTagName('styles')[0].childNodes;
 		for (var i = 0; i < styles.length; i++)
 		{
 			style = styles[i];
@@ -79,7 +82,7 @@ function mceInit(data, textStatus, xhr)
 			styleType = style.nodeName.toLowerCase();
 			styleFormat[styleType] = style.getAttribute("tag");
 			styleFormat.styles = {};
-			css = style.textContent.split("\n");
+			css = style.textContent ? style.textContent.split("\n") : style.text.split("\n");
 			for (var j = 0; j < css.length; j++)
 			{
 				css[j] = css[j].replace(/^\s+|\s+$/g, '');
@@ -104,7 +107,7 @@ function mceInit(data, textStatus, xhr)
 		 ****************************************************************************/
 
 		/*
-		 * Режим превращения textarea в WYSISYG
+		 * Режим превращения textarea в WYSIWYG
 		 *
 		 * - textareas          - Все textarea
 		 * - specific_textareas - Выбранные textarea (см. editor_selector)
