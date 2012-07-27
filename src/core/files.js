@@ -30,6 +30,7 @@
 var objRowSel = null;
 var httpRoot;
 var slctPanel;
+var iBrowser = {Engine: $.browser.msie ? 'IE' : 'Gecko'};
 
 function filesInit(root, panel)
 {
