@@ -221,6 +221,7 @@
 		<!-- jQuery -->
 		<copy todir="${build.dir}/core/jquery">
 			<fileset refid="files.3rd.jquery" />
+			<filelist dir="3rdparty/jquery.cookie" files="jquery.cookie.js" />
 		</copy>
 
 		<!-- Modernizr -->
