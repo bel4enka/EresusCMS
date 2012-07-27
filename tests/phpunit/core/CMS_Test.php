@@ -138,5 +138,19 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	}
 	//-----------------------------------------------------------------------------
 
+	/**
+	 * @covers Eresus_CMS::getPage
+	 */
+	public function test__getPage()
+	{	
+		$p_page = new ReflectionProperty("Eresus_CMS", "page");
+		$p_page->setAccessible(true);
+		
+		$eresus = new Eresus_CMS();
+		$p_page->setValue($eresus,'foo');
+		
+		$this->assertEquals('foo', $eresus->getPage());
+	}
+	
 	/* */
 }
