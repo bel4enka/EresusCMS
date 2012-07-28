@@ -454,6 +454,8 @@ class TPages
 		# Вычисляем адрес страницы
 		$urlAbs = Eresus_Kernel::app()->getPage()->clientURL($item['id']);
 
+		$isMainPage = $item['name'] == 'main' && $item['owner'] == 0;
+
 		$form = array(
 			'name' => 'PageForm',
 			'caption' => $item['caption'].' ('.$item['name'].')',
@@ -461,7 +463,8 @@ class TPages
 			'fields' => array (
 				array ('type' => 'hidden','name' => 'update', 'value'=>$item['id']),
 				array ('type' => 'edit','name' => 'name','label' => admPagesName,'width' => '150px',
-					'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid),
+					'maxlength' => '32', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admPagesNameInvalid,
+					'disabled' => $isMainPage),
 				array ('type' => 'edit','name' => 'title','label' => admPagesTitle,'width' => '100%',
 					'pattern'=>'/.+/', 'errormsg'=>admPagesTitleInvalid),
 				array ('type' => 'edit','name' => 'caption','label' => admPagesCaption,
@@ -494,6 +497,13 @@ class TPages
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
+
+		if ($isMainPage)
+		{
+			array_unshift($form['fields'],
+				array('type' => 'hidden', 'name' => 'name', 'value' => 'main'));
+		}
+
 		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
 		return $result;
 	}
@@ -509,6 +519,8 @@ class TPages
 	 */
 	function sectionIndexBranch($owner=0, $level=0)
 	{
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
 		$result = array();
 		$items = Eresus_CMS::getLegacyKernel()->sections->children($owner,
 			Eresus_CMS::getLegacyKernel()->user['auth'] ?
@@ -525,8 +537,21 @@ class TPages
 			$row[] = $items[$i]['name'];
 			$row[] = array('text' => $content_type, 'align' => 'center');
 			$row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
-			$row[] = sprintf($this->cache['index_controls'], $items[$i]['id'], $items[$i]['id'],
-				$items[$i]['id'], $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
+			if ($items[$i]['name'] == 'main' && $items[$i]['owner'] == 0)
+			{
+				$root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
+				$controls =
+					$page->control('setup', $root.'id=%d').' '.
+					$page->control('position',
+						array($root.'action=up&amp;id=%d', $root.'action=down&amp;id=%d')).' '.
+					$page->control('add', $root.'action=create&amp;owner=%d');
+			}
+			else
+			{
+				$controls = $this->cache['index_controls'];
+			}
+			$row[] = sprintf($controls, $items[$i]['id'], $items[$i]['id'], $items[$i]['id'],
+				$items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
 			$result[] = $row;
 			$children = $this->sectionIndexBranch($items[$i]['id'], $level+1);
 			if (count($children))
