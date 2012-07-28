@@ -15,20 +15,6 @@
 
 {%- macro relbar() %}
     <nav class="main-nav">
-			<ul class="location">
-				{%- block rootrellink %}
-				<li class="location__item location__item_is_root">
-					<a class="location__link location__link_is_root" href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a>{{ reldelim1 }}
-				</li>
-				{%- endblock %}
-				{%- for parent in parents %}
-				<li class="location__item">
-					<a class="location__link" href="{{ parent.link|e }}" {% if loop.last %}{{ accesskey("U") }}{% endif %}>{{ parent.title }}</a>{{ reldelim1 }}
-				</li>
-				{%- endfor %}
-				{%- block relbaritems %} {% endblock %}
-			</ul>
-
       <ul class="siblings">
         {%- for rellink in rellinks %}
         <li class="siblings__item">
@@ -37,20 +23,34 @@
         </li>
         {%- endfor %}
       </ul>
+	    <ul class="location">
+		    {%- block rootrellink %}
+		    <li class="location__item location__item_is_root">
+			    <a class="location__link location__link_is_root" href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a>{{ reldelim1 }}
+		    </li>
+		    {%- endblock %}
+		    {%- for parent in parents %}
+		    <li class="location__item">
+			    <a class="location__link" href="{{ parent.link|e }}" {% if loop.last %}{{ accesskey("U") }}{% endif %}>{{ parent.title }}</a>{{ reldelim1 }}
+		    </li>
+		    {%- endfor %}
+		    {%- block relbaritems %} {% endblock %}
+	    </ul>
     </nav>
 {%- endmacro %}
 
 {%- macro sidebar() %}
       {%- if render_sidebar %}
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-          {%- block sidebarlogo %}
-          {%- if logo %}
-            <p class="logo"><a href="{{ pathto(master_doc) }}">
-              <img class="logo" src="{{ pathto('_static/' + logo, 1) }}" alt="Logo"/>
-            </a></p>
-          {%- endif %}
-          {%- endblock %}
+      <div class="main-sidebar">
+	      {%- block sidebarlogo %}
+	      {%- if logo %}
+	      <div class="logo">
+		      <a href="{{ pathto(master_doc) }}"><img class="logo"
+						src="{{ pathto('_static/' + logo, 1) }}" alt="Logo"></a>
+	      </div>
+	      {%- endif %}
+	      {%- endblock %}
+	      <div class="sphinxsidebarwrapper">
           {%- if sidebars != None %}
             {#- new style sidebar: explicitly include/exclude templates #}
             {%- for sidebartemplate in sidebars %}
@@ -80,7 +80,7 @@
 {%- endmacro %}
 
 {%- macro script() %}
-    <script type="text/javascript">
+    <script>
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '{{ url_root }}',
         VERSION:     '{{ release|e }}',
@@ -90,7 +90,7 @@
       };
     </script>
     {%- for scriptfile in script_files %}
-    <script type="text/javascript" src="{{ pathto(scriptfile, 1) }}"></script>
+    <script src="{{ pathto(scriptfile, 1) }}"></script>
     {%- endfor %}
 {%- endmacro %}
 
@@ -102,9 +102,9 @@
     {%- endfor %}
 {%- endmacro %}
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset={{ encoding }}" />
+    <meta charset="{{ encoding }}">
     {{ metatags }}
     {%- block htmltitle %}
     <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
@@ -190,7 +190,7 @@
       {% trans last_updated=last_updated|e %}Last updated on {{ last_updated }}.{% endtrans %}
     {%- endif %}
     {%- if show_sphinx %}
-      {% trans sphinx_version=sphinx_version|e %}Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
+      {% trans sphinx_version=sphinx_version|e %}Created using <a class="footer__link" href="http://sphinx.pocoo.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
     {%- endif %}
     </div>
 {%- endblock %}
