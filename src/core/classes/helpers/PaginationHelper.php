@@ -104,9 +104,9 @@ implements Iterator, Countable
 	 *
 	 * Принимаемые параметры можно указать и позднее, при помощи соответствующих методов setXXX.
 	 *
-	 * @param int     $total[optional]        Общее количество страниц.
-	 * @param int     $current[optional]      Номер текущей страницы. По умолчанию 1.
-	 * @para, sttring $urlTemplate[optional]  Шаблон URL. Используйте "%d" для подстановки страницы
+	 * @param int    $total        Общее количество страниц.
+	 * @param int    $current      Номер текущей страницы. По умолчанию 1.
+	 * @param string $urlTemplate  Шаблон URL. Используйте "%d" для подстановки страницы
 	 *
 	 * @return PaginationHelper
 	 *
