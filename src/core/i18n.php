@@ -68,7 +68,9 @@ class I18n
 	static public function getInstance()
 	{
 		if (!self::$instance)
+		{
 			self::$instance = new I18n(Eresus_Kernel::app()->getFsRoot() . '/lang');
+		}
 
 		return self::$instance;
 	}
@@ -95,6 +97,7 @@ class I18n
 	public function setLocale($locale)
 	{
 		$this->locale = $locale;
+		/** @noinspection PhpIncludeInspection */
 		include_once $this->path . '/' . $this->locale . '.php';
 	}
 	//-----------------------------------------------------------------------------
@@ -102,14 +105,17 @@ class I18n
 	/**
 	 * Возвращает текст в заданной локали
 	 *
-	 * @param string $key                 Ключ искомой строки
-	 * @param string $context [optional]  Контекст
+	 * @param string $key      Ключ искомой строки
+	 * @param string $context  Контекст (пока не используется)
 	 * @return string
 	 */
-	public function getText($key, $context = null)
+	public function getText($key, /** @noinspection PhpUnusedParameterInspection */
+		$context = null)
 	{
 		if (defined($key))
+		{
 			return constant($key);
+		}
 
 		return $key;
 	}

@@ -1116,7 +1116,15 @@ class Eresus
 	/**
 	 * Данные сессии
 	 *
+	 * Это свойство представляет собой ассоциативный массив, хранящий данные текущей сессии:
+	 *
+	 * - time (int) — Время последней активности пользователя в этой сессии
+	 * - request (array) — Используется функциями {@link saveRequest()} и {@link restoreRequest()}
+	 * - msg (array) — Очередь сообщений, используемая функциями {@link ErrorMessage()} и
+	 * {@link InfoMessage()}
+	 *
 	 * @var array
+	 * @since 2.10
 	 */
 	public $session;
 
@@ -1130,6 +1138,7 @@ class Eresus
 	/**
 	 * Интерфейс к БД
 	 * @var MySQL
+	 * @since 2.10
 	 * @deprecated с 3.00, используйте DB
 	 */
 	public $db;
@@ -1144,36 +1153,54 @@ class Eresus
 	 * Учётная запись пользователя
 	 *
 	 * @var array
+	 * @since 2.10
 	 */
 	public $user;
 
 	/**
+	 * Хост сайта
+	 *
 	 * @var string
+	 * @since 2.10
 	 * @deprecated с 3.00, используйте Eresus::$request
 	 */
 	public $host;
 
 	/**
+	 * Относительный URL сайта относительно корня сервера
+	 *
+	 * Если сайт, расположен в корне (т. е. по адресу http://example.org/), то path будет равен «/».
+	 *
+	 * Если сайт, расположен в поддиректории, например по адресу http://example.org/site/, то path
+	 * будет равен «/site/».
+	 *
 	 * @var string
+	 * @since 2.10
 	 * @deprecated с 3.00, используйте Eresus::$request
 	 */
 	public $path;
 
 	/**
-	 * Корневой URL
+	 * Полный корневой URL сайта
+	 *
 	 * @var string
+	 * @since 2.10
 	 */
 	public $root;
 
 	/**
-	 * URL данных
+	 * Полный URL к директории данных
+	 *
 	 * @var string
+	 * @since 2.10
 	 */
 	public $data;
 
 	/**
-	 * URL стилей
+	 * Полный URL к директории стилей
+	 *
 	 * @var string
+	 * @since 2.10
 	 */
 	public $style;
 
@@ -1597,10 +1624,8 @@ class Eresus
 
 	/**
 	 * Инициализация системы
-	 *
-	 * @access public
 	 */
-	function init()
+	public function init()
 	{
 		// Отключение закавычивания передаваемых данных
 		if (!PHP::checkVersion('5.3'))

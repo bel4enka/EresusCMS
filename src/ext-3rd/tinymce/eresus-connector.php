@@ -48,7 +48,7 @@ class TinyMCEConnector extends EresusExtensionConnector
 	private static $scriptsInstalled = false;
 
 	/**
-	 *
+	 * Возвращает разметку для подключения WYSIWYG-редактора
 	 * @param Form  $form
 	 * @param array $field
 	 * @return array

@@ -121,7 +121,8 @@ class Eresus_CMS extends EresusApplication
 	 *
 	 * @since 2.16
 	 */
-	public function fatalError($error = null, $exit = true)
+	public function fatalError(/** @noinspection PhpUnusedParameterInspection */
+		$error = null, $exit = true)
 	{
 		include dirname(__FILE__) . '/fatal.html.php';
 		die;
@@ -368,15 +369,17 @@ class Eresus_CMS extends EresusApplication
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		/*
-		 * Переменную $Eresus надо сделать глобальной чтобы файл конфигурации
+		 * Переменную $Eresus приходится делать глобальной, чтобы файл конфигурации
 		 * мог записывать в неё свои значения.
-		 * TODO
+		 * TODO Избавиться от глобальной переменной
 		 */
+		/** @noinspection PhpUnusedLocalVariableInspection */
 		global $Eresus;
 
 		$filename = $this->getFsRoot() . '/cfg/main.php';
 		if (file_exists($filename))
 		{
+			/** @noinspection PhpIncludeInspection */
 			include $filename;
 			// TODO: Сделать проверку успешного подключения файла
 		}
@@ -433,7 +436,7 @@ class Eresus_CMS extends EresusApplication
 	/**
 	 * Обрабатывает запрос к стороннему расширению
 	 *
-	 * Вызов производитеся через коннектор этого расширения
+	 * Вызов производится через коннектор этого расширения
 	 *
 	 * @return void
 	 */
@@ -445,6 +448,7 @@ class Eresus_CMS extends EresusApplication
 		$filename = $this->getFsRoot().'/ext-3rd/'.$extension.'/eresus-connector.php';
 		if ($extension && is_file($filename))
 		{
+			/** @noinspection PhpIncludeInspection */
 			include_once $filename;
 			$className = $extension.'Connector';
 			$connector = new $className;
