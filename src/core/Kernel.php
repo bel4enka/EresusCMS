@@ -71,7 +71,7 @@ class Eresus_Kernel
 	const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
 
 	/**
-	 * Признак иницилизации ядра
+	 * Признак инициализации ядра
 	 *
 	 * @var bool
 	 */
@@ -97,7 +97,7 @@ class Eresus_Kernel
 	 * Инициализация ядра
 	 *
 	 * Этот метод:
-	 * 1. устанавливает временну́ю зону;
+	 * 1. устанавливает временную зону;
 	 * 2. регистрирует {@link autoload() автозагрузчик классов};
 	 * 3. регистрирует {@link initExceptionHandling() перехватчики ошибок}.
 	 *
@@ -114,7 +114,7 @@ class Eresus_Kernel
 			return;
 		}
 
-		// Устанавливаем кодировку по умолчанию для опрераций mb_*
+		// Устанавливаем кодировку по умолчанию для операций mb_*
 		mb_internal_encoding('utf-8');
 
 		/* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
@@ -136,7 +136,7 @@ class Eresus_Kernel
 	 *
 	 * Этот метод:
 	 * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
-	 * 2. отключает HTML-оформление стандартных сообщенй об ошибках;
+	 * 2. отключает HTML-оформление стандартных сообщений об ошибках;
 	 * 3. регистрирует {@link errorHandler()};
 	 * 4. регистрирует {@link fatalErrorHandler()}.
 	 *
@@ -176,7 +176,7 @@ class Eresus_Kernel
 			{
 				/*Eresus_Logger::log(
 					LOG_NOTICE, __METHOD__,
-					'Fatal error handler not instaled! Fatal error will be not handled!'
+					'Fatal error handler not installed! Fatal error will be not handled!'
 				);*/
 			}
 		}
@@ -189,18 +189,18 @@ class Eresus_Kernel
 	 *
 	 * Обработчик ошибок, устанавливаемый через {@link set_error_handler() set_error_handler()} в
 	 * методе {@link initExceptionHandling()}. Все ошибки важнее E_NOTICE превращаются в исключения
-	 * {@link http://php.net/ErrorException ErrorException}, остальные передаются
-	 * {@link Eresus_Logger::log()}.
+	 * {@link http://php.net/ErrorException ErrorException}.
 	 *
 	 * @param int    $errno    тип ошибки
 	 * @param string $errstr   описание ошибки
 	 * @param string $errfile  имя файла, в котором произошла ошибка
 	 * @param int    $errline  строка, где произошла ошибка
 	 *
+	 * @throws ErrorException
+	 *
 	 * @return bool
 	 *
 	 * @since 3.00
-	 * @uses Eresus_Logger::log()
 	 */
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
 	{
@@ -236,7 +236,7 @@ class Eresus_Kernel
 		{
 			throw new ErrorException($errstr, $errno, $level, $errfile, $errline);
 		}
-		else
+		/*else
 		{
 			$logMessage = sprintf(
 				"%s in %s:%s",
@@ -244,8 +244,8 @@ class Eresus_Kernel
 				$errfile,
 				$errline
 			);
-			//Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
-		}
+			Eresus_Logger::log(__FUNCTION__, $level, $logMessage);
+		}*/
 
 		return true;
 	}
@@ -258,13 +258,13 @@ class Eresus_Kernel
 	 * использовании {@link set_error_handler() set_error_handler()}. Это делается через обработчик
 	 * {@link ob_start() ob_start()}, устанавливаемый в методе {@link initExceptionHandling()}.
 	 *
-	 * <i>Замечание по производительности</i>: этот метод освобождает в начале и выделет в конце
+	 * <i>Замечание по производительности</i>: этот метод освобождает в начале и выделяет в конце
 	 * своей работы буфер в памяти для отлова ошибок переполнения памяти. Эти операции затормаживают
 	 * вывод примерно на 1-2%.
 	 *
 	 * @param string $output  содержимое буфера вывода
 	 *
-	 * @return string|false
+	 * @return string|bool
 	 *
 	 * @since 3.00
 	 * @uses Eresus_Logger::log
@@ -341,6 +341,7 @@ class Eresus_Kernel
 
 			if (file_exists($fileName))
 			{
+				/** @noinspection PhpIncludeInspection */
 				include $fileName;
 				return self::classExists($className);
 			}
@@ -365,6 +366,7 @@ class Eresus_Kernel
 
 			if (file_exists($fileName))
 			{
+				/** @noinspection PhpIncludeInspection */
 				include $fileName;
 				return self::classExists($className);
 			}

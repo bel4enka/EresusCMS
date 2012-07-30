@@ -6,27 +6,8 @@
 
 .. toctree::
    :maxdepth: 2
+   :numbered:
 
    overview
-
-
-Руководство администратора
---------------------------
-
-.. toctree::
-   :maxdepth: 2
-   :numbered:
-
-   manage/intro/index
-   manage/ui/index
-   manage/site/index
-
-Разработка расширений
----------------------
-
-.. toctree::
-   :maxdepth: 2
-   :numbered:
-
-   dev/internals/index
-   dev/appendix/index
+   manage/index
+   dev/index

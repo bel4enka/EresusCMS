@@ -64,7 +64,7 @@ if (isset($php_errormsg))
 ini_set('track_errors', false);
 
 /*
- * Если есть файл install.php, запускаем инсталлятор, а не CMS
+ * Если есть файл install.php, запускаем установщик, а не CMS
  * Это код для будущих версий
  */
 if (is_file('install.php'))

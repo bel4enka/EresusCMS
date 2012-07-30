@@ -269,6 +269,39 @@
 
 	  <delete dir="${docs.dir}" includeemptydirs="true" failonerror="false" />
 
+	  <delete dir="build.tmp" includeemptydirs="true" failonerror="false" />
+	  <copy todir="build.tmp/source">
+		  <fileset dir="docs">
+			  <include name="**/*" />
+			  <exclude name=".svn" />
+		  </fileset>
+		  <filterchain>
+			  <expandproperties />
+		  </filterchain>
+	  </copy>
+
+	  <echo message="Building HTML docs..." />
+	  <exec command="sphinx-build -b html -d build.tmp/cache build.tmp/source ${docs.dir}"
+	        passthru="true" />
+
+	  <if>
+		  <istrue value="${docs.pdf}" />
+		  <then>
+
+			  <echo message="Building PDF docs..." />
+			  <exec command="sphinx-build -b latex -d build.tmp/cache build.tmp/source build.tmp/latex"
+			        passthru="true" />
+			  <exec dir="build.tmp/latex" command="make all-pdf" />
+			  <copy todir="${docs.dir}">
+				  <fileset dir="build.tmp/latex">
+					  <include name="*.pdf" />
+				  </fileset>
+			  </copy>
+
+		  </then>
+	  </if>
+
+	  <delete dir="build.tmp" includeemptydirs="true" failonerror="true" />
 	  <phpdoc
 			title="Eresus ${product.version} API"
 			destdir="${docs.dir}/api"
@@ -283,40 +316,6 @@
 				<exclude name="src/ext-3rd/tinymce/plugins/images/**" />
 			</fileset>
 		</phpdoc>
-
-	  <delete dir="build.tmp" includeemptydirs="true" failonerror="false" />
-		<copy todir="build.tmp/source">
-			<fileset dir="docs">
-				<include name="**/*" />
-				<exclude name=".svn" />
-			</fileset>
-			<filterchain>
-				<expandproperties />
-			</filterchain>
-		</copy>
-
-		<echo message="Building HTML docs..." />
-		<exec command="sphinx-build -b html -d build.tmp/cache build.tmp/source ${docs.dir}/manuals"
-			passthru="true" />
-
-	  <if>
-	    <istrue value="${docs.pdf}" />
-	    <then>
-
-		    <echo message="Building PDF docs..." />
-				<exec command="sphinx-build -b latex -d build.tmp/cache build.tmp/source build.tmp/latex"
-					passthru="true" />
-				<exec dir="build.tmp/latex" command="make all-pdf" />
-				<copy todir="${docs.dir}">
-					<fileset dir="build.tmp/latex">
-						<include name="*.pdf" />
-					</fileset>
-				</copy>
-
-	    </then>
-	  </if>
-
-		<delete dir="build.tmp" includeemptydirs="true" failonerror="true" />
 
 	</target>
 

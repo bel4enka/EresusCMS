@@ -1078,6 +1078,7 @@ function __property($object, $property)
 /**
  * Основной класс приложения
  *
+ * @since 2.10
  * @package Eresus
  */
 class Eresus
@@ -1207,29 +1208,54 @@ class Eresus
 	/**
 	 * Корневая директория
 	 * @var string
+	 * @since 2.10
 	 */
 	public $froot;
 
 	/**
 	 * Директория данных
 	 * @var string
+	 * @since 2.10
 	 */
 	public $fdata;
 
 	/**
-	 *
+	 * Директория стилей
 	 * @var string
+	 * @since 2.10
 	 */
-	public $fstyle; # Директория стилей
+	public $fstyle;
 
 	/**
 	 * Запрос HTTP
+	 *
+	 * Это свойство представляет собой ассоциативный массив, хранящий параметры текущего HTTP-запроса:
+	 *
+	 * - method (string) — HTTP-метод — GET или POST
+	 * - scheme (string) — HTTP-схема: HTTP или HTTPS
+	 * - url (string) — Полный URL запроса, за исключением идентификатора сессии (если он присутствует
+	 *   в URL)
+	 * - link (string) Заготовка для создания URL с параметрами GET. Пример:
+	 *   <code>$url = $Eresus->request['link'].'type=monitor&diag=17';</code> В $url будет нечто
+	 *   вроде 'http://example.org/exec.php?type=monitor&diag=17'
+	 * - referer (string) — URL, откуда был совершён переход
+	 * - arg (array) — Ассоциативный массив аргументов запроса (GET + POST)
+	 * - path (string) — Строка, содержащая путь к текущей виртуальной директории. Например, для
+	 *   запроса 'http://example.org/virt/dir/exec.php?id=1' path будет 'http://example.org/virt/dir/'
+	 * - file (string) — Имя запрошенного файла. Например «exec.php» для вышеприведённого адреса
+	 * - params (array) — Массив, представляющий собой набор всех виртуальных директорий URL, после
+	 *   корневого URL сайта
+	 *
 	 * @var array
+	 * @since 2.10
 	 */
 	public $request;
 
 	/**
+	 * Интерфейс работы с разделами сайта
+	 *
 	 * @var Sections
+	 * @since 2.10
 	 */
 	public $sections;
 

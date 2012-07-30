@@ -11,7 +11,7 @@
 
 * функция ``dbShiftItems``
 * свойство ``Eresus::$https``
-* методы ``Eresus::isWin32``, ``Eresus::isUnix``, ``Eresus::isMac``, ``Eresus::isModule``, ``Eresus::isCgi``, ``Eresus::isCli``. Вместо них используйте соответственно `System::isWindows() <../../../api/Core/System.html#isWindows>`_, `System::isUnixLike() <../../../api/Core/System.html#isUnixLike>`_, `System::isMac() <../../../api/Core/System.html#isMac>`_, `PHP::isModule() <../../../api/Core/PHP.html#isModule>`_, `PHP::isCGI() <../../../api/Core/PHP.html#isCGI>`_, `PHP::isCLI() <../../../api/Core/PHP.html#isCLI>`_.
+* методы ``Eresus::isWin32``, ``Eresus::isUnix``, ``Eresus::isMac``, ``Eresus::isModule``, ``Eresus::isCgi``, ``Eresus::isCli``. Вместо них используйте соответственно `System::isWindows() <../../api/Core/System.html#isWindows>`_, `System::isUnixLike() <../../api/Core/System.html#isUnixLike>`_, `System::isMac() <../../api/Core/System.html#isMac>`_, `PHP::isModule() <../../api/Core/PHP.html#isModule>`_, `PHP::isCGI() <../../api/Core/PHP.html#isCGI>`_, `PHP::isCLI() <../../api/Core/PHP.html#isCLI>`_.
 * функция ``FormatDate``. Вместо неё используйте возможности шаблонизатора.
 * функция ``useClass``. Вместо неё теперь используется автозагрузка классов.
 
@@ -34,7 +34,7 @@
 Eresus_CMS::getLegacyKernel()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Метод `Eresus_CMS::getLegacyKernel() <../../../api/Eresus/Eresus_CMS.html#getLegacyKernel>`_ возвращает экземпляр класса `Eresus <../../../api/Eresus/Eresus.html>`_. Его следует использовать вместо глобальной переменной ``$Eresus``. Пример:
+Метод `Eresus_CMS::getLegacyKernel() <../../api/Eresus/Eresus_CMS.html#getLegacyKernel>`_ возвращает экземпляр класса `Eresus <../../api/Eresus/Eresus.html>`_. Его следует использовать вместо глобальной переменной ``$Eresus``. Пример:
 
 .. code-block:: php
 
@@ -45,7 +45,7 @@ Eresus_CMS::getLegacyKernel()
 Eresus_CMS::getPage()
 ^^^^^^^^^^^^^^^^^^^^^
 
-Метод `Eresus_CMS::Page() <../../../api/Eresus/Eresus_CMS.html#getPage>`_ возвращает экземпляр класса `TClientUI <../../../api/Eresus/TClientUI.html>`_ или `TAdminUI <../../../api/Eresus/TAdminUI.html>`_. Его следует использовать вместо глобальной переменной ``$page``. Пример:
+Метод `Eresus_CMS::Page() <../../api/Eresus/Eresus_CMS.html#getPage>`_ возвращает экземпляр класса `TClientUI <../../api/Eresus/TClientUI.html>`_ или `TAdminUI <../../api/Eresus/TAdminUI.html>`_. Его следует использовать вместо глобальной переменной ``$page``. Пример:
 
 .. code-block:: php
 
