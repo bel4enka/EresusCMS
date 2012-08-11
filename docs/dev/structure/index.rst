@@ -4,3 +4,4 @@
 .. toctree::
    :maxdepth: 2
 
+   skeleton
