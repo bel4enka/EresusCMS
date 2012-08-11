@@ -1290,7 +1290,7 @@ class TAdminUI extends WebPage
 			if (Eresus_CMS::getLegacyKernel()->login($req->arg('user'),
 				Eresus_CMS::getLegacyKernel()->password_hash($password), $autologin))
 			{
-				HTTP::redirect('./admin.php');
+				HTTP::redirect(Eresus_CMS::getLegacyKernel()->root . 'admin.php');
 			}
 		}
 
