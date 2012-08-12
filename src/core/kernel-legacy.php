@@ -1762,17 +1762,18 @@ class Eresus
 		}
 
 		$item = $this->db->selectItem('users', "`login`='$login'");
+		// Если такой пользователь есть...
 		if (!is_null($item))
 		{
-			// Если такой пользователь есть...
+			// Если учетная запись активна...
 			if ($item['active'])
 			{
-				// Если учетная запись активна...
-				if (time() - $item['lastLoginTime'] > $item['loginErrors'])
+				$noBruteForcing = time() - $item['lastLoginTime'] > $item['loginErrors'];
+				if ($noBruteForcing || $this->conf['debug']['enable'])
 				{
+					// Если пароль верен...
 					if ($key == $item['hash'])
 					{
-						// Если пароль верен...
 						if ($auto)
 						{
 							$this->set_login_cookies($login, $key);
