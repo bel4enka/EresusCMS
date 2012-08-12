@@ -82,7 +82,8 @@ class Eresus_CMS extends EresusApplication
 			$this->initConf();
 			if (Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
 			{
-				include_once 'debug.php';
+				// Обратная совместимость TODO убрать
+				define('ERESUS_CMS_DEBUG', true);
 			}
 
 			$i18n = I18n::getInstance();
