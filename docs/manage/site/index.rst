@@ -7,5 +7,7 @@
    sections/index
    fm
    plugins/index
+   themes
+   users
    settings
    meta-tags

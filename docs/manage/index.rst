@@ -7,5 +7,7 @@
    intro/index
    setup/index
    ui/index
+   content/index
    site/index
    debug-mode
+   appendix/index
