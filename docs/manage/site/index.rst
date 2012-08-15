@@ -5,5 +5,7 @@
    :maxdepth: 1
 
    sections/index
+   fm
+   plugins/index
    settings
    meta-tags
