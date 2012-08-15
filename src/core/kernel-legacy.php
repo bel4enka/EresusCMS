@@ -686,8 +686,9 @@ function dbReorderItems($table, $condition='', $id='id')
 /**
  * Чтение файла
  *
- * @param string $filename Имя файла
- * @return mixed Содержимое файла или false
+ * @param string $filename  имя файла
+ *
+ * @return mixed  содержимое файла или false
  */
 function fileread($filename)
 {
@@ -701,7 +702,6 @@ function fileread($filename)
 	}
 	return $result;
 }
-//------------------------------------------------------------------------------
 
 /**
  * Запись в файл

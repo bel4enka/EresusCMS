@@ -79,23 +79,29 @@ class Templates
 	/**
 	 * Возвращает шаблон
 	 *
-	 * @param string $name  Имя шаблона
-	 * @param string $type  Тип шаблона (соответствует поддиректории в /templates)
-	 * @param bool   $array Вернуть шаблон в виде массива
-	 * @return mixed Шаблон
+	 * Если имя ($name) не указано, будет использовано имя «default».
+	 *
+	 * Если шаблон не найден и имя ($name) НЕ «default», будет предпринята попытка загрузить шаблон
+	 * с именем «default» из той же папки ($type).
+	 *
+	 * @param string $name   имя шаблона
+	 * @param string $type   тип шаблона (соответствует поддиректории в /templates)
+	 * @param bool   $array  вернуть шаблон в виде массива
+	 *
+	 * @return string|bool  содержимое шаблона или false, если шаблон не найден
 	 */
-	function get($name = '', $type = '', $array = false)
+	public function get($name = '', $type = '', $array = false)
 	{
 		if (empty($name))
 		{
 			$name = 'default';
 		}
-		$filename = filesRoot.'templates/';
+		$filename = filesRoot . 'templates/';
 		if ($type)
 		{
-			$filename .= "$type/";
+			$filename .= $type . '/';
 		}
-		$filename .= "$name.html";
+		$filename .= $name . '.html';
 		$result = fileread($filename);
 		if ($result)
 		{
@@ -122,11 +128,10 @@ class Templates
 			{
 				$result = $this->get('default', $type);
 			}
-			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
-			if (!$result)
-			{
-				$result = '';
-			}
+		}
+		if (!$result)
+		{
+			$result = false;
 		}
 		return $result;
 	}
