@@ -186,11 +186,9 @@ class TClientUI extends WebPage
 	/**
 	 * Производит разбор URL и загрузку соответствующего раздела
 	 *
-	 * @access  private
-	 *
 	 * @return  array|bool  Описание загруженного раздела или false если он не найден
 	 */
-	function loadPage()
+	private function loadPage()
 	{
 		$result = false;
 		$main_fake = false;
@@ -364,7 +362,7 @@ class TClientUI extends WebPage
 	/**
 	 * Отправляет созданную страницу пользователю.
 	 */
-	function render()
+	public function render()
 	{
 		if (arg('HTTP_ERROR'))
 		{

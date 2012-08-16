@@ -7,5 +7,7 @@
    :maxdepth: 2
 
    structure/index
+   guide/index
    internals/index
+   debug
    appendix/index

@@ -1252,10 +1252,10 @@ class TAdminUI extends WebPage
 	 *
 	 * @return void
 	 */
-	function render()
+	public function render()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-		/* Проверям права доступа и, если надо, проводим авторизацию */
+		/* Проверяем права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
 			$this->auth();
