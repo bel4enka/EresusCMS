@@ -5,4 +5,5 @@
    :maxdepth: 2
 
    skeleton
+   plugin.xml
    classes
