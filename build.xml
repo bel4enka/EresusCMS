@@ -291,7 +291,8 @@
 			  <echo message="Building PDF docs..." />
 			  <exec command="sphinx-build -b latex -d build.tmp/cache build.tmp/source build.tmp/latex"
 			        passthru="true" />
-			  <exec dir="build.tmp/latex" command="make all-pdf" />
+			  <exec dir="build.tmp/latex"
+					command="gmake all-pdf gmake all-pdf LATEXOPTS='-interaction=nonstopmode'" />
 			  <copy todir="${docs.dir}">
 				  <fileset dir="build.tmp/latex">
 					  <include name="*.pdf" />
