@@ -44,31 +44,47 @@ define('CLIENTUI', true);
  */
 class TClientUI extends WebPage
 {
-	var $dbItem = array(); # Информация о странице из БД
-	var $name = ''; # Имя страницы
-	var $owner = 0; # Идентификатор родительской страницы
-	var $section = array(); # Массив заголовков страниц
-	var $caption = ''; # Название страницы
-	var $hint = ''; # Подсказка с описанием страницы
-	var $description = ''; # Описание страницы
-	var $keywords = ''; # Ключевые слова страницы
-	var $access = GUEST; # Базовый уровень доступа к странице
-	var $visible = true; # Видимость страницы
-	var $type = 'default'; # Тип страницы
-	var $content = ''; # Контент страницы
-	var $options = array(); # Опции страницы
-	var $Document; # DOM-интерфейс к странице
-	var $plugin; # Плагин контента
-	var $scripts = ''; # Скрипты
-	var $styles = ''; # Стили
-	var $subpage = 0; # Подстраница списка элементов
+	public $dbItem = array(); # Информация о странице из БД
+	public $name = ''; # Имя страницы
+	public $owner = 0; # Идентификатор родительской страницы
+	public $section = array(); # Массив заголовков страниц
+	public $caption = ''; # Название страницы
+	public $hint = ''; # Подсказка с описанием страницы
+	public $description = ''; # Описание страницы
+	public $keywords = ''; # Ключевые слова страницы
+	public $access = GUEST; # Базовый уровень доступа к странице
+	public $visible = true; # Видимость страницы
+	public $type = 'default'; # Тип страницы
+	public $content = ''; # Контент страницы
+	public $options = array(); # Опции страницы
+	public $Document; # DOM-интерфейс к странице
+	public $plugin; # Плагин контента
+	public $scripts = ''; # Скрипты
+	public $styles = ''; # Стили
+	public $subpage = 0; # Подстраница списка элементов
 
 	/**
 	 * Идентификатор объекта контента
 	 *
+	 * Объект контента (или «топик») – это статья, новость, фотография или другой объект в разделе,
+	 * содержащим список таких однотипных объектов.
+	 *
+	 * В $topic помещается элемент массива {@link $Eresus::$request}}['params'] , следующий после
+	 * адреса текущего раздела и номера подстраницы списка (если он есть). Если такого элемента в
+	 * массиве нет, то $topic будет равен false.
+	 *
+	 * Примеры:
+	 *
+	 * - http://exmaple.org/articles/p2/123/ — $topic равен «123».
+	 * - http://exmaple.org/articles/123/ — $topic равен «123».
+	 * - http://exmaple.org/articles/ — $topic равен «false».
+	 * - http://exmaple.org/articles/123/file?key=value — $topic равен «123».
+	 * - http://exmaple.org/articles/file?key=value — $topic равен «false».
+	 *
 	 * @var string|bool
+	 * @since 2.10
 	 */
-	var $topic = false;
+	public $topic = false;
 
 	//------------------------------------------------------------------------------
 

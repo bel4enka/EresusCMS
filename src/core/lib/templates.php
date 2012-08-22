@@ -34,6 +34,8 @@
  * Работа с шаблонами
  *
  * @package Eresus
+ *
+ * @since 2.10
  */
 class Templates
 {
@@ -189,15 +191,16 @@ class Templates
 		$result = filewrite($filename, $content);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
+
 	/**
 	 * Удаляет шаблон
 	 *
 	 * @param string $name Имя шаблона
 	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 *
 	 * @return bool Результат выполнения
 	 */
-	function delete($name, $type = '')
+	public function delete($name, $type = '')
 	{
 		$filename = filesRoot.'templates/';
 		if ($type)
@@ -208,5 +211,4 @@ class Templates
 		$result = filedelete($filename);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 }

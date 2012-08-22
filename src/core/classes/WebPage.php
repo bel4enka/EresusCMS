@@ -315,6 +315,8 @@ class WebPage
 	 *
 	 * @param string $httpEquiv  Имя заголовка HTTP
 	 * @param string $content  	  Значение заголовка
+	 *
+	 * @since 2.10
 	 */
 	public function setMetaHeader($httpEquiv, $content)
 	{
@@ -325,8 +327,10 @@ class WebPage
 	/**
 	 * Установка мета-тега
 	 *
-	 * @param string $name  		 Имя тега
+	 * @param string $name     Имя тега
 	 * @param string $content  Значение тега
+	 *
+	 * @since 2.10
 	 */
 	public function setMetaTag($name, $content)
 	{
@@ -339,6 +343,8 @@ class WebPage
 	 *
 	 * @param string $url    URL файла
 	 * @param string $media  Тип носителя
+	 *
+	 * @since 2.10
 	 */
 	public function linkStyles($url, $media = '')
 	{
@@ -366,7 +372,9 @@ class WebPage
 	 * Встраивание CSS
 	 *
 	 * @param string $content  Стили CSS
-	 * @param string $media 	  Тип носителя
+	 * @param string $media    Тип носителя
+	 *
+	 * @since 2.10
 	 */
 	public function addStyles($content, $media = '')
 	{
@@ -402,8 +410,10 @@ class WebPage
 	 *
 	 * Если передан аргумент «top», то скрипт будет подключен в самом начале блока скриптов.
 	 *
-	 * @param string $url  URL скрипта
-	 * @param string ...   Дополнительные параметры
+	 * @param string $url        URL скрипта
+	 * @param string $param,.../  Дополнительные параметры
+	 *
+	 * @since 2.10
 	 */
 	public function linkScripts($url)
 	{
@@ -474,10 +484,9 @@ class WebPage
 			}
 		}
 	}
-	//------------------------------------------------------------------------------
 
 	/**
-	 * Добавление клиентских скриптов
+	 * Встраивает в страницу клиентские скрипты
 	 *
 	 * <b>Типы скриптов</b>
 	 * - ecma, text/ecmascript
@@ -490,7 +499,9 @@ class WebPage
 	 * - body - вставить в секцию <body>
 	 *
 	 * @param string $code  Код скрипта
-	 * @param string ...    Дополнительные параметры
+	 * @param string $param,...    Дополнительные параметры
+	 *
+	 * @since 2.10
 	 */
 	public function addScripts($code)
 	{
@@ -687,7 +698,6 @@ class WebPage
 		$result = implode("\n" , $result);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Строит URL GET-запроса на основе переданных аргументов
@@ -702,8 +712,39 @@ class WebPage
 	 *
 	 * Если значение аргумента - пустая строка, он будет удалён из запроса.
 	 *
+	 * Если значение аргумента – массив, то его элементы будут объединены в строку через запятую.
+	 *
+	 * <b>Пример</b>
+	 *
+	 * Обрабатывается запрос: http://example.com/page/?name=igor&second_name=orlov&date=18.11.10
+	 *
+	 * <code>
+	 * $args = array(
+	 *   'second_name' => 'zotov',
+	 *   'date' => '',
+	 *   'age' => 31,
+	 *   'flags' => array('new', 'customer', 'discount'),
+	 * );
+	 * return $page->url($args);
+	 * </code>
+	 *
+	 * Этот код:
+	 *
+	 * - Оставит ''name'' нетронутым, потому что его нет в $args
+	 * - Заменит значение ''second_name''
+	 * - Удалит аргумент ''date''
+	 * - Добавит числовой аргумент ''age''
+	 * - Добавит массив ''flags''
+	 *
+	 * Получится:
+	 *
+	 * http://example.com/page/?name=igor&second_name=zotov&age=31&flags=new,customer,discount
+	 *
 	 * @param array $args  Установить аргументы
+	 *
 	 * @return string
+	 *
+	 * @since 2.10
 	 */
 	public function url($args = array())
 	{
@@ -740,7 +781,10 @@ class WebPage
 	 * Возвращает клиентский URL страницы с идентификатором $id
 	 *
 	 * @param int $id  Идентификатор страницы
+	 *
 	 * @return string URL страницы или NULL если раздела $id не существует
+	 *
+	 * @since 2.10
 	 */
 	public function clientURL($id)
 	{
@@ -774,9 +818,12 @@ class WebPage
 	 *
 	 * @param int     $total      Общее количество страниц
 	 * @param int     $current    Номер текущей страницы
-	 * @param string  $url        Шаблон адреса для перехода к подстранице.
+	 * @param string  $url        Шаблон адреса для перехода к подстранице
 	 * @param array   $templates  Шаблоны оформления
+	 *
 	 * @return string
+	 *
+	 * @since 2.10
 	 */
 	public function pageSelector($total, $current, $url = null, $templates = null)
 	{

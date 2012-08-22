@@ -216,14 +216,18 @@ class Plugins
 		//$filename = filesRoot.'ext/'.$name.'.php';
 		//if (file_exists($filename)) unlink($filename);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
 	 * Загружает плагин и возвращает его экземпляр
 	 *
+	 * Метод пытается загрузить плагин с именем $name (если он не был загружен ранее). В случае успеха
+	 * создаётся и возвращается экземпляр основного класса плагина (либо экземпляр, созданный ранее).
+	 *
 	 * @param string $name  Имя плагина
 	 *
-	 * @return Plugin|TPlugin|false  Экземпляр плагина или FASLE если не удалось загрузить плагин
+	 * @return Plugin|TPlugin|bool  Экземпляр плагина или false если не удалось загрузить плагин
+	 *
+	 * @since 2.10
 	 */
 	public function load($name)
 	{
@@ -375,57 +379,57 @@ class Plugins
 		}
 		return $result;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function clientOnStart()
 	{
 		if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function clientOnURLSplit($item, $url)
 	{
 		if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function clientOnTopicRender($text, $topic = null)
 	{
 		if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
 		return $text;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function clientOnContentRender($text)
 	{
 		if (isset($this->events['clientOnContentRender']))
 			foreach($this->events['clientOnContentRender'] as $plugin) $text = $this->items[$plugin]->clientOnContentRender($text);
 		return $text;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function clientOnPageRender($text)
 	{
 		if (isset($this->events['clientOnPageRender']))
 			foreach($this->events['clientOnPageRender'] as $plugin) $text = $this->items[$plugin]->clientOnPageRender($text);
 		return $text;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function clientBeforeSend($text)
 	{
 		if (isset($this->events['clientBeforeSend']))
 			foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
 		return $text;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	/* function clientOnFormControlRender($formName, $control, $text)
 	{
 		if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
 		return $text;
 	}*/
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 	function adminOnMenuRender()
 	{
 		if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin)
 			if (method_exists($this->items[$plugin], 'adminOnMenuRender')) $this->items[$plugin]->adminOnMenuRender();
 			else ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
  /**
 	* Событие ajaxOnRequest
 	*/
@@ -1132,7 +1136,6 @@ class ContentPlugin extends Plugin
 		$this->updateContent(arg('content', 'dbsafe'));
 		HTTP::redirect(arg('submitURL'));
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Отрисовка клиентской части
@@ -1151,7 +1154,6 @@ class ContentPlugin extends Plugin
 
 		return Eresus_Kernel::app()->getPage()->content;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Отрисовка административной части
