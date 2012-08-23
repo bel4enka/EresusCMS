@@ -3,30 +3,27 @@
  * ${product.title}
  *
  * @version ${product.version}
- *
- * PhpUnit Tests
- *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
- * @subpackage Tests
- * @author Михаил Красильников <mk@eresus.ru>
- *
- * $Id$
+ * @package Eresus
  */
 
 require_once TESTS_SRC_DIR . '/core/classes/WebPage.php';
@@ -47,22 +44,26 @@ class HtmlScriptElementTest extends PHPUnit_Framework_TestCase
 		$test = new HtmlScriptElement();
 		$this->assertEquals('<script type="text/javascript"></script>', $test->getHTML());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем конструктор с URL
 	 *
 	 * @covers HtmlScriptElement::__construct
 	 */
-	public function test_cusntruct_URL()
+	public function test_construct_URL()
 	{
 		$test = new HtmlScriptElement('http://example.org/some_script');
-		$this->assertEquals('<script type="text/javascript" src="http://example.org/some_script"></script>', $test->getHTML());
+		$this->assertEquals(
+			'<script type="text/javascript" src="http://example.org/some_script"></script>',
+			$test->getHTML()
+		);
 
 		$test = new HtmlScriptElement('/some_script.js');
-		$this->assertEquals('<script type="text/javascript" src="/some_script.js"></script>', $test->getHTML());
+		$this->assertEquals(
+			'<script type="text/javascript" src="/some_script.js"></script>',
+			$test->getHTML()
+		);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем конструктор с кодом
@@ -70,28 +71,35 @@ class HtmlScriptElementTest extends PHPUnit_Framework_TestCase
 	 * @covers HtmlScriptElement::__construct
 	 * @covers HtmlScriptElement::setContents
 	 */
-	public function test_cusntruct_code()
+	public function test_construct_code()
 	{
 		$test = new HtmlScriptElement('alert("Hello world");');
-		$this->assertEquals("<script type=\"text/javascript\">//<!-- <![CDATA[\nalert(\"Hello world\");\n//]] --></script>", $test->getHTML());
+		$this->assertEquals(
+			"<script type=\"text/javascript\">//<!-- <![CDATA[\n" .
+				"alert(\"Hello world\");\n//]] --></script>",
+			$test->getHTML()
+		);
 
-		$test = new HtmlScriptElement('alert("test");');
-		$this->assertEquals("<script type=\"text/javascript\">//<!-- <![CDATA[\nalert(\"test\");\n//]] --></script>", $test->getHTML());
+		$test = new HtmlScriptElement('jQuery.webshims.polyfill();');
+		$this->assertEquals(
+			"<script type=\"text/javascript\">//<!-- <![CDATA[\n" .
+				"jQuery.webshims.polyfill();\n//]] --></script>",
+			$test->getHTML()
+		);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем async и defer
 	 *
 	 * @covers HtmlScriptElement::__construct
 	 */
-	public function test_cusntruct_async_defer()
+	public function test_construct_async_defer()
 	{
 		$test = new HtmlScriptElement('script.js');
 		$test->setAttribute('defer');
-		$this->assertEquals('<script type="text/javascript" src="script.js" defer></script>', $test->getHTML());
+		$this->assertEquals('<script type="text/javascript" src="script.js" defer></script>',
+			$test->getHTML());
 	}
-	//-----------------------------------------------------------------------------
 
 	/* */
 }

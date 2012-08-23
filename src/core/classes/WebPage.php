@@ -187,9 +187,10 @@ class HtmlScriptElement extends HtmlElement
 		/*
 		 * Считаем URL-ом всё, что:
 		 * - либо содержит xxx:// в начале
-		 * - либо состоит из минимум двух групп непробельных символов, разделённых точкой или слэшем
+		 * - либо состоит из минимум двух групп символов (любые непроблеьные или «;»), разделённых
+		 *   точкой или слэшем
 		 */
-		if ($script !== '' && preg_match('=(^\w{3,8}://|^\S*(\.|/)\S*$)=', $script))
+		if ($script !== '' && preg_match('=(^\w{3,8}://|^[^\s;]+(\.|/)[^\s;]+$)=', $script))
 		{
 			$this->setAttribute('src', $script);
 			$this->setContents('');
@@ -607,6 +608,7 @@ class WebPage
 				$this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'top');
 				$this->linkJsLib('modernizr');
 				$this->linkJsLib('jquery');
+				$this->addScripts('jQuery.webshims.polyfill();');
 			break;
 		}
 	}
