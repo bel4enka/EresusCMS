@@ -564,7 +564,7 @@ class WebPage
 	 *
 	 * - jquery — {@link http://jquery.com/ jQuery}
 	 * - modernizr — {@link http://modernizr.com/ Modernizr}
-	 * - webshim — {@link http://afarkas.github.com/webshim/demos/ Webshims}
+	 * - webshim — {@link http://afarkas.github.com/webshim/demos/ Webshim}
 	 * - webshims — устаревший синоним для webshim
 	 *
 	 * Аргументы для библиотеки jquery:
@@ -604,7 +604,6 @@ class WebPage
 
 			case 'webshim':
 			case 'webshims':
-				$this->linkScripts($root . 'core/js/webshim/custom.js', 'top');
 				$this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'top');
 				$this->linkJsLib('modernizr');
 				$this->linkJsLib('jquery');
