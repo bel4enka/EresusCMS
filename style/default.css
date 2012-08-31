@@ -4,7 +4,7 @@
 html {margin: 0; padding: 0;}
 body {margin: 0; padding: 0; font-family: verdana, tahoma, sans-serif;}
 img {border: 0;}
-sup,sub {font-size: 6pt;}
+sup,sub {font-size: 80%;}
 
 a:link {color: blue;}
 a:visited {color: navy;}
@@ -19,11 +19,11 @@ h4 {font-family: 'Arial', sans-serif; font-size: 9pt; margin: 1em 0px 2px 0px;}
 h5 {font-family: 'Arial', sans-serif; font-size: 8pt; margin: 1em 0px 2px 1em;}
 
 /* Стили области контента */
-#content {padding: 5px 10px; font-size: 90%;}
+#Content {padding: 5px 10px; font-size: 90%;}
 
 div.form {}
 .form th {}
-.form td {;}
+.form td {}
 .form input {}
 .form textarea {}
 .form input.button {}

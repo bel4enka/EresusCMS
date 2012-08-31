@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.05
+# Версия 2.06
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -213,7 +213,7 @@ class TAdminUI {
   global $request;
 
     $prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
-    if ($itemsCount > $ItemsPerPage) {
+    if ($itemsCount > $itemsPerPage) {
       $result = '<div class="admListPages">'.strPages;
       if ($Descending) {
         $forFrom = $pageCount;

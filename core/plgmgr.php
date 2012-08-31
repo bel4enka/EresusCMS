@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.05
+# Версия 2.06
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -151,6 +151,7 @@ class TPlgMgr {
   global $db, $page, $request;
 
     if (UserRights($this->access)) {
+      $result = '';
       $page->title = admPlugins;
       if (isset($request['arg']['update'])) $this->update();
       elseif (isset($request['arg']['toggle'])) $this->toggle();

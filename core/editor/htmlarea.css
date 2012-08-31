@@ -47,7 +47,9 @@
 }
 
 .htmlarea .toolbar .buttonDisabled img {
+  filter: gray() alpha(opacity = 25);
   -moz-opacity: 0.25;
+  opacity: 0.25;
 }
 
 .htmlarea .toolbar .separator {
@@ -223,8 +225,11 @@ form { margin: 0px; border: none; }
   font-size:100%;
   font-weight:bold;
   padding: 2px;
+  clear:left;
+  
 }
 
+.htmlarea .panel { overflow:auto; }
 .htmlarea .panels.left  .panel { border-right:none; border-left:none; }
 .htmlarea .panels.left  h1     { border-right:none;  }
 .htmlarea .panels.right .panel { border-right:none; border-left:none; }

@@ -5,7 +5,6 @@
 
 <script type="text/javascript" src="popup.js"></script>
 <link rel="stylesheet" type="text/css" href="popup.css" />
-<script src="$(httpRoot)core/functions.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 
@@ -76,11 +75,6 @@ function onPreview() {
   window.ipreview.location.replace(url);
   return false;
 }
-
-function onBrowse() {
-  BrowseFileDialog("f_url", "");
-  return false;
-}
 </script>
 
 </head>
@@ -97,7 +91,8 @@ function onBrowse() {
     <td style="width: 7em; text-align: right">Image URL:</td>
     <td><input type="text" name="url" id="f_url" style="width:75%"
       title="Enter the image URL here" />
-      <button name="browse" onclick="return onBrowse();" title="Browse file on server">Browse</button>
+      <button name="preview" onclick="return onPreview();"
+      title="Preview the image in a new window">Preview</button>
     </td>
   </tr>
   <tr>
@@ -119,15 +114,16 @@ function onBrowse() {
 <div class="fl">Alignment:</div>
 <select size="1" name="align" id="f_align"
   title="Positioning of this image">
-  <option value=""  selected="1">Not set</option>
-  <option value="left"          >Left</option>
-  <option value="right"         >Right</option>
-  <option value="texttop"       >Texttop</option>
-  <option value="absmiddle"     >Absmiddle</option>
-  <option value="absbottom"     >Absbottom</option>
-  <option value="bottom"        >Bottom</option>
-  <option value="middle"        >Middle</option>
-  <option value="top"           >Top</option>
+  <option value=""                             >Not set</option>
+  <option value="left"                         >Left</option>
+  <option value="right"                        >Right</option>
+  <option value="texttop"                      >Texttop</option>
+  <option value="absmiddle"                    >Absmiddle</option>
+  <option value="baseline" selected="1"        >Baseline</option>
+  <option value="absbottom"                    >Absbottom</option>
+  <option value="bottom"                       >Bottom</option>
+  <option value="middle"                       >Middle</option>
+  <option value="top"                          >Top</option>
 </select>
 
 <p />
@@ -162,12 +158,12 @@ title="Vertical padding" />
 <table width="100%" style="margin-bottom: 0.2em">
  <tr>
   <td valign="bottom">
-    <!--div class="fr">Image Preview:</div-->
-    <button name="preview" onclick="return onPreview();" title="Preview the image in a new window" style="white-space: nowrap; width: auto; margin-bottom: 5px;">Preview</button>
-    <iframe name="ipreview" id="ipreview" frameborder="0" style="border : 1px solid gray;" height="200" width="300" src=""></iframe>
+    <div class="fr">Image Preview:</div>
+    <iframe name="ipreview" id="ipreview" frameborder="0" style="border : 1px solid gray;" 
+	height="200" width="300" src="blank.html"></iframe>
   </td>
   <td valign="bottom" style="text-align: right">
-    <button type="button" name="ok" onclick="return onOK();">OK</button><br />
+    <button type="button" name="ok" onclick="return onOK();">OK</button><br>
     <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>
   </td>
  </tr>

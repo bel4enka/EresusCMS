@@ -27,18 +27,18 @@
     --     included in the top 10 lines of the file (see the embedded edit mode)
     --
     --  $HeadURL: http://svn.xinha.python-hosting.com/trunk/htmlarea.js $
-    --  $LastChangedDate: 2006-03-20 14:27:09 +1200 (Mon, 20 Mar 2006) $
-    --  $LastChangedRevision: 477 $
-    --  $LastChangedBy: mokhet $
+    --  $LastChangedDate: 2006-12-23 11:31:46 +1300 (Sat, 23 Dec 2006) $
+    --  $LastChangedRevision: 621 $
+    --  $LastChangedBy: ray $
     --------------------------------------------------------------------------*/
 
 HTMLArea.version =
 {
   'Release'   : 'Trunk',
   'Head'      : '$HeadURL: http://svn.xinha.python-hosting.com/trunk/htmlarea.js $'.replace(/^[^:]*: (.*) \$$/, '$1'),
-  'Date'      : '$LastChangedDate: 2006-03-20 14:27:09 +1200 (Mon, 20 Mar 2006) $'.replace(/^[^:]*: ([0-9-]*) ([0-9:]*) ([+0-9]*) \((.*)\) \$/, '$4 $2 $3'),
-  'Revision'  : '$LastChangedRevision: 477 $'.replace(/^[^:]*: (.*) \$$/, '$1'),
-  'RevisionBy': '$LastChangedBy: mokhet $'.replace(/^[^:]*: (.*) \$$/, '$1')
+  'Date'      : '$LastChangedDate: 2006-12-23 11:31:46 +1300 (Sat, 23 Dec 2006) $'.replace(/^[^:]*: ([0-9-]*) ([0-9:]*) ([+0-9]*) \((.*)\) \$/, '$4 $2 $3'),
+  'Revision'  : '$LastChangedRevision: 621 $'.replace(/^[^:]*: (.*) \$$/, '$1'),
+  'RevisionBy': '$LastChangedBy: ray $'.replace(/^[^:]*: (.*) \$$/, '$1')
 };
 
 if ( typeof _editor_url == "string" )
@@ -72,12 +72,17 @@ var __htmlareas = [];
 
 // browser identification
 HTMLArea.agt       = navigator.userAgent.toLowerCase();
-HTMLArea.is_ie     = ((HTMLArea.agt.indexOf("msie") != -1) && (HTMLArea.agt.indexOf("opera") == -1));
+HTMLArea.is_ie	   = ((HTMLArea.agt.indexOf("msie") != -1) && (HTMLArea.agt.indexOf("opera") == -1));
 HTMLArea.is_opera  = (HTMLArea.agt.indexOf("opera") != -1);
-HTMLArea.is_mac    = (HTMLArea.agt.indexOf("mac") != -1);
+HTMLArea.is_mac	   = (HTMLArea.agt.indexOf("mac") != -1);
 HTMLArea.is_mac_ie = (HTMLArea.is_ie && HTMLArea.is_mac);
 HTMLArea.is_win_ie = (HTMLArea.is_ie && !HTMLArea.is_mac);
 HTMLArea.is_gecko  = (navigator.product == "Gecko");
+HTMLArea.isRunLocally = document.URL.toLowerCase().search(/^file:/) != -1;
+if ( HTMLArea.isRunLocally )
+{
+  alert('Xinha *must* be installed on a web server. Locally opened files (those that use the "file://" protocol) cannot properly function. Xinha will try to initialize but may not be correctly loaded.');
+}
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -105,7 +110,8 @@ function HTMLArea(textarea, config)
       textarea = HTMLArea.getElementById('textarea', textarea);
     }
     this._textArea = textarea;
-
+    this._textArea.spellcheck = false;
+       
     // Before we modify anything, get the initial textarea size
     this._initial_ta_size =
     {
@@ -165,7 +171,7 @@ function HTMLArea(textarea, config)
     this._notifyListeners = {};
 
     // Panels
-    var panels =
+    var panels = 
     {
       right:
       {
@@ -276,11 +282,18 @@ HTMLArea.Config = function()
   this.undoSteps = 20;
 
   // the time interval at which undo samples are taken
-  this.undoTimeout = 500;       // 1/2 sec.
+  this.undoTimeout = 500;	// 1/2 sec.
+
+  // set this to true if you want to explicitly right-justify when 
+  // setting the text direction to right-to-left
+  this.changeJustifyWithDirection = false;
 
   // if true then HTMLArea will retrieve the full HTML, starting with the
   // <HTML> tag.
   this.fullPage = false;
+
+  // style included in the iframe document
+  this.pageStyle = "";
 
   // external stylesheets to load (REFERENCE THESE ABSOLUTELY)
   this.pageStyleSheets = [];
@@ -345,9 +358,23 @@ HTMLArea.Config = function()
   // even neater, if you resize the window the toolbars will reflow.  Niiiice.
 
   this.flowToolbars = true;
-
+  
   // set to true if you want the loading panel to show at startup
   this.showLoading = false;
+
+  // set to false if you want to allow JavaScript in the content, otherwise <script> tags are stripped out
+  this.stripScripts = true;
+  
+  // size of color picker cells
+  this.colorPickerCellSize = '6px';
+  // granularity of color picker cells (number per column/row)
+  this.colorPickerGranularity = 18;
+  // position of color picker from toolbar button
+  this.colorPickerPosition = 'bottom,right';
+  // set to true to show websafe checkbox in picker
+  this.colorPickerWebSafe = false;
+  // number of recent colors to remember
+  this.colorPickerSaveColors = 20;
 
   /** CUSTOMIZING THE TOOLBAR
    * -------------------------
@@ -366,8 +393,8 @@ HTMLArea.Config = function()
     ["separator","subscript","superscript"],
     ["linebreak","separator","justifyleft","justifycenter","justifyright","justifyfull"],
     ["separator","insertorderedlist","insertunorderedlist","outdent","indent"],
-    ["separator","insertlinebreak","inserthorizontalrule","createlink","insertimage","inserttable"],
-    ["separator","undo","redo","selectall","print"], (HTMLArea.is_gecko ? [] : ["cut","copy","paste","overwrite","saveas"]),
+    ["separator","inserthorizontalrule","createlink","insertimage","inserttable"],
+    ["linebreak","separator","undo","redo","selectall","print"], (HTMLArea.is_gecko ? [] : ["cut","copy","paste","overwrite","saveas"]),
     ["separator","killword","clearfonts","removeformat","toggleborders","splitblock","lefttoright", "righttoleft"],
     ["separator","htmlmode","showhelp","about"]
   ];
@@ -376,14 +403,14 @@ HTMLArea.Config = function()
   this.fontname =
   {
     "&mdash; font &mdash;": '',
-    "Arial":             'arial,helvetica,sans-serif',
-    "Courier New":         'courier new,courier,monospace',
-    "Georgia":         'georgia,times new roman,times,serif',
-    "Tahoma":            'tahoma,arial,helvetica,sans-serif',
+    "Arial":	         'arial,helvetica,sans-serif',
+    "Courier New":	   'courier new,courier,monospace',
+    "Georgia":	       'georgia,times new roman,times,serif',
+    "Tahoma":	         'tahoma,arial,helvetica,sans-serif',
     "Times New Roman": 'times new roman,times,serif',
-    "Verdana":         'verdana,arial,helvetica,sans-serif',
-    "impact":            'impact',
-    "WingDings":             'wingdings'
+    "Verdana":	       'verdana,arial,helvetica,sans-serif',
+    "impact":	         'impact',
+    "WingDings":	     'wingdings'
   };
 
   this.fontsize =
@@ -433,7 +460,7 @@ HTMLArea.Config = function()
   // ADDING CUSTOM BUTTONS: please read below!
   // format of the btnList elements is "ID: [ ToolTip, Icon, Enabled in text mode?, ACTION ]"
   //    - ID: unique ID for the button.  If the button calls document.execCommand
-  //        it's wise to give it the same name as the called command.
+  //	    it's wise to give it the same name as the called command.
   //    - ACTION: function that gets called when the button is clicked.
   //              it has the following prototype:
   //                 function(editor, buttonName)
@@ -480,7 +507,6 @@ HTMLArea.Config = function()
     paste: [ "Paste from clipboard", ["ed_buttons_main.gif",4,1], false, cut_copy_paste ],
     selectall: [ "Select all", "ed_selectall.gif", false, function(e) {e.execCommand("selectall");} ],
 
-    insertlinebreak: [ "Line Break", ["ed_buttons_main.gif",2,4], false, function(e) { e.execCommand("insertlinebreak"); } ],
     inserthorizontalrule: [ "Horizontal Rule", ["ed_buttons_main.gif",6,0], false, function(e) { e.execCommand("inserthorizontalrule"); } ],
     createlink: [ "Insert Web Link", ["ed_buttons_main.gif",6,1], false, function(e) { e._createLink(); } ],
     insertimage: [ "Insert/Modify Image", ["ed_buttons_main.gif",6,3], false, function(e) { e.execCommand("insertimage"); } ],
@@ -517,11 +543,11 @@ HTMLArea.Config = function()
    *   var editor = new HTMLArea("your_text_area_id");
    *   var cfg = editor.config; // this is the default configuration
    *   cfg.btnList["my-hilite"] =
-   *    [ function(editor) { editor.surroundHTML('<span style="background:yellow">', '</span>'); }, // action
-   *      "Highlight selection", // tooltip
-   *      "my_hilite.gif", // image
-   *      false // disabled in text mode
-   *    ];
+   *	[ function(editor) { editor.surroundHTML('<span style="background:yellow">', '</span>'); }, // action
+   *	  "Highlight selection", // tooltip
+   *	  "my_hilite.gif", // image
+   *	  false // disabled in text mode
+   *	];
    *   cfg.toolbar.push(["linebreak", "my-hilite"]); // add the new button to the toolbar
    *
    * An alternate (also more convenient and recommended) way to
@@ -535,7 +561,7 @@ HTMLArea.Config = function()
     if ( typeof btn != 'object' )
     {
       continue;
-    }
+    } 
     if ( typeof btn[1] != 'string' )
     {
       btn[1][0] = _editor_url + this.imgURL + btn[1][0];
@@ -698,7 +724,7 @@ HTMLArea.Config.prototype.addToolbarElement = function(id, where, position)
   {
     whereIsArray = true;
     whereLength = where.length;
-        }
+	}
 
   if ( idIsArray ) //find the button/select box in input array
   {
@@ -722,7 +748,7 @@ HTMLArea.Config.prototype.addToolbarElement = function(id, where, position)
     {
       // check if button/select box exists
       if ( a[i] == sid )
-      {
+      { 
         exists = true;
         break;
       }
@@ -751,7 +777,7 @@ HTMLArea.Config.prototype.addToolbarElement = function(id, where, position)
       {
         // find the position to insert
         if ( a[j] == where )
-        {
+        { 
           found = true;
           break;
         }
@@ -763,7 +789,7 @@ HTMLArea.Config.prototype.addToolbarElement = function(id, where, position)
   {
     //if check found any other as the first button
     if ( !found && whereIsArray )
-    {
+    { 
       if ( where.length != whereLength )
       {
         j = whereJ;
@@ -790,7 +816,7 @@ HTMLArea.Config.prototype.addToolbarElement = function(id, where, position)
         }
       }
       else
-      {
+      { 
         // insert before/after the found button
         if ( position < 0 )
         {
@@ -832,6 +858,8 @@ HTMLArea.Config.prototype.addToolbarElement = function(id, where, position)
   }
 };
 
+HTMLArea.Config.prototype.removeToolbarElement = HTMLArea.Config.prototype.hideSomeButtons;
+
 /** Helper function: replace all TEXTAREA-s in the document with HTMLArea-s. */
 HTMLArea.replaceAll = function(config)
 {
@@ -854,7 +882,7 @@ HTMLArea.replace = function(id, config)
 HTMLArea.prototype._createToolbar = function ()
 {
   this.setLoadingMessage('Create Toolbar');
-  var editor = this;    // to access this in nested functions
+  var editor = this;	// to access this in nested functions
 
   var toolbar = document.createElement("div");
   // ._toolbar is for legacy, ._toolBar is better thanks.
@@ -864,26 +892,26 @@ HTMLArea.prototype._createToolbar = function ()
 
   HTMLArea.freeLater(this, '_toolBar');
   HTMLArea.freeLater(this, '_toolbar');
-
+  
   var tb_row = null;
   var tb_objects = {};
   this._toolbarObjects = tb_objects;
 
-        this._createToolbar1(editor, toolbar, tb_objects);
-        this._htmlArea.appendChild(toolbar);
-
+	this._createToolbar1(editor, toolbar, tb_objects);
+	this._htmlArea.appendChild(toolbar);      
+  
   return toolbar;
 };
 
 // FIXME : function never used, can probably be removed from source
 HTMLArea.prototype._setConfig = function(config)
 {
-        this.config = config;
+	this.config = config;
 };
 
 HTMLArea.prototype._addToolbar = function()
 {
-        this._createToolbar1(this, this._toolbar, this._toolbarObjects);
+	this._createToolbar1(this, this._toolbar, this._toolbarObjects);
 };
 
 /**
@@ -1043,19 +1071,19 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
       el.title = tooltip;
       var obj =
       {
-        name    : txt, // field name
-        element : el,   // the UI element (SELECT)
+        name	: txt, // field name
+        element : el,	// the UI element (SELECT)
         enabled : true, // is it enabled?
-        text    : false, // enabled in text mode?
-        cmd     : cmd, // command ID
-        state   : setButtonStatus, // for changing state
+        text	: false, // enabled in text mode?
+        cmd	: cmd, // command ID
+        state	: setButtonStatus, // for changing state
         context : context
       };
-
+      
       HTMLArea.freeLater(obj);
-
+      
       tb_objects[txt] = obj;
-
+      
       for ( var i in options )
       {
         // prevent iterating over wrong type
@@ -1102,17 +1130,17 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
         el.title = HTMLArea._lc("Current style");
         obj =
         {
-          name  : txt, // the button name (i.e. 'bold')
+          name	: txt, // the button name (i.e. 'bold')
           element : el, // the UI element (DIV)
           enabled : true, // is it enabled?
-          active        : false, // is it pressed?
-          text  : false, // enabled in text mode?
-          cmd   : "textindicator", // the command ID
-          state : setButtonStatus // for changing state
+          active	: false, // is it pressed?
+          text	: false, // enabled in text mode?
+          cmd	: "textindicator", // the command ID
+          state	: setButtonStatus // for changing state
         };
-
+      
         HTMLArea.freeLater(obj);
-
+      
         tb_objects[txt] = obj;
       break;
       default:
@@ -1126,6 +1154,7 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
       el.style.textDecoration = 'none';
       el.title = btn[0];
       el.className = "button";
+      el.style.direction = "ltr";
       // let's just pretend we have a button object, and
       // assign all the needed information to it.
       obj =
@@ -1135,11 +1164,11 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
         enabled : true, // is it enabled?
         active : false, // is it pressed?
         text : btn[2], // enabled in text mode?
-        cmd     : btn[3], // the command ID
-        state   : setButtonStatus, // for changing state
+        cmd	: btn[3], // the command ID
+        state	: setButtonStatus, // for changing state
         context : btn[4] || null // enabled in a certain context?
       };
-
+      HTMLArea.freeLater(el);
       HTMLArea.freeLater(obj);
 
       tb_objects[txt] = obj;
@@ -1203,7 +1232,7 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
       var img = i_contain.firstChild;
       el.appendChild(i_contain);
 
-      obj.imgel = img;
+      obj.imgel = img;      
       obj.swapImage = function(newimg)
       {
         if ( typeof newimg != 'string' )
@@ -1220,7 +1249,7 @@ HTMLArea.prototype._createToolbar1 = function (editor, toolbar, tb_objects)
           img.style.left = '0px';
         }
       };
-
+      
     }
     else if( !el )
     {
@@ -1375,7 +1404,7 @@ HTMLArea.prototype._createStatusBar = function()
   statusbar.className = "statusBar";
   this._statusBar = statusbar;
   HTMLArea.freeLater(this, '_statusBar');
-
+  
   // statusbar.appendChild(document.createTextNode(HTMLArea._lc("Path") + ": "));
   // creates a holder for the path view
   var div = document.createElement("span");
@@ -1405,30 +1434,30 @@ HTMLArea.prototype._createStatusBar = function()
 HTMLArea.prototype.generate = function ()
 {
   var i;
-  var editor = this;    // we'll need "this" in some nested functions
+  var editor = this;	// we'll need "this" in some nested functions
   this.setLoadingMessage('Generate Xinha object');
 
   if ( typeof Dialog == 'undefined' )
   {
-    // why can't we use the following line instead ?
-//    HTMLArea._loadback(_editor_url + 'dialog.js', this.generate );
-    HTMLArea._loadback(_editor_url + 'dialog.js', function() { editor.generate(); } );
+    HTMLArea._loadback(_editor_url + 'dialog.js', this.generate, this );
     return false;
   }
 
   if ( typeof HTMLArea.Dialog == 'undefined' )
   {
-    // why can't we use the following line instead ?
-//    HTMLArea._loadback(_editor_url + 'inline-dialog.js', this.generate );
-    HTMLArea._loadback(_editor_url + 'inline-dialog.js', function() { editor.generate(); } );
+    HTMLArea._loadback(_editor_url + 'inline-dialog.js', this.generate, this );
     return false;
   }
 
   if ( typeof PopupWin == 'undefined' )
   {
-    // why can't we use the following line instead ?
-//    HTMLArea._loadback(_editor_url + 'ipopupwin.js', this.generate );
-    HTMLArea._loadback(_editor_url + 'popupwin.js', function() { editor.generate(); } );
+    HTMLArea._loadback(_editor_url + 'popupwin.js', this.generate, this );
+    return false;
+  }
+
+  if ( typeof colorPicker == 'undefined' )
+  {
+    HTMLArea._loadback(_editor_url + 'popups/color_picker.js', this.generate, this );
     return false;
   }
 
@@ -1514,7 +1543,7 @@ HTMLArea.prototype.generate = function ()
 
   };
   HTMLArea.freeLater(this._framework);
-
+  
   var fw = this._framework;
   fw.table.border = "0";
   fw.table.cellPadding = "0";
@@ -1573,7 +1602,7 @@ HTMLArea.prototype.generate = function ()
   this._iframe = iframe;
   this._iframe.className = 'xinha_iframe';
   HTMLArea.freeLater(this, '_iframe');
-
+  
     // creates & appends the status bar
   var statusbar = this._createStatusBar();
   this._framework.sb_cell.appendChild(statusbar);
@@ -1615,6 +1644,30 @@ HTMLArea.prototype.generate = function ()
         return true;
       }
     );
+
+    //add onsubmit handlers for textareas that don't have one 
+    // doesn't work in IE!!
+   /* if ( !textarea.form.xinha_submit )
+    {
+      textarea.form.xinha_submit = textarea.form.submit;
+      textarea.form.submit = function()
+      {
+        for ( var i = this.elements.length; i--; )
+        {
+          var element = this.elements[i];
+          if ( element.type != 'textarea' ) continue;
+          for ( var a = __htmlareas.length; a--; )
+          {
+            var editor = __htmlareas[a];
+            if ( editor && editor._textArea == element)
+            {
+              element.value = editor.outwardHtml(editor.getHTML());
+            }
+          }
+        }
+        this.xinha_submit();
+      };
+    }*/
   }
 
   // add a handler for the "back/forward" case -- on body.unload we save
@@ -1711,10 +1764,6 @@ HTMLArea.prototype.initSize = function()
   this.sizeEditor(width, height, this.config.sizeIncludesBars, this.config.sizeIncludesPanels);
 
   // why can't we use the following line instead ?
-//  HTMLArea.addDom0Event(window, 'resize', this.sizeEditor);
-  HTMLArea.addDom0Event(window, 'resize', function(e) { editor.sizeEditor(); });
-
-  // why can't we use the following line instead ?
 //  this.notifyOn('panel_change',this.sizeEditor);
   this.notifyOn('panel_change',function() { editor.sizeEditor(); });
 };
@@ -1753,13 +1802,13 @@ HTMLArea.prototype.sizeEditor = function(width, height, includingBars, including
       var rPanel = this._panels.right;
       if ( rPanel.on && rPanel.panels.length && HTMLArea.hasDisplayedChildren(rPanel.div) )
       {
-        this._htmlArea.style.width = this._htmlArea.offsetWidth + parseInt(this.config.panel_dimensions.right, 10);
+        this._htmlArea.style.width = (this._htmlArea.offsetWidth + parseInt(this.config.panel_dimensions.right, 10)) + 'px';
       }
 
       var lPanel = this._panels.left;
       if ( lPanel.on && lPanel.panels.length && HTMLArea.hasDisplayedChildren(lPanel.div) )
       {
-        this._htmlArea.style.width = this._htmlArea.offsetWidth + parseInt(this.config.panel_dimensions.left, 10);
+        this._htmlArea.style.width = (this._htmlArea.offsetWidth + parseInt(this.config.panel_dimensions.left, 10)) + 'px';
       }
     }
   }
@@ -1819,7 +1868,7 @@ HTMLArea.prototype.sizeEditor = function(width, height, includingBars, including
 
   if ( panel_is_alive('left') )
   {
-    col_span += 1;
+    col_span += 1;      
   }
 
 //  if ( panel_is_alive('top') )
@@ -1898,8 +1947,21 @@ HTMLArea.prototype.sizeEditor = function(width, height, includingBars, including
   {
     edcellheight -= parseInt(this.config.panel_dimensions.bottom, 10);
   }
-  this._iframe.style.height = edcellheight + 'px';
-
+  this._iframe.style.height = edcellheight + 'px';  
+//  this._framework.rp_cell.style.height = edcellheight + 'px';
+//  this._framework.lp_cell.style.height = edcellheight + 'px';
+  
+  // (re)size the left and right panels so they are equal the editor height
+//  for(var i = 0; i < this._panels.left.panels.length; i++)
+//  {
+//    this._panels.left.panels[i].style.height = this._iframe.style.height;
+//  }
+  
+//  for(var i = 0; i < this._panels.right.panels.length; i++)
+//  {
+//    this._panels.right.panels[i].style.height = this._iframe.style.height;
+//  }  
+  
   var edcellwidth = width;
   if ( panel_is_alive('left') )
   {
@@ -1907,13 +1969,13 @@ HTMLArea.prototype.sizeEditor = function(width, height, includingBars, including
   }
   if ( panel_is_alive('right') )
   {
-    edcellwidth -= parseInt(this.config.panel_dimensions.right, 10);
+    edcellwidth -= parseInt(this.config.panel_dimensions.right, 10);    
   }
   this._iframe.style.width = edcellwidth + 'px';
 
   this._textArea.style.height = this._iframe.style.height;
   this._textArea.style.width  = this._iframe.style.width;
-
+     
   this.notifyOf('resize', {width:this._htmlArea.offsetWidth, height:this._htmlArea.offsetHeight});
 };
 
@@ -1923,7 +1985,8 @@ HTMLArea.prototype.addPanel = function(side)
   div.side = side;
   if ( side == 'left' || side == 'right' )
   {
-    div.style.width = this.config.panel_dimensions[side];
+    div.style.width  = this.config.panel_dimensions[side];
+    if(this._iframe) div.style.height = this._iframe.style.height;     
   }
   HTMLArea.addClasses(div, 'panel');
   this._panels[side].panels.push(div);
@@ -1933,6 +1996,7 @@ HTMLArea.prototype.addPanel = function(side)
 
   return div;
 };
+
 
 HTMLArea.prototype.removePanel = function(panel)
 {
@@ -1951,7 +2015,7 @@ HTMLArea.prototype.removePanel = function(panel)
 
 HTMLArea.prototype.hidePanel = function(panel)
 {
-  if ( panel )
+  if ( panel && panel.style.display != 'none' )
   {
     panel.style.display = 'none';
     this.notifyOf('panel_change', {'action':'hide','panel':panel});
@@ -1960,7 +2024,7 @@ HTMLArea.prototype.hidePanel = function(panel)
 
 HTMLArea.prototype.showPanel = function(panel)
 {
-  if ( panel )
+  if ( panel && panel.style.display == 'none' )
   {
     panel.style.display = '';
     this.notifyOf('panel_change', {'action':'show','panel':panel});
@@ -2118,7 +2182,7 @@ HTMLArea.prototype.initIframe = function()
   {
     if ( editor._iframe.contentDocument )
     {
-      this._doc = editor._iframe.contentDocument;
+      this._doc = editor._iframe.contentDocument;        
     }
     else
     {
@@ -2143,10 +2207,10 @@ HTMLArea.prototype.initIframe = function()
   { // try later
     setTimeout(function() { editor.initIframe(); }, 50);
   }
-
+  
   HTMLArea.freeLater(this, '_doc');
-
-  doc.open();
+  
+  doc.open("text/html","replace");
   var html = '';
   if ( !editor.config.fullPage )
   {
@@ -2161,7 +2225,8 @@ HTMLArea.prototype.initIframe = function()
     html += ".htmtableborders, .htmtableborders td, .htmtableborders th {border : 1px dashed lightgrey ! important;} \n";
     html += "</style>\n";
     html += "<style type=\"text/css\">";
-    html += "html, body { border: 0px;  background-color: #ffffff; } \n";
+    html += "html, body { border: 0px; } \n";
+    html += "body { background-color: #ffffff; } \n";
     html += "span.macro, span.macro ul, span.macro div, span.macro p {background : #CCCCCC;}\n";
     html += "</style>\n";
 
@@ -2201,19 +2266,23 @@ HTMLArea.prototype.initIframe = function()
 
   this.setEditorEvents();
 };
-
-/** Delay a function until the document is ready for operations.  See ticket:547 */
-HTMLArea.prototype.whenDocReady = function(doFunction)
+  
+/**
+ * Delay a function until the document is ready for operations.
+ * See ticket:547
+ * @param {object} F (Function) The function to call once the document is ready
+ * @public
+ */
+HTMLArea.prototype.whenDocReady = function(F)
 {
-  var editor = this;
-
-  if ( !this._doc.body )
+  var E = this;
+  if ( this._doc && this._doc.body )
   {
-    setTimeout(function() { editor.whenDocReady(doFunction); }, 50);
+    F();
   }
   else
   {
-    doFunction();
+    setTimeout(function() { E.whenDocReady(F); }, 50);
   }
 };
 
@@ -2308,7 +2377,7 @@ HTMLArea.prototype.setFullHTML = function(html)
     }
     var html_re = /<html>((.|\n)*?)<\/html>/i;
     html = html.replace(html_re, "$1");
-    this._doc.open();
+    this._doc.open("text/html","replace");
     this._doc.write(html);
     this._doc.close();
     if ( reac )
@@ -2360,11 +2429,13 @@ HTMLArea.prototype.setEditorEvents = function()
       {
         editor._onGenerate();
       }
+
+      HTMLArea.addDom0Event(window, 'resize', function(e) { editor.sizeEditor(); });
       editor.removeLoadingMessage();
     }
   );
 };
-
+  
 /***************************************************
  *  Category: PLUGINS
  ***************************************************/
@@ -2451,31 +2522,7 @@ HTMLArea.loadPlugin = function(pluginName, callback)
   var plugin = pluginName.replace(/([a-z])([A-Z])([a-z])/g, function (str, l1, l2, l3) { return l1 + "-" + l2.toLowerCase() + l3; }).toLowerCase() + ".js";
   var plugin_file = dir + "/" + plugin;
 
-  if ( callback )
-  {
-    HTMLArea._loadback(plugin_file, function() { callback(pluginName); });
-  }
-  else
-  {
-    /**
-    * @todo : try to avoid the use of document.write, it's evil
-    * @todo : better yet, try to update HTMLArea._loadback to let it include
-    *         the file without a callback function
-    *  try
-    *  {
-    *    var head = document.getElementsByTagName('head')[0];
-    *    var script = document.createElement('script');
-    *    script.type = "text/javascript";
-    *    script.src = plugin_file;
-    *    head.appendChild(script);
-    *  }
-    *  catch(ex)
-    *  {
-    *    document.write('<script type="text/javascript" src="' + plugin_file + '"></script>');
-    *  }
-    */
-    document.write('<script type="text/javascript" src="' + plugin_file + '"></script>');
-  }
+  HTMLArea._loadback(plugin_file, callback ? function() { callback(pluginName); } : null);
   return false;
 };
 
@@ -2538,7 +2585,7 @@ HTMLArea.loadPlugins = function(plugins, callbackIfNotReady)
   if ( retVal )
   {
     return true;
-  }
+  } 
 
   // Waiting on plugins to load, return false now and come back a bit later
   // if we have to callback
@@ -3021,7 +3068,7 @@ HTMLArea.prototype.updateToolbar = function(noStatus)
           }
         );
         var txt = el.tagName.toLowerCase();
-        a.title = el.style.cssText;
+        if (typeof el.style != 'undefined') a.title = el.style.cssText;
         if ( el.id )
         {
           txt += "#" + el.id;
@@ -3320,7 +3367,7 @@ else
 {
   HTMLArea.prototype.insertNodeAtSelection = function(toBeInserted)
   {
-    return null;        // this function not yet used for IE <FIXME>
+    return null;	// this function not yet used for IE <FIXME>
   };
 }
 
@@ -3534,7 +3581,7 @@ else
     // and that the anchor (start of selection) is an element.  This might not be totally
     // correct, we possibly should do a simlar check to IE?
     if ( !sel.isCollapsed )
-    {
+    {      
       if ( sel.anchorNode.childNodes.length > sel.anchorOffset && sel.anchorNode.childNodes[sel.anchorOffset].nodeType == 1 )
       {
         return sel.anchorNode.childNodes[sel.anchorOffset];
@@ -3545,7 +3592,7 @@ else
       }
       else
       {
-        return sel.anchorNode.parentNode;
+        return null; // return sel.anchorNode.parentNode;
       }
     }
     return null;
@@ -3574,7 +3621,7 @@ else
     }
 
     if ( typeof sel.isCollapsed != 'undefined' )
-    {
+    {      
       return sel.isCollapsed;
     }
 
@@ -3851,7 +3898,18 @@ if ( HTMLArea.is_ie )
   {
     var sel = this._getSelection();
     var range = this._createRange(sel);
-    return range.htmlText;
+    
+    // Need to be careful of control ranges which won't have htmlText
+    if( range.htmlText )
+    {
+      return range.htmlText
+    }
+    else if(range.length >= 1)
+    {
+      return range.item(0).outerHTML;
+    }
+    
+    return '';
   };
 }
 else
@@ -3942,20 +4000,21 @@ HTMLArea.prototype._createLink = function(link)
       {
         try
         {
-          editor._doc.execCommand("createlink", false, param.f_href);
-          a = editor.getParentElement();
-          var sel = editor._getSelection();
-          var range = editor._createRange(sel);
-          if ( !HTMLArea.is_ie )
+          var tmp = HTMLArea.uniq('http://www.example.com/Link');
+          editor._doc.execCommand('createlink', false, tmp);
+
+          // Fix them up
+          var anchors = editor._doc.getElementsByTagName('a');
+          for(var i = 0; i < anchors.length; i++)
           {
-            a = range.startContainer;
-            if ( ! ( /^a$/i.test(a.tagName) ) )
+            var anchor = anchors[i];
+            if(anchor.href == tmp)
             {
-              a = a.nextSibling;
-              if ( a === null )
-              {
-                a = range.startContainer.parentNode;
-              }
+              // Found one.
+              if (!a) a = anchor;
+              anchor.href =  param.f_href;
+              if (param.f_target) anchor.target =  param.f_target;
+              if (param.f_title)  anchor.title =  param.f_title;
             }
           }
         } catch(ex) {}
@@ -3979,7 +4038,6 @@ HTMLArea.prototype._createLink = function(link)
       {
         return false;
       }
-      a.target = param.f_target.trim();
       a.title = param.f_title.trim();
       editor.selectNodeContents(a);
       editor.updateToolbar();
@@ -3989,17 +4047,9 @@ HTMLArea.prototype._createLink = function(link)
 
 // Called when the user clicks on "InsertImage" button.  If an image is already
 // there, it will just modify it's properties.
-HTMLArea.prototype._insertLineBreak = function()
-{
-  var editor = this;    // for nested functions
-  var br = document.createElement('br');
-  editor.insertNodeAtSelection(br);
-  editor.updateToolbar();
-};
-
 HTMLArea.prototype._insertImage = function(image)
 {
-  var editor = this;    // for nested functions
+  var editor = this;	// for nested functions
   var outparam = null;
   if ( typeof image == "undefined" )
   {
@@ -4069,7 +4119,7 @@ HTMLArea.prototype._insertImage = function(image)
         switch (field)
         {
           case "f_alt":
-            img.alt = (value == "")?" ":value;
+            img.alt = value;
           break;
           case "f_border":
             img.border = parseInt(value || "0", 10);
@@ -4094,7 +4144,7 @@ HTMLArea.prototype._insertTable = function()
 {
   var sel = this._getSelection();
   var range = this._createRange(sel);
-  var editor = this;    // for nested functions
+  var editor = this;	// for nested functions
   this._popupDialog(
     editor.config.URIs.insert_table,
     function(param)
@@ -4191,8 +4241,13 @@ HTMLArea.prototype._comboSelected = function(el, txt)
       this.execCommand(txt, false, value);
     break;
     case "formatblock":
-      // (HTMLArea.is_ie) && (value = "<" + value + ">");
-      if( !HTMLArea.is_gecko || (value !== 'blockquote' && value !== 'div'))
+      // Mozilla inserts an empty tag (<>) if no parameter is passed  
+      if ( !value )
+      {
+      	this.updateToolbar();
+      	break;
+      }
+      if( !HTMLArea.is_gecko || value !== 'blockquote' )
       {
         value = "<" + value + ">";
       }
@@ -4221,40 +4276,60 @@ HTMLArea.prototype._comboSelected = function(el, txt)
  */
 HTMLArea.prototype._colorSelector = function(cmdID)
 {
-  var editor = this;    // for nested functions
+  var editor = this;	// for nested functions
+  var btn = editor._toolbarObjects[cmdID].element;
+  var initcolor;
   if ( cmdID == 'hilitecolor' )
   {
     if ( HTMLArea.is_ie )
     {
       cmdID = 'backcolor';
+      initcolor = HTMLArea._colorToRgb(editor._doc.queryCommandValue("backcolor"));
+    }
+    else
+    {
+      initcolor = HTMLArea._colorToRgb(editor._doc.queryCommandValue("hilitecolor"));
     }
     // @todo : useCSS is deprecated, see ticket #619
-    if ( HTMLArea.is_gecko )
+    //[wymsy]: mozilla bug #279330 has been fixed, I don't think we need this any more
+  /*  if ( HTMLArea.is_gecko )
     {
       try
       {
-        editor._doc.execCommand('useCSS', false, false); //switch on useCSS (mozilla bug #279330)
+     //   editor._doc.execCommand('useCSS', false, false); //switch on useCSS (mozilla bug #279330)
       } catch (ex) {}
-    }
+    }*/
   }
-  this._popupDialog(
-    editor.config.URIs.select_color,
-    function(color)
+  else
+  {
+  	initcolor = HTMLArea._colorToRgb(editor._doc.queryCommandValue("forecolor"));
+  }
+  var cback = function(color) { editor._doc.execCommand(cmdID, false, color); };
+  if ( HTMLArea.is_ie )
+  {
+    var range = editor._createRange(editor._getSelection());
+    cback = function(color)
     {
-      // selection not canceled
-      if ( color )
-      {
-        editor._doc.execCommand(cmdID, false, "#" + color);
-      }
-    },
-    HTMLArea._colorToRgb(this._doc.queryCommandValue(cmdID)));
+      range.select();
+      editor._doc.execCommand(cmdID, false, color);
+    };
+  }
+  var picker = new colorPicker(
+  {
+  	cellsize:editor.config.colorPickerCellSize,
+  	callback:cback,
+  	granularity:editor.config.colorPickerGranularity,
+  	websafe:editor.config.colorPickerWebSafe,
+  	savecolors:editor.config.colorPickerSaveColors
+  });
+  picker.open(editor.config.colorPickerPosition, btn, initcolor);
 };
 
 // the execCommand function (intercepts some commands and replaces them with
 // our own implementation)
 HTMLArea.prototype.execCommand = function(cmdID, UI, param)
 {
-  var editor = this;    // for nested functions
+  var editor = this;	// for nested functions
   this.focusEditor();
   cmdID = cmdID.toLowerCase();
   // @todo : useCSS is deprecated, see ticket #619
@@ -4290,10 +4365,6 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param)
       {
         this._doc.execCommand(cmdID, UI, param);
       }
-    break;
-
-    case "insertlinebreak":
-      this._insertLineBreak();
     break;
 
     case "inserttable":
@@ -4337,6 +4408,10 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param)
     break;
     case "lefttoright":
     case "righttoleft":
+      if (this.config.changeJustifyWithDirection) 
+      {
+        this._doc.execCommand((cmdID == "righttoleft") ? "justifyright" : "justifyleft", UI, param);
+      }
       var dir = (cmdID == "righttoleft") ? "rtl" : "ltr";
       var el = this.getParentElement();
       while ( el && !HTMLArea.isBlockElement(el) )
@@ -4364,7 +4439,7 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param)
       {
         if ( this.config.debug )
         {
-          alert(ex + "\n\nby execCommand(" + cmdID + ");");
+          alert(e + "\n\nby execCommand(" + cmdID + ");");
         }
       }
     break;
@@ -4416,72 +4491,7 @@ HTMLArea.prototype._editorEvent = function(ev)
 
   if ( keyEvent && ev.ctrlKey && !ev.altKey )
   {
-    var sel = null;
-    var range = null;
-    var key = String.fromCharCode(HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
-    var cmd = null;
-    var value = null;
-    switch (key)
-    {
-      case 'a':
-        if ( !HTMLArea.is_ie )
-        {
-          // KEY select all
-          sel = this._getSelection();
-          sel.removeAllRanges();
-          range = this._createRange();
-          range.selectNodeContents(this._doc.body);
-          sel.addRange(range);
-          HTMLArea._stopEvent(ev);
-        }
-      break;
-
-      // simple key commands follow
-
-      case 'b': cmd = "bold"; break;
-      case 'i': cmd = "italic"; break;
-      case 'u': cmd = "underline"; break;
-      case 's': cmd = "strikethrough"; break;
-      case 'l': cmd = "justifyleft"; break;
-      case 'e': cmd = "justifycenter"; break;
-      case 'r': cmd = "justifyright"; break;
-      case 'j': cmd = "justifyfull"; break;
-      case 'z': cmd = "undo"; break;
-      case 'y': cmd = "redo"; break;
-      case 'v':
-        if ( HTMLArea.is_ie || editor.config.htmlareaPaste )
-        {
-          cmd = "paste";
-        }
-      break;
-      case 'n':
-        cmd = "formatblock";
-        value = HTMLArea.is_ie ? "<p>" : "p";
-      break;
-
-      case '0': cmd = "killword"; break;
-
-      // headings
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-        cmd = "formatblock";
-        value = "h" + key;
-        if ( HTMLArea.is_ie )
-        {
-          value = "<" + value + ">";
-        }
-      break;
-    }
-    if ( cmd )
-    {
-      // execute simple command
-      this.execCommand(cmd, false, value);
-      HTMLArea._stopEvent(ev);
-    }
+  	this._shortCuts(ev);
   }
   else if ( keyEvent )
   {
@@ -4560,9 +4570,18 @@ HTMLArea.prototype._editorEvent = function(ev)
               break;
             }
 
+            RE_date = /[0-9\.]*/; //could be date or ip or something else ...
+            RE_ip = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/;
             var mUrl = matchData.match(HTMLArea.RE_url);
             if ( mUrl )
             {
+              if (RE_date.test(matchData))
+              {
+                if (!RE_ip.test(matchData)) 
+                {
+                  break;
+                }
+              }
               var leftTextUrl  = s.anchorNode;
               var rightTextUrl = leftTextUrl.splitText(s.anchorOffset);
               var midTextUrl   = leftTextUrl.splitText(midStart);
@@ -4594,7 +4613,7 @@ HTMLArea.prototype._editorEvent = function(ev)
               if ( !a )
               {
                 break; // not an anchor
-              }
+              } 
               if ( !a._updateAnchTimeout )
               {
                 if ( s.anchorNode.data.match(HTMLArea.RE_email) && a.href.match('mailto:' + s.anchorNode.data.trim()) )
@@ -4671,7 +4690,77 @@ HTMLArea.prototype._editorEvent = function(ev)
     },
     250);
 };
+// handles ctrl + key shortcuts 
+HTMLArea.prototype._shortCuts = function (ev)
+{
+  var editor = this;
+  var sel = null;
+  var range = null;
+  var key = String.fromCharCode(HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
+  var cmd = null;
+  var value = null;
+  switch (key)
+  {
+    case 'a':
+    if ( !HTMLArea.is_ie )
+    {
+      // KEY select all
+      sel = this._getSelection();
+      sel.removeAllRanges();
+      range = this._createRange();
+      range.selectNodeContents(this._doc.body);
+      sel.addRange(range);
+      HTMLArea._stopEvent(ev);
+    }
+    break;
 
+    // simple key commands follow
+
+    case 'b': cmd = "bold"; break;
+    case 'i': cmd = "italic"; break;
+    case 'u': cmd = "underline"; break;
+    case 's': cmd = "strikethrough"; break;
+    case 'l': cmd = "justifyleft"; break;
+    case 'e': cmd = "justifycenter"; break;
+    case 'r': cmd = "justifyright"; break;
+    case 'j': cmd = "justifyfull"; break;
+    case 'z': cmd = "undo"; break;
+    case 'y': cmd = "redo"; break;
+    case 'v':
+    if ( HTMLArea.is_ie || editor.config.htmlareaPaste )
+    {
+      cmd = "paste";
+    }
+    break;
+    case 'n':
+    cmd = "formatblock";
+    value = HTMLArea.is_ie ? "<p>" : "p";
+    break;
+
+    case '0': cmd = "killword"; break;
+
+    // headings
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    cmd = "formatblock";
+    value = "h" + key;
+    if ( HTMLArea.is_ie )
+    {
+      value = "<" + value + ">";
+    }
+    break;
+  }
+  if ( cmd )
+  {
+    // execute simple command
+    this.execCommand(cmd, false, value);
+    HTMLArea._stopEvent(ev);
+  }
+}
 HTMLArea.prototype.convertNode = function(el, newTagName)
 {
   var newel = this._doc.createElement(newTagName);
@@ -5021,7 +5110,7 @@ HTMLArea.prototype.outwardHtml = function(html)
   html = html.replace(/<(\/?)b(\s|>|\/)/ig, "<$1strong$2");
   html = html.replace(/<(\/?)i(\s|>|\/)/ig, "<$1em$2");
   html = html.replace(/<(\/?)strike(\s|>|\/)/ig, "<$1del$2");
-
+  
   // replace window.open to that any clicks won't open a popup in designMode
   html = html.replace("onclick=\"try{if(document.designMode &amp;&amp; document.designMode == 'on') return false;}catch(e){} window.open(", "onclick=\"window.open(");
 
@@ -5052,6 +5141,8 @@ HTMLArea.prototype.outwardHtml = function(html)
   {
     html = html.replace(/<script[\s]*src[\s]*=[\s]*['"]chrome:\/\/.*?["']>[\s]*<\/script>/ig, '');
   }
+  //prevent execution of JavaScript (Ticket #685)
+  html = html.replace(/(<script[^>]*)(freezescript)/gi,"$1javascript");
 
   return html;
 };
@@ -5063,9 +5154,9 @@ HTMLArea.prototype.inwardHtml = function(html)
   if ( HTMLArea.is_gecko )
   {
     html = html.replace(/<(\/?)strong(\s|>|\/)/ig, "<$1b$2");
-    html = html.replace(/<(\/?)em(\s|>|\/)/ig, "<$1i$2");
+    html = html.replace(/<(\/?)em(\s|>|\/)/ig, "<$1i$2");    
   }
-
+  
   // Both IE and Gecko use strike instead of del (#523)
   html = html.replace(/<(\/?)del(\s|>|\/)/ig, "<$1strike$2");
 
@@ -5073,6 +5164,8 @@ HTMLArea.prototype.inwardHtml = function(html)
   html = html.replace("onclick=\"window.open(", "onclick=\"try{if(document.designMode &amp;&amp; document.designMode == 'on') return false;}catch(e){} window.open(");
 
   html = this.inwardSpecialReplacements(html);
+
+  html = html.replace(/(<script[^>]*)(javascript)/gi,"$1freezescript");
 
   // For IE's sake, make any URLs that are semi-absolute (="/....") to be
   // truely absolute
@@ -5093,7 +5186,7 @@ HTMLArea.prototype.outwardSpecialReplacements = function(html)
     if ( typeof from.replace != 'function' || typeof to.replace != 'function' )
     {
       continue;
-    }
+    } 
     // alert('out : ' + from + '=>' + to);
     var reg = new RegExp(from.replace(HTMLArea.RE_Specials, '\\$1'), 'g');
     html = html.replace(reg, to.replace(/\$/g, '$$$$'));
@@ -5129,7 +5222,7 @@ HTMLArea.prototype.fixRelativeLinks = function(html)
 {
   if ( typeof this.config.stripSelfNamedAnchors != 'undefined' && this.config.stripSelfNamedAnchors )
   {
-    var stripRe = new RegExp(document.location.href.replace(HTMLArea.RE_Specials, '\\$1') + '(#[^\'" ]*)', 'g');
+    var stripRe = new RegExp(document.location.href.replace(/&/g,'&amp;').replace(HTMLArea.RE_Specials, '\\$1') + '(#[^\'" ]*)', 'g');
     html = html.replace(stripRe, '$1');
   }
 
@@ -5138,14 +5231,14 @@ HTMLArea.prototype.fixRelativeLinks = function(html)
     var baseRe = null;
     if ( typeof this.config.baseHref != 'undefined' && this.config.baseHref !== null )
     {
-      baseRe = new RegExp(this.config.baseHref.replace(HTMLArea.RE_Specials, '\\$1'), 'g');
+      baseRe = new RegExp( "((href|src|background)=\")(" + this.config.baseHref.replace( HTMLArea.RE_Specials, '\\$1' ) + ")", 'g' );
     }
     else
     {
-      baseRe = new RegExp(document.location.href.replace(/([^\/]*\/?)$/, '').replace(HTMLArea.RE_Specials, '\\$1'), 'g');
+      baseRe = new RegExp( "((href|src|background)=\")(" + document.location.href.replace( /([^\/]*\/?)$/, '' ).replace( HTMLArea.RE_Specials, '\\$1' ) + ")", 'g' );
     }
 
-    html = html.replace(baseRe, '');
+    html = html.replace(baseRe, '$1');
   }
 
 //  if ( HTMLArea.is_ie )
@@ -5363,10 +5456,10 @@ HTMLArea.flushEvents = function()
     }
     e = HTMLArea._eventFlushers.pop();
   }
-
-  /*
+  
+  /* 
     // This code is very agressive, and incredibly slow in IE, so I've disabled it.
-
+    
     if(document.all)
     {
       for(var i = 0; i < document.all.length; i++)
@@ -5382,7 +5475,7 @@ HTMLArea.flushEvents = function()
       }
     }
   */
-
+  
   // alert('Flushed ' + x + ' events.');
 };
 
@@ -5610,7 +5703,7 @@ HTMLArea._hasClass = function(el, className)
 
 HTMLArea._blockTags = " body form textarea fieldset ul ol dl li div " +
 "p h1 h2 h3 h4 h5 h6 quote pre table thead " +
-"tbody tfoot tr td th iframe address blockquote";
+"tbody tfoot tr td th iframe address blockquote ";
 HTMLArea.isBlockElement = function(el)
 {
   return el && el.nodeType == 1 && (HTMLArea._blockTags.indexOf(" " + el.tagName.toLowerCase() + " ") != -1);
@@ -5622,7 +5715,7 @@ HTMLArea.isParaContainer = function(el)
   return el && el.nodeType == 1 && (HTMLArea._paraContainerTags.indexOf(" " + el.tagName.toLowerCase() + " ") != -1);
 };
 
-// These are all the tags for which the end tag is not optional or
+// These are all the tags for which the end tag is not optional or 
 // forbidden, taken from the list at:
 //   http://www.w3.org/TR/REC-html40/index/elements.html
 HTMLArea._closingTags = " a abbr acronym address applet b bdo big blockquote button caption center cite code del dfn dir div dl em fieldset font form frameset h1 h2 h3 h4 h5 h6 i iframe ins kbd label legend map menu noframes noscript object ol optgroup pre q s samp script select small span strike strong style sub sup table textarea title tt u ul var ";
@@ -5650,7 +5743,7 @@ HTMLArea.htmlEncode = function(str)
   return str;
 };
 
-// Retrieves the HTML code from the given node.  This is a replacement for
+// Retrieves the HTML code from the given node.	 This is a replacement for
 // getting innerHTML, using standard DOM calls.
 // Wrapper catch a Mozilla-Exception with non well formed html source code
 HTMLArea.getHTML = function(root, outputRoot, editor)
@@ -5712,6 +5805,10 @@ HTMLArea.getHTMLWrapper = function(root, outputRoot, editor, indent)
       var closed;
       var i;
       var root_tag = (root.nodeType == 1) ? root.tagName.toLowerCase() : '';
+      if ( ( root_tag == "script" || root_tag == "noscript" ) && editor.config.stripScripts )
+      {
+        break;
+      }
       if ( outputRoot )
       {
         outputRoot = !(editor.config.htmlRemoveTags && editor.config.htmlRemoveTags.test(root_tag));
@@ -5733,7 +5830,8 @@ HTMLArea.getHTMLWrapper = function(root, outputRoot, editor, indent)
           html += (HTMLArea.is_ie ? ('\n' + indent) : '') + "</head>";
         }
         break;
-      } else if ( outputRoot )
+      }
+      else if ( outputRoot )
       {
         closed = (!(root.hasChildNodes() || HTMLArea.needsClosingTag(root)));
         html += (HTMLArea.is_ie && HTMLArea.isBlockElement(root) ? ('\n' + indent) : '') + "<" + root.tagName.toLowerCase();
@@ -5836,17 +5934,28 @@ HTMLArea.getHTMLWrapper = function(root, outputRoot, editor, indent)
         }
       }
       var containsBlock = false;
-      for ( i = root.firstChild; i; i = i.nextSibling )
+      if ( root_tag == "script" || root_tag == "noscript" )
       {
-        if ( !containsBlock && i.nodeType == 1 && HTMLArea.isBlockElement(i) )
+        if ( !editor.config.stripScripts )
         {
-          containsBlock = true;
+          var innerText = (root.hasChildNodes()) ? ((HTMLArea.is_ie) ? "\n" + root.innerHTML.replace(/^[\n\r]*/,'').replace(/\s+$/,'') + '\n' + indent : root.firstChild.nodeValue) : '';
+          html += innerText + '</'+root_tag+'>' + ((HTMLArea.is_ie) ? '\n' : '');
         }
-        html += HTMLArea.getHTMLWrapper(i, true, editor, indent + '  ');
       }
-      if ( outputRoot && !closed )
+      else
       {
-        html += (HTMLArea.is_ie && HTMLArea.isBlockElement(root) && containsBlock ? ('\n' + indent) : '') + "</" + root.tagName.toLowerCase() + ">";
+        for ( i = root.firstChild; i; i = i.nextSibling )
+        {
+          if ( !containsBlock && i.nodeType == 1 && HTMLArea.isBlockElement(i) )
+          {
+            containsBlock = true;
+          }
+          html += HTMLArea.getHTMLWrapper(i, true, editor, indent + '  ');
+        }
+        if ( outputRoot && !closed )
+        {
+          html += (HTMLArea.is_ie && HTMLArea.isBlockElement(root) && containsBlock ? ('\n' + indent) : '') + "</" + root.tagName.toLowerCase() + ">";
+        }
       }
     break;
 
@@ -6124,16 +6233,23 @@ HTMLArea._postback = function(url, data, handler)
   }
 
   var content = '';
-  for ( var i in data )
+  if (typeof data == 'string')
   {
-    content += (content.length ? '&' : '') + i + '=' + encodeURIComponent(data[i]);
+    content = data;
+  }
+  else if(data != null)
+  {
+    for ( var i in data )
+    {
+      content += (content.length ? '&' : '') + i + '=' + encodeURIComponent(data[i]);
+    }
   }
 
   function callBack()
   {
     if ( req.readyState == 4 )
     {
-      if ( req.status == 200 )
+      if ( req.status == 200 || HTMLArea.isRunLocally && req.status == 0 )
       {
         if ( typeof handler == 'function' )
         {
@@ -6171,7 +6287,7 @@ HTMLArea._getback = function(url, handler)
   {
     if ( req.readyState == 4 )
     {
-      if ( req.status == 200 )
+      if ( req.status == 200 || HTMLArea.isRunLocally && req.status == 0 )
       {
         handler(req.responseText, req);
       }
@@ -6202,7 +6318,7 @@ HTMLArea._geturlcontent = function(url)
   // Synchronous!
   req.open('GET', url, false);
   req.send(null);
-  if ( req.status == 200 )
+  if ( req.status == 200 || HTMLArea.isRunLocally && req.status == 0 )
   {
     return req.responseText;
   }
@@ -6324,13 +6440,25 @@ HTMLArea._loadlang = function(context)
 };
 
 /** Return a localised string.
- * @param string    English language string
+ * @param string    English language string. It can also contain variables in the form "Some text with $variable=replaced text$". 
+ *                  This replaces $variable in "Some text with $variable" with "replaced text"
  * @param context   Case sensitive context name, eg 'HTMLArea' (default), 'TableOperations'...
  * @param replace   Replace $variables in String, eg {foo: 'replaceText'} ($foo in string will be replaced)
  */
 HTMLArea._lc = function(string, context, replace)
 {
   var ret;
+  if (typeof string == 'string') var m = string.match(/\$(.*?)=(.*?)\$/g);
+  if (m) 
+  {
+    if (!replace) replace = {};
+    for (var i = 0;i<m.length;i++)
+    {
+      var n = m[i].match(/\$(.*?)=(.*?)\$/);
+      replace[n[1]] = n[2];
+      string = string.replace(n[0],'$'+n[1]);
+    }
+  }
   if ( _editor_lang == "en" )
   {
     if ( typeof string == 'object' && string.string )
@@ -6430,24 +6558,33 @@ HTMLArea.hasDisplayedChildren = function(el)
   return false;
 };
 
-
-HTMLArea._loadback = function(src, callback)
+/**
+ * Load a javascript file by inserting it in the HEAD tag and eventually call a function when loaded
+ * @param {string} U (Url)      Source url of the file to load
+ * @param {object} C {Callback} Callback function to launch once ready (optional)
+ * @param {object} O (scOpe)    Application scope for the callback function (optional)
+ * @param {object} B (Bonus}    Arbitrary object send as a param to the callback function (optional)
+ * @public
+ */
+HTMLArea._loadback = function(U, C, O, B)
 {
-  var head = document.getElementsByTagName("head")[0];
-  var evt = HTMLArea.is_ie ? "onreadystatechange" : "onload";
-
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src = src;
-  script[evt] = function()
+  var T = HTMLArea.is_ie ? "onreadystatechange" : "onload";
+  var S = document.createElement("script");
+  S.type = "text/javascript";
+  S.src = U;
+  if ( C )
   {
-    if ( HTMLArea.is_ie && ! ( /loaded|complete/.test(window.event.srcElement.readyState) ) )
+    S[T] = function()
     {
-      return;
-    }
-    callback();
-  };
-  head.appendChild(script);
+      if ( HTMLArea.is_ie && ! ( /loaded|complete/.test(window.event.srcElement.readyState) ) )
+      {
+        return;
+      }
+      C.call(O ? O : this, B);
+      S[T] = null;
+    };
+  }
+  document.getElementsByTagName("head")[0].appendChild(S);
 };
 
 HTMLArea.collectionToArray = function(collection)
@@ -6692,6 +6829,12 @@ HTMLArea.freeLater = function(obj,prop)
   HTMLArea.toFree.push({o:obj,p:prop});
 };
 
+/**
+ * Release memory properties from object
+ * @param {object} object The object to free memory
+ * @param (string} prop   The property to release (optional)
+ * @private
+ */
 HTMLArea.free = function(obj, prop)
 {
   if ( obj && !prop )
@@ -6703,20 +6846,17 @@ HTMLArea.free = function(obj, prop)
   }
   else if ( obj )
   {
-    try
-    {
-      obj[prop] = null;
-    } catch(ex) {}
+    try { obj[prop] = null; } catch(x) {}
   }
 };
 
-/** IE's Garbage Collector is broken very badly.  We will do our best to
+/** IE's Garbage Collector is broken very badly.  We will do our best to 
  *   do it's job for it, but we can't be perfect.
  */
 
-HTMLArea.collectGarbageForIE = function()
-{
-  HTMLArea.flushEvents();
+HTMLArea.collectGarbageForIE = function() 
+{  
+  HTMLArea.flushEvents();   
   for ( var x = 0; x < HTMLArea.toFree.length; x++ )
   {
     if ( !HTMLArea.toFree[x].o )
@@ -6724,6 +6864,7 @@ HTMLArea.collectGarbageForIE = function()
       alert("What is " + x + ' ' + HTMLArea.toFree[x].o);
     }
     HTMLArea.free(HTMLArea.toFree[x].o, HTMLArea.toFree[x].p);
+    HTMLArea.toFree[x].o = null;
   }
 };
 

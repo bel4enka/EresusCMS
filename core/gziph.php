@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.05
+# Версия 2.06
 # © 2004-2006, ProCreat Systems
 # http://procreat.ru/
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -9,6 +9,12 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 error_reporting(E_NONE);
 
+#----------------------------------------------------------------------------------------------------------------------
+function ContentLength($contents) {
+  Header("Content-Length: ".strlen($contents));
+  return $contents;
+}
+#----------------------------------------------------------------------------------------------------------------------
 $filesRoot = __FILE__; 
 $filesRoot = str_replace('\\','/',$filesRoot);
 $filesRoot = substr($filesRoot, 0, strpos($filesRoot, '/core/')+1);
@@ -19,14 +25,16 @@ $styleRoot = $httpRoot.'style/';
 $dataRoot = $httpRoot.'data/';
 $dataFiles = $filesRoot.'data/';
 
+ob_start('ContentLength');
 ob_start('ob_gzhandler');
 $type = isset($_REQUEST['type'])?$_REQUEST['type']:'text/plain';
 $file = isset($_REQUEST['file'])?$_REQUEST['file']:'';
 if (empty($file)) exit;
-Header('Content-type: '.$type);
-Header('Cache-Control: '.(isset($_GET['cache'])?$_GET['cache']:'no-cache'));
-Header("Expires: " .gmdate("D, d M Y H:i:s", time() + 3600) . " GMT");
 $filename = AddSlashes($filesRoot.$file);
+Header('Content-type: '.$type.(isset($_GET['charset'])?'; charset='.$_GET['charset']:''));
+Header('Cache-Control: '.(isset($_GET['cache'])?$_GET['cache']:'public'));
+Header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
+#Header("Expires: " .gmdate("D, d M Y H:i:s", time() + 3600) . " GMT");
 $text = file_get_contents($filename);
 $text = str_replace(array(
   '$(httpHost)',

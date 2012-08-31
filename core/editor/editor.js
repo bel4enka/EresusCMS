@@ -2,7 +2,14 @@ function xinha_init()
 {
   var xinha_plugins = [
     'ContextMenu',
+    'DynamicCSS',
+    'EnterParagraphs',
+    'FullScreen',
+    'GetHtml',
+    'ImageManager',
     'InsertAnchor',
+    'PasteText',
+    'TableOperations'
   ];
   if(!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
   var xinha_config = new HTMLArea.Config();
@@ -23,9 +30,9 @@ function xinha_init()
     ["separator","subscript","superscript"],
     ["linebreak","separator","justifyleft","justifycenter","justifyright","justifyfull"],
     ["separator","insertorderedlist","insertunorderedlist","outdent","indent"],
-    ["separator","insertlinebreak","inserthorizontalrule","createlink","insertimage","inserttable"],
+    ["separator","inserthorizontalrule","createlink","insertimage","inserttable"],
     (HTMLArea.is_gecko ? [] : ["separator","cut","copy","paste"]),
-    ["separator","killword","clearfonts","removeformat"]
+    ["separator","killword","clearfonts","removeformat","toggleborders","splitblock"],
   ];
 
   xinha_config.fontname =
@@ -65,8 +72,7 @@ function xinha_init()
     "Address"  : "address",
     "Formatted": "pre"
   };
-
-  
+   
   xinha_editors = HTMLArea.makeEditors(xinha_editors, xinha_config, xinha_plugins);
   HTMLArea.startEditors(xinha_editors);
 }

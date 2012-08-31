@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
 
-window.resizeTo(400, 100);
+window.resizeTo(410, 250);
 
 HTMLArea = window.opener.HTMLArea;
 function i18n(str) {
@@ -18,7 +18,7 @@ function i18n(str) {
 function Init() {
   HTMLArea = window.opener.HTMLArea; // load the HTMLArea plugin and lang file
   __dlg_translate('HTMLArea');
-  __dlg_init();
+  __dlg_init(null, HTMLArea.is_ie ? null : {width:410,height:250});
   // Make sure the translated string appears in the drop down. (for gecko)
   document.getElementById("f_unit").selectedIndex = 1;
   document.getElementById("f_unit").selectedIndex = 0;
@@ -132,17 +132,21 @@ title="Leave empty for no border" />
 
 <div class="space"></div>
 
-<div>Cell spacing:</div>
-<input type="text" name="spacing" id="f_spacing" size="5" value="1" title="Space between adjacent cells" />
+<div class="fr">Cell spacing:</div>
+<input type="text" name="spacing" id="f_spacing" size="5" value="1"
+title="Space between adjacent cells" />
 
 <p />
 
-<div>Cell padding:</div>
-<input type="text" name="padding" id="f_padding" size="5" value="1" title="Space between content and border in cell" />
+<div class="fr">Cell padding:</div>
+<input type="text" name="padding" id="f_padding" size="5" value="1"
+title="Space between content and border in cell" />
+
 <div class="space"></div>
+
 </fieldset>
 
-<div style="text-align: center;">
+<div style="margin-top: 85px; border-top: 1px solid #999; padding: 2px; text-align: right;">
 <button type="button" name="ok" onclick="return onOK();">OK</button>
 <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>
 </div>
