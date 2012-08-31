@@ -96,6 +96,10 @@ class Plugins
 				$success = true;
 				foreach ($this->list as $plugin => $item)
 				{
+					if (!($item['info'] instanceof Eresus_PluginInfo))
+					{
+						continue;
+					}
 					foreach ($item['info']->getRequiredPlugins() as $required)
 					{
 						list ($name, $minVer, $maxVer) = $required;
