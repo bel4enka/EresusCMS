@@ -4,8 +4,6 @@
  Eresus CMS
 
  Файл сборки проекта
-
- $Id$
  -->
 <project name="eresus-cms" default="build" basedir="./">
 
@@ -14,7 +12,6 @@
 	<!-- Основные файлы проекта -->
 	<fileset dir="src" id="files.sources">
 		<include name="**" />
-		<exclude name="**/.svn" />
 		<exclude name="**/*.src" />
 	</fileset>
 
@@ -26,56 +23,42 @@
 	<!-- Eresus Framework -->
 	<fileset dir="framework" id="files.framework">
 		<include name="**" />
-		<exclude name="**/.svn" />
 		<exclude name="**/*.src" />
 	</fileset>
 
 	<!-- 3rd party: EditArea -->
 	<fileset dir="3rdparty/edit_area" id="files.3rd.editarea">
 		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
-
-	<!-- 3rd party: jQuery -->
-	<fileset dir="3rdparty/jquery" id="files.3rd.jquery">
-		<include name="**" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!-- 3rd party: Modernizr -->
 	<fileset dir="3rdparty/modernizr" id="files.3rd.modernizr">
 		<include name="**" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!-- 3rd party: Tiny MCE -->
 	<fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
 		<include name="**" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!-- SQL dumps -->
 	<fileset dir="db" id="files.db">
 		<include name="**" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!-- Tools files -->
 	<fileset dir="." id="files.tools">
 		<include name="tools/**" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!-- SDK files -->
 	<fileset dir="." id="files.sdk">
 		<include name="SDK/**" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!-- Модульные тесты -->
 	<fileset dir="." id="files.tests.unit">
 		<include name="tests/phpunit/**.php" />
-		<exclude name=".svn" />
 	</fileset>
 
 	<!--
@@ -203,16 +186,17 @@
 
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/botobor">
-			<fileset dir="3rdparty/botobor">
+			<fileset dir="vendor/Botobor/src">
 				<include name="**" />
-				<exclude name=".svn" />
 			</fileset>
 		</copy>
 
 		<!-- jQuery -->
 		<copy todir="${build.dir}/core/jquery">
-			<fileset refid="files.3rd.jquery" />
-			<filelist dir="3rdparty/jquery.cookie" files="jquery.cookie.js" />
+			<fileset dir="3rdparty/jquery">
+				<include name="**" />
+			</fileset>
+			<filelist dir="vendor/jquery-cookie" files="jquery.cookie.js" />
 		</copy>
 
 		<!-- Modernizr -->
@@ -224,7 +208,6 @@
 		<copy todir="${build.dir}/core/js/webshim">
 			<fileset dir="3rdparty/webshim">
 				<include name="**" />
-				<exclude name=".svn" />
 			</fileset>
 		</copy>
 
@@ -273,7 +256,6 @@
 	  <copy todir="build.tmp/source">
 		  <fileset dir="docs">
 			  <include name="**/*" />
-			  <exclude name=".svn" />
 		  </fileset>
 		  <filterchain>
 			  <expandproperties />

@@ -1,0 +1,6 @@
+[submodule "vendor/Botobor"]
+	path = vendor/Botobor
+	url = git://github.com/mekras/botobor.git
+[submodule "vendor/jquery-cookie"]
+	path = vendor/jquery-cookie
+	url = git://github.com/carhartl/jquery-cookie.git
