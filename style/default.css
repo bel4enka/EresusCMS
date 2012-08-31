@@ -1,0 +1,25 @@
+/* Стандартные стили */
+
+/* Стандартные стили */
+
+/* Основные стили */
+	td{ font-family:verdana; font-size:7pt; }
+	.copy{ font-family:verdana; font-size:7pt; color:black; text-decoration:none; }
+	.menu{ font-weight:bold; text-decoration:none; color:#353D50; padding-left:3; padding-right:3; }
+	.menu:hover{ color:#0066FF;}
+	.menu2 {font-size:11; font-weight:bold; text-decoration:none; color:#353D50;}
+	.menu2:hover{ color:#0066FF;}
+	.tdmar {width:26; padding:3; padding-left:1}
+/* Стили области контента */
+
+/* Сообщения об ошибках */
+div.errorBox {background: #090; border: solid 2px #f00; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}
+div.errorBoxCap {background: #f00; color: #000; font-weight: bold; padding: 2px 5px 0px 5px; margin: 2px 2px 0 2px;}
+/* Информационные сообщения */
+div.infoBox {background: #090; border: solid 2px #25b; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}
+div.infoBoxCap {background: #25b; color: #000; font-weight: bold; padding: 2px 5px 0px 5px; margin: 2px 2px 0 2px;}
+
+/* PLUGINS */
+
+h1 { font-size: 13pt; }
+h3 { font-size: 12pt; }
