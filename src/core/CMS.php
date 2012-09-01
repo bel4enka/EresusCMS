@@ -26,9 +26,9 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
+
+use Symfony\Component\ClassLoader\MapClassLoader;
 
 /**
  * Класс приложения Eresus CMS
@@ -63,8 +63,18 @@ class Eresus_CMS extends EresusApplication
 
 		try
 		{
-			/* Подключение таблицы автозагрузки классов */
-			EresusClassAutoloader::add('core/cms.autoload.php');
+			/*
+			 * Подключение таблицы автозагрузки классов
+			 */
+			$loader = new MapClassLoader(array(
+				'EresusForm' => __DIR__ . '/EresusForm.php',
+				'I18n' => __DIR__ . '/i18n.php',
+				'PaginationHelper' => __DIR__ . 'classes/helpers/PaginationHelper.php',
+				'Templates' => __DIR__ . '/lib/templates.php',
+				'WebServer' => __DIR__ . '/classes/WebServer.php',
+				'WebPage' => __DIR__ . '/classes/WebPage.php',
+			));
+			$loader->register();
 
 			/* Общая инициализация */
 			$this->checkEnvironment();
