@@ -385,64 +385,91 @@ class Plugins
 
 	function clientOnStart()
 	{
-		if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
+		if (isset($this->events['clientOnStart']))
+		{
+			foreach ($this->events['clientOnStart'] as $plugin)
+			{
+				$this->items[$plugin]->clientOnStart();
+			}
+		}
 	}
 
-	function clientOnURLSplit($item, $url)
+	public function clientOnURLSplit($item, $url)
 	{
-		if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
+		if (isset($this->events['clientOnURLSplit']))
+		{
+			foreach ($this->events['clientOnURLSplit'] as $plugin)
+			{
+				$this->items[$plugin]->clientOnURLSplit($item, $url);
+			}
+		}
 	}
 
-	function clientOnTopicRender($text, $topic = null)
+	public function clientOnTopicRender($text, $topic = null)
 	{
-		if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
+		if (isset($this->events['clientOnTopicRender']))
+		{
+			foreach ($this->events['clientOnTopicRender'] as $plugin)
+			{
+				$text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
+			}
+		}
 		return $text;
 	}
 
-	function clientOnContentRender($text)
+	public function clientOnContentRender($text)
 	{
 		if (isset($this->events['clientOnContentRender']))
-			foreach($this->events['clientOnContentRender'] as $plugin) $text = $this->items[$plugin]->clientOnContentRender($text);
+		{
+			foreach ($this->events['clientOnContentRender'] as $plugin)
+			{
+				$text = $this->items[$plugin]->clientOnContentRender($text);
+			}
+		}
 		return $text;
 	}
 
-	function clientOnPageRender($text)
+	public function clientOnPageRender($text)
 	{
 		if (isset($this->events['clientOnPageRender']))
-			foreach($this->events['clientOnPageRender'] as $plugin) $text = $this->items[$plugin]->clientOnPageRender($text);
+		{
+			foreach ($this->events['clientOnPageRender'] as $plugin)
+			{
+				$text = $this->items[$plugin]->clientOnPageRender($text);
+			}
+		}
 		return $text;
 	}
 
-	function clientBeforeSend($text)
+	public function clientBeforeSend($text)
 	{
 		if (isset($this->events['clientBeforeSend']))
-			foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
+		{
+			foreach ($this->events['clientBeforeSend'] as $plugin)
+			{
+				$text = $this->items[$plugin]->clientBeforeSend($text);
+			}
+		}
 		return $text;
 	}
 
-	/* function clientOnFormControlRender($formName, $control, $text)
+	public function adminOnMenuRender()
 	{
-		if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
-		return $text;
-	}*/
-
-	function adminOnMenuRender()
-	{
-		if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin)
-			if (method_exists($this->items[$plugin], 'adminOnMenuRender')) $this->items[$plugin]->adminOnMenuRender();
-			else ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+		if (isset($this->events['adminOnMenuRender']))
+		{
+			foreach ($this->events['adminOnMenuRender'] as $plugin)
+			{
+				if (method_exists($this->items[$plugin], 'adminOnMenuRender'))
+				{
+					$this->items[$plugin]->adminOnMenuRender();
+				}
+				else
+				{
+					ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+				}
+			}
+		}
 	}
-
- /**
-	* Событие ajaxOnRequest
-	*/
-	function ajaxOnRequest()
-	{
-		if (isset($this->events['ajaxOnRequest']))
-			foreach($this->events['ajaxOnRequest'] as $plugin)
-				$this->items[$plugin]->ajaxOnRequest();
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Автозагрузка классов плагинов
