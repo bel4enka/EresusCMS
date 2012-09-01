@@ -50,6 +50,7 @@ return array(
 	/* Template */
 	'Template' => 'Template/Template.php',
 	'TemplateFile' => 'Template/Template.php',
+	'TemplateSettings' => 'Template/Template.php',
 
 	/* WWW */
 	'HTTP' => 'WWW/HTTP/HTTP.php',

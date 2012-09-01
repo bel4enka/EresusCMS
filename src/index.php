@@ -55,7 +55,7 @@ Eresus_Kernel::init();
 /**
  * Подключение Eresus Core
  */
-include_once 'core/framework/core/eresus-core.compiled.php';
+require 'core/framework/core/eresus-core.php';
 
 if (isset($php_errormsg))
 {
