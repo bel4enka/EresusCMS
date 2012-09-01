@@ -82,7 +82,7 @@ class TContent
 					{
 						$form = array(
 							'name' => 'editURL',
-							'caption' => admEdit,
+							'caption' => ADM_EDIT,
 							'width' => '100%',
 							'fields' => array (
 								array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
@@ -105,7 +105,7 @@ class TContent
 					{
 						$form = array(
 							'name' => 'editURL',
-							'caption' => admEdit,
+							'caption' => ADM_EDIT,
 							'width' => '100%',
 							'fields' => array (
 								array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),

@@ -200,25 +200,25 @@ define('strInformation', 'Информация');
 
 
 /***************** АДМИНИСТРИРОВАНИЕ *******************/
-define('admTDiv', ' - ');
+define('ADM_T_DIV', ' - ');
 
-define('admAdd', 'Добавить');
-define('admAdded', 'Добавлено');
-define('admDelete', 'Удалить');
-define('admDeleted', 'Удалено');
-define('admEdit', 'Изменить');
-define('admActivate', 'Включить');
-define('admActivated', 'Активировано');
-define('admDeactivate', 'Отключить');
-define('admDeactivated', 'Деактивировано');
-define('admSortPosition', 'По порядку');
-define('admSortAscending', 'По возрастанию');
-define('admSortDescending', 'По убыванию');
-define('admUp', 'Вверх');
-define('admDown', 'Вниз');
-define('admUpdated', 'Изменено');
+define('ADM_ADD', 'Добавить');
+define('ADM_ADDED', 'Добавлено');
+define('ADM_DELETE', 'Удалить');
+define('ADM_DELETED', 'Удалено');
+define('ADM_EDIT', 'Изменить');
+define('ADM_ACTIVATE', 'Включить');
+define('ADM_ACTIVATED', 'Активировано');
+define('ADM_DEACTIVATE', 'Отключить');
+define('ADM_DEACTIVATED', 'Деактивировано');
+define('ADM_SORT_POS', 'По порядку');
+define('ADM_SORT_ASC', 'По возрастанию');
+define('ADM_SORT_DESC', 'По убыванию');
+define('ADM_UP', 'Вверх');
+define('ADM_DOWN', 'Вниз');
+define('ADM_UPDATED', 'Изменено');
 
-define('admNA', '(не задано)');
+define('ADM_NA', '(не задано)');
 define('admPlugin', 'Плагин');
 define('admPlugins', 'Модули расширения');
 define('admSettings', 'Настройки');
@@ -298,14 +298,14 @@ define('admConfigClientPagesAtOnce', 'Показывать');
 define('admConfigClientPagesAtOnceComment', 'элементов в переключателе страниц');
 
 /* Оформление */
-define('admThemesTabWidth', '180px');
-define('admThemesTemplate', 'Шаблон');
-define('admThemesTemplates', 'Шаблоны страниц');
-define('admThemesFilenameLabel', 'Имя файла');
-define('admThemesDescriptionLabel', 'Описание');
-define('admThemesStyles', 'Файлы стилей');
-define('admThemesStyleLabel', 'Редактирование файла стилей');
-define('admThemesStandard', 'Стандартные шаблоны');
+define('ADM_THEMES_TAB_WIDTH', '180px');
+define('ADM_THEMES_TEMPLATE', 'Шаблон');
+define('ADM_THEMES_TEMPLATES', 'Шаблоны страниц');
+define('ADM_THEMES_FILENAME_LABEL', 'Имя файла');
+define('ADM_THEMES_DESC_LABEL', 'Описание');
+define('ADM_THEMES_STYLES', 'Файлы стилей');
+define('ADM_THEMES_STYLE_LABEL', 'Редактирование файла стилей');
+define('ADM_THEMES_STANDARD', 'Стандартные шаблоны');
 define('ADM_THEMES_FILENAME_FILTERED',
 	'Указанное Вами имя файла содержало недопустимые символы и было изменено на "%s"');
 

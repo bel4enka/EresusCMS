@@ -45,10 +45,10 @@ class AdminList {
 		'delete'        => array('image' => 'admin/themes/default/img/medium/item-delete.png', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
 		'setup'         => array('image' => 'admin/themes/default/img/medium/item-config.png', 'title' => strProperties, 'alt' => '*'),
 		'move'          => array('image' => 'admin/themes/default/img/medium/item-move.png', 'title' => strMove, 'alt' => '-&gt;'),
-		'on'            => array('image' => 'admin/themes/default/img/medium/item-inactive.png', 'title' => admActivate, 'alt' => '0'),
-		'off'           => array('image' => 'admin/themes/default/img/medium/item-active.png', 'title' => admDeactivate, 'alt' => '1'),
-		'position'      => array('image' => 'admin/themes/default/img/medium/move-up.png', 'title' => admUp, 'alt' => '&uarr;'),
-		'position_down' => array('image' => 'admin/themes/default/img/medium/move-down.png', 'title' => admDown, 'alt' => '&darr;'),
+		'on'            => array('image' => 'admin/themes/default/img/medium/item-inactive.png', 'title' => ADM_ACTIVATE, 'alt' => '0'),
+		'off'           => array('image' => 'admin/themes/default/img/medium/item-active.png', 'title' => ADM_DEACTIVATE, 'alt' => '1'),
+		'position'      => array('image' => 'admin/themes/default/img/medium/move-up.png', 'title' => ADM_UP, 'alt' => '&uarr;'),
+		'position_down' => array('image' => 'admin/themes/default/img/medium/move-down.png', 'title' => ADM_DOWN, 'alt' => '&darr;'),
 		);
 
 	/**

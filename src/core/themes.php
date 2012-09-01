@@ -51,11 +51,11 @@ class TThemes
 	 * @var array
 	 */
 	public $tabs = array(
-		'width' => admThemesTabWidth,
+		'width' => ADM_THEMES_TAB_WIDTH,
 		'items' => array(
-			array('caption' => admThemesTemplates),
-			array('caption' => admThemesStandard),
-			array('caption' => admThemesStyles),
+			array('caption' => ADM_THEMES_TEMPLATES),
+			array('caption' => ADM_THEMES_STANDARD),
+			array('caption' => ADM_THEMES_STYLES),
 		),
 	);
 
@@ -148,14 +148,14 @@ class TThemes
 	{
 		$form = array(
 			'name' => 'addForm',
-			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admAdd,
+			'caption' => Eresus_Kernel::app()->getPage()->title.ADM_T_DIV.ADM_ADD,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'edit','name'=>'name','label'=>admThemesFilenameLabel, 'width'=>'200px',
+				array('type'=>'edit','name'=>'name','label'=>ADM_THEMES_FILENAME_LABEL, 'width'=>'200px',
 					'comment'=>'.html'),
-				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type'=>'edit','name'=>'desc','label'=>ADM_THEMES_DESC_LABEL, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok','cancel'),
@@ -177,15 +177,15 @@ class TThemes
 		$item = $templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admEdit,
+			'caption' => Eresus_Kernel::app()->getPage()->title.ADM_T_DIV.ADM_EDIT,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px',
-					'comment'=>'.html', 'disabled' => true, 'value' => $item['name']),
-				array('type'=>'edit','name'=>'desc','label'=>admThemesDescriptionLabel, 'width'=>'100%'),
+				array('type' => 'edit', 'name' => 'filename', 'label' => ADM_THEMES_FILENAME_LABEL,
+					'width' => '200px', 'comment' => '.html', 'disabled' => true, 'value' => $item['name']),
+				array('type'=>'edit','name'=>'desc','label'=>ADM_THEMES_DESC_LABEL, 'width'=>'100%'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -219,7 +219,7 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
+					array('caption'=>ADM_ADD, 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
@@ -243,7 +243,7 @@ class TThemes
 	 */
 	public function sectionTemplates()
 	{
-		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesTemplates;
+		Eresus_Kernel::app()->getPage()->title .= ADM_T_DIV.ADM_THEMES_TEMPLATES;
 
 		$result = '';
 		switch (arg('action'))
@@ -342,12 +342,12 @@ class TThemes
 		");
 		$form = array(
 			'name' => 'addForm',
-			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admAdd,
+			'caption' => Eresus_Kernel::app()->getPage()->title.ADM_T_DIV.ADM_ADD,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'select','name'=>'name','label'=>admThemesTemplate, 'values'=>$values,
+				array('type'=>'select','name'=>'name','label'=>ADM_THEMES_TEMPLATE, 'values'=>$values,
 					'items'=>$items, 'extra' => 'onChange="onTemplateNameChange()"'),
 				array('type'=>'text','name'=>'hint', 'value' => $hint, 'extra' => 'id="templateHint"'),
 				array('type'=>'memo','name'=>'code', 'height'=>'30', 'syntax' => 'html'),
@@ -371,13 +371,13 @@ class TThemes
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
-			'caption' => Eresus_Kernel::app()->getPage()->title . admTDiv . admEdit,
+			'caption' => Eresus_Kernel::app()->getPage()->title . ADM_T_DIV . ADM_EDIT,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'name'),
-				array('type'=>'edit','name'=>'_name','label' => admThemesFilenameLabel,
+				array('type'=>'edit','name'=>'_name','label' => ADM_THEMES_FILENAME_LABEL,
 					'width' => '200px', 'comment' => '.tmpl (' .
 					$this->stdTemplates[$item['name']]['caption'].')',
 					'disabled' => true, 'value'=>$item['name']),
@@ -417,7 +417,7 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
+					array('caption'=>ADM_ADD, 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
@@ -441,7 +441,7 @@ class TThemes
 	 */
 	public function sectionStd()
 	{
-		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStandard;
+		Eresus_Kernel::app()->getPage()->title .= ADM_T_DIV.ADM_THEMES_STANDARD;
 
 		$result = '';
 		switch (arg('action'))
@@ -531,14 +531,14 @@ class TThemes
 	{
 		$form = array(
 			'name' => 'addForm',
-			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admAdd,
+			'caption' => Eresus_Kernel::app()->getPage()->title.ADM_T_DIV.ADM_ADD,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
-				array('type'=>'edit','name'=>'filename','label'=>admThemesFilenameLabel, 'width'=>'200px',
-					'comment'=>'.css'),
-				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel,
+				array('type' => 'edit', 'name' => 'filename', 'label' => ADM_THEMES_FILENAME_LABEL,
+					'width'=>'200px', 'comment'=>'.css'),
+				array('type'=>'edit','name'=>'description','label'=>ADM_THEMES_DESC_LABEL,
 					'width'=>'100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
@@ -566,15 +566,15 @@ class TThemes
 		$item['html'] = trim(mb_substr($item['html'], mb_strpos($item['html'], "\n")));
 		$form = array(
 			'name' => 'editForm',
-			'caption' => Eresus_Kernel::app()->getPage()->title.admTDiv.admEdit,
+			'caption' => Eresus_Kernel::app()->getPage()->title.ADM_T_DIV.ADM_EDIT,
 			'width' => '100%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'action', 'value'=>'update'),
 				array('type'=>'hidden','name'=>'section', 'value'=>arg('section')),
 				array('type'=>'hidden','name'=>'filename'),
-				array('type'=>'edit','name'=>'_filename','label'=>admThemesFilenameLabel, 'width'=>'200px',
-					'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
-				array('type'=>'edit','name'=>'description','label'=>admThemesDescriptionLabel,
+				array('type' => 'edit', 'name' => '_filename', 'label' => ADM_THEMES_FILENAME_LABEL,
+					'width'=>'200px', 'comment'=>'.css', 'disabled' => true, 'value' => $item['filename']),
+				array('type'=>'edit','name'=>'description','label'=>ADM_THEMES_DESC_LABEL,
 					'width'=>'100%'),
 				array('type'=>'memo','name'=>'html', 'height'=>'30', 'syntax' => 'css'),
 			),
@@ -609,7 +609,7 @@ class TThemes
 			'tabs' => array(
 				'width'=>'120px',
 				'items'=>array(
-					array('caption'=>admAdd, 'name'=>'action', 'value'=>'add'),
+					array('caption'=>ADM_ADD, 'name'=>'action', 'value'=>'add'),
 				)
 			),
 		);
@@ -645,7 +645,7 @@ class TThemes
 	public function sectionStyles()
 	{
 		$result = '';
-			Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStyles;
+			Eresus_Kernel::app()->getPage()->title .= ADM_T_DIV.ADM_THEMES_STYLES;
 		switch (arg('action'))
 		{
 			case 'update':

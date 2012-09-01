@@ -112,7 +112,7 @@ class Templates
 				$desc = preg_match($this->pattern, $result);
 				$result = array(
 					'name' => $name,
-					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : admNA,
+					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : ADM_NA,
 					'code' => $desc ? trim(mb_substr($result, mb_strpos($result, "\n"))) : $result,
 				);
 			}

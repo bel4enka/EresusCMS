@@ -516,7 +516,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/move-up.png',
-					'title' => admUp,
+					'title' => ADM_UP,
 					'alt' => '&uarr;',
 				);
 				$s = array_pop($href);
@@ -526,7 +526,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/move-down.png',
-					'title' => admDown,
+					'title' => ADM_DOWN,
 					'alt' => '&darr;',
 				);
 			break;
@@ -780,8 +780,8 @@ class TAdminUI extends WebPage
 			'<tr><th style="width: 100px;">'.admControls.
 			(isset($table['controls']['position'])?' <a href="'.
 			$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.
-			admSortPosition.'">'.
-			img('admin/themes/default/img/ard.gif', admSortPosition, admSortPosition).'</a>':'').
+			ADM_SORT_POS.'">'.
+			img('admin/themes/default/img/ard.gif', ADM_SORT_POS, ADM_SORT_POS).'</a>':'').
 			"</th>";
 		if (count($table['columns']))
 		{
@@ -793,11 +793,11 @@ class TAdminUI extends WebPage
 					'</span>':(isset($column['caption'])?$column['caption']:'&nbsp;')).
 					(isset($table['name'])?
 					' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).
-					'" title="'.admSortAscending.'">'.
-					img('admin/themes/default/img/ard.gif', admSortAscending, admSortAscending).'</a> '.
+					'" title="'.ADM_SORT_ASC.'">'.
+					img('admin/themes/default/img/ard.gif', ADM_SORT_ASC, ADM_SORT_ASC).'</a> '.
 					'<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).
-					'" title="'.admSortDescending.'">'.
-					img('admin/themes/default/img/aru.gif', admSortDescending, admSortDescending).
+					'" title="'.ADM_SORT_DESC.'">'.
+					img('admin/themes/default/img/aru.gif', ADM_SORT_DESC, ADM_SORT_DESC).
 					'</a></th>':'');
 			}
 		}
@@ -822,8 +822,8 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_delete, $item[$table['key']]) . '" title="' .
-						admDelete . '" onclick="return askdel(this)">' .
-						img('admin/themes/default/img/medium/item-delete.png', admDelete, admDelete, 16, 16).
+						ADM_DELETE . '" onclick="return askdel(this)">' .
+						img('admin/themes/default/img/medium/item-delete.png', ADM_DELETE, ADM_DELETE, 16, 16).
 						'</a>';
 				}
 
@@ -837,8 +837,8 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_edit, $item[$table['key']]) . '" title="' .
-						admEdit .	'">' .
-						img('admin/themes/default/img/medium/item-edit.png', admEdit, admEdit, 16, 16).'</a>';
+						ADM_EDIT .	'">' .
+						img('admin/themes/default/img/medium/item-edit.png', ADM_EDIT, ADM_EDIT, 16, 16).'</a>';
 				}
 
 				/* Вверх/вниз */
@@ -852,11 +852,11 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_position, 'up', $item[$table['key']]) .
-						'" title="' . admUp . '">' .
-						img('admin/themes/default/img/medium/move-up.png', admUp, admUp).'</a>';
+						'" title="' . ADM_UP . '">' .
+						img('admin/themes/default/img/medium/move-up.png', ADM_UP, ADM_UP).'</a>';
 					$result .= ' <a href="' . sprintf($url_position, 'down', $item[$table['key']]) .
-						'" title="' . admDown . '">' .
-						img('admin/themes/default/img/medium/move-down.png', admDown, admDown).'</a>';
+						'" title="' . ADM_DOWN . '">' .
+						img('admin/themes/default/img/medium/move-down.png', ADM_DOWN, ADM_DOWN).'</a>';
 				}
 
 				/* Активность */
@@ -869,10 +869,10 @@ class TAdminUI extends WebPage
 				)
 				{
 					$result .= ' <a href="' . sprintf($url_toggle, $item[$table['key']]) . '" title="' .
-						($item['active'] ? admDeactivate : admActivate) . '">' .
+						($item['active'] ? ADM_DEACTIVATE : ADM_ACTIVATE) . '">' .
 						img('admin/themes/default/img/medium/item-' . ($item['active'] ? 'active':'inactive').
-						'.png', $item['active']?admDeactivate:admActivate,
-						$item['active']?admDeactivate:admActivate).'</a>';
+						'.png', $item['active']?ADM_DEACTIVATE:ADM_ACTIVATE,
+						$item['active']?ADM_DEACTIVATE:ADM_ACTIVATE).'</a>';
 				}
 
 				$result .= '</td>';
@@ -1102,7 +1102,7 @@ class TAdminUI extends WebPage
 			{
 				if (empty($item['caption']))
 				{
-					$item['caption'] = admNA;
+					$item['caption'] = ADM_NA;
 				}
 
 				if (

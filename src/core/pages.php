@@ -156,7 +156,7 @@ class TPages
 				$item['caption'] = trim($item['caption']);
 				if (empty($item['caption']))
 				{
-					$item['caption'] = admNA;
+					$item['caption'] = ADM_NA;
 				}
 				$result[0][] = $item['id'];
 				$result[1][] = str_repeat('&nbsp;', $level*2).$item['caption'];
