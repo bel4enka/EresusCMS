@@ -128,10 +128,10 @@ define('errUploadSizeFORM',
 define('errUploadPartial', 'Файл "%s" получен только частично.');
 define('errUploadNoFile', 'Файл "%s" не был загружен.');
 
-define('errInvalidPassword', 'Неверное имя пользователя или пароль');
-define('errAccountNotActive', errInvalidPassword);
-define('errAccountNotExists', errInvalidPassword);
-define('errTooEarlyRelogin', "Перед попыткой повторного логина должно пройти не менее %s секунд!");
+define('ERR_PASSWORD_INVALID', 'Неверное имя пользователя или пароль');
+define('ERR_ACCOUNT_NOT_ACTIVE', ERR_PASSWORD_INVALID);
+define('ERR_LOGIN_FAILED_TOO_EARLY',
+	"Перед попыткой повторного логина должно пройти не менее %s секунд!");
 # Формы
 define('errFormUnknownType', 'Неизвестный тип поля "%s" в форме "%s"');
 define('errFormFieldHasNoName', 'Не указано имя для поля типа "%s" в форме "%s"');

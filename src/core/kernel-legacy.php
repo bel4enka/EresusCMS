@@ -1718,7 +1718,7 @@ class Eresus
 				}
 				else
 				{
-					ErrorMessage(sprintf(errAccountNotActive, $item['login']));
+					ErrorMessage(sprintf(ERR_ACCOUNT_NOT_ACTIVE, $item['login']));
 					$this->logout();
 				}
 			}
@@ -1824,10 +1824,10 @@ class Eresus
 	/**
 	 * Авторизация пользователя
 	 *
-	 * @param string $unsafeLogin   Имя пользователя
+	 * @param string $unsafeLogin  Имя пользователя
 	 * @param string $key		       Ключ учётной записи
-	 * @param bool   $auto		       Сохранить авторизационные данные на комптютере посетителя
-	 * @param bool   $cookie        Авторизация при помощи cookie
+	 * @param bool   $auto		     Сохранить авторизационные данные на компьютере посетителя
+	 * @param bool   $cookie       Авторизация при помощи cookie
 	 * @return bool Результат
 	 */
 	function login($unsafeLogin, $key, $auto = false, $cookie = false)
@@ -1838,7 +1838,7 @@ class Eresus
 
 		if ($login != $unsafeLogin)
 		{
-			ErrorMessage(errInvalidPassword);
+			ErrorMessage(ERR_PASSWORD_INVALID);
 			return false;
 		}
 
@@ -1884,7 +1884,7 @@ class Eresus
 						// Если пароль не верен...
 						if (!$cookie)
 						{
-							ErrorMessage(errInvalidPassword);
+							ErrorMessage(ERR_PASSWORD_INVALID);
 							$item['lastLoginTime'] = time();
 							$item['loginErrors']++;
 							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
@@ -1894,19 +1894,19 @@ class Eresus
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(errTooEarlyRelogin, $item['loginErrors']));
+					ErrorMessage(sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $item['loginErrors']));
 					$item['lastLoginTime'] = time();
 					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 				}
 			}
 			else
 			{
-				ErrorMessage(sprintf(errAccountNotActive, $login));
+				ErrorMessage(sprintf(ERR_ACCOUNT_NOT_ACTIVE, $login));
 			}
 		}
 		else
 		{
-			ErrorMessage(errInvalidPassword);
+			ErrorMessage(ERR_PASSWORD_INVALID);
 		}
 		return $result;
 	}
