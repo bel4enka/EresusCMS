@@ -94,13 +94,6 @@ define('ACCESSLEVEL3', 'Редактор');
 define('ACCESSLEVEL4', 'Пользователь');
 define('ACCESSLEVEL5', 'Гость');
 
-define('RESTRICTION0', 'нет ограничений');
-define('RESTRICTION1', 'Предмодерация');
-define('RESTRICTION2', 'Только чтение');
-define('strNoRestrictions', 'нет ограничений');
-define('strPredModeration', 'Предмодерация');
-define('strReadOnly', 'Только чтение');
-
 /* ОШИБКИ */
 
 # Общие
