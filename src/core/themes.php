@@ -458,28 +458,39 @@ class TThemes
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Создаёт новый файл стилей
+	 *
 	 * @return void
 	 */
 	public function sectionStylesInsert()
 	{
-		$file = "/* ".arg('description')." */\r\n\r\n".arg('html');
-		$fp = fopen(filesRoot.'style/'.arg('filename').'.css', 'w');
-		fwrite($fp, $file);
-		fclose($fp);
+		$filename = arg('filename');
+		$filter = new Eresus_FS_NameFilter();
+		$filename = $filter->filter($filename);
+
+		if ('' === $filename)
+		{
+			$filename = uniqid();
+		}
+
+		if ($filename != arg('filename'))
+		{
+			ErrorMessage(sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
+		}
+
+		$contents = "/* ".arg('description')." */\r\n\r\n".arg('html');
+		file_put_contents(Eresus_CMS::getLegacyKernel()->froot . 'style/' . $filename . '.css',
+			$contents);
 		HTTP::redirect(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Обновляет файл стилей
 	 */
 	public function sectionStylesUpdate()
 	{
-		Eresus_CMS::getLegacyKernel()->request['update'] = true;
 		$this->sectionStylesInsert();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???

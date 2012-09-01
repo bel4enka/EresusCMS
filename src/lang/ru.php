@@ -306,6 +306,8 @@ define('admThemesDescriptionLabel', 'Описание');
 define('admThemesStyles', 'Файлы стилей');
 define('admThemesStyleLabel', 'Редактирование файла стилей');
 define('admThemesStandard', 'Стандартные шаблоны');
+define('ADM_THEMES_FILENAME_FILTERED',
+	'Указанное Вами имя файла содержало недопустимые символы и было изменено на "%s"');
 
 define('admPluginsAdd', 'Добавить плагин');
 define('admPluginsTableHint',
