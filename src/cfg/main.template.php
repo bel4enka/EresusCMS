@@ -75,12 +75,6 @@ $Eresus->conf['db']['name'] = '';
 
 // Этот параметр управляет параметрами обратной совместимости
 $Eresus->conf['backward'] = array(
-	// Делает доступным класс TPlugin в версиях старше 2.10b
-	'TPlugin' => true,
-	// Делает доступным класс TContentPlugin в версиях старше 2.10b
-	'TContentPlugin' => true,
-	// Делает доступным класс TListContentPlugin в версиях старше 2.10b
-	'TListContentPlugin' => true,
 	// Отключает усиленное хеширование пароля, для совместимости со старыми базами пользователей
 	'weak_password' => false,
 );

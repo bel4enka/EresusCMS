@@ -246,32 +246,6 @@ function useLib($library)
 }
 
 /**
- * Подключает описание класса
- *
- * @param  string  $className   Имя класса
- *
- * @return  bool  Результат выполнения
- *
- * @deprecated
- */
-function useClass($className)
-{
-	$result = false;
-	if (DIRECTORY_SEPARATOR != '/')
-	{
-		$className = str_replace('/', DIRECTORY_SEPARATOR, $className);
-	}
-	$filename = realpath(dirname(__FILE__)) . '/classes/' . $className.'.php';
-	if (is_file($filename))
-	{
-		include_once($filename);
-		$result = true;
-	}
-	return $result;
-}
-
-
-/**
  * Функция отсылает письмо по указанному адресу
  *
  * @param string $address
@@ -1573,18 +1547,6 @@ class Eresus
 		else
 		{
 			FatalError("Classes file '$filename' not found!");
-		}
-		if ($this->conf['backward']['TListContentPlugin'])
-		{
-			useClass('backward/TListContentPlugin');
-		}
-		elseif ($this->conf['backward']['TContentPlugin'])
-		{
-			useClass('backward/TContentPlugin');
-		}
-		elseif ($this->conf['backward']['TPlugin'])
-		{
-			useClass('backward/TPlugin');
 		}
 	}
 
