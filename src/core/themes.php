@@ -146,7 +146,9 @@ class TThemes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderForm($form);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -174,7 +176,9 @@ class TThemes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderForm($form, $item);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -212,7 +216,9 @@ class TThemes
 		{
 			$items[] = array('filename' => $key, 'description' => $value);
 		}
-		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderTable($table, $items);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -240,7 +246,7 @@ class TThemes
 			default:
 				if (arg('delete'))
 				{
-					$result = $this->sectionTemplatesDelete();
+					$this->sectionTemplatesDelete();
 				}
 				elseif (arg('id'))
 				{
@@ -368,7 +374,9 @@ class TThemes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderForm($form, $item);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -406,7 +414,9 @@ class TThemes
 		{
 			$items[] = array('filename' => $key, 'description' => $value);
 		}
-		$result = Eresus_Kernel::app()->getPage()->renderTable($table, $items);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderTable($table, $items);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -419,13 +429,14 @@ class TThemes
 	{
 		Eresus_Kernel::app()->getPage()->title .= admTDiv.admThemesStandard;
 
+		$result = '';
 		switch (arg('action'))
 		{
 			case 'update':
-				$result = $this->sectionStdUpdate();
+				$this->sectionStdUpdate();
 				break;
 			case 'insert':
-				$result = $this->sectionStdInsert();
+				$this->sectionStdInsert();
 				break;
 			case 'add':
 				$result = $this->sectionStdAdd();
@@ -433,7 +444,7 @@ class TThemes
 			default:
 				if (arg('delete'))
 				{
-					$result = $this->sectionStdDelete();
+					$this->sectionStdDelete();
 				}
 				if (arg('id'))
 				{
@@ -519,7 +530,9 @@ class TThemes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderForm($form);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -553,7 +566,9 @@ class TThemes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$result = $page->renderForm($form, $item);
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
@@ -624,7 +639,7 @@ class TThemes
 				break;
 
 			case 'insert':
-				$result = $this->sectionStylesInsert();
+				$this->sectionStylesInsert();
 				break;
 
 			case 'add':
@@ -634,7 +649,7 @@ class TThemes
 			default:
 				if (arg('delete'))
 				{
-					$result = $this->sectionStylesDelete();
+					$this->sectionStylesDelete();
 				}
 				elseif (arg('id'))
 				{
@@ -665,7 +680,9 @@ class TThemes
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'std'));
 			$this->tabs['items'][2]['url'] =
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'css'));
-			$result .= Eresus_Kernel::app()->getPage()->renderTabs($this->tabs);
+			/** @var TAdminUI $page */
+			$page = Eresus_Kernel::app()->getPage();
+			$result .= $page->renderTabs($this->tabs);
 			switch (arg('section'))
 			{
 				case 'css':
