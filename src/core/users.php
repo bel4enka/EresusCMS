@@ -69,49 +69,6 @@ class TUsers extends Accounts
 		return true;
 	}
 	
-	function notifyMessage($new, $old=null)
-	{
-		$result = '';
-		if (is_null($old))
-		{
-			$result .= admUsersName.": ".$new['name']."\n";
-			$result .= admUsersLogin.": ".$new['login']."\n";
-			$result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$new['access'])."\n";
-			$result .= admUsersMail.": ".$new['mail']."\n";
-		}
-		else
-		{
-			$result = "ID ".$new['id']." - <strong>".$old['name']."</strong>\n".admChanges.":\n";
-			if ($new['name'] != $old['name'])
-			{
-				$result .= admUsersName.": ".$old['name']." &rarr; ".$new['name']."\n";
-			}
-			if ($new['login'] != $old['login'])
-			{
-				$result .= admUsersLogin.": ".$old['login']." &rarr; ".$new['login']."\n";
-			}
-			if ($new['active'] != $old['active'])
-			{
-				$result .= admUsersAccountState.": ".($old['active']?strYes:strNo)." &rarr; ".
-					($new['active']?strYes:strNo)."\n";
-			}
-			if ($new['loginErrors'] != $old['loginErrors'])
-			{
-				$result .= admUsersLoginErrors.": ".$old['loginErrors']." &rarr; ".$new['loginErrors']."\n";
-			}
-			if ($new['access'] != $old['access'])
-			{
-				$result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$old['access'])." &rarr; ".
-					constant('ACCESSLEVEL'.$new['access'])."\n";
-			}
-			if ($new['mail'] != $old['mail'])
-			{
-				$result .= admUsersMail.": ".$old['mail']." &rarr; ".$new['mail']."\n";
-			}
-		}
-		return $result;
-	}
-	
 	function check_for_root($item)
 	{
 		return ($item['access'] != ROOT);
