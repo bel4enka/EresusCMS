@@ -96,8 +96,22 @@ class TThemes
 	 */
 	public function sectionTemplatesInsert()
 	{
+		$filename = arg('name');
+		$filter = new Eresus_FS_NameFilter();
+		$filename = $filter->filter($filename);
+
+		if ('' === $filename)
+		{
+			$filename = uniqid();
+		}
+
+		if ($filename != arg('name'))
+		{
+			ErrorMessage(sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
+		}
+
 		$templates = new Templates();
-		$templates->add(arg('name'), '', arg('code'), arg('desc'));
+		$templates->add($filename, '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
