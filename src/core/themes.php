@@ -498,7 +498,7 @@ class TThemes
 	 */
 	public function sectionStylesDelete()
 	{
-		$filename = filesRoot.'style/'.arg('delete');
+		$filename = Eresus_CMS::getLegacyKernel()->froot . 'style/'.arg('delete');
 		if (file_exists($filename))
 		{
 			unlink($filename);
@@ -540,7 +540,8 @@ class TThemes
 	public function sectionStylesEdit()
 	{
 		$item['filename'] = arg('id');
-		$item['html'] = trim(file_get_contents(filesRoot.'style/'.$item['filename']));
+		$item['html'] = trim(file_get_contents(Eresus_CMS::getLegacyKernel()->froot . 'style/' .
+			$item['filename']));
 		preg_match('|/\*(.*?)\*/|', $item['html'], $item['description']);
 		$item['description'] = trim($item['description'][1]);
 		$item['filename'] = substr($item['filename'], 0, strrpos($item['filename'], '.'));
@@ -593,7 +594,7 @@ class TThemes
 			),
 		);
 		# Загружаем список шаблонов
-		$dir = filesRoot.'style/';
+		$dir = Eresus_CMS::getLegacyKernel()->froot . 'style/';
 		$hnd = opendir($dir);
 		$items = array();
 		while (($filename = readdir($hnd))!==false)
