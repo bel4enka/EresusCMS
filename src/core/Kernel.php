@@ -84,7 +84,7 @@ class Eresus_Kernel
 	/**
 	 * Контейнер служб
 	 *
-	 * @var Container
+	 * @var ContainerBuilder
 	 * @since 3.01
 	 */
 	static private $sc;
@@ -467,18 +467,21 @@ class Eresus_Kernel
 			throw new LogicException('Application class "' . $class . '" does not exists');
 		}
 
-		self::$app = new $class();
+		/** @var Eresus_CMS $app */
+		$app = new $class();
 
 		if (!method_exists($class, 'main'))
 		{
-			self::$app = null;
+			$app = null;
 			throw new LogicException('Method "main()" does not exists in "' . $class . '"');
 		}
+
+		self::sc()->set('app', $app);
 
 		try
 		{
 			//Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
-			$exitCode = self::$app->main();
+			$exitCode = $app->main();
 			//Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
 		}
 		catch (Eresus_SuccessException $e)
@@ -490,21 +493,38 @@ class Eresus_Kernel
 			//self::handleException($e);
 			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
 		}
-		self::$app = null;
+		self::sc()->removeDefinition('app');
 		return $exitCode;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает контейнер служб
 	 *
-	 * @return Container
+	 * @return ContainerBuilder
 	 *
 	 * @since 3.01
 	 */
 	public static function sc()
 	{
 		return self::$sc;
+	}
+
+	/**
+	 * Возвращает службу
+	 *
+	 * Доступные службы:
+	 *
+	 * - app — текущее приложение, обычно {@link Eresus_CMS}
+	 *
+	 * @param string $id  идентификатор службы
+	 *
+	 * @return object
+	 *
+	 * @since 3.01
+	 */
+	public static function get($id)
+	{
+		return self::sc()->get($id);
 	}
 
 	/**
@@ -523,6 +543,6 @@ class Eresus_Kernel
 	 */
 	public static function app()
 	{
-		return self::$app;
+		return self::sc()->get('app');
 	}
 }
