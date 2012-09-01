@@ -118,7 +118,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionTemplatesDelete()
 	{
@@ -131,7 +131,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionTemplatesAdd()
 	{
@@ -156,7 +156,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionTemplatesEdit()
 	{
@@ -185,7 +185,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionTemplatesList()
 	{
@@ -262,7 +262,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionStdInsert()
 	{
@@ -275,7 +275,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionStdUpdate()
 	{
@@ -285,7 +285,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionStdDelete()
 	{
@@ -383,7 +383,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionStdList()
 	{
@@ -422,7 +422,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionStd()
 	{
@@ -459,7 +459,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function sectionStylesInsert()
 	{
@@ -498,7 +498,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionStylesAdd()
 	{
@@ -524,7 +524,7 @@ class TThemes
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string  HTML
 	 */
 	public function sectionStylesEdit()
 	{
