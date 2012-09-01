@@ -105,7 +105,6 @@ class Eresus_Kernel
 	 *
 	 * @since 3.00
 	 */
-	// @codeCoverageIgnoreStart
 	static public function init()
 	{
 		/* Разрешаем только однократный вызов этого метода */
@@ -121,15 +120,32 @@ class Eresus_Kernel
 		@$timezone = date_default_timezone_get();
 		date_default_timezone_set($timezone);
 
-		// Регистрация автозагрузчика классов
-		spl_autoload_register(array('Eresus_Kernel', 'autoload'));
+		/*
+		 * Регистрация загрузчиков классов
+		 */
+		require __DIR__ . '/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+
+		$loader = new Symfony\Component\ClassLoader\UniversalClassLoader();
+		$loader->registerNamespaces(array(
+			'Symfony' => __DIR__,
+		));
+		$loader->registerPrefixes(array(
+			'Eresus_' => __DIR__,
+		));
+		$loader->register();
+
+		$botoborPath = __DIR__ . '/botobor/botobor.php';
+		$map = new Symfony\Component\ClassLoader\MapClassLoader(array(
+			'Botobor' => $botoborPath,
+			'Botobor_Form' => $botoborPath,
+			'Botobor_Keeper' => $botoborPath,
+		));
+		$map->register();
 
 		self::initExceptionHandling();
 
 		self::$inited = true;
 	}
-	// @codeCoverageIgnoreEnd
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализирует обработчики ошибок
@@ -307,74 +323,6 @@ class Eresus_Kernel
 		// возвращаем false для вывода буфера
 		return false;
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Автозагрузчик классов
-	 *
-	 * Работает только для классов «Eresus_*». Из имени класса удаляется префикс «Eresus_», все
-	 * символы в имени класса «_» заменяются на разделитель директорий, добавляется суффикс «.php».
-	 *
-	 * Таким образом класс «Eresus_HTTP_Request» будет искаться в файле «core/HTTP/Request.php».
-	 *
-	 * Устанавливается через {@link spl_autoload_register() spl_autoload_register()} в методе
-	 * {@link init()}.
-	 *
-	 * @param string $className
-	 *
-	 * @throws LogicException если класс не найден
-	 *
-	 * @return bool
-	 *
-	 * @since 3.00
-	 * @uses classExists()
-	 */
-	public static function autoload($className)
-	{
-		/*
-		 * Классы Eresus
-		 */
-		if (stripos($className, 'Eresus_') === 0)
-		{
-			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-				str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
-
-			if (file_exists($fileName))
-			{
-				/** @noinspection PhpIncludeInspection */
-				include $fileName;
-				return self::classExists($className);
-			}
-			/*
-			 * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
-			 * Отсутствие такого класса не является ошибкой. Отсутствие любого другого класса расцениваем
-			 * как логическую ошибку.
-			 */
-			elseif (substr($className, -5) !== 'Table')
-			{
-				throw new LogicException('Class "' . $className . '" not found');
-			}
-		}
-
-		/*
-		 * Классы Botobor
-		 */
-		if (stripos($className, 'Botobor') === 0)
-		{
-			$fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'botobor' . DIRECTORY_SEPARATOR .
-				'botobor.php';
-
-			if (file_exists($fileName))
-			{
-				/** @noinspection PhpIncludeInspection */
-				include $fileName;
-				return self::classExists($className);
-			}
-		}
-
-		return false;
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает true если PHP запущен на UNIX-подобной ОС

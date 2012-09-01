@@ -196,6 +196,14 @@
 			strip="0"
 		/>
 
+		<!-- Symfony ClassLoader -->
+		<copy todir="${build.dir}/core/Symfony/Component/ClassLoader">
+			<fileset dir="vendor/symfony/ClassLoader">
+				<include name="**/*.php" />
+				<exclude name="Tests/**" />
+			</fileset>
+		</copy>
+
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/botobor">
 			<fileset dir="vendor/Botobor/src">
