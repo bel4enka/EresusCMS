@@ -379,7 +379,6 @@ class TPages
 	{
 		$result[0] = array();
 		$result[1] = array();
-		useLib('templates');
 		$templates = new Templates();
 		$list = $templates->enum();
 		$result[0]= array_values($list);

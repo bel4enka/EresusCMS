@@ -28,6 +28,11 @@
 * Webshim до 1.8.12
 * TinyMCE до 3.5.6
 
+useLib
+^^^^^^
+
+Бибилиотека «templates» больше не требует подключения при помощи `useLib() <../../api/Eresus/_src---core---kernel-legacy.php.html#functionuseLib>`_.
+
 Добавлено
 ---------
 

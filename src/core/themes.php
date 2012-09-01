@@ -96,7 +96,6 @@ class TThemes
 	 */
 	public function sectionTemplatesInsert()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
@@ -109,7 +108,6 @@ class TThemes
 	 */
 	public function sectionTemplatesUpdate()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$templates->update(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
@@ -122,7 +120,6 @@ class TThemes
 	 */
 	public function sectionTemplatesDelete()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'));
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
@@ -160,7 +157,6 @@ class TThemes
 	 */
 	public function sectionTemplatesEdit()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$item = $templates->get(arg('id'), '', true);
 		$form = array(
@@ -209,7 +205,6 @@ class TThemes
 				)
 			),
 		);
-		useLib('templates');
 		$templates = new Templates();
 		$list = $templates->enum();
 		$items = array();
@@ -266,7 +261,6 @@ class TThemes
 	 */
 	public function sectionStdInsert()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
 		HTTP::redirect(arg('submitURL'));
@@ -289,7 +283,6 @@ class TThemes
 	 */
 	public function sectionStdDelete()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$templates->delete(arg('delete'), 'std');
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
@@ -354,7 +347,6 @@ class TThemes
 	 */
 	public function sectionStdEdit()
 	{
-		useLib('templates');
 		$templates = new Templates();
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
@@ -407,7 +399,6 @@ class TThemes
 				)
 			),
 		);
-		useLib('templates');
 		$templates = new Templates();
 		$list = $templates->enum('std');
 		$items = array();

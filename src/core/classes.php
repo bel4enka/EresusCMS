@@ -322,7 +322,6 @@ class Plugins
 				{
 					$page->content = '$(items)';
 				}
-				useLib('templates');
 				$templates = new Templates();
 				$template = $templates->get('SectionListItem', 'std');
 				if (false === $template)

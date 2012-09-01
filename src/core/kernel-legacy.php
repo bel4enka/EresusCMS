@@ -214,7 +214,7 @@ function UserRights($level)
  * - glib — работа с изображениями
  * - mysql — работа с MySQL
  * - sections — работа с разделами сайта
- * - templates — работа с шаблонами
+ * - templates — работа с шаблонами (эта библиотека больше не требует подключения!)
  *
  * @param string $library  имя библиотеки
  *
