@@ -46,11 +46,6 @@
 		<include name="**" />
 	</fileset>
 
-	<!-- Tools files -->
-	<fileset dir="." id="files.tools">
-		<include name="tools/**" />
-	</fileset>
-
 	<!-- SDK files -->
 	<fileset dir="." id="files.sdk">
 		<include name="SDK/**" />
@@ -237,7 +232,6 @@
 		
 		<copy todir="${build.dir}/distrib">
 			<fileset refid="files.db" />
-			<fileset refid="files.tools" />
 			<fileset refid="files.sdk" />
 			<filterchain>
 			    <expandproperties />

@@ -1,13 +1,12 @@
 #!/bin/sh
-#
-# Script dumps MySQL database
+##
+# Dumps MySQL database
 #
 # @author Михаил Красильников <mihalych@vsepofigu.ru>
 #
-# $Id$
-#
 
-CONFIG="../../cfg/main.php"
+home=`dirname $0`
+CONFIG="$home/../cfg/main.php"
 
 #
 # Check dependencies
