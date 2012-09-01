@@ -30,6 +30,10 @@
  * $Id$
  */
 
+use Symfony\Component\ClassLoader\UniversalClassLoader,
+		Symfony\Component\ClassLoader\MapClassLoader,
+		Symfony\Component\DependencyInjection\Container,
+		Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Исключительная ситуация, не связанная с ошибкой
@@ -78,9 +82,17 @@ class Eresus_Kernel
 	static private $inited = false;
 
 	/**
+	 * Контейнер служб
+	 *
+	 * @var Container
+	 * @since 3.01
+	 */
+	static private $sc;
+
+	/**
 	 * Выполняемое приложение
 	 *
-	 * @var object
+	 * @var EresusApplication
 	 * @see exec(), app()
 	 */
 	static private $app = null;
@@ -123,9 +135,10 @@ class Eresus_Kernel
 		/*
 		 * Регистрация загрузчиков классов
 		 */
+		/** @noinspection PhpIncludeInspection */
 		require __DIR__ . '/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
-		$loader = new Symfony\Component\ClassLoader\UniversalClassLoader();
+		$loader = new UniversalClassLoader();
 		$loader->registerNamespaces(array(
 			'Symfony' => __DIR__,
 		));
@@ -135,7 +148,7 @@ class Eresus_Kernel
 		$loader->register();
 
 		$botoborPath = __DIR__ . '/botobor/botobor.php';
-		$map = new Symfony\Component\ClassLoader\MapClassLoader(array(
+		$map = new MapClassLoader(array(
 			'Botobor' => $botoborPath,
 			'Botobor_Form' => $botoborPath,
 			'Botobor_Keeper' => $botoborPath,
@@ -143,6 +156,8 @@ class Eresus_Kernel
 		$map->register();
 
 		self::initExceptionHandling();
+
+		self::$sc = new ContainerBuilder();
 
 		self::$inited = true;
 	}
@@ -481,6 +496,18 @@ class Eresus_Kernel
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Возвращает контейнер служб
+	 *
+	 * @return Container
+	 *
+	 * @since 3.01
+	 */
+	public static function sc()
+	{
+		return self::$sc;
+	}
+
+	/**
 	 * Возвращает выполняемое приложение или null, если приложение не запущено
 	 *
 	 * Пример: получение корневой директории приложения.
@@ -498,5 +525,4 @@ class Eresus_Kernel
 	{
 		return self::$app;
 	}
-	//-----------------------------------------------------------------------------
 }

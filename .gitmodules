@@ -7,3 +7,6 @@
 [submodule "vendor/symfony/ClassLoader"]
 	path = vendor/symfony/ClassLoader
 	url = git://github.com/symfony/ClassLoader.git
+[submodule "vendor/symfony/DependencyInjection"]
+	path = vendor/symfony/DependencyInjection
+	url = git://github.com/symfony/DependencyInjection.git

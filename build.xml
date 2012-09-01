@@ -199,8 +199,22 @@
 		<!-- Symfony ClassLoader -->
 		<copy todir="${build.dir}/core/Symfony/Component/ClassLoader">
 			<fileset dir="vendor/symfony/ClassLoader">
-				<include name="**/*.php" />
+				<include name="**/*" />
 				<exclude name="Tests/**" />
+				<exclude name=".git" />
+				<exclude name="composer.json" />
+				<exclude name="phpunit.*" />
+			</fileset>
+		</copy>
+
+		<!-- Symfony DependencyInjection -->
+		<copy todir="${build.dir}/core/Symfony/Component/DependencyInjection">
+			<fileset dir="vendor/symfony/DependencyInjection">
+				<include name="**/*" />
+				<exclude name="Tests/**" />
+				<exclude name=".git" />
+				<exclude name="composer.json" />
+				<exclude name="phpunit.*" />
 			</fileset>
 		</copy>
 
