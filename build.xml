@@ -68,8 +68,21 @@
 	-->
 	<target name="vendors" description="Fetch 3rd party components">
 
-		<exec command="git submodule init" checkreturn="true" logoutput="true" />
-		<exec command="git submodule update" checkreturn="true" logoutput="true" />
+		<if>
+			<available file="composer.phar" property="." />
+
+			<then>
+				<exec command="php composer.phar update" passthru="true" />
+			</then>
+
+			<else>
+				<httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
+				         filename="composer.php"/>
+				<exec command="php composer.php" passthru="true" />
+				<delete file="composer.php" />
+				<exec command="php composer.phar install" passthru="true" />
+			</else>
+		</if>
 
 	</target>
 
@@ -196,31 +209,20 @@
 			strip="0"
 		/>
 
-		<!-- Symfony ClassLoader -->
-		<copy todir="${build.dir}/core/Symfony/Component/ClassLoader">
-			<fileset dir="vendor/symfony/ClassLoader">
+		<!-- Symfony -->
+		<copy todir="${build.dir}/core/Symfony">
+			<fileset dir="vendor/symfony/symfony/src/Symfony">
 				<include name="**/*" />
-				<exclude name="Tests/**" />
+				<exclude name="**/Tests/**" />
 				<exclude name=".git" />
-				<exclude name="composer.json" />
-				<exclude name="phpunit.*" />
-			</fileset>
-		</copy>
-
-		<!-- Symfony DependencyInjection -->
-		<copy todir="${build.dir}/core/Symfony/Component/DependencyInjection">
-			<fileset dir="vendor/symfony/DependencyInjection">
-				<include name="**/*" />
-				<exclude name="Tests/**" />
-				<exclude name=".git" />
-				<exclude name="composer.json" />
-				<exclude name="phpunit.*" />
+				<exclude name="**/composer.json" />
+				<exclude name="**/phpunit.*" />
 			</fileset>
 		</copy>
 
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/botobor">
-			<fileset dir="vendor/Botobor/src">
+			<fileset dir="vendor/mekras/botobor/src">
 				<include name="**" />
 			</fileset>
 		</copy>
@@ -230,7 +232,7 @@
 			<fileset dir="3rdparty/jquery">
 				<include name="**" />
 			</fileset>
-			<filelist dir="vendor/jquery-cookie" files="jquery.cookie.js" />
+			<filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
 		</copy>
 
 		<!-- Modernizr -->
