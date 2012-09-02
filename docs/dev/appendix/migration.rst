@@ -57,6 +57,11 @@ Eresus_CMS::getPage()
    <?php
    $pageId = Eresus_Kernel::app()->getPage()->id;
 
+Eresus_PHP
+^^^^^^^^^^
+
+Класс `Eresus_PHP <../../api/Eresus/Eresus_PHP.html>`_ предназначен для взаимодействия с интерпретатором PHP. Например, с его помощью можно узнать максимальный допустимый размер загружаемого файла.
+
 Eresus_FS_NameFilter
 ^^^^^^^^^^^^^^^^^^^^
 
