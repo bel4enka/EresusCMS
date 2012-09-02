@@ -311,16 +311,22 @@ class TFiles
 		$result .= "</table>\n";
 		return $result;
 	}
-	
-	function renderControls()
+
+	/**
+	 * Возвращает разметку элементов управления
+	 *
+	 * @return string
+	 */
+	private function renderControls()
 	{
+		$maxFileSize = floor(Eresus_PHP::getMaxUploadSize() / 1024 / 1024) . ' Mb';
 		$result =
 			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n".
 			"<tr><td align=\"center\">Загрузить файл</td><td><form name=\"upload\" action=\"".
 				Eresus_CMS::getLegacyKernel()->request['url']."\" method=\"post\" " .
 				"enctype=\"multipart/form-data\"><div id=\"fm_upload\"><input type=\"file\" " .
 				"name=\"upload\" size=\"50\"><input type=\"submit\" value=\"Загрузить\"> " .
-				"Максимальный размер файла: ".ini_get('upload_max_filesize')."</div></form></td></tr>".
+				"Максимальный размер файла: " . $maxFileSize . "</div></form></td></tr>".
 			"<tr><td align=\"center\"><a href=\"javascript:Copy('SelFileName');\">Скопировать имя</a>" .
 			"</td><td style=\"width: 100%;\"><input type=\"text\" id=\"SelFileName\" value=\"" .
 				"Нет выбранных объектов\" style=\"width: 100%;\"></td></tr>".
