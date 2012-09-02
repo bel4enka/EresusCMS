@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Файловый менеджер
  *
- * @copyright 2004-2007, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 /**
@@ -76,7 +74,7 @@ class TFiles
 			array('ext'=>'pdf','icon'=>'application-pdf'),
 		);
 	var $root;
-	var $panels = array('l'=>'', 'r'=>'');
+	private $panels = array('l'=>'', 'r'=>'');
 	var $sp = 'l';
 
 	/**
@@ -180,7 +178,7 @@ class TFiles
 	function buildFileList($dir)
 	{
 		$result = array();
-		@$hnd=opendir(filesRoot.$this->root.$dir);
+		@$hnd=opendir(Eresus_CMS::getLegacyKernel()->froot.$this->root.$dir);
 		if ($hnd)
 		{
 			$i = 0;
@@ -193,7 +191,7 @@ class TFiles
 						continue;
 					}
 					$result[$i]['filename'] = $name;
-					$perm = fileperms(filesRoot.$this->root.$dir.'/'.$name);
+					$perm = fileperms(Eresus_CMS::getLegacyKernel()->froot.$this->root.$dir.'/'.$name);
 					$perm = $perm - 32768;
 					if ($perm < 0)
 					{
@@ -212,14 +210,14 @@ class TFiles
 					}
 					if (function_exists('posix_getpwuid') && !System::isWindows())
 					{
-						$result[$i]['owner'] = posix_getpwuid(fileowner(filesRoot.$this->root . $dir . $name));
+						$result[$i]['owner'] = posix_getpwuid(fileowner(Eresus_CMS::getLegacyKernel()->froot.$this->root . $dir . $name));
 						$result[$i]['owner'] = $result[$i]['owner']['name'];
 					}
 					else
 					{
 						$result[$i]['owner'] = 'unknown';
 					}
-					switch (filetype(filesRoot.$this->root.$dir . $name))
+					switch (filetype(Eresus_CMS::getLegacyKernel()->froot.$this->root.$dir . $name))
 					{
 						case 'dir':
 							$result[$i]['icon'] = 'folder';
@@ -230,7 +228,7 @@ class TFiles
 						break;
 						case 'file':
 							$result[$i]['link'] = httpRoot . $this->root . $dir . $name;
-							$result[$i]['size'] = number_format(filesize(filesRoot . $this->root . $dir . $name));
+							$result[$i]['size'] = number_format(filesize(Eresus_CMS::getLegacyKernel()->froot . $this->root . $dir . $name));
 							$result[$i]['action'] = 'new';
 							$result[$i]['icon'] = 'application-octet-stream';
 							if (count($this->icons))
@@ -247,7 +245,7 @@ class TFiles
 						break;
 					}
 					$result[$i]['date'] = strftime("%y-%m-%d %H:%I:%S",
-						filemtime(filesRoot.$this->root.$dir.'/'.$name));
+						filemtime(Eresus_CMS::getLegacyKernel()->froot.$this->root.$dir.'/'.$name));
 					$i++;
 				}
 			}
@@ -281,7 +279,7 @@ class TFiles
 	
 	function renderFileList($side)
 	{
-		$path = $this->pannels[$side];
+		$path = $this->panels[$side];
 		$items = $this->BuildFileList($path);
 		$result =
 			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"filesList\"" .
@@ -340,7 +338,7 @@ class TFiles
 	{
 		foreach ($_FILES as $name => $file)
 		{
-			upload($name, filesRoot.$this->root.$this->pannels[$this->sp]);
+			upload($name, Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp]);
 		}
 		HTTP::goback();
 	}
@@ -356,7 +354,7 @@ class TFiles
 	 */
 	function mkDir()
 	{
-		$pathname = filesRoot.$this->root.$this->pannels[$this->sp].arg('mkdir', FILES_FILTER);
+		$pathname = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('mkdir', FILES_FILTER);
 		FS::mkDir($pathname, 0777, true);
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
@@ -391,8 +389,8 @@ class TFiles
 	
 	function renameEntry()
 	{
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('rename', FILES_FILTER);
-		$newname = filesRoot.$this->root.$this->pannels[$this->sp].arg('newname', FILES_FILTER);
+		$filename = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('rename', FILES_FILTER);
+		$newname = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('newname', FILES_FILTER);
 		if (file_exists($filename))
 		{
 			rename($filename, $newname);
@@ -402,7 +400,7 @@ class TFiles
 	
 	function chmodEntry()
 	{
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('chmod', FILES_FILTER);
+		$filename = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('chmod', FILES_FILTER);
 		if (file_exists($filename))
 		{
 			chmod($filename, octdec(arg('perms', '/\D/')));
@@ -412,8 +410,8 @@ class TFiles
 	
 	function copyFile()
 	{
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('copyfile', FILES_FILTER);
-		$dest = filesRoot . $this->root . $this->pannels[$this->sp=='l'?'r':'l'].
+		$filename = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('copyfile', FILES_FILTER);
+		$dest = Eresus_CMS::getLegacyKernel()->froot . $this->root . $this->panels[$this->sp=='l'?'r':'l'].
 			arg('copyfile', FILES_FILTER);
 		if (is_file($filename))
 		{
@@ -428,8 +426,8 @@ class TFiles
 	function moveFile()
 	{
 		#if (UserRights(ADMIN)) {
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('movefile', FILES_FILTER);
-		$dest = filesRoot.$this->root.$this->pannels[$this->sp=='l'?'r':'l'].
+		$filename = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('movefile', FILES_FILTER);
+		$dest = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp=='l'?'r':'l'].
 			arg('movefile', FILES_FILTER);
 		if (is_file($filename))
 		{
@@ -445,7 +443,7 @@ class TFiles
 	function deleteFile()
 	{
 		#if (UserRights(ADMIN)) {
-		$filename = filesRoot.$this->root.$this->pannels[$this->sp].arg('delete', FILES_FILTER);
+		$filename = Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp].arg('delete', FILES_FILTER);
 		if (is_file($filename))
 		{
 			unlink($filename);
@@ -463,19 +461,19 @@ class TFiles
 	{
 		$this->root = 'data/';
 
-		$this->pannels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
-		$this->pannels['l'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['l']);
-		$this->pannels['l'] = preg_replace('!^/!', '', $this->pannels['l']);
-		while (!empty($this->pannels['l']) && !is_dir(filesRoot.$this->root.$this->pannels['l']))
+		$this->panels['l'] = (arg('lf')?preg_replace('!^/|/$!','',arg('lf')).'/':'');
+		$this->panels['l'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->panels['l']);
+		$this->panels['l'] = preg_replace('!^/!', '', $this->panels['l']);
+		while (!empty($this->panels['l']) && !is_dir(Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels['l']))
 		{
-			$this->pannels['l'] = preg_replace('![^/]+/$!', '', $this->pannels['l']);
+			$this->panels['l'] = preg_replace('![^/]+/$!', '', $this->panels['l']);
 		}
-		$this->pannels['r'] = (arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
-		$this->pannels['r'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->pannels['r']);
-		$this->pannels['r'] = preg_replace('!^/!', '', $this->pannels['r']);
-		while (!empty($this->pannels['r']) && !is_dir(filesRoot.$this->root.$this->pannels['r']))
+		$this->panels['r'] = (arg('rf')?preg_replace('!^/|/$!','',arg('rf')).'/':'');
+		$this->panels['r'] = preg_replace('~(/\.\.|^\.\./)~', '', $this->panels['r']);
+		$this->panels['r'] = preg_replace('!^/!', '', $this->panels['r']);
+		while (!empty($this->panels['r']) && !is_dir(Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels['r']))
 		{
-			$this->pannels['r'] = preg_replace('![^/]+/$!', '', $this->pannels['r']);
+			$this->panels['r'] = preg_replace('![^/]+/$!', '', $this->panels['r']);
 		}
 		$this->sp = substr(arg('sp', '/[^lr]/'), 0, 1);
 		if (!$this->sp)
