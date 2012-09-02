@@ -307,16 +307,33 @@ class TThemes
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Диалог добавления стандартного шаблона
+	 *
 	 * @return string
 	 */
-	public function sectionStdAdd()
+	private function sectionStdAdd()
 	{
+		/*
+		 * Создаём список имеющихся шаблонов чтобы отфильтровать их из списка доступных.
+		 */
+		$templates = new Templates();
+		$list = array_keys($templates->enum('std'));
+		$existed = array();
+		foreach ($list as $key)
+		{
+			$existed []= $key;
+		}
+
+
 		$values = array();
 		$items = array();
 		$jsArray = "var aTemplates = Array();\n";
 		foreach ($this->stdTemplates as $key => $item)
 		{
+			if (in_array($key, $existed))
+			{
+				continue;
+			}
 			if (!isset($hint))
 			{
 				$hint = isset($item['hint']) ? $item['hint'] : '';
