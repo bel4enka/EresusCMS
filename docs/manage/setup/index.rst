@@ -4,4 +4,5 @@
 .. toctree::
    :maxdepth: 2
 
+   files
    config-main
