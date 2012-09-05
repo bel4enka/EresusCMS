@@ -6,6 +6,7 @@
 
    install
    uninstall
+   providing_content_type
    events
    settings
    link-js-css
