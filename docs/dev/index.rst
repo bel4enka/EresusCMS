@@ -6,6 +6,7 @@
 .. toctree::
    :maxdepth: 2
 
+   intro
    structure/index
    guide/index
    internals/index
