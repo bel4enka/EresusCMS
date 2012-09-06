@@ -7,10 +7,10 @@ PHP
   5.2.1 или новее
 
 Модули PHP (обязательно)
-  date, dom, filter, gd, hash, iconv, libxml, mbstring, mcrypt, pcre, PDO, posix, session, SimpleXML, zlib
+  date, dom, filter, gd, hash, iconv, libxml, mbstring, mcrypt, pcre, PDO, posix, session, SimpleXML, tokenizer, zlib
 
 Модули PHP (необязательно)
-  curl, memcache, Reflection, tokenizer, xmlwriter
+  curl, memcache, Reflection, xmlwriter
 
 СУБД
   MySQL 5 или новее
