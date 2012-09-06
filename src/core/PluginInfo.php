@@ -77,7 +77,7 @@ class Eresus_PluginInfo
 	private $description;
 
 	/**
-	 * Требуемая версия ядар
+	 * Требуемая версия ядра
 	 *
 	 * @var array [min, max)]
 	 */
@@ -113,12 +113,13 @@ class Eresus_PluginInfo
 			return self::loadFromPhpFile($filename);
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Имитация свойств
 	 *
 	 * @param string $name
+	 *
+	 * @throws RuntimeException
 	 *
 	 * @return mixed
 	 *
@@ -129,12 +130,11 @@ class Eresus_PluginInfo
 		$getter = 'get' . $name;
 		if (!method_exists($this, $getter))
 		{
-			throw new RuntimeException('Access to unexistent property ' . $name . ' in class ' .
+			throw new RuntimeException('Access to unknown property ' . $name . ' in class ' .
 				get_class($this));
 		}
 		return $this->$getter();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает UID плагина
@@ -147,7 +147,6 @@ class Eresus_PluginInfo
 	{
 		return $this->uid ? $this->uid : $this->getName() . '@unknown.eresus.ru';
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает имя
@@ -160,7 +159,6 @@ class Eresus_PluginInfo
 	{
 		return $this->name;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает название
@@ -173,7 +171,6 @@ class Eresus_PluginInfo
 	{
 		return $this->title;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает версию
@@ -186,7 +183,6 @@ class Eresus_PluginInfo
 	{
 		return $this->version;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает описание
@@ -199,7 +195,6 @@ class Eresus_PluginInfo
 	{
 		return $this->description;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает требуемую версию CMS
@@ -212,7 +207,6 @@ class Eresus_PluginInfo
 	{
 		return $this->requiredKernel;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает список требуемых плагинов
@@ -225,7 +219,6 @@ class Eresus_PluginInfo
 	{
 		return $this->requiredPlugins;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Создаёт объект из файла XML
@@ -283,17 +276,16 @@ class Eresus_PluginInfo
 
 		return $info;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	* Создаёт объект из файла PHP
-	*
-	* @param string $filename
-	*
-	* @return Eresus_PluginInfo
-	*
-	* @since 2.16
-	*/
+	 * Создаёт объект из файла PHP
+	 *
+	 * @param string $filename
+	 *
+	 * @return Eresus_PluginInfo
+	 *
+	 * @since 2.16
+	 */
 	private static function loadFromPhpFile($filename)
 	{
 		$source = file_get_contents($filename);
@@ -353,6 +345,4 @@ class Eresus_PluginInfo
 		}
 		return $info;
 	}
-	//-----------------------------------------------------------------------------
-
 }
