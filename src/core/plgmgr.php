@@ -165,14 +165,15 @@ class TPlgMgr
 		$data['plugins'] = array();
 		if (count($files))
 		{
+			// Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
+			$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
+
 			foreach ($files as $file)
 			{
 				$errors = array();
 				try
 				{
 					$info = Eresus_PluginInfo::loadFromFile($file);
-					// Удаляем из версии ядра все буквы, чтобы сравнивать только цифры
-					$kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
 					$required = $info->getRequiredKernel();
 					if (
 						version_compare($kernelVersion, $required[0], '<')/* ||
@@ -182,12 +183,6 @@ class TPlgMgr
 						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
 						$errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
 					}
-					/*}
-					else
-					{
-						$msg =  I18n::getInstance()->getText('Class "%s" not found in plugin file', $this);
-						$info['errors'] []= sprintf($msg, $info['name']);
-					}*/
 				}
 				catch (RuntimeException $e)
 				{
