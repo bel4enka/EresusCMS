@@ -166,7 +166,7 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(
 			"FATAL ERROR\nSee application log for more info.\n",
 			Eresus_Kernel::fatalErrorHandler('Fatal error: A in B on line C'));
-	}
+	}*/
 	//-----------------------------------------------------------------------------
 
 	/**
@@ -175,6 +175,23 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testExecOk()
 	{
+		$sc = new ReflectionProperty('Eresus_Kernel', 'sc');
+		$sc->setAccessible(true);
+		$stub = $this->getMock('UniversalStub', array('get', 'set'));
+		$stub->expects($this->once())->method('set')->will($this->returnCallback(
+			function ($a, $b)
+			{
+				$GLOBALS['TESTS_' . __METHOD__] = $b;
+			}
+		));
+		$stub->expects($this->any())->method('get')->will($this->returnCallback(
+			function ()
+			{
+				return $GLOBALS['TESTS_' . __METHOD__];
+			}
+		));
+		$sc->setValue('Eresus_Kernel', $stub);
+
 		$this->assertEquals(123, Eresus_Kernel::exec('Eresus_Kernel_Test_Application1'));
 	}
 	//-----------------------------------------------------------------------------
