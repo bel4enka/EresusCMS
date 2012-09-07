@@ -127,7 +127,6 @@ class Eresus_Extensions_Registry
 	 * @param string $name  Имя плагина
 	 *
 	 * @throws DomainException
-	 * @throws EresusSourceParseException
 	 *
 	 * @return void
 	 */

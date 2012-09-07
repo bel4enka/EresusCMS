@@ -32,15 +32,6 @@
 
 
 /**
- * Плагин повреждён
- *
- * Обычно это означает синтаксическую ошибку в файле плагина.
- *
- * @package Eresus
- */
-class EresusSourceParseException extends EresusRuntimeException {};
-
-/**
  * Базовый класс коннектора сторонних расширений
  *
  * @package Eresus
