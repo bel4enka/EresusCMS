@@ -110,12 +110,14 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 			'style'=>'go',
 			'text'=>'world'
 			);
-		  
+
+		$renderCell = new ReflectionMethod('AdminList', 'renderCell');
+		$renderCell->setAccessible(true);
     $this->assertEquals('<meta style="text-align: bar;go"><a href="foo">world</a></meta>',
-			$AdminList->renderCell('meta', $cell));    
+			$renderCell->invoke($AdminList, 'meta', $cell));
 		
 		$cell=array();  
-    $this->assertEquals('<meta></meta>',	$AdminList->renderCell('meta', $cell));
+    $this->assertEquals('<meta></meta>',	$renderCell->invoke($AdminList, 'meta', $cell));
 	}	
 
 	/**

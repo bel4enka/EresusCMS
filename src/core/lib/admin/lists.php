@@ -33,6 +33,7 @@
  *
  * @package Eresus
  */
+/** @noinspection PhpDocSignatureInspection */
 class AdminList
 {
 	public $columns = array();
@@ -102,7 +103,7 @@ class AdminList
 	 *
 	 * @param string|array $cell...  заголовок или описание столбца
 	 */
-	public function setHead(/** @noinspection PhpUnusedParameterInspection */$cell)
+	public function setHead()
 	{
 		$this->head = array();
 		$items = func_get_args();
