@@ -25,7 +25,6 @@
 -------------------------------
 
 - Eresus_Admin_Theme
-- EresusAdminComponent
 - TAbout
 - TAdminUI
 - TContent
