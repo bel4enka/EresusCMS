@@ -54,7 +54,7 @@ class TUsers
 	 */
 	function __construct()
 	{
-		$this->accounts = new EresusAccounts();
+		$this->accounts = new Eresus_Accounts();
 	}
 
 	function checkMail($mail)

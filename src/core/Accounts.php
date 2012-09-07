@@ -33,7 +33,7 @@
  * Работа с учётными записями пользователей
  * @package Eresus
  */
-class EresusAccounts
+class Eresus_Accounts
 {
 	/**
 	 * string

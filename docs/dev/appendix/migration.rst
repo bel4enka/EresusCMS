@@ -11,3 +11,4 @@
 - AdminUITheme в Eresus_Admin_Theme
 - Plugin в Eresus_Extensions_Plugin
 - ContentPlugin в Eresus_Extensions_ContentPlugin
+- EresusAccounts в Eresus_Accounts

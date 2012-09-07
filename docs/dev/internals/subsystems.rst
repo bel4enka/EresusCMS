@@ -9,7 +9,7 @@
 - Eresus_PHP
 - Eresus_Kernel
 - Eresus_CMS
-- EresusAccounts
+- Eresus_Accounts
 - Sections
 - Templates
 - WebPage
