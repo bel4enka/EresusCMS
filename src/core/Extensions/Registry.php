@@ -34,7 +34,7 @@
  *
  * @package Eresus
  */
-class Plugins
+class Eresus_Extensions_Registry
 {
 	/**
 	 * Список всех активированных плагинов

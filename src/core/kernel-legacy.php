@@ -1219,7 +1219,7 @@ class Eresus
 
 	/**
 	 * Плагины
-	 * @var Plugins
+	 * @var Eresus_Extensions_Registry
 	 */
 	public $plugins;
 
@@ -1589,7 +1589,7 @@ class Eresus
 	 */
 	function init_plugins()
 	{
-		$this->plugins = new Plugins;
+		$this->plugins = new Eresus_Extensions_Registry;
 		$this->plugins->init();
 	}
 

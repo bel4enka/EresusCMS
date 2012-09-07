@@ -41,17 +41,17 @@ require_once TESTS_SRC_DIR . '/core/Kernel.php';
 class Plugins_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Plugins::autoload
+	 * @covers Eresus_Extensions_Registry::autoload
 	 */
 	public function test_autoload()
 	{
-		$plugins = $this->getMock('Plugins', array('load'));
+		$plugins = $this->getMock('Eresus_Extensions_Registry', array('load'));
 		$plugins->expects($this->any())->method('load')->
 			will($this->returnCallback(function ($a) { return 'foo' == $a;}));
 
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->any())->method('getFsRoot')->
-			will($this->returnValue(TESTS_FIXT_DIR . '/core/Plugins/'));
+			will($this->returnValue(TESTS_FIXT_DIR . '/core/Eresus_Extensions_Registry/'));
 		$sc = $this->getMock('stdClass', array('get'));
 		$sc->expects($this->any())->method('get')->will($this->returnValue($app));
 		Eresus_Tests::setStatic('Eresus_Kernel', $sc, 'sc');

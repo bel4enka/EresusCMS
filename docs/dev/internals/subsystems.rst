@@ -59,7 +59,7 @@
 Подсистема расширения функционала
 ---------------------------------
 
-- Plugins
+- Eresus_Extensions_Registry
 - Eresus_Extensions_Plugin
 - Eresus_Extensions_ContentPlugin
 - TPlugin
