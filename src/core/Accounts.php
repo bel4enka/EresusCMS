@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * ${product.description}
+ * Работа с учётными записями пользователей
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
