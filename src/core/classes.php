@@ -299,7 +299,7 @@ class Plugins
 		{
 
 			case 'default':
-				$plugin = new ContentPlugin;
+				$plugin = new Eresus_Extensions_ContentPlugin;
 				$result = $plugin->clientRenderContent();
 			break;
 

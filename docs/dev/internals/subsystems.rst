@@ -62,7 +62,7 @@
 
 - Plugins
 - Plugin
-- ContentPlugin
+- Eresus_Extensions_ContentPlugin
 - TPlugin
 - TContentPlugin
 - TListContentPlugin

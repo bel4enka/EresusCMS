@@ -160,7 +160,7 @@ class TSettings
 
 		foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
 		{
-			if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
+			if ($plugin instanceof Eresus_Extensions_ContentPlugin || $plugin instanceof TContentPlugin)
 			{
 				$contentTypes []= array('name' => $plugin->name, 'caption' => $plugin->title);
 			}

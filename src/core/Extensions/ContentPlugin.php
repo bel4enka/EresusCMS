@@ -33,7 +33,7 @@
  *
  * @package Eresus
  */
-class ContentPlugin extends Plugin
+class Eresus_Extensions_ContentPlugin extends Plugin
 {
 	/**
 	 * Конструктор

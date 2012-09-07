@@ -60,7 +60,7 @@ class TContent
 			switch ($item['type'])
 			{
 				case 'default':
-					$editor = new ContentPlugin();
+					$editor = new Eresus_Extensions_ContentPlugin();
 					if (arg('update'))
 					{
 						$editor->update();
