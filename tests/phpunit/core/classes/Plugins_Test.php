@@ -52,7 +52,9 @@ class Plugins_Test extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->any())->method('getFsRoot')->
 			will($this->returnValue(TESTS_FIXT_DIR . '/core/Plugins/'));
-		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
+		$sc = $this->getMock('stdClass', array('get'));
+		$sc->expects($this->any())->method('get')->will($this->returnValue($app));
+		Eresus_Tests::setStatic('Eresus_Kernel', $sc, 'sc');
 
 		// Нет такого файла
 		$this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
