@@ -8,6 +8,6 @@
    :maxdepth: 2
    :numbered:
 
-   overview
+   overview/index
    manage/index
    dev/index

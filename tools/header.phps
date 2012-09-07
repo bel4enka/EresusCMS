@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Модульные тесты
+ * [Описание файла]
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -26,38 +26,4 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  */
-
-require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../src/core/PluginInfo.php';
-
-/**
- * @package Eresus
- * @subpackage Tests
- */
-class Eresus_PluginInfo_Test extends PHPUnit_Framework_TestCase
-{
-	/**
-	 * @covers Eresus_PluginInfo::loadFromXmlFile
-	 */
-	public function test_loadFromXmlFile()
-	{
-		$method = new ReflectionMethod('Eresus_PluginInfo', 'loadFromXmlFile');
-		$method->setAccessible(true);
-
-		$method->invoke(null, TESTS_FIXT_DIR . '/core/PluginInfo/no_reqs/myplugin/plugin.xml');
-	}
-
-	/**
-	 * @covers Eresus_PluginInfo::loadFromFile
-	 * @covers Eresus_PluginInfo::loadFromPhpFile
-	 * @covers Eresus_PluginInfo::getRequiredKernel
-	 */
-	public function test_kernel_req()
-	{
-		$info = Eresus_PluginInfo::loadFromFile(TESTS_FIXT_DIR .
-			'/core/PluginInfo/kernel_php/myplugin.php');
-		$this->assertEquals(array('3.00', ''), $info->getRequiredKernel());
-	}
-}

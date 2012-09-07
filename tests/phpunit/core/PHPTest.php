@@ -29,35 +29,29 @@
  * @subpackage Tests
  */
 
-require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../src/core/PluginInfo.php';
+require_once __DIR__ . '/../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/PHP.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_PluginInfo_Test extends PHPUnit_Framework_TestCase
+class Eresus_PHPTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Eresus_PluginInfo::loadFromXmlFile
+	 * @covers Eresus_PHP::iniSizeToInt
 	 */
-	public function test_loadFromXmlFile()
+	public function test_iniSizeToInt()
 	{
-		$method = new ReflectionMethod('Eresus_PluginInfo', 'loadFromXmlFile');
-		$method->setAccessible(true);
+		$this->assertEquals(1024, Eresus_PHP::iniSizeToInt('1024'));
 
-		$method->invoke(null, TESTS_FIXT_DIR . '/core/PluginInfo/no_reqs/myplugin/plugin.xml');
-	}
+		$this->assertEquals(2 * 1024, Eresus_PHP::iniSizeToInt('2K'));
+		$this->assertEquals(2 * 1024, Eresus_PHP::iniSizeToInt('2 K'));
 
-	/**
-	 * @covers Eresus_PluginInfo::loadFromFile
-	 * @covers Eresus_PluginInfo::loadFromPhpFile
-	 * @covers Eresus_PluginInfo::getRequiredKernel
-	 */
-	public function test_kernel_req()
-	{
-		$info = Eresus_PluginInfo::loadFromFile(TESTS_FIXT_DIR .
-			'/core/PluginInfo/kernel_php/myplugin.php');
-		$this->assertEquals(array('3.00', ''), $info->getRequiredKernel());
+		$this->assertEquals(3 * 1024 * 1024, Eresus_PHP::iniSizeToInt('3M'));
+		$this->assertEquals(3 * 1024 * 1024, Eresus_PHP::iniSizeToInt('3 M'));
+
+		$this->assertEquals(4 * 1024 * 1024 * 1024, Eresus_PHP::iniSizeToInt('4G'));
+		$this->assertEquals(4 * 1024 * 1024 * 1024, Eresus_PHP::iniSizeToInt('4 G'));
 	}
 }

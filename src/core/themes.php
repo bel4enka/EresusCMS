@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Управление шаблонами и стилями
  *
- * @copyright 2004-2007, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,28 +26,25 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
-#TODO: Проверить нет ли доступа к внешним директориям
+// TODO: Проверить, нет ли доступа к внешним директориям
 
 /**
  * Управление темами оформления
  *
  * @package Eresus
- * @author mekras
  */
 class TThemes
 {
 	/**
-	 * ???
+	 * Минимальный требуемый уровень доступа
 	 * @var int
 	 */
 	public $access = ADMIN;
 
 	/**
-	 * ???
+	 * Псевдо-вкладки
 	 * @var array
 	 */
 	public $tabs = array(
@@ -310,16 +307,33 @@ class TThemes
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * ???
+	 * Диалог добавления стандартного шаблона
+	 *
 	 * @return string
 	 */
-	public function sectionStdAdd()
+	private function sectionStdAdd()
 	{
+		/*
+		 * Создаём список имеющихся шаблонов чтобы отфильтровать их из списка доступных.
+		 */
+		$templates = new Templates();
+		$list = array_keys($templates->enum('std'));
+		$existed = array();
+		foreach ($list as $key)
+		{
+			$existed []= $key;
+		}
+
+
 		$values = array();
 		$items = array();
 		$jsArray = "var aTemplates = Array();\n";
 		foreach ($this->stdTemplates as $key => $item)
 		{
+			if (in_array($key, $existed))
+			{
+				continue;
+			}
 			if (!isset($hint))
 			{
 				$hint = isset($item['hint']) ? $item['hint'] : '';

@@ -31,7 +31,7 @@
 useLib
 ^^^^^^
 
-Бибилиотека «templates» больше не требует подключения при помощи `useLib() <../../api/Eresus/_src---core---kernel-legacy.php.html#functionuseLib>`_.
+Библиотека «templates» больше не требует подключения при помощи `useLib() <../../api/Eresus/_src---core---kernel-legacy.php.html#functionuseLib>`_.
 
 Добавлено
 ---------
@@ -57,3 +57,12 @@ Eresus_CMS::getPage()
    <?php
    $pageId = Eresus_Kernel::app()->getPage()->id;
 
+Eresus_PHP
+^^^^^^^^^^
+
+Класс `Eresus_PHP <../../api/Eresus/Eresus_PHP.html>`_ предназначен для взаимодействия с интерпретатором PHP. Например, с его помощью можно узнать максимальный допустимый размер загружаемого файла.
+
+Eresus_FS_NameFilter
+^^^^^^^^^^^^^^^^^^^^
+
+Класс `Eresus_FS_NameFilter <../../api/Eresus/Eresus_FS_NameFilter.html>`_ предназначен для фильтрации недопустимых символов в именах файлов.
