@@ -39,7 +39,7 @@ class AdminList
 	public $columns = array();
 	public $head = array();
 	public $body = array();
-	private $__controls = array(
+	private $controls = array(
 		'add' => array('image' => 'admin/themes/default/img/medium/item-add.png', 'title' => STR_ADD,
 			'alt' => '+'),
 		'edit' => array('image' => 'admin/themes/default/img/medium/item-edit.png', 'title' => STR_EDIT,
@@ -72,9 +72,9 @@ class AdminList
 	public function control($type, $href, $custom = array())
 	{
 		$s = '';
-		if (isset($this->__controls[$type]))
+		if (isset($this->controls[$type]))
 		{
-			$control = $this->__controls[$type];
+			$control = $this->controls[$type];
 		}
 		switch ($type)
 		{
