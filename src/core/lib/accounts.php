@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
  * ${product.description}
  *
- * @copyright 2004-2007, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 
@@ -67,7 +65,6 @@ class EresusAccounts
 		}
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Возвращает учётную запись или список записей
@@ -106,22 +103,20 @@ class EresusAccounts
 		}
 		return $result;
 	}
-	//------------------------------------------------------------------------------
+
 	function getByName($name)
 	{
 		return $this->get("`login` = '$name'");
 	}
-	//-----------------------------------------------------------------------------
+
 	/**
-	*	Добавляет	учётную	запись
-	*
-	*	@access	public
-	*
-	*	@param	array	$item	Учётная	запись
-	*
-	*	@return	mixed	Описание	записи	или	false	в	случае	неудачи
-	*/
-	function add($item)
+	 * Добавляет	учётную	запись
+	 *
+	 * @param array $item Учётная запись
+	 *
+	 * @return mixed Описание записи или false в случае неудачи
+	 */
+	public function add($item)
 	{
 		$result	=	false;
 		if	(isset($item['id']))	unset($item['id']);
@@ -131,44 +126,32 @@ class EresusAccounts
 			$result	=	$this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
 		return	$result;
 	}
-	//------------------------------------------------------------------------------
+
 	/**
-	*	Изменяет	учётную	запись
-	*
-	*	@access	public
-	*
-	*	@param	array	$item	Учётная	запись
-	*
-	*	@return	mixed	Описание	изменённой	записи	или	false	в	случае	неудачи
-	*/
-	function update($item)
+	 * Изменяет учётную запись
+	 *
+	 * @param array $item  Учётная запись
+	 *
+	 * @return mixed Описание изменённой записи или false в случае неудачи
+	 */
+	public function update($item)
 	{
 		$item['profile'] = encodeOptions($item['profile']);
 		$result	=	Eresus_CMS::getLegacyKernel()->db->
 			updateItem($this->table, $item, "`id`={$item['id']}");
 		return $result;
 	}
-	//------------------------------------------------------------------------------
+
 	/**
-	*	Удаляет	учётную	запись
-	*
-	*	@access	public
-	*
-	*	@param	int	$id	Идентификатор	записи
-	*
-	*	@return	bool	Результат	операции
-	*/
-	function delete($id)
+	 * Удаляет учётную запись
+	 *
+	 * @param int $id Идентификатор записи
+	 *
+	 * @return bool Результат операции
+	 */
+	public function delete($id)
 	{
 		$result	=	Eresus_CMS::getLegacyKernel()->db->delete($this->table,	"`id`=$id");
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 }
-
-/**
- * @deprecated since Eresus 2.11
- *
- * @package Eresus
- */
-class Accounts extends EresusAccounts {}

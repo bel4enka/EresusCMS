@@ -37,7 +37,7 @@ useLib('accounts');
  *
  * @package Eresus
  */
-class TUsers extends Accounts
+class TUsers
 {
 	private $accounts;
 
@@ -54,7 +54,7 @@ class TUsers extends Accounts
 	 */
 	function __construct()
 	{
-		$this->accounts = new Accounts();
+		$this->accounts = new EresusAccounts();
 	}
 
 	function checkMail($mail)
