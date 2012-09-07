@@ -58,7 +58,6 @@ class ContentPlugin extends Plugin
 			}
 		}
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Возвращает информацию о плагине
@@ -73,7 +72,6 @@ class ContentPlugin extends Plugin
 		$result['content'] = true;
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Действия при удалении раздела данного типа
@@ -83,9 +81,10 @@ class ContentPlugin extends Plugin
 	public function onSectionDelete($id, $table = '')
 	{
 		if (count($this->dbTable($table)))
+		{
 			$this->dbDelete($table, $id, 'section');
+		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обновляет контент страницы в БД
@@ -94,16 +93,17 @@ class ContentPlugin extends Plugin
 	 */
 	public function updateContent($content)
 	{
-		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
+		$item = Eresus_CMS::getLegacyKernel()->db->
+			selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
 		$item['content'] = $content;
-		Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
+		Eresus_CMS::getLegacyKernel()->db->
+			updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Обновляет контент страницы
 	 */
-	function adminUpdate()
+	public function adminUpdate()
 	{
 		$this->updateContent(arg('content', 'dbsafe'));
 		HTTP::redirect(arg('submitURL'));
@@ -116,15 +116,17 @@ class ContentPlugin extends Plugin
 	 */
 	public function clientRenderContent()
 	{
+		/** @var TClientUI $page */
+		$page = Eresus_Kernel::app()->getPage();
 		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
 		if (Eresus_CMS::getLegacyKernel()->request['file'] ||
 			Eresus_CMS::getLegacyKernel()->request['query'] ||
-			Eresus_Kernel::app()->getPage()->subpage || Eresus_Kernel::app()->getPage()->topic)
+			$page->subpage || $page->topic)
 		{
-			Eresus_Kernel::app()->getPage()->httpError(404);
+			$page->httpError(404);
 		}
 
-		return Eresus_Kernel::app()->getPage()->content;
+		return $page->content;
 	}
 
 	/**
@@ -134,9 +136,13 @@ class ContentPlugin extends Plugin
 	 */
 	public function adminRenderContent()
 	{
-		if (arg('action') == 'update') $this->adminUpdate();
-		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".
-			Eresus_Kernel::app()->getPage()->id."'");
+		if (arg('action') == 'update')
+		{
+			$this->adminUpdate();
+		}
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='" . $page->id . "'");
 		$form = array(
 			'name' => 'editForm',
 			'caption' => Eresus_Kernel::app()->getPage()->title,
@@ -148,8 +154,7 @@ class ContentPlugin extends Plugin
 			'buttons' => array('apply', 'reset'),
 		);
 
-		$result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
+		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 }
