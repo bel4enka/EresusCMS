@@ -564,7 +564,7 @@ class TPages
 
 	/**
 	 * ???
-	 * @return unknown_type
+	 * @return string
 	 */
 	function sectionIndex()
 	{
@@ -586,11 +586,9 @@ class TPages
 		{
 			$this->cache['content_types'][$types[1][$i]] = $types[0][$i];
 		}
-		useLib('admin/lists');
-		$table = new Eresus_UI_Admin_List;
+		$table = new Eresus_UI_Admin_List();
 		$table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
-		$table->addRow(array(admPagesRoot, '', '', '',
-			array(Eresus_Kernel::app()->getPage()->
+		$table->addRow(array(admPagesRoot, '', '', '', array(Eresus_Kernel::app()->getPage()->
 				control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
 		$table->addRows($this->sectionIndexBranch(0, 1));
 		$result = $table->render();
