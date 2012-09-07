@@ -39,11 +39,11 @@ require_once TESTS_SRC_DIR . '/core/lib/admin/lists.php';
 class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers AdminList::setColumn
+	 * @covers Eresus_UI_Admin_List::setColumn
 	 */
 	public function test_setColumn()
 	{
-		 $AdminList = new AdminList();
+		 $AdminList = new Eresus_UI_Admin_List();
 		 $AdminList->columns = array(0=>array(1, 2));
      $AdminList->setColumn(1, array(3, 4));      
      $this->assertEquals(array(array(1, 2), array(3, 4)),$AdminList->columns);
@@ -54,11 +54,11 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @covers AdminList::addRow
+	 * @covers Eresus_UI_Admin_List::addRow
 	 */
 	public function test_addRow()
 	{
-		$AdminList = new AdminList();
+		$AdminList = new Eresus_UI_Admin_List();
 		$cells=array(
 				0=>'foo',
 				1=>array('bar'),
@@ -75,11 +75,11 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @covers AdminList::addRows
+	 * @covers Eresus_UI_Admin_List::addRows
 	 */
 	public function test_addRows()
 	{
-		$AdminList = new AdminList();
+		$AdminList = new Eresus_UI_Admin_List();
 		$rows=array(
 			0=>array(0=>'foo', 1=>array('bar'),	2=>array('text'=>'go')),	
 			1=>array(0=>'foo', 1=>array('bar'),	2=>array('text'=>'go'))
@@ -99,11 +99,11 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @covers AdminList::renderCell
+	 * @covers Eresus_UI_Admin_List::renderCell
 	 */
 	public function test_renderCell()
 	{
-		$AdminList = new AdminList();
+		$AdminList = new Eresus_UI_Admin_List();
 		$cell=array(
 			'href'=>'foo',
 			'align'=>'bar',
@@ -111,7 +111,7 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 			'text'=>'world'
 			);
 
-		$renderCell = new ReflectionMethod('AdminList', 'renderCell');
+		$renderCell = new ReflectionMethod('Eresus_UI_Admin_List', 'renderCell');
 		$renderCell->setAccessible(true);
     $this->assertEquals('<meta style="text-align: bar;go"><a href="foo">world</a></meta>',
 			$renderCell->invoke($AdminList, 'meta', $cell));
@@ -121,11 +121,11 @@ class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
 	}	
 
 	/**
-	 * @covers AdminList::setHead
+	 * @covers Eresus_UI_Admin_List::setHead
 	 */
 	public function test_setHead()
 	{
-		$AdminList = new AdminList();
+		$AdminList = new Eresus_UI_Admin_List();
 
 		$AdminList->setHead('foo', array('bar','text'=>'go')); 
     $this->assertEquals( array(array('text'=>'foo'), array('bar','text'=>'go')),	$AdminList->head); 

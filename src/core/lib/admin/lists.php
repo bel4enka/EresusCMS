@@ -34,7 +34,7 @@
  * @package Eresus
  */
 /** @noinspection PhpDocSignatureInspection */
-class AdminList
+class Eresus_UI_Admin_List
 {
 	public $columns = array();
 	public $head = array();
