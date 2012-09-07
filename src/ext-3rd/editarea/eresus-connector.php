@@ -36,7 +36,7 @@
  *
  * @package Eresus
  */
-class EditAreaConnector extends EresusExtensionConnector
+class EditAreaConnector extends Eresus_Extensions_Connector
 {
 	/**
 	 * Обработка поля "syntax" для старых форм

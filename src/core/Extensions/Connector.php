@@ -33,7 +33,7 @@
  *
  * @package Eresus
  */
-class EresusExtensionConnector
+class Eresus_Extensions_Connector
 {
 	/**
 	 * Корневой URL расширения
@@ -52,7 +52,7 @@ class EresusExtensionConnector
 	/**
 	 * Конструктор
 	 *
-	 * @return EresusExtensionConnector
+	 * @return Eresus_Extensions_Connector
 	 */
 	function __construct()
 	{
@@ -60,7 +60,6 @@ class EresusExtensionConnector
 		$this->root = Eresus_CMS::getLegacyKernel()->root.'ext-3rd/'.$name.'/';
 		$this->froot = Eresus_CMS::getLegacyKernel()->froot.'ext-3rd/'.$name.'/';
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Заменяет глобальные макросы
@@ -90,7 +89,6 @@ class EresusExtensionConnector
 
 		return $text;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Метод вызывается при проксировании прямых запросов к расширению
@@ -157,5 +155,4 @@ class EresusExtensionConnector
 				break;
 		}
 	}
-	//-----------------------------------------------------------------------------
 }

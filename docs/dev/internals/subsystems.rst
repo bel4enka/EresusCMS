@@ -70,7 +70,7 @@
 --------------------------------
 
 - EresusExtensions
-- EresusExtensionConnector
+- Eresus_Extensions_Connector
 - EditAreaConnector
 - TinyMCEConnector
 

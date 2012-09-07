@@ -43,11 +43,11 @@
  * Класс-коннектор
  *
  * Класс-коннектор должен иметь имя вида 'ИмяРасширенияConnector' и наследоваться от
- * базового класса EresusExtensionConnector.
+ * базового класса Eresus_Extensions_Connector.
  *
  * @package [Название пакета]
  */
-class ExtensionNameConnector extends EresusExtensionConnector
+class ExtensionNameConnector extends Eresus_Extensions_Connector
 {
 
 }

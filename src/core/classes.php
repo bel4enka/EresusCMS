@@ -82,7 +82,7 @@ class EresusExtensions
 	* @param string $function  Расширяемая функция
 	* @param string $name      Имя расширения
 	*
-	* @return mixed  Экземпляр класса EresusExtensionConnector или false если не удалось загрузить расширение
+	* @return mixed  Экземпляр класса Eresus_Extensions_Connector или false если не удалось загрузить расширение
 	*/
 	function load($class, $function, $name = null)
 	{

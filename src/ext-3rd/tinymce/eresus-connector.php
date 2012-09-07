@@ -37,7 +37,7 @@
  *
  * @package Eresus
  */
-class TinyMCEConnector extends EresusExtensionConnector
+class TinyMCEConnector extends Eresus_Extensions_Connector
 {
 	/**
 	 * Признак того, что скрипты уже установлены
