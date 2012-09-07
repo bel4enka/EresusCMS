@@ -119,7 +119,7 @@ function FatalError($msg)
 			"        <div align=\"center\"><br /><a href=\"javascript:history.back()\" " .
 				"style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; " .
 				"height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; " .
-				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
+				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".STR_RETURN."</a></div>\n".
 			"      </td></tr>\n".
 			"    </table>\n".
 			"  </div>\n".

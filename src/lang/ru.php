@@ -152,19 +152,19 @@ define('HTTP_CODE_403', 'Доступ к запрошенному ресурсу
 define('HTTP_CODE_404', 'Запрошенная страница не найдена');
 
 /* СТАНДАРТНЫЕ */
-define('strOk', 'OK');
-define('strApply', 'Применить');
-define('strCancel', 'Отменить');
-define('strReset', 'Вернуть');
-define('strAdd', 'Добавить');
-define('strEdit', 'Изменить');
-define('strDelete', 'Удалить');
-define('strMove', 'Переместить');
-define('strReturn', 'Вернуться');
-define('strProperties', 'Свойства');
-define('strYes', 'Да');
-define('strNo', 'Нет');
-define('strExit', 'Выход');
+define('STR_OK', 'OK');
+define('STR_APPLY', 'Применить');
+define('STR_CANCEL', 'Отменить');
+define('STR_RESET', 'Вернуть');
+define('STR_ADD', 'Добавить');
+define('STR_EDIT', 'Изменить');
+define('STR_DELETE', 'Удалить');
+define('STR_MOVE', 'Переместить');
+define('STR_RETURN', 'Вернуться');
+define('STR_PROPS', 'Свойства');
+define('STR_YES', 'Да');
+define('STR_NO', 'Нет');
+define('STR_EXIT', 'Выход');
 
 /* ОПОВЕЩЕНИЯ */
 define('strNotification', "Оповещение");

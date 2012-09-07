@@ -475,7 +475,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/item-add.png',
-					'title' => strAdd,
+					'title' => STR_ADD,
 					'alt' => '+',
 				);
 			break;
@@ -483,7 +483,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/item-edit.png',
-					'title' => strEdit,
+					'title' => STR_EDIT,
 					'alt' => '&plusmn;',
 				);
 			break;
@@ -491,7 +491,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/item-delete.png',
-					'title' => strDelete,
+					'title' => STR_DELETE,
 					'alt' => 'X',
 					'onclick' => 'return askdel(this)',
 				);
@@ -500,7 +500,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/item-config.png',
-					'title' => strProperties,
+					'title' => STR_PROPS,
 					'alt' => '*',
 				);
 			break;
@@ -508,7 +508,7 @@ class TAdminUI extends WebPage
 				$control = array(
 					'image' => Eresus_CMS::getLegacyKernel()->root .
 						'admin/themes/default/img/medium/item-move.png',
-					'title' => strMove,
+					'title' => STR_MOVE,
 					'alt' => '-&gt;',
 				);
 			break;
@@ -914,16 +914,16 @@ class TAdminUI extends WebPage
 							switch ($column['function'])
 							{
 								case 'isEmpty':
-									$value = empty($value)?strYes:strNo;
+									$value = empty($value)?STR_YES:STR_NO;
 								break;
 								case 'isNotEmpty':
-									$value = empty($value)?strNo:strYes;
+									$value = empty($value)?STR_NO:STR_YES;
 								break;
 								case 'isNull':
-									$value = is_null($value)?strYes:strNo;
+									$value = is_null($value)?STR_YES:STR_NO;
 								break;
 								case 'isNotNull':
-									$value = is_null($value)?strNo:strYes;
+									$value = is_null($value)?STR_NO:STR_YES;
 								break;
 								case 'length':
 									$value = mb_strlen($value);

@@ -268,7 +268,7 @@ class TPages
 					array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
 					array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
 					array('type'=>'hidden', 'name'=>'id', 'value' => $item['id']),
-					array('type'=>'select', 'label'=>strMove.' "<b>'.$item['caption'].'</b>" в',
+					array('type'=>'select', 'label'=>STR_MOVE.' "<b>'.$item['caption'].'</b>" в',
 						'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
 				),
 				'buttons' => array('ok', 'cancel'),
@@ -398,7 +398,7 @@ class TPages
 		restoreRequest();
 		$form = array (
 			'name' => 'createPage',
-			'caption' => strAdd,
+			'caption' => STR_ADD,
 			'width' => '600px',
 			'fields' => array (
 				array ('type' => 'hidden','name'=>'owner','value'=>arg('owner', 'int')),
