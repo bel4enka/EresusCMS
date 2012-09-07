@@ -63,8 +63,6 @@ class Eresus_Admin_Theme
 	 * Конструктор
 	 *
 	 * @param string $name  Внутреннее имя темы (директория внутри themes)
-	 *
-	 * @return Eresus_Admin_Theme
 	 */
 	public function __construct($name = null)
 	{
