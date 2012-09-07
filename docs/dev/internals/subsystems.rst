@@ -24,7 +24,7 @@
 Административный интерфейс (АИ)
 -------------------------------
 
-- AdminUITheme
+- Eresus_Admin_Theme
 - EresusAdminComponent
 - TAbout
 - TAdminUI

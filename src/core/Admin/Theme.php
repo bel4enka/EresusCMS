@@ -40,7 +40,7 @@
  *
  * @package Eresus
  */
-class AdminUITheme
+class Eresus_Admin_Theme
 {
 	/**
 	 * Путь к директории тем относительно корня сайта
@@ -64,7 +64,7 @@ class AdminUITheme
 	 *
 	 * @param string $name  Внутреннее имя темы (директория внутри themes)
 	 *
-	 * @return AdminUITheme
+	 * @return Eresus_Admin_Theme
 	 */
 	public function __construct($name = null)
 	{
