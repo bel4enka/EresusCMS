@@ -58,7 +58,7 @@ class Plugin
 	 *
 	 * @var string
 	 */
-	public $kernel = '2.10b2';
+	public $kernel = '3.00';
 
 	/**
 	 * Название плагина
@@ -155,10 +155,14 @@ class Plugin
 			$this->settings =
 				decodeOptions(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['settings'],
 					$this->settings);
-			# Если установлена версия плагина отличная от установленной ранее
-			# то необходимо произвести обновление информации о плагине в БД
+			/*
+			 * Если установлена версия плагина отличная от установленной ранее
+			 * то необходимо произвести обновление информации о плагине в БД
+ 			 */
 			if ($this->version != Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['version'])
+			{
 				$this->resetPlugin();
+			}
 		}
 		$this->dirData = Eresus_CMS::getLegacyKernel()->fdata . $this->name . '/';
 		$this->urlData = Eresus_CMS::getLegacyKernel()->data . $this->name . '/';
@@ -166,20 +170,20 @@ class Plugin
 		$this->urlCode = Eresus_CMS::getLegacyKernel()->root . 'ext/' . $this->name . '/';
 		$this->dirStyle = Eresus_CMS::getLegacyKernel()->fstyle . $this->name . '/';
 		$this->urlStyle = Eresus_CMS::getLegacyKernel()->style . $this->name . '/';
-		$filename = filesRoot . 'lang/' . $this->name . '/' . $locale['lang'] . '.php';
+		$filename = Eresus_CMS::getLegacyKernel()->froot . 'lang/' . $this->name . '/' .
+			$locale['lang'] . '.php';
 		if (FS::isFile($filename))
 		{
 			Core::safeInclude($filename);
 		}
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Возвращает информацию о плагине
 	 *
-	 * @param  array  $item  Предыдущая версия информации (по умолчанию null)
+	 * @param array $item  Предыдущая версия информации (по умолчанию null)
 	 *
-	 * @return  array  Массив информации, пригодный для записи в БД
+	 * @return array Массив информации, пригодный для записи в БД
 	 */
 	public function __item($item = null)
 	{
@@ -193,7 +197,6 @@ class Plugin
 		$result['description'] = $this->description;
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Перехватчик обращений к несуществующим методам плагинов
@@ -207,7 +210,6 @@ class Plugin
 	{
 		throw new EresusMethodNotExistsException($method, get_class($this));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает URL директории данных плагина
@@ -220,7 +222,6 @@ class Plugin
 	{
 		return $this->urlData;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает URL директории файлов плагина
@@ -233,7 +234,6 @@ class Plugin
 	{
 		return $this->urlCode;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает URL директории стилей плагина
@@ -246,7 +246,6 @@ class Plugin
 	{
 		return $this->urlStyle;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Чтение настроек плагина из БД
@@ -263,7 +262,6 @@ class Plugin
 		}
 		return (bool) $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Сохранение настроек плагина в БД
@@ -280,7 +278,6 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Обновление данных о плагине в БД
@@ -304,7 +301,6 @@ class Plugin
 	 */
 	public function uninstall()
 	{
-		# TODO: Перенести в IDataSource
 		$eresus = Eresus_CMS::getLegacyKernel();
 		$tables = $eresus->db->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}_%'");
 		$tables = array_merge($tables, $eresus->db->
@@ -314,7 +310,6 @@ class Plugin
 			$this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
 		}
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Действия при изменении настроек
@@ -322,7 +317,6 @@ class Plugin
 	public function onSettingsUpdate()
 	{
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Сохраняет в БД изменения настроек плагина
@@ -339,13 +333,12 @@ class Plugin
 		$this->onSettingsUpdate();
 		$this->saveSettings();
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Замена макросов
 	 *
-	 * @param  string  $template  Строка в которой требуется провести замену макросов
-	 * @param  mixed   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+	 * @param string $template  Строка в которой требуется провести замену макросов
+	 * @param mixed  $item      Ассоциативный массив со значениями для подстановки вместо макросов
 	 *
 	 * @return  string  Обработанная строка
 	 */
@@ -354,7 +347,6 @@ class Plugin
 		$result = replaceMacros($template, $item);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Создание новой директории
@@ -366,25 +358,39 @@ class Plugin
 	{
 		$result = true;
 		$umask = umask(0000);
-		# Проверка и создание корневой директории данных
-		if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
-		if ($result) {
-			# Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
+		// Проверка и создание корневой директории данных
+		if (!is_dir($this->dirData))
+		{
+			$result = mkdir($this->dirData);
+		}
+		if ($result)
+		{
+			// Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
 			$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-			if ($name) {
+			if ($name)
+			{
 				$name = explode('/', $name);
 				$root = substr($this->dirData, 0, -1);
-				for($i=0; $i<count($name); $i++) if ($name[$i]) {
-					$root .= '/'.$name[$i];
-					if (!is_dir($root)) $result = mkdir($root);
-					if (!$result) break;
+				for ($i=0; $i<count($name); $i++)
+				{
+					if ($name[$i])
+					{
+						$root .= '/'.$name[$i];
+						if (!is_dir($root))
+						{
+							$result = mkdir($root);
+						}
+						if (!$result)
+						{
+							break;
+						}
+					}
 				}
 			}
 		}
 		umask($umask);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Удаление директории и файлов
@@ -397,19 +403,35 @@ class Plugin
 		$result = true;
 		$name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
 		$name = $this->dirData.$name;
-		if (is_dir($name)) {
+		if (is_dir($name))
+		{
 			$files = glob($name.'/{.*,*}', GLOB_BRACE);
-			for ($i = 0; $i < count($files); $i++) {
-				if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
-				if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
-				elseif (is_file($files[$i])) $result = filedelete($files[$i]);
-				if (!$result) break;
+			for ($i = 0; $i < count($files); $i++)
+			{
+				if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..')
+				{
+					continue;
+				}
+				if (is_dir($files[$i]))
+				{
+					$result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
+				}
+				elseif (is_file($files[$i]))
+				{
+					$result = filedelete($files[$i]);
+				}
+				if (!$result)
+				{
+					break;
+				}
 			}
-			if ($result) $result = rmdir($name);
+			if ($result)
+			{
+				$result = rmdir($name);
+			}
 		}
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Возвращает реальное имя таблицы
@@ -421,7 +443,6 @@ class Plugin
 	{
 		return $this->name.(empty($table)?'':'_'.$table);
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Создание таблицы в БД
@@ -429,14 +450,13 @@ class Plugin
 	 * @param string $SQL Описание таблицы
 	 * @param string $name Имя таблицы
 	 *
-	 * @return bool Результат выполенения
+	 * @return bool Результат выполнения
 	 */
 	protected function dbCreateTable($SQL, $name = '')
 	{
 		$result = Eresus_CMS::getLegacyKernel()->db->create($this->__table($name), $SQL);
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Удаление таблицы БД
@@ -450,7 +470,6 @@ class Plugin
 		$result = Eresus_CMS::getLegacyKernel()->db->drop($this->__table($name));
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Производит выборку из таблицы БД
@@ -461,6 +480,7 @@ class Plugin
 	 * @param string	$fields				Список полей
 	 * @param int			$limit				Вернуть не больше полей чем limit
 	 * @param int			$offset				Смещение выборки
+	 * @param string  $group        поле для группировки
 	 * @param bool		$distinct			Только уникальные результаты
 	 *
 	 * @return array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
@@ -473,7 +493,6 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Получение записи из БД
@@ -491,14 +510,15 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Вставка в таблицу БД
 	 *
-	 * @param string $table          Имя таблицы
-	 * @param array  $item           Вставляемый элемент
-	 * @param string $key[optional]  Имя ключевого поля. По умолчанию "id"
+	 * @param string $table  Имя таблицы
+	 * @param array  $item   Вставляемый элемент
+	 * @param string $key    Имя ключевого поля. По умолчанию "id"
+	 *
+	 * @return array
 	 */
 	public function dbInsert($table, $item, $key = 'id')
 	{
@@ -507,7 +527,6 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Изменение данных в БД
@@ -522,7 +541,10 @@ class Plugin
 	{
 		if (is_array($data))
 		{
-			if (empty($condition)) $condition = 'id';
+			if (empty($condition))
+			{
+				$condition = 'id';
+			}
 			$result = Eresus_CMS::getLegacyKernel()->db->
 				updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
 		}
@@ -538,7 +560,6 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Удаление элемента из БД
@@ -556,7 +577,6 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Подсчёт количества записей в БД
@@ -572,7 +592,6 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Получение информации о таблицах
@@ -588,14 +607,11 @@ class Plugin
 
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Регистрация обработчиков событий
 	 *
-	 * @param string $event1  Имя события1
-	 * ...
-	 * @param string $eventN  Имя событияN
+	 * @param string $event...  Имя события
 	 */
 	protected function listenEvents()
 	{
@@ -604,5 +620,4 @@ class Plugin
 			Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->name;
 		}
 	}
-	//------------------------------------------------------------------------------
 }
