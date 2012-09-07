@@ -34,7 +34,7 @@
  *
  * @package Eresus
  */
-class EresusExtensions
+class Eresus_Extensions_VendorRegistry
 {
 	/**
 	 * Загруженные расширения

@@ -69,7 +69,7 @@
 Коннекторы сторонних компонентов
 --------------------------------
 
-- EresusExtensions
+- Eresus_Extensions_VendorRegistry
 - Eresus_Extensions_Connector
 - EditAreaConnector
 - TinyMCEConnector

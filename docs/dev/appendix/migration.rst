@@ -22,3 +22,5 @@
 - EresusAccounts в Eresus_Accounts
 - EresusCollection в Eresus_Helpers_Collection
 - Plugins в Eresus_Extensions_Registry
+- EresusConnector в Eresus_Extensions_Connector
+- EresusExtensions в Eresus_Extensions_VendorRegistry

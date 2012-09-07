@@ -1205,7 +1205,7 @@ class Eresus
 	/**
 	 * Интерфейс к расширениям системы
 	 *
-	 * @var EresusExtensions
+	 * @var Eresus_Extensions_VendorRegistry
 	 */
 	public $extensions;
 
@@ -1561,7 +1561,7 @@ class Eresus
 			include_once($filename);
 		}
 
-		$this->extensions = new EresusExtensions();
+		$this->extensions = new Eresus_Extensions_VendorRegistry();
 	}
 
 	/**
