@@ -82,7 +82,7 @@
 Вспомогательные средства
 ------------------------
 
-- EresusCollection
+- Eresus_Helpers_Collection
 - Eresus_Feed_Writer
 - Eresus_Feed_Writer_Item
 - Eresus_FS_NameFilter

@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Коллекция
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mk@eresus.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -27,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 /**
@@ -38,7 +35,7 @@
  *
  * @since 2.15
  */
-class EresusCollection implements ArrayAccess, Countable, Serializable
+class Eresus_Helpers_Collection implements ArrayAccess, Countable, Serializable
 {
 	/**
 	 * Значение, возвращаемое, при обращении к несуществующему элементу коллекции
@@ -61,9 +58,10 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	 *
 	 * @param array $data
 	 *
-	 * @return EresusCollection
-	 *
 	 * @throws InvalidArgumentException если $data не массив
+	 *
+	 * @return Eresus_Helpers_Collection
+	 *
 	 * @since 2.15
 	 */
 	public function __construct($data = array())
@@ -71,12 +69,11 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 		if (!is_array($data))
 		{
 			throw new InvalidArgumentException(
-				'First argument of EresusCollection::__construct must be an array and not ' .
+				'First argument of Eresus_Helpers_Collection::__construct must be an array and not ' .
 				gettype($data));
 		}
 		$this->data = $data;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает значение, возвращаемое при обращении к несуществующему элементу
@@ -91,10 +88,8 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 	{
 		$this->defaultValue = $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetExists()
 	 */
 	public function offsetExists($offset)
@@ -102,10 +97,8 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 		$this->checkOffsetType($offset);
 		return isset($this->data[$offset]);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetGet()
 	 */
 	public function offsetGet($offset)
@@ -121,10 +114,8 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 
 		return $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetSet()
 	 */
 	public function offsetSet($offset, $value)
@@ -145,10 +136,8 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 			$this->data[$offset] = $value;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetUnset()
 	 */
 	public function offsetUnset($offset)
@@ -160,46 +149,40 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 			unset($this->data[$offset]);
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Countable::count()
 	 */
 	public function count()
 	{
 		return count($this->data);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Serializable::serialize()
 	 */
 	public function serialize()
 	{
 		return serialize($this->data);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
 	 * @see Serializable::unserialize()
 	 */
 	public function unserialize($serialized)
 	{
 		$this->data = unserialize($serialized);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяет тип ключа
 	 *
 	 * @param mixed $offset
 	 *
+	 * @throws InvalidArgumentException если у ключа не скалярное значение
+	 *
 	 * @return void
 	 *
-	 * @throws InvalidArgumentException если у ключа не скалярное значение
 	 * @since 2.15
 	 */
 	protected function checkOffsetType($offset)
@@ -210,6 +193,4 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
 				gettype($offset));
 		}
 	}
-	//-----------------------------------------------------------------------------
-
 }

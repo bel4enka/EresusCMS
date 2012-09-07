@@ -33,7 +33,7 @@ require_once TESTS_SRC_DIR . '/core/Extensions/Plugin.php';
  * @package Eresus
  * @subpackage Tests
  */
-class PluginTest extends PHPUnit_Framework_TestCase
+class Eresus_Extensions_PluginTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers Eresus_Extensions_Plugin::getDataURL

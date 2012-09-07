@@ -36,7 +36,7 @@ require_once TESTS_SRC_DIR . '/core/UI/Admin/List.php';
  * @package Eresus_CMS
  * @subpackage Tests
  */
-class Eresus_AdminList_Test extends PHPUnit_Framework_TestCase
+class Eresus_UI_Admin_ListTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers Eresus_UI_Admin_List::setColumn
