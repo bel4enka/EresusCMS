@@ -126,15 +126,16 @@ class Eresus_Extensions_Registry
 	 *
 	 * @param string $name  Имя плагина
 	 *
-	 * @return void
-	 *
+	 * @throws DomainException
 	 * @throws EresusSourceParseException
+	 *
+	 * @return void
 	 */
 	public function install($name)
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
-		$filename = filesRoot.'ext/'.$name.'.php';
+		$filename = Eresus_CMS::getLegacyKernel()->froot.'ext/'.$name.'.php';
 		if (FS::exists($filename))
 		{
 			$info = Eresus_PluginInfo::loadFromFile($filename);
@@ -186,7 +187,7 @@ class Eresus_Extensions_Registry
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Деинсталлирует плагин
+	 * Исключает плагин из подключенных
 	 *
 	 * @param string $name  Имя плагина
 	 */
@@ -231,7 +232,7 @@ class Eresus_Extensions_Registry
 			return $this->items[$name];
 		}
 
-		/* Если такой плагин не зарегистрирован, возвращаем FASLE */
+		/* Если такой плагин не зарегистрирован, возвращаем false */
 		if (!isset($this->list[$name]))
 		{
 			eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
@@ -239,9 +240,9 @@ class Eresus_Extensions_Registry
 		}
 
 		// Путь к файлу плагина
-		$filename = filesRoot . 'ext/' . $name . '.php';
+		$filename = Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $name . '.php';
 
-		/* Если такого файла нет, возвращаем FASLE */
+		/* Если такого файла нет, возвращаем false */
 		if (!file_exists($filename))
 		{
 			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
@@ -292,13 +293,11 @@ class Eresus_Extensions_Registry
 				break;
 
 			case 'list':
+				$request = Eresus_CMS::getLegacyKernel()->request;
 				/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-				if (Eresus_CMS::getLegacyKernel()->request['file'] ||
-					Eresus_CMS::getLegacyKernel()->request['query'] ||
-					$page->subpage ||
-					$page->topic)
+				if ($request['file'] || $request['query'] || $page->subpage || $page->topic)
 				{
-					Eresus_Kernel::app()->getPage()->httpError(404);
+					$page->httpError(404);
 				}
 
 				$subitems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" .
@@ -478,6 +477,7 @@ class Eresus_Extensions_Registry
 				str_replace('_', '/', substr($className, strlen($pluginName) + 1)) . '.php';
 			if (file_exists($filename))
 			{
+				/** @noinspection PhpIncludeInspection */
 				include $filename;
 				return Eresus_Kernel::classExists($className);
 			}
