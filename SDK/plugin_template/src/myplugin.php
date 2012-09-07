@@ -37,7 +37,7 @@
  *
  * @package [Имя пакета]
  */
-class MyPlugin extends Plugin
+class MyPlugin extends Eresus_Extensions_Plugin
 {
 	/**
 	 * Версия плагина

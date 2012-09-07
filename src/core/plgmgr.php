@@ -187,7 +187,7 @@ class TPlgMgr
 				catch (RuntimeException $e)
 				{
 					$errors []= $e->getMessage();
-					$info = new Plugin();
+					$info = new Eresus_Extensions_Plugin();
 					$info->title = $info->name = basename($file, '.php');
 					$info->version = '';
 				}

@@ -36,7 +36,7 @@ require_once TESTS_SRC_DIR . '/core/Extensions/Plugin.php';
 class PluginTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Plugin::getDataURL
+	 * @covers Eresus_Extensions_Plugin::getDataURL
 	 */
 	public function test_getDataURL()
 	{
@@ -47,13 +47,13 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
 		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
 		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/data/plugin/', $test->getDataURL());
+		$test = new Eresus_Extensions_Plugin();
+		$this->assertEquals('http://exmaple.org/data/eresus_extensions_plugin/', $test->getDataURL());
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Plugin::getCodeURL
+	 * @covers Eresus_Extensions_Plugin::getCodeURL
 	 */
 	public function test_getCodeURL()
 	{
@@ -64,13 +64,13 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
 		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
 		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/ext/plugin/', $test->getCodeURL());
+		$test = new Eresus_Extensions_Plugin();
+		$this->assertEquals('http://exmaple.org/ext/eresus_extensions_plugin/', $test->getCodeURL());
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * @covers Plugin::getStyleURL
+	 * @covers Eresus_Extensions_Plugin::getStyleURL
 	 */
 	public function test_getStyleURL()
 	{
@@ -81,8 +81,8 @@ class PluginTest extends PHPUnit_Framework_TestCase
 		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
 		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
 		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/style/plugin/', $test->getStyleURL());
+		$test = new Eresus_Extensions_Plugin();
+		$this->assertEquals('http://exmaple.org/style/eresus_extensions_plugin/', $test->getStyleURL());
 	}
 	//-----------------------------------------------------------------------------
 

@@ -33,7 +33,7 @@
  *
  * @package Eresus
  */
-class Plugin
+class Eresus_Extensions_Plugin
 {
 	/**
 	 * Имя плагина
@@ -143,7 +143,7 @@ class Plugin
 	 * @uses $locale
 	 * @uses FS::isFile
 	 * @uses Core::safeInclude
-	 * @uses Plugin::resetPlugin
+	 * @uses Eresus_Extensions_Plugin::resetPlugin
 	 */
 	public function __construct()
 	{

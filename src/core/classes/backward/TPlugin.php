@@ -35,7 +35,7 @@
  * Родительский класс для всех плагинов
  *
  * @package Eresus
- * @deprecated Используйте Plugin
+ * @deprecated Используйте Eresus_Extensions_Plugin
  */
 class TPlugin
 {
