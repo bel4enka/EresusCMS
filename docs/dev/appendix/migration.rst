@@ -32,3 +32,8 @@
 - i18n в Eresus_i18n
 - EresusForm в Eresus_UI_Form
 - Templates в Eresus_Templates
+
+glib
+^^^^
+
+Функции библиотеки glib перенесены в старое ядро (kernel-legacy).
