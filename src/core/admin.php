@@ -872,14 +872,16 @@ class TAdminUI extends WebPage
 				'content' => 'Content',
 				'files' => 'Files',
 				'languages' => 'Languages',
-				'pages' => 'pages',
+				'pages' => 'Pages',
 				'plgmgr' => 'Plgmgr',
 				'settings' => 'Settings',
 				'themes' => 'Themes',
 				'users' => 'Users'
 			);
-			$filename = Eresus_CMS::getLegacyKernel()->froot . "core/Admin/Controllers/$module.php";
-			if (file_exists($filename))
+			$filename = array_key_exists($module, $map)
+				? Eresus_CMS::getLegacyKernel()->froot . "core/Eresus/Admin/Controllers/{$map[$module]}.php"
+				: null;
+			if ($filename && file_exists($filename))
 			{
 				Core::safeInclude($filename);
 				$class = "T$module";
@@ -892,7 +894,7 @@ class TAdminUI extends WebPage
 			}
 			else
 			{
-				ErrorMessage(errFileNotFound.': "' . Eresus_CMS::getLegacyKernel()->froot . "core/$module.php'");
+				ErrorMessage(sprintf('Модуль "%s" не найден', $module));
 			}
 
 			/*
