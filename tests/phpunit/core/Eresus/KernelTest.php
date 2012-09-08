@@ -1,10 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * Тесты
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,19 +27,16 @@
  *
  * @package Eresus
  * @subpackage Tests
- *
- * $Id$
  */
-require_once 'PHPUnit/Extensions/OutputTestCase.php';
 
-require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../src/core/Kernel.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/Kernel.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
+class Eresus_KernelTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @var mixed

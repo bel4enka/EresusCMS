@@ -1,10 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * Тесты
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -29,44 +30,28 @@
  */
 
 require_once __DIR__ . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/FS/NameFilter.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/PHP.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_FS_NameFilterTest extends PHPUnit_Framework_TestCase
+class Eresus_PHPTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @cover Eresus_FS_NameFilter::setAllowedChars
-	 * @expectedException PHPUnit_Framework_Error_Warning
+	 * @covers Eresus_PHP::iniSizeToInt
 	 */
-	public function test_setAllowedChars_notString()
+	public function test_iniSizeToInt()
 	{
-		$filter = new Eresus_FS_NameFilter();
-		$filter->setAllowedChars(true);
-	}
+		$this->assertEquals(1024, Eresus_PHP::iniSizeToInt('1024'));
 
-	/**
-	 * @cover Eresus_FS_NameFilter::setAllowedChars
-	 * @expectedException InvalidArgumentException
-	 */
-	public function test_setAllowedChars_barRegexp()
-	{
-		$filter = new Eresus_FS_NameFilter();
-		$filter->setAllowedChars('/');
-	}
+		$this->assertEquals(2 * 1024, Eresus_PHP::iniSizeToInt('2K'));
+		$this->assertEquals(2 * 1024, Eresus_PHP::iniSizeToInt('2 K'));
 
-	/**
-	 * @cover Eresus_FS_NameFilter::setAllowedChars
-	 * @cover Eresus_FS_NameFilter::filter
-	 */
-	public function test_filter()
-	{
-		$filter = new Eresus_FS_NameFilter();
+		$this->assertEquals(3 * 1024 * 1024, Eresus_PHP::iniSizeToInt('3M'));
+		$this->assertEquals(3 * 1024 * 1024, Eresus_PHP::iniSizeToInt('3 M'));
 
-		$this->assertEquals('foo', $filter->filter('%@f*oo$'));
-		$filter->setAllowedChars('a-z%');
-		$this->assertEquals('%foo', $filter->filter('%@f*oo$'));
+		$this->assertEquals(4 * 1024 * 1024 * 1024, Eresus_PHP::iniSizeToInt('4G'));
+		$this->assertEquals(4 * 1024 * 1024 * 1024, Eresus_PHP::iniSizeToInt('4 G'));
 	}
 }

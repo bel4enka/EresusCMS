@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Запускающий скрипт для режима Web
+ * Тесты
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -26,73 +26,40 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
+ * @subpackage Tests
  */
 
-// Временно включаем вывод ошибок, пока не инициализированы средства журналирования
-ini_set('display_errors', true);
-
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', dirname(__FILE__) . '/var/log/eresus.log');
+require_once __DIR__ . '/../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/Admin/Controllers/Settings.php';
 
 /**
- * Уровень детализации журнала
+ * @package Eresus_CMS
+ * @subpackage Tests
  */
-define('ERESUS_LOG_LEVEL' , LOG_ERR);
-
-ini_set('track_errors', true);
-
-define('ERESUS_SITE_ROOT', __DIR__);
-
-/**
- * Подключение ядра
- */
-require ERESUS_SITE_ROOT . '/core/Eresus/Kernel.php';
-
-Eresus_Kernel::init();
-
-/**
- * Подключение Eresus Core
- */
-require ERESUS_SITE_ROOT . '/core/framework/core/eresus-core.php';
-
-if (isset($php_errormsg))
-{
-	die($php_errormsg);
-}
-ini_set('track_errors', false);
-
-/*
- * Если есть файл install.php, запускаем установщик, а не CMS
- * Это код для будущих версий
- */
-if (is_file('install.php'))
-{
-	$fileName = 'install.php';
-	$appName = 'Installer';
-}
-else
-{
-	$fileName = ERESUS_SITE_ROOT . '/core/Eresus/CMS.php';
-	$appName = 'Eresus_CMS';
-}
-
-
-try
+class Eresus_TSettingsTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * Подключение главного приложения
+	 * @covers TSettings::mkstr
 	 */
-	include $fileName;
-}
-catch (Exception $e)
-{
-	die('Can not include file "' . $fileName . '". Is it exists and accessible?');
-}
+	public function test_mkstr()
+	{
+		$mkstr = new ReflectionMethod('TSettings', 'mkstr');
+		$mkstr->setAccessible(true);
 
-// Запуск приложения
-Eresus_Kernel::exec($appName);
+		$settings = new TSettings('');
+		$this->assertEquals("  define('foo', '');\n", $mkstr->invoke($settings, 'foo'));
+		$this->assertEquals("  define('foo', false);\n", $mkstr->invoke($settings, 'foo', 'bool'));
+		$this->assertEquals("  define('foo', 0);\n", $mkstr->invoke($settings, 'foo', 'int'));
+
+		$_POST['foo'] = "' \\ \" \r \n";
+
+		$options = array('nobr' => true);
+		$this->assertEquals("  define('foo', '\\' \\\\ \"    ');\n",
+			$mkstr->invoke($settings, "foo", 'string', $options));
+
+		$options = array('savebr' => true);
+		$this->assertEquals("  define('foo', \"' \\\\ \\\\\\\" \\\\r \\\\n\");\n",
+			$mkstr->invoke($settings, "foo", 'string', $options));
+	}
+	/* */
+}

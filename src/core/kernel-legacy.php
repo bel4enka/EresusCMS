@@ -1532,25 +1532,6 @@ class Eresus
 	}
 
 	/**
-	 * Подключение базовых классов
-	 *
-	 * @access private
-	 */
-	function init_classes()
-	{
-		# Подключение строковых данных
-		$filename = $this->froot.'core/classes.php';
-		if (is_file($filename))
-		{
-			include_once($filename);
-		}
-		else
-		{
-			FatalError("Classes file '$filename' not found!");
-		}
-	}
-
-	/**
 	 * Инициализация расширений
 	 */
 	function init_extensions()
@@ -1721,8 +1702,6 @@ class Eresus
 		$this->init_request();
 		# Настройка локали
 		$this->init_locale();
-		# Подключение базовых классов
-		$this->init_classes();
 		# Инициализация расширений
 		$this->init_extensions();
 		# Подключение к источнику данных

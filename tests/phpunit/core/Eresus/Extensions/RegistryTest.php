@@ -1,10 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * Модульные тесты
+ * Тесты
  *
- * @copyright 2011, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,19 +27,17 @@
  *
  * @package Eresus
  * @subpackage Tests
- *
- * $Id$
  */
 
-require_once __DIR__ . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/Extensions/Registry.php';
-require_once TESTS_SRC_DIR . '/core/Kernel.php';
+require_once __DIR__ . '/../../../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/Extensions/Registry.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/Kernel.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Plugins_Test extends PHPUnit_Framework_TestCase
+class Eresus_Extensions_RegistryTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers Eresus_Extensions_Registry::autoload

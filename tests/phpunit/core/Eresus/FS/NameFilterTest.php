@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Модульные тесты
+ * Тесты
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -29,35 +29,45 @@
  * @subpackage Tests
  */
 
-require_once dirname(__FILE__) . '/../stubs.php';
-require_once dirname(__FILE__) . '/../../../src/core/PluginInfo.php';
+require_once __DIR__ . '/../../../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/FS/NameFilter.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_PluginInfo_Test extends PHPUnit_Framework_TestCase
+class Eresus_FS_NameFilterTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers Eresus_PluginInfo::loadFromXmlFile
+	 * @cover Eresus_FS_NameFilter::setAllowedChars
+	 * @expectedException PHPUnit_Framework_Error_Warning
 	 */
-	public function test_loadFromXmlFile()
+	public function test_setAllowedChars_notString()
 	{
-		$method = new ReflectionMethod('Eresus_PluginInfo', 'loadFromXmlFile');
-		$method->setAccessible(true);
-
-		$method->invoke(null, TESTS_FIXT_DIR . '/core/PluginInfo/no_reqs/myplugin/plugin.xml');
+		$filter = new Eresus_FS_NameFilter();
+		$filter->setAllowedChars(true);
 	}
 
 	/**
-	 * @covers Eresus_PluginInfo::loadFromFile
-	 * @covers Eresus_PluginInfo::loadFromPhpFile
-	 * @covers Eresus_PluginInfo::getRequiredKernel
+	 * @cover Eresus_FS_NameFilter::setAllowedChars
+	 * @expectedException InvalidArgumentException
 	 */
-	public function test_kernel_req()
+	public function test_setAllowedChars_barRegexp()
 	{
-		$info = Eresus_PluginInfo::loadFromFile(TESTS_FIXT_DIR .
-			'/core/PluginInfo/kernel_php/myplugin.php');
-		$this->assertEquals(array('3.00', ''), $info->getRequiredKernel());
+		$filter = new Eresus_FS_NameFilter();
+		$filter->setAllowedChars('/');
+	}
+
+	/**
+	 * @cover Eresus_FS_NameFilter::setAllowedChars
+	 * @cover Eresus_FS_NameFilter::filter
+	 */
+	public function test_filter()
+	{
+		$filter = new Eresus_FS_NameFilter();
+
+		$this->assertEquals('foo', $filter->filter('%@f*oo$'));
+		$filter->setAllowedChars('a-z%');
+		$this->assertEquals('%foo', $filter->filter('%@f*oo$'));
 	}
 }

@@ -67,12 +67,12 @@ class Eresus_CMS extends EresusApplication
 			 * Подключение таблицы автозагрузки классов
 			 */
 			$loader = new MapClassLoader(array(
-				'EresusForm' => __DIR__ . '/EresusForm.php',
-				'I18n' => __DIR__ . '/i18n.php',
-				'PaginationHelper' => __DIR__ . 'classes/helpers/PaginationHelper.php',
-				'Templates' => __DIR__ . '/lib/templates.php',
-				'WebServer' => __DIR__ . '/classes/WebServer.php',
-				'WebPage' => __DIR__ . '/classes/WebPage.php',
+				'EresusForm' => ERESUS_SITE_ROOT . '/core/EresusForm.php',
+				'I18n' => ERESUS_SITE_ROOT . '/core/i18n.php',
+				'PaginationHelper' => ERESUS_SITE_ROOT . '/core/classes/helpers/PaginationHelper.php',
+				'Templates' => ERESUS_SITE_ROOT . '/core/lib/templates.php',
+				'WebServer' => ERESUS_SITE_ROOT . '/core/classes/WebServer.php',
+				'WebPage' => ERESUS_SITE_ROOT . '/core/classes/WebPage.php',
 			));
 			$loader->register();
 
@@ -83,7 +83,7 @@ class Eresus_CMS extends EresusApplication
 			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 
 			/* Подключение старого ядра */
-			include_once 'kernel-legacy.php';
+			include ERESUS_SITE_ROOT . '/core/kernel-legacy.php';
 
 			/**
 			 * @global Eresus Eresus
@@ -135,7 +135,7 @@ class Eresus_CMS extends EresusApplication
 	public function fatalError(/** @noinspection PhpUnusedParameterInspection */
 		$error = null, $exit = true)
 	{
-		include dirname(__FILE__) . '/fatal.html.php';
+		include ERESUS_SITE_ROOT . '/core/fatal.html.php';
 		die;
 	}
 	//-----------------------------------------------------------------------------
@@ -209,7 +209,7 @@ class Eresus_CMS extends EresusApplication
 		{
 			if (!PHP::isCLI())
 			{
-				require_once 'errors.html.php';
+				include ERESUS_SITE_ROOT . '/core/errors.html.php';
 			}
 			else
 			{
@@ -301,7 +301,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		include 'client.php';
+		include ERESUS_SITE_ROOT . '/core/client.php';
 
 		$GLOBALS['page'] = $this->page = new TClientUI();
 		$this->page->init();
@@ -318,7 +318,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		include 'admin.php';
+		include ERESUS_SITE_ROOT . '/core/admin.php';
 
 		$GLOBALS['page'] = $this->page = new TAdminUI();
 		/*return */$this->page->render();

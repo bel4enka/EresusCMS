@@ -134,18 +134,18 @@ class Eresus_Kernel
 		 * Регистрация загрузчиков классов
 		 */
 		/** @noinspection PhpIncludeInspection */
-		require __DIR__ . '/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+		require ERESUS_SITE_ROOT . '/core/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 		$loader = new UniversalClassLoader();
 		$loader->registerNamespaces(array(
-			'Symfony' => __DIR__,
+			'Symfony' => ERESUS_SITE_ROOT . '/core',
 		));
 		$loader->registerPrefixes(array(
-			'Eresus_' => __DIR__,
+			'Eresus_' => ERESUS_SITE_ROOT . '/core',
 		));
 		$loader->register();
 
-		$botoborPath = __DIR__ . '/botobor/botobor.php';
+		$botoborPath = ERESUS_SITE_ROOT . '/core/botobor/botobor.php';
 		$map = new MapClassLoader(array(
 			'Botobor' => $botoborPath,
 			'Botobor_Form' => $botoborPath,

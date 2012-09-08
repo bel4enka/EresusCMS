@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Класс представляет страницу административного интерфейса
  *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,14 +26,7 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
-
-
-
-
-
 
 define('ADMINUI', true);
 
@@ -874,9 +867,21 @@ class TAdminUI extends WebPage
 		if (arg('mod'))
 		{
 			$module = arg('mod', '/[^\w-]/');
-			if (file_exists(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php"))
+			$map = array(
+				'about' => 'About',
+				'content' => 'Content',
+				'files' => 'Files',
+				'languages' => 'Languages',
+				'pages' => 'pages',
+				'plgmgr' => 'Plgmgr',
+				'settings' => 'Settings',
+				'themes' => 'Themes',
+				'users' => 'Users'
+			);
+			$filename = Eresus_CMS::getLegacyKernel()->froot . "core/Admin/Controllers/$module.php";
+			if (file_exists($filename))
 			{
-				Core::safeInclude(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php");
+				Core::safeInclude($filename);
 				$class = "T$module";
 				$this->module = new $class;
 			}
