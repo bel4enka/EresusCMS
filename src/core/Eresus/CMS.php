@@ -77,11 +77,6 @@ class Eresus_CMS extends EresusApplication
 			 */
 			$GLOBALS['Eresus'] = new Eresus;
 			$this->initConf();
-			if (Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
-			{
-				// Обратная совместимость TODO убрать
-				define('ERESUS_CMS_DEBUG', true);
-			}
 
 			$i18n = Eresus_I18n::getInstance();
 			TemplateSettings::setGlobalValue('i18n', $i18n);
