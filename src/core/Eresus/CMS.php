@@ -85,7 +85,7 @@ class Eresus_CMS extends EresusApplication
 			Eresus_CMS::getLegacyKernel()->init();
 			TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
 
-			if (PHP::isCLI())
+			if (Eresus_Kernel::isCLI())
 			{
 				return $this->runCLI();
 			}
@@ -255,7 +255,6 @@ class Eresus_CMS extends EresusApplication
 
 		echo $output;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализация Web
@@ -267,6 +266,7 @@ class Eresus_CMS extends EresusApplication
 		Core::setValue('core.template.templateDir', $this->getFsRoot());
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 
+		Eresus_Kernel::sc()->set('request', Eresus_HTTP_Request::createFromGlobals());
 		$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
 		$this->detectWebRoot();

@@ -26,14 +26,13 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage Tests
  */
 
 require_once __DIR__ . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/Eresus/CMS.php';
-require_once TESTS_SRC_DIR . '/core/Eresus/WebServer.php';
 
 /**
- * @package Eresus_CMS
+ * @package Eresus
  * @subpackage Tests
  */
 class Eresus_CMSTest extends PHPUnit_Framework_TestCase
@@ -146,5 +145,41 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 		$p_page->setValue($eresus,'foo');
 		
 		$this->assertEquals('foo', $eresus->getPage());
+	}
+
+	/**
+	 * @covers Eresus_CMS::runWeb
+	 */
+	public function test_runWeb()
+	{
+		$runWeb = new ReflectionMethod('Eresus_CMS', 'runWeb');
+		$runWeb->setAccessible(true);
+
+		$request = new ReflectionProperty('Eresus_CMS', 'request');
+		$request->setAccessible(true);
+
+		$cms = $this->getMock('Eresus_CMS',
+			array('initWeb', 'call3rdPartyExtension', 'runWebAdminUI', 'runWebClientUI'));
+		$cms->expects($this->once())->method('call3rdPartyExtension');
+		$cms->expects($this->once())->method('runWebAdminUI');
+		$cms->expects($this->once())->method('runWebClientUI');
+
+		/* call3rdPartyExtension */
+		$requestMock = $this->getMock('stdClass', array('getLocal'));
+		$requestMock->expects($this->any())->method('getLocal')->will($this->returnValue('/ext-3rd'));
+		$request->setValue($cms, $requestMock);
+		$runWeb->invoke($cms);
+
+		/* runWebAdminUI */
+		$requestMock = $this->getMock('stdClass', array('getLocal'));
+		$requestMock->expects($this->any())->method('getLocal')->will($this->returnValue('/admin'));
+		$request->setValue($cms, $requestMock);
+		$runWeb->invoke($cms);
+
+		/* runWebClientUI */
+		$requestMock = $this->getMock('stdClass', array('getLocal'));
+		$requestMock->expects($this->any())->method('getLocal')->will($this->returnValue('/'));
+		$request->setValue($cms, $requestMock);
+		$runWeb->invoke($cms);
 	}
 }

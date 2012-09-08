@@ -28,10 +28,26 @@
  * @package Eresus
  */
 
+use Symfony\Component\ClassLoader\UniversalClassLoader;
+
 define('TESTS_TEST_DIR', __DIR__ );
 define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
 
 require_once __DIR__ . '/stubs.php';
+
+define('TESTS_VENDORS', TESTS_SRC_DIR . '/../vendor');
+
+require TESTS_VENDORS .
+	'/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+
+$loader = new UniversalClassLoader();
+$loader->registerNamespaces(array(
+	'Symfony' => TESTS_VENDORS . '/symfony/symfony/src',
+));
+$loader->registerPrefixes(array(
+	'Eresus_' => TESTS_SRC_DIR . '/core',
+));
+$loader->register();
 
 require_once TESTS_SRC_DIR . '/lang/ru.php';
 
