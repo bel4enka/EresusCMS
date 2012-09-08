@@ -204,42 +204,6 @@ function UserRights($level)
 }
 
 /**
- * Подключает библиотеку
- *
- * Доступные библиотеки:
- *
- * - forms — работа с веб-формами
- *
- * @param string $library  имя библиотеки
- *
- * @return bool  true, если библиотека успешно подключена
- *
- * @since 2.10
- *
- * @deprecated
- */
-function useLib($library)
-{
-	$result = false;
-	if (DIRECTORY_SEPARATOR != '/')
-	{
-		$library = str_replace('/', DIRECTORY_SEPARATOR, $library);
-	}
-	$filename = DIRECTORY_SEPARATOR . $library . '.php';
-	$dirs = explode(PATH_SEPARATOR, get_include_path());
-	foreach ($dirs as $path)
-	{
-		if (is_file($path.$filename))
-		{
-			include_once($path . $filename);
-			$result = true;
-			break;
-		}
-	}
-	return $result;
-}
-
-/**
  * Функция отсылает письмо по указанному адресу
  *
  * @param string $address
