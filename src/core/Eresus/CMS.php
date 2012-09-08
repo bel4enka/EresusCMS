@@ -267,7 +267,12 @@ class Eresus_CMS
 
 		Eresus_Kernel::sc()->set('request', Eresus_HTTP_Request::createFromGlobals());
 		//$this->response = new HttpResponse();
-		$this->detectWebRoot();
+
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
+		TemplateSettings::setGlobalValue('siteRoot',
+			$request->getScheme() . '://' . $request->getHost() . $request->getBasePath());
+
 		//$this->initRoutes();
 	}
 
@@ -296,28 +301,6 @@ class Eresus_CMS
 
 		$GLOBALS['page'] = $this->page = new Eresus_AdminUI();
 		/*return */$this->page->render();
-	}
-
-	/**
-	 * Определение корневого веб-адреса сайта
-	 *
-	 * Метод определяет корневой адрес сайта и устанавливает соответствующим
-	 * образом localRoot объекта EresusCMS::request
-	 */
-	protected function detectWebRoot()
-	{
-		$webServer = Eresus_WebServer::getInstance();
-		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
-		$SUFFIX = $this->getFsRoot();
-		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		/** @var Eresus_HTTP_Request $request */
-		$request = Eresus_Kernel::get('request');
-		$request->setLocalRoot($SUFFIX);
-		eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
-
-		TemplateSettings::setGlobalValue('siteRoot',
-			$request->getScheme() . '://' . $request->getHost() . $request->getLocalRoot());
-
 	}
 
 	/**

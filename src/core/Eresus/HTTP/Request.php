@@ -56,13 +56,7 @@ class Eresus_HTTP_Request extends Request
 	 */
 	public function getLocalUrl()
 	{
-		$url = $this->getRequestUri();
-
-		if ($this->localRoot && strpos($url, $this->localRoot) === 0)
-		{
-			$url = substr($url, strlen($this->localRoot));
-		}
-		return $url;
+		return substr($this->getRequestUri(), strlen($this->getBasePath()));
 	}
 
 	/**
@@ -93,16 +87,11 @@ class Eresus_HTTP_Request extends Request
 	}
 
 	/**
-	 * Возвращает адрес корня сайта
-	 *
-	 * @return string
-	 *
-	 * @see setLocalRoot()
-	 * @since 3.01
+	 * Возвращает имя запрошенного в URL файла (без пути)
 	 */
-	public function getLocalRoot()
+	public function getFilename()
 	{
-		return $this->localRoot;
+		return basename($this->getPathInfo());
 	}
 	//@codeCoverageIgnoreStart
 }
