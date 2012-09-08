@@ -35,7 +35,7 @@ define('ADMINUI', true);
  *
  * @package Eresus
  */
-class TAdminUI extends Eresus_WebPage
+class Eresus_AdminUI extends Eresus_WebPage
 {
 	/**
 	 * Загружаемый модуль
@@ -88,7 +88,7 @@ class TAdminUI extends Eresus_WebPage
 
 	/**
 	 * Констурктор
-	 * @return TAdminUI
+	 * @return Eresus_AdminUI
 	 */
 	public function __construct()
 	{

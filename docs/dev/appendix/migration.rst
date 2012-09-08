@@ -40,6 +40,7 @@
 - Templates в Eresus_Templates
 - Sections в Eresus_Sections
 - Form в Eresus_UI_Admin_ArrayForm
+- TAdminUI в Eresus_AdminUI
 
 glib
 ^^^^

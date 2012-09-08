@@ -26,7 +26,7 @@
 
 - Eresus_Admin_Theme
 - Eresus_Admin_Controllers_About
-- TAdminUI
+- Eresus_AdminUI
 - Eresus_Admin_Controllers_Content
 - Eresus_Admin_Controllers_Files
 - Eresus_Admin_Controllers_Pages

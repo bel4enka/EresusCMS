@@ -515,7 +515,7 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function sectionIndexBranch($owner=0, $level=0)
 	{
-		/** @var TAdminUI $page */
+		/** @var Eresus_AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = array();
 		$items = Eresus_CMS::getLegacyKernel()->sections->children($owner,

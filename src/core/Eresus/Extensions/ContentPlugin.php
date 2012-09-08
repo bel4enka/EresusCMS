@@ -140,7 +140,7 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 		{
 			$this->adminUpdate();
 		}
-		/** @var TAdminUI $page */
+		/** @var Eresus_AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='" . $page->id . "'");
 		$form = array(

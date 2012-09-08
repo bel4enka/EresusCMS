@@ -223,7 +223,7 @@ class Eresus_Admin_Controllers_Plgmgr
 
 		ksort($data['plugins']);
 
-		/* @var TAdminUI $page */
+		/* @var Eresus_AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);
