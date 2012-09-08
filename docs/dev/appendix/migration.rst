@@ -52,3 +52,12 @@ glib
 ^^^^
 
 Функции библиотеки glib перенесены в старое ядро (kernel-legacy).
+
+
+Добавлено
+---------
+
+Классы
+^^^^^^
+
+- Eresus_HTTP_Request — обёртка для Symfony\Component\HttpFoundation\Request.
