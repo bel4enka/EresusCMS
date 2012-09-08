@@ -518,7 +518,8 @@ class Eresus_UI_Form
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$GLOBALS['page']->linkScripts($GLOBALS['Eresus']->root . 'core/Eresus_UI_Form.js');
+		$url = Eresus_CMS::getLegacyKernel()->root . 'core/EresusForm.js';
+		Eresus_Kernel::app()->getPage()->linkScripts($url);
 
 		$html = $this->parseExtended();
 
@@ -627,7 +628,7 @@ class Eresus_UI_Form
 
 		$id = $this->xml->firstChild->nextSibling->getAttribute('id');
 		// инициализация объекта формы
-		$scriptContents = "\n\$(document).ready(function () {window.$id = new Eresus_UI_Form('$id');\n";
+		$scriptContents = "\n\$(document).ready(function () {window.$id = new EresusForm('$id');\n";
 
 		/*
 		 * Если в сессии установлен флаг isInvalid, вызываем перепроверку формы
