@@ -11,6 +11,11 @@
   Eresus_Extensions_Plugin и Eresus_Extensions_ContentPlugin.
 - EresusSourceParseException. Вместо него вбрасывается DomainException.
 
+Функции
+^^^^^^^
+
+- form — краткая форма для обращения к Eresus_UI_Admin_ArrayForm
+
 Изменено
 --------
 
@@ -33,6 +38,7 @@
 - EresusForm в Eresus_UI_Form
 - Templates в Eresus_Templates
 - Sections в Eresus_Sections
+- Form в Eresus_UI_Admin_ArrayForm
 
 glib
 ^^^^

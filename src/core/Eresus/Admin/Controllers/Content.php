@@ -50,7 +50,6 @@ class Eresus_Admin_Controllers_Content
 			return '';
 		}
 		$result = '';
-		useLib('sections');
 		$sections = new Eresus_Sections();
 		$item = $sections->get(arg('section', 'int'));
 

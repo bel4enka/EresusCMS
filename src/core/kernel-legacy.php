@@ -209,7 +209,6 @@ function UserRights($level)
  * Доступные библиотеки:
  *
  * - forms — работа с веб-формами
- * - sections — работа с разделами сайта
  *
  * @param string $library  имя библиотеки
  *
@@ -1814,8 +1813,6 @@ class Eresus
 		$this->check_cookies();
 		# Обновление данных о пользователе
 		$this->reset_login();
-		# Подключение работы с разделами сайта
-		useLib('sections');
 		$this->sections = new Eresus_Sections;
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}

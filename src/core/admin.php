@@ -848,11 +848,11 @@ class TAdminUI extends Eresus_WebPage
 		{
 			$result .= $this->renderTabs($form['tabs']);
 		}
-		useLib('forms');
 		$wnd['caption'] = $form['caption'];
 		$wnd['width'] = isset($form['width'])?$form['width']:'';
 		$wnd['style'] = 'padding: 0px;';
-		$wnd['body'] = form($form, $values);
+		$form = new Eresus_UI_Admin_ArrayForm($form, $values);
+		$wnd['body'] = $form->render();
 		$result .= $this->window($wnd);
 		return $result;
 	}

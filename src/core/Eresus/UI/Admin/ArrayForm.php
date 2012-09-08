@@ -35,14 +35,14 @@
  *
  * @package Eresus
  */
-class Form
+class Eresus_UI_Admin_ArrayForm
 {
 	var $form;
 	var $values;
 	var $hidden = '';
 	var $onsubmit = '';
 	var $validator = '';
-	var $file = false;    # Признок наличия полей типа file
+	var $file = false;    # Признак наличия полей типа file
 	var $html = false;    # Признак наличия WYSIWYG редакторов
 	var $options = array();
 	/**
@@ -435,21 +435,3 @@ class Form
 	}
 	//------------------------------------------------------------------------------
 }
-
-/**
-* Отрисовывает форму на основе массива
-*
-* @access  public
-*
-* @param  array  $form    Описание формы
-* @param  array  $values  Значения полей по умолчанию (необязательно)
-*
-* @return  string  HTML-код формы
-*/
-function form($form, $values=array())
-{
-	$Form = new Form($form, $values);
-	$result = $Form->render();
-	return $result;
-}
-//------------------------------------------------------------------------------
