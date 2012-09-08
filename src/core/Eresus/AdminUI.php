@@ -73,7 +73,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 	public $headers;
 
 	/**
-	 * Для совместимости с TClientUI
+	 * Для совместимости с Eresus_ClientUI
 	 *
 	 * @var array
 	 */

@@ -269,7 +269,7 @@ class Eresus_Extensions_Registry
 	 */
 	function clientRenderContent()
 	{
-		/* @var TClientUI $page */
+		/* @var Eresus_ClientUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = '';
 		switch ($page->type)

@@ -143,7 +143,7 @@ class Eresus_CMS extends EresusApplication
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает экземпляр класса TClientUI или Eresus_AdminUI
+	 * Возвращает экземпляр класса Eresus_ClientUI или Eresus_AdminUI
 	 *
 	 * Метод нужен до отказа от переменной $page
 	 *
@@ -288,9 +288,7 @@ class Eresus_CMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		include ERESUS_SITE_ROOT . '/core/client.php';
-
-		$GLOBALS['page'] = $this->page = new TClientUI();
+		$GLOBALS['page'] = $this->page = new Eresus_ClientUI();
 		$this->page->init();
 		/*return */$this->page->render();
 	}

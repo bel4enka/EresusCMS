@@ -44,9 +44,9 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 	{
 		parent::__construct();
 
-		/* @var TClientUI $page */
+		/* @var Eresus_ClientUI $page */
 		$page = Eresus_Kernel::app()->getPage();
-		if ($page instanceof TClientUI)
+		if ($page instanceof Eresus_ClientUI)
 		{
 			$page->plugin = $this->name;
 			if (isset($page->options) && count($page->options))
@@ -116,7 +116,7 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 	 */
 	public function clientRenderContent()
 	{
-		/** @var TClientUI $page */
+		/** @var Eresus_ClientUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
 		if (Eresus_CMS::getLegacyKernel()->request['file'] ||
