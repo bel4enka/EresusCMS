@@ -30,7 +30,7 @@
 
 require_once __DIR__ . '/../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/Eresus/CMS.php';
-require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/WebServer.php';
 
 /**
  * @package Eresus_CMS
@@ -49,8 +49,8 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 		}
 
 		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
+		$webServer = Eresus_WebServer::getInstance();
+		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
@@ -81,8 +81,8 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 		}
 
 		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
+		$webServer = Eresus_WebServer::getInstance();
+		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
@@ -113,8 +113,8 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 		}
 
 		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
+		$webServer = Eresus_WebServer::getInstance();
+		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
 

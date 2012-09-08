@@ -13,7 +13,7 @@
 - Sections
 - Templates
 - WebPage
-- WebServer
+- Eresus_WebServer
 
 А также некоторые устаревшие компоненты:
 

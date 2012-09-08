@@ -71,7 +71,6 @@ class Eresus_CMS extends EresusApplication
 				'I18n' => ERESUS_SITE_ROOT . '/core/i18n.php',
 				'PaginationHelper' => ERESUS_SITE_ROOT . '/core/classes/helpers/PaginationHelper.php',
 				'Templates' => ERESUS_SITE_ROOT . '/core/lib/templates.php',
-				'WebServer' => ERESUS_SITE_ROOT . '/core/classes/WebServer.php',
 				'WebPage' => ERESUS_SITE_ROOT . '/core/classes/WebPage.php',
 			));
 			$loader->register();
@@ -333,7 +332,7 @@ class Eresus_CMS extends EresusApplication
 	 */
 	protected function detectWebRoot()
 	{
-		$webServer = WebServer::getInstance();
+		$webServer = Eresus_WebServer::getInstance();
 		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
 		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));

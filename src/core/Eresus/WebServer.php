@@ -1,12 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Интерфейс к веб-серверу
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -27,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 /**
@@ -39,12 +36,12 @@
  * @package Eresus
  * @since 2.15
  */
-class WebServer
+class Eresus_WebServer
 {
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var WebServer
+	 * @var Eresus_WebServer
 	 * @since 2.15
 	 */
 	private static $instance;
@@ -60,7 +57,7 @@ class WebServer
 	/**
 	 * Возвращает экземпляр класса
 	 *
-	 * @return WebServer
+	 * @return Eresus_WebServer
 	 *
 	 * @since 2.15
 	 */
@@ -90,9 +87,6 @@ class WebServer
 	/**
 	 * Конструктор
 	 *
-	 * @return WebServer
-	 *
-	 * @uses FS::canonicalForm()
 	 * @since 2.15
 	 */
 	private function __construct()
