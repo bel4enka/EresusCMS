@@ -135,18 +135,6 @@ class HTTP
 	static private $request;
 
 	/**
-	 * Sets test instance of HttpRequest
-	 *
-	 * @param HttpRequest|null $request
-	 */
-	static public function setTestRequest($request)
-	{
-		if (Core::testMode())
-			self::$request = $request;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Build an URL
 	 *
 	 * The parts of the second URL will be merged into the first according to the flags argument.
@@ -247,23 +235,6 @@ class HTTP
 			.((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '')
 			.((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
 		;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Returns an instance of a HttpRequest class
-	 *
-	 * Object instancing only once
-	 *
-	 * @return HttpRequest
-	 */
-	static public function request()
-	{
-		if (!self::$request)
-		{
-			self::$request = new HttpRequest();
-		}
-		return self::$request;
 	}
 	//-----------------------------------------------------------------------------
 
