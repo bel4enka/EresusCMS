@@ -37,7 +37,7 @@
  *
  * @since 2.10
  */
-class Templates
+class Eresus_Templates
 {
 	private $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
 

@@ -107,7 +107,7 @@ class Eresus_Admin_Controllers_Themes
 			ErrorMessage(sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
 		}
 
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$templates->add($filename, '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -119,7 +119,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionTemplatesUpdate()
 	{
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$templates->update(arg('name'), '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -131,7 +131,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionTemplatesDelete()
 	{
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$templates->delete(arg('delete'));
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
@@ -170,7 +170,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionTemplatesEdit()
 	{
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$item = $templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
@@ -220,7 +220,7 @@ class Eresus_Admin_Controllers_Themes
 				)
 			),
 		);
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$list = $templates->enum();
 		$items = array();
 		foreach ($list as $key=>$value)
@@ -278,7 +278,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionStdInsert()
 	{
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -300,7 +300,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionStdDelete()
 	{
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$templates->delete(arg('delete'), 'std');
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
@@ -316,7 +316,7 @@ class Eresus_Admin_Controllers_Themes
 		/*
 		 * Создаём список имеющихся шаблонов чтобы отфильтровать их из списка доступных.
 		 */
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$list = array_keys($templates->enum('std'));
 		$existed = array();
 		foreach ($list as $key)
@@ -381,7 +381,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionStdEdit()
 	{
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
@@ -435,7 +435,7 @@ class Eresus_Admin_Controllers_Themes
 				)
 			),
 		);
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$list = $templates->enum('std');
 		$items = array();
 		foreach ($list as $key=>$value)

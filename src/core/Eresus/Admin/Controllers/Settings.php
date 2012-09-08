@@ -126,7 +126,7 @@ class Eresus_Admin_Controllers_Settings
 	 * Возвращает HTML-код раздела
 	 * @return string  HTML
 	 * @uses Eresus_UI_Form
-	 * @uses Templates
+	 * @uses Eresus_Templates
 	 */
 	private function renderForm()
 	{
@@ -170,7 +170,7 @@ class Eresus_Admin_Controllers_Settings
 		$form->setValue('contentTypeDefault', option('contentTypeDefault'));
 
 		/* Загружаем список шаблонов */
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$list = $templates->enum();
 		$templates = array();
 		foreach ($list as $key => $value)

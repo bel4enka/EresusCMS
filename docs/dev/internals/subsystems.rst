@@ -11,7 +11,7 @@
 - Eresus_CMS
 - Eresus_Accounts
 - Sections
-- Templates
+- Eresus_Templates
 - Eresus_WebPage
 - Eresus_WebServer
 

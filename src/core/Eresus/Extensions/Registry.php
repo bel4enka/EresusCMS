@@ -297,7 +297,7 @@ class Eresus_Extensions_Registry
 				{
 					$page->content = '$(items)';
 				}
-				$templates = new Templates();
+				$templates = new Eresus_Templates();
 				$template = $templates->get('SectionListItem', 'std');
 				if (false === $template)
 				{

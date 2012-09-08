@@ -376,7 +376,7 @@ class Eresus_Admin_Controllers_Pages
 	{
 		$result[0] = array();
 		$result[1] = array();
-		$templates = new Templates();
+		$templates = new Eresus_Templates();
 		$list = $templates->enum();
 		$result[0]= array_values($list);
 		$result[1]= array_keys($list);

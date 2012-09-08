@@ -180,7 +180,7 @@ class TClientUI extends Eresus_WebPage
 		{
 			$url = $this->url().'p%d/';
 		}
-		$Templates = new Templates();
+		$Templates = new Eresus_Templates();
 		$defaults = explode('---', $Templates->get('PageSelector', 'std'));
 		if (!is_array($templates))
 		{
@@ -385,7 +385,7 @@ class TClientUI extends Eresus_WebPage
 		}
 		# Отрисовываем контент
 		$content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
-		$templates = new Templates;
+		$templates = new Eresus_Templates;
 		$this->template = $templates->get($this->template);
 		$content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
 

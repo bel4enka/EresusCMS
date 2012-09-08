@@ -31,3 +31,4 @@
 - WebPage в Eresus_WebPage
 - i18n в Eresus_i18n
 - EresusForm в Eresus_UI_Form
+- Templates в Eresus_Templates
