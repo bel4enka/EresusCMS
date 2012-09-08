@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Родительский класс веб-интерфейсов
  *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -26,211 +26,14 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
-
-
-
-/**
- * Абстрактный элемент документа HTML
- *
- * @package Eresus
- * @since 2.15
- */
-class HtmlElement
-{
-	/**
-	 * Имя тега
-	 *
-	 * @var string
-	 */
-	private $tagName;
-
-	/**
-	 * Атрибуты
-	 *
-	 * @var array
-	 */
-	private $attrs = array();
-
-	/**
-	 * Содержимое
-	 *
-	 * @var string
-	 */
-	private $contents = null;
-
-	/**
-	 * Конструктор
-	 *
-	 * @param string $tagName
-	 *
-	 * @since 2.15
-	 */
-	public function __construct($tagName)
-	{
-		$this->tagName = $tagName;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Устанавливает значение атрибута
-	 *
-	 * @param string $name   имя атрибута
-	 * @param mixed  $value  значение атрибута
-	 *
-	 * @return void
-	 *
-	 * @since 2.15
-	 */
-	public function setAttribute($name, $value = true)
-	{
-		$this->attrs[$name] = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает значение атрибута
-	 *
-	 * @param string $name  имя атрибута
-	 *
-	 * @return mixed
-	 *
-	 * @since 2.15
-	 */
-	public function getAttribute($name)
-	{
-		if (!isset($this->attrs[$name]))
-		{
-			return null;
-		}
-
-		return $this->attrs[$name];
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Устанавливает содержимое
-	 *
-	 * @param string $contents  содержимое
-	 *
-	 * @return void
-	 *
-	 * @since 2.15
-	 */
-	public function setContents($contents)
-	{
-		$this->contents = $contents;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Возвращает разметку элемента
-	 *
-	 * @return string  разметка HTML
-	 *
-	 * @since 2.15
-	 */
-	public function getHTML()
-	{
-		// Открывающий тег
-		$html = '<' . $this->tagName;
-
-		/* Добавляем атрибуты */
-		foreach ($this->attrs as $name => $value)
-		{
-			$html .= ' ' . $name;
-
-			if ($value !== true)
-			{
-				$html .= '="' . $value . '"';
-			}
-		}
-
-		$html .= '>';
-
-		/* Если есть содержимое, то добавляем его и закрывающий тег */
-		if ($this->contents !== null)
-		{
-			$html .= $this->contents . '</' . $this->tagName . '>';
-		}
-
-		return $html;
-	}
-	//-----------------------------------------------------------------------------
-}
-
-
-
-/**
- * Элемент <script>
- *
- * @package Eresus
- * @since 2.15
- */
-class HtmlScriptElement extends HtmlElement
-{
-	/**
-	 * Создаёт новый элемент <script>
-	 *
-	 * @param string $script [optional]  URL или код скрипта.
-	 *
-	 * @since 2.15
-	 */
-	public function __construct($script = '')
-	{
-		parent::__construct('script');
-
-		$this->setAttribute('type', 'text/javascript');
-
-		/*
-		 * Считаем URL-ом всё, что:
-		 * - либо содержит xxx:// в начале
-		 * - либо состоит из минимум двух групп символов (любые непроблеьные или «;»), разделённых
-		 *   точкой или слэшем
-		 */
-		if ($script !== '' && preg_match('=(^\w{3,8}://|^[^\s;]+(\.|/)[^\s;]+$)=', $script))
-		{
-			$this->setAttribute('src', $script);
-			$this->setContents('');
-		}
-		else
-		{
-			$this->setContents($script);
-		}
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Устанавливает содержимое
-	 *
-	 * @param string $contents  содержимое
-	 *
-	 * @return void
-	 *
-	 * @since 2.15
-	 */
-	public function setContents($contents)
-	{
-		if ($contents)
-		{
-			$contents = "//<!-- <![CDATA[\n". $contents . "\n//]] -->";
-		}
-		parent::setContents($contents);
-	}
-	//-----------------------------------------------------------------------------
-
-}
-
-
 
 /**
  * Родительский класс веб-интерфейсов
  *
  * @package Eresus
  */
-class WebPage
+class Eresus_WebPage
 {
 	/**
 	 * Идентификатор текущего раздела
@@ -300,7 +103,7 @@ class WebPage
 	/**
 	 * Конструктор
 	 *
-	 * @return WebPage
+	 * @return Eresus_WebPage
 	 */
 	// @codeCoverageIgnoreStart
 	public function __construct()
@@ -426,7 +229,7 @@ class WebPage
 			}
 		}
 
-		$script = new HtmlScriptElement($url);
+		$script = new Eresus_HTML_ScriptElement($url);
 
 		$args = func_get_args();
 		// Отбрасываем $url
@@ -506,7 +309,7 @@ class WebPage
 	 */
 	public function addScripts($code)
 	{
-		$script = new HtmlScriptElement($code);
+		$script = new Eresus_HTML_ScriptElement($code);
 
 		$args = func_get_args();
 		// Отбрасываем $code
@@ -654,7 +457,7 @@ class WebPage
 		 */
 		foreach ($this->head['scripts'] as $script)
 		{
-			/** @var HtmlScriptElement $script */
+			/** @var Eresus_HTML_ScriptElement $script */
 			$result[] = $script->getHTML();
 		}
 
@@ -692,7 +495,7 @@ class WebPage
 		 */
 		foreach ($this->body['scripts'] as $script)
 		{
-			/** @var HtmlScriptElement $script */
+			/** @var Eresus_HTML_ScriptElement $script */
 			$result[] = $script->getHTML();
 		}
 

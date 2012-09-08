@@ -42,7 +42,7 @@ define('CLIENTUI', true);
  *
  * @package Eresus
  */
-class TClientUI extends WebPage
+class TClientUI extends Eresus_WebPage
 {
 	public $dbItem = array(); # Информация о странице из БД
 	public $name = ''; # Имя страницы

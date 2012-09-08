@@ -12,7 +12,7 @@
 - Eresus_Accounts
 - Sections
 - Templates
-- WebPage
+- Eresus_WebPage
 - Eresus_WebServer
 
 А также некоторые устаревшие компоненты:
@@ -43,8 +43,8 @@
 Библиотека UI
 -------------
 
-- HtmlElement
-- HtmlScriptElement
+- Eresus_Html_Element
+- Eresus_HTML_ScriptElement
 - Eresus_UI_Pagination
 - EresusForm
 

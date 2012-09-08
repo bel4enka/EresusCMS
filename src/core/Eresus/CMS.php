@@ -45,7 +45,7 @@ class Eresus_CMS extends EresusApplication
 	protected $request;
 
 	/**
-	 * @var WebPage
+	 * @var Eresus_WebPage
 	 * @since 3.00
 	 */
 	protected $page;
@@ -70,7 +70,6 @@ class Eresus_CMS extends EresusApplication
 				'EresusForm' => ERESUS_SITE_ROOT . '/core/EresusForm.php',
 				'I18n' => ERESUS_SITE_ROOT . '/core/i18n.php',
 				'Templates' => ERESUS_SITE_ROOT . '/core/lib/templates.php',
-				'WebPage' => ERESUS_SITE_ROOT . '/core/classes/WebPage.php',
 			));
 			$loader->register();
 
@@ -158,7 +157,7 @@ class Eresus_CMS extends EresusApplication
 	 *
 	 * Метод нужен до отказа от переменной $page
 	 *
-	 * @return WebPage
+	 * @return Eresus_WebPage
 	 *
 	 * @since 3.00
 	 */

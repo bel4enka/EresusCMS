@@ -28,3 +28,4 @@
 - EresusExtensions в Eresus_Extensions_VendorRegistry
 - WebServer в Eresus_WebServer
 - PaginationHelper в Eresus_UI_Pagination
+- WebPage в Eresus_WebPage
