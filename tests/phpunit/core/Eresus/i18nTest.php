@@ -30,7 +30,7 @@
  */
 
 require_once __DIR__ . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/Eresus/i18n.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/I18n.php';
 
 /**
  * @package Eresus_CMS

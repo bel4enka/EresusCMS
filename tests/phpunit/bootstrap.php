@@ -2,12 +2,10 @@
 /**
  * ${product.title}
  *
- * Модульные тесты
+ * Тесты
  *
  * @version ${product.version}
- *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -28,9 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
- *
- * $Id$
  */
 
 define('TESTS_TEST_DIR', __DIR__ );
