@@ -209,7 +209,6 @@ function UserRights($level)
  * Доступные библиотеки:
  *
  * - forms — работа с веб-формами
- * - mysql — работа с MySQL
  * - sections — работа с разделами сайта
  *
  * @param string $library  имя библиотеки
@@ -1667,17 +1666,10 @@ class Eresus
 	 */
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine']))
-		{
-			$className = $this->conf['db']['engine'];
-			$this->db = new $className;
-			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
-				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-		}
-		else
-		{
-			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
-		}
+		include __DIR__ . '/mysql.php';
+		$this->db = new MySQL;
+		$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
+			$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
 	}
 
 	/**
