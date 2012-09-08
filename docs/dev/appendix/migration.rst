@@ -26,3 +26,5 @@
 - Plugins в Eresus_Extensions_Registry
 - EresusConnector в Eresus_Extensions_Connector
 - EresusExtensions в Eresus_Extensions_VendorRegistry
+- WebServer в Eresus_WebServer
+- PaginationHelper в Eresus_UI_Pagination

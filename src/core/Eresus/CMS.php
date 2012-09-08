@@ -69,7 +69,6 @@ class Eresus_CMS extends EresusApplication
 			$loader = new MapClassLoader(array(
 				'EresusForm' => ERESUS_SITE_ROOT . '/core/EresusForm.php',
 				'I18n' => ERESUS_SITE_ROOT . '/core/i18n.php',
-				'PaginationHelper' => ERESUS_SITE_ROOT . '/core/classes/helpers/PaginationHelper.php',
 				'Templates' => ERESUS_SITE_ROOT . '/core/lib/templates.php',
 				'WebPage' => ERESUS_SITE_ROOT . '/core/classes/WebPage.php',
 			));

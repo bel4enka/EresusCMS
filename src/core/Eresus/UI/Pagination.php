@@ -1,14 +1,13 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Помощник нумерации
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mk@eresus.ru>
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -27,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 /**
@@ -38,8 +35,7 @@
  *
  * @since 2.14
  */
-class PaginationHelper
-implements Iterator, Countable
+class Eresus_UI_Pagination implements Iterator, Countable
 {
 	/**
 	 * Общее количество страниц
@@ -108,7 +104,7 @@ implements Iterator, Countable
 	 * @param int    $current      Номер текущей страницы. По умолчанию 1.
 	 * @param string $urlTemplate  Шаблон URL. Используйте "%d" для подстановки страницы
 	 *
-	 * @return PaginationHelper
+	 * @return Eresus_UI_Pagination
 	 *
 	 * @since 2.14
 	 */

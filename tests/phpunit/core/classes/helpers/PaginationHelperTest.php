@@ -29,13 +29,13 @@
  * $Id$
  */
 
-require_once TESTS_SRC_DIR . '/core/classes/helpers/PaginationHelper.php';
+require_once TESTS_SRC_DIR . '/core/Eresus/UI/Pagination.php';
 
 /**
  * @package EresusCMS
  * @subpackage Tests
  */
-class PaginationHelperTest extends PHPUnit_Framework_TestCase
+class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * (non-PHPdoc)
@@ -61,12 +61,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку и чтение свойства $total
 	 *
-	 * @covers PaginationHelper::setTotal
-	 * @covers PaginationHelper::getTotal
+	 * @covers Eresus_UI_Pagination::setTotal
+	 * @covers Eresus_UI_Pagination::getTotal
 	 */
 	public function test_setgetTotal()
 	{
-		$test = new PaginationHelper();
+		$test = new Eresus_UI_Pagination();
 		$test->setTotal(123);
 		$this->assertEquals(123, $test->getTotal());
 	}
@@ -75,12 +75,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку и чтение свойства $current
 	 *
-	 * @covers PaginationHelper::setCurrent
-	 * @covers PaginationHelper::getCurrent
+	 * @covers Eresus_UI_Pagination::setCurrent
+	 * @covers Eresus_UI_Pagination::getCurrent
 	 */
 	public function test_setgetCurrent()
 	{
-		$test = new PaginationHelper();
+		$test = new Eresus_UI_Pagination();
 		$test->setCurrent(123);
 		$this->assertEquals(123, $test->getCurrent());
 	}
@@ -89,19 +89,19 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем конструктор
 	 *
-	 * @covers PaginationHelper::__construct
+	 * @covers Eresus_UI_Pagination::__construct
 	 */
 	public function test_construct_wo_args()
 	{
-		$test = new PaginationHelper();
+		$test = new Eresus_UI_Pagination();
 		$this->assertNull($test->getTotal(), 'Case 1');
 		$this->assertEquals(1, $test->getCurrent(), 'Case 1');
 
-		$test = new PaginationHelper(10);
+		$test = new Eresus_UI_Pagination(10);
 		$this->assertEquals(10, $test->getTotal(), 'Case 2');
 		$this->assertEquals(1, $test->getCurrent(), 'Case 2');
 
-		$test = new PaginationHelper(20, 5);
+		$test = new Eresus_UI_Pagination(20, 5);
 		$this->assertEquals(20, $test->getTotal(), 'Case 3');
 		$this->assertEquals(5, $test->getCurrent(), 'Case 3');
 	}
@@ -110,12 +110,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку и чтение свойства $templatePath
 	 *
-	 * @covers PaginationHelper::setTemplate
-	 * @covers PaginationHelper::getTemplate
+	 * @covers Eresus_UI_Pagination::setTemplate
+	 * @covers Eresus_UI_Pagination::getTemplate
 	 */
 	public function test_setgetTemplate()
 	{
-		$test = new PaginationHelper();
+		$test = new Eresus_UI_Pagination();
 		$test->setTemplate('/path/to/file');
 		$this->assertEquals('/path/to/file', $test->getTemplate());
 	}
@@ -124,12 +124,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку и чтение свойства $urlTemplate
 	 *
-	 * @covers PaginationHelper::setUrlTemplate
-	 * @covers PaginationHelper::getUrlTemplate
+	 * @covers Eresus_UI_Pagination::setUrlTemplate
+	 * @covers Eresus_UI_Pagination::getUrlTemplate
 	 */
 	public function test_setgetUrlTemplate()
 	{
-		$test = new PaginationHelper();
+		$test = new Eresus_UI_Pagination();
 		$test->setUrlTemplate('/%d/');
 		$this->assertEquals('/%d/', $test->getUrlTemplate());
 	}
@@ -138,12 +138,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку и чтение свойства $size
 	 *
-	 * @covers PaginationHelper::setSize
-	 * @covers PaginationHelper::getSize
+	 * @covers Eresus_UI_Pagination::setSize
+	 * @covers Eresus_UI_Pagination::getSize
 	 */
 	public function test_setgetSize()
 	{
-		$test = new PaginationHelper();
+		$test = new Eresus_UI_Pagination();
 		$test->setSize(5);
 		$this->assertEquals(5, $test->getSize());
 	}
@@ -152,12 +152,12 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем метод rewind()
 	 *
-	 * @covers PaginationHelper::rewind
-	 * @covers PaginationHelper::count
+	 * @covers Eresus_UI_Pagination::rewind
+	 * @covers Eresus_UI_Pagination::count
 	 */
 	public function test_rewind()
 	{
-		$test = new PaginationHelper(10, 1);
+		$test = new Eresus_UI_Pagination(10, 1);
 		$test->rewind();
 		$this->assertEquals(10, count($test), 'Case 1');
 
@@ -181,7 +181,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_commonUse_simple()
 	{
-		$test = new PaginationHelper(10, 5);
+		$test = new Eresus_UI_Pagination(10, 5);
 
 		$data = $test->render();
 		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
@@ -215,7 +215,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_commonUse_begining()
 	{
-		$test = new PaginationHelper(100, 1);
+		$test = new Eresus_UI_Pagination(100, 1);
 
 		$data = $test->render();
 		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
@@ -255,7 +255,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_commonUse_ending()
 	{
-		$test = new PaginationHelper(100, 100);
+		$test = new Eresus_UI_Pagination(100, 100);
 
 		$data = $test->render();
 		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
@@ -295,7 +295,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_commonUse_middle()
 	{
-		$test = new PaginationHelper(100, 50);
+		$test = new Eresus_UI_Pagination(100, 50);
 
 		$data = $test->render();
 		$this->assertArrayHasKey('pagination', $data, '$data does not contain "pagination" entry');
@@ -338,7 +338,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_size2()
 	{
-		$test = new PaginationHelper(4, 4);
+		$test = new Eresus_UI_Pagination(4, 4);
 		$test->setSize(2);
 
 		$data = $test->render();
@@ -375,7 +375,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_size2_beginning()
 	{
-		$test = new PaginationHelper(4, 1);
+		$test = new Eresus_UI_Pagination(4, 1);
 		$test->setSize(2);
 
 		$data = $test->render();
@@ -412,7 +412,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_size2_current3()
 	{
-		$test = new PaginationHelper(4, 3);
+		$test = new Eresus_UI_Pagination(4, 3);
 		$test->setSize(2);
 
 		$data = $test->render();

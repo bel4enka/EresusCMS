@@ -45,7 +45,7 @@
 
 - HtmlElement
 - HtmlScriptElement
-- PaginationHelper
+- Eresus_UI_Pagination
 - EresusForm
 
 Библиотека UI АИ
