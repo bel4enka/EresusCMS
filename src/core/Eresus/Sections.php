@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
- * ${product.description}
+ * Работа с разделами сайта
  *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -27,23 +27,9 @@
  *
  * @package Eresus
  *
- * $Id$
- *
  * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
  *
  */
-
-/**
- * Активные разделы
- * @var int
- */
-define('SECTIONS_ACTIVE',  0x0001);
-
-/**
- * Видимые разделы
- * @var int
- */
-define('SECTIONS_VISIBLE', 0x0002);
 
 /**
  * Работа с разделами сайта
@@ -52,8 +38,20 @@ define('SECTIONS_VISIBLE', 0x0002);
  *
  * @since 2.10
  */
-class Sections
+class Eresus_Sections
 {
+	/**
+	 * Активные разделы
+	 * @var int
+	 */
+	const SECTIONS_ACTIVE = 0x0001;
+
+	/**
+	 * Видимые разделы
+	 * @var int
+	 */
+	const SECTIONS_VISIBLE = 0x0002;
+
 	/**
 	 * Имя таблицы разделов
 	 *
@@ -169,8 +167,8 @@ class Sections
 				for ($i=0; $i<count($list); $i++)
 				{
 					/* Фильтруем с учётом переданных флагов */
-					$filterByActivePassed = !($flags & SECTIONS_ACTIVE) || $list[$i]['active'];
-					$filterByVisiblePassed = !($flags & SECTIONS_VISIBLE) || $list[$i]['visible'];
+					$filterByActivePassed = !($flags & self::SECTIONS_ACTIVE) || $list[$i]['active'];
+					$filterByVisiblePassed = !($flags & self::SECTIONS_VISIBLE) || $list[$i]['visible'];
 
 					if ($filterByActivePassed && $filterByVisiblePassed)
 					{

@@ -1441,7 +1441,7 @@ class Eresus
 	/**
 	 * Интерфейс работы с разделами сайта
 	 *
-	 * @var Sections
+	 * @var Eresus_Sections
 	 * @since 2.10
 	 */
 	public $sections;
@@ -1816,7 +1816,7 @@ class Eresus
 		$this->reset_login();
 		# Подключение работы с разделами сайта
 		useLib('sections');
-		$this->sections = new Sections;
+		$this->sections = new Eresus_Sections;
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 

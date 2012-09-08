@@ -971,7 +971,8 @@ class TAdminUI extends Eresus_WebPage
 
 		$result = '';
 		$items = Eresus_CMS::getLegacyKernel()->
-			sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'], SECTIONS_ACTIVE);
+			sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'],
+				Eresus_Sections::SECTIONS_ACTIVE);
 
 		if (count($items))
 		{

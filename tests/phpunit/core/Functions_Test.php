@@ -226,6 +226,17 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('b', replaceMacros('$(a?b:c)', array('a' => true)));
 		$this->assertEquals('c', replaceMacros('$(a?b:c)', array('a' => false)));
 	}
-	
-	
+
+	/**
+	 *
+	 */
+	public function test_imageCreateFromFile()
+	{
+		$folder = TESTS_FIXT_DIR . '/core/lib/glib';
+
+		$this->assertInternalType('resource', imageCreateFromFile($folder . '/gif.gif'));
+		$this->assertInternalType('resource', imageCreateFromFile($folder . '/jpeg.jpg'));
+		$this->assertInternalType('resource', imageCreateFromFile($folder . '/png.png'));
+	}
+
 }

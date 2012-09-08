@@ -220,7 +220,7 @@ class TClientUI extends Eresus_WebPage
 		{
 			$items = Eresus_CMS::getLegacyKernel()->sections->children($item['id'],
 				Eresus_CMS::getLegacyKernel()->user['auth'] ?
-					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, SECTIONS_ACTIVE);
+					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, Eresus_Sections::SECTIONS_ACTIVE);
 			$item = false;
 			for ($i=0; $i<count($items); $i++)
 			{

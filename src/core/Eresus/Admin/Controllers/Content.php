@@ -51,7 +51,7 @@ class Eresus_Admin_Controllers_Content
 		}
 		$result = '';
 		useLib('sections');
-		$sections = new Sections();
+		$sections = new Eresus_Sections();
 		$item = $sections->get(arg('section', 'int'));
 
 		Eresus_Kernel::app()->getPage()->id = $item['id'];
