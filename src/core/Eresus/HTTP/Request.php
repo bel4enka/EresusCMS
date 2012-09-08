@@ -39,14 +39,6 @@ use Symfony\Component\HttpFoundation\Request;
 class Eresus_HTTP_Request extends Request
 {
 	/**
-	 * Локальный корень (на случай когда сайт расположен не в корне)
-	 *
-	 * @var string
-	 * @since 3.01
-	 */
-	protected $localRoot;
-
-	/**
 	 * Возвращает URL относительно корня сайта
 	 *
 	 * @return string
@@ -60,38 +52,29 @@ class Eresus_HTTP_Request extends Request
 	}
 
 	/**
-	 * Задаёт путь к корню сайта
-	 *
-	 * Этот путь будет вырезан из значений, возвращаемых {@link getLocalPath()}.
-	 *
-	 * <code>
-	 * $req = new Eresus_HTTP_Request('http://example.org/some/path/script?query');
-	 * echo $req->getLocalPath(); // '/some/path'
-	 * $req->setLocalRoot('/some');
-	 * echo $req->getLocalPath(); // '/path'
-	 * </code>
-	 *
-	 * @param string $root
-	 *
-	 * @return void
-	 *
-	 * @since 3.01
-	 */
-	public function setLocalRoot($root)
-	{
-		if (substr($root, -1) == '/')
-		{
-			$root = substr($root, 0, -1);
-		}
-		$this->localRoot = $root;
-	}
-
-	/**
 	 * Возвращает имя запрошенного в URL файла (без пути)
 	 */
 	public function getFilename()
 	{
 		return basename($this->getPathInfo());
+	}
+
+
+	/**
+	 * Возвращает из URL путь без имени файла
+	 */
+	public function getPath()
+	{
+		$path = $this->getPathInfo();
+		if (substr($path, -1) == '/')
+		{
+			$path = substr($path, 0, -1);
+		}
+		else
+		{
+			$path = dirname($path);
+		}
+		return $path;
 	}
 	//@codeCoverageIgnoreStart
 }

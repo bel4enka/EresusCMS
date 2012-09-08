@@ -63,4 +63,17 @@ class Eresus_HTTP_RequestTest extends PHPUnit_Framework_TestCase
 		$request = Eresus_HTTP_Request::create('/example.com/admin.php', 'GET');
 		$this->assertEquals('admin.php', $request->getFilename());
 	}
+
+	/**
+	 * @covers Eresus_HTTP_Request::getPath
+	 */
+	public function test_getPath()
+	{
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_HTTP_Request::create('/path/to/file.php', 'GET');
+		$this->assertEquals('/path/to', $request->getPath());
+
+		$request = Eresus_HTTP_Request::create('/path/to/', 'GET');
+		$this->assertEquals('/path/to', $request->getPath());
+	}
 }
