@@ -35,10 +35,10 @@
  *
  * @package Eresus
  */
-class TPages
+class Eresus_Admin_Controllers_Pages
 {
 	/**
-	 * Уровень доступа к этому модулу
+	 * Уровень доступа к этому модулю
 	 * @var int
 	 */
 	public $access = ADMIN;

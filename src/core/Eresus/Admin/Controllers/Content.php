@@ -35,7 +35,7 @@
  *
  * @package Eresus
  */
-class TContent
+class Eresus_Admin_Controllers_Content
 {
 
 	/**

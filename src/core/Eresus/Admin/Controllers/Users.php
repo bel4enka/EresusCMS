@@ -30,14 +30,12 @@
  * $Id$
  */
 
-useLib('accounts');
-
 /**
  * Управление пользователями
  *
  * @package Eresus
  */
-class TUsers
+class Eresus_Admin_Controllers_Users
 {
 	private $accounts;
 
@@ -50,7 +48,7 @@ class TUsers
 	/**
 	 * Конструктор
 	 *
-	 * @return TUsers
+	 * @return Eresus_Admin_Controllers_Users
 	 */
 	function __construct()
 	{

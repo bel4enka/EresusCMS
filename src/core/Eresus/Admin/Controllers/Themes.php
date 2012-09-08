@@ -35,7 +35,7 @@
  *
  * @package Eresus
  */
-class TThemes
+class Eresus_Admin_Controllers_Themes
 {
 	/**
 	 * Минимальный требуемый уровень доступа

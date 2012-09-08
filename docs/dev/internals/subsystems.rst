@@ -25,15 +25,15 @@
 -------------------------------
 
 - Eresus_Admin_Theme
-- TAbout
+- Eresus_Admin_Controllers_About
 - TAdminUI
-- TContent
-- TFiles
-- TPages
-- TPlgMgr
-- TSettings
-- TThemes
-- TUsers
+- Eresus_Admin_Controllers_Content
+- Eresus_Admin_Controllers_Files
+- Eresus_Admin_Controllers_Pages
+- Eresus_Admin_Controllers_Plgmgr
+- Eresus_Admin_Controllers_Settings
+- Eresus_Admin_Controllers_Themes
+- Eresus_Admin_Controllers_Users
 
 Клиентский интерфейс (КИ)
 -------------------------

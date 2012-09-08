@@ -39,14 +39,14 @@ require_once TESTS_SRC_DIR . '/core/Eresus/Admin/Controllers/Settings.php';
 class Eresus_TSettingsTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers TSettings::mkstr
+	 * @covers Eresus_Admin_Controllers_Settings::mkstr
 	 */
 	public function test_mkstr()
 	{
-		$mkstr = new ReflectionMethod('TSettings', 'mkstr');
+		$mkstr = new ReflectionMethod('Eresus_Admin_Controllers_Settings', 'mkstr');
 		$mkstr->setAccessible(true);
 
-		$settings = new TSettings('');
+		$settings = new Eresus_Admin_Controllers_Settings('');
 		$this->assertEquals("  define('foo', '');\n", $mkstr->invoke($settings, 'foo'));
 		$this->assertEquals("  define('foo', false);\n", $mkstr->invoke($settings, 'foo', 'bool'));
 		$this->assertEquals("  define('foo', 0);\n", $mkstr->invoke($settings, 'foo', 'int'));

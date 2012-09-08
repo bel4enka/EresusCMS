@@ -53,7 +53,7 @@ define('FILES_FILTER', '!\.\./!');
  *
  * @package Eresus
  */
-class TFiles
+class Eresus_Admin_Controllers_Files
 {
 	var
 		$access = EDITOR,

@@ -34,7 +34,7 @@
  *
  * @package Eresus
  */
-class TPlgMgr
+class Eresus_Admin_Controllers_Plgmgr
 {
 	/**
 	 * Уровень доступа к модулю

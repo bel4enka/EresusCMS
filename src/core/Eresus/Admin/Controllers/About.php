@@ -34,7 +34,7 @@
  *
  * @package Eresus
  */
-class TAbout
+class Eresus_Admin_Controllers_About
 {
 	/**
 	 * Возвращает страницу "О программе"

@@ -862,29 +862,13 @@ class TAdminUI extends WebPage
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		$req = HTTP::request();
 		$result = '';
 		if (arg('mod'))
 		{
 			$module = arg('mod', '/[^\w-]/');
-			$map = array(
-				'about' => 'About',
-				'content' => 'Content',
-				'files' => 'Files',
-				'languages' => 'Languages',
-				'pages' => 'Pages',
-				'plgmgr' => 'Plgmgr',
-				'settings' => 'Settings',
-				'themes' => 'Themes',
-				'users' => 'Users'
-			);
-			$filename = array_key_exists($module, $map)
-				? Eresus_CMS::getLegacyKernel()->froot . "core/Eresus/Admin/Controllers/{$map[$module]}.php"
-				: null;
-			if ($filename && file_exists($filename))
+			$class = 'Eresus_Admin_Controllers_' . ucfirst($module);
+			if (class_exists($class))
 			{
-				Core::safeInclude($filename);
-				$class = "T$module";
 				$this->module = new $class;
 			}
 			elseif (substr($module, 0, 4) == 'ext-')

@@ -33,7 +33,7 @@
 /**
  * @package Eresus
  */
-class TSettings
+class Eresus_Admin_Controllers_Settings
 {
 	/**
 	 * Минимальный требуемый уровень доступа
