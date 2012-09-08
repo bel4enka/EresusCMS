@@ -67,7 +67,7 @@ class Eresus_Kernel
 	 * @var ContainerBuilder
 	 * @since 3.01
 	 */
-	static private $sc;
+	static private $sc = null;
 
 	/**
 	 * Выполняемое приложение
@@ -137,8 +137,6 @@ class Eresus_Kernel
 		$map->register();
 
 		self::initExceptionHandling();
-
-		self::$sc = new ContainerBuilder();
 
 		self::$inited = true;
 	}
@@ -487,6 +485,10 @@ class Eresus_Kernel
 	 */
 	public static function sc()
 	{
+		if (null === self::$sc)
+		{
+			self::$sc = new ContainerBuilder();
+		}
 		return self::$sc;
 	}
 
