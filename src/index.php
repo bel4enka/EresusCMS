@@ -46,19 +46,19 @@ define('ERESUS_LOG_LEVEL' , LOG_ERR);
 
 ini_set('track_errors', true);
 
-define('ERESUS_SITE_ROOT', __DIR__);
+define('ERESUS_APP_ROOT', __DIR__);
 
 /**
  * Подключение ядра
  */
-require ERESUS_SITE_ROOT . '/core/Eresus/Kernel.php';
+require ERESUS_APP_ROOT . '/core/Eresus/Kernel.php';
 
 Eresus_Kernel::init();
 
 /**
  * Подключение Eresus Core
  */
-require ERESUS_SITE_ROOT . '/core/framework/core/eresus-core.php';
+require ERESUS_APP_ROOT . '/core/framework/core/eresus-core.php';
 
 if (isset($php_errormsg))
 {
@@ -77,7 +77,7 @@ if (is_file('install.php'))
 }
 else
 {
-	$fileName = ERESUS_SITE_ROOT . '/core/Eresus/CMS.php';
+	$fileName = ERESUS_APP_ROOT . '/core/Eresus/CMS.php';
 	$appName = 'Eresus_CMS';
 }
 

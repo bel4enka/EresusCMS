@@ -35,15 +35,8 @@ use Symfony\Component\ClassLoader\MapClassLoader;
  *
  * @package Eresus
  */
-class Eresus_CMS extends EresusApplication
+class Eresus_CMS
 {
-	/**
-	 * HTTP-запрос
-	 *
-	 * @var HttpRequest
-	 */
-	protected $request;
-
 	/**
 	 * @var Eresus_WebPage
 	 * @since 3.00
@@ -70,7 +63,7 @@ class Eresus_CMS extends EresusApplication
 			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 
 			/* Подключение старого ядра */
-			include ERESUS_SITE_ROOT . '/core/kernel-legacy.php';
+			include ERESUS_APP_ROOT . '/core/kernel-legacy.php';
 
 			/**
 			 * @global Eresus Eresus
@@ -102,7 +95,6 @@ class Eresus_CMS extends EresusApplication
 		}
 		return 0;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выводит сообщение о фатальной ошибке и прекращает работу приложения
@@ -117,10 +109,19 @@ class Eresus_CMS extends EresusApplication
 	public function fatalError(/** @noinspection PhpUnusedParameterInspection */
 		$error = null, $exit = true)
 	{
-		include ERESUS_SITE_ROOT . '/core/fatal.html.php';
+		include ERESUS_APP_ROOT . '/core/fatal.html.php';
 		die;
 	}
-	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает корневую папку приложения
+	 *
+	 * @return string
+	 */
+	public function getFsRoot()
+	{
+		return ERESUS_APP_ROOT;
+	}
 
 	/**
 	 * Возвращает экземпляр класса Eresus
@@ -135,7 +136,6 @@ class Eresus_CMS extends EresusApplication
 	{
 		return $GLOBALS['Eresus'];
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает экземпляр класса Eresus_ClientUI или Eresus_AdminUI
@@ -150,7 +150,6 @@ class Eresus_CMS extends EresusApplication
 	{
 		return $this->page;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверка окружения
@@ -191,7 +190,7 @@ class Eresus_CMS extends EresusApplication
 		{
 			if (!PHP::isCLI())
 			{
-				include ERESUS_SITE_ROOT . '/core/errors.html.php';
+				include ERESUS_APP_ROOT . '/core/errors.html.php';
 			}
 			else
 			{
@@ -199,7 +198,6 @@ class Eresus_CMS extends EresusApplication
 			}
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Создание файловой структуры
@@ -225,7 +223,6 @@ class Eresus_CMS extends EresusApplication
 			// TODO Сделать проверку на запись в созданные директории
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выполнение в режиме Web
@@ -237,14 +234,16 @@ class Eresus_CMS extends EresusApplication
 		$this->initWeb();
 
 		$output = '';
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
 
 		switch (true)
 		{
-			case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
+			case strpos($request->getLocalUrl(), '/ext-3rd') === 0:
 				$this->call3rdPartyExtension();
 			break;
 
-			case substr($this->request->getLocal(), 0, 6) == '/admin':
+			case strpos($request->getLocalUrl(), '/admin') === 0:
 				$output = $this->runWebAdminUI();
 			break;
 
@@ -267,12 +266,10 @@ class Eresus_CMS extends EresusApplication
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 
 		Eresus_Kernel::sc()->set('request', Eresus_HTTP_Request::createFromGlobals());
-		$this->request = HTTP::request();
 		//$this->response = new HttpResponse();
 		$this->detectWebRoot();
 		//$this->initRoutes();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Запуск КИ
@@ -287,7 +284,6 @@ class Eresus_CMS extends EresusApplication
 		$this->page->init();
 		/*return */$this->page->render();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Запуск АИ
@@ -301,7 +297,6 @@ class Eresus_CMS extends EresusApplication
 		$GLOBALS['page'] = $this->page = new Eresus_AdminUI();
 		/*return */$this->page->render();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Определение корневого веб-адреса сайта
@@ -315,17 +310,15 @@ class Eresus_CMS extends EresusApplication
 		$DOCUMENT_ROOT = $webServer->getDocumentRoot();
 		$SUFFIX = $this->getFsRoot();
 		$SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-		$this->request->setLocalRoot($SUFFIX);
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
+		$request->setLocalRoot($SUFFIX);
 		eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
 		TemplateSettings::setGlobalValue('siteRoot',
-			$this->request->getScheme() . '://' .
-			$this->request->getHost() .
-			$this->request->getLocalRoot()
-		);
+			$request->getScheme() . '://' . $request->getHost() . $request->getLocalRoot());
 
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выполнение в режиме CLI
@@ -339,7 +332,6 @@ class Eresus_CMS extends EresusApplication
 		$this->initCLI();
 		return 0;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализация CLI
@@ -348,7 +340,6 @@ class Eresus_CMS extends EresusApplication
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализация конфигурации
@@ -377,7 +368,6 @@ class Eresus_CMS extends EresusApplication
 			$this->fatalError("Main config file '$filename' not found!");
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализация БД
@@ -397,7 +387,6 @@ class Eresus_CMS extends EresusApplication
 
 		DBSettings::setDSN($dsn);*/
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Инициализация сессии
@@ -420,7 +409,6 @@ class Eresus_CMS extends EresusApplication
 		$GLOBALS['session'] = &$_SESSION['session'];
 		$GLOBALS['user'] = &$_SESSION['user'];*/
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обрабатывает запрос к стороннему расширению
@@ -431,7 +419,9 @@ class Eresus_CMS extends EresusApplication
 	 */
 	protected function call3rdPartyExtension()
 	{
-		$extension = substr($this->request->getLocal(), 9);
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
+		$extension = substr($request->getLocalUrl(), 9);
 		$extension = substr($extension, 0, strpos($extension, '/'));
 
 		$filename = $this->getFsRoot().'/ext-3rd/'.$extension.'/eresus-connector.php';
@@ -449,5 +439,4 @@ class Eresus_CMS extends EresusApplication
 			echo '404 Not Found';
 		}
 	}
-	//-----------------------------------------------------------------------------
 }

@@ -70,14 +70,6 @@ class Eresus_Kernel
 	static private $sc = null;
 
 	/**
-	 * Выполняемое приложение
-	 *
-	 * @var EresusApplication
-	 * @see exec(), app()
-	 */
-	static private $app = null;
-
-	/**
 	 * Для тестирования
 	 *
 	 * @var bool
@@ -116,18 +108,18 @@ class Eresus_Kernel
 		 * Регистрация загрузчиков классов
 		 */
 		/** @noinspection PhpIncludeInspection */
-		require ERESUS_SITE_ROOT . '/core/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+		require ERESUS_APP_ROOT . '/core/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 		$loader = new UniversalClassLoader();
 		$loader->registerNamespaces(array(
-			'Symfony' => ERESUS_SITE_ROOT . '/core',
+			'Symfony' => ERESUS_APP_ROOT . '/core',
 		));
 		$loader->registerPrefixes(array(
-			'Eresus_' => ERESUS_SITE_ROOT . '/core',
+			'Eresus_' => ERESUS_APP_ROOT . '/core',
 		));
 		$loader->register();
 
-		$botoborPath = ERESUS_SITE_ROOT . '/core/botobor/botobor.php';
+		$botoborPath = ERESUS_APP_ROOT . '/core/botobor/botobor.php';
 		$map = new MapClassLoader(array(
 			'Botobor' => $botoborPath,
 			'Botobor_MetaData' => $botoborPath,

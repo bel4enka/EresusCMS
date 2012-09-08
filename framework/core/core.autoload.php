@@ -59,8 +59,4 @@ return array(
 	'HttpMessage' => 'WWW/HTTP/HttpMessage.php',
 	'HttpRequest' => 'WWW/HTTP/HttpRequest.php',
 	'HttpResponse' => 'WWW/HTTP/HttpResponse.php',
-
-	/* Applications */
-	'EresusApplication' => 'EresusApplication.php',
-
 );

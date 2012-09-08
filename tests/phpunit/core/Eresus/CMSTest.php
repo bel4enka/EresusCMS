@@ -42,31 +42,23 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_detectWebRoot()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = Eresus_WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html';
-		$httpRequest = new HttpRequest();
+		$cms = $this->getMock('Eresus_CMS', array('getFsRoot'));
+		$cms->expects($this->any())->method('getFsRoot')
+			->will($this->returnValue('/home/user/public_html'));
 
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
+		$request = $this->getMock('UniversalStub', array('setLocalRoot'));
+		$request->expects($this->once())->method('setLocalRoot')->with('');
+		Eresus_Kernel::sc()->set('request', $request);
 
 		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-		$this->assertEquals('', $httpRequest->localRoot);
+		$detectWebRoot->invoke($cms);
 	}
 
 	/**
@@ -74,31 +66,23 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_detectWebRoot_notRoot()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = Eresus_WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html/example.org';
-		$httpRequest = new HttpRequest();
+		$cms = $this->getMock('Eresus_CMS', array('getFsRoot'));
+		$cms->expects($this->any())->method('getFsRoot')
+			->will($this->returnValue('/home/user/public_html/example.org'));
 
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
+		$request = $this->getMock('UniversalStub', array('setLocalRoot'));
+		$request->expects($this->once())->method('setLocalRoot')->with('/example.org');
+		Eresus_Kernel::sc()->set('request', $request);
 
 		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-		$this->assertEquals('/example.org', $httpRequest->localRoot);
+		$detectWebRoot->invoke($cms);
 	}
 
 	/**
@@ -106,31 +90,23 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_detectWebRoot_windows()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = Eresus_WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('Eresus_WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
-		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
+		$documentRoot->setValue($webServer, 'C:/Program Files/Apache Webserver/docs');
 
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org');
-		$httpRequest = new HttpRequest();
+		$cms = $this->getMock('Eresus_CMS', array('getFsRoot'));
+		$cms->expects($this->any())->method('getFsRoot')
+			->will($this->returnValue('C:/Program Files/Apache Webserver/docs/example.org'));
 
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
+		$request = $this->getMock('UniversalStub', array('setLocalRoot'));
+		$request->expects($this->once())->method('setLocalRoot')->with('/example.org');
+		Eresus_Kernel::sc()->set('request', $request);
 
 		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
 		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-		$this->assertEquals('/example.org', $httpRequest->localRoot);
+		$detectWebRoot->invoke($cms);
 	}
 
 	/**
@@ -155,9 +131,6 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 		$runWeb = new ReflectionMethod('Eresus_CMS', 'runWeb');
 		$runWeb->setAccessible(true);
 
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-
 		$cms = $this->getMock('Eresus_CMS',
 			array('initWeb', 'call3rdPartyExtension', 'runWebAdminUI', 'runWebClientUI'));
 		$cms->expects($this->once())->method('call3rdPartyExtension');
@@ -165,21 +138,21 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
 		$cms->expects($this->once())->method('runWebClientUI');
 
 		/* call3rdPartyExtension */
-		$requestMock = $this->getMock('stdClass', array('getLocal'));
-		$requestMock->expects($this->any())->method('getLocal')->will($this->returnValue('/ext-3rd'));
-		$request->setValue($cms, $requestMock);
+		$request = $this->getMock('stdClass', array('getLocalUrl'));
+		$request->expects($this->any())->method('getLocalUrl')->will($this->returnValue('/ext-3rd'));
+		Eresus_Kernel::sc()->set('request', $request);
 		$runWeb->invoke($cms);
 
 		/* runWebAdminUI */
-		$requestMock = $this->getMock('stdClass', array('getLocal'));
-		$requestMock->expects($this->any())->method('getLocal')->will($this->returnValue('/admin'));
-		$request->setValue($cms, $requestMock);
+		$request = $this->getMock('stdClass', array('getLocalUrl'));
+		$request->expects($this->any())->method('getLocalUrl')->will($this->returnValue('/admin'));
+		Eresus_Kernel::sc()->set('request', $request);
 		$runWeb->invoke($cms);
 
 		/* runWebClientUI */
-		$requestMock = $this->getMock('stdClass', array('getLocal'));
-		$requestMock->expects($this->any())->method('getLocal')->will($this->returnValue('/'));
-		$request->setValue($cms, $requestMock);
+		$request = $this->getMock('stdClass', array('getLocalUrl'));
+		$request->expects($this->any())->method('getLocalUrl')->will($this->returnValue('/'));
+		Eresus_Kernel::sc()->set('request', $request);
 		$runWeb->invoke($cms);
 	}
 }
