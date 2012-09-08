@@ -558,7 +558,7 @@ function replaceMacros($template, $source)
  * В качестве фильтра может быть использовано регулярное выражение (PCRE) или одно из ключевых слов:
  *
  * - int, integer – целое число (используется {@link intval() intval()})
- * -float – вещественное число (используется {@link floatval() floatval()})
+ * - float – вещественное число (используется {@link floatval() floatval()})
  * - word – только буквы и цифры
  * - dbsafe – строка, безопасная для использования в запросах к БД
  *
@@ -571,10 +571,11 @@ function replaceMacros($template, $source)
  */
 function arg($arg, $filter = null)
 {
-	$request = Eresus_CMS::getLegacyKernel()->request;
-	$arg = isset($request['arg'][$arg]) ?
-		$request['arg'][$arg] :
-		null;
+	/** @var Eresus_HTTP_Request $request */
+	$request = Eresus_Kernel::get('request');
+	$arg = $request->request->has($arg)
+		? $request->request->get($arg)
+		: $request->query->get($arg, null);
 
 	if ($arg !== false && !is_null($filter))
 	{
