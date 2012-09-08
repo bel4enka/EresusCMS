@@ -125,14 +125,14 @@ class Eresus_Admin_Controllers_Settings
 	/**
 	 * Возвращает HTML-код раздела
 	 * @return string  HTML
-	 * @uses EresusForm
+	 * @uses Eresus_UI_Form
 	 * @uses Templates
 	 */
 	private function renderForm()
 	{
 		$template = Eresus_Kernel::app()->getPage()->getUITheme()->
 			getResource('SiteSettings/form.html');
-		$form = new EresusForm($template, LOCALE_CHARSET);
+		$form = new Eresus_UI_Form($template);
 		/* Основные */
 		$form->setValue('siteName', option('siteName'));
 		$form->setValue('siteTitle', option('siteTitle'));

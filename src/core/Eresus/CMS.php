@@ -67,7 +67,6 @@ class Eresus_CMS extends EresusApplication
 			 * Подключение таблицы автозагрузки классов
 			 */
 			$loader = new MapClassLoader(array(
-				'EresusForm' => ERESUS_SITE_ROOT . '/core/EresusForm.php',
 				'Templates' => ERESUS_SITE_ROOT . '/core/lib/templates.php',
 			));
 			$loader->register();

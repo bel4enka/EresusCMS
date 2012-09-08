@@ -334,7 +334,7 @@
  *
  * <code>
  *   # Создаём экземпляр формы
- *   $form = new EresusForm('Common/path/form');
+ *   $form = new Eresus_UI_Form('Common/path/form');
  *
  *   # Загружаем данные в форму
  *   $profile = new ProfileModel();
@@ -348,7 +348,7 @@
  *
  * <code>
  * 	# Создаём экземпляр той же формы что и выше
- *  $form = new EresusForm('Partner/path/form');
+ *  $form = new Eresus_UI_Form('Partner/path/form');
  *
  *  $profile = new ProfileModel();
  *  # Читаем данные
@@ -359,7 +359,7 @@
  *
  * @package Eresus
  */
-class EresusForm
+class Eresus_UI_Form
 {
 
 	/**
@@ -518,7 +518,7 @@ class EresusForm
 		$this->sessionRestore();
 		$this->detectAutoValidate();
 
-		$GLOBALS['page']->linkScripts($GLOBALS['Eresus']->root . 'core/EresusForm.js');
+		$GLOBALS['page']->linkScripts($GLOBALS['Eresus']->root . 'core/Eresus_UI_Form.js');
 
 		$html = $this->parseExtended();
 
@@ -627,7 +627,7 @@ class EresusForm
 
 		$id = $this->xml->firstChild->nextSibling->getAttribute('id');
 		// инициализация объекта формы
-		$scriptContents = "\n\$(document).ready(function () {window.$id = new EresusForm('$id');\n";
+		$scriptContents = "\n\$(document).ready(function () {window.$id = new Eresus_UI_Form('$id');\n";
 
 		/*
 		 * Если в сессии установлен флаг isInvalid, вызываем перепроверку формы
@@ -779,7 +779,7 @@ class EresusForm
 		}
 		else
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm tag "%s"', $node->localName);
+			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported Eresus_UI_Form tag "%s"', $node->localName);
 			return $node;
 		}
 	}
@@ -1008,7 +1008,7 @@ class EresusForm
 		}
 		else
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported EresusForm attribute "%s"', $attr->name);
+			eresus_log(__METHOD__, LOG_WARNING, 'Unsupported Eresus_UI_Form attribute "%s"', $attr->name);
 		}
 
 		$node->removeAttributeNode($attr);
