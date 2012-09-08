@@ -160,7 +160,7 @@ class Eresus_Admin_Controllers_Settings
 
 		foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
 		{
-			if ($plugin instanceof Eresus_Extensions_ContentPlugin || $plugin instanceof TContentPlugin)
+			if ($plugin instanceof Eresus_Extensions_ContentPlugin)
 			{
 				$contentTypes []= array('name' => $plugin->name, 'caption' => $plugin->title);
 			}

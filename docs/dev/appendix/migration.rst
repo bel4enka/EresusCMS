@@ -7,7 +7,9 @@
 Классы
 ^^^^^^
 
-- EresusSourceParseException. Вместо него вбрасывается DomainException
+- TPlugin, TContentPlugin, TListContentPlugin. Вместо них следует использовать классы
+  Eresus_Extensions_Plugin и Eresus_Extensions_ContentPlugin.
+- EresusSourceParseException. Вместо него вбрасывается DomainException.
 
 Изменено
 --------

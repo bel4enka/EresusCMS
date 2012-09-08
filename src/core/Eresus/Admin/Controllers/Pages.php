@@ -356,10 +356,7 @@ class Eresus_Admin_Controllers_Pages
 		{
 			foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
 			{
-				if (
-					$plugin instanceof Eresus_Extensions_ContentPlugin ||
-					$plugin instanceof TContentPlugin
-				)
+				if ($plugin instanceof Eresus_Extensions_ContentPlugin)
 				{
 					$result[0][] = $plugin->title;
 					$result[1][] = $plugin->name;

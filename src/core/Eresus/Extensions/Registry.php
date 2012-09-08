@@ -156,11 +156,6 @@ class Eresus_Extensions_Registry
 			}
 
 			$className = $name;
-			if (!class_exists($className, false) && class_exists('T' . $className, false))
-			{
-				$className = 'T' . $className; // FIXME: Обратная совместимость с версиями до 2.10b2
-			}
-
 			if (class_exists($className, false))
 			{
 				$this->items[$name] = new $className();
@@ -217,7 +212,7 @@ class Eresus_Extensions_Registry
 	 *
 	 * @param string $name  Имя плагина
 	 *
-	 * @return Eresus_Extensions_Plugin|TPlugin|bool  Экземпляр плагина или false если не удалось загрузить плагин
+	 * @return Eresus_Extensions_Plugin|bool  Экземпляр плагина или false
 	 *
 	 * @since 2.10
 	 */
@@ -251,12 +246,6 @@ class Eresus_Extensions_Registry
 
 		Core::safeInclude($filename);
 		$className = $name;
-
-		/* TODO: Обратная совместимость с версиями до 2.10b2. Отказаться в новых версиях */
-		if (!class_exists($className, false) && class_exists('T' . $className))
-		{
-			$className = 'T' . $className;
-		}
 
 		if (!class_exists($className, false))
 		{
