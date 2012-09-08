@@ -35,7 +35,7 @@
  * @package Eresus
  * @since 2.15
  */
-class Eresus_Html_Element
+class Eresus_HTML_Element
 {
 	/**
 	 * Имя тега

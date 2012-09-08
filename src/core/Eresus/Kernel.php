@@ -34,24 +34,6 @@ use Symfony\Component\ClassLoader\UniversalClassLoader,
 		Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Исключительная ситуация, не связанная с ошибкой
- *
- * @package Eresus
- * @since 3.00
- */
-class Eresus_SuccessException extends Exception {}
-
-
-/**
- * Исключительная ситуация, не связанная с ошибкой, требующая завершения приложения
- *
- * @package Eresus
- * @since 3.00
- */
-class Eresus_ExitException extends Eresus_SuccessException {}
-
-
-/**
  * Ядро CMS
  *
  * Основные функции ядра
@@ -148,6 +130,7 @@ class Eresus_Kernel
 		$botoborPath = ERESUS_SITE_ROOT . '/core/botobor/botobor.php';
 		$map = new MapClassLoader(array(
 			'Botobor' => $botoborPath,
+			'Botobor_MetaData' => $botoborPath,
 			'Botobor_Form' => $botoborPath,
 			'Botobor_Keeper' => $botoborPath,
 		));

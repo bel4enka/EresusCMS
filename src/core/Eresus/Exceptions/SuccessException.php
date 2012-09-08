@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Элемент <script>
+ * Исключительная ситуация, не связанная с ошибкой
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -29,58 +29,11 @@
  */
 
 /**
- * Элемент <script>
+ * Исключительная ситуация, не связанная с ошибкой
  *
  * @package Eresus
- * @since 2.15
+ * @since 3.00
  */
-class Eresus_HTML_ScriptElement extends Eresus_HTML_Element
+class Eresus_SuccessException extends Exception
 {
-	/**
-	 * Создаёт новый элемент <script>
-	 *
-	 * @param string $script [optional]  URL или код скрипта.
-	 *
-	 * @since 2.15
-	 */
-	public function __construct($script = '')
-	{
-		parent::__construct('script');
-
-		$this->setAttribute('type', 'text/javascript');
-
-		/*
-		 * Считаем URL-ом всё, что:
-		 * - либо содержит xxx:// в начале
-		 * - либо состоит из минимум двух групп символов (любые непроблеьные или «;»), разделённых
-		 *   точкой или слэшем
-		 */
-		if ($script !== '' && preg_match('=(^\w{3,8}://|^[^\s;]+(\.|/)[^\s;]+$)=', $script))
-		{
-			$this->setAttribute('src', $script);
-			$this->setContents('');
-		}
-		else
-		{
-			$this->setContents($script);
-		}
-	}
-
-	/**
-	 * Устанавливает содержимое
-	 *
-	 * @param string $contents  содержимое
-	 *
-	 * @return void
-	 *
-	 * @since 2.15
-	 */
-	public function setContents($contents)
-	{
-		if ($contents)
-		{
-			$contents = "//<!-- <![CDATA[\n". $contents . "\n//]] -->";
-		}
-		parent::setContents($contents);
-	}
 }

@@ -40,12 +40,12 @@ class HtmlElementTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем простую конструкцию
 	 *
-	 * @covers Eresus_Html_Element::__construct
-	 * @covers Eresus_Html_Element::getHTML
+	 * @covers Eresus_HTML_Element::__construct
+	 * @covers Eresus_HTML_Element::getHTML
 	 */
 	public function test_simple()
 	{
-		$test = new Eresus_Html_Element('a');
+		$test = new Eresus_HTML_Element('a');
 		$this->assertEquals('<a>', $test->getHTML());
 	}
 	//-----------------------------------------------------------------------------
@@ -53,12 +53,12 @@ class HtmlElementTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку атрибутов
 	 *
-	 * @covers Eresus_Html_Element::setAttribute
-	 * @covers Eresus_Html_Element::getHTML
+	 * @covers Eresus_HTML_Element::setAttribute
+	 * @covers Eresus_HTML_Element::getHTML
 	 */
 	public function test_setAttribute()
 	{
-		$test = new Eresus_Html_Element('a');
+		$test = new Eresus_HTML_Element('a');
 
 		$test->setAttribute('href', '#');
 		$this->assertEquals('<a href="#">', $test->getHTML());
@@ -75,11 +75,11 @@ class HtmlElementTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем чтение атрибутов
 	 *
-	 * @covers Eresus_Html_Element::getAttribute
+	 * @covers Eresus_HTML_Element::getAttribute
 	 */
 	public function test_getAttribute()
 	{
-		$test = new Eresus_Html_Element('a');
+		$test = new Eresus_HTML_Element('a');
 
 		$test->setAttribute('href', '#');
 		$this->assertEquals('#', $test->getAttribute('href'));
@@ -91,12 +91,12 @@ class HtmlElementTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Проверяем установку содержимого
 	 *
-	 * @covers Eresus_Html_Element::setContents
-	 * @covers Eresus_Html_Element::getHTML
+	 * @covers Eresus_HTML_Element::setContents
+	 * @covers Eresus_HTML_Element::getHTML
 	 */
 	public function test_setContents()
 	{
-		$test = new Eresus_Html_Element('a');
+		$test = new Eresus_HTML_Element('a');
 
 		$test->setContents('some text');
 		$this->assertEquals('<a>some text</a>', $test->getHTML());
