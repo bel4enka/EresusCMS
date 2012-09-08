@@ -29,3 +29,4 @@
 - WebServer в Eresus_WebServer
 - PaginationHelper в Eresus_UI_Pagination
 - WebPage в Eresus_WebPage
+- i18n в Eresus_i18n

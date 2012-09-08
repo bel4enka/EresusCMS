@@ -1,13 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * ${product.title}
  *
  * Модуль интернационализации.
  *
- * @copyright 2004-2007, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
@@ -28,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 
@@ -38,13 +34,13 @@
  *
  * @package Eresus
  */
-class I18n
+class Eresus_I18n
 {
 
 	/**
 	 * Экземпляр-одиночка
 	 *
-	 * @var I18n
+	 * @var Eresus_I18n
 	 */
 	static private $instance;
 
@@ -63,13 +59,13 @@ class I18n
 	/**
 	 * Возвращает экземпляр-одиночку
 	 *
-	 * @return I18n
+	 * @return Eresus_I18n
 	 */
 	static public function getInstance()
 	{
 		if (!self::$instance)
 		{
-			self::$instance = new I18n(Eresus_Kernel::app()->getFsRoot() . '/lang');
+			self::$instance = new Eresus_I18n(Eresus_Kernel::app()->getFsRoot() . '/lang');
 		}
 
 		return self::$instance;
@@ -80,7 +76,7 @@ class I18n
 	 * Конструктор
 	 *
 	 * @param string $path  Путь к файлам локализации
-	 * @return I18n
+	 * @return Eresus_I18n
 	 */
 	public function __construct($path)
 	{

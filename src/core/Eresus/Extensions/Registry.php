@@ -100,7 +100,7 @@ class Eresus_Extensions_Registry
 							$msg = 'Plugin "%s" requires plugin %s';
 							$requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
 							eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
-							/*$msg = I18n::getInstance()->getText($msg, $this);
+							/*$msg = Eresus_I18n::getInstance()->getText($msg, $this);
 							ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
 							unset($this->list[$plugin]);
 							$success = false;
@@ -173,7 +173,7 @@ class Eresus_Extensions_Registry
 		{
 			eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
 				$name);
-			$msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
+			$msg = Eresus_I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
 			$msg = sprintf($msg, $filename, $name);
 			ErrorMessage($msg);
 		}

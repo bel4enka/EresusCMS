@@ -68,7 +68,6 @@ class Eresus_CMS extends EresusApplication
 			 */
 			$loader = new MapClassLoader(array(
 				'EresusForm' => ERESUS_SITE_ROOT . '/core/EresusForm.php',
-				'I18n' => ERESUS_SITE_ROOT . '/core/i18n.php',
 				'Templates' => ERESUS_SITE_ROOT . '/core/lib/templates.php',
 			));
 			$loader->register();
@@ -93,7 +92,7 @@ class Eresus_CMS extends EresusApplication
 				define('ERESUS_CMS_DEBUG', true);
 			}
 
-			$i18n = I18n::getInstance();
+			$i18n = Eresus_I18n::getInstance();
 			TemplateSettings::setGlobalValue('i18n', $i18n);
 			//$this->initDB();
 			//$this->initSession();

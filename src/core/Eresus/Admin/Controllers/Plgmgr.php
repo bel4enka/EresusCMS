@@ -180,7 +180,7 @@ class Eresus_Admin_Controllers_Plgmgr
 						version_compare($kernelVersion, $required[1], '>')*/
 					)
 					{
-						$msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
+						$msg =  Eresus_I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
 						$errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
 					}
 				}
@@ -213,7 +213,7 @@ class Eresus_Admin_Controllers_Plgmgr
 					)
 					{
 						{
-							$msg = I18n::getInstance()->getText('Requires plugin: %s', $this);
+							$msg = Eresus_I18n::getInstance()->getText('Requires plugin: %s', $this);
 							$item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
 						}
 					}

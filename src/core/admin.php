@@ -897,13 +897,13 @@ class TAdminUI extends Eresus_WebPage
 						if (isset($name))
 						{
 							$logMsg = 'Error in plugin "' . $name . '"';
-							$msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+							$msg = Eresus_I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
 							$msg = sprintf($msg, $name);
 						}
 						else
 						{
 							$logMsg = 'Error in module "' . $module . '"';
-							$msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
+							$msg = Eresus_I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
 							$msg = sprintf($msg, $module);
 						}
 
@@ -925,7 +925,7 @@ class TAdminUI extends Eresus_WebPage
 			else
 			{
 				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
-				$msg = I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
+				$msg = Eresus_I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
 				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
