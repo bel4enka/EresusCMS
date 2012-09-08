@@ -197,7 +197,10 @@ class Eresus_Admin_Controllers_Settings
 			return '';
 		}
 
-		if (HTTP::request()->getMethod() == 'POST')
+		/** @var Eresus_HTTP_Request $req */
+		$request = Eresus_Kernel::get('request');
+
+		if ($request->getMethod() == 'POST')
 		{
 			$this->update();
 		}

@@ -1154,10 +1154,12 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 */
 	private function auth()
 	{
-		$req = HTTP::request();
-		$user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
-		$password = $req->arg('password');
-		$autologin = $req->arg('autologin');
+		/** @var Eresus_HTTP_Request $req */
+		$req = Eresus_Kernel::get('request');
+		$user = $req->request->get('user');
+		$user = preg_replace('/[^a-z0-9_\-\.\@]/', '', $user);
+		$password = $req->request->get('password');
+		$autologin = $req->request->getInt('autologin', 0);
 
 		$data = array('errors' => array());
 		$data['user'] = $user;
@@ -1165,7 +1167,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 
 		if ($req->getMethod() == 'POST')
 		{
-			if (Eresus_CMS::getLegacyKernel()->login($req->arg('user'),
+			if (Eresus_CMS::getLegacyKernel()->login($req->request->get('user'),
 				Eresus_CMS::getLegacyKernel()->password_hash($password), $autologin))
 			{
 				HTTP::redirect(Eresus_CMS::getLegacyKernel()->root . 'admin.php');
@@ -1177,7 +1179,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 		{
 			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
 			{
-				$data['errors'] []= iconv(CHARSET, 'utf-8', $message);
+				$data['errors'] []= $message;
 			}
 
 			Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
