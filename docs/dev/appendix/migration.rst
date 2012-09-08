@@ -23,24 +23,25 @@
 Переименованы классы
 ^^^^^^^^^^^^^^^^^^^^
 
-- AdminList в Eresus_UI_Admin_List (использовать useLib для его подключения больше не надо)
-- AdminUITheme в Eresus_Admin_Theme
 - Plugin в Eresus_Extensions_Plugin
 - ContentPlugin в Eresus_Extensions_ContentPlugin
-- EresusAccounts в Eresus_Accounts
-- EresusCollection в Eresus_Helpers_Collection
-- Plugins в Eresus_Extensions_Registry
 - EresusConnector в Eresus_Extensions_Connector
-- EresusExtensions в Eresus_Extensions_VendorRegistry
-- WebServer в Eresus_WebServer
-- PaginationHelper в Eresus_UI_Pagination
-- WebPage в Eresus_WebPage
-- i18n в Eresus_i18n
-- EresusForm в Eresus_UI_Form
+- TAdminUI в Eresus_AdminUI
+- TClientUI в Eresus_ClientUI
 - Templates в Eresus_Templates
+- EresusForm в Eresus_UI_Form
 - Sections в Eresus_Sections
 - Form в Eresus_UI_Admin_ArrayForm
-- TAdminUI в Eresus_AdminUI
+- PaginationHelper в Eresus_UI_Pagination
+- EresusAccounts в Eresus_Accounts
+- EresusCollection в Eresus_Helpers_Collection
+- AdminList в Eresus_UI_Admin_List
+- AdminUITheme в Eresus_Admin_Theme
+- Plugins в Eresus_Extensions_Registry
+- EresusExtensions в Eresus_Extensions_VendorRegistry
+- WebServer в Eresus_WebServer
+- WebPage в Eresus_WebPage
+- i18n в Eresus_i18n
 
 glib
 ^^^^
