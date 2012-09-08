@@ -47,22 +47,22 @@ class Eresus_HTTP_Request extends Request
 	protected $localRoot;
 
 	/**
-	 * Возвращает путь относительно корня сайта
+	 * Возвращает URL относительно корня сайта
 	 *
 	 * @return string
 	 *
 	 * @see setLocalRoot()
 	 * @since 3.01
 	 */
-	public function getLocalPath()
+	public function getLocalUrl()
 	{
-		$path = $this->getBasePath();
+		$url = $this->getRequestUri();
 
-		if ($this->localRoot && strpos($path, $this->localRoot) === 0)
+		if ($this->localRoot && strpos($url, $this->localRoot) === 0)
 		{
-			$path = substr($path, strlen($this->localRoot));
+			$url = substr($url, strlen($this->localRoot));
 		}
-		return $path;
+		return $url;
 	}
 
 	/**

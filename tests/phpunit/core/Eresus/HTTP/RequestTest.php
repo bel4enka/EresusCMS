@@ -40,41 +40,28 @@ class Eresus_HTTP_RequestTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers Eresus_HTTP_Request::setLocalRoot
 	 * @covers Eresus_HTTP_Request::getLocalRoot
-	 * @covers Eresus_HTTP_Request::getLocalPath
+	 * @covers Eresus_HTTP_Request::getLocalUrl
 	 */
 	public function test_localRoot()
 	{
 		/** @var Eresus_HTTP_Request $request */
-		$request = Eresus_HTTP_Request::create('/folder/path/to/file.php', 'GET', array(), array(),
+		$request = Eresus_HTTP_Request::create('/example.com/admin.php', 'GET', array(), array(),
 			array(),
 			array(
 				'HTTP_HOST' => 'example.org',
 				'DOCUMENT_ROOT' => '/home/user/public_html',
-				'SCRIPT_FILENAME' => '/home/user/public_html/folder/path/to/file.php',
-				'REQUEST_URI' => '/folder/path/to/file.php',
-				'SCRIPT_NAME' => '/folder/path/to/file.php',
-				'PHP_SELF' => '/folder/path/to/file.php',
+				'SCRIPT_FILENAME' => '/home/user/public_html/example.com/admin.php',
+				'REQUEST_URI' => '/example.com/admin.php?a=b',
+				'SCRIPT_NAME' => '/example.com/index.php',
+				'PHP_SELF' => '/example.com/index.php',
 			));
-		$this->assertEquals('/folder/path/to', $request->getLocalPath());
+		$this->assertEquals('/example.com/admin.php', $request->getLocalUrl());
 
-		$request->setLocalRoot('/folder');
-		$this->assertEquals('/path/to', $request->getLocalPath());
+		$request->setLocalRoot('/example.com');
+		$this->assertEquals('/admin.php', $request->getLocalUrl());
 
-		$request->setLocalRoot('/folder/');
-		$this->assertEquals('/folder', $request->getLocalRoot());
-		$this->assertEquals('/path/to', $request->getLocalPath());
-
-
-		$request = Eresus_HTTP_Request::create('/path/to/file.php', 'GET', array(), array(),
-			array(),
-			array(
-				'HTTP_HOST' => 'example.org',
-				'DOCUMENT_ROOT' => '/home/user/public_html',
-				'SCRIPT_FILENAME' => '/home/user/public_html/path/to/file.php',
-				'REQUEST_URI' => '/path/to/file.php',
-				'SCRIPT_NAME' => '/path/to/file.php',
-				'PHP_SELF' => '/path/to/file.php',
-			));
-		$this->assertEquals('/path/to', $request->getLocalPath());
+		$request->setLocalRoot('/example.com/');
+		$this->assertEquals('/example.com', $request->getLocalRoot());
+		$this->assertEquals('/admin.php', $request->getLocalUrl());
 	}
 }
