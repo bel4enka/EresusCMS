@@ -51,9 +51,7 @@ class Eresus_Extensions_RegistryTest extends PHPUnit_Framework_TestCase
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->any())->method('getFsRoot')->
 			will($this->returnValue(TESTS_FIXT_DIR . '/core/Eresus_Extensions_Registry/'));
-		$sc = $this->getMock('stdClass', array('get'));
-		$sc->expects($this->any())->method('get')->will($this->returnValue($app));
-		Eresus_Tests::setStatic('Eresus_Kernel', $sc, 'sc');
+		Eresus_Kernel::sc()->set('app', $app);
 
 		// Нет такого файла
 		$this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
