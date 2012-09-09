@@ -592,7 +592,9 @@ class Eresus_WebPage
 	 */
 	public function clientURL($id)
 	{
-		$parents = Eresus_CMS::getLegacyKernel()->sections->parents($id);
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$parents = $sections->parents($id);
 
 		if (is_null($parents))
 		{
@@ -600,7 +602,7 @@ class Eresus_WebPage
 		}
 
 		array_push($parents, $id);
-		$items = Eresus_CMS::getLegacyKernel()->sections->get( $parents);
+		$items = $sections->get( $parents);
 
 		$list = array();
 		for ($i = 0; $i < count($items); $i++)

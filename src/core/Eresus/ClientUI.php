@@ -224,10 +224,13 @@ class Eresus_ClientUI extends Eresus_WebPage
 		reset(Eresus_CMS::getLegacyKernel()->request['params']);
 		$item['id'] = 0;
 		$url = '';
+
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+
 		do
 		{
-			$items = Eresus_CMS::getLegacyKernel()->sections->children($item['id'],
-				Eresus_CMS::getLegacyKernel()->user['auth'] ?
+			$items = $sections->children($item['id'], Eresus_CMS::getLegacyKernel()->user['auth'] ?
 					Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, Eresus_Sections::SECTIONS_ACTIVE);
 			$item = false;
 			for ($i=0; $i<count($items); $i++)
@@ -256,7 +259,7 @@ class Eresus_ClientUI extends Eresus_WebPage
 		Eresus_CMS::getLegacyKernel()->request['path'] = Eresus_CMS::getLegacyKernel()->root . $url;
 		if ($result)
 		{
-			$result = Eresus_CMS::getLegacyKernel()->sections->get($result['id']);
+			$result = $sections->get($result['id']);
 		}
 		return $result;
 	}

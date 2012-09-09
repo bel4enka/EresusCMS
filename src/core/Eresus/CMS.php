@@ -56,7 +56,7 @@ class Eresus_CMS
 			$this->checkEnvironment();
 			$this->createFileStructure();
 
-			Eresus_Kernel::sc()->set('request', Eresus_HTTP_Request::createFromGlobals());
+			$this->initServiceContainer();
 
 			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 			/* Подключение старого ядра */
@@ -417,5 +417,15 @@ class Eresus_CMS
 			header('404 Not Found', true, 404);
 			echo '404 Not Found';
 		}
+	}
+
+	/**
+	 * Подготавливает контейнер служб
+	 */
+	private function initServiceContainer()
+	{
+		$container = Eresus_Kernel::sc();
+		$container->set('request', Eresus_HTTP_Request::createFromGlobals());
+		$container->register('sections', 'Eresus_Sections');
 	}
 }

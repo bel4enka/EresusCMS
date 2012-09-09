@@ -72,11 +72,12 @@ class Eresus_Admin_Controllers_Pages
 		$item['options'] = arg('options');
 		$item['created'] = $item['updated'] = date('Y-m-d H:i:s');
 
-		$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
-			"') AND (`owner`='" . $item['owner'] . "')");
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$temp = $sections->get("(`name`='" . $item['name']."') AND (`owner`='" . $item['owner'] . "')");
 		if (count($temp) == 0)
 		{
-			Eresus_CMS::getLegacyKernel()->sections->add($item);
+			$sections->add($item);
 			$this->dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
 			HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 		}
@@ -95,7 +96,9 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function update()
 	{
-		$old = Eresus_CMS::getLegacyKernel()->sections->get(arg('update', 'int'));
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$old = $sections->get(arg('update', 'int'));
 		$item = $old;
 
 		$item['name'] = arg('name', '/[^a-z0-9_]/i');
@@ -112,7 +115,7 @@ class Eresus_Admin_Controllers_Pages
 		$item['position'] = arg('position', 'int');
 		$item['options'] = text2array(arg('options'), true);
 
-		$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
+		$temp = $sections->get("(`name`='" . $item['name'] .
 			"') AND (`owner`='" . $item['owner'] . "' AND `id` <> " . $item['id'] . ")");
 		if (count($temp) > 0)
 		{
@@ -131,7 +134,7 @@ class Eresus_Admin_Controllers_Pages
 			$item['updated'] = date('Y-m-d H:i:s');
 		}
 
-		Eresus_CMS::getLegacyKernel()->sections->update($item);
+		$sections->update($item);
 
 		HTTP::redirect(arg('submitURL'));
 	}
@@ -146,8 +149,9 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function selectList($skip=0, $owner = 0, $level = 0)
 	{
-		$items = Eresus_CMS::getLegacyKernel()->sections->
-			children($owner, Eresus_CMS::getLegacyKernel()->user['access']);
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access']);
 		$result = array(array(), array());
 		foreach ($items as $item)
 		{
@@ -175,21 +179,22 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function moveUp()
 	{
-		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$item = $sections->get(arg('id', 'int'));
 		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+		$item = $sections->get(arg('id', 'int'));
 		if ($item['position'] > 0)
 		{
-			$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`owner`='".$item['owner'].
-				"') AND (`position`='".
+			$temp = $sections->get("(`owner`='".$item['owner']."') AND (`position`='".
 				($item['position']-1)."')");
 			if (count($temp))
 			{
 				$temp = $temp[0];
 				$item['position']--;
 				$temp['position']++;
-				Eresus_CMS::getLegacyKernel()->sections->update($item);
-				Eresus_CMS::getLegacyKernel()->sections->update($temp);
+				$sections->update($item);
+				$sections->update($temp);
 			}
 		}
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
@@ -202,22 +207,22 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function moveDown()
 	{
-		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$item = $sections->get(arg('id', 'int'));
 		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-		if ($item['position'] <
-			count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner'])))
+		$item = $sections->get(arg('id', 'int'));
+		if ($item['position'] < count($sections->children($item['owner'])))
 		{
-			$temp = Eresus_CMS::getLegacyKernel()->sections->
-				get("(`owner`='".$item['owner']."') AND (`position`='".
+			$temp = $sections->get("(`owner`='".$item['owner']."') AND (`position`='".
 				($item['position']+1)."')");
 			if ($temp)
 			{
 				$temp = $temp[0];
 				$item['position']++;
 				$temp['position']--;
-				Eresus_CMS::getLegacyKernel()->sections->update($item);
-				Eresus_CMS::getLegacyKernel()->sections->update($temp);
+				$sections->update($item);
+				$sections->update($temp);
 			}
 		}
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
@@ -231,11 +236,13 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function move()
 	{
-		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$item = $sections->get(arg('id', 'int'));
 		if (!is_null(arg('to')))
 		{
 			$item['owner'] = arg('to', 'int');
-			$item['position'] = count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner']));
+			$item['position'] = count($sections->children($item['owner']));
 
 			/* Проверяем, нет ли в разделе назначения раздела с таким же именем */
 			$q = DB::createSelectQuery();
@@ -253,7 +260,7 @@ class Eresus_Admin_Controllers_Pages
 				HTTP::goback();
 			}
 
-			Eresus_CMS::getLegacyKernel()->sections->update($item);
+			$sections->update($item);
 			HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 		}
 		else
@@ -320,8 +327,10 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	function delete()
 	{
-		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-		Eresus_CMS::getLegacyKernel()->sections->delete(arg('id', 'int'));
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$item = $sections->get(arg('id', 'int'));
+		$sections->delete(arg('id', 'int'));
 		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 	}
@@ -442,7 +451,9 @@ class Eresus_Admin_Controllers_Pages
 	 */
 	private function edit($id)
 	{
-		$item = Eresus_CMS::getLegacyKernel()->sections->get($id);
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$item = $sections->get($id);
 		$content = $this->loadContentTypes();
 		$templates = $this->loadTemplates();
 		$item['options'] = array2text($item['options'], true);
@@ -518,8 +529,9 @@ class Eresus_Admin_Controllers_Pages
 		/** @var Eresus_AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = array();
-		$items = Eresus_CMS::getLegacyKernel()->sections->children($owner,
-			Eresus_CMS::getLegacyKernel()->user['auth'] ?
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['auth'] ?
 				Eresus_CMS::getLegacyKernel()->user['access'] : GUEST);
 		for ($i=0; $i<count($items); $i++)
 		{

@@ -976,9 +976,11 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$theme = $this->getUITheme();
 
 		$result = '';
-		$items = Eresus_CMS::getLegacyKernel()->
-			sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'],
-				Eresus_Sections::SECTIONS_ACTIVE);
+
+		/** @var Eresus_Sections $sections */
+		$sections = Eresus_Kernel::get('sections');
+		$items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'],
+			Eresus_Sections::SECTIONS_ACTIVE);
 
 		if (count($items))
 		{

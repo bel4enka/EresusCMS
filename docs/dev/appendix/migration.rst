@@ -11,6 +11,11 @@
   Eresus_Extensions_Plugin и Eresus_Extensions_ContentPlugin.
 - EresusSourceParseException. Вместо него вбрасывается DomainException.
 
+Свойства и методы
+^^^^^^^^^^^^^^^^^
+
+- Eresus::$sections удалено, используйте Eresus_Kernel::get('sections')
+
 Функции
 ^^^^^^^
 

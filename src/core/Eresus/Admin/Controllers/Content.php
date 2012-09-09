@@ -74,7 +74,9 @@ class Eresus_Admin_Controllers_Content
 					if (arg('update'))
 					{
 						$item['content'] = arg('content', 'dbsafe');
-						Eresus_CMS::getLegacyKernel()->sections->update($item);
+						/** @var Eresus_Sections $sections */
+						$sections = Eresus_Kernel::get('sections');
+						$sections->update($item);
 						HTTP::redirect(arg('submitURL'));
 					}
 					else
@@ -97,7 +99,9 @@ class Eresus_Admin_Controllers_Content
 					if (arg('update'))
 					{
 						$item['content'] = arg('url', 'dbsafe');
-						Eresus_CMS::getLegacyKernel()->sections->update($item);
+						/** @var Eresus_Sections $sections */
+						$sections = Eresus_Kernel::get('sections');
+						$sections->update($item);
 						HTTP::redirect(arg('submitURL'));
 					}
 					else

@@ -845,13 +845,6 @@ function __clearargs($args)
 			}
 			else
 			{
-				if ( ! PHP::checkVersion('5.3') )
-				{
-					if (get_magic_quotes_gpc())
-					{
-						$value = StripSlashes($value);
-					}
-				}
 				if (strpos($key, 'wyswyg_') === 0)
 				{
 					unset($args[$key]);
@@ -1094,14 +1087,6 @@ class Eresus
 	 * @since 2.10
 	 */
 	public $request;
-
-	/**
-	 * Интерфейс работы с разделами сайта
-	 *
-	 * @var Eresus_Sections
-	 * @since 2.10
-	 */
-	public $sections;
 
 	/**
 	 * Инициирует сессии
@@ -1418,7 +1403,6 @@ class Eresus
 		$this->check_cookies();
 		# Обновление данных о пользователе
 		$this->reset_login();
-		$this->sections = new Eresus_Sections;
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 
