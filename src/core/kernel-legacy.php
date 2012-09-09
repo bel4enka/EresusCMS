@@ -632,13 +632,6 @@ function upload($name, $filename, $overwrite = true)
 	return $result;
 }
 
-function HttpAnswer($answer)
-{
-	Header('Content-type: text/html; charset='.CHARSET);
-	echo $answer;
-	exit;
-}
-
 /**
  * Возвращает значение глобального параметра
  *

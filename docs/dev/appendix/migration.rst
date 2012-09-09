@@ -23,6 +23,7 @@
 - fileread
 - filewrite
 - filedelete
+- HttpAnswer
 - SendXML
 - __macroConst
 - __macroVar
