@@ -2,61 +2,49 @@
 /**
  * ${product.title}
  *
+ * Тесты
+ *
  * @version ${product.version}
- *
- * PhpUnit Tests
- *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  *
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
- * @author Михаил Красильников <mk@eresus.ru>
- *
- * $Id$
  */
 
-require_once TESTS_SRC_DIR . '/core/Eresus/UI/Pagination.php';
+require_once __DIR__ . '/../../../bootstrap.php';
 
 /**
- * @package EresusCMS
+ * @package Eresus
  * @subpackage Tests
  */
 class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * (non-PHPdoc)
 	 * @see Framework/PHPUnit_Framework_TestCase::setUp()
 	 */
 	protected function setUp()
 	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->request = array('path' => '/root/');
+		$request = Eresus_HTTP_Request::create('/root/');
+		Eresus_Kernel::sc()->set('request', $request);
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * (non-PHPdoc)
-	 * @see Framework/PHPUnit_Framework_TestCase::tearDown()
-	 */
-	protected function tearDown()
-	{
-		unset($GLOBALS['Eresus']);
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем установку и чтение свойства $total
@@ -70,7 +58,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$test->setTotal(123);
 		$this->assertEquals(123, $test->getTotal());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем установку и чтение свойства $current
@@ -84,7 +71,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$test->setCurrent(123);
 		$this->assertEquals(123, $test->getCurrent());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем конструктор
@@ -105,7 +91,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(20, $test->getTotal(), 'Case 3');
 		$this->assertEquals(5, $test->getCurrent(), 'Case 3');
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем установку и чтение свойства $templatePath
@@ -119,7 +104,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$test->setTemplate('/path/to/file');
 		$this->assertEquals('/path/to/file', $test->getTemplate());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем установку и чтение свойства $urlTemplate
@@ -133,7 +117,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$test->setUrlTemplate('/%d/');
 		$this->assertEquals('/%d/', $test->getUrlTemplate());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем установку и чтение свойства $size
@@ -147,7 +130,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$test->setSize(5);
 		$this->assertEquals(5, $test->getSize());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Проверяем метод rewind()
@@ -173,7 +155,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 		$test->rewind();
 		$this->assertEquals(11, count($test), 'Case 4');
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обычное использование
@@ -202,18 +183,17 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 			}
 
 			$this->assertEquals($i, $helper->key());
-			$this->assertEquals($i, $page['title'], 'Ivalid page number');
-			$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid page url');
+			$this->assertEquals($i, $page['title'], 'Invalid page number');
+			$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Invalid page url');
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обычное использование
 	 *
 	 */
-	public function test_commonUse_begining()
+	public function test_commonUse_beginning()
 	{
 		$test = new Eresus_UI_Pagination(100, 1);
 
@@ -234,20 +214,19 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 				break;
 
 				case $i >= 1 && $i < 11:
-					$this->assertEquals($i, $page['title'], 'Ivalid page number');
-					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid page url');
+					$this->assertEquals($i, $page['title'], 'Invalid page number');
+					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Invalid page url');
 				break;
 
 				case $i == 11:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
-					$this->assertEquals('/root/p11/', $page['url'], 'Ivalid last page url');
+					$this->assertEquals('/root/p11/', $page['url'], 'Invalid last page url');
 				break;
 			}
 
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обычное использование
@@ -275,19 +254,18 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 
 				case $i == 1:
 					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
-					$this->assertEquals('/root/p90/', $page['url'], 'Ivalid first page url');
+					$this->assertEquals('/root/p90/', $page['url'], 'Invalid first page url');
 				break;
 
 				case $i > 1 && $i < 11:
-					$this->assertEquals($i + 89, $page['title'], 'Ivalid page number');
-					$this->assertEquals('/root/p' . ($i + 89) . '/', $page['url'], 'Ivalid page url');
+					$this->assertEquals($i + 89, $page['title'], 'Invalid page number');
+					$this->assertEquals('/root/p' . ($i + 89) . '/', $page['url'], 'Invalid page url');
 				break;
 			}
 
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обычное использование
@@ -315,23 +293,22 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 
 				case $i == 1:
 					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
-					$this->assertEquals('/root/p40/', $page['url'], 'Ivalid first page url');
+					$this->assertEquals('/root/p40/', $page['url'], 'Invalid first page url');
 				break;
 
 				case $i > 1 && $i < 12:
-					$this->assertEquals($i + 43, $page['title'], 'Ivalid page number');
+					$this->assertEquals($i + 43, $page['title'], 'Invalid page number');
 				break;
 
 				case $i == 12:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
-					$this->assertEquals('/root/p60/', $page['url'], 'Ivalid last page url');
+					$this->assertEquals('/root/p60/', $page['url'], 'Invalid last page url');
 				break;
 			}
 
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 *
@@ -355,12 +332,12 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 
 				case $i == 1:
 					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
-					$this->assertEquals('/root/p2/', $page['url'], 'Ivalid first page url');
+					$this->assertEquals('/root/p2/', $page['url'], 'Invalid first page url');
 				break;
 
 				case $i > 1 && $i < 3:
-					$this->assertEquals($i + 1, $page['title'], 'Ivalid page number');
-					$this->assertEquals('/root/p' . ($i + 1) . '/', $page['url'], 'Ivalid page url');
+					$this->assertEquals($i + 1, $page['title'], 'Invalid page number');
+					$this->assertEquals('/root/p' . ($i + 1) . '/', $page['url'], 'Invalid page url');
 				break;
 
 			}
@@ -368,7 +345,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 *
@@ -391,13 +367,13 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 				break;
 
 				case $i >= 1 && $i < 3:
-					$this->assertEquals($i, $page['title'], 'Ivalid page number');
-					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Ivalid last page url');
+					$this->assertEquals($i, $page['title'], 'Invalid page number');
+					$this->assertEquals('/root/p' . $i . '/', $page['url'], 'Invalid last page url');
 				break;
 
 				case $i == 3:
 					$this->assertEquals('&rarr;', $page['title'], 'Invalid last element');
-					$this->assertEquals('/root/p3/', $page['url'], 'Ivalid last page url');
+					$this->assertEquals('/root/p3/', $page['url'], 'Invalid last page url');
 				break;
 
 			}
@@ -405,7 +381,6 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 *
@@ -429,7 +404,7 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 
 				case $i == 1:
 					$this->assertEquals('&larr;', $page['title'], 'Invalid first element');
-					$this->assertEquals('/root/p1/', $page['url'], 'Ivalid first page url');
+					$this->assertEquals('/root/p1/', $page['url'], 'Invalid first page url');
 				break;
 
 				case $i > 1 && $i < 4:
@@ -447,7 +422,4 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 			$i++;
 		}
 	}
-	//-----------------------------------------------------------------------------
-
-	/* */
 }

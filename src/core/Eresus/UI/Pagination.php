@@ -104,8 +104,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	 * @param int    $current      Номер текущей страницы. По умолчанию 1.
 	 * @param string $urlTemplate  Шаблон URL. Используйте "%d" для подстановки страницы
 	 *
-	 * @return Eresus_UI_Pagination
-	 *
 	 * @since 2.14
 	 */
 	public function __construct($total = null, $current = 1, $urlTemplate = null)
@@ -117,7 +115,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 			$this->urlTemplate = $urlTemplate;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает общее количество страниц
@@ -131,7 +128,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		$this->total = $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает общее количество страниц
@@ -144,7 +140,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->total;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает номер текущей страницы
@@ -158,7 +153,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		$this->current = $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает номер текущей страницы
@@ -171,7 +165,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->current;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает шаблон URL
@@ -185,7 +178,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		$this->urlTemplate = $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает шаблон URL
@@ -198,7 +190,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->urlTemplate;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает путь к шаблону
@@ -212,7 +203,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		$this->templatePath = $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает путь к шаблону
@@ -225,7 +215,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->templatePath;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает максимальное количество отображаемых страниц
@@ -239,7 +228,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		$this->size = $value;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает максимальное количество отображаемых страниц
@@ -252,7 +240,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->size;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает текущий элемент списка страниц
@@ -267,7 +254,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->items[$this->iteration - 1];
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает номер итерации
@@ -282,11 +268,8 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->iteration;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
-	 *
 	 * @return void
 	 *
 	 * @since 2.14
@@ -297,10 +280,9 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		$this->iteration++;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * Подготовливает объект к первой итерации
+	 * Подготавливает объект к первой итерации
 	 *
 	 * @return void
 	 *
@@ -372,11 +354,8 @@ class Eresus_UI_Pagination implements Iterator, Countable
 
 		$this->iteration = 1;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
-	 *
 	 * @return bool
 	 *
 	 * @since 2.14
@@ -387,11 +366,8 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return $this->iteration - 1 < count($this->items);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * (non-PHPdoc)
-	 *
 	 * @return int
 	 *
 	 * @since 2.14
@@ -402,7 +378,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		return count($this->items);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Создаёт разметку переключателя страниц
@@ -419,7 +394,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 
 		return $tmpl->compile($data);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Подготавливает свойство $urlTemplate для использования
@@ -432,10 +406,11 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		if (!$this->urlTemplate)
 		{
-			$this->urlTemplate = Eresus_CMS::getLegacyKernel()->request['path'] . 'p%d/';
+			/** @var Eresus_HTTP_Request $request */
+			$request = Eresus_Kernel::get('request');
+			$this->urlTemplate = $request->getPath() . '/p%d/';
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Создаёт элемент нумерации
@@ -455,5 +430,6 @@ class Eresus_UI_Pagination implements Iterator, Countable
 			'current' => false
 		);
 	}
-	//-----------------------------------------------------------------------------
+	//@codeCoverageIgnoreStart
 }
+//@codeCoverageIgnoreEnd
