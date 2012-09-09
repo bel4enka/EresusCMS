@@ -60,8 +60,9 @@ class Eresus_CMS
 			$this->checkEnvironment();
 			$this->createFileStructure();
 
-			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+			Eresus_Kernel::sc()->set('request', Eresus_HTTP_Request::createFromGlobals());
 
+			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 			/* Подключение старого ядра */
 			include ERESUS_APP_ROOT . '/core/kernel-legacy.php';
 
@@ -265,7 +266,6 @@ class Eresus_CMS
 		Core::setValue('core.template.templateDir', $this->getFsRoot());
 		Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
 
-		Eresus_Kernel::sc()->set('request', Eresus_HTTP_Request::createFromGlobals());
 		//$this->response = new HttpResponse();
 
 		/** @var Eresus_HTTP_Request $request */
