@@ -17,6 +17,7 @@
 - form — краткая форма для обращения к Eresus_UI_Admin_ArrayForm
 - useLib — все классы теперь загружаются автоматически
 - FatalError — используйте исключения
+- dbReorderItems
 - img
 - gettime
 - fileread

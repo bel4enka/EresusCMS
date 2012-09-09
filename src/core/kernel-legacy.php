@@ -505,6 +505,7 @@ function replaceMacros($template, $source)
  * @return mixed  значение аргумента или null если такой аргумент не был передан в запросе
  *
  * @since 2.01
+ * @deprecated используйте Eresus_HTTP_Request
  */
 function arg($arg, $filter = null)
 {
@@ -560,26 +561,6 @@ function restoreRequest()
 	{
 		Eresus_CMS::getLegacyKernel()->request = Eresus_CMS::getLegacyKernel()->session['request'];
 		unset(Eresus_CMS::getLegacyKernel()->session['request']);
-	}
-}
-
-/**
- * Упорядочивание элементов
- *
- * @param string $table      Таблица
- * @param string $condition  Условие
- * @param string $id         Имя ключевого поля
- *
- * @deprecated
- */
-function dbReorderItems($table, $condition='', $id='id')
-{
-	$items = Eresus_CMS::getLegacyKernel()->db->
-		select("`".$table."`", $condition, '`position`', $id);
-	for ($i=0; $i<count($items); $i++)
-	{
-		Eresus_CMS::getLegacyKernel()->db->
-			update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 	}
 }
 

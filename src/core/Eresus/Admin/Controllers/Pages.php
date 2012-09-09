@@ -77,7 +77,7 @@ class Eresus_Admin_Controllers_Pages
 		if (count($temp) == 0)
 		{
 			Eresus_CMS::getLegacyKernel()->sections->add($item);
-			dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
+			$this->dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
 			HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 		}
 		else
@@ -176,7 +176,7 @@ class Eresus_Admin_Controllers_Pages
 	function moveUp()
 	{
 		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-		dbReorderItems('pages', "`owner`='".$item['owner']."'");
+		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		if ($item['position'] > 0)
 		{
@@ -203,7 +203,7 @@ class Eresus_Admin_Controllers_Pages
 	function moveDown()
 	{
 		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-		dbReorderItems('pages', "`owner`='".$item['owner']."'");
+		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		if ($item['position'] <
 			count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner'])))
@@ -322,7 +322,7 @@ class Eresus_Admin_Controllers_Pages
 	{
 		$item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
 		Eresus_CMS::getLegacyKernel()->sections->delete(arg('id', 'int'));
-		dbReorderItems('pages', "`owner`='".$item['owner']."'");
+		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
 		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 	}
 	//-----------------------------------------------------------------------------
@@ -646,4 +646,22 @@ class Eresus_Admin_Controllers_Pages
 		}
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Упорядочивание элементов
+	 *
+	 * @param string $table      Таблица
+	 * @param string $condition  Условие
+	 * @param string $id         Имя ключевого поля
+	 */
+	private function dbReorderItems($table, $condition='', $id='id')
+	{
+		$items = Eresus_CMS::getLegacyKernel()->db->
+			select("`".$table."`", $condition, '`position`', $id);
+		for ($i=0; $i<count($items); $i++)
+		{
+			Eresus_CMS::getLegacyKernel()->db->
+				update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
+		}
+	}
 }
