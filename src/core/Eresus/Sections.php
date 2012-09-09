@@ -327,7 +327,7 @@ class Eresus_Sections
 		{
 			$item['owner'] = 0;
 		}
-		$item['created'] = gettime('Y-m-d H:i:s');
+		$item['created'] = date('Y-m-d H:i:s');
 		$item['updated'] = $item['created'];
 		$item['options'] = isset($item['options']) ? trim($item['options']) : '';
 		$item['options'] = empty($item['options']) ?
@@ -354,7 +354,7 @@ class Eresus_Sections
 	 */
 	public function update($item)
 	{
-		$item['updated'] = gettime('Y-m-d H:i:s');
+		$item['updated'] = date('Y-m-d H:i:s');
 		$item['options'] = encodeOptions($item['options']);
 		$item['title'] = Eresus_CMS::getLegacyKernel()->db->escape($item['title']);
 		$item['caption'] = Eresus_CMS::getLegacyKernel()->db->escape($item['caption']);

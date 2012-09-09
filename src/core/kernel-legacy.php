@@ -26,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 /**
@@ -38,10 +36,7 @@ define('CMSNAME', 'Eresus');
 define('CMSVERSION', '${product.version}'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
-define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '${build.date}'); # Дата обновления ядра
-
-# Уровни доступа
+/* Уровни доступа */
 define('ROOT',   1); # Главный администратор
 define('ADMIN',  2); # Администратор
 define('EDITOR', 3); # Редактор
@@ -318,20 +313,6 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 		return (mail($address, $subject, $text, $headers)===0);
 	}
 	return false;
-}
-
-/**
- * Возвращает время с учетом смещения
- *
- * @param string $format
- *
- * @return string
- */
-function gettime($format = 'Y-m-d H:i:s')
-{
-	#$delta = (GMT_ZONE * 3600) - date('Z'); // Смещение на нужный часовой пояс
-	$delta = 0;
-	return date($format , time() + $delta); // Время, со смещением на наш часовой пояс
 }
 
 /**
@@ -646,75 +627,6 @@ function dbReorderItems($table, $condition='', $id='id')
 		Eresus_CMS::getLegacyKernel()->db->
 			update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
 	}
-}
-
-/**
- * Чтение файла
- *
- * @param string $filename  имя файла
- *
- * @return mixed  содержимое файла или false
- *
- * @since 2.10
- * @deprecated
- */
-function fileread($filename)
-{
-	$result = false;
-	if (is_file($filename))
-	{
-		if (is_readable($filename))
-		{
-			$result = file_get_contents($filename);
-		}
-	}
-	return $result;
-}
-
-/**
- * Запись в файл
- *
- * @param string $filename Имя файла
- * @param string $content  Содержимое
- * @param int    $flags    Флаги
- *
- * @return bool Результат выполнения
- *
- * @since 2.10
- * @deprecated
- */
-function filewrite($filename, $content, $flags = 0)
-{
-	$result = false;
-	@$fp = fopen($filename, ($flags && FILE_APPEND)?'ab':'wb');
-	if ($fp)
-	{
-		$result = fwrite($fp, $content) == strlen($content);
-		fclose($fp);
-	}
-	return $result;
-}
-
-/**
- * Удаляет файл
- *
- * @param string $filename Имя файла
- *
- * @return bool Результат выполнения
- *
- * @since 2.10
- */
-function filedelete($filename)
-{
-	$result = false;
-	if (is_file($filename))
-	{
-		if (is_writeable($filename))
-		{
-			$result = unlink($filename);
-		}
-	}
-	return $result;
 }
 
 /**
@@ -1715,7 +1627,7 @@ class Eresus
 						$this->user['hash'] = $item['hash'];
 						if ($setVisitTime)
 						{
-							$item['lastVisit'] = gettime(); # Записываем время последнего входа
+							$item['lastVisit'] = date('Y-m-d H:i:s'); # Записываем время последнего входа
 						}
 						$item['lastLoginTime'] = time();
 						$item['loginErrors'] = 0;

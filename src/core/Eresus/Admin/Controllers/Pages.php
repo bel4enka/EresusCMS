@@ -70,7 +70,7 @@ class Eresus_Admin_Controllers_Pages
 		$item['access'] = arg('access', 'int');
 		$item['position'] = arg('position', 'int');
 		$item['options'] = arg('options');
-		$item['created'] = $item['updated'] = gettime('Y-m-d H:i:s');
+		$item['created'] = $item['updated'] = date('Y-m-d H:i:s');
 
 		$temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
 			"') AND (`owner`='" . $item['owner'] . "')");
@@ -128,7 +128,7 @@ class Eresus_Admin_Controllers_Pages
 		$item['updated'] = arg('updated', 'dbsafe');
 		if (arg('updatedAuto'))
 		{
-			$item['updated'] = gettime('Y-m-d H:i:s');
+			$item['updated'] = date('Y-m-d H:i:s');
 		}
 
 		Eresus_CMS::getLegacyKernel()->sections->update($item);

@@ -418,7 +418,7 @@ class Eresus_Extensions_Plugin
 				}
 				elseif (is_file($files[$i]))
 				{
-					$result = filedelete($files[$i]);
+					$result = unlink($files[$i]);
 				}
 				if (!$result)
 				{

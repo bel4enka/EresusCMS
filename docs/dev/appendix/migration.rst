@@ -17,11 +17,14 @@
 - form — краткая форма для обращения к Eresus_UI_Admin_ArrayForm
 - img
 - useLib — все классы теперь загружаются автоматически
+- gettime
+- fileread
+- filewrite
+- filedelete
 
 Константы
 ---------
 
-- ERESUS_CMS_DEBUG
 - httpPath (используйте Eresus_HTTP_Request::getBasePath())
 - httpHost (используйте Eresus_HTTP_Request::getHost())
 - httpRoot (используйте Eresus_CMS::getLegacyKernel()->root)
@@ -29,6 +32,10 @@
 - dataRoot (используйте Eresus_CMS::getLegacyKernel()->data)
 - cookieHost
 - cookiePath
+- ERESUS_CMS_DEBUG
+- KERNELNAME
+- KERNELDATE
+
 
 Изменено
 --------

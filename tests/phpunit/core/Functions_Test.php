@@ -103,14 +103,6 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	/**
 	 *  
 	 */
-	public function test_gettime()
-	{
-		$this->assertEquals(date('Y-m-d'),gettime('Y-m-d')); 
-	}
-	
-	/**
-	 *  
-	 */
 	public function test_encodeHTML()
 	{
 		$test_encodeHTML_str='<a href="#">foo</a>';

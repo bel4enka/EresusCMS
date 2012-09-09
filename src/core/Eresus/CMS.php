@@ -47,13 +47,9 @@ class Eresus_CMS
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
-	 *
-	 * @see framework/core/EresusApplication#main()
 	 */
 	public function main()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
 		try
 		{
 			/* Общая инициализация */

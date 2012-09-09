@@ -104,7 +104,7 @@ class Eresus_Templates
 			$filename .= $type . '/';
 		}
 		$filename .= $name . '.html';
-		$result = fileread($filename);
+		$result = file_get_contents($filename);
 		if ($result)
 		{
 			if ($array)
@@ -158,7 +158,7 @@ class Eresus_Templates
 		}
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
-		$result = filewrite($filename, $content);
+		$result = file_put_contents($filename, $content);
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ class Eresus_Templates
 			$item['desc'] = $desc;
 		}
 		$content = "<!-- {$item['desc']} -->\n\n{$item['code']}";
-		$result = filewrite($filename, $content);
+		$result = file_put_contents($filename, $content);
 		return $result;
 	}
 
@@ -208,7 +208,7 @@ class Eresus_Templates
 			$filename .= "$type/";
 		}
 		$filename .= "$name.html";
-		$result = filedelete($filename);
+		$result = unlink($filename);
 		return $result;
 	}
 }
