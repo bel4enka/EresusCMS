@@ -41,27 +41,6 @@ require_once TESTS_SRC_DIR . '/core/kernel-legacy.php';
 class Functions_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 *
-	 */
-	public function test_macroConst()
-	{
-		define('Functions_Test_Foo', 'bar');
-		$this->assertEquals('bar', __macroConst(array(null, 'Functions_Test_Foo')));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 *
-	 */
-	public function test_macroVar()
-	{
-		$GLOBALS['Functions_Test_Foo'] = 'bar';
-		$this->assertEquals('bar', __macroVar(array(null, null, 'Functions_Test_Foo')));
-		$this->assertEquals('barbaz', __macroVar(array(null, null, 'Functions_Test_Foo', '."baz"')));
-	}
-	//-----------------------------------------------------------------------------
-
-       	/**
 	 * 
 	 */
 	public function test_FormatSize()

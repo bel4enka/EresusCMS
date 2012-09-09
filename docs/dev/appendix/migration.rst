@@ -24,6 +24,8 @@
 - filewrite
 - filedelete
 - SendXML
+- __macroConst
+- __macroVar
 
 Константы
 ---------
