@@ -44,6 +44,12 @@ class Eresus_CMS
 	protected $page;
 
 	/**
+	 * @var Eresus
+	 * @since 3.01
+	 */
+	protected $legacyKernel;
+
+	/**
 	 * Основной метод приложения
 	 *
 	 * @return int  Код завершения для консольных вызовов
@@ -62,10 +68,7 @@ class Eresus_CMS
 			/* Подключение старого ядра */
 			include ERESUS_APP_ROOT . '/core/kernel-legacy.php';
 
-			/**
-			 * @global Eresus Eresus
-			 */
-			$GLOBALS['Eresus'] = new Eresus;
+			$this->legacyKernel = new Eresus;
 			$this->initConf();
 
 			$i18n = Eresus_I18n::getInstance();
@@ -131,7 +134,7 @@ class Eresus_CMS
 	 */
 	public static function getLegacyKernel()
 	{
-		return $GLOBALS['Eresus'];
+		return $this->legacyKernel;
 	}
 
 	/**
@@ -281,7 +284,7 @@ class Eresus_CMS
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		$GLOBALS['page'] = $this->page = new Eresus_ClientUI();
+		$this->page = new Eresus_ClientUI();
 		$this->page->init();
 		/*return */$this->page->render();
 	}
@@ -295,7 +298,7 @@ class Eresus_CMS
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-		$GLOBALS['page'] = $this->page = new Eresus_AdminUI();
+		$this->page = new Eresus_AdminUI();
 		/*return */$this->page->render();
 	}
 
@@ -326,14 +329,6 @@ class Eresus_CMS
 	protected function initConf()
 	{
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		/*
-		 * Переменную $Eresus приходится делать глобальной, чтобы файл конфигурации
-		 * мог записывать в неё свои значения.
-		 * TODO Избавиться от глобальной переменной
-		 */
-		/** @noinspection PhpUnusedLocalVariableInspection */
-		global $Eresus;
 
 		$filename = $this->getFsRoot() . '/cfg/main.php';
 		if (file_exists($filename))

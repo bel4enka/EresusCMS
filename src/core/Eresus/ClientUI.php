@@ -86,7 +86,11 @@ class Eresus_ClientUI extends Eresus_WebPage
 	 */
 	public $topic = false;
 
-	//------------------------------------------------------------------------------
+	/**
+	 * @var bool
+	 * @see httpError
+	 */
+	private static $error = false;
 
 	/**
 	 * Конструктор
@@ -322,9 +326,7 @@ class Eresus_ClientUI extends Eresus_WebPage
 
 	function httpError($code)
 	{
-		global $KERNEL;
-
-		if (isset($KERNEL['ERROR']))
+		if (self::$error)
 		{
 			return;
 		}
@@ -379,7 +381,7 @@ class Eresus_ClientUI extends Eresus_WebPage
 			$this->template = 'default';
 			$this->content = '<h1>HTTP ERROR '.$code.': '.$message.'</h1>';
 		}
-		$KERNEL['ERROR'] = true;
+		self::$error = true;
 		$this->render();
 		exit;
 	}

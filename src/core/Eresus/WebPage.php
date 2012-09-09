@@ -552,10 +552,8 @@ class Eresus_WebPage
 	 */
 	public function url($args = array())
 	{
-		global $Eresus;
-
 		/* Объединяем аргументы метода и аргументы текущего запроса */
-		$args = array_merge($Eresus->request['arg'], $args);
+		$args = array_merge(Eresus_CMS::getLegacyKernel()->request['arg'], $args);
 
 		/* Превращаем значения-массивы в строки, соединяя элементы запятой */
 		foreach ($args as $key => $value)

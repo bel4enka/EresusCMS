@@ -1,6 +1,9 @@
 Переход на 3.01 с 3.00
 ======================
 
+.. attention::
+   Изменился формат файла настроек! Смотрите ``cfg/main.template.php``.
+
 Удалено
 -------
 
@@ -34,7 +37,7 @@
 - __macroVar
 
 Константы
----------
+^^^^^^^^^
 
 - httpPath (используйте Eresus_HTTP_Request::getBasePath())
 - httpHost (используйте Eresus_HTTP_Request::getHost())
@@ -47,6 +50,11 @@
 - KERNELNAME
 - KERNELDATE
 
+Глобальные переменные
+^^^^^^^^^^^^^^^^^^^^^
+
+- Eresus
+- page
 
 Изменено
 --------

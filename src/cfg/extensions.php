@@ -1,6 +1,6 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * ${product.title}
  *
  * Конфигурация расширений
  *
@@ -22,11 +22,9 @@
  * расширение. Формат данных пока не определён, используйте значение null.
  *
  * @package Eresus
- *
- * $Id$
  */
 
-$GLOBALS['Eresus']->conf['extensions'] = array(
+Eresus_CMS::getLegacyKernel()->conf['extensions'] = array(
 	// Расширение возможностей форм ввода
 	'forms' => array(
 		// Расширение полей типа memo

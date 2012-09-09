@@ -1285,12 +1285,10 @@ class Image_Toolbox {
      * @param integer $angle rotation of the text.
      */
 	function addText($text, $font, $size, $color, $x, $y, $angle = 0) {
-		global $HTTP_SERVER_VARS;
-
 		if (substr($font, 0, 1) == DIRECTORY_SEPARATOR || (substr($font, 1, 1) == ":" && (substr($font, 2, 1) == "\\" || substr($font, 2, 1) == "/"))) {
 			$prepath = '';
 		} else {
-			$prepath = substr($HTTP_SERVER_VARS['SCRIPT_FILENAME'], 0, strrpos($HTTP_SERVER_VARS['SCRIPT_FILENAME'], DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
+			$prepath = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
 		}
 		$text = $this->_iso2uni($text);
 		if (is_string($x) || is_string($y)) {

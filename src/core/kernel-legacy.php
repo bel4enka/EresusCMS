@@ -1403,7 +1403,6 @@ class Eresus
 		$this->check_cookies();
 		# Обновление данных о пользователе
 		$this->reset_login();
-		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 
 	/**
