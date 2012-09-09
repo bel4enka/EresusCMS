@@ -324,8 +324,8 @@ class Eresus_Extensions_Registry
 							$item['description'],
 							$item['hint'],
 							Eresus_CMS::getLegacyKernel()->request['url'] .
-								($page->name == 'main' &&
-									!$page->owner ? 'main/' : '').$item['name'].'/',
+								($page->name == 'main' &&	!$page->owner ? 'main/' : '') .
+								$item['name'].'/',
 						),
 						$template
 					);
