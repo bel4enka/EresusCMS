@@ -256,7 +256,9 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	}
 	if (mb_strpos($sender, '@') === false)
 	{
-		$sender = 'no-reply@'.preg_replace('/^www\./', '', httpHost);
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::sc()->get('request');
+		$sender = 'no-reply@'.preg_replace('/^www\./', '', $request->getHost());
 	}
 	$fromSign = "\n-- \n".$fromSign;
 	if ($html)
@@ -874,113 +876,9 @@ function option($name)
 }
 
 /**
- * Функция возвращает заполненный тэг <img>
- *
- * function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
- * function img($imagename, $params=array())
- *
- * @param string $imagename
- *
+ * @param int $size
  * @return string
  */
-function img($imagename)
-{
-	$argc = func_num_args();
-	$argv = func_get_args();
-	if ($argc > 1)
-	{
-		if (is_array($argv[1]))
-		{
-			$p = $argv[1];
-		}
-		else
-		{
-			$p['alt'] = $argv[1];
-			if ($argc > 2)
-			{
-				$p['title'] = $argv[2];
-			}
-			if ($argc > 3)
-			{
-				$p['width'] = $argv[3];
-			}
-			if ($argc > 4)
-			{
-				$p['height'] = $argv[4];
-			}
-			if ($argc > 5)
-			{
-				$p['style'] = $argv[5];
-			}
-		}
-	}
-	if (!isset($p['alt']))
-	{
-		$p['alt'] = '';
-	}
-	if (!isset($p['title']))
-	{
-		$p['title'] = '';
-	}
-	if (!isset($p['width']))
-	{
-		$p['width'] = '';
-	}
-	if (!isset($p['height']))
-	{
-		$p['height'] = '';
-	}
-	if (!isset($p['style']))
-	{
-		$p['style'] = '';
-	}
-	if (!isset($p['ext']))
-	{
-		$p['ext'] = '';
-	}
-	if (!isset($p['autosize']))
-	{
-		$p['autosize'] = true;
-	}
-
-	if (strpos($imagename, httpRoot) !== false)
-	{
-		$imagename = str_replace(httpRoot, '', $imagename);
-	}
-	if (strpos($imagename, filesRoot) !== false)
-	{
-		$imagename = str_replace(filesRoot, '', $imagename);
-	}
-	if (strpos($imagename, '://') === false)
-	{
-		$imagename = httpRoot . $imagename;
-	}
-	$local = (strpos($imagename, httpRoot) === 0);
-
-	if ($p['autosize'] && $local && empty($p['width']) && empty($p['height']))
-	{
-		$filename = str_replace(httpRoot, filesRoot, $imagename);
-		if (is_file($filename))
-		{
-			$info = getimagesize($filename);
-		}
-	}
-	if (isset($info))
-	{
-		$p['width'] = $info[0];
-		$p['height'] = $info[1];
-	};
-
-	$result = '<img src="'.$imagename.'" alt="'.$p['alt'].'"'.
-		(empty($p['width'])?'':' width="'.$p['width'].'"').
-		(empty($p['height'])?'':' height="'.$p['height'].'"').
-		(empty($p['title'])?'':' title="'.$p['title'].'"').
-		(empty($p['style'])?'':' style="'.$p['style'].'"').
-		(empty($p['ext'])?'':' '.$p['ext']).
-	' />';
-	return $result;
-}
-
 function FormatSize($size)
 {
 	if ($size > 1073741824)
@@ -1501,88 +1399,35 @@ class Eresus
 	 */
 	function init_request()
 	{
-		global $request;
-
-		# Значения по умолчанию
-		$request = array(
-			'method' => $_SERVER['REQUEST_METHOD'],
-			'scheme' => isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
-			'host' => strtolower(is_null($this->host) ? $_SERVER['HTTP_HOST'] : $this->host),
-			'port' => '',
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
+		$this->request = array(
+			'method' => $request->getMethod(),
+			'scheme' => $request->getScheme(),
+			'host' => $request->getHost(),
+			'port' => $request->getPort(),
 			'user' => isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '',
 			'pass' => isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '',
-			'path' => '',
-			'query' => '',
-			'fragment' => '', # TODO: Можно ли узнать значение этого компонента?
+			'path' => $request->getPath(),
+			'query' => $request->getQueryString(),
+			'fragment' => '',
 			'referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
+			'url' => $request->getUri(),
+			'file' => $request->getFilename(),
+			'link' => $request->getPathInfo() . '?',
 		);
 
-		$request['url'] = $request['scheme'] . '://' . $request['host'] . $_SERVER['REQUEST_URI'];
+		$this->host = $request->getHost();
+		$this->root = $request->getScheme() . '://' . $request->getHost() . $request->getBasePath() .
+			'/';
+		$this->data = $this->root . '/data/';
+		$this->style = $this->root . '/style';
 
-		$request = array_merge($request, parse_url($request['url']));
-		$request['file'] = substr($request['path'], strrpos($request['path'], '/')+1);
-		if ($request['file'])
-		{
-			$request['path'] = substr($request['path'], 0, -strlen($request['file']));
-		}
-
-		# Создаем заготовку URL для GET-запросов с параметрами
-		$request['link'] = $request['url'];
-		if (substr($request['link'], -1) == '/')
-		{
-			$request['link'] .= '?';
-		}
-		elseif (strpos($request['link'], '?') === false)
-		{
-			$request['link'] .= '?';
-		}
-		else
-		{
-			$request['link'] .= '&';
-		}
-
-		if (is_null($this->path))
-		{
-			$s = $this->froot;
-			$s = substr($s,
-				strlen(realpath($_SERVER['DOCUMENT_ROOT'])) - (System::isWindows() ? 2 : 0));
-			if (!strlen($s) || substr($s, -1) != '/')
-			{
-				$s .= '/';
-			}
-			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
-		}
-
-		/*
-		 * Установка свойств объекта $Eresus
-		 * Должна выполняться ДО вызова __clearargs
-		 */
-		$root = $request['scheme'] . '://' . $request['host'] .
-			($request['port'] ? ':'.$request['port'] : '');
-		$this->host = $request['host'];
-		$this->root = $root.$this->path;
-		$this->data = $this->root.'data/';
-		$this->style = $this->root.'style/';
-
-
-		# Сбор аргументов вызова
-		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
-		# Разбивка параметров вызова скрипта
-		$s = substr($request['path'], strlen($this->path));
-		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
-
-		$request['path'] = $root.$request['path'];
-
-		# Обратная совместимость
-		# <= 2.9
-		$this->request = &$request;
-		define('httpPath', $this->path);
-		define('httpHost', $this->host);
-		define('httpRoot', $this->root);
-		define('styleRoot', $this->style);
-		define('dataRoot', $this->data);
-		define('cookieHost', $this->host);
-		define('cookiePath', $this->path);
+		// Сбор аргументов вызова
+		$this->request['arg'] = __clearargs(array_merge($request->query->all(),
+			$request->request->all()));
+		// Разбивка параметров вызова скрипта
+		$this->request['params'] = explode('/', $request->getLocalUrl());
 	}
 
 	/**
