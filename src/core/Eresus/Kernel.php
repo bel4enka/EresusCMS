@@ -29,7 +29,6 @@
  */
 
 use Symfony\Component\ClassLoader\UniversalClassLoader,
-		Symfony\Component\ClassLoader\MapClassLoader,
 		Symfony\Component\DependencyInjection\Container,
 		Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -108,25 +107,12 @@ class Eresus_Kernel
 		 * Регистрация загрузчиков классов
 		 */
 		/** @noinspection PhpIncludeInspection */
-		require ERESUS_APP_ROOT . '/core/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-
+		require ERESUS_APP_ROOT . '/core/vendor/autoload.php';
 		$loader = new UniversalClassLoader();
-		$loader->registerNamespaces(array(
-			'Symfony' => ERESUS_APP_ROOT . '/core',
-		));
 		$loader->registerPrefixes(array(
 			'Eresus_' => ERESUS_APP_ROOT . '/core',
 		));
 		$loader->register();
-
-		$botoborPath = ERESUS_APP_ROOT . '/core/botobor/botobor.php';
-		$map = new MapClassLoader(array(
-			'Botobor' => $botoborPath,
-			'Botobor_MetaData' => $botoborPath,
-			'Botobor_Form' => $botoborPath,
-			'Botobor_Keeper' => $botoborPath,
-		));
-		$map->register();
 
 		self::initExceptionHandling();
 

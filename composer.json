@@ -2,7 +2,7 @@
 	"require":
 	{
 		"php" : " >= 5.3.3",
-		"symfony/symfony" : "2.0.*",
+		"symfony/symfony" : "2.1.*",
 		"mekras/botobor" : "0.3.*",
 		"carhartl/jquery-cookie" : "1.1"
 	},

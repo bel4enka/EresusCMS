@@ -204,21 +204,29 @@
 			strip="0"
 		/>
 
-		<!-- Symfony -->
-		<copy todir="${build.dir}/core/Symfony">
-			<fileset dir="vendor/symfony/symfony/src/Symfony">
+		<!-- Сторонние компоненты -->
+		<copy todir="${build.dir}/core/vendor">
+			<fileset dir="vendor/">
 				<include name="**/*" />
 				<exclude name="**/Tests/**" />
+				<exclude name="**/tests/**" />
+				<exclude name="**/test/**" />
 				<exclude name=".git" />
+				<exclude name="**/*.dist" />
 				<exclude name="**/composer.json" />
-				<exclude name="**/phpunit.*" />
-			</fileset>
-		</copy>
-
-		<!-- Ботобор -->
-		<copy todir="${build.dir}/core/botobor">
-			<fileset dir="vendor/mekras/botobor/src">
-				<include name="**" />
+				<exclude name="**/.travis.yml" />
+				<exclude name="**/build.xml" />
+				<exclude name="**/build.properties" />
+				<exclude name="**/*.md" />
+				<exclude name="**/UPGRADE*" />
+				<exclude name="**/README*" />
+				<!-- Composer -->
+				<exclude name="**/installed.json" />
+				<!-- Twig -->
+				<exclude name="**/twig/doc/**" />
+				<exclude name="**/twig/package.*" />
+				<!-- JavaScript -->
+				<exclude name="carhartl/**" />
 			</fileset>
 		</copy>
 
