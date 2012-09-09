@@ -666,7 +666,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 			(isset($table['controls']['position'])?' <a href="'.
 			$this->url(array($prefix.'sort' => 'position', $prefix.'desc' => '0')).'" title="'.
 			ADM_SORT_POS.'">'.
-			img('admin/themes/default/img/ard.gif', ADM_SORT_POS, ADM_SORT_POS).'</a>':'').
+			sprintf($img, 'ard.gif', 8, 8, ADM_SORT_POS, ADM_SORT_POS).'</a>':'').
 			"</th>";
 		if (count($table['columns']))
 		{
@@ -679,10 +679,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 					(isset($table['name'])?
 					' <a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '')).
 					'" title="'.ADM_SORT_ASC.'">'.
-					img('admin/themes/default/img/ard.gif', ADM_SORT_ASC, ADM_SORT_ASC).'</a> '.
+						sprintf($img, 'ard.gif', 8, 8, ADM_SORT_ASC, ADM_SORT_ASC).'</a> '.
 					'<a href="'.$this->url(array($prefix.'sort' => $column['name'], $prefix.'desc' => '1')).
 					'" title="'.ADM_SORT_DESC.'">'.
-					img('admin/themes/default/img/aru.gif', ADM_SORT_DESC, ADM_SORT_DESC).
+						sprintf($img, 'aru.gif', 8, 8, ADM_SORT_DESC, ADM_SORT_DESC).
 					'</a></th>':'');
 			}
 		}
@@ -708,7 +708,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 				{
 					$result .= ' <a href="' . sprintf($url_delete, $item[$table['key']]) . '" title="' .
 						ADM_DELETE . '" onclick="return askdel(this)">' .
-						img('admin/themes/default/img/medium/item-delete.png', ADM_DELETE, ADM_DELETE, 16, 16).
+						sprintf($img, 'medium/item-delete.png', 16, 16, ADM_DELETE, ADM_DELETE).
 						'</a>';
 				}
 
@@ -723,7 +723,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 				{
 					$result .= ' <a href="' . sprintf($url_edit, $item[$table['key']]) . '" title="' .
 						ADM_EDIT .	'">' .
-						img('admin/themes/default/img/medium/item-edit.png', ADM_EDIT, ADM_EDIT, 16, 16).'</a>';
+						sprintf($img, 'medium/item-edit.png', 16, 16, ADM_EDIT, ADM_EDIT);
 				}
 
 				/* Вверх/вниз */
@@ -738,10 +738,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 				{
 					$result .= ' <a href="' . sprintf($url_position, 'up', $item[$table['key']]) .
 						'" title="' . ADM_UP . '">' .
-						img('admin/themes/default/img/medium/move-up.png', ADM_UP, ADM_UP).'</a>';
+						sprintf($img, 'medium/move-up.png', 16, 16, ADM_UP, ADM_UP) . '</a>';
 					$result .= ' <a href="' . sprintf($url_position, 'down', $item[$table['key']]) .
 						'" title="' . ADM_DOWN . '">' .
-						img('admin/themes/default/img/medium/move-down.png', ADM_DOWN, ADM_DOWN).'</a>';
+						sprintf($img, 'medium/move-down.png', 16, 16, ADM_DOWN, ADM_DOWN) . '</a>';
 				}
 
 				/* Активность */
@@ -755,9 +755,9 @@ class Eresus_AdminUI extends Eresus_WebPage
 				{
 					$result .= ' <a href="' . sprintf($url_toggle, $item[$table['key']]) . '" title="' .
 						($item['active'] ? ADM_DEACTIVATE : ADM_ACTIVATE) . '">' .
-						img('admin/themes/default/img/medium/item-' . ($item['active'] ? 'active':'inactive').
-						'.png', $item['active']?ADM_DEACTIVATE:ADM_ACTIVATE,
-						$item['active']?ADM_DEACTIVATE:ADM_ACTIVATE).'</a>';
+						sprintf($img, 'medium/item' . ($item['active'] ? 'active':'inactive') . '.png', 16, 16,
+							$item['active'] ? ADM_DEACTIVATE : ADM_ACTIVATE,
+							$item['active'] ? ADM_DEACTIVATE : ADM_ACTIVATE) . '</a>';
 				}
 
 				$result .= '</td>';
