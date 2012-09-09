@@ -127,6 +127,7 @@ class Eresus_Extensions_Registry
 	 * @param string $name  Имя плагина
 	 *
 	 * @throws DomainException
+	 * @throws RuntimeException
 	 *
 	 * @return void
 	 */
@@ -166,7 +167,7 @@ class Eresus_Extensions_Registry
 			}
 			else
 			{
-				FatalError(sprintf(errClassNotFound, $className));
+				throw new RuntimeException(sprintf(errClassNotFound, $className));
 			}
 		}
 		else
@@ -251,7 +252,7 @@ class Eresus_Extensions_Registry
 		{
 			eresus_log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
 				$className, $name, $filename);
-			FatalError(sprintf(errClassNotFound, $name));
+			throw new RuntimeException(sprintf(errClassNotFound, $name));
 		}
 
 		// Заносим экземпляр в реестр

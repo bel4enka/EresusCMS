@@ -79,52 +79,6 @@ function __macroVar(array $matches)
 }
 
 /**
- * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
- *
- * @param string $msg  Текст сообщения
- *
- * @since 2.00
- */
-function FatalError($msg)
-{
-	if (PHP_SAPI == 'cli')
-	{
-		$result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg))."\n";
-	}
-	else
-	{
-		$result =
-			"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
-			"<html>\n".
-			"<head>\n".
-			"  <title>".errError."</title>\n".
-			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\">\n".
-			"</head>\n\n".
-			"<body>\n".
-			"  <div align=\"center\" style=\"font-family: Arial, Helvetica, sans-serif;\">\n".
-			"    <table cellspacing=\"0\" style=\"border-style: solid; " .
-				"border-color: #e88 #800 #800 #e88; min-width: 500px;\">\n".
-			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
-				"border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; " .
-				"font-weight: bold; text-align: center; font-size: 10pt;\">".errError."</td></tr>\n".
-			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
-				"border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; " .
-				"font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
-			"        <p style=\"text-align: center\">".$msg."</p>\n".
-			"        <div align=\"center\"><br /><a href=\"javascript:history.back()\" " .
-				"style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; " .
-				"height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; " .
-				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".STR_RETURN."</a></div>\n".
-			"      </td></tr>\n".
-			"    </table>\n".
-			"  </div>\n".
-			"</body>\n".
-			"</html>";
-	}
-	die($result);
-}
-
-/**
  * Возвращает разметку сообщения о пользовательской ошибке
  *
  * @param string $text     Текст сообщения
@@ -1277,18 +1231,18 @@ class Eresus
 	/**
 	 * Читает настройки
 	 *
-	 * @access  private
+	 * @throws RuntimeException
 	 */
-	function init_settings()
+	private function init_settings()
 	{
 		$filename = $this->froot.'cfg/settings.php';
 		if (is_file($filename))
 		{
-			include_once($filename);
+			include($filename);
 		}
 		else
 		{
-			FatalError("Settings file '$filename' not found!");
+			throw new RuntimeException("Settings file '$filename' not found!");
 		}
 	}
 
@@ -1333,9 +1287,9 @@ class Eresus
 	/**
 	 * Инициализация локали
 	 *
-	 * @access private
+	 * @throws RuntimeException
 	 */
-	function init_locale()
+	private function init_locale()
 	{
 		global $locale;
 
@@ -1346,11 +1300,11 @@ class Eresus
 		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
-			include_once($filename);
+			include($filename);
 		}
 		else
 		{
-			FatalError("Locale file '$filename' not found!");
+			throw new RuntimeException("Locale file '$filename' not found!");
 		}
 	}
 

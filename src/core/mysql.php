@@ -84,6 +84,8 @@ class MySQL
 	 * @param string $source    Имя источника данных
 	 * @param string $prefix
 	 *
+	 * @throws DomainException
+	 *
 	 * @return bool  Результат соединения
 	 * @deprecated
 	 */
@@ -101,7 +103,7 @@ class MySQL
 		catch (DBRuntimeException $e)
 		{
 			Core::logException($e);
-			FatalError("Can not connect to MySQL server. See log for more info.");
+			throw new DomainException("Can not connect to MySQL server. See log for more info.", 0, $e);
 		}
 
 		return true;

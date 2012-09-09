@@ -15,8 +15,9 @@
 ^^^^^^^
 
 - form — краткая форма для обращения к Eresus_UI_Admin_ArrayForm
-- img
 - useLib — все классы теперь загружаются автоматически
+- FatalError — используйте исключения
+- img
 - gettime
 - fileread
 - filewrite
