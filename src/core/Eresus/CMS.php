@@ -47,7 +47,7 @@ class Eresus_CMS
 	 * @var Eresus
 	 * @since 3.01
 	 */
-	protected $legacyKernel;
+	protected static $legacyKernel;
 
 	/**
 	 * Основной метод приложения
@@ -68,7 +68,7 @@ class Eresus_CMS
 			/* Подключение старого ядра */
 			include ERESUS_APP_ROOT . '/core/kernel-legacy.php';
 
-			$this->legacyKernel = new Eresus;
+			self::$legacyKernel = new Eresus;
 			$this->initConf();
 
 			$i18n = Eresus_I18n::getInstance();
@@ -134,7 +134,7 @@ class Eresus_CMS
 	 */
 	public static function getLegacyKernel()
 	{
-		return $this->legacyKernel;
+		return self::$legacyKernel;
 	}
 
 	/**

@@ -40,13 +40,14 @@ class Eresus_Extensions_PluginTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getDataURL()
 	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
-		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
-		$GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
-		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
-		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
-		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
+		$Eresus = new stdClass();
+		$Eresus->froot = '/home/exmaple.org/';
+		$Eresus->fdata = '/home/exmaple.org/data/';
+		$Eresus->fstyle = '/home/exmaple.org/style/';
+		$Eresus->root = 'http://exmaple.org/';
+		$Eresus->data = 'http://exmaple.org/data/';
+		$Eresus->style = 'http://exmaple.org/style/';
+		Eresus_Tests::setStatic('Eresus_CMS', $Eresus, 'legacyKernel');
 		$test = new Eresus_Extensions_Plugin();
 		$this->assertEquals('http://exmaple.org/data/eresus_extensions_plugin/', $test->getDataURL());
 	}
@@ -57,13 +58,14 @@ class Eresus_Extensions_PluginTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getCodeURL()
 	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
-		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
-		$GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
-		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
-		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
-		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
+		$Eresus = new stdClass();
+		$Eresus->froot = '/home/exmaple.org/';
+		$Eresus->fdata = '/home/exmaple.org/data/';
+		$Eresus->fstyle = '/home/exmaple.org/style/';
+		$Eresus->root = 'http://exmaple.org/';
+		$Eresus->data = 'http://exmaple.org/data/';
+		$Eresus->style = 'http://exmaple.org/style/';
+		Eresus_Tests::setStatic('Eresus_CMS', $Eresus, 'legacyKernel');
 		$test = new Eresus_Extensions_Plugin();
 		$this->assertEquals('http://exmaple.org/ext/eresus_extensions_plugin/', $test->getCodeURL());
 	}
@@ -74,13 +76,14 @@ class Eresus_Extensions_PluginTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_getStyleURL()
 	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
-		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
-		$GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
-		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
-		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
-		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
+		$Eresus = new stdClass();
+		$Eresus->froot = '/home/exmaple.org/';
+		$Eresus->fdata = '/home/exmaple.org/data/';
+		$Eresus->fstyle = '/home/exmaple.org/style/';
+		$Eresus->root = 'http://exmaple.org/';
+		$Eresus->data = 'http://exmaple.org/data/';
+		$Eresus->style = 'http://exmaple.org/style/';
+		Eresus_Tests::setStatic('Eresus_CMS', $Eresus, 'legacyKernel');
 		$test = new Eresus_Extensions_Plugin();
 		$this->assertEquals('http://exmaple.org/style/eresus_extensions_plugin/', $test->getStyleURL());
 	}
