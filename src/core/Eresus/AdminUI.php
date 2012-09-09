@@ -164,8 +164,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 *
 	 * @return string
 	 */
-	function replaceMacros($text)
+	public function replaceMacros($text)
 	{
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
 		$result = str_replace(
 			array(
 				'$(httpHost)',
@@ -180,11 +182,11 @@ class Eresus_AdminUI extends Eresus_WebPage
 				'$(siteDescription)',
 			),
 			array(
-				httpHost,
-				httpPath,
+				$request->getHost(),
+				$request->getBasePath(),
 				Eresus_CMS::getLegacyKernel()->root,
-				styleRoot,
-				dataRoot,
+				Eresus_CMS::getLegacyKernel()->style,
+				Eresus_CMS::getLegacyKernel()->data,
 
 				siteName,
 				siteTitle,
@@ -650,6 +652,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 		{
 			$items = $values;
 		}
+
+		// Шаблон вставки картинки
+		$img = '<img src="' . Eresus_CMS::getLegacyKernel()->root .
+			'admin/themes/default/img/%s" width="%d" height="%d" title="%s" alt="%s">';
 
 		if (isset($pages))
 		{

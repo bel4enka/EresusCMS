@@ -98,9 +98,17 @@ class Eresus_ClientUI extends Eresus_WebPage
 	}
 	//------------------------------------------------------------------------------
 
-	# Подставляет значения макросов
-	function replaceMacros($text)
+	/**
+	 * Подставляет значения макросов
+	 *
+	 * @param string $text
+	 *
+	 * @return string
+	 */
+	public function replaceMacros($text)
 	{
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
 		$section = $this->section;
 		if (siteTitleReverse)
 		{
@@ -134,11 +142,11 @@ class Eresus_ClientUI extends Eresus_WebPage
 				'$(sectionTitle)',
 			),
 			array(
-				httpHost,
-				httpPath,
-				httpRoot,
-				styleRoot,
-				dataRoot,
+				$request->getHost(),
+				$request->getBasePath(),
+				Eresus_CMS::getLegacyKernel()->root,
+				Eresus_CMS::getLegacyKernel()->style,
+				Eresus_CMS::getLegacyKernel()->data,
 
 				siteName,
 				siteTitle,
