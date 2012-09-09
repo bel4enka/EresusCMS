@@ -738,18 +738,6 @@ function HttpAnswer($answer)
 }
 
 /**
- * Отправляет браузеру XML
- *
- * @param string $data
- */
-function SendXML($data)
-{
-	Header('Content-Type: text/xml');
-	echo '<?xml version="1.0" encoding="'.CHARSET.'"?>'."\n<root>".$data."</root>";
-	exit;
-}
-
-/**
  * Возвращает значение глобального параметра
  *
  * Предоставляет доступ к параметрам, устанавливаемым в разделе конфигурации сайта:

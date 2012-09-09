@@ -21,6 +21,7 @@
 - fileread
 - filewrite
 - filedelete
+- SendXML
 
 Константы
 ---------
