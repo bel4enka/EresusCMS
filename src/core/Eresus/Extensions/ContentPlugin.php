@@ -118,10 +118,11 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 	{
 		/** @var Eresus_ClientUI $page */
 		$page = Eresus_Kernel::app()->getPage();
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
+
 		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-		if (Eresus_CMS::getLegacyKernel()->request['file'] ||
-			Eresus_CMS::getLegacyKernel()->request['query'] ||
-			$page->subpage || $page->topic)
+		if ($request->getFilename() || $request->getQueryString() || $page->subpage || $page->topic)
 		{
 			$page->httpError(404);
 		}
