@@ -367,8 +367,8 @@ define('admPagesContent', 'Контент страницы');
 define('admTemplList', 'Шаблон элемента списка разделов');
 define('admTemplListLabel',
 	'Шаблон списка разделов. Используйте макрос $(items) для вставки списка. Для изменения ' .
-	'оформления элементов списка создайте или измените шаблон <a href="'.httpRoot.
-	'admin.php?mod=themes&section=std">'.admTemplList.'</a>');
+	'оформления элементов списка создайте или измените шаблон <a ' .
+	'href="admin.php?mod=themes&section=std">'.admTemplList.'</a>');
 define('admTemplListItemLabel',
 	'Шаблон элемента списка разделов. Макросы <strong>$(title)</strong> - заголовок; <strong>' .
 	'$(caption)</strong> - пункт меню; <strong>$(description)</strong> - описание; <strong>$(hint)' .
