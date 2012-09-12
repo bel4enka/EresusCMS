@@ -28,6 +28,8 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
 define('ADMINUI', true);
 
 /**
@@ -40,7 +42,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 	/**
 	 * Загружаемый модуль
 	 *
-	 * @var object
+	 * @var Eresus_Admin_Controllers_Abstract
 	 */
 	public $module;
 
@@ -876,6 +878,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 			if (class_exists($class))
 			{
 				$this->module = new $class;
+				if ($this->module instanceof ContainerAwareInterface)
+				{
+					$this->module->setContainer(Eresus_Kernel::sc());
+				}
 			}
 			elseif (substr($module, 0, 4) == 'ext-')
 			{

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<about>
+
+	<!-- Секция содержит информацию о продукте -->
+	<product title="${product.title}" version="${product.version}">
+		<!--
+			<copyright
+				year="Год начала"
+				owner="Владелец прав"
+				url="URL сайта владельца"
+			>
+				Дополнительная информация
+			</copyright> 
+			
+			Обязательными атрибутами являются owner и year
+		-->
+		<copyright year="2004-2012" owner="Михаил Красильников" url="http://eresus.ru/" />
+		<!-- Можно указать несколько копирайтов -->
+		
+	</product>
+	
+	<!-- Лицензия -->
+	<license>
+		<ru>
+			<p>Данная программа является свободным программным обеспечением. Вы вправе распространять ее и/или
+			модифицировать в соответствии с условиями версии 3 либо (по вашему выбору) с условиями более поздней
+			версии Стандартной Общественной Лицензии GNU, опубликованной <a href="http://fsf.org/">Free Software
+			Foundation</a>.</p>
+	
+			<p>Мы распространяем эту программу в надежде на то, что она будет вам полезной, однако НЕ
+			ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и
+			ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации
+			ознакомьтесь со <a href="http://www.gnu.org/licenses/gpl.html">Стандартной Общественной Лицензией
+			GNU</a> (<a href="http://code.google.com/p/gpl3rus/wiki/LatestRelease">неофициальный русский
+			перевод</a>).</p>
+		</ru>
+	</license>
+	
+	<!-- Секция содержит информацию о сторонних разработках -->
+	<uses>
+
+		<item title="Symfony" url="http://symfony.com/" logo="symfony.png">
+			<ru>Фреймворк для разработки веб-приложений на PHP.</ru>
+		</item>
+
+		<item title="eZ Components" url="http://ezcomponents.org/" logo="ezcomponents.png">
+			<ru>Библиотека компонентов для PHP.</ru>
+		</item>
+
+		<item url="http://jquery.com/" logo="jquery.png" title="jQuery">
+			<ru>Библиотека JavaScript для простой и быстрой работы с документами HTML.</ru>
+		</item>
+
+		<item url="http://dwoo.org/" logo="dwoo.gif" title="Dwoo">
+			<ru>Шаблонизатор для PHP5.</ru>
+		</item>
+
+		<item url="http://modernizr.com/" logo="modernizr.png" title="Modernizr">
+			<ru>Библиотека JavaScript, которая определяет возможности HTML5 и CSS3 браузера пользователя.</ru>
+			<en>JavaScript library that detects HTML5 and CSS3 features in the user’s browser.</en>
+		</item>
+
+		<item url="http://afarkas.github.com/webshim/demos/" logo="webshim.png" title="Webshim">
+			<ru>Поддержка HTML5 в старых браузерах.</ru>
+			<en>HTML5 support in old browsers.</en>
+		</item>
+
+		<item url="http://tinymce.moxiecode.com/" logo="tinymce.png" title="TinyMCE">
+			<ru>Визуальный редактор HTML.</ru>
+		</item>
+
+		<item url="http://www.cdolivet.com/editarea/" logo="" title="EditArea">
+			<ru>Редактор исходного кода с подсветкой синтаксиса.</ru>
+			<en>JavaScript editor for source code.</en>
+		</item>
+
+		<item url="https://github.com/carhartl/jquery-cookie" logo="" title="jquery-cookie">
+			<ru>Простой, легковесный плагин для jQuery для чтения, записи и удаления куки.</ru>
+			<en>A simple, lightweight jQuery plugin for reading, writing and deleting cookies.</en>
+		</item>
+
+		<item url="https://github.com/mekras/botobor" logo="" title="Ботобор">
+			<ru>Библиотека для защиты форм от спам-ботов.</ru>
+		</item>
+
+	</uses>
+	
+</about>

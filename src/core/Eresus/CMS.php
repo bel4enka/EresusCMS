@@ -28,7 +28,7 @@
  * @package Eresus
  */
 
-use Symfony\Component\ClassLoader\MapClassLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Класс приложения Eresus CMS
@@ -420,6 +420,20 @@ class Eresus_CMS
 	private function initServiceContainer()
 	{
 		$container = Eresus_Kernel::sc();
+
+		$container->register('twig.loader', 'Twig_Loader_Filesystem')
+			->addArgument($this->getFsRoot());
+		$container->register('twig.environment', 'Twig_Environment')
+			->addArgument(new Reference('twig.loader'))
+			->addArgument(array('cache' => $this->getFsRoot() . '/var/cache/twig'));
+		$container->register('twig.parser', '\Symfony\Component\Templating\TemplateNameParser');
+		$container->register('twig.locator', '\Symfony\Component\Config\FileLocator')/*
+			->addArgument(array())*/;
+		$container->register('templating', '\Symfony\Bundle\TwigBundle\TwigEngine')
+			->addArgument(new Reference('twig.environment'))
+			->addArgument(new Reference('twig.parser'))
+			->addArgument(new Reference('twig.locator'));
+
 		$container->set('request', Eresus_HTTP_Request::createFromGlobals());
 		$container->register('sections', 'Eresus_Sections');
 	}

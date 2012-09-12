@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Страница "О программе"
+ * Абстрактный контроллер АИ
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -28,64 +28,19 @@
  * @package Eresus
  */
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 /**
- * Страница "О программе"
+ * Абстрактный контроллер АИ
  *
  * @package Eresus
  */
-class Eresus_Admin_Controllers_About extends Eresus_Admin_Controllers_Abstract
+abstract class Eresus_Admin_Controllers_Abstract extends Controller
 {
 	/**
-	 * Возвращает страницу "О программе"
+	 * Должен возвращать разметку страницы
 	 *
 	 * @return string  HTML
 	 */
-	public function adminRender()
-	{
-		global $locale;
-
-		/** @var Eresus_CMS $app */
-		$app = $this->get('app');
-		/** @var SimpleXMLElement $xml */
-		$xml = simplexml_load_file($app->getFsRoot() . '/core/data/about.xml');
-
-		$data = array();
-
-		$product = $xml->product[0];
-		$data['product'] = array();
-		$data['product']['title'] = strval($product['title']);
-		$data['product']['version'] = strval($product['version']);
-
-		$data['product']['copyrights'] = array();
-		$copyrights = $product->copyright;
-		for ($i = 0; $i < count($copyrights); $i++)
-		{
-			$copyright = $copyrights[$i];
-			$data['product']['copyrights'] []= array(
-				'year' => strval($copyright['year']),
-				'owner' => strval($copyright['owner']),
-				'url' => strval($copyright['url']),
-			);
-		}
-
-		$license = $xml->license[0];
-		$data['license'] = array();
-		$data['license']['text'] = strval($license->{$locale['lang']}[0]);
-
-		$data['components'] = array();
-		$components = $xml->xpath('//uses/item');
-		foreach ($components as $component)
-		{
-			$data['components'] []= array(
-				'title' => strval($component['title']),
-				'url' => strval($component['url']),
-				'logo' => strval($component['logo']),
-				'description' => strval($component->{$locale['lang']}[0])
-			);
-		}
-
-		$html = $this->renderView('core/templates/about.html.twig', $data);
-
-		return $html;
-	}
+	abstract public function adminRender();
 }
