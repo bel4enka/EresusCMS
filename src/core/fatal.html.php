@@ -104,7 +104,7 @@
 			if (isset($error))
 			{
 				echo '<h2>' . get_class($error) . '</h2>';
-				if (defined('ERESUS_CMS_DEBUG'))
+				if (Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
 				{
 					?>
 					<div class="message"><?php echo $error->getMessage();?></div>
