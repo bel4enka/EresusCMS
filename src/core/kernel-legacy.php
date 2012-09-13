@@ -46,6 +46,39 @@ define('GUEST',  5); # Гость (не зарегистрирован)
 
 
 /**
+ * Возвращает константу для подстановки в макросы
+ *
+ * @param array $matches
+ *
+ * @return mixed
+ *
+ * @since 2.14
+ */
+function __macroConst(array $matches)
+{
+	return constant($matches[1]);
+}
+
+/**
+ * Возвращает глобальную переменную для подстановки в макросы
+ *
+ * @param array $matches
+ *
+ * @return mixed
+ *
+ * @since 2.14
+ */
+function __macroVar(array $matches)
+{
+	$result = $GLOBALS[$matches[2]];
+	if (!empty($matches[3]))
+	{
+		@eval('$result = $result'.$matches[3].';');
+	}
+	return $result;
+}
+
+/**
  * Возвращает разметку сообщения о пользовательской ошибке
  *
  * @param string $text     Текст сообщения
