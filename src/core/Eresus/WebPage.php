@@ -28,12 +28,14 @@
  * @package Eresus
  */
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 /**
  * Родительский класс веб-интерфейсов
  *
  * @package Eresus
  */
-class Eresus_WebPage
+class Eresus_WebPage extends Controller
 {
 	/**
 	 * Идентификатор текущего раздела

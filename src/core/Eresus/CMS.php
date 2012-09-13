@@ -272,6 +272,10 @@ class Eresus_CMS
 		TemplateSettings::setGlobalValue('siteRoot',
 			$request->getScheme() . '://' . $request->getHost() . $request->getBasePath());
 
+		/** @var Twig_Environment $twigEnv */
+		$twigEnv = Eresus_Kernel::sc()->get('twig.environment');
+		$twigEnv->addExtension(new Eresus_Twig_Extension());
+
 		//$this->initRoutes();
 	}
 
@@ -285,6 +289,7 @@ class Eresus_CMS
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		$this->page = new Eresus_ClientUI();
+		$this->page->setContainer(Eresus_Kernel::sc());
 		$this->page->init();
 		/*return */$this->page->render();
 	}
@@ -299,6 +304,7 @@ class Eresus_CMS
 		eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
 		$this->page = new Eresus_AdminUI();
+		$this->page->setContainer(Eresus_Kernel::sc());
 		/*return */$this->page->render();
 	}
 
@@ -426,7 +432,7 @@ class Eresus_CMS
 			->addArgument($this->getFsRoot());
 		$container->register('twig.environment', 'Twig_Environment')
 			->addArgument(new Reference('twig.loader'))
-			->addArgument(array('cache' => $this->getFsRoot() . '/var/cache/twig'));
+			->addArgument(array('cache' => $this->getFsRoot() . '/var/cache/twig', 'autoescape' => false));
 		$container->register('twig.parser', '\Symfony\Component\Templating\TemplateNameParser');
 		$container->register('twig.locator', '\Symfony\Component\Config\FileLocator');
 		$container->register('templating', '\Symfony\Bundle\TwigBundle\TwigEngine')

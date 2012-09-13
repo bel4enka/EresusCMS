@@ -1200,7 +1200,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 */
 	public function render()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		/* Проверяем права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
@@ -1271,6 +1270,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$data['page'] = $this;
 		$data['content'] = $this->renderContent();
 		$data['siteName'] = option('siteName');
+		//$data['siteRoot'] = Eresus_CMS::getLegacyKernel()->root;
 		$data['body'] = $this->renderBodySection();
 		$data['cms'] = array(
 			'name' => CMSNAME,
@@ -1282,8 +1282,8 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$data['controlMenu'] = $this->renderControlMenu();
 		$data['user'] = Eresus_CMS::getLegacyKernel()->user;
 
-		$tmpl = new Template('admin/themes/default/page.default.html');
-		$html = $tmpl->compile($data);
+		//$tmpl = new Template('admin/themes/default/page.default.html');
+		//$html = $tmpl->compile($data);
 
 		if (count($this->headers))
 		{
@@ -1292,6 +1292,8 @@ class Eresus_AdminUI extends Eresus_WebPage
 				header($header);
 			}
 		}
+
+		$html = $this->renderView('core/templates/default.html.twig', $data);
 
 		echo $html;
 	}

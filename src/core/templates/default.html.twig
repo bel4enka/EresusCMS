@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>{{ siteName }} - {{ page.title }}</title>
+	<link rel="stylesheet" href="{{ siteRoot }}admin/themes/default/theme.css">
+	<link rel="stylesheet" href="{{ siteRoot }}admin/themes/default/main.css">
+	<script>
+		window.Eresus = {
+			siteRoot: "{{ siteRoot }}"
+		};
+	</script>
+	{{ jslib('jquery', 'ui', 'cookie') }}
+	{{ call(page, 'renderHeadSection') }}
+</head>
+<body>
+
+	<div id="header" class="header ui-widget-header">
+		<div class="width-limit">
+			<div id="cmsLogo">
+				<a href="{{ siteRoot }}admin/about">
+					<img src="{{ siteRoot }}admin/themes/default/img/logo.png"
+                        alt="{{ cms.name }} {{ cms.version }}" width="150" height="30">
+				</a>
+			</div>
+			<h1>{{ siteName }} &ndash; {{ page.title }}</h1>
+			CMS {{ cms.name }} {{ cms.version }}
+		</div>
+	</div>
+
+	<div class="width-limit">
+		<div class="nav sidebar">
+
+			<div class="box ui-widget ui-widget-content">
+				<div class="header">{{ i18n('admContent') }}</div>
+				<div class="content menu menu-content">
+					<ul>
+						{{ sectionMenu }}
+					</ul>
+				</div>
+			</div>
+
+			<div class="box ui-widget ui-widget-content menu">
+				{{ controlMenu }}
+			</div>
+
+			<div class="box ui-widget ui-widget-content">
+				<div class="header">{{ user.name }}</div>
+				<div class="content user-box">
+					<a href="{{ siteRoot }}admin.php?mod=users&amp;id={$user.id}">
+						{{ i18n('admUsersChangePassword') }}
+					</a>
+					<form action="{{ siteRoot }}admin.php" method="post">
+						<div class="ui-button-box">
+							<input type="hidden" name="action" value="logout">
+							<button type="submit">{{ i18n('STR_EXIT') }}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="content">
+			<noscript>
+				<div class="ui-state-error box">
+					В вашем браузере не работает JavaScript. Без JavaScript работа с панелью управления
+					сайтом невозможна, и может привести к потере информации!
+				</div>
+			</noscript>
+			{% if Eresus.conf.debug.enable %}
+			<div class="ui-state-error box">
+				Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
+				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
+			</div>
+			{% endif %}
+			{{ content }}
+		</div>
+	</div>
+
+	<script src="{{ siteRoot }}admin/themes/default/theme.js"></script>
+	<script src="{{ siteRoot }}core/functions.js"></script>
+	{{ body }}
+</body>
+</html>
