@@ -101,13 +101,9 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 */
 	public function __construct()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
 		parent::__construct();
 
-		$theme = new Eresus_Admin_Theme();
-		$this->setUITheme($theme);
-		TemplateSettings::setGlobalValue('theme', $theme);
+		$this->initTheme();
 
 		$this->title = admControls;
 		/* Определяем уровень вложенности */
@@ -143,7 +139,16 @@ class Eresus_AdminUI extends Eresus_WebPage
 			),
 		);
 	}
-	//-----------------------------------------------------------------------------
+
+	/**
+	 * Подготовка темы оформления
+	 */
+	private function initTheme()
+	{
+		$theme = new Eresus_Admin_Theme();
+		$this->setUITheme($theme);
+		TemplateSettings::setGlobalValue('theme', $theme);
+	}
 
 	/**
 	 * Возвращает объект текущей темы оформления
@@ -153,7 +158,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 	{
 		return $this->uiTheme;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Устанавливает новую тему оформления
@@ -164,7 +168,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 	{
 		$this->uiTheme = $theme;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Подставляет значения макросов
@@ -209,7 +212,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function url($args = null, $clear = false)
 	{
@@ -252,7 +254,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$result = Eresus_CMS::getLegacyKernel()->root . 'admin.php' . $result;
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Добавляет пункт в меню "Расширения"
@@ -324,17 +325,24 @@ class Eresus_AdminUI extends Eresus_WebPage
 			$ptr['access'] = $item['access'];
 		}
 	}
-	//-----------------------------------------------------------------------------
 
-
-	function box($text, $class, $caption='')
+	/**
+	 * @param string $text
+	 * @param string $class
+	 * @param string $caption
+	 * @return string
+	 */
+	function box($text, $class, $caption = '')
 	{
 		$result = "<div".(empty($class)?'':' class="'.$class.'"').">\n".(empty($caption)?'':
 			'<span class="'.$class.'Caption">'.$caption.'</span><br />').$text."</div>\n";
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
+	/**
+	 * @param array $wnd
+	 * @return string
+	 */
 	function window($wnd)
 	{
 		$result =
@@ -345,7 +353,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 		"</td></tr>\n</table>\n";
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовывает элемент управления
@@ -441,7 +448,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 		}
 		return $result;
 	}
-	//------------------------------------------------------------------------------
 
 	/**
 	 * Отрисовывает кнопки-"вкладки"
@@ -531,8 +537,15 @@ class Eresus_AdminUI extends Eresus_WebPage
 		}
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
+	/**
+	 * @param $itemsCount
+	 * @param $itemsPerPage
+	 * @param $pageCount
+	 * @param bool $Descending
+	 * @param string $sub_prefix
+	 * @return string
+	 */
 	function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
 	{
 		$prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
@@ -571,7 +584,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 			return '';
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовывает таблицу-список на основе описания $table
@@ -854,7 +866,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 		}
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	function renderForm($form, $values=array())
 	{
