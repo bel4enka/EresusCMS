@@ -327,21 +327,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 	}
 
 	/**
-	 * @param array $wnd
-	 * @return string
-	 */
-	function window($wnd)
-	{
-		$result =
-		"<table border=\"0\" class=\"admWindow\"".(empty($wnd['width'])?'':' style="width: '.
-		$wnd['width'].';"').">\n".
-		(empty($wnd['caption'])?'':"<tr><th>".$wnd['caption']."</th></tr>\n").
-		"<tr><td".(empty($wnd['style'])?'':' style="'.$wnd['style'].'"').">".$wnd['body'].
-		"</td></tr>\n</table>\n";
-		return $result;
-	}
-
-	/**
 	 * Отрисовывает элемент управления
 	 *
 	 * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
@@ -856,18 +841,20 @@ class Eresus_AdminUI extends Eresus_WebPage
 
 	function renderForm($form, $values=array())
 	{
-		$result = '';
+		$html = '';
 		if (isset($form['tabs']))
 		{
-			$result .= $this->renderTabs($form['tabs']);
+			$html .= $this->renderTabs($form['tabs']);
 		}
-		$wnd['caption'] = $form['caption'];
-		$wnd['width'] = isset($form['width'])?$form['width']:'';
-		$wnd['style'] = 'padding: 0px;';
+		$width = isset($form['width']) ? $form['width'] : '';
 		$form = new Eresus_UI_Admin_ArrayForm($form, $values);
-		$wnd['body'] = $form->render();
-		$result .= $this->window($wnd);
-		return $result;
+
+		$html .=
+			'<table border="0" class="admWindow" style="width: ' . $width . ';"><tr><th>' .
+			$form['caption'] . '</th></tr><tr><td style="style: padding: 0;">' . $form->render() .
+			'</td></tr></table>';
+
+		return $html;
 	}
 
 	/**

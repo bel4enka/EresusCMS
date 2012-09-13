@@ -19,6 +19,7 @@
 
 - Eresus::$sections удалено, используйте Eresus_Kernel::get('sections')
 - TAdminUI::box()
+- TAdminUI::window()
 
 Функции
 ^^^^^^^
