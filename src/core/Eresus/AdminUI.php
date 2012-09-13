@@ -847,11 +847,11 @@ class Eresus_AdminUI extends Eresus_WebPage
 			$html .= $this->renderTabs($form['tabs']);
 		}
 		$width = isset($form['width']) ? $form['width'] : '';
-		$form = new Eresus_UI_Admin_ArrayForm($form, $values);
+		$formObj = new Eresus_UI_Admin_ArrayForm($form, $values);
 
 		$html .=
 			'<table border="0" class="admWindow" style="width: ' . $width . ';"><tr><th>' .
-			$form['caption'] . '</th></tr><tr><td style="style: padding: 0;">' . $form->render() .
+			$form['caption'] . '</th></tr><tr><td style="style: padding: 0;">' . $formObj->render() .
 			'</td></tr></table>';
 
 		return $html;
@@ -953,6 +953,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 			if (class_exists($class))
 			{
 				$this->module = new $class;
+				if ($this->module instanceof ContainerAwareInterface)
+				{
+					$this->module->setContainer(Eresus_Kernel::sc());
+				}
 			}
 			elseif (substr($module, 0, 4) == 'ext-')
 			{
