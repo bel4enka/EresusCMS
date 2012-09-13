@@ -42,8 +42,6 @@ class Eresus_Admin_Controllers_About extends Eresus_Admin_Controllers_Abstract
 	 */
 	public function adminRender()
 	{
-		global $locale;
-
 		/** @var Eresus_CMS $app */
 		$app = $this->get('app');
 		/** @var SimpleXMLElement $xml */
@@ -68,9 +66,11 @@ class Eresus_Admin_Controllers_About extends Eresus_Admin_Controllers_Abstract
 			);
 		}
 
+		$locale = Eresus_I18n::getInstance()->getLocale();
+
 		$license = $xml->license[0];
 		$data['license'] = array();
-		$data['license']['text'] = strval($license->{$locale['lang']}[0]);
+		$data['license']['text'] = strval($license->{$locale}[0]);
 
 		$data['components'] = array();
 		$components = $xml->xpath('//uses/item');
@@ -80,7 +80,7 @@ class Eresus_Admin_Controllers_About extends Eresus_Admin_Controllers_Abstract
 				'title' => strval($component['title']),
 				'url' => strval($component['url']),
 				'logo' => strval($component['logo']),
-				'description' => strval($component->{$locale['lang']}[0])
+				'description' => strval($component->{$locale}[0])
 			);
 		}
 
