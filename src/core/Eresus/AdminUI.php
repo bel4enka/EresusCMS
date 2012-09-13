@@ -29,6 +29,11 @@
  */
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 define('ADMINUI', true);
 
@@ -89,7 +94,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 	protected $uiTheme;
 
 	/**
-	 * Констурктор
+	 * Конструктор
 	 * @return Eresus_AdminUI
 	 */
 	public function __construct()
@@ -864,12 +869,89 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$result .= $this->window($wnd);
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
-	function renderContent()
+	/**
+	 * Возвращает разметку области контента
+	 *
+	 * @throws DomainException
+	 * @throws LogicException  если нет контероллера, указанного в маршруте
+	 *
+	 * @return string
+	 */
+	private function renderContent()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
+		$routes = new RouteCollection();
+		$routes->add('about',
+			new Route('/admin/about', array('controller' => 'Eresus_Admin_Controllers_About')));
+		$context = new RequestContext();
+		/** @var Eresus_HTTP_Request $request */
+		$request = Eresus_Kernel::get('request');
+		$context->fromRequest($request);
+		$matcher = new UrlMatcher($routes, $context);
 
+		try
+		{
+			$match = $matcher->match($request->getLocalUrl());
+			if (!class_exists($match['controller']))
+			{
+				throw new LogicException('Invalid route! Unknown controller class: ' .
+					$match['controller']);
+			}
+			$controller = new $match['controller'];
+			if ($controller instanceof ContainerAwareInterface)
+			{
+				$controller->setContainer(Eresus_Kernel::sc());
+			}
+			if ($controller instanceof Eresus_Admin_Controllers_Abstract)
+			{
+				$result = $controller->adminRender();
+			}
+			else
+			{
+				throw new LogicException($match['controller'] .
+					' is not descendant of Eresus_Admin_Controllers_Abstract');
+			}
+		}
+		catch (ResourceNotFoundException $e)
+		{
+			$result = $this->legacyRenderContent();
+		}
+
+		if (
+			isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
+		)
+		{
+			$messages = '';
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['information'] as $message)
+			{
+				$messages .= InfoBox($message);
+			}
+			$result = $messages . $result;
+			Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
+		}
+		if (
+			isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
+			count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))
+		{
+			$messages = '';
+			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
+			{
+				$messages .= ErrorBox($message);
+			}
+			$result = $messages . $result;
+			Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
+		}
+		return $result;
+	}
+
+	/**
+	 * Старый метод отрисовки контента
+	 *
+	 * @return string  HTML
+	 */
+	private function legacyRenderContent()
+	{
 		$result = '';
 		if (arg('mod'))
 		{
@@ -878,10 +960,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 			if (class_exists($class))
 			{
 				$this->module = new $class;
-				if ($this->module instanceof ContainerAwareInterface)
-				{
-					$this->module->setContainer(Eresus_Kernel::sc());
-				}
 			}
 			elseif (substr($module, 0, 4) == 'ext-')
 			{
@@ -941,34 +1019,8 @@ class Eresus_AdminUI extends Eresus_WebPage
 				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
-		if (
-			isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
-			count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
-		)
-		{
-			$messages = '';
-			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['information'] as $message)
-			{
-				$messages .= InfoBox($message);
-			}
-			$result = $messages . $result;
-			Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
-		}
-		if (
-			isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
-			count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))
-		{
-			$messages = '';
-			foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
-			{
-				$messages .= ErrorBox($message);
-			}
-			$result = $messages . $result;
-			Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
-		}
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовывает ветку меню
@@ -976,6 +1028,8 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 * @param $opened
 	 * @param $owner
 	 * @param $level
+	 *
+	 * @return string
 	 */
 	private function renderPagesMenu(&$opened, $owner = 0, $level = 0)
 	{

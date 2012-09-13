@@ -404,6 +404,7 @@ class Eresus_CMS
 			/** @noinspection PhpIncludeInspection */
 			include_once $filename;
 			$className = $extension.'Connector';
+			/** @var Eresus_Extensions_Connector $connector */
 			$connector = new $className;
 			$connector->proxy();
 		}
