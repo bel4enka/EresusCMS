@@ -37,14 +37,14 @@
  */
 class Eresus_UI_Admin_ArrayForm
 {
-	var $form;
-	var $values;
-	var $hidden = '';
-	var $onsubmit = '';
-	var $validator = '';
-	var $file = false;    # Признак наличия полей типа file
-	var $html = false;    # Признак наличия WYSIWYG редакторов
-	var $options = array();
+	private $form;
+	private $values;
+	private $hidden = '';
+	private $onsubmit = '';
+	private $validator = '';
+	private $file = false;    # Признак наличия полей типа file
+	private $html = false;    # Признак наличия WYSIWYG редакторов
+	private $options = array();
 	/**
 	* Конструктор
 	*
