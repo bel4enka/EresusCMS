@@ -33,6 +33,8 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 define('ADMINUI', true);
@@ -888,6 +890,12 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$request = Eresus_Kernel::get('request');
 		$context->fromRequest($request);
 		$matcher = new UrlMatcher($routes, $context);
+
+		/** @var Twig_Environment $twigEnv */
+		$twigEnv = Eresus_Kernel::sc()->get('twig.environment');
+		$generator = new UrlGenerator($routes, $context);
+		$twigExt = new RoutingExtension($generator);
+		$twigEnv->addExtension($twigExt);
 
 		try
 		{

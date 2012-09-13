@@ -432,7 +432,8 @@ class Eresus_CMS
 			->addArgument($this->getFsRoot());
 		$container->register('twig.environment', 'Twig_Environment')
 			->addArgument(new Reference('twig.loader'))
-			->addArgument(array('cache' => $this->getFsRoot() . '/var/cache/twig', 'autoescape' => false));
+			->addArgument(array('cache' => $this->getFsRoot() . '/var/cache/twig',
+				'autoescape' => false));
 		$container->register('twig.parser', '\Symfony\Component\Templating\TemplateNameParser');
 		$container->register('twig.locator', '\Symfony\Component\Config\FileLocator');
 		$container->register('templating', '\Symfony\Bundle\TwigBundle\TwigEngine')
