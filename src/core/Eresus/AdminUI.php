@@ -327,19 +327,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 	}
 
 	/**
-	 * @param string $text
-	 * @param string $class
-	 * @param string $caption
-	 * @return string
-	 */
-	function box($text, $class, $caption = '')
-	{
-		$result = "<div".(empty($class)?'':' class="'.$class.'"').">\n".(empty($caption)?'':
-			'<span class="'.$class.'Caption">'.$caption.'</span><br />').$text."</div>\n";
-		return $result;
-	}
-
-	/**
 	 * @param array $wnd
 	 * @return string
 	 */
