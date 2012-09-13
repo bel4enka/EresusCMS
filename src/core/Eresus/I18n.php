@@ -32,11 +32,27 @@
 /**
  * Служба интернационализации
  *
+ * Файлы локализации должны располагаться в папке «lang» и называться «код_локали.php». Например:
+ * «lang/ru.php», «lang/en_US.php».
+ *
+ * <b>Примеры</b>
+ *
+ * <code>
+ * $i18n = Eresus_i18n::getInstance();
+ * $i18n->setLocale('en_US');
+ * echo $i18->getText('Привет, мир!'); // Может вывести, например, "Hello world!"
+ * </code>
+ *
+ * И в шаблонах:
+ *
+ * <code>
+ * <div>{{ i18n('Привет, мир!') }}</div>
+ * </code>
+ *
  * @package Eresus
  */
 class Eresus_I18n
 {
-
 	/**
 	 * Экземпляр-одиночка
 	 *
@@ -70,7 +86,6 @@ class Eresus_I18n
 
 		return self::$instance;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Конструктор
@@ -82,21 +97,38 @@ class Eresus_I18n
 	{
 		$this->path = $path;
 	}
-	//-----------------------------------------------------------------------------
+
+	/**
+	 * Возвращает текущую локаль
+	 *
+	 * @return string
+	 *
+	 * @since 3.01
+	 */
+	public function getLocale()
+	{
+		return $this->locale;
+	}
 
 	/**
 	 * Выбор локали
 	 *
 	 * @param string $locale
+	 *
+	 * @throws InvalidArgumentException  если код локали не в фомрате xx или xx_XX
+	 *
 	 * @return void
 	 */
 	public function setLocale($locale)
 	{
+		if (!preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $locale))
+		{
+			throw new InvalidArgumentException('Invalid locale code: ' . $locale);
+		}
 		$this->locale = $locale;
 		/** @noinspection PhpIncludeInspection */
 		include_once $this->path . '/' . $this->locale . '.php';
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает текст в заданной локали
@@ -115,5 +147,4 @@ class Eresus_I18n
 
 		return $key;
 	}
-	//-----------------------------------------------------------------------------
 }
