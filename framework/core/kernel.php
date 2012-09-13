@@ -1784,8 +1784,6 @@ class Core {
 
 		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-		self::initExceptionHandling();
-
 		/**
 		 * eZ Components
 		 */
@@ -1925,78 +1923,24 @@ class Core {
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Init exception handling
-	 *
-	 */
-	static private function initExceptionHandling()
-	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		/* Reserve memory for emergency needs */
-		$GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] = str_repeat('x', ERESUS_MEMORY_OVERFLOW_BUFFER * 1024);
-
-		/* Override php.ini settings */
-		ini_set('html_errors', 0); // Some cosmetic setup
-
-		set_error_handler('EresusErrorHandler');
-		eresus_log(__METHOD__, LOG_DEBUG, 'Error handler installed');
-
-		set_exception_handler('EresusExceptionHandler');
-		eresus_log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
-
-		/*
-		 * PHP has no standart methods to intercept some error types (e.g. E_PARSE or E_ERROR),
-		 * but there is a way to do this - register callback function via ob_start.
-		 * But not in CLI mode.
-		 */
-		if (! PHP::isCLI())
-		{
-			if (ob_start('EresusFatalErrorHandler', 4096))
-				eresus_log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-			else
-				eresus_log(
-					LOG_NOTICE, __METHOD__,
-					'Fatal error handler not instaled! Fatal error will be not handled!'
-				);
-		}
-
-		eresus_log(__METHOD__, LOG_DEBUG, 'done');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Writes exception description to log
 	 *
 	 * @param Exception $e
-	 * @param string    $msg [optional]  Message
 	 */
-	static public function logException($e, $msg = null)
+	static public function logException($e)
 	{
-		if ($e instanceof EresusExceptionInterface) {
-
-			$description = $e->getDescription();
-			$previous = $e->getPreviousException();
-
-		} else {
-
-			$description = '(no description)';
-			$previous = null;
-
-		}
-
 		$logMessage = sprintf(
-			"%s in %s at %s\nMessage: %s\nDescription: %s\nBacktrace:\n%s\n",
+			"%s in %s at %s\nMessage: %s\nBacktrace:\n%s\n",
 			get_class($e),
 			$e->getFile(),
 			$e->getLine(),
 			$e->getMessage(),
-			$description,
 			$trace = $e->getTraceAsString()
 		);
 		eresus_log('Core', LOG_ERR, $logMessage);
 
-		if ($previous)
-			self::logException($previous, 'Previous exception:');
+		if ($e->getPrevious())
+			self::logException($e->getPrevious(), 'Previous exception:');
 	}
 	//-----------------------------------------------------------------------------
 
