@@ -22,7 +22,8 @@ class AppKernel extends Kernel
             new Eresus\CmsBundle\EresusCmsBundle()
         );
 
-        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+        if (in_array($this->getEnvironment(), array('dev', 'test')))
+        {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
         }
@@ -32,6 +33,22 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+        $loader->load(__DIR__ . '/../../app/config/config_' . $this->getEnvironment() . '.yml');
+    }
+
+    /**
+     * Возвращает корневую папку приложения (app/)
+     *
+     * @return string
+     */
+    public function getRootDir()
+    {
+        if (null === $this->rootDir)
+        {
+            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../../app'));
+        }
+
+        return $this->rootDir;
     }
 }
+
