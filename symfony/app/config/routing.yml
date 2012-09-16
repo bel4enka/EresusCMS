@@ -1,0 +1,9 @@
+main:
+    pattern:  /
+    defaults: { _controller: EresusCmsBundle:Legacy:index }
+
+_legacy:
+    pattern:  /{path}
+    defaults: { _controller: EresusCmsBundle:Legacy:index }
+    requirements:
+        path: ".+"

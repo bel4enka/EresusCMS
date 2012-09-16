@@ -65,7 +65,7 @@ AddDefaultCharset Off
 	RewriteRule ^(robots.txt|favicon.[^\.]+|core/gziph.php.*)$ - [last]
 
 	# Все остальные запросы должны перехватываться запускающим скриптом
-	RewriteRule .* index.php
+	RewriteRule .* app_dev.php
 </IfModule>
 
 # Если mod_rewrite не сработал (модуль не подключен, нет нужного файла), то...

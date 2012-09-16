@@ -173,7 +173,7 @@
 		</php>
 
 		<!-- Копирование основных файлов -->
-		<copy todir="${build.dir}">
+		<copy todir="${build.dir}/web">
 			<fileset refid="files.sources" />
 			<filterchain>
 			    <expandproperties />
@@ -181,17 +181,17 @@
 		</copy>
 
 			<!-- Обработка файлов CSS темы default -->
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/typography.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/layout.css" />
-			<append destFile="${build.dir}/admin/themes/default/theme.css"
-				file="${build.dir}/admin/themes/default/css.src/widgets.css" />
-			<delete dir="${build.dir}/admin/themes/default/css.src" />
+			<append destFile="${build.dir}/web/admin/themes/default/theme.css"
+				file="${build.dir}/web/admin/themes/default/css.src/typography.css" />
+			<append destFile="${build.dir}/web/admin/themes/default/theme.css"
+				file="${build.dir}/web/admin/themes/default/css.src/layout.css" />
+			<append destFile="${build.dir}/web/admin/themes/default/theme.css"
+				file="${build.dir}/web/admin/themes/default/css.src/widgets.css" />
+			<delete dir="${build.dir}/web/admin/themes/default/css.src" />
 
 		<!-- Eresus Core -->
 		<echo msg="Copying Eresus Core..." level="info" />
-		<copy todir="${build.dir}/core/framework">
+		<copy todir="${build.dir}/web/core/framework">
 			<fileset refid="files.framework" />
 			<filterchain>
 				<expandproperties />
@@ -200,12 +200,12 @@
 
 		<patch
 			patchfile="${project.basedir}/patches/issue832.patch"
-			dir="${build.dir}"
+			dir="${build.dir}/web"
 			strip="0"
 		/>
 
 		<!-- Сторонние компоненты -->
-		<copy todir="${build.dir}/core/vendor">
+		<copy todir="${build.dir}/vendor">
 			<fileset dir="vendor/">
 				<include name="**/*" />
 				<exclude name="**/Tests/**" />
@@ -231,7 +231,7 @@
 		</copy>
 
 		<!-- jQuery -->
-		<copy todir="${build.dir}/core/jquery">
+		<copy todir="${build.dir}/web/core/jquery">
 			<fileset dir="3rdparty/jquery">
 				<include name="**" />
 			</fileset>
@@ -239,24 +239,24 @@
 		</copy>
 
 		<!-- Modernizr -->
-		<copy todir="${build.dir}/core/js/modernizr">
+		<copy todir="${build.dir}/web/core/js/modernizr">
 			<fileset refid="files.3rd.modernizr" />
 		</copy>
 
 		<!-- Webshims -->
-		<copy todir="${build.dir}/core/js/webshim">
+		<copy todir="${build.dir}/web/core/js/webshim">
 			<fileset dir="3rdparty/webshim">
 				<include name="**" />
 			</fileset>
 		</copy>
 
 		<!-- Tiny MCE -->
-		<copy todir="${build.dir}/ext-3rd/tinymce">
+		<copy todir="${build.dir}/web/ext-3rd/tinymce">
 			<fileset refid="files.3rd.tiny_mce" />
 		</copy>
 
 		<!-- EditArea -->
-		<copy todir="${build.dir}/ext-3rd/editarea">
+		<copy todir="${build.dir}/web/ext-3rd/editarea">
 			<fileset refid="files.3rd.editarea" />
 		</copy>
 
@@ -269,6 +269,18 @@
 			    <expandproperties />
 		  </filterchain>
 		</copy>
+
+		<copy todir="${build.dir}">
+			<fileset dir="symfony">
+				<include name="**/*" />
+			</fileset>
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+
+		<chmod file="${build.dir}/app/cache" mode="0777" />
+		<chmod file="${build.dir}/app/logs" mode="0777" />
 
 		<!--
 			Удаляем файлы *.orig (остаются от применения патчей под FreeBSD)

@@ -107,7 +107,7 @@ class Eresus_Kernel
 		 * Регистрация загрузчиков классов
 		 */
 		/** @noinspection PhpIncludeInspection */
-		require ERESUS_APP_ROOT . '/core/vendor/autoload.php';
+		//require ERESUS_APP_ROOT . '/core/vendor/autoload.php';
 		$loader = new UniversalClassLoader();
 		$loader->registerPrefixes(array(
 			'Eresus_' => ERESUS_APP_ROOT . '/core',
