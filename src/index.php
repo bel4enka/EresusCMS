@@ -74,6 +74,7 @@ if (isset($php_errormsg))
 // Выключаем отслеживание ошибок, теперь полагаемся на ядро
 ini_set('track_errors', false);
 
+//TODO Заменить на prod, для dev сдлеать index.dev.php
 $kernel = new Eresus_Kernel('dev', true);
 
 // Восстанавливаем состояние вывода ошибок
