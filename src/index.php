@@ -44,51 +44,8 @@ ini_set('error_log', __DIR__ . '/var/log/eresus.log');
  */
 define('ERESUS_LOG_LEVEL', LOG_ERR);
 
-ini_set('track_errors', true);
-
 define('ERESUS_APP_ROOT', __DIR__);
 
 Eresus_Kernel::initStatic();
-
-/**
- * Подключение Eresus Core
- */
-require ERESUS_APP_ROOT . '/core/framework/core/eresus-core.php';
-
-if (isset($php_errormsg))
-{
-    die($php_errormsg);
-}
-ini_set('track_errors', false);
-
-/*
- * Если есть файл install.php, запускаем установщик, а не CMS
- * Это код для будущих версий
- */
-if (is_file('install.php'))
-{
-    $fileName = 'install.php';
-    $appName = 'Installer';
-}
-else
-{
-    $fileName = ERESUS_APP_ROOT . '/core/Eresus/CMS.php';
-    $appName = 'Eresus_CMS';
-}
-
-
-try
-{
-    /**
-     * Подключение главного приложения
-     */
-    include $fileName;
-}
-catch (Exception $e)
-{
-    die('Can not include file "' . $fileName . '". Is it exists and accessible?');
-}
-
-// Запуск приложения
-Eresus_Kernel::exec($appName);
+Eresus_Kernel::exec('Eresus_CMS');
 

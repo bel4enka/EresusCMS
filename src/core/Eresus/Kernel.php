@@ -98,6 +98,20 @@ class Eresus_Kernel extends Kernel
             return;
         }
 
+        ini_set('track_errors', true);
+
+        /**
+         * Подключение Eresus Core
+         */
+        require ERESUS_APP_ROOT . '/core/framework/core/eresus-core.php';
+
+        if (isset($php_errormsg))
+        {
+            die($php_errormsg);
+        }
+
+        ini_set('track_errors', false);
+
         // Устанавливаем кодировку по умолчанию для операций mb_*
         mb_internal_encoding('utf-8');
 
