@@ -48,12 +48,7 @@ ini_set('track_errors', true);
 
 define('ERESUS_APP_ROOT', __DIR__);
 
-/**
- * Подключение ядра
- */
-require ERESUS_APP_ROOT . '/core/Eresus/Kernel.php';
-
-Eresus_Kernel::init();
+Eresus_Kernel::initStatic();
 
 /**
  * Подключение Eresus Core

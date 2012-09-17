@@ -4,9 +4,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 $loader = require_once __DIR__ . '/app/autoload.php';
 
-require_once __DIR__ . '/core/AppKernel.php';
+require_once __DIR__ . '/core/Eresus/Kernel.php';
 
-$kernel = new AppKernel('dev', true);
+$kernel = new Eresus_Kernel('dev', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
