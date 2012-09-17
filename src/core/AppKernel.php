@@ -33,7 +33,7 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__ . '/../../app/config/config_' . $this->getEnvironment() . '.yml');
+        $loader->load(__DIR__ . '/../app/config/config_' . $this->getEnvironment() . '.yml');
     }
 
     /**
@@ -45,7 +45,7 @@ class AppKernel extends Kernel
     {
         if (null === $this->rootDir)
         {
-            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../../app'));
+            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../app'));
         }
 
         return $this->rootDir;

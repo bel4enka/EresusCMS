@@ -9,7 +9,7 @@ class LegacyController extends Controller
     public function indexAction()
     {
         ob_start();
-        include __DIR__ . '/../../../../web/index.php';
+        include __DIR__ . '/../../../../index.php';
         $html = ob_get_clean();
         $response = new \Symfony\Component\HttpFoundation\Response($html);
         return $response;
