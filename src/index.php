@@ -31,6 +31,7 @@
  */
 
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 // Временно включаем вывод ошибок, пока не инициализированы средства журналирования
 ini_set('display_errors', true);
@@ -49,7 +50,25 @@ define('ERESUS_LOG_LEVEL', LOG_ERR);
 define('ERESUS_APP_ROOT', __DIR__);
 
 /** @var \Composer\Autoload\ClassLoader $loader */
-$loader = require_once __DIR__ . '/app/autoload.php';
+/** @noinspection PhpIncludeInspection */
+$loader = require __DIR__ . '/vendor/autoload.php';
+
+// intl
+if (!function_exists('intl_get_error_code'))
+{
+    /** @noinspection PhpIncludeInspection */
+    require_once __DIR__
+        . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+
+    $loader->add(
+        '',
+        __DIR__ . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs'
+    );
+}
+
+/** @noinspection PhpParamsInspection */
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+
 $loader->add('Eresus_', ERESUS_APP_ROOT . '/core');
 
 $kernel = new Eresus_Kernel('dev', true);
