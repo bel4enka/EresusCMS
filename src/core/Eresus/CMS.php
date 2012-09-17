@@ -66,7 +66,7 @@ class Eresus_CMS
 
 			eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 			/* Подключение старого ядра */
-			include ERESUS_APP_ROOT . '/core/kernel-legacy.php';
+			include ERESUS_PATH . '/core/kernel-legacy.php';
 
 			self::$legacyKernel = new Eresus;
 			$this->initConf();
@@ -109,7 +109,7 @@ class Eresus_CMS
 	public function fatalError(/** @noinspection PhpUnusedParameterInspection */
 		$error = null, $exit = true)
 	{
-		include ERESUS_APP_ROOT . '/core/fatal.html.php';
+		include ERESUS_PATH . '/core/fatal.html.php';
 		die;
 	}
 
@@ -120,7 +120,7 @@ class Eresus_CMS
 	 */
 	public function getFsRoot()
 	{
-		return ERESUS_APP_ROOT;
+		return ERESUS_PATH;
 	}
 
 	/**
@@ -190,7 +190,7 @@ class Eresus_CMS
 		{
 			if (!PHP::isCLI())
 			{
-				include ERESUS_APP_ROOT . '/core/errors.html.php';
+				include ERESUS_PATH . '/core/errors.html.php';
 			}
 			else
 			{

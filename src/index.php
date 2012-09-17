@@ -34,26 +34,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
 // Временно включаем вывод ошибок, пока не инициализированы средства журналирования
-ini_set('display_errors', true);
-
-/*
- * Установка имени файла журнала
- * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
- */
-ini_set('error_log', __DIR__ . '/var/log/eresus.log');
+$displayErrors = ini_set('display_errors', true);
+// Временно включаем отслеживание ошибок
+ini_set('track_errors', true);
 
 /**
- * Уровень детализации журнала
+ * Полный путь к корню сайта
  */
-define('ERESUS_LOG_LEVEL', LOG_ERR);
-
-define('ERESUS_APP_ROOT', __DIR__);
+define('ERESUS_PATH', __DIR__);
 
 /** @var \Composer\Autoload\ClassLoader $loader */
 /** @noinspection PhpIncludeInspection */
 $loader = require __DIR__ . '/vendor/autoload.php';
 
-// intl
+/* intl */
 if (!function_exists('intl_get_error_code'))
 {
     /** @noinspection PhpIncludeInspection */
@@ -69,9 +63,22 @@ if (!function_exists('intl_get_error_code'))
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', ERESUS_APP_ROOT . '/core');
+$loader->add('Eresus_', ERESUS_PATH . '/core');
+
+/* Если произошли какие-то ошибки, прерываем работу приложения */
+if (isset($php_errormsg))
+{
+    die($php_errormsg);
+}
+
+// Выключаем отслеживание ошибок, теперь полагаемся на ядро
+ini_set('track_errors', false);
 
 $kernel = new Eresus_Kernel('dev', true);
+
+// Восстанавливаем состояние вывода ошибок
+ini_set('track_errors', $displayErrors);
+
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
