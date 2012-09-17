@@ -63,20 +63,33 @@
 	-->
 	<target name="vendors" description="Fetch 3rd party components">
 
+        <property environment="env" />
+
 		<if>
-			<available file="composer.phar" property="." />
+            <available file="composer" property="." filepath="${env.PATH}" />
+            <then>
+                <exec command="composer update" passthru="true" />
+            </then>
 
-			<then>
-				<exec command="php composer.phar update" passthru="true" />
-			</then>
+            <else>
 
-			<else>
-				<httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
-				         filename="composer.php"/>
-				<exec command="php composer.php" passthru="true" />
-				<delete file="composer.php" />
-				<exec command="php composer.phar install" passthru="true" />
-			</else>
+                <if>
+                    <available file="composer.phar" property="." />
+
+                    <then>
+                        <exec command="php composer.phar update" passthru="true" />
+                    </then>
+
+                    <else>
+                        <echo message="download" />
+                        <httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
+                                 filename="composer.php"/>
+                        <exec command="php composer.php" passthru="true" />
+                        <delete file="composer.php" />
+                        <exec command="php composer.phar install" passthru="true" />
+                    </else>
+                </if>
+            </else>
 		</if>
 
 	</target>
@@ -365,6 +378,9 @@
 		<delete dir="${docs.dir}" includeemptydirs="true" />
 		<delete dir="${logs.dir}" includeemptydirs="true" />
 		<delete dir="${phpunit.coverage.html}" includeemptydirs="true" />
+        <delete dir="vendor" includeemptydirs="true" />
+        <delete dir="composer.lock" />
+        <delete dir="composer.php" />
 
 	</target>
 
