@@ -30,6 +30,8 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
 // Временно включаем вывод ошибок, пока не инициализированы средства журналирования
 ini_set('display_errors', true);
 
@@ -46,6 +48,14 @@ define('ERESUS_LOG_LEVEL', LOG_ERR);
 
 define('ERESUS_APP_ROOT', __DIR__);
 
-Eresus_Kernel::initStatic();
-Eresus_Kernel::exec('Eresus_CMS');
+$loader = require_once __DIR__ . '/app/autoload.php';
+
+require_once __DIR__ . '/core/Eresus/Kernel.php';
+
+$kernel = new Eresus_Kernel('dev', true);
+$kernel->loadClassCache();
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);
 
