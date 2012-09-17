@@ -119,17 +119,6 @@ class Eresus_Kernel extends Kernel
         @$timezone = date_default_timezone_get();
         date_default_timezone_set($timezone);
 
-        /*
-         * Регистрация загрузчиков классов
-         */
-        /** @noinspection PhpIncludeInspection */
-        //require ERESUS_APP_ROOT . '/core/vendor/autoload.php';
-        $loader = new UniversalClassLoader();
-        $loader->registerPrefixes(
-            array('Eresus_' => ERESUS_APP_ROOT . '/core')
-        );
-        $loader->register();
-
         self::initExceptionHandling();
 
         self::$inited = true;

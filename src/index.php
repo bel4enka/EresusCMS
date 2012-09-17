@@ -48,9 +48,9 @@ define('ERESUS_LOG_LEVEL', LOG_ERR);
 
 define('ERESUS_APP_ROOT', __DIR__);
 
+/** @var \Composer\Autoload\ClassLoader $loader */
 $loader = require_once __DIR__ . '/app/autoload.php';
-
-require_once __DIR__ . '/core/Eresus/Kernel.php';
+$loader->add('Eresus_', ERESUS_APP_ROOT . '/core');
 
 $kernel = new Eresus_Kernel('dev', true);
 $kernel->loadClassCache();
