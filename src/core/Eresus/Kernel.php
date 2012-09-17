@@ -56,13 +56,6 @@ class Eresus_Kernel extends Kernel
     const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
 
     /**
-     * Признак инициализации ядра
-     *
-     * @var bool
-     */
-    static private $inited = false;
-
-    /**
      * Контейнер служб
      *
      * @var ContainerBuilder
@@ -79,24 +72,14 @@ class Eresus_Kernel extends Kernel
     private static $override_isCLI = null;
 
     /**
-     * Инициализация ядра
+     * Конструктор ядра
      *
-     * Этот метод:
-     * 1. устанавливает временную зону;
-     * 2. регистрирует {@link autoload() автозагрузчик классов};
-     * 3. регистрирует {@link initExceptionHandling() перехватчики ошибок}.
-     *
-     * @return void
-     *
-     * @since 3.00
+     * @param string $environment  окружение (prod, test, dev)
+     * @param bool   $debug        включить или нет отладку
      */
-    public static function initStatic()
+    public function __construct($environment, $debug)
     {
-        /* Разрешаем только однократный вызов этого метода */
-        if (self::$inited)
-        {
-            return;
-        }
+        parent::__construct($environment, $debug);
 
         /*
          * Установка имени файла журнала
@@ -122,8 +105,6 @@ class Eresus_Kernel extends Kernel
         date_default_timezone_set($timezone);
 
         self::initExceptionHandling();
-
-        self::$inited = true;
     }
 
     /**
