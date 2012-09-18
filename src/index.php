@@ -30,7 +30,6 @@
  * $Id$
  */
 
-use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
 // Временно включаем вывод ошибок, пока не инициализированы средства журналирования
@@ -84,7 +83,7 @@ $kernel = new Eresus_Kernel('dev', true);
 ini_set('track_errors', $displayErrors);
 
 $kernel->loadClassCache();
-$request = Request::createFromGlobals();
+$request = Eresus_HTTP_Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);
