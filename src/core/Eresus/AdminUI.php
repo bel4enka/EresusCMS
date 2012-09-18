@@ -877,10 +877,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$matcher = new UrlMatcher($routes, $context);
 
 		/** @var Twig_Environment $twigEnv */
-		$twigEnv = Eresus_Kernel::sc()->get('twig.environment');
-		$generator = new UrlGenerator($routes, $context);
-		$twigExt = new RoutingExtension($generator);
-		$twigEnv->addExtension($twigExt);
+		//$twigEnv = Eresus_Kernel::sc()->get('twig');
+		//$generator = new UrlGenerator($routes, $context);
+		//$twigExt = new RoutingExtension($generator);
+		//$twigEnv->addExtension($twigExt);
 
 		try
 		{

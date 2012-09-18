@@ -270,8 +270,12 @@ class Eresus_CMS
             $request->getScheme() . '://' . $request->getHost() . $request->getBasePath());
 
         /** @var Twig_Environment $twigEnv */
-        $twigEnv = Eresus_Kernel::sc()->get('twig.environment');
+        $twigEnv = Eresus_Kernel::sc()->get('twig');
         $twigEnv->addExtension(new Eresus_Twig_Extension());
+
+        /** @var Twig_Loader_Filesystem $loader */
+        $loader = Eresus_Kernel::sc()->get('twig.loader');
+        $loader->addPath($this->getFsRoot());
 
         //$this->initRoutes();
     }
@@ -424,22 +428,7 @@ class Eresus_CMS
     private function initServiceContainer()
     {
         $container = Eresus_Kernel::sc();
-
-        $container->register('twig.loader', 'Twig_Loader_Filesystem')
-            ->addArgument($this->getFsRoot());
-        $container->register('twig.environment', 'Twig_Environment')
-            ->addArgument(new Reference('twig.loader'))
-            ->addArgument(array('cache' => $this->getFsRoot() . '/var/cache/twig',
-                'autoescape' => false));
-        $container->register('twig.parser', '\Symfony\Component\Templating\TemplateNameParser');
-        $container->register('twig.locator', '\Symfony\Component\Config\FileLocator');
-        $container->register('templating', '\Symfony\Bundle\TwigBundle\TwigEngine')
-            ->addArgument(new Reference('twig.environment'))
-            ->addArgument(new Reference('twig.parser'))
-            ->addArgument(new Reference('twig.locator'));
-
-        $container->set('request', Eresus_HTTP_Request::createFromGlobals());
-        $container->register('sections', 'Eresus_Sections');
+        $container->set('sections', new Eresus_Sections);
     }
 }
 

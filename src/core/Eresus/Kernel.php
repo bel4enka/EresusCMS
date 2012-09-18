@@ -32,7 +32,6 @@ use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Ядро CMS
@@ -56,14 +55,6 @@ class Eresus_Kernel extends Kernel
     const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
 
     /**
-     * Контейнер служб
-     *
-     * @var ContainerBuilder
-     * @since 3.01
-     */
-    static private $sc = null;
-
-    /**
      * Для тестирования
      *
      * @var bool
@@ -76,6 +67,8 @@ class Eresus_Kernel extends Kernel
      *
      * @param string $environment  окружение (prod, test, dev)
      * @param bool   $debug        включить или нет отладку
+     *
+     * @since 3.01
      */
     public function __construct($environment, $debug)
     {
@@ -90,7 +83,7 @@ class Eresus_Kernel extends Kernel
         /**
          * Уровень детализации журнала
          */
-        define('ERESUS_LOG_LEVEL', LOG_ERR);
+        define('ERESUS_LOG_LEVEL', $debug ? LOG_DEBUG : LOG_ERR);
 
         /**
          * Подключение Eresus Core
@@ -428,24 +421,21 @@ class Eresus_Kernel extends Kernel
             //self::handleException($e);
             $exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
         }
-        self::sc()->removeDefinition('app');
         return $exitCode;
     }
 
     /**
      * Возвращает контейнер служб
      *
-     * @return ContainerBuilder
+     * @return Container
      *
      * @since 3.01
      */
     public static function sc()
     {
-        if (null === self::$sc)
-        {
-            self::$sc = new ContainerBuilder();
-        }
-        return self::$sc;
+        /** @var Eresus_Kernel $kernel */
+        $kernel = $GLOBALS['kernel'];
+        return $kernel->container;
     }
 
     /**
@@ -485,6 +475,13 @@ class Eresus_Kernel extends Kernel
         return self::sc()->get('app');
     }
 
+    /**
+     * Возвращает используемые пакеты
+     *
+     * @return array
+     *
+     * @since 3.01
+     */
     public function registerBundles()
     {
         $bundles = array(
@@ -511,6 +508,11 @@ class Eresus_Kernel extends Kernel
         return $bundles;
     }
 
+    /**
+     * Возвращает настройки контейнера служб
+     *
+     * @param Symfony\Component\Config\Loader\LoaderInterface $loader
+     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
