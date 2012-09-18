@@ -217,7 +217,6 @@ class Eresus_Kernel extends Kernel
 
         return true;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Обработчик фатальных ошибок
@@ -515,7 +514,7 @@ class Eresus_Kernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir() . '/app/config/config_' . $this->getEnvironment() . '.yml');
+        $loader->load($this->getRootDir() . '/cfg/config_' . $this->getEnvironment() . '.yml');
     }
 
     /**
