@@ -514,7 +514,8 @@ class Eresus_Kernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir() . '/cfg/config_' . $this->getEnvironment() . '.yml');
+        $loader->load($this->getRootDir() . '/core/Eresus/CmsBundle/Resources/config/config_'
+            . $this->getEnvironment() . '.yml');
     }
 
     /**
