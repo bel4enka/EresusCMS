@@ -243,6 +243,18 @@
 			</fileset>
 		</copy>
 
+        <copy todir="${build.dir}/bundles/framework">
+            <fileset dir="vendor/symfony/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/public">
+                <include name="**/*" />
+            </fileset>
+        </copy>
+
+        <copy todir="${build.dir}/bundles/webprofiler">
+            <fileset dir="vendor/symfony/symfony/src/Symfony/Bundle/WebProfilerBundle/Resources/public">
+                <include name="**/*" />
+            </fileset>
+        </copy>
+
 		<!-- jQuery -->
 		<copy todir="${build.dir}/core/jquery">
 			<fileset dir="3rdparty/jquery">
