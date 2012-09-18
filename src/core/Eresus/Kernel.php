@@ -78,7 +78,7 @@ class Eresus_Kernel extends Kernel
          * Установка имени файла журнала
          * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
          */
-        ini_set('error_log', ERESUS_PATH . '/var/log/eresus.log');
+        ini_set('error_log', ERESUS_PATH . '/var/logs/eresus.log');
 
         /**
          * Уровень детализации журнала
@@ -515,7 +515,7 @@ class Eresus_Kernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
+        $loader->load($this->getRootDir() . '/app/config/config_' . $this->getEnvironment() . '.yml');
     }
 
     /**
@@ -527,10 +527,32 @@ class Eresus_Kernel extends Kernel
     {
         if (null === $this->rootDir)
         {
-            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../../app'));
+            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../..'));
         }
 
         return $this->rootDir;
+    }
+
+    /**
+     * Возвращает папку журналов
+     *
+     * @return string
+     *
+     * @api
+     */
+    public function getLogDir()
+    {
+        return $this->getRootDir() . '/var/logs';
+    }
+
+    /**
+     * Возвращает папку кэша
+     *
+     * @return string
+     */
+    public function getCacheDir()
+    {
+        return $this->getRootDir() . '/var/cache/' . $this->environment;
     }
 }
 

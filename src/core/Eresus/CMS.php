@@ -207,7 +207,7 @@ class Eresus_CMS
     protected function createFileStructure()
     {
         $dirs = array(
-            '/var/log',
+            '/var/logs',
             '/var/cache',
             '/var/cache/templates',
         );
