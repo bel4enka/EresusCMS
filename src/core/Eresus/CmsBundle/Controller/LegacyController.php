@@ -19,6 +19,11 @@ class LegacyController extends Controller
         ob_start();
         try
         {
+            /** @var Eresus_Kernel $kernel */
+            $kernel = $this->get('kernel');
+            /* Подключение старого ядра */
+            include $kernel->getRootDir() . '/core/kernel-legacy.php';
+
             /* Общая инициализация */
             $app->main();
         }

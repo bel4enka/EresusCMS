@@ -54,9 +54,6 @@ class Eresus_CMS
      */
     public function main()
     {
-        /* Подключение старого ядра */
-        include ERESUS_PATH . '/core/kernel-legacy.php';
-
         self::$legacyKernel = new Eresus;
         $this->initConf();
 
