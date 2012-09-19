@@ -60,10 +60,10 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
         $runWeb->setAccessible(true);
 
         $cms = $this->getMock('Eresus_CMS',
-            array('initWeb', 'call3rdPartyExtension', 'runWebAdminUI', 'runWebClientUI'));
+            array('initWeb', 'call3rdPartyExtension', 'runWebAdminUi', 'runWebClientUi'));
         $cms->expects($this->once())->method('call3rdPartyExtension');
-        $cms->expects($this->once())->method('runWebAdminUI');
-        $cms->expects($this->once())->method('runWebClientUI');
+        $cms->expects($this->once())->method('runWebAdminUi');
+        $cms->expects($this->once())->method('runWebClientUi');
 
         /* call3rdPartyExtension */
         $request = $this->getMock('stdClass', array('getLocalUrl'));
@@ -71,13 +71,13 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
         Eresus_Kernel::sc()->set('request', $request);
         $runWeb->invoke($cms);
 
-        /* runWebAdminUI */
+        /* runWebAdminUi */
         $request = $this->getMock('stdClass', array('getLocalUrl'));
         $request->expects($this->any())->method('getLocalUrl')->will($this->returnValue('/admin'));
         Eresus_Kernel::sc()->set('request', $request);
         $runWeb->invoke($cms);
 
-        /* runWebClientUI */
+        /* runWebClientUi */
         $request = $this->getMock('stdClass', array('getLocalUrl'));
         $request->expects($this->any())->method('getLocalUrl')->will($this->returnValue('/'));
         Eresus_Kernel::sc()->set('request', $request);

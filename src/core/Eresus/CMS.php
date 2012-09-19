@@ -29,6 +29,7 @@
  */
 
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Класс приложения Eresus CMS
@@ -51,6 +52,8 @@ class Eresus_CMS
 
     /**
      * Основной метод приложения
+     *
+     * @return Response
      */
     public function main()
     {
@@ -71,16 +74,19 @@ class Eresus_CMS
         switch (true)
         {
             case strpos($request->getLocalUrl(), '/ext-3rd') === 0:
+                ob_start();
                 $this->call3rdPartyExtension();
+                $output = ob_get_clean();
+                $response = new Response($output);
                 break;
             case strpos($request->getLocalUrl(), '/admin') === 0:
-                $output = $this->runWebAdminUI();
+                $response = $this->runWebAdminUi();
                 break;
             default:
-                $output = $this->runWebClientUI();
+                $response = $this->runWebClientUi();
         }
 
-        echo $output;
+        return $response;
     }
 
     /**
@@ -168,31 +174,29 @@ class Eresus_CMS
 
     /**
      * Запуск КИ
-     * @return string
+     * @return Response
      * @deprecated Это временная функция
      */
-    protected function runWebClientUI()
+    protected function runWebClientUi()
     {
         eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
         $this->page = new Eresus_ClientUI();
         $this->page->setContainer(Eresus_Kernel::sc());
         $this->page->init();
-        /*return */$this->page->render();
+        return $this->page->render();
     }
 
     /**
      * Запуск АИ
-     * @return string
+     * @return Response
      * @deprecated Это временная функция
      */
-    protected function runWebAdminUI()
+    protected function runWebAdminUi()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
-
         $this->page = new Eresus_AdminUI();
         $this->page->setContainer(Eresus_Kernel::sc());
-        /*return */$this->page->render();
+        return $this->page->render();
     }
 
     /**

@@ -30,6 +30,8 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * Признак клиентского интерфейса
  *
@@ -388,7 +390,9 @@ class Eresus_ClientUI extends Eresus_WebPage
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отправляет созданную страницу пользователю.
+	 * Отправляет созданную страницу пользователю
+     *
+     * @return Response
 	 */
 	public function render()
 	{
@@ -458,17 +462,8 @@ class Eresus_ClientUI extends Eresus_WebPage
 		}
 
 		$result = Eresus_CMS::getLegacyKernel()->plugins->clientBeforeSend($result);
-		if (!Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
-		{
-			ob_start('ob_gzhandler');
-		}
-		echo $result;
-		if (!Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
-		{
-			ob_end_flush();
-		}
+		return new Response($result);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выводит список подстраниц для навигации по ним

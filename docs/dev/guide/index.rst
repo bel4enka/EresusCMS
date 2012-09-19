@@ -4,6 +4,7 @@
 .. toctree::
    :maxdepth: 1
 
+   responses
    install
    uninstall
    providing_content_type

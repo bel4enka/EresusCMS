@@ -33,9 +33,8 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 define('ADMINUI', true);
 
@@ -1188,33 +1187,32 @@ class Eresus_AdminUI extends Eresus_WebPage
 
 		return $menu;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отправляет созданную страницу пользователю
 	 *
-	 * @return void
+	 * @return Response
 	 */
 	public function render()
 	{
 		/* Проверяем права доступа и, если надо, проводим авторизацию */
 		if (!UserRights(EDITOR))
 		{
-			$this->auth();
+			$response = $this->auth();
 		}
 		else
 		{
-			$this->renderUI();
+			$response = $this->renderUI();
 		}
+        return $response;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовка и вывод страницы аутентификации
 	 *
 	 * Авторизация проводится методом {@see Eresus::login()}.
 	 *
-	 * @return void
+	 * @return Response
 	 */
 	private function auth()
 	{
@@ -1251,17 +1249,16 @@ class Eresus_AdminUI extends Eresus_WebPage
 
 		$tmpl = $this->getUITheme()->getTemplate('auth.html');
 		$html = $tmpl->compile($data);
-		echo $html;
+		return new Response($html);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовка интерфейса
-	 * @return void
+     *
+	 * @return Response
 	 */
 	private function renderUI()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		$data = array();
 
 		$data['page'] = $this;
@@ -1290,9 +1287,6 @@ class Eresus_AdminUI extends Eresus_WebPage
 			}
 		}
 
-		$html = $this->renderView('core/templates/default.html.twig', $data);
-
-		echo $html;
+		return new Response($this->renderView('core/templates/default.html.twig', $data));
 	}
-	//-----------------------------------------------------------------------------
 }

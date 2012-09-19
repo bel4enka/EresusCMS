@@ -16,23 +16,13 @@ class LegacyController extends Controller
         $app = new Eresus_CMS();
         Eresus_Kernel::sc()->set('app', $app);
 
-        ob_start();
-        try
-        {
-            /** @var Eresus_Kernel $kernel */
-            $kernel = $this->get('kernel');
-            /* Подключение старого ядра */
-            include $kernel->getRootDir() . '/core/kernel-legacy.php';
+        /** @var Eresus_Kernel $kernel */
+        $kernel = $this->get('kernel');
+        /* Подключение старого ядра */
+        include $kernel->getRootDir() . '/core/kernel-legacy.php';
 
-            /* Общая инициализация */
-            $app->main();
-        }
-        catch (Eresus_SuccessException $e)
-        {
-        }
+        $response = $app->main();
 
-        $html = ob_get_clean();
-        $response = new \Symfony\Component\HttpFoundation\Response($html);
         return $response;
     }
 
