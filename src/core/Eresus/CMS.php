@@ -59,8 +59,6 @@ class Eresus_CMS
 
         $i18n = Eresus_I18n::getInstance();
         TemplateSettings::setGlobalValue('i18n', $i18n);
-        //$this->initDB();
-        //$this->initSession();
         Eresus_CMS::getLegacyKernel()->init();
         TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
 
