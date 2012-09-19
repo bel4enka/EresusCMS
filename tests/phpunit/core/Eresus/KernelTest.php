@@ -40,298 +40,157 @@ require_once TESTS_SRC_DIR . '/core/Eresus/Exceptions/ExitException.php';
  */
 class Eresus_KernelTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @var mixed
-	 */
-	private $error_log;
+    /**
+     * @var mixed
+     */
+    private $error_log;
 
-	/**
-	 * @var string
-	 */
-	private $inclue_path;
+    /**
+     * @var string
+     */
+    private $include_path;
 
-	/**
-	 * @see PHPUnit_Framework_TestCase::setUp()
-	 */
-	protected function setUp()
-	{
-		$this->inclue_path = get_include_path();
-		$this->error_log = ini_get('error_log');
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @see PHPUnit_Framework_TestCase::setUp()
+     */
+    protected function setUp()
+    {
+        $this->include_path = get_include_path();
+        $this->error_log = ini_get('error_log');
+    }
 
-	/**
-	 * @see PHPUnit_Framework_TestCase::tearDown()
-	 */
-	protected function tearDown()
-	{
-		ini_set('error_log', $this->error_log);
-		set_include_path($this->inclue_path);
+    /**
+     * @see PHPUnit_Framework_TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        ini_set('error_log', $this->error_log);
+        set_include_path($this->include_path);
 
-		$filename = TESTS_SRC_DIR . '/core/Stub.php';
-		if (is_file($filename))
-		{
-			unlink($filename);
-		}
+        $filename = TESTS_SRC_DIR . '/core/Stub.php';
+        if (is_file($filename))
+        {
+            unlink($filename);
+        }
 
-		$filename = TESTS_SRC_DIR . '/core/botobor/botobor.php';
-		if (is_file($filename))
-		{
-			unlink($filename);
-		}
+        $filename = TESTS_SRC_DIR . '/core/botobor/botobor.php';
+        if (is_file($filename))
+        {
+            unlink($filename);
+        }
 
-		$filename = TESTS_SRC_DIR . '/core/botobor';
-		if (is_dir($filename))
-		{
-			rmdir($filename);
-		}
-	}
-	//-----------------------------------------------------------------------------
+        $filename = TESTS_SRC_DIR . '/core/botobor';
+        if (is_dir($filename))
+        {
+            rmdir($filename);
+        }
+    }
 
-	/**
-	 * @covers Eresus_Kernel::initExceptionHandling
-	 */
-	public function test_initExceptionHandling()
-	{
-		$method = new ReflectionMethod('Eresus_Kernel', 'initExceptionHandling');
-		$method->setAccessible(true);
-		$method->invoke(null);
+    /**
+     * @covers Eresus_Kernel::initExceptionHandling
+     */
+    public function test_initExceptionHandling()
+    {
+        $kernel = $this->getMockBuilder('Eresus_Kernel')->disableOriginalConstructor()->getMock();
 
-		$this->assertTrue(isset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']), 'No emergency buffer');
-		$this->assertEquals(0, ini_get('html_errors'), '"html_errors" option is set');
+        $method = new ReflectionMethod('Eresus_Kernel', 'initExceptionHandling');
+        $method->setAccessible(true);
+        $method->invoke($kernel);
 
-	}
-	//-----------------------------------------------------------------------------
+        $this->assertTrue(isset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']), 'No emergency buffer');
+        $this->assertEquals(0, ini_get('html_errors'), '"html_errors" option is set');
+    }
 
-	/**
-	 * @ covers Eresus_Kernel::handleException
-	 * /
-	public function test_handleException()
-	{
-		$e = new Exception;
-		ini_set('error_log', '/dev/null');
-		$this->expectOutputString("Unhandled Exception!\n");
-		Eresus_Kernel::handleException($e);
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @ covers Eresus_Kernel::handleException
+     * /
+    public function test_handleException()
+    {
+        $e = new Exception;
+        ini_set('error_log', '/dev/null');
+        $this->expectOutputString("Unhandled Exception!\n");
+        Eresus_Kernel::handleException($e);
+    }*/
 
-	/**
-	 * @covers Eresus_Kernel::errorHandler
-	 */
-	public function test_errorHandler_at()
-	{
-		@Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Eresus_Kernel::errorHandler
+     */
+    public function test_errorHandler_at()
+    {
+        @Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
+    }
 
-	/**
-	 * @covers Eresus_Kernel::errorHandler
-	 */
-	public function test_errorHandler_NOTICE()
-	{
-		Eresus_Kernel::errorHandler(E_NOTICE, 'Notice', '/some/file', 123);
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Eresus_Kernel::errorHandler
+     */
+    public function test_errorHandler_NOTICE()
+    {
+        Eresus_Kernel::errorHandler(E_NOTICE, 'Notice', '/some/file', 123);
+    }
 
-	/**
-	 * @covers Eresus_Kernel::errorHandler
-	 * @expectedException ErrorException
-	 */
-	public function test_errorHandler_WARNING()
-	{
-		Eresus_Kernel::errorHandler(E_WARNING, 'Warning', '/some/file', 123);
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Eresus_Kernel::errorHandler
+     * @expectedException ErrorException
+     */
+    public function test_errorHandler_WARNING()
+    {
+        Eresus_Kernel::errorHandler(E_WARNING, 'Warning', '/some/file', 123);
+    }
 
-	/**
-	 * @covers Eresus_Kernel::errorHandler
-	 * @expectedException ErrorException
-	 */
-	public function test_errorHandler_ERROR()
-	{
-		Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Eresus_Kernel::errorHandler
+     * @expectedException ErrorException
+     */
+    public function test_errorHandler_ERROR()
+    {
+        Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
+    }
 
-	/**
-	 * @covers Eresus_Kernel::fatalErrorHandler
-	 * /
-	public function test_fatalErrorHandler()
-	{
-		$this->assertFalse(Eresus_Kernel::fatalErrorHandler(''));
-		Eresus_Config::set('eresus.cms.log.level', -1);
-		$this->assertEquals(
-			"PARSE ERROR\nSee application log for more info.\n",
-			Eresus_Kernel::fatalErrorHandler('Parse error: A in B on line C'));
-		$this->assertEquals(
-			"FATAL ERROR\nSee application log for more info.\n",
-			Eresus_Kernel::fatalErrorHandler('Fatal error: A in B on line C'));
-	}*/
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Eresus_Kernel::fatalErrorHandler
+     * /
+    public function test_fatalErrorHandler()
+    {
+        $this->assertFalse(Eresus_Kernel::fatalErrorHandler(''));
+        Eresus_Config::set('eresus.cms.log.level', -1);
+        $this->assertEquals(
+            "PARSE ERROR\nSee application log for more info.\n",
+            Eresus_Kernel::fatalErrorHandler('Parse error: A in B on line C'));
+        $this->assertEquals(
+            "FATAL ERROR\nSee application log for more info.\n",
+            Eresus_Kernel::fatalErrorHandler('Fatal error: A in B on line C'));
+    }*/
 
-	/**
-	 * @covers Eresus_Kernel::exec
-	 * @covers Eresus_Kernel::app
-	 */
-	public function testExecOk()
-	{
-		$this->assertEquals(123, Eresus_Kernel::exec('Eresus_Kernel_Test_Application1'));
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * Just make sure that method can be executed
+     *
+     * @covers Eresus_Kernel::isCGI
+     */
+    public function test_lint_isCGI()
+    {
+        Eresus_Kernel::isCGI();
+        $this->assertTrue(true);
+    }
 
-	/**
-	 * @covers Eresus_Kernel::exec
-	 * @expectedException LogicException
-	 */
-	public function testExecInvalidClass()
-	{
-		Eresus_Kernel::exec('StdClass');
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * Just make sure that method can be executed
+     *
+     * @covers Eresus_Kernel::isCLI
+     */
+    public function test_lint_isCLI()
+    {
+        Eresus_Kernel::isCLI();
+        $this->assertTrue(true);
+    }
 
-	/**
-	 * @covers Eresus_Kernel::exec
-	 * @expectedException LogicException
-	 */
-	public function testExecUnexistentClass()
-	{
-		Eresus_Kernel::exec('UnexistentClass');
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_Kernel::exec
-	 */
-	public function testExecAppWithException()
-	{
-		$this->assertEquals(0xFFFF, Eresus_Kernel::exec('Eresus_Kernel_Test_Application2'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_Kernel::exec
-	 */
-	public function test_ExecAppWith_with_SuccessException()
-	{
-		$this->assertEquals(0, Eresus_Kernel::exec('Eresus_Kernel_Test_Application3'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Just make sure that method can be executed
-	 *
-	 * @covers Eresus_Kernel::isCGI
-	 */
-	public function test_lint_isCGI()
-	{
-		Eresus_Kernel::isCGI();
-		$this->assertTrue(true);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Just make sure that method can be executed
-	 *
-	 * @covers Eresus_Kernel::isCLI
-	 */
-	public function test_lint_isCLI()
-	{
-		Eresus_Kernel::isCLI();
-		$this->assertTrue(true);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Just make sure that method can be executed
-	 *
-	 * @covers Eresus_Kernel::isModule
-	 */
-	public function test_lint_isModule()
-	{
-		Eresus_Kernel::isModule();
-		$this->assertTrue(true);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_Kernel::classExists
-	 */
-	public function test_classExists()
-	{
-		$this->assertFalse(Eresus_Kernel::classExists('UnexistentClass'));
-		$this->assertTrue(Eresus_Kernel::classExists('Eresus_Kernel_Test_Class'));
-		$this->assertTrue(Eresus_Kernel::classExists('Eresus_Kernel_Test_Interface'));
-	}
+    /**
+     * Just make sure that method can be executed
+     *
+     * @covers Eresus_Kernel::isModule
+     */
+    public function test_lint_isModule()
+    {
+        Eresus_Kernel::isModule();
+        $this->assertTrue(true);
+    }
 }
-
-
-// @codeCoverageIgnoreStart
-/**
- * EresusApplication stub
- */
-class Eresus_Kernel_Test_Application1
-{
-	/**
-	 * (non-PHPdoc)
-	 * @see core/EresusApplication#main()
-	 */
-	public function main()
-	{
-		if (!(Eresus_Kernel::app() instanceof self))
-		{
-			throw new Exception('Eresus_Kernel::app() returns invalid result');
-		}
-		return 123;
-	}
-	//-----------------------------------------------------------------------------
-}
-
-/**
- * EresusApplication stub
- *
- */
-class Eresus_Kernel_Test_Application2
-{
-	/**
-	 * (non-PHPdoc)
-	 * @see core/EresusApplication#main()
-	 */
-	public function main()
-	{
-		throw new RuntimeException('Message');
-	}
-	//-----------------------------------------------------------------------------
-}
-
-/**
- * EresusApplication stub
- *
- */
-class Eresus_Kernel_Test_Application3
-{
-	/**
-	 * (non-PHPdoc)
-	 * @see core/EresusApplication#main()
-	 */
-	public function main()
-	{
-		throw new Eresus_ExitException;
-	}
-	//-----------------------------------------------------------------------------
-}
-
-/**
- *
- */
-function Eresus_Kernel_Test_error_handler()
-{
-
-}
-//-----------------------------------------------------------------------------
- /* */
-
-interface Eresus_Kernel_Test_Interface {};
-class Eresus_Kernel_Test_Class {};
-
-// @codeCoverageIgnoreEnd
-
