@@ -51,49 +51,30 @@ class Eresus_CMS
 
     /**
      * Основной метод приложения
-     *
-     * @return int  Код завершения для консольных вызовов
      */
     public function main()
     {
-        try
+        /* Подключение старого ядра */
+        include ERESUS_PATH . '/core/kernel-legacy.php';
+
+        self::$legacyKernel = new Eresus;
+        $this->initConf();
+
+        $i18n = Eresus_I18n::getInstance();
+        TemplateSettings::setGlobalValue('i18n', $i18n);
+        //$this->initDB();
+        //$this->initSession();
+        Eresus_CMS::getLegacyKernel()->init();
+        TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
+
+        if (Eresus_Kernel::isCLI())
         {
-            /* Общая инициализация */
-            $this->checkEnvironment();
-            $this->createFileStructure();
-
-            $this->initServiceContainer();
-
-            eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-            /* Подключение старого ядра */
-            include ERESUS_PATH . '/core/kernel-legacy.php';
-
-            self::$legacyKernel = new Eresus;
-            $this->initConf();
-
-            $i18n = Eresus_I18n::getInstance();
-            TemplateSettings::setGlobalValue('i18n', $i18n);
-            //$this->initDB();
-            //$this->initSession();
-            Eresus_CMS::getLegacyKernel()->init();
-            TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
-
-            if (Eresus_Kernel::isCLI())
-            {
-                return $this->runCLI();
-            }
-            else
-            {
-                $this->runWeb();
-            }
+            return $this->runCLI();
         }
-        catch (Exception $e)
+        else
         {
-            Core::logException($e);
-            ob_end_clean();
-            $this->fatalError($e, false);
+            $this->runWeb();
         }
-        return 0;
     }
 
     /**
@@ -149,79 +130,6 @@ class Eresus_CMS
     public function getPage()
     {
         return $this->page;
-    }
-
-    /**
-     * Проверка окружения
-     *
-     * @return void
-     */
-    protected function checkEnvironment()
-    {
-        $errors = array();
-
-        /* Проверяем наличие нужных файлов */
-        $required = array('cfg/main.php');
-        foreach ($required as $filename)
-        {
-            if (!FS::exists($filename))
-            {
-                $errors []= array('file' => $filename, 'problem' => 'missing');
-            }
-        }
-
-        /* Проверяем доступность для записи */
-        $writable = array(
-            'cfg/settings.php',
-            'var',
-            'data',
-            'templates',
-            'style'
-        );
-        foreach ($writable as $filename)
-        {
-            if (!FS::isWritable($filename))
-            {
-                $errors []= array('file' => $filename, 'problem' => 'non-writable');
-            }
-        }
-
-        if ($errors)
-        {
-            if (!PHP::isCLI())
-            {
-                include ERESUS_PATH . '/core/errors.html.php';
-            }
-            else
-            {
-                die("Errors...\n"); // TODO Доделать
-            }
-        }
-    }
-
-    /**
-     * Создание файловой структуры
-     *
-     * @return void
-     */
-    protected function createFileStructure()
-    {
-        $dirs = array(
-            '/var/logs',
-            '/var/cache',
-            '/var/cache/templates',
-        );
-
-        foreach ($dirs as $dir)
-        {
-            if (!FS::exists($this->getFsRoot() . $dir))
-            {
-                $umask = umask(0000);
-                mkdir(FS::nativeForm($this->getFsRoot() . $dir), 0777);
-                umask($umask);
-            }
-            // TODO Сделать проверку на запись в созданные директории
-        }
     }
 
     /**
@@ -420,15 +328,6 @@ class Eresus_CMS
             header('404 Not Found', true, 404);
             echo '404 Not Found';
         }
-    }
-
-    /**
-     * Подготавливает контейнер служб
-     */
-    private function initServiceContainer()
-    {
-        $container = Eresus_Kernel::sc();
-        $container->set('sections', new Eresus_Sections);
     }
 }
 

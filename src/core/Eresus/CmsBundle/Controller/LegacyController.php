@@ -2,6 +2,7 @@
 
 namespace Eresus\CmsBundle\Controller;
 
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Eresus_SuccessException;
 use Eresus_Kernel;
@@ -18,13 +19,16 @@ class LegacyController extends Controller
         ob_start();
         try
         {
+            /* Общая инициализация */
             $app->main();
         }
         catch (Eresus_SuccessException $e)
         {
         }
+
         $html = ob_get_clean();
         $response = new \Symfony\Component\HttpFoundation\Response($html);
         return $response;
     }
+
 }
