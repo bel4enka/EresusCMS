@@ -97,7 +97,7 @@ class Eresus_Kernel extends Kernel
         @$timezone = date_default_timezone_get();
         date_default_timezone_set($timezone);
 
-        self::initExceptionHandling();
+        $this->initExceptionHandling();
     }
 
     /**
@@ -112,9 +112,8 @@ class Eresus_Kernel extends Kernel
      * @return void
      *
      * @since 3.00
-     * @uses Eresus_Logger::log()
      */
-    private static function initExceptionHandling()
+    private function initExceptionHandling()
     {
         /* Резервируем буфер на случай переполнения памяти */
         $GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
@@ -137,7 +136,7 @@ class Eresus_Kernel extends Kernel
         // @codeCoverageIgnoreStart
         if (! self::isCLI())
         {
-            if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
+            if (ob_start(array($this, 'fatalErrorHandler'), 4096))
             {
                 //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
             }
@@ -151,7 +150,6 @@ class Eresus_Kernel extends Kernel
         }
         // @codeCoverageIgnoreEnd
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Обработчик ошибок
@@ -236,23 +234,31 @@ class Eresus_Kernel extends Kernel
      * @since 3.00
      * @uses Eresus_Logger::log
      */
-    public static function fatalErrorHandler($output)
+    public function fatalErrorHandler($output)
     {
         // Освобождает резервный буфер
         unset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']);
         if (preg_match('/(parse|fatal) error:.*in .* on line/Ui', $output, $m))
         {
             $GLOBALS['ERESUS_CORE_FATAL_ERROR_HANDLER'] = true;
-            switch (strtolower($m[1]))
+            if ($this->getEnvironment() == 'prod')
             {
-                case 'fatal':
-                    $message = 'FATAL ERROR';
-                    break;
-                case 'parse':
-                    $message = 'PARSE ERROR';
-                    break;
-                default:
-                    $message = 'ERROR:';
+                switch (strtolower($m[1]))
+                {
+                    case 'fatal':
+                        $message = 'FATAL ERROR';
+                        break;
+                    case 'parse':
+                        $message = 'PARSE ERROR';
+                        break;
+                    default:
+                        $message = 'ERROR:';
+                }
+                $message .= "\nSee application log for more info.\n";
+            }
+            else
+            {
+                $message = $output;
             }
 
             //Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
@@ -264,7 +270,7 @@ class Eresus_Kernel extends Kernel
             }
             //@codeCoverageIgnoreEnd
 
-            return $message . "\nSee application log for more info.\n";
+            return $message;
         }
         $GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
             str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
@@ -495,7 +501,9 @@ class Eresus_Kernel extends Kernel
             new JMS\AopBundle\JMSAopBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
-            new Eresus\CmsBundle\EresusCmsBundle()
+            new Eresus\CommonBundle\CommonBundle(),
+            new Eresus\ORMBundle\ORMBundle(),
+            new Eresus\CmsBundle\CmsBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test')))
