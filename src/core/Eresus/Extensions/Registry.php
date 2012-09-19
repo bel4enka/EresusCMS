@@ -468,7 +468,7 @@ class Eresus_Extensions_Registry
 			{
 				/** @noinspection PhpIncludeInspection */
 				include $filename;
-				return Eresus_Kernel::classExists($className);
+				return class_exists($className, false) || interface_exists($className, false);
 			}
 		}
 

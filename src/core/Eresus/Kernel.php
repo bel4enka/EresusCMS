@@ -363,21 +363,6 @@ class Eresus_Kernel extends Kernel
     }
 
     /**
-     * Проверяет, объявлен ли указанный класс или интерфейс
-     *
-     * Этот метод не инициирует автозагрузку.
-     *
-     * @param string $name  имя класса или интерфейса
-     * @return bool true если класс или интерфейс $name объявлен
-     *
-     * @since 3.00
-     */
-    public static function classExists($name)
-    {
-        return class_exists($name, false) || interface_exists($name, false);
-    }
-
-    /**
      * Возвращает контейнер служб
      *
      * @return Container
