@@ -378,58 +378,6 @@ class Eresus_Kernel extends Kernel
     }
 
     /**
-     * Создаёт экземпляр приложения и выполняет его
-     *
-     * Класс приложения должен содержать публичный метод main(), который будет вызван после создания
-     * экземпляра класса.
-     *
-     * @param string $class  имя класса приложения
-     *
-     * @throws LogicException если класс $class не найден или не содержит метода «main()»
-     *
-     * @return int  код завершения (0 — успешное завершение)
-     *
-     * @since 3.00
-     * @see $app, app()
-     * @uses Eresus_Logger::log()
-     */
-    public static function exec($class)
-    {
-        if (!class_exists($class))
-        {
-            throw new LogicException('Application class "' . $class . '" does not exists');
-        }
-
-        /** @var Eresus_CMS $app */
-        $app = new $class();
-
-        if (!method_exists($class, 'main'))
-        {
-            $app = null;
-            throw new LogicException('Method "main()" does not exists in "' . $class . '"');
-        }
-
-        self::sc()->set('app', $app);
-
-        try
-        {
-            //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
-            $exitCode = $app->main();
-            //Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
-        }
-        catch (Eresus_SuccessException $e)
-        {
-            $exitCode = 0;
-        }
-        catch (Exception $e)
-        {
-            //self::handleException($e);
-            $exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
-        }
-        return $exitCode;
-    }
-
-    /**
      * Возвращает контейнер служб
      *
      * @return Container
