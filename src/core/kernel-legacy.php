@@ -1455,19 +1455,19 @@ class Eresus
 	}
 
 	/**
-	 * Устанавливает авторизационные кукисы
+	 * Устанавливает авторизационные куки
 	 *
 	 * @param string $login
 	 * @param string $key
 	 */
-	function set_login_cookies($login, $key)
+	private function set_login_cookies($login, $key)
 	{
 		setcookie('eresus_login', $login, time()+2592000, $this->path);
 		setcookie('eresus_key', $key, time()+2592000, $this->path);
 	}
 
 	/**
-	 * Удалаяет авторизационные кукисы
+	 * Удаляет авторизационные куки
 	 *
 	 */
 	function clear_login_cookies()
@@ -1480,14 +1480,15 @@ class Eresus
 	 * Авторизация пользователя
 	 *
 	 * @param string $unsafeLogin  Имя пользователя
-	 * @param string $key		       Ключ учётной записи
-	 * @param bool   $auto		     Сохранить авторизационные данные на компьютере посетителя
+	 * @param string $key		   Ключ учётной записи
+	 * @param bool   $auto		   Сохранить авторизационные данные на компьютере посетителя
 	 * @param bool   $cookie       Авторизация при помощи cookie
+     *
 	 * @return bool Результат
 	 */
-	function login($unsafeLogin, $key, $auto = false, $cookie = false)
+	public function login($unsafeLogin, $key, $auto = false, $cookie = false)
 	{
-		$result = false;
+        $result = false;
 
 		$login = preg_replace('/[^a-z0-9_\-\.\@]/', '', $unsafeLogin);
 
@@ -1497,18 +1498,23 @@ class Eresus
 			return false;
 		}
 
-		$item = $this->db->selectItem('users', "`login`='$login'");
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = Eresus_Kernel::get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        $account = $em->getRepository('CmsBundle:Account')->findOneByLogin($login);
+
 		// Если такой пользователь есть...
-		if (!is_null($item))
+		if (null !== $account)
 		{
 			// Если учетная запись активна...
-			if ($item['active'])
+			if ($account->active)
 			{
-				$noBruteForcing = time() - $item['lastLoginTime'] > $item['loginErrors'];
+				$noBruteForcing = time() - $account->lastLoginTime > $account->loginErrors;
 				if ($noBruteForcing || $this->conf['debug']['enable'])
 				{
 					// Если пароль верен...
-					if ($key == $item['hash'])
+					if ($key == $account->hash)
 					{
 						if ($auto)
 						{
@@ -1519,18 +1525,22 @@ class Eresus
 							$this->clear_login_cookies();
 						}
 						$setVisitTime = (! isset($this->user['id'])) || (! (bool) $this->user['id']);
-						$this->user = $item;
-						$this->user['profile'] = decodeOptions($this->user['profile']);
-						$this->user['auth'] = true; # Устанавливаем флаг авторизации
-						// Хэш пароля используется для подтверждения аутентификации
-						$this->user['hash'] = $item['hash'];
+						$this->user = array(
+                            'id' => $account->id,
+                            'login' => $account->login,
+                            'name' => $account->name,
+                            'hash' => $account->hash,
+                            'access' => $account->access,
+                            'profile' => $account->profile,
+                            'auth' => true,
+                        );
 						if ($setVisitTime)
 						{
-							$item['lastVisit'] = date('Y-m-d H:i:s'); # Записываем время последнего входа
+                            // Записываем время последнего входа
+							$account->lastVisit = new DateTime();;
 						}
-						$item['lastLoginTime'] = time();
-						$item['loginErrors'] = 0;
-						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+						$account->lastLoginTime = time();
+						$account->loginErrors = 0;
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
@@ -1540,18 +1550,16 @@ class Eresus
 						if (!$cookie)
 						{
 							ErrorMessage(ERR_PASSWORD_INVALID);
-							$item['lastLoginTime'] = time();
-							$item['loginErrors']++;
-							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+							$account->lastLoginTime = time();
+							$account->loginErrors++;
 						}
 					}
 				}
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $item['loginErrors']));
-					$item['lastLoginTime'] = time();
-					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+					ErrorMessage(sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $account->loginErrors));
+					$account->lastLoginTime = time();
 				}
 			}
 			else
@@ -1563,6 +1571,7 @@ class Eresus
 		{
 			ErrorMessage(ERR_PASSWORD_INVALID);
 		}
+        $em->flush();
 		return $result;
 	}
 
