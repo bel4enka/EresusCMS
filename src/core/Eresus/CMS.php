@@ -64,14 +64,25 @@ class Eresus_CMS
         Eresus_CMS::getLegacyKernel()->init();
         TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
 
-        if (Eresus_Kernel::isCLI())
+        $this->initWeb();
+
+        $output = '';
+        /** @var Eresus_HTTP_Request $request */
+        $request = Eresus_Kernel::get('request');
+
+        switch (true)
         {
-            return $this->runCLI();
+            case strpos($request->getLocalUrl(), '/ext-3rd') === 0:
+                $this->call3rdPartyExtension();
+                break;
+            case strpos($request->getLocalUrl(), '/admin') === 0:
+                $output = $this->runWebAdminUI();
+                break;
+            default:
+                $output = $this->runWebClientUI();
         }
-        else
-        {
-            $this->runWeb();
-        }
+
+        echo $output;
     }
 
     /**
@@ -127,34 +138,6 @@ class Eresus_CMS
     public function getPage()
     {
         return $this->page;
-    }
-
-    /**
-     * Выполнение в режиме Web
-     */
-    protected function runWeb()
-    {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-        $this->initWeb();
-
-        $output = '';
-        /** @var Eresus_HTTP_Request $request */
-        $request = Eresus_Kernel::get('request');
-
-        switch (true)
-        {
-            case strpos($request->getLocalUrl(), '/ext-3rd') === 0:
-                $this->call3rdPartyExtension();
-                break;
-            case strpos($request->getLocalUrl(), '/admin') === 0:
-                $output = $this->runWebAdminUI();
-                break;
-            default:
-                $output = $this->runWebClientUI();
-        }
-
-        echo $output;
     }
 
     /**
@@ -215,27 +198,6 @@ class Eresus_CMS
     }
 
     /**
-     * Выполнение в режиме CLI
-     *
-     * @return int
-     */
-    protected function runCLI()
-    {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-        $this->initCLI();
-        return 0;
-    }
-
-    /**
-     * Инициализация CLI
-     */
-    protected function initCLI()
-    {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
-    }
-
-    /**
      * Инициализация конфигурации
      */
     protected function initConf()
@@ -253,47 +215,6 @@ class Eresus_CMS
         {
             $this->fatalError("Main config file '$filename' not found!");
         }
-    }
-
-    /**
-     * Инициализация БД
-     */
-    protected function initDB()
-    {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
-        /*
-        global $Eresus;
-
-        // FIXME Использование устаревших настроек
-        $dsn = ($Eresus->conf['db']['engine'] ? $Eresus->conf['db']['engine'] : 'mysql') .
-            '://' . $Eresus->conf['db']['user'] .
-            ':' . $Eresus->conf['db']['password'] .
-            '@' . ($Eresus->conf['db']['host'] ? $Eresus->conf['db']['host'] : 'localhost') .
-            '/' . $Eresus->conf['db']['name'];
-
-        DBSettings::setDSN($dsn);*/
-    }
-
-    /**
-     * Инициализация сессии
-     */
-    protected function initSession()
-    {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-        /*global $Eresus;
-
-        session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
-        session_name('sid');
-        session_start();
-
-        # Обратная совместимость
-        $Eresus->session = &$_SESSION['session'];
-        #if (!isset($Eresus->session['msg']))
-            $Eresus->session['msg'] = array('error' => array(), 'information' => array());
-        #$Eresus->user = &$_SESSION['user'];
-        $GLOBALS['session'] = &$_SESSION['session'];
-        $GLOBALS['user'] = &$_SESSION['user'];*/
     }
 
     /**
