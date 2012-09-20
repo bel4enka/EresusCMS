@@ -51,12 +51,4 @@ return array(
 	'Template' => 'Template/Template.php',
 	'TemplateFile' => 'Template/Template.php',
 	'TemplateSettings' => 'Template/Template.php',
-
-	/* WWW */
-	'HTTP' => 'WWW/HTTP/HTTP.php',
-	'HttpHeader' => 'WWW/HTTP/HttpHeaders.php',
-	'HttpHeaders' => 'WWW/HTTP/HttpHeaders.php',
-	'HttpMessage' => 'WWW/HTTP/HttpMessage.php',
-	'HttpRequest' => 'WWW/HTTP/HttpRequest.php',
-	'HttpResponse' => 'WWW/HTTP/HttpResponse.php',
 );
