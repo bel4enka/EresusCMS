@@ -30,6 +30,9 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  *
  * @package Eresus
@@ -60,14 +63,16 @@ class Eresus_Admin_Controllers_Plgmgr
 
 		HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
 	}
-	//-----------------------------------------------------------------------------
 
-	private function delete()
-	{
-		Eresus_CMS::getLegacyKernel()->plugins->load(arg('delete'));
-		Eresus_CMS::getLegacyKernel()->plugins->uninstall(arg('delete'));
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
-	}
+    /**
+     * @return Response
+     */
+    private function delete()
+    {
+        Eresus_CMS::getLegacyKernel()->plugins->load(arg('delete'));
+        Eresus_CMS::getLegacyKernel()->plugins->uninstall(arg('delete'));
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
+    }
 
 	private function edit()
 	{
@@ -93,11 +98,14 @@ class Eresus_Admin_Controllers_Plgmgr
 		return $result;
 	}
 
-	private function update()
+    /**
+     * @return Response
+     */
+    private function update()
 	{
 		Eresus_CMS::getLegacyKernel()->plugins->load(arg('update'));
 		Eresus_CMS::getLegacyKernel()->plugins->items[arg('update')]->updateSettings();
-		HTTP::redirect(arg('submitURL'));
+		return new RedirectResponse(arg('submitURL'));
 	}
 
 	/**
@@ -235,7 +243,7 @@ class Eresus_Admin_Controllers_Plgmgr
 	/**
 	 * Отрисовка контента модуля
 	 *
-	 * @return string
+	 * @return Response|string
 	 */
 	public function adminRender()
 	{
@@ -254,16 +262,16 @@ class Eresus_Admin_Controllers_Plgmgr
 		switch (true)
 		{
 			case arg('update') !== null:
-				$this->update();
-			break;
+				return $this->update();
+			    break;
 
 			case arg('toggle') !== null:
 				$this->toggle();
 			break;
 
 			case arg('delete') !== null:
-				$this->delete();
-			break;
+				return $this->delete();
+			    break;
 
 			case arg('id') !== null:
 				$result = $this->edit();
@@ -304,5 +312,4 @@ class Eresus_Admin_Controllers_Plgmgr
 		}
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 }

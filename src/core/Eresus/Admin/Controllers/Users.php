@@ -30,6 +30,9 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Управление пользователями
  *
@@ -77,24 +80,23 @@ class Eresus_Admin_Controllers_Users
 		return (($item['access'] != ROOT)||
 			(Eresus_CMS::getLegacyKernel()->user['id'] == $item['id'])) && UserRights(ADMIN);
 	}
-	
-	function toggle()
+
+    /**
+     * @return Response
+     */
+    private function toggle()
 	{
 		$item = $this->accounts->get(arg('toggle', 'int'));
 		$item['active'] = !$item['active'];
 		$this->accounts->update($item);
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
 	
 
 	/**
-	 * @param mixed $dummy  Используется для совместимости с родительским методом
-	 *
-	 * @return mixed  void
-	 *
-	 * @see EresusAccounts::update()
+	 * @return Response
 	 */
-	public function update($dummy)
+	private function update()
 	{
 		$item = $this->accounts->get(arg('update', 'int'));
 		foreach ($item as $key => $value)
@@ -109,13 +111,15 @@ class Eresus_Admin_Controllers_Users
 		{
 			$this->accounts->update($item);
 		};
-		HTTP::redirect(arg('submitURL'));
+        return new RedirectResponse(arg('submitURL'));
 	}
 	
 	/**
 	 * Создание учётной записи
+     *
+     * @return Response
 	 */
-	function insert()
+	private function insert()
 	{
 		# Получение данных
 		$item = array(
@@ -157,31 +161,30 @@ class Eresus_Admin_Controllers_Users
 		if ($error)
 		{
 			saveRequest();
-			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
+            return new RedirectResponse(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 		if (!$this->accounts->add($item))
 		{
 			ErrorMessage('Error creating user account');
 		}
-		HTTP::redirect(arg('submitURL'));
+        return new RedirectResponse(arg('submitURL'));
 	}
 	
 
 	/**
-	 * @param mixed $dummy  Используется для совместимости с родительским методом
-	 *
-	 * @return mixed void
-	 *
-	 * @see EresusAccounts::delete()
+	 * @return Response
 	 */
-	public function delete($dummy)
+	private function delete()
 	{
 		$this->accounts->get(arg('delete', 'int'));
 		$this->accounts->delete(arg('delete', 'int'));
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+		return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
-	
-	function password()
+
+    /**
+     * @return Response
+     */
+    private function password()
 	{
 		$item = $this->accounts->get(arg('password', 'int'));
 		if (arg('pswd1') == arg('pswd2'))
@@ -189,10 +192,10 @@ class Eresus_Admin_Controllers_Users
 			$item['hash'] = Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd1'));
 			$this->accounts->update($item);
 		}
-		HTTP::redirect(arg('submitURL'));
+        return new RedirectResponse(arg('submitURL'));
 	}
 	
-	function edit()
+	private function edit()
 	{
 		$item = Eresus_CMS::getLegacyKernel()->db->selectItem('users', "`id`='".arg('id')."'");
 		$form = array(
@@ -274,11 +277,11 @@ class Eresus_Admin_Controllers_Users
 
 	/**
 	 *
-	 * @return string
+	 * @return Response|string
 	 */
 	public function adminRender()
 	{
-		$result = '';
+        $result = '';
 		$request = Eresus_CMS::getLegacyKernel()->request;
 		$granted = false;
 		if (UserRights($this->access))
@@ -303,20 +306,20 @@ class Eresus_Admin_Controllers_Users
 		{
 			if (arg('update'))
 			{
-				$this->update(null);
+				return $this->update();
 			}
 			elseif (isset($request['arg']['password']) && (!isset($request['arg']['action']) ||
 				($request['arg']['action'] != 'login')))
 			{
-				$this->password();
+				return $this->password();
 			}
 			elseif (isset($request['arg']['toggle']))
 			{
-				$this->toggle();
+				return $this->toggle();
 			}
 			elseif (isset($request['arg']['delete']))
 			{
-				$this->delete(null);
+				return $this->delete();
 			}
 			elseif (isset($request['arg']['id']))
 			{
@@ -330,7 +333,7 @@ class Eresus_Admin_Controllers_Users
 						$result = $this->create();
 						break;
 					case 'insert':
-						$this->insert();
+						return $this->insert();
 						break;
 				}
 			}
@@ -381,5 +384,4 @@ class Eresus_Admin_Controllers_Users
 			return '';
 		}
 	}
-	//-----------------------------------------------------------------------------
 }

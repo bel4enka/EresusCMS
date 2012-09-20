@@ -29,6 +29,8 @@
  */
 
 // TODO: Проверить, нет ли доступа к внешним директориям
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Управление темами оформления
@@ -89,7 +91,7 @@ class Eresus_Admin_Controllers_Themes
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
 	public function sectionTemplatesInsert()
 	{
@@ -109,33 +111,30 @@ class Eresus_Admin_Controllers_Themes
 
 		$templates = new Eresus_Templates();
 		$templates->add($filename, '', arg('code'), arg('desc'));
-		HTTP::redirect(arg('submitURL'));
+		return new RedirectResponse(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
 	public function sectionTemplatesUpdate()
 	{
 		$templates = new Eresus_Templates();
 		$templates->update(arg('name'), '', arg('code'), arg('desc'));
-		HTTP::redirect(arg('submitURL'));
+		return new RedirectResponse(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
 	public function sectionTemplatesDelete()
 	{
 		$templates = new Eresus_Templates();
 		$templates->delete(arg('delete'));
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+		return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -274,15 +273,14 @@ class Eresus_Admin_Controllers_Themes
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
-	public function sectionStdInsert()
+	private function sectionStdInsert()
 	{
 		$templates = new Eresus_Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
-		HTTP::redirect(arg('submitURL'));
+        return new RedirectResponse(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -296,15 +294,14 @@ class Eresus_Admin_Controllers_Themes
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
-	public function sectionStdDelete()
+	private function sectionStdDelete()
 	{
 		$templates = new Eresus_Templates();
 		$templates->delete(arg('delete'), 'std');
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+		return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Диалог добавления стандартного шаблона
@@ -490,7 +487,7 @@ class Eresus_Admin_Controllers_Themes
 	/**
 	 * Создаёт новый файл стилей
 	 *
-	 * @return void
+	 * @return Response
 	 */
 	public function sectionStylesInsert()
 	{
@@ -511,7 +508,7 @@ class Eresus_Admin_Controllers_Themes
 		$contents = "/* ".arg('description')." */\r\n\r\n".arg('html');
 		file_put_contents(Eresus_CMS::getLegacyKernel()->froot . 'style/' . $filename . '.css',
 			$contents);
-		HTTP::redirect(arg('submitURL'));
+		return new RedirectResponse(arg('submitURL'));
 	}
 
 	/**
@@ -524,7 +521,7 @@ class Eresus_Admin_Controllers_Themes
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
 	public function sectionStylesDelete()
 	{
@@ -533,9 +530,8 @@ class Eresus_Admin_Controllers_Themes
 		{
 			unlink($filename);
 		}
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+		return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -694,11 +690,10 @@ class Eresus_Admin_Controllers_Themes
 
 	/**
 	 * ???
-	 * @return string
+	 * @return Response|string
 	 */
 	public function adminRender()
 	{
-		$result = '';
 		if (UserRights($this->access))
 		{
 			#FIXME: Временное решение #0000163
@@ -710,22 +705,23 @@ class Eresus_Admin_Controllers_Themes
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'css'));
 			/** @var Eresus_AdminUI $page */
 			$page = Eresus_Kernel::app()->getPage();
-			$result .= $page->renderTabs($this->tabs);
 			switch (arg('section'))
 			{
 				case 'css':
-					$result .= $this->sectionStyles();
+					$result = $this->sectionStyles();
 					break;
 				case 'std':
-					$result .= $this->sectionStd();
+					$result = $this->sectionStd();
 					break;
 				case 'themes':
 				default:
-					$result .= $this->sectionTemplates();
-					break;
+					$result = $this->sectionTemplates();
 			}
 		}
+        if (is_string($result))
+        {
+            $result = $page->renderTabs($this->tabs) . $result;
+        }
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 }

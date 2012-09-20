@@ -62,7 +62,11 @@ class Eresus_CMS
 
         $i18n = Eresus_I18n::getInstance();
         TemplateSettings::setGlobalValue('i18n', $i18n);
-        Eresus_CMS::getLegacyKernel()->init();
+        $response = Eresus_CMS::getLegacyKernel()->init();
+        if ($response)
+        {
+            return $response;
+        }
         TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
 
         $this->initWeb();

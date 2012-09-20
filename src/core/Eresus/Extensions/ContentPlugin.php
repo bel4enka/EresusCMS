@@ -28,6 +28,9 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Базовый класс для плагинов, предоставляющих тип контента
  *
@@ -102,11 +105,13 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 
 	/**
 	 * Обновляет контент страницы
+     *
+     * @return Response
 	 */
 	public function adminUpdate()
 	{
 		$this->updateContent(arg('content', 'dbsafe'));
-		HTTP::redirect(arg('submitURL'));
+		return new RedirectResponse(arg('submitURL'));
 	}
 
 	/**
@@ -133,13 +138,13 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 	/**
 	 * Отрисовка административной части
 	 *
-	 * @return  string  Контент
+	 * @return Response|string  Контент
 	 */
 	public function adminRenderContent()
 	{
 		if (arg('action') == 'update')
 		{
-			$this->adminUpdate();
+			return $this->adminUpdate();
 		}
 		/** @var Eresus_AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();

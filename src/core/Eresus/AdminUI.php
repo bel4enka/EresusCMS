@@ -35,6 +35,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 define('ADMINUI', true);
 
@@ -940,11 +941,10 @@ class Eresus_AdminUI extends Eresus_WebPage
 	/**
 	 * Старый метод отрисовки контента
 	 *
-	 * @return string  HTML
+	 * @return Response|string  HTML
 	 */
 	private function legacyRenderContent()
 	{
-		$result = '';
 		if (arg('mod'))
 		{
 			$module = arg('mod', '/[^\w-]/');
@@ -976,7 +976,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 				{
 					try
 					{
-						$result .= $this->module->adminRender();
+						$result = $this->module->adminRender();
 					}
 					catch (Exception $e)
 					{
@@ -1000,21 +1000,25 @@ class Eresus_AdminUI extends Eresus_WebPage
 						{
 							$msg .= '<br />' . $e->getDescription();
 						}
-						$result .= ErrorBox($msg);
+						$result = ErrorBox($msg);
 					}
 				}
 				else
 				{
-					$result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
+					$result = ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
 				}
 			}
 			else
 			{
 				eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
 				$msg = Eresus_I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
-				$result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
+				$result = ErrorBox(sprintf($msg, isset($name) ? $name : $module));
 			}
 		}
+        else
+        {
+            $result = '';
+        }
 		return $result;
 	}
 
@@ -1232,7 +1236,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 			if (Eresus_CMS::getLegacyKernel()->login($req->request->get('user'),
 				Eresus_CMS::getLegacyKernel()->password_hash($password), $autologin))
 			{
-				HTTP::redirect(Eresus_CMS::getLegacyKernel()->root . 'admin.php');
+                return new RedirectResponse(Eresus_CMS::getLegacyKernel()->root . 'admin.php');
 			}
 		}
 

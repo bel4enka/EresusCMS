@@ -28,6 +28,8 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Работа с плагинами
@@ -266,9 +268,9 @@ class Eresus_Extensions_Registry
 	/**
 	 * Отрисовка контента раздела
 	 *
-	 * @return string  Контент
+	 * @return string|Response  ответ
 	 */
-	function clientRenderContent()
+	public function clientRenderContent()
 	{
 		/* @var Eresus_ClientUI $page */
 		$page = Eresus_Kernel::app()->getPage();
@@ -335,9 +337,7 @@ class Eresus_Extensions_Registry
 				break;
 
 			case 'url':
-				HTTP::redirect($page->replaceMacros($page->content));
-				break;
-
+                return new RedirectResponse($page->replaceMacros($page->content));
 			default:
 				if ($this->load($page->type))
 				{

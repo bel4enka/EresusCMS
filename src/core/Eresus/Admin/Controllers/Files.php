@@ -28,6 +28,9 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Сравнение двух файлов
  *
@@ -343,31 +346,33 @@ class Eresus_Admin_Controllers_Files
 			"</table>";
 		return $result;
 	}
-	
-	function upload()
+
+    /**
+     * @return Response
+     */
+    private function upload()
 	{
 		foreach ($_FILES as $name => $file)
 		{
 			upload($name, Eresus_CMS::getLegacyKernel()->froot.$this->root.$this->panels[$this->sp]);
 		}
-		HTTP::goback();
+        return new RedirectResponse($_SERVER['HTTP_REFERER']);
 	}
 	
 
 	/**
 	 * Создаёт директорию
 	 *
-	 * @return void
+	 * @return Response
 	 *
 	 * @uses FS::mkDir()
-	 * @uses HTTP::redirect()
 	 */
 	function mkDir()
 	{
 		$pathname = Eresus_CMS::getLegacyKernel()->froot . $this->root .
 			$this->panels[$this->sp] . arg('mkdir', FILES_FILTER);
 		FS::mkDir($pathname, 0777, true);
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+        return new RedirectResponse(str_replace('&amp;', '&', $this->url()));
 	}
 
 	function rmDir($path)
@@ -396,8 +401,11 @@ class Eresus_Admin_Controllers_Files
 		}
 		#}
 	}
-	
-	function renameEntry()
+
+    /**
+     * @return Response
+     */
+    private function renameEntry()
 	{
 		$froot = Eresus_CMS::getLegacyKernel()->froot;
 		$filename = $froot . $this->root.$this->panels[$this->sp].arg('rename', FILES_FILTER);
@@ -406,10 +414,13 @@ class Eresus_Admin_Controllers_Files
 		{
 			rename($filename, $newName);
 		}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+        return new RedirectResponse(str_replace('&amp;', '&', $this->url()));
 	}
-	
-	function chmodEntry()
+
+    /**
+     * @return Response
+     */
+    private function chmodEntry()
 	{
 		$filename = Eresus_CMS::getLegacyKernel()->froot . $this->root . $this->panels[$this->sp] .
 			arg('chmod', FILES_FILTER);
@@ -417,10 +428,13 @@ class Eresus_Admin_Controllers_Files
 		{
 			chmod($filename, octdec(arg('perms', '/\D/')));
 		}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+        return new RedirectResponse(str_replace('&amp;', '&', $this->url()));
 	}
-	
-	function copyFile()
+
+    /**
+     * @return Response
+     */
+    private function copyFile()
 	{
 		$froot = Eresus_CMS::getLegacyKernel()->froot;
 		$filename = $froot.$this->root.$this->panels[$this->sp].arg('copyfile', FILES_FILTER);
@@ -433,10 +447,13 @@ class Eresus_Admin_Controllers_Files
 		elseif (is_dir($filename))
 		{
 		}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+        return new RedirectResponse(str_replace('&amp;', '&', $this->url()));
 	}
-	
-	function moveFile()
+
+    /**
+     * @return Response
+     */
+    private function moveFile()
 	{
 		#if (UserRights(ADMIN)) {
 		$froot = Eresus_CMS::getLegacyKernel()->froot;
@@ -451,10 +468,13 @@ class Eresus_Admin_Controllers_Files
 		{
 		}
 		#}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+        return new RedirectResponse(str_replace('&amp;', '&', $this->url()));
 	}
-	
-	function deleteFile()
+
+    /**
+     * @return Response
+     */
+    private function deleteFile()
 	{
 		#if (UserRights(ADMIN)) {
 		$filename = Eresus_CMS::getLegacyKernel()->froot . $this->root . $this->panels[$this->sp] .
@@ -469,13 +489,13 @@ class Eresus_Admin_Controllers_Files
 			rmdir($filename);
 		}
 		#}
-		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
+        return new RedirectResponse(str_replace('&amp;', '&', $this->url()));
 	}
 
 	/**
 	 * Возвращает разметку интерфейса
 	 *
-	 * @return string
+	 * @return Response|string
 	 */
 	public function adminRender()
 	{
@@ -504,31 +524,31 @@ class Eresus_Admin_Controllers_Files
 		}
 		if (count($_FILES))
 		{
-			$this->upload();
+			return $this->upload();
 		}
 		elseif (arg('mkdir'))
 		{
-			$this->mkDir();
+			return $this->mkDir();
 		}
 		elseif (arg('rename'))
 		{
-			$this->renameEntry();
+            return $this->renameEntry();
 		}
 		elseif (arg('chmod'))
 		{
-			$this->chmodEntry();
+            return $this->chmodEntry();
 		}
 		elseif (arg('copyfile'))
 		{
-			$this->copyFile();
+            return $this->copyFile();
 		}
 		elseif (arg('movefile'))
 		{
-			$this->moveFile();
+            return $this->moveFile();
 		}
 		elseif (arg('delete'))
 		{
-			$this->deleteFile();
+            return $this->deleteFile();
 		}
 		else
 		{
@@ -550,6 +570,5 @@ class Eresus_Admin_Controllers_Files
 					"--></script>\n";
 			return $result;
 		}
-		return '';
 	}
 }

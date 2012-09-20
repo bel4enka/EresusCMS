@@ -30,6 +30,9 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Управление контентом
  *
@@ -41,7 +44,7 @@ class Eresus_Admin_Controllers_Content
 	/**
 	 * Возвращает разметку интерфейса управления контентом текущего раздела
 	 *
-	 * @return string  HTML
+	 * @return Response|string  HTML
 	 */
 	public function adminRender()
 	{
@@ -68,7 +71,7 @@ class Eresus_Admin_Controllers_Content
 					{
 						$result = $editor->adminRenderContent();
 					}
-				break;
+				    break;
 
 				case 'list':
 					if (arg('update'))
@@ -77,7 +80,7 @@ class Eresus_Admin_Controllers_Content
 						/** @var Eresus_Sections $sections */
 						$sections = Eresus_Kernel::get('sections');
 						$sections->update($item);
-						HTTP::redirect(arg('submitURL'));
+						return new RedirectResponse(arg('submitURL'));
 					}
 					else
 					{
@@ -102,7 +105,7 @@ class Eresus_Admin_Controllers_Content
 						/** @var Eresus_Sections $sections */
 						$sections = Eresus_Kernel::get('sections');
 						$sections->update($item);
-						HTTP::redirect(arg('submitURL'));
+						return new RedirectResponse(arg('submitURL'));
 					}
 					else
 					{

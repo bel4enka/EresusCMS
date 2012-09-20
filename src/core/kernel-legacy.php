@@ -28,6 +28,8 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Название системы
  * @var string
@@ -1329,6 +1331,7 @@ class Eresus
 	/**
 	 * Проверка на логин/логаут
 	 *
+     * @return Response|null
 	 */
 	function check_loginout()
 	{
@@ -1336,13 +1339,14 @@ class Eresus
 		{
 			case 'login':
 				$this->login(arg('user'), $this->password_hash(arg('password')), arg('autologin', 'int'));
-				HTTP::redirect($this->request['url']);
-			break;
+				return new RedirectResponse($this->request['url']);
+			    break;
 			case 'logout':
 				$this->logout(true);
-				HTTP::redirect($this->root.'admin/');
-			break;
+				return new RedirectResponse($this->root.'admin/');
+			    break;
 		}
+        return null;
 	}
 
 	/**
@@ -1398,6 +1402,8 @@ class Eresus
 
 	/**
 	 * Инициализация системы
+     *
+     * @return Response|null
 	 */
 	public function init()
 	{
@@ -1431,11 +1437,16 @@ class Eresus
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута
-		$this->check_loginout();
+		$response = $this->check_loginout();
+        if ($response)
+        {
+            return $response;
+        }
 		# Попытка cookie-логина
 		$this->check_cookies();
 		# Обновление данных о пользователе
 		$this->reset_login();
+        return null;
 	}
 
 	/**

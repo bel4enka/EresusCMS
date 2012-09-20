@@ -30,6 +30,9 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Управление разделами сайта
  *
@@ -51,9 +54,10 @@ class Eresus_Admin_Controllers_Pages
 
 	/**
 	 * Запись новой страницы в БД
-	 * @return void
+     *
+	 * @return Response
 	 */
-	function insert()
+	private function insert()
 	{
 		$item = array();
 		$item['owner'] = arg('owner', 'int');
@@ -79,22 +83,21 @@ class Eresus_Admin_Controllers_Pages
 		{
 			$sections->add($item);
 			$this->dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
-			HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+            return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 		}
 		else
 		{
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
+            return new RedirectResponse(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
-	 * @return void
+	 * @return Response
 	 */
-	function update()
+	private function update()
 	{
 		/** @var Eresus_Sections $sections */
 		$sections = Eresus_Kernel::get('sections');
@@ -121,7 +124,7 @@ class Eresus_Admin_Controllers_Pages
 		{
 			ErrorMessage(sprintf(errItemWithSameName, $item['name']));
 			saveRequest();
-			HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
+            return new RedirectResponse(Eresus_CMS::getLegacyKernel()->request['referer']);
 		}
 
 		if (arg('created'))
@@ -136,9 +139,8 @@ class Eresus_Admin_Controllers_Pages
 
 		$sections->update($item);
 
-		HTTP::redirect(arg('submitURL'));
+        return new RedirectResponse(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -171,13 +173,13 @@ class Eresus_Admin_Controllers_Pages
 		}
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Функция перемещает страницу вверх в списке
-	 * @return void
+     *
+	 * @return Response
 	 */
-	function moveUp()
+	private function moveUp()
 	{
 		/** @var Eresus_Sections $sections */
 		$sections = Eresus_Kernel::get('sections');
@@ -197,15 +199,14 @@ class Eresus_Admin_Controllers_Pages
 				$sections->update($temp);
 			}
 		}
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Функция перемещает страницу вниз в списке
-	 * @return void
+	 * @return Response
 	 */
-	function moveDown()
+	private function moveDown()
 	{
 		/** @var Eresus_Sections $sections */
 		$sections = Eresus_Kernel::get('sections');
@@ -225,16 +226,15 @@ class Eresus_Admin_Controllers_Pages
 				$sections->update($temp);
 			}
 		}
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Перемещает страницу из одной ветки в другую
 	 *
-	 * @return string
+	 * @return Response|string
 	 */
-	function move()
+	private function move()
 	{
 		/** @var Eresus_Sections $sections */
 		$sections = Eresus_Kernel::get('sections');
@@ -257,11 +257,11 @@ class Eresus_Admin_Controllers_Pages
 			if ($count['count'])
 			{
 				ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
-				HTTP::goback();
+                return new RedirectResponse($_SERVER['HTTP_REFERER']);
 			}
 
 			$sections->update($item);
-			HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+            return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 		}
 		else
 		{
@@ -283,9 +283,7 @@ class Eresus_Admin_Controllers_Pages
 			$result = Eresus_Kernel::app()->getPage()->renderForm($form);
 			return $result;
 		}
-		return '';
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -323,18 +321,17 @@ class Eresus_Admin_Controllers_Pages
 
 	/**
 	 * Удаляет страницу
-	 * @return void
+	 * @return Response
 	 */
-	function delete()
+	private function delete()
 	{
 		/** @var Eresus_Sections $sections */
 		$sections = Eresus_Kernel::get('sections');
 		$item = $sections->get(arg('id', 'int'));
 		$sections->delete(arg('id', 'int'));
 		$this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
-		HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает список типов контента в виде, пригодном для построения выпадающего списка

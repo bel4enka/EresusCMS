@@ -30,6 +30,9 @@
  * $Id$
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * @package Eresus
  */
@@ -87,17 +90,13 @@ class Eresus_Admin_Controllers_Settings
 		$result .= $value . ");\n";
 		return $result;
 	}
-	//--------------------------------------------------------------------
 
 	/**
 	 * Записывает настройки
-	 * @return void
-	 * @uses HTTP::goback
+	 * @return Response
 	 */
 	private function update()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
 		$settings = "<?php\n";
 
 		$settings .= $this->mkstr('siteName', 'string');
@@ -118,9 +117,8 @@ class Eresus_Admin_Controllers_Settings
 		$settings .= $this->mkstr('pageTemplateDefault', 'string');
 
 		file_put_contents(filesRoot.'cfg/settings.php', $settings);
-		HTTP::goback();
+		return new RedirectResponse($_SERVER['HTTP_REFERER']);
 	}
-	//--------------------------------------------------------------------
 
 	/**
 	 * Возвращает HTML-код раздела
@@ -182,16 +180,14 @@ class Eresus_Admin_Controllers_Settings
 		$html = $form->compile();
 		return $html;
 	}
-	//--------------------------------------------------------------------
 
 	/**
 	 * Отрисовка контента
-	 * @return string
-	 * @uses HTTP::request
+     *
+	 * @return Response|string
 	 */
 	function adminRender()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
 		if (!UserRights($this->access))
 		{
 			return '';
@@ -202,11 +198,10 @@ class Eresus_Admin_Controllers_Settings
 
 		if ($request->getMethod() == 'POST')
 		{
-			$this->update();
+			return $this->update();
 		}
 
 		$html = $this->renderForm();
 		return $html;
 	}
-	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }

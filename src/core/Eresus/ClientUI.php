@@ -402,6 +402,10 @@ class Eresus_ClientUI extends Eresus_WebPage
 		}
 		# Отрисовываем контент
 		$content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
+        if ($content instanceof Response)
+        {
+            return $content;
+        }
 		$templates = new Eresus_Templates;
 		$this->template = $templates->get($this->template);
 		$content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
