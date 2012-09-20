@@ -13,6 +13,7 @@
 - TPlugin, TContentPlugin, TListContentPlugin. Вместо них следует использовать классы
   Eresus_Extensions_Plugin и Eresus_Extensions_ContentPlugin.
 - EresusSourceParseException. Вместо него вбрасывается DomainException.
+- HttpResponse, HttpHeaders, HttpMessage, HTTP. См. :doc:`/dev/guide/responses`.
 
 Свойства и методы
 ^^^^^^^^^^^^^^^^^
@@ -64,7 +65,7 @@
 Перенаправления
 ^^^^^^^^^^^^^^^
 
-Изменился механизм перенаправлений (редиректов). Подробнее см. раздел :doc:`<dev/>`
+Изменился механизм перенаправлений (редиректов). Подробнее см. раздел :doc:`/dev/guide/responses`.
 
 Переименованы классы
 ^^^^^^^^^^^^^^^^^^^^

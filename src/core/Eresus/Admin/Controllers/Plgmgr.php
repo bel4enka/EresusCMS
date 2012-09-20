@@ -48,7 +48,7 @@ class Eresus_Admin_Controllers_Plgmgr
 	/**
 	 * Включает или отключает плагин
 	 *
-	 * @return void
+	 * @return Response
 	 */
 	private function toggle()
 	{
@@ -61,7 +61,7 @@ class Eresus_Admin_Controllers_Plgmgr
 			);
 		DB::execute($q);
 
-		HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
 
     /**
@@ -111,13 +111,10 @@ class Eresus_Admin_Controllers_Plgmgr
 	/**
 	 * Подключает плагины
 	 *
-	 * @return void
-	 * @see add()
+	 * @return Response
 	 */
 	private function insert()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
 		$files = arg('files');
 		if ($files && is_array($files))
 		{
@@ -137,9 +134,8 @@ class Eresus_Admin_Controllers_Plgmgr
 			}
 
 		}
-		HttpResponse::redirect('admin.php?mod=plgmgr');
+        return new RedirectResponse('admin.php?mod=plgmgr');
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает диалог добавления плагина
@@ -249,12 +245,8 @@ class Eresus_Admin_Controllers_Plgmgr
 	{
 		if (!UserRights($this->access))
 		{
-			eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
-				Eresus_CMS::getLegacyKernel()->user['name']);
 			return '';
 		}
-
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
 
 		$result = '';
 		Eresus_Kernel::app()->getPage()->title = admPlugins;
@@ -266,7 +258,7 @@ class Eresus_Admin_Controllers_Plgmgr
 			    break;
 
 			case arg('toggle') !== null:
-				$this->toggle();
+				return $this->toggle();
 			break;
 
 			case arg('delete') !== null:
@@ -282,7 +274,7 @@ class Eresus_Admin_Controllers_Plgmgr
 			break;
 
 			case arg('action') == 'insert':
-				$this->insert();
+				return $this->insert();
 			break;
 
 			default:

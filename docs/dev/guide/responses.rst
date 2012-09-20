@@ -11,3 +11,17 @@
 #. **Вернуть экземпляр Symfony\\Component\\HttpFoundation\\Response**. Он будет отдан клиенту как есть.
 #. **Вбросить исключение**. Клиенту будет отправлено подходящее сообщение об ошибке с соответствующим
    кодом.
+
+Перенаправления
+---------------
+
+Перенаправление можно выполнить следующим образом:
+
+.. code-block:: php
+
+   <?php
+   use Symfony\Component\HttpFoundation\RedirectResponse;
+
+   return new RedirectResponse($url);
+
+Подробнее см. документацию по Symfony: `<http://symfony.com/doc/2.1/book/controller.html#redirecting>`_.
