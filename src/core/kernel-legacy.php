@@ -1513,6 +1513,7 @@ class Eresus
         $doctrine = Eresus_Kernel::get('doctrine');
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $doctrine->getManager();
+        /** @var \Eresus\CmsBundle\Entity\Account $account */
         $account = $em->getRepository('CmsBundle:Account')->findOneByLogin($login);
 
 		// Если такой пользователь есть...
@@ -1536,15 +1537,8 @@ class Eresus
 							$this->clear_login_cookies();
 						}
 						$setVisitTime = (! isset($this->user['id'])) || (! (bool) $this->user['id']);
-						$this->user = array(
-                            'id' => $account->id,
-                            'login' => $account->login,
-                            'name' => $account->name,
-                            'hash' => $account->hash,
-                            'access' => $account->access,
-                            'profile' => $account->profile,
-                            'auth' => true,
-                        );
+						$this->user = $account->toArray();
+                        $this->user['auth'] = true;
 						if ($setVisitTime)
 						{
                             // Записываем время последнего входа

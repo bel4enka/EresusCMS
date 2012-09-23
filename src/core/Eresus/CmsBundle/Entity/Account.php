@@ -38,6 +38,18 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Учётная запись пользователя
  *
+ * @property int       $id
+ * @property string    $login
+ * @property string    $hash
+ * @property bool      $active
+ * @property \DateTime $lastVisit
+ * @property int       $lastLoginTime
+ * @property int       $loginErrors
+ * @property int       $access
+ * @property string    $name
+ * @property string    $mail
+ * @property array     $profile
+ *
  * @package Eresus
  * @since 3.01
  *
@@ -147,4 +159,23 @@ class Account extends AbstractEntity
      * @ORM\Column(type="array")
      */
     protected $profile;
+
+    /**
+     * Возвращает своства учётной записи в виде массива
+     *
+     * @return array
+     * @since 3.01
+     */
+    public function toArray()
+    {
+        return array(
+            'id' => $this->id,
+            'login' => $this->login,
+            'name' => $this->name,
+            'hash' => $this->hash,
+            'access' => $this->access,
+            'profile' => $this->profile,
+        );
+    }
 }
+
