@@ -22,6 +22,9 @@ twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
     autoescape:       false
+    form:
+        resources:
+            - 'CmsBundle:Form:fields.html.twig'
 
 # Assetic Configuration
 assetic:
