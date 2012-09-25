@@ -197,6 +197,9 @@
 			</filterchain>
 		</copy>
 
+		<svnexport repositoryurl="https://github.com/mekras/botobor/tags/v0.3.1"
+			todir="3rdparty/libbotobor" force="true" />
+
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/libbotobor">
 			<fileset refid="files.3rd.libbotobor" />
