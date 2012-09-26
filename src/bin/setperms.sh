@@ -23,7 +23,7 @@ function makeWritable
   else
     if [ -d $1 ]
     then
-      doChmod 'a+rw -R' $1
+      doChmod '-R a+rw' $1
     else
       echo "ERROR: File $1 not exist!"
       exit 2
