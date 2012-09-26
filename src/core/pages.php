@@ -98,7 +98,11 @@ class TPages
 		$old = Eresus_CMS::getLegacyKernel()->sections->get(arg('update', 'int'));
 		$item = $old;
 
-		$item['name'] = arg('name', '/[^a-z0-9_]/i');
+		$newName = arg('name', '/[^a-z0-9_]/i');
+		if ($newName)
+		{
+			$item['name'] = $newName;
+		}
 		$item['title'] = arg('title', 'dbsafe');
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['description'] = arg('description', 'dbsafe');
