@@ -98,7 +98,7 @@ class Templates
 		{
 			$name = 'default';
 		}
-		$folder = Eresus_Kernel::app()->getFsRoot() . 'templates/';
+		$folder = Eresus_Kernel::app()->getFsRoot() . '/templates/';
 		if ($type)
 		{
 			$folder .= $type . '/';

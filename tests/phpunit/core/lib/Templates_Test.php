@@ -45,7 +45,7 @@ class Eresus_Templates_Test extends PHPUnit_Framework_TestCase
 	{
 		$app = $this->getMock('stdClass', array('getFsRoot'));
 		$app->expects($this->any())->method('getFsRoot')->
-			will($this->returnValue(TESTS_FIXT_DIR . '/core/lib/'));
+			will($this->returnValue(TESTS_FIXT_DIR . '/core/lib'));
 		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
 		$templates = new Templates();
