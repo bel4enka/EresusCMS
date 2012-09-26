@@ -98,42 +98,36 @@ class Templates
 		{
 			$name = 'default';
 		}
-		$filename = filesRoot . 'templates/';
+		$folder = Eresus_Kernel::app()->getFsRoot() . 'templates/';
 		if ($type)
 		{
-			$filename .= $type . '/';
+			$folder .= $type . '/';
 		}
-		$filename .= $name . '.html';
-		$result = fileread($filename);
-		if ($result)
+		$filename = $folder . $name . '.html';
+		if (!file_exists($filename) && 'default' != $name)
 		{
-			if ($array)
-			{
-				$desc = preg_match($this->pattern, $result);
-				$result = array(
-					'name' => $name,
-					'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : ADM_NA,
-					'code' => $desc ? trim(mb_substr($result, mb_strpos($result, "\n"))) : $result,
-				);
-			}
-			else
-			{
-				if (preg_match($this->pattern, $result))
-				{
-					$result = trim(mb_substr($result, mb_strpos($result, "\n")));
-				}
-			}
+			$filename = $folder . 'default.html';
+		}
+		if (!file_exists($filename))
+		{
+			return false;
+		}
+		$result = file_get_contents($filename);
+		if ($array)
+		{
+			$desc = preg_match($this->pattern, $result);
+			$result = array(
+				'name' => $name,
+				'desc' => $desc ? preg_replace($this->pattern, '$1', $result) : ADM_NA,
+				'code' => $desc ? trim(mb_substr($result, mb_strpos($result, "\n"))) : $result,
+			);
 		}
 		else
 		{
-			if (empty($type) && $name != 'default')
+			if (preg_match($this->pattern, $result))
 			{
-				$result = $this->get('default', $type);
+				$result = trim(mb_substr($result, mb_strpos($result, "\n")));
 			}
-		}
-		if (!$result)
-		{
-			$result = false;
 		}
 		return $result;
 	}
