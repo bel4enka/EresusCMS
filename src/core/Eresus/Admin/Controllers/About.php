@@ -28,6 +28,9 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * Страница "О программе"
  *
@@ -35,57 +38,59 @@
  */
 class Eresus_Admin_Controllers_About extends Eresus_Admin_Controllers_Abstract
 {
-	/**
-	 * Возвращает страницу "О программе"
-	 *
-	 * @return string  HTML
-	 */
-	public function adminRender()
-	{
-		/** @var Eresus_CMS $app */
-		$app = $this->get('app');
-		/** @var SimpleXMLElement $xml */
-		$xml = simplexml_load_file($app->getFsRoot() . '/core/data/about.xml');
+    /**
+     * Возвращает страницу "О программе"
+     *
+     * @param Request $request
+     *
+     * @return Response|string  HTML
+     */
+    public function adminRender(Request $request)
+    {
+        /** @var Eresus_CMS $app */
+        $app = $this->get('app');
+        /** @var SimpleXMLElement $xml */
+        $xml = simplexml_load_file($app->getFsRoot() . '/core/data/about.xml');
 
-		$data = array();
+        $data = array();
 
-		$product = $xml->product[0];
-		$data['product'] = array();
-		$data['product']['title'] = strval($product['title']);
-		$data['product']['version'] = strval($product['version']);
+        $product = $xml->product[0];
+        $data['product'] = array();
+        $data['product']['title'] = strval($product['title']);
+        $data['product']['version'] = strval($product['version']);
 
-		$data['product']['copyrights'] = array();
-		$copyrights = $product->copyright;
-		for ($i = 0; $i < count($copyrights); $i++)
-		{
-			$copyright = $copyrights[$i];
-			$data['product']['copyrights'] []= array(
-				'year' => strval($copyright['year']),
-				'owner' => strval($copyright['owner']),
-				'url' => strval($copyright['url']),
-			);
-		}
+        $data['product']['copyrights'] = array();
+        $copyrights = $product->copyright;
+        for ($i = 0; $i < count($copyrights); $i++)
+        {
+            $copyright = $copyrights[$i];
+            $data['product']['copyrights'] []= array(
+                'year' => strval($copyright['year']),
+                'owner' => strval($copyright['owner']),
+                'url' => strval($copyright['url']),
+            );
+        }
 
-		$locale = Eresus_I18n::getInstance()->getLocale();
+        $locale = Eresus_I18n::getInstance()->getLocale();
 
-		$license = $xml->license[0];
-		$data['license'] = array();
-		$data['license']['text'] = strval($license->{$locale}[0]);
+        $license = $xml->license[0];
+        $data['license'] = array();
+        $data['license']['text'] = strval($license->{$locale}[0]);
 
-		$data['components'] = array();
-		$components = $xml->xpath('//uses/item');
-		foreach ($components as $component)
-		{
-			$data['components'] []= array(
-				'title' => strval($component['title']),
-				'url' => strval($component['url']),
-				'logo' => strval($component['logo']),
-				'description' => strval($component->{$locale}[0])
-			);
-		}
+        $data['components'] = array();
+        $components = $xml->xpath('//uses/item');
+        foreach ($components as $component)
+        {
+            $data['components'] []= array(
+                'title' => strval($component['title']),
+                'url' => strval($component['url']),
+                'logo' => strval($component['logo']),
+                'description' => strval($component->{$locale}[0])
+            );
+        }
 
-		$html = $this->renderView('core/templates/about.html.twig', $data);
+        $html = $this->renderView('core/templates/about.html.twig', $data);
 
-		return $html;
-	}
+        return $html;
+    }
 }

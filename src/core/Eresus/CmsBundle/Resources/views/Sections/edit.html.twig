@@ -1,0 +1,21 @@
+<table class="admWindow">
+    <tr>
+        <th>Изменение раздела</th>
+    </tr>
+    <tr>
+        <td>
+            <form action="admin.php" method="post" {{ form_enctype(form) }}>
+                <input type="hidden" name="mod" value="pages">
+                <input type="hidden" name="id" value="{{ form.vars.value.id }}">
+                {{ form_widget(form) }}
+                <div>
+                    URL этой страницы: <a href="{{ pageURL }}">{{ pageURL }}</a>
+                </div>
+                <div class="ui-button-box">
+                    <button type="submit">Сохранить</button>
+                    <button type="button" onclick="history.back();">Отменить</button>
+                </div>
+            </form>
+        </td>
+    </tr>
+</table>

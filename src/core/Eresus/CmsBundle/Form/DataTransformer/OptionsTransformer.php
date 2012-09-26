@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Абстрактный контроллер АИ
+ * Трансформер опций
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -28,23 +28,55 @@
  * @package Eresus
  */
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+namespace Eresus\CmsBundle\Form\DataTransformer;
+
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
- * Абстрактный контроллер АИ
+ * Трансформер опций
  *
  * @package Eresus
+ * @since 3.01
  */
-abstract class Eresus_Admin_Controllers_Abstract extends Controller
+class OptionsTransformer implements DataTransformerInterface
 {
     /**
-     * Должен возвращать разметку страницы
+     * Превращает массив опций в текст
      *
-     * @param Request $request
+     * @param array $options
      *
-     * @return Response|string  HTML
+     * @return string
      */
-    abstract public function adminRender(Request $request);
+    public function transform($options)
+    {
+        $text = '';
+        if (is_array($options))
+        {
+            foreach ($options as $key => $value)
+            {
+                $text .= "$key=$value\n";
+            }
+        }
+        return $text;
+    }
+
+    /**
+     * Превращает текст в массив опций
+     *
+     * @param  string $text
+     *
+     * @return array
+     */
+    public function reverseTransform($text)
+    {
+        $options = array();
+        $text = explode("\n", trim($text));
+        foreach ($text as $line)
+        {
+            list ($key, $value) = explode('=', $line);
+            $options[$key] = $value;
+        }
+        return $options;
+    }
 }

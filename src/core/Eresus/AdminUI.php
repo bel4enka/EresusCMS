@@ -863,7 +863,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 * @throws DomainException
 	 * @throws LogicException  если нет контероллера, указанного в маршруте
 	 *
-	 * @return string
+	 * @return Response|string
 	 */
 	private function renderContent()
 	{
@@ -897,7 +897,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 			}
 			if ($controller instanceof Eresus_Admin_Controllers_Abstract)
 			{
-				$result = $controller->adminRender();
+				$result = $controller->adminRender($request);
 			}
 			else
 			{
@@ -909,6 +909,11 @@ class Eresus_AdminUI extends Eresus_WebPage
 		{
 			$result = $this->legacyRenderContent();
 		}
+
+        if ($result instanceof Response)
+        {
+            return $result;
+        }
 
 		if (
 			isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
@@ -976,7 +981,9 @@ class Eresus_AdminUI extends Eresus_WebPage
 				{
 					try
 					{
-						$result = $this->module->adminRender();
+                        /** @var \Symfony\Component\HttpFoundation\Request $request */
+                        $request = $this->get('request');
+						$result = $this->module->adminRender($request);
 					}
 					catch (Exception $e)
 					{
@@ -1263,10 +1270,16 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 */
 	private function renderUI()
 	{
+        $response = $this->renderContent();
+        if ($response instanceof Response)
+        {
+            return $response;
+        }
+
 		$data = array();
 
 		$data['page'] = $this;
-		$data['content'] = $this->renderContent();
+		$data['content'] = $response;
 		$data['siteName'] = option('siteName');
 		//$data['siteRoot'] = Eresus_CMS::getLegacyKernel()->root;
 		$data['body'] = $this->renderBodySection();
