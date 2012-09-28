@@ -269,17 +269,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     }
 
     /**
-     * Возвращает список доступных шаблонов
-     *
-     * @return array
-     */
-    private function loadTemplates()
-    {
-        $templates = new Eresus_Templates();
-        return $templates->enum();
-    }
-
-    /**
      * Добавление нового раздела
      *
      * @param Request $request
@@ -447,11 +436,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                 control('move', $root.'action=move&amp;id=%d').' '.
             Eresus_Kernel::app()->getPage()->
                 control('delete', $root.'action=delete&amp;id=%d');
-        $types = $this->loadContentTypes();
-        for ($i=0; $i<count($types[0]); $i++)
-        {
-            $this->cache['content_types'][$types[1][$i]] = $types[0][$i];
-        }
+        $this->cache['content_types'] = $this->loadContentTypes();
         $table = new Eresus_UI_Admin_List();
         $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
         $table->addRow(array(admPagesRoot, '', '', '', array(Eresus_Kernel::app()->getPage()->
@@ -505,24 +490,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     }
 
     /**
-     * Упорядочивание элементов
-     *
-     * @param string $table      Таблица
-     * @param string $condition  Условие
-     * @param string $id         Имя ключевого поля
-     */
-    private function dbReorderItems($table, $condition='', $id='id')
-    {
-        $items = Eresus_CMS::getLegacyKernel()->db->
-            select("`".$table."`", $condition, '`position`', $id);
-        for ($i=0; $i<count($items); $i++)
-        {
-            Eresus_CMS::getLegacyKernel()->db->
-                update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
-        }
-    }
-
-    /**
      * Возвращает форму добавления/изменения
      *
      * @param Section $section  раздел сайта
@@ -534,6 +501,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     private function getForm(Section $section)
     {
         $isMainPage = 'main' == $section->name && null === $section->parent;
+        $templates = new Eresus_Templates();
 
         $null2string = new NullToStringTransformer();
 
@@ -551,7 +519,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                 array('label'  => 'Ключевые слова', 'required' => false))
                 ->addModelTransformer($null2string))
             ->add('template', 'choice', array('label'  => 'Шаблон',
-                'choices' => $this->loadTemplates()))
+                'choices' => $templates->enum()))
             ->add('type', 'choice', array('label'  => 'Тип раздела',
                 'choices' => $this->loadContentTypes()))
             ->add('active', 'checkbox', array('label'  => 'Включить'))
