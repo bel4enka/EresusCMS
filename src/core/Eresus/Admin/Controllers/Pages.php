@@ -237,7 +237,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         {
             $select = $this->selectList($item['id']);
             array_unshift($select[0], 0);
-            array_unshift($select[1], admPagesRoot);
+            array_unshift($select[1], ADM_PAGES_ROOT);
             $form = array(
                 'name' => 'MoveForm',
                 'caption' => admPagesMove,
@@ -290,9 +290,9 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         /*
          * Стандартные типы контента
          */
-        $result['default'] = admPagesContentDefault;
-        $result['list'] = admPagesContentList;
-        $result['url'] = admPagesContentURL;
+        $result['default'] = ADM_PAGES_CONTENT_DEFAULT;
+        $result['list'] = ADM_PAGES_CONTENT_LIST;
+        $result['url'] = ADM_PAGES_CONTENT_URL;
 
         /*
          * Типы контентов из плагинов
@@ -408,35 +408,41 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     /**
      * Отрисовывает подраздел индекса
      *
-     * @param  int  $owner  Родительский раздел
-     * @param  int  $level  Уровень вложенности
+     * @param  Section|null $owner  Родительский раздел
+     * @param  int          $level  Уровень вложенности
      *
      * @return  string  Отрисованная часть таблицы
      */
-    private function sectionIndexBranch($owner = 0, $level = 0)
+    private function sectionIndexBranch($owner = null, $level = 0)
     {
         /** @var Eresus_AdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
+        $rootURL = Eresus_CMS::getLegacyKernel()->root;
         $result = array();
-        /** @var Eresus_Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['auth'] ?
-                Eresus_CMS::getLegacyKernel()->user['access'] : GUEST);
-        for ($i=0; $i<count($items); $i++)
+        if (null == $owner)
         {
-            $content_type = isset($this->cache['content_types'][$items[$i]['type']]) ?
-                $this->cache['content_types'][$items[$i]['type']] :
-                '<span class="admError">'.sprintf(errContentType, $items[$i]['type']).'</span>';
+            $owner = new Section;
+            $owner->children = $this->getDoctrine()->getManager()
+                ->getRepository('CmsBundle:Section')->findBy(array('parent' => null));
+        }
+        foreach ($owner->children as $section)
+        {
+            /** @var Section $section */
+            $content_type = isset($this->cache['content_types'][$section->type])
+                ? $this->cache['content_types'][$section->type]
+                : '<span class="admError">' . sprintf(ERR_CONTENT_TYPE, $section->type) . '</span>';
             $row = array();
-            $row[] = array('text' => $items[$i]['caption'], 'style'=>"padding-left: {$level}em;",
-                'href'=>Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=content&amp;section='.
-                    $items[$i]['id']);
-            $row[] = $items[$i]['name'];
+            $row[] = array(
+                'text' => $section->caption,
+                'style'=>"padding-left: {$level}em;",
+                'href' =>$rootURL . 'admin.php?mod=content&amp;section=' . $section->id
+            );
+            $row[] = $section->name;
             $row[] = array('text' => $content_type, 'align' => 'center');
-            $row[] = array('text' => constant('ACCESSLEVEL'.$items[$i]['access']), 'align' => 'center');
-            if ($items[$i]['name'] == 'main' && $items[$i]['owner'] == 0)
+            $row[] = array('text' => constant('ACCESSLEVEL'.$section->access), 'align' => 'center');
+            if ($section->name == 'main' && null == $section->parent)
             {
-                $root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
+                $root = $rootURL . 'admin.php?mod=pages&amp;';
                 $controls =
                     $page->control('setup', $root.'id=%d').' '.
                     $page->control('position',
@@ -447,10 +453,10 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
             {
                 $controls = $this->cache['index_controls'];
             }
-            $row[] = sprintf($controls, $items[$i]['id'], $items[$i]['id'], $items[$i]['id'],
-                $items[$i]['id'], $items[$i]['id'], $items[$i]['id']);
+            $row[] = sprintf($controls, $section->id, $section->id, $section->id, $section->id,
+                $section->id, $section->id);
             $result[] = $row;
-            $children = $this->sectionIndexBranch($items[$i]['id'], $level+1);
+            $children = $this->sectionIndexBranch($section, $level + 1);
             if (count($children))
             {
                 $result = array_merge($result, $children);
@@ -466,24 +472,21 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function sectionIndex()
     {
+        /** @var Eresus_AdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
         $root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
         $this->cache['index_controls'] =
-            Eresus_Kernel::app()->getPage()->
-                control('setup', $root.'id=%d').' '.
-            Eresus_Kernel::app()->getPage()->
-                control('position', array($root.'action=up&amp;id=%d',$root.'action=down&amp;id=%d')).
-            ' '.
-            Eresus_Kernel::app()->getPage()->
-                control('add', $root.'action=create&amp;owner=%d').' '.
-            Eresus_Kernel::app()->getPage()->
-                control('move', $root.'action=move&amp;id=%d').' '.
-            Eresus_Kernel::app()->getPage()->
-                control('delete', $root.'action=delete&amp;id=%d');
+            $page->control('setup', $root.'id=%d').' '.
+            $page->control('position', array($root . 'action=up&amp;id=%d',
+                $root . 'action=down&amp;id=%d')).' '.
+            $page->control('add', $root.'action=create&amp;owner=%d').' '.
+            $page->control('move', $root.'action=move&amp;id=%d').' '.
+            $page->control('delete', $root.'action=delete&amp;id=%d');
         $this->cache['content_types'] = $this->loadContentTypes();
         $table = new Eresus_UI_Admin_List();
         $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
-        $table->addRow(array(admPagesRoot, '', '', '', array(Eresus_Kernel::app()->getPage()->
-                control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
+        $table->addRow(array(ADM_PAGES_ROOT, '', '', '',
+            array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
         $table->addRows($this->sectionIndexBranch(null, 1));
         $result = $table->render();
         return $result;
@@ -548,3 +551,4 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         return $builder->getForm();
     }
 }
+

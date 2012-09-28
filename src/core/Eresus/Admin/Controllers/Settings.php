@@ -151,9 +151,9 @@ class Eresus_Admin_Controllers_Settings
 
 		/* Создаем список типов контента */
 		$contentTypes = array(
-			array('name' => 'default','caption' => admPagesContentDefault),
-			array('name' => 'list','caption' => admPagesContentList),
-			array('name' => 'url','caption' => admPagesContentURL)
+			array('name' => 'default','caption' => ADM_PAGES_CONTENT_DEFAULT),
+			array('name' => 'list','caption' => ADM_PAGES_CONTENT_LIST),
+			array('name' => 'url','caption' => ADM_PAGES_CONTENT_URL)
 		);
 
 		foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)

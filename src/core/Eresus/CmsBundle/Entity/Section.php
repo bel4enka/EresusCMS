@@ -34,6 +34,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Eresus\ORMBundle\AbstractEntity;
+use Eresus\CmsBundle\Repository\SectionRepository;
 
 /**
  * Раздел сайта
@@ -61,7 +62,7 @@ use Eresus\ORMBundle\AbstractEntity;
  * @package Eresus
  * @since 3.01
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Eresus\CmsBundle\Repository\SectionRepository")
  * @ORM\Table(name="pages")
  * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */

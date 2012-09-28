@@ -143,7 +143,7 @@ define('errAccessDenied', 'Доступ к данному разделу зап�
 define('errNonexistedDomain', 'Несуществующий домен: "%s"');
 
 # Разделы
-define('errContentType', 'Неверный тип контента "%s"');
+define('ERR_CONTENT_TYPE', 'Неверный тип контента "%s"');
 
 define('errItemWithSameName', 'Элемент с именем "%s" уже существует.');
 
@@ -337,10 +337,10 @@ define('admUsersCreate', 'Создать пользователя');
 define('admUsersAdded', 'Добавлена учетная запись');
 
 define('admPagesMove', 'Переместить ветку');
-define('admPagesRoot', 'КОРЕНЬ');
-define('admPagesContentDefault', 'По умолчанию');
-define('admPagesContentList', 'Список подразделов');
-define('admPagesContentURL', 'URL');
+define('ADM_PAGES_ROOT', 'КОРЕНЬ');
+define('ADM_PAGES_CONTENT_DEFAULT', 'По умолчанию');
+define('ADM_PAGES_CONTENT_LIST', 'Список подразделов');
+define('ADM_PAGES_CONTENT_URL', 'URL');
 define('admPagesThisURL', 'URL этой страницы');
 define('admPagesID', 'ID страницы');
 define('admPagesName', 'Имя страницы');
