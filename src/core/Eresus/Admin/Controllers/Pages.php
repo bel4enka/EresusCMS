@@ -90,26 +90,34 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     /**
      * Функция перемещает страницу вверх в списке
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    private function moveUp()
+    private function moveUp(Request $request)
     {
-        /** @var Eresus_Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $item = $sections->get(arg('id', 'int'));
-        $this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
-        $item = $sections->get(arg('id', 'int'));
-        if ($item['position'] > 0)
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Section $section */
+        $section = $em->find('CmsBundle:Section', $request->query->get('id'));
+        if ($section->position > 0)
         {
-            $temp = $sections->get("(`owner`='".$item['owner']."') AND (`position`='".
-                ($item['position']-1)."')");
-            if (count($temp))
+            $q = $em->createQuery(
+                'SELECT s FROM CmsBundle:Section s ' .
+                'WHERE s.parent = :parent AND s.position < :position ' .
+                'ORDER BY s.position DESC'
+            );
+            $q->setParameter('parent', $section->parent);
+            $q->setParameter('position', $section->position);
+            $q->setMaxResults(1);
+            /** @var Section $swap */
+            $swap = $q->getOneOrNullResult();
+            if (null !== $swap)
             {
-                $temp = $temp[0];
-                $item['position']--;
-                $temp['position']++;
-                $sections->update($item);
-                $sections->update($temp);
+                $pos = $section->position;
+                $section->position = $swap->position;
+                $swap->position = $pos;
+                $em->flush();
             }
         }
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
@@ -117,27 +125,33 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
 
     /**
      * Функция перемещает страницу вниз в списке
+     *
+     * @param Request $request
+     *
      * @return Response
      */
-    private function moveDown()
+    private function moveDown(Request $request)
     {
-        /** @var Eresus_Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $item = $sections->get(arg('id', 'int'));
-        $this->dbReorderItems('pages', "`owner`='".$item['owner']."'");
-        $item = $sections->get(arg('id', 'int'));
-        if ($item['position'] < count($sections->children($item['owner'])))
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Section $section */
+        $section = $em->find('CmsBundle:Section', $request->query->get('id'));
+        $q = $em->createQuery(
+            'SELECT s FROM CmsBundle:Section s ' .
+            'WHERE s.parent = :parent AND s.position > :position ' .
+            'ORDER BY s.position ASC'
+        );
+        $q->setParameter('parent', $section->parent);
+        $q->setParameter('position', $section->position);
+        $q->setMaxResults(1);
+        /** @var Section $swap */
+        $swap = $q->getOneOrNullResult();
+        if (null !== $swap)
         {
-            $temp = $sections->get("(`owner`='".$item['owner']."') AND (`position`='".
-                ($item['position']+1)."')");
-            if ($temp)
-            {
-                $temp = $temp[0];
-                $item['position']++;
-                $temp['position']--;
-                $sections->update($item);
-                $sections->update($temp);
-            }
+            $pos = $section->position;
+            $section->position = $swap->position;
+            $swap->position = $pos;
+            $em->flush();
         }
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
@@ -412,13 +426,13 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         }
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
-     * ???
+     * Возвращает дерево разделов
+     *
      * @return string
      */
-    function sectionIndex()
+    private function sectionIndex()
     {
         $root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
         $this->cache['index_controls'] =
@@ -446,7 +460,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $result = $table->render();
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает разметку интерфейса или готовый ответ
@@ -463,10 +476,10 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
             switch ($request->get('action'))
             {
                 case 'up':
-                    $this->moveUp();
+                    $result = $this->moveUp($request);
                     break;
                 case 'down':
-                    $this->moveDown();
+                    $result = $this->moveDown($request);
                     break;
                 case 'create':
                     $result = $this->create($request);
