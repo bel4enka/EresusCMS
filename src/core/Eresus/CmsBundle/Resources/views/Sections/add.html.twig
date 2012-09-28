@@ -6,7 +6,8 @@
         <td>
             <form action="admin.php" method="post" {{ form_enctype(form) }}>
                 <input type="hidden" name="mod" value="pages">
-                <input type="hidden" name="id" value="{{ form.vars.value.id }}">
+                <input type="hidden" name="action" value="create">
+                <input type="hidden" name="owner" value="{{ ownerId }}">
                 {{ form_widget(form) }}
                 <div class="ui-button-box">
                     <button type="submit">Создать</button>

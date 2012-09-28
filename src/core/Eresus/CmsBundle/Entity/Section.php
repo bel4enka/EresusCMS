@@ -30,15 +30,17 @@
 
 namespace Eresus\CmsBundle\Entity;
 
-use Eresus\ORMBundle\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Eresus\ORMBundle\AbstractEntity;
 
 /**
  * Раздел сайта
  *
  * @property int       $id
  * @property string    $name
- * @property int       $owner
+ * @property Section   $parent
  * @property string    $title
  * @property string    $caption
  * @property string    $description
@@ -54,6 +56,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @property array     $options
  * @property \DateTime $created
  * @property \DateTime $updated
+ * @property Section[] $children
  *
  * @package Eresus
  * @since 3.01
@@ -87,11 +90,12 @@ class Section extends AbstractEntity
     /**
      * Родитель
      *
-     * @var int
+     * @var Section
      *
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Section", inversedBy="children")
+     * @ORM\JoinColumn(name="owner", referencedColumnName="id")
      */
-    protected $owner;
+    protected $parent;
 
     /**
      * Заголовок
@@ -117,6 +121,7 @@ class Section extends AbstractEntity
      * @var string
      *
      * @ORM\Column(type="text")
+     * @Assert\NotNull()
      */
     protected $description;
 
@@ -227,5 +232,20 @@ class Section extends AbstractEntity
      * @ORM\Column(type="datetime")
      */
     protected $updated;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="parent")
+     */
+    protected $children;
+
+    /**
+     * Конструктор
+     */
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 }
 

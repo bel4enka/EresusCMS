@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Eresus\CmsBundle\Form\DataTransformer\OptionsTransformer;
+use Eresus\CmsBundle\Form\DataTransformer\NullToStringTransformer;
 use Eresus\CmsBundle\Entity\Section;
 
 /**
@@ -269,63 +270,62 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      *
      * @param Request $request
      *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
      * @return Response|string
      */
     private function create(Request $request)
     {
         $section = new Section();
-        $section->owner = $request->query->get('owner');
+        $section->description = '';
+        $section->keywords = '';
+        $section->hint = '';
+        $section->content = '';
         $section->active = true;
         $section->visible = true;
         $section->access = GUEST;
         $section->created = new DateTime();
         $section->updated = new DateTime();
 
-        $builder = $this->createFormBuilder($section);
-        $builder
-            ->add('name', 'text', array('label'  => 'Имя'))
-            ->add('title', 'text', array('label'  => 'Заголовок'))
-            ->add('caption', 'text', array('label'  => 'Пункт меню'))
-            ->add('hint', 'text', array('label'  => 'Подсказка', 'required' => false))
-            ->add('description', 'text', array('label'  => 'Описание', 'required' => false))
-            ->add('keywords', 'text', array('label'  => 'Ключевые слова', 'required' => false))
-            ->add('template', 'choice', array('label'  => 'Шаблон',
-            'choices' => $this->loadTemplates()))
-            ->add('type', 'choice', array('label'  => 'Тип раздела',
-            'choices' => $this->loadContentTypes()))
-            ->add('active', 'checkbox', array('label'  => 'Включить'))
-            ->add('visible', 'checkbox', array('label'  => 'Показывать в меню'))
-            ->add('access', 'choice', array('label'  => 'Уровень доступа','choices' => array(
-            ROOT => ACCESSLEVEL1,
-            ADMIN => ACCESSLEVEL2,
-            EDITOR => ACCESSLEVEL3,
-            USER => ACCESSLEVEL4,
-            GUEST => ACCESSLEVEL5
-        )))
-            ->add('position', 'integer', array('label'  => 'Порядковый номер'))
-            ->add($builder->create('options', 'textarea',
-            array('label'  => 'Опции', 'required' => false))
-            ->addModelTransformer(new OptionsTransformer()))
-            ->add('created', 'datetime', array('label'  => 'Дата создания',
-            'widget' => 'single_text', 'format' => IntlDateFormatter::SHORT))
-            ->add('updated', 'datetime', array('label'  => 'Дата изменения',
-            'widget' => 'single_text', 'format' => IntlDateFormatter::SHORT));
-        $form = $builder->getForm();
+        $form = $this->getForm($section);
 
         if ($request->getMethod() == 'POST')
         {
             $form->bind($request);
             if ($form->isValid())
             {
+                $ownerId = $request->request->get('owner');
+                if (0 == $ownerId)
+                {
+                    $parent = null;
+                }
+                else
+                {
+                    $parent = $this->getDoctrine()->getManager()
+                        ->find('CmsBundle:Section', $request->request->get('owner'));
+                    if (null === $parent)
+                    {
+                        throw $this->createNotFoundException();
+                    }
+                }
+                $section->parent = $parent;
+                /** @var \Doctrine\ORM\EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($section);
+
+                $q = $em->createQuery(
+                    'SELECT MAX(s.position) FROM CmsBundle:Section s WHERE s.parent = :parent');
+                $q->setParameter('parent', $parent);
+                $max = $q->getSingleResult();
+                $section->position = $max[1] + 1;
+
                 $em->flush();
                 return $this->redirect(Eresus_Kernel::app()->getPage()->url());
             }
         }
 
         return $this->renderView('CmsBundle:Sections:add.html.twig',
-            array('form' => $form->createView()));
+            array('form' => $form->createView(), 'ownerId' => $request->get('owner')));
     }
 
     /**
@@ -340,39 +340,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Entity\Section $section */
         $section = $em->find('CmsBundle:Section', $request->get('id'));
-
-        $isMainPage = $section->name == 'main' && $section->owner == 0;
-
-        $builder = $this->createFormBuilder($section);
-        $builder
-            ->add('name', 'text', array('label'  => 'Имя', 'read_only' => $isMainPage))
-            ->add('title', 'text', array('label'  => 'Заголовок'))
-            ->add('caption', 'text', array('label'  => 'Пункт меню'))
-            ->add('hint', 'text', array('label'  => 'Подсказка', 'required' => false))
-            ->add('description', 'text', array('label'  => 'Описание', 'required' => false))
-            ->add('keywords', 'text', array('label'  => 'Ключевые слова', 'required' => false))
-            ->add('template', 'choice', array('label'  => 'Шаблон',
-                'choices' => $this->loadTemplates()))
-            ->add('type', 'choice', array('label'  => 'Тип раздела',
-                'choices' => $this->loadContentTypes()))
-            ->add('active', 'checkbox', array('label'  => 'Включить'))
-            ->add('visible', 'checkbox', array('label'  => 'Показывать в меню'))
-            ->add('access', 'choice', array('label'  => 'Уровень доступа','choices' => array(
-                ROOT => ACCESSLEVEL1,
-                ADMIN => ACCESSLEVEL2,
-                EDITOR => ACCESSLEVEL3,
-                USER => ACCESSLEVEL4,
-                GUEST => ACCESSLEVEL5
-            )))
-            ->add('position', 'integer', array('label'  => 'Порядковый номер'))
-            ->add($builder->create('options', 'textarea',
-                array('label'  => 'Опции', 'required' => false))
-                ->addModelTransformer(new OptionsTransformer()))
-            ->add('created', 'datetime', array('label'  => 'Дата создания',
-                'widget' => 'single_text', 'format' => IntlDateFormatter::SHORT))
-            ->add('updated', 'datetime', array('label'  => 'Дата изменения',
-                'widget' => 'single_text', 'format' => IntlDateFormatter::SHORT));
-        $form = $builder->getForm();
+        $form = $this->getForm($section);
 
         if ($request->getMethod() == 'POST')
         {
@@ -474,7 +442,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
         $table->addRow(array(admPagesRoot, '', '', '', array(Eresus_Kernel::app()->getPage()->
                 control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
-        $table->addRows($this->sectionIndexBranch(0, 1));
+        $table->addRows($this->sectionIndexBranch(null, 1));
         $result = $table->render();
         return $result;
     }
@@ -489,47 +457,38 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     public function adminRender(Request $request)
     {
+        $result = '';
         if (UserRights($this->access))
         {
-            $result = '';
-            if ($request->get('action'))
+            switch ($request->get('action'))
             {
-                switch ($request->get('action'))
-                {
-                    case 'up':
-                        $this->moveUp();
-                        break;
-                    case 'down':
-                        $this->moveDown();
-                        break;
-                    case 'create':
-                        $result = $this->create($request);
-                        break;
-                    case 'insert':
-                        $this->insert();
-                        break;
-                    case 'move':
-                        $result = $this->move();
-                        break;
-                    case 'delete':
-                        $this->delete($request);
-                        break;
-                }
+                case 'up':
+                    $this->moveUp();
+                    break;
+                case 'down':
+                    $this->moveDown();
+                    break;
+                case 'create':
+                    $result = $this->create($request);
+                    break;
+                case 'move':
+                    $result = $this->move();
+                    break;
+                case 'delete':
+                    $this->delete($request);
+                    break;
+                default:
+                    if ($request->get('id') != null)
+                    {
+                        $result = $this->edit($request);
+                    }
+                    else
+                    {
+                        $result = $this->sectionIndex();
+                    }
             }
-            elseif ($request->get('id') != null)
-            {
-                $result = $this->edit($request);
-            }
-            else
-            {
-                $result = $this->sectionIndex();
-            }
-            return $result;
         }
-        else
-        {
-            return '';
-        }
+        return $result;
     }
 
     /**
@@ -548,5 +507,63 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
             Eresus_CMS::getLegacyKernel()->db->
                 update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
         }
+    }
+
+    /**
+     * Возвращает форму добавления/изменения
+     *
+     * @param Section $section  раздел сайта
+     *
+     * @return Symfony\Component\Form\Form
+     *
+     * @since 3.01
+     */
+    private function getForm(Section $section)
+    {
+        $isMainPage = 'main' == $section->name && null === $section->parent;
+
+        $null2string = new NullToStringTransformer();
+
+        $builder = $this->createFormBuilder($section);
+        $builder
+            ->add('name', 'text', array('label'  => 'Имя', 'read_only' => $isMainPage))
+            ->add('title', 'text', array('label'  => 'Заголовок'))
+            ->add('caption', 'text', array('label'  => 'Пункт меню'))
+            ->add($builder->create('hint', 'text', array('label'  => 'Подсказка',
+                'required' => false))->addModelTransformer($null2string))
+            ->add($builder->create('description', 'text',
+                array('label'  => 'Описание', 'required' => false))
+                ->addModelTransformer($null2string))
+            ->add($builder->create('keywords', 'text',
+                array('label'  => 'Ключевые слова', 'required' => false))
+                ->addModelTransformer($null2string))
+            ->add('template', 'choice', array('label'  => 'Шаблон',
+                'choices' => $this->loadTemplates()))
+            ->add('type', 'choice', array('label'  => 'Тип раздела',
+                'choices' => $this->loadContentTypes()))
+            ->add('active', 'checkbox', array('label'  => 'Включить'))
+            ->add('visible', 'checkbox', array('label'  => 'Показывать в меню'))
+            ->add('access', 'choice', array('label'  => 'Уровень доступа',
+                'choices' => array(
+                    ROOT => ACCESSLEVEL1,
+                    ADMIN => ACCESSLEVEL2,
+                    EDITOR => ACCESSLEVEL3,
+                    USER => ACCESSLEVEL4,
+                    GUEST => ACCESSLEVEL5
+                )));
+        if ($section->id)
+        {
+            $builder->add('position', 'integer', array('label'  => 'Порядковый номер'));
+        }
+        $builder
+            ->add($builder->create('options', 'textarea',
+                array('label'  => 'Опции', 'required' => false))
+                ->addModelTransformer(new OptionsTransformer()))
+            ->add('created', 'datetime', array('label'  => 'Дата создания',
+            'widget' => 'single_text', 'format' => IntlDateFormatter::SHORT))
+            ->add('updated', 'datetime', array('label'  => 'Дата изменения',
+            'widget' => 'single_text', 'format' => IntlDateFormatter::SHORT));
+
+        return $builder->getForm();
     }
 }

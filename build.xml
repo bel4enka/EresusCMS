@@ -65,7 +65,7 @@
 
         <property environment="env" />
 
-		<if>
+        <if>
             <available file="composer" property="." filepath="${env.PATH}" />
             <then>
                 <exec command="composer update" passthru="true" />
@@ -90,7 +90,7 @@
                     </else>
                 </if>
             </else>
-		</if>
+        </if>
 
 	</target>
 
