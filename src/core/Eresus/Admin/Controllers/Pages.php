@@ -55,6 +55,49 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     private $cache;
 
     /**
+     * Возвращает разметку интерфейса или готовый ответ
+     *
+     * @param Request $request
+     *
+     * @return Response|string
+     */
+    public function adminRender(Request $request)
+    {
+        $result = '';
+        if (UserRights($this->access))
+        {
+            switch ($request->get('action'))
+            {
+                case 'up':
+                    $result = $this->moveUp($request);
+                    break;
+                case 'down':
+                    $result = $this->moveDown($request);
+                    break;
+                case 'create':
+                    $result = $this->create($request);
+                    break;
+                case 'move':
+                    $result = $this->move();
+                    break;
+                case 'delete':
+                    $this->delete($request);
+                    break;
+                default:
+                    if ($request->get('id') != null)
+                    {
+                        $result = $this->edit($request);
+                    }
+                    else
+                    {
+                        $result = $this->sectionIndex();
+                    }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * ???
      * @param $skip
      * @param $owner
@@ -370,7 +413,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      *
      * @return  string  Отрисованная часть таблицы
      */
-    function sectionIndexBranch($owner=0, $level=0)
+    private function sectionIndexBranch($owner = 0, $level = 0)
     {
         /** @var Eresus_AdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
@@ -443,49 +486,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                 control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
         $table->addRows($this->sectionIndexBranch(null, 1));
         $result = $table->render();
-        return $result;
-    }
-
-    /**
-     * Возвращает разметку интерфейса или готовый ответ
-     *
-     * @param Request $request
-     *
-     * @return Response|string
-     */
-    public function adminRender(Request $request)
-    {
-        $result = '';
-        if (UserRights($this->access))
-        {
-            switch ($request->get('action'))
-            {
-                case 'up':
-                    $result = $this->moveUp($request);
-                    break;
-                case 'down':
-                    $result = $this->moveDown($request);
-                    break;
-                case 'create':
-                    $result = $this->create($request);
-                    break;
-                case 'move':
-                    $result = $this->move();
-                    break;
-                case 'delete':
-                    $this->delete($request);
-                    break;
-                default:
-                    if ($request->get('id') != null)
-                    {
-                        $result = $this->edit($request);
-                    }
-                    else
-                    {
-                        $result = $this->sectionIndex();
-                    }
-            }
-        }
         return $result;
     }
 
