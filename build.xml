@@ -63,8 +63,34 @@
 	-->
 	<target name="vendors" description="Fetch 3rd party components">
 
-		<exec command="git submodule init" checkreturn="true" logoutput="true" />
-		<exec command="git submodule update" checkreturn="true" logoutput="true" />
+		<property environment="env" />
+
+		<if>
+			<available file="composer" property="." filepath="${env.PATH}" />
+			<then>
+				<exec command="composer update" passthru="true" />
+			</then>
+
+			<else>
+
+				<if>
+					<available file="composer.phar" property="." />
+
+					<then>
+						<exec command="php composer.phar update" passthru="true" />
+					</then>
+
+					<else>
+						<echo message="download" />
+						<httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
+							filename="composer.php"/>
+						<exec command="php composer.php" passthru="true" />
+						<delete file="composer.php" />
+						<exec command="php composer.phar install" passthru="true" />
+					</else>
+				</if>
+			</else>
+		</if>
 
 	</target>
 
@@ -193,7 +219,7 @@
 
 		<!-- Ботобор -->
 		<copy todir="${build.dir}/core/botobor">
-			<fileset dir="vendor/Botobor/src">
+			<fileset dir="vendor/mekras/botobor/src">
 				<include name="**" />
 			</fileset>
 		</copy>
@@ -203,7 +229,7 @@
 			<fileset dir="3rdparty/jquery">
 				<include name="**" />
 			</fileset>
-			<filelist dir="vendor/jquery-cookie" files="jquery.cookie.js" />
+			<filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
 		</copy>
 
 		<!-- Modernizr -->

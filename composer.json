@@ -1,0 +1,38 @@
+{
+	"require":
+	{
+		"mekras/botobor" : "0.3.*",
+		"carhartl/jquery-cookie" : "1.1"
+	},
+	"repositories":
+	[
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "mekras/botobor",
+                "version": "0.3.0",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/mekras/botobor",
+                    "reference": "v0.3.0"
+                }
+            }
+        },
+		{
+			"type": "package",
+			"package":
+			{
+				"name": "carhartl/jquery-cookie",
+				"version": "1.1",
+				"source":
+				{
+					"type": "git",
+					"url": "https://github.com/carhartl/jquery-cookie",
+					"reference": "v1.1"
+				}
+			}
+		}
+	]
+}
