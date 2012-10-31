@@ -78,7 +78,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                     $result = $this->create($request);
                     break;
                 case 'move':
-                    $result = $this->move();
+                    $result = $this->move($request);
                     break;
                 case 'delete':
                     $this->delete($request);
@@ -202,28 +202,36 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     /**
      * Перемещает страницу из одной ветки в другую
      *
+     * @param Request $request
+     *
      * @return Response|string
      */
-    private function move()
+    private function move(Request $request)
     {
-        /** @var Eresus_Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $item = $sections->get(arg('id', 'int'));
-        if (!is_null(arg('to')))
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Section $section */
+        $section = $em->find('CmsBundle:Section', $request->get('id'));
+
+        if ($request->getMethod() == 'POST')
         {
-            $item['owner'] = arg('to', 'int');
-            $item['position'] = count($sections->children($item['owner']));
+            $section->parent = $request->request->get('to')
+                ? $em->find('CmsBundle:Section', $request->request->get('to'))
+                : null;
+
+            $q = $em->createQuery(
+                'SELECT MAX(s.position) FROM CmsBundle:Section s WHERE s.parent = :parent');
+            $q->setParameter('parent', $section->parent);
+            $max = $q->getSingleResult();
+            $section->position = $max[1] + 1;
 
             /* Проверяем, нет ли в разделе назначения раздела с таким же именем */
-            $q = DB::createSelectQuery();
-            $e = $q->expr;
-            $q->select($q->alias($e->count('id'), 'count'))
-                ->from('pages')
-                ->where($e->lAnd(
-                    $e->eq('owner', $q->bindValue($item['owner'], null, PDO::PARAM_INT)),
-                    $e->eq('name', $q->bindValue($item['name']))
-                ));
-            $count = DB::fetch($q);
+            $q = $em->createQuery(
+                'SELECT COUNT(s.id) count FROM CmsBundle:Section s ' .
+                'WHERE s.parent = :parent AND name = :name');
+            $q->setParameter('parent', $section->parent);
+            $q->setParameter('name', $section->name);
+            var_dump($q->getResult()); die;
             if ($count['count'])
             {
                 ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
@@ -235,7 +243,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         }
         else
         {
-            $select = $this->selectList($item['id']);
+            $select = $this->selectList($section->id);
             array_unshift($select[0], 0);
             array_unshift($select[1], ADM_PAGES_ROOT);
             $form = array(
