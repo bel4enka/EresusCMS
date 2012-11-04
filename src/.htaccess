@@ -53,10 +53,6 @@ AddDefaultCharset Off
 
 	### ДРУГИЕ ПЕРЕАДРЕСОВКИ ###
 
-	# Включаем gzip-сжатие CSS и JavaScript
-	RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [last]
-	RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [last]
-
 	# Отключаем перехват запросов в следующих директориях
 	RewriteRule ^(bundles|core/js|admin/themes|admin/logos|ext|data|style)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
