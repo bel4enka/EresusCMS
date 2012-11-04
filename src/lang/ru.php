@@ -215,7 +215,7 @@ define('ADM_NA', '(не задано)');
 define('admPlugin', 'Плагин');
 define('admPlugins', 'Модули расширения');
 define('admSettings', 'Настройки');
-define('admContent', 'Контент');
+define('ADM_CONTENT', 'Наполнение');
 define('admControls', 'Управление');
 define('admConfiguration', 'Конфигурация');
 define('admStructure', 'Разделы сайта');

@@ -1,0 +1,17 @@
+.page__header
+{
+    background: #cddef3;
+    border: solid 1px #99bbe8;
+    box-shadow:
+        0 1px 0 0 white inset,
+        0 1px 3px 0 rgba(255, 255, 255, 0.898) inset,
+        0 15px 1px 0 #D5E4F5 inset,
+        0 16px 0 0 #9AB8EC inset,
+        0 23px 4px 0 #B8CFEE inset;
+    font-size: 12px;
+    height: 32px;
+    line-height: 16px;
+    margin-bottom: 5px;
+    padding: 0 10px;
+    position: relative;
+}

@@ -1,0 +1,9 @@
+.message_type_info
+{
+	background-color: #cddef3;
+}
+
+.message_type_info:before
+{
+    background-position: -96px 0;
+}

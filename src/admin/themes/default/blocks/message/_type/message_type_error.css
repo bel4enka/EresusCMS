@@ -1,0 +1,9 @@
+.message_type_error
+{
+    background-color: #ffcabf;
+}
+
+.message_type_error:before
+{
+    background-position: -32px 0;
+}

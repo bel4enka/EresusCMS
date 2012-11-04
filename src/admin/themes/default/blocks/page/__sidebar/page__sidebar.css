@@ -1,0 +1,6 @@
+.page__sidebar
+{
+    position: absolute;
+    left: 5px;
+    width: 200px;
+}

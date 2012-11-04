@@ -1,0 +1,9 @@
+.message_type_warning
+{
+	background-color: #ffe87f;
+}
+
+.message_type_warning:before
+{
+    background-position: -64px 0;
+}
