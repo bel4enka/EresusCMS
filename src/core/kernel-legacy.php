@@ -30,6 +30,7 @@
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
+use Eresus\CmsBundle\Extensions\Registry;
 
 /**
  * Название системы
@@ -1019,7 +1020,7 @@ class Eresus
 
 	/**
 	 * Плагины
-	 * @var Eresus_Extensions_Registry
+	 * @var Registry
 	 */
 	public $plugins;
 
@@ -1302,7 +1303,7 @@ class Eresus
 	 */
 	function init_plugins()
 	{
-		$this->plugins = new Eresus_Extensions_Registry;
+		$this->plugins = new Registry;
 		$this->plugins->init();
 	}
 
