@@ -66,7 +66,7 @@
 Коннекторы сторонних компонентов
 --------------------------------
 
-- Eresus_Extensions_VendorRegistry
+- Eresus\\CmsBundle\\Extensions\\VendorRegistry
 - Eresus\\CmsBundle\\Extensions\\Connector
 - EditAreaConnector
 - TinyMCEConnector
