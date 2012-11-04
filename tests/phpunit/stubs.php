@@ -33,8 +33,6 @@
  * $Id$
  */
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-
 define('filesRoot', '/home/exmaple.org/');
 define('httpRoot', 'http:///exmaple.org/');
 

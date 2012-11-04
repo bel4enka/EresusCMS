@@ -89,7 +89,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_Kernel::initExceptionHandling
      */
-    public function test_initExceptionHandling()
+    public function testInitExceptionHandling()
     {
         $kernel = $this->getMockBuilder('Eresus_Kernel')->disableOriginalConstructor()->getMock();
 
@@ -115,7 +115,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_Kernel::errorHandler
      */
-    public function test_errorHandler_at()
+    public function testErrorHandlerAt()
     {
         @Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
     }
@@ -123,7 +123,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_Kernel::errorHandler
      */
-    public function test_errorHandler_NOTICE()
+    public function testErrorHandlerNotice()
     {
         Eresus_Kernel::errorHandler(E_NOTICE, 'Notice', '/some/file', 123);
     }
@@ -132,7 +132,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
      * @covers Eresus_Kernel::errorHandler
      * @expectedException ErrorException
      */
-    public function test_errorHandler_WARNING()
+    public function testErrorHandlerWarning()
     {
         Eresus_Kernel::errorHandler(E_WARNING, 'Warning', '/some/file', 123);
     }
@@ -141,7 +141,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
      * @covers Eresus_Kernel::errorHandler
      * @expectedException ErrorException
      */
-    public function test_errorHandler_ERROR()
+    public function testErrorHandlerError()
     {
         Eresus_Kernel::errorHandler(E_ERROR, 'Error', '/some/file', 123);
     }
@@ -166,7 +166,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
      *
      * @covers Eresus_Kernel::isCGI
      */
-    public function test_lint_isCGI()
+    public function testIsCgi()
     {
         Eresus_Kernel::isCGI();
         $this->assertTrue(true);
@@ -177,7 +177,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
      *
      * @covers Eresus_Kernel::isCLI
      */
-    public function test_lint_isCLI()
+    public function testIsCli()
     {
         Eresus_Kernel::isCLI();
         $this->assertTrue(true);
@@ -188,7 +188,7 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
      *
      * @covers Eresus_Kernel::isModule
      */
-    public function test_lint_isModule()
+    public function testIsModule()
     {
         Eresus_Kernel::isModule();
         $this->assertTrue(true);

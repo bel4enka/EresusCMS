@@ -39,41 +39,44 @@ require_once TESTS_SRC_DIR . '/core/Eresus/Kernel.php';
  */
 class Eresus_Extensions_RegistryTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Eresus_Extensions_Registry::autoload
-	 */
-	public function test_autoload()
-	{
-		$plugins = $this->getMock('Eresus_Extensions_Registry', array('load'));
-		$plugins->expects($this->any())->method('load')->
-			will($this->returnCallback(function ($a) { return 'foo' == $a;}));
+    /**
+     * @covers Eresus_Extensions_Registry::autoload
+     */
+    public function testAutoload()
+    {
+        $plugins = $this->getMock('Eresus_Extensions_Registry', array('load'));
+        $plugins->expects($this->any())->method('load')->
+            will($this->returnCallback(
+                function ($a)
+                {
+                    return 'foo' == $a;
+                }
+            )
+        );
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->any())->method('getFsRoot')->
-			will($this->returnValue(TESTS_FIXT_DIR . '/core/Eresus_Extensions_Registry/'));
-		Eresus_Kernel::sc()->set('app', $app);
+        $app = $this->getMock('stdClass', array('getFsRoot'));
+        $app->expects($this->any())->method('getFsRoot')->
+            will($this->returnValue(TESTS_FIXT_DIR . '/core/Eresus_Extensions_Registry/'));
+        Eresus_Kernel::sc()->set('app', $app);
 
-		// Нет такого файла
-		$this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
+        // Нет такого файла
+        $this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
 
-		// Файл есть, но плагин не активирован
-		$this->assertFalse($plugins->autoload('Bar_Foo_Baz'));
+        // Файл есть, но плагин не активирован
+        $this->assertFalse($plugins->autoload('Bar_Foo_Baz'));
 
-		// Файл есть и плагин активирован
-		$this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
-		$this->assertTrue(class_exists('Foo_Bar_Baz', false));
-	}
-	//-----------------------------------------------------------------------------
+        // Файл есть и плагин активирован
+        $this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
+        $this->assertTrue(class_exists('Foo_Bar_Baz', false));
+    }
 
-	/**
-	 * @covers Eresus_Kernel::autoload
-	 * @expectedException LogicException
-	 * /
-	public function test_autoload_failed()
-	{
-		$this->assertFalse(Eresus_Kernel::autoload('Eresus_Unexistent'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/* */
+    /**
+     * @covers Eresus_Kernel::autoload
+     * @expectedException LogicException
+     * /
+    public function test_autoload_failed()
+    {
+        $this->assertFalse(Eresus_Kernel::autoload('Eresus_Unexistent'));
+    }*/
 }
+

@@ -76,7 +76,7 @@ ini_set('track_errors', false);
 /**
  * @global Eresus_Kernel $kernel
  */
-//TODO Заменить на prod, для dev сдлеать index.dev.php
+//TODO Заменить на prod, для dev сделать index.dev.php
 $kernel = new Eresus_Kernel('dev', true);
 
 // Восстанавливаем состояние вывода ошибок
