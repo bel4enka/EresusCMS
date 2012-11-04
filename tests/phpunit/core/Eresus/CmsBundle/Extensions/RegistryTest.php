@@ -29,22 +29,24 @@
  * @subpackage Tests
  */
 
-require_once __DIR__ . '/../../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/Eresus/Extensions/Registry.php';
-require_once TESTS_SRC_DIR . '/core/Eresus/Kernel.php';
+namespace Tests\Eresus\CmsBundle\Extensions;
+
+use Eresus_Kernel;
+
+require_once __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_Extensions_RegistryTest extends PHPUnit_Framework_TestCase
+class RegistryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers Eresus_Extensions_Registry::autoload
+     * @covers \Eresus\CmsBundle\Extensions\Registry::autoload
      */
     public function testAutoload()
     {
-        $plugins = $this->getMock('Eresus_Extensions_Registry', array('load'));
+        $plugins = $this->getMock('Eresus\CmsBundle\Extensions\Registry', array('load'));
         $plugins->expects($this->any())->method('load')->
             will($this->returnCallback(
                 function ($a)
@@ -56,7 +58,7 @@ class Eresus_Extensions_RegistryTest extends PHPUnit_Framework_TestCase
 
         $app = $this->getMock('stdClass', array('getFsRoot'));
         $app->expects($this->any())->method('getFsRoot')->
-            will($this->returnValue(TESTS_FIXT_DIR . '/core/Eresus_Extensions_Registry/'));
+            will($this->returnValue(TESTS_FIXT_DIR . '/core/Eresus/CmsBundle/Extensions/Registry/'));
         Eresus_Kernel::sc()->set('app', $app);
 
         // Нет такого файла
@@ -69,14 +71,5 @@ class Eresus_Extensions_RegistryTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
         $this->assertTrue(class_exists('Foo_Bar_Baz', false));
     }
-
-    /**
-     * @covers Eresus_Kernel::autoload
-     * @expectedException LogicException
-     * /
-    public function test_autoload_failed()
-    {
-        $this->assertFalse(Eresus_Kernel::autoload('Eresus_Unexistent'));
-    }*/
 }
 

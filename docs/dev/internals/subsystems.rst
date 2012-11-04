@@ -59,7 +59,7 @@
 Подсистема расширения функционала
 ---------------------------------
 
-- Eresus_Extensions_Registry
+- Eresus\\CmsBundle\\Extensions\\Registry
 - Eresus\\CmsBundle\\Extensions\\Plugin
 - Eresus\\CmsBundle\\Extensions\\ContentPlugin
 
