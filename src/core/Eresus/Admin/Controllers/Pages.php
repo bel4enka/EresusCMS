@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Eresus\CmsBundle\Form\DataTransformer\OptionsTransformer;
 use Eresus\CmsBundle\Form\DataTransformer\NullToStringTransformer;
 use Eresus\CmsBundle\Entity\Section;
+use Eresus\CmsBundle\Extensions\ContentPlugin;
 
 /**
  * Управление разделами сайта
@@ -231,7 +232,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                 'WHERE s.parent = :parent AND name = :name');
             $q->setParameter('parent', $section->parent);
             $q->setParameter('name', $section->name);
-            var_dump($q->getResult()); die;
+            var_dump($q->getResult()); die; // TODO !!!
             if ($count['count'])
             {
                 ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
@@ -309,7 +310,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         {
             foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
             {
-                if ($plugin instanceof Eresus_Extensions_ContentPlugin)
+                if ($plugin instanceof ContentPlugin)
                 {
                     $result[$plugin->name] = $plugin->title;
                 }

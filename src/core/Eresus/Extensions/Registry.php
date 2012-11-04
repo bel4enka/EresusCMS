@@ -30,6 +30,8 @@
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\Extensions\Plugin;
+use Eresus\CmsBundle\Extensions\ContentPlugin;
 
 /**
  * Работа с плагинами
@@ -215,7 +217,7 @@ class Eresus_Extensions_Registry
 	 *
 	 * @param string $name  Имя плагина
 	 *
-	 * @return Eresus_Extensions_Plugin|bool  Экземпляр плагина или false
+	 * @return Plugin|bool  Экземпляр плагина или false
 	 *
 	 * @since 2.10
 	 */
@@ -279,7 +281,7 @@ class Eresus_Extensions_Registry
 		{
 
 			case 'default':
-				$plugin = new Eresus_Extensions_ContentPlugin;
+				$plugin = new ContentPlugin;
 				$result = $plugin->clientRenderContent();
 				break;
 

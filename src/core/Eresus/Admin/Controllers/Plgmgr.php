@@ -32,6 +32,7 @@
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\Extensions\Plugin;
 
 /**
  *
@@ -191,7 +192,7 @@ class Eresus_Admin_Controllers_Plgmgr
 				catch (RuntimeException $e)
 				{
 					$errors []= $e->getMessage();
-					$info = new Eresus_Extensions_Plugin();
+					$info = new Plugin();
 					$info->title = $info->name = basename($file, '.php');
 					$info->version = '';
 				}

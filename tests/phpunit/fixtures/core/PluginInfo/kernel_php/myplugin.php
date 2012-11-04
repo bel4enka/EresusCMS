@@ -1,6 +1,8 @@
 <?php
+use Eresus\CmsBundle\Extensions\Plugin;
 
-class MyPlugin extends Eresus_Extensions_Plugin
+class MyPlugin extends Plugin
 {
-	public $kernel = '3.00';
+    public $kernel = '3.00';
 }
+
