@@ -31,6 +31,7 @@
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Extensions\Registry;
+use Eresus\CmsBundle\Extensions\VendorRegistry;
 
 /**
  * Название системы
@@ -1006,7 +1007,7 @@ class Eresus
 	/**
 	 * Интерфейс к расширениям системы
 	 *
-	 * @var Eresus_Extensions_VendorRegistry
+	 * @var VendorRegistry
 	 */
 	public $extensions;
 
@@ -1282,7 +1283,7 @@ class Eresus
 			include_once($filename);
 		}
 
-		$this->extensions = new Eresus_Extensions_VendorRegistry();
+		$this->extensions = new VendorRegistry();
 	}
 
 	/**
