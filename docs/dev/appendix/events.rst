@@ -4,7 +4,7 @@
 adminOnMenuRender
 -----------------
 
-Генерируется в методе `Eresus_AdminUI::render() <../../api/Eresus/Eresus_AdminUI.html#render>`_. после построения контента страницы.
+Генерируется в методе `AdminUI::render() <../../api/Eresus/CmsBundle/AdminUI.html#render>`_. после построения контента страницы.
 
 clientBeforeSend
 ----------------

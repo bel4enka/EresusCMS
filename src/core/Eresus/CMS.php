@@ -32,6 +32,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Response;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Extensions\Connector;
+use Eresus\CmsBundle\AdminUI;
 
 /**
  * Класс приложения Eresus CMS
@@ -200,7 +201,7 @@ class Eresus_CMS
      */
     protected function runWebAdminUi()
     {
-        $this->page = new Eresus_AdminUI();
+        $this->page = new AdminUI();
         $this->page->setContainer(Eresus_Kernel::sc());
         return $this->page->render();
     }

@@ -33,6 +33,7 @@
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\Plugin;
+use Eresus\CmsBundle\AdminUI;
 
 /**
  *
@@ -228,7 +229,7 @@ class Eresus_Admin_Controllers_Plgmgr
 
 		ksort($data['plugins']);
 
-		/* @var Eresus_AdminUI $page */
+		/* @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
 		$html = $tmpl->compile($data);

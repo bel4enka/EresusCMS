@@ -31,6 +31,7 @@
 // TODO: Проверить, нет ли доступа к внешним директориям
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\AdminUI;
 
 /**
  * Управление темами оформления
@@ -156,7 +157,7 @@ class Eresus_Admin_Controllers_Themes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form);
 		return $result;
@@ -186,7 +187,7 @@ class Eresus_Admin_Controllers_Themes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form, $item);
 		return $result;
@@ -226,7 +227,7 @@ class Eresus_Admin_Controllers_Themes
 		{
 			$items[] = array('filename' => $key, 'description' => $value);
 		}
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderTable($table, $items);
 		return $result;
@@ -365,7 +366,7 @@ class Eresus_Admin_Controllers_Themes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		/* @var Eresus_AdminUI $page */
+		/* @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form);
 		return $result;
@@ -399,7 +400,7 @@ class Eresus_Admin_Controllers_Themes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form, $item);
 		return $result;
@@ -439,7 +440,7 @@ class Eresus_Admin_Controllers_Themes
 		{
 			$items[] = array('filename' => $key, 'description' => $value);
 		}
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderTable($table, $items);
 		return $result;
@@ -554,7 +555,7 @@ class Eresus_Admin_Controllers_Themes
 			),
 			'buttons' => array('ok','cancel'),
 		);
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form);
 		return $result;
@@ -590,7 +591,7 @@ class Eresus_Admin_Controllers_Themes
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
-		/** @var Eresus_AdminUI $page */
+		/** @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form, $item);
 		return $result;
@@ -641,7 +642,7 @@ class Eresus_Admin_Controllers_Themes
 			}
 		}
 		closedir($hnd);
-		/* @var Eresus_AdminUI $page */
+		/* @var AdminUI $page */
 		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderTable($table, $items);
 		return $result;
@@ -703,7 +704,7 @@ class Eresus_Admin_Controllers_Themes
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'std'));
 			$this->tabs['items'][2]['url'] =
 				Eresus_Kernel::app()->getPage()->url(array('id' => '', 'section' => 'css'));
-			/** @var Eresus_AdminUI $page */
+			/** @var AdminUI $page */
 			$page = Eresus_Kernel::app()->getPage();
 			switch (arg('section'))
 			{

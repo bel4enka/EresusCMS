@@ -36,6 +36,7 @@ use Eresus\CmsBundle\HTTP\Request;
 use Eresus_Kernel;
 use Eresus_CMS;
 use Eresus_ClientUI;
+use Eresus\CmsBundle\AdminUI;
 
 /**
  * Базовый класс для плагинов, предоставляющих тип контента
@@ -152,7 +153,7 @@ class ContentPlugin extends Plugin
         {
             return $this->adminUpdate();
         }
-        /** @var \Eresus_AdminUI $page */
+        /** @var AdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
         $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='" . $page->id . "'");
         $form = array(

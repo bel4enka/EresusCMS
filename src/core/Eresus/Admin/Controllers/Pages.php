@@ -35,6 +35,7 @@ use Eresus\CmsBundle\Form\DataTransformer\OptionsTransformer;
 use Eresus\CmsBundle\Form\DataTransformer\NullToStringTransformer;
 use Eresus\CmsBundle\Entity\Section;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
+use Eresus\CmsBundle\AdminUI;
 
 /**
  * Управление разделами сайта
@@ -424,7 +425,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function sectionIndexBranch($owner = null, $level = 0)
     {
-        /** @var Eresus_AdminUI $page */
+        /** @var AdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
         $rootURL = Eresus_CMS::getLegacyKernel()->root;
         $result = array();
@@ -481,7 +482,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function sectionIndex()
     {
-        /** @var Eresus_AdminUI $page */
+        /** @var AdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
         $root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
         $this->cache['index_controls'] =
