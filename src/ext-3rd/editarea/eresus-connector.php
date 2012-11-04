@@ -31,37 +31,39 @@
  * $Id: eresus-connector.php 739 2010-02-06 18:43:28Z mk $
  */
 
+use Eresus\CmsBundle\Extensions\Connector;
+
 /**
  * Класс-коннектор
  *
  * @package Eresus
  */
-class EditAreaConnector extends Eresus_Extensions_Connector
+class EditAreaConnector extends Connector
 {
-	/**
-	 * Обработка поля "syntax" для старых форм
-	 *
-	 * @param Eresus_UI_Admin_ArrayForm  $form
-	 * @param array $field
-	 * @return array
-	 */
-	public function forms_memo_syntax($form, $field)
-	{
-		// Проверяем, не были ли уже выполнены эти действия ранее
-		if (!isset($form->options['editarea']))
-		{
-	    // Подключаем EditArea
-			Eresus_Kernel::app()->getPage()->linkScripts($this->root . 'edit_area_full.js');
+    /**
+     * Обработка поля "syntax" для старых форм
+     *
+     * @param \Eresus_UI_Admin_ArrayForm  $form
+     * @param array $field
+     * @return array
+     */
+    public function forms_memo_syntax($form, $field)
+    {
+        // Проверяем, не были ли уже выполнены эти действия ранее
+        if (!isset($form->options['editarea']))
+        {
+            // Подключаем EditArea
+            Eresus_Kernel::app()->getPage()->linkScripts($this->root . 'edit_area_full.js');
 
-	    $form->options['editarea'] = true;
-		}
+            $form->options['editarea'] = true;
+        }
 
-		if (!$field['id'])
-		{
-			$field['id'] = $form->form['name'] . '_' . $field['name'];
-		}
+        if (!$field['id'])
+        {
+            $field['id'] = $form->form['name'] . '_' . $field['name'];
+        }
 
-		Eresus_Kernel::app()->getPage()->addScripts("
+        Eresus_Kernel::app()->getPage()->addScripts("
 			editAreaLoader.init({
 				id : '{$field['id']}',
 				syntax: '{$field['syntax']}',
@@ -71,7 +73,6 @@ class EditAreaConnector extends Eresus_Extensions_Connector
 			});
 		");
 
-		return $field;
-	}
-	//-----------------------------------------------------------------------------
+        return $field;
+    }
 }

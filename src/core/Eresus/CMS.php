@@ -31,6 +31,7 @@
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Response;
 use Eresus\CmsBundle\HTTP\Request;
+use Eresus\CmsBundle\Extensions\Connector;
 
 /**
  * Класс приложения Eresus CMS
@@ -244,7 +245,7 @@ class Eresus_CMS
             /** @noinspection PhpIncludeInspection */
             include_once $filename;
             $className = $extension.'Connector';
-            /** @var Eresus_Extensions_Connector $connector */
+            /** @var Connector $connector */
             $connector = new $className;
             $connector->proxy();
         }

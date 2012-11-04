@@ -28,80 +28,78 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
+
+use Eresus\CmsBundle\Extensions\Connector;
 
 /**
  * Класс-коннектор
  *
  * @package Eresus
  */
-class TinyMCEConnector extends Eresus_Extensions_Connector
+class TinyMCEConnector extends Connector
 {
-	/**
-	 * Признак того, что скрипты уже установлены
-	 *
-	 * @var bool
-	 * @since 2.16
-	 */
-	private static $scriptsInstalled = false;
+    /**
+     * Признак того, что скрипты уже установлены
+     *
+     * @var bool
+     * @since 2.16
+     */
+    private static $scriptsInstalled = false;
 
-	/**
-	 * Возвращает разметку для подключения WYSIWYG-редактора
-	 * @param Eresus_UI_Admin_ArrayForm  $form
-	 * @param array $field
-	 * @return array
-	 */
-	function forms_html($form, $field)
-	{
-		$value = isset($form->values[$field['name']]) ?
-			$form->values[$field['name']] :
-			(isset($field['value'])?$field['value']:'');
-		$preset = isset($field['preset']) ? $field['preset'] : 'default';
-		$result = "\t\t" . '<tr><td colspan="2">' . $field['label'] .
-			'<br /><textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
-			'" cols="80" rows="25" style="width: 100%; height: ' .
-			$field['height'].';">'.str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root,
-			EncodeHTML($value)).'</textarea></td></tr>'."\n";
+    /**
+     * Возвращает разметку для подключения WYSIWYG-редактора
+     * @param \Eresus_UI_Admin_ArrayForm  $form
+     * @param array $field
+     * @return array
+     */
+    function forms_html($form, $field)
+    {
+        $value = isset($form->values[$field['name']]) ?
+            $form->values[$field['name']] :
+            (isset($field['value'])?$field['value']:'');
+        $preset = isset($field['preset']) ? $field['preset'] : 'default';
+        $result = "\t\t" . '<tr><td colspan="2">' . $field['label'] .
+            '<br /><textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
+            '" cols="80" rows="25" style="width: 100%; height: ' .
+            $field['height'].';">'.str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root,
+            EncodeHTML($value)).'</textarea></td></tr>'."\n";
 
-		if (!self::$scriptsInstalled)
-		{
-			Eresus_Kernel::app()->getPage()->linkScripts($this->root.'tiny_mce.js');
-			Eresus_Kernel::app()->getPage()->linkScripts($this->root.'presets/'.$preset.'.js');
-			self::$scriptsInstalled = true;
-		}
+        if (!self::$scriptsInstalled)
+        {
+            Eresus_Kernel::app()->getPage()->linkScripts($this->root.'tiny_mce.js');
+            Eresus_Kernel::app()->getPage()->linkScripts($this->root.'presets/'.$preset.'.js');
+            self::$scriptsInstalled = true;
+        }
 
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
+        return $result;
+    }
 
-	/**
-	 * Возвращает разметку редактора
-	 *
-	 * @param array $field
-	 *
-	 * @return string
-	 *
-	 * @since 2.16
-	 */
-	public function getWYSIWYG(array $field)
-	{
-		$value = isset($field['value']) ? $field['value'] : '';
-		$preset = isset($field['preset']) ? $field['preset'] : 'default';
-		$html = '<textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
-			'" cols="80" rows="25" style="height: ' . $field['height'] . ';">' .
-			str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root, EncodeHTML($value)) . '</textarea>';
+    /**
+     * Возвращает разметку редактора
+     *
+     * @param array $field
+     *
+     * @return string
+     *
+     * @since 2.16
+     */
+    public function getWYSIWYG(array $field)
+    {
+        $value = isset($field['value']) ? $field['value'] : '';
+        $preset = isset($field['preset']) ? $field['preset'] : 'default';
+        $html = '<textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
+            '" cols="80" rows="25" style="height: ' . $field['height'] . ';">' .
+            str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root, EncodeHTML($value)) . '</textarea>';
 
-		if (!self::$scriptsInstalled)
-		{
-			$html .=
-				'<script type="text/javascript" src="' . $this->root . 'tiny_mce.js"></script>' .
-				'<script type="text/javascript" src="' . $this->root . 'presets/' . $preset .
-				'.js"></script>';
-			self::$scriptsInstalled = true;
-		}
-		return $html;
-	}
-	//-----------------------------------------------------------------------------
+        if (!self::$scriptsInstalled)
+        {
+            $html .=
+                '<script type="text/javascript" src="' . $this->root . 'tiny_mce.js"></script>' .
+                    '<script type="text/javascript" src="' . $this->root . 'presets/' . $preset .
+                    '.js"></script>';
+            self::$scriptsInstalled = true;
+        }
+        return $html;
+    }
 }

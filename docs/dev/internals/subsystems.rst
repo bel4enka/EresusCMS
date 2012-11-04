@@ -60,14 +60,14 @@
 ---------------------------------
 
 - Eresus_Extensions_Registry
-- Eresus\CmsBundle\Extensions\Plugin
-- Eresus\CmsBundle\Extensions\ContentPlugin
+- Eresus\\CmsBundle\\Extensions\\Plugin
+- Eresus\\CmsBundle\\Extensions\\ContentPlugin
 
 Коннекторы сторонних компонентов
 --------------------------------
 
 - Eresus_Extensions_VendorRegistry
-- Eresus_Extensions_Connector
+- Eresus\\CmsBundle\\Extensions\\Connector
 - EditAreaConnector
 - TinyMCEConnector
 

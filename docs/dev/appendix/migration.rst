@@ -14,7 +14,7 @@
 ^^^^^^
 
 - TPlugin, TContentPlugin, TListContentPlugin. Вместо них следует использовать классы
-  Eresus\CmsBundle\Extensions\Plugin и Eresus\CmsBundle\Extensions\ContentPlugin.
+  Eresus\\CmsBundle\\Extensions\\Plugin и Eresus\\CmsBundle\\Extensions\\ContentPlugin.
 - EresusSourceParseException. Вместо него вбрасывается DomainException.
 - HttpResponse, HttpHeaders, HttpMessage, HTTP. См. :doc:`/dev/guide/responses`.
 
@@ -45,8 +45,8 @@
 Константы
 ^^^^^^^^^
 
-- httpPath (используйте Eresus\CmsBundle\HTTP\Request::getBasePath())
-- httpHost (используйте Eresus\CmsBundle\HTTP\Request::getHost())
+- httpPath (используйте Eresus\\CmsBundle\\HTTP\\Request::getBasePath())
+- httpHost (используйте Eresus\\CmsBundle\\HTTP\\Request::getHost())
 - httpRoot (используйте Eresus_CMS::getLegacyKernel()->root)
 - styleRoot (используйте Eresus_CMS::getLegacyKernel()->style)
 - dataRoot (используйте Eresus_CMS::getLegacyKernel()->data)
@@ -73,9 +73,9 @@
 Переименованы классы
 ^^^^^^^^^^^^^^^^^^^^
 
-- Plugin в Eresus\CmsBundle\Extensions\Plugin
-- ContentPlugin в Eresus\CmsBundle\Extensions\ContentPlugin
-- EresusConnector в Eresus_Extensions_Connector
+- Plugin в Eresus\\CmsBundle\\Extensions\\Plugin
+- ContentPlugin в Eresus\\CmsBundle\\Extensions\\ContentPlugin
+- EresusConnector в Eresus\\CmsBundle\\Extensions\\Connector
 - TAdminUI в Eresus_AdminUI
 - TClientUI в Eresus_ClientUI
 - Templates в Eresus_Templates
@@ -110,4 +110,4 @@ arg()
 Классы
 ^^^^^^
 
-- Eresus\CmsBundle\HTTP\Request — обёртка для Symfony\Component\HttpFoundation\Request.
+- Eresus\\CmsBundle\\HTTP\\Request — обёртка для Symfony\Component\HttpFoundation\Request.

@@ -39,6 +39,8 @@
  *   forms_html()
  */
 
+use Eresus\CmsBundle\Extensions\Connector;
+
 /**
  * Класс-коннектор
  *
@@ -47,7 +49,8 @@
  *
  * @package [Название пакета]
  */
-class ExtensionNameConnector extends Eresus_Extensions_Connector
+class ExtensionNameConnector extends Connector
 {
 
 }
+
