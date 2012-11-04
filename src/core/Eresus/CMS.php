@@ -42,12 +42,14 @@ use Eresus\CmsBundle\AdminUI;
 class Eresus_CMS
 {
     /**
+     * Создаваемая страница
      * @var Eresus_WebPage
      * @since 3.00
      */
     protected $page;
 
     /**
+     * Старое ядро
      * @var Eresus
      * @since 3.01
      */

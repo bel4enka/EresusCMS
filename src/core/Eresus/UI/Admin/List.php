@@ -28,12 +28,12 @@
  * @package Eresus
  */
 
+/** @noinspection PhpDocSignatureInspection */
 /**
  * Виджет списка
  *
  * @package Eresus
  */
-/** @noinspection PhpDocSignatureInspection */
 class Eresus_UI_Admin_List
 {
 	public $columns = array();

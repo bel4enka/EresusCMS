@@ -36,11 +36,15 @@
 class Eresus_Accounts
 {
 	/**
-	 * string
+     * Имя таблицы
+     *
+	 * @var string
 	 */
 	private $table = 'users';
 
 	/**
+     * Кэш учётных записей
+     *
 	 * @var array
 	 */
 	private $cache = array();

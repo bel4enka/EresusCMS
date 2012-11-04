@@ -478,8 +478,6 @@ class Eresus_Kernel extends Kernel
      * Возвращает папку журналов
      *
      * @return string
-     *
-     * @api
      */
     public function getLogDir()
     {

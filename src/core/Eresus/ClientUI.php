@@ -26,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 use Symfony\Component\HttpFoundation\Response;
@@ -90,8 +88,9 @@ class Eresus_ClientUI extends Eresus_WebPage
 	public $topic = false;
 
 	/**
+     * true если сейчас обрабатывается ошибкаs
 	 * @var bool
-	 * @see httpError
+	 * @see httpError()
 	 */
 	private static $error = false;
 

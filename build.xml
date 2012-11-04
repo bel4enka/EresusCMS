@@ -339,20 +339,19 @@
       </if>
 
       <delete dir="build.tmp" includeemptydirs="true" failonerror="true" />
-      <phpdoc
-            title="Eresus ${product.version} API"
-            destdir="${docs.dir}/api"
-            sourcecode="false"
-            parseprivate="false"
-            output="${docs.api.converter}">
-            <fileset dir=".">
-                <include name="src/core/**/*.php" />
-                <include name="framework/core/**/*.php" />
-                <exclude name="framework/core/3rdparty/**" />
-                <include name="src/ext-3rd/**/*.php" />
-                <exclude name="src/ext-3rd/tinymce/plugins/images/**" />
-            </fileset>
-        </phpdoc>
+      <mkdir dir="${docs.dir}/api" />
+      <phpdoc2
+          title="Eresus ${product.version} API"
+          destdir="${docs.dir}/api"
+          template="${docs.api.template}">
+          <fileset dir=".">
+              <include name="src/core/**/*.php" />
+              <include name="framework/core/**/*.php" />
+              <exclude name="framework/core/3rdparty/**" />
+              <include name="src/ext-3rd/**/*.php" />
+              <exclude name="src/ext-3rd/tinymce/plugins/images/**" />
+          </fileset>
+      </phpdoc2>
 
     </target>
 

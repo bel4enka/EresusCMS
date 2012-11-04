@@ -26,8 +26,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id$
  */
 
 use Symfony\Component\HttpFoundation\Response;
@@ -36,6 +34,7 @@ use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\AdminUI;
 
 /**
+ * Управление модулями расширения
  *
  * @package Eresus
  */

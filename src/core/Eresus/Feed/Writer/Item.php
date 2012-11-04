@@ -28,8 +28,6 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- *
- * $Id: main.php 1884 2011-10-19 05:32:08Z mk $
  */
 
 /**

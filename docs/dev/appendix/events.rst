@@ -4,12 +4,12 @@
 adminOnMenuRender
 -----------------
 
-Генерируется в методе `AdminUI::render() <../../api/Eresus/CmsBundle/AdminUI.html#render>`_. после построения контента страницы.
+Генерируется в методе `AdminUI::render() <../../api/classes/Eresus.CmsBundle.AdminUI.html#render>`_. после построения контента страницы.
 
 clientBeforeSend
 ----------------
 
-Генерируется в методе `Eresus_ClientUI::render() <../../api/Eresus/Eresus_ClientUI.html#render>`_ непосредственно перед отправкой страницы браузеру. Обработчику передаётся строка, содержащая код страницы.
+Генерируется в методе `Eresus_ClientUI::render() <../../api/Eresus/classes/Eresus_ClientUI.html#render>`_ непосредственно перед отправкой страницы браузеру. Обработчику передаётся строка, содержащая код страницы.
 
 Пример обработчика:
 
