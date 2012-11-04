@@ -31,6 +31,7 @@
  */
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Eresus\CmsBundle\HTTP\Request;
 
 // Временно включаем вывод ошибок, пока не инициализированы средства журналирования
 $displayErrors = ini_set('display_errors', true);
@@ -83,7 +84,7 @@ $kernel = new Eresus_Kernel('dev', true);
 ini_set('track_errors', $displayErrors);
 
 $kernel->loadClassCache();
-$request = Eresus_HTTP_Request::createFromGlobals();
+$request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);

@@ -32,6 +32,7 @@
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\HTTP\Request;
 
 /**
  * @package Eresus
@@ -193,7 +194,7 @@ class Eresus_Admin_Controllers_Settings
 			return '';
 		}
 
-		/** @var Eresus_HTTP_Request $req */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 
 		if ($request->getMethod() == 'POST')

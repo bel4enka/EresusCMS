@@ -29,51 +29,56 @@
  * @subpackage Tests
  */
 
-require_once __DIR__ . '/../../../bootstrap.php';
+namespace Tests\Eresus\CmsBundle\HTTP;
+
+require_once __DIR__ . '/../../../../bootstrap.php';
+
+use Eresus\CmsBundle\HTTP\Request;
 
 /**
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_HTTP_RequestTest extends PHPUnit_Framework_TestCase
+class RequestTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Eresus_HTTP_Request::getLocalUrl
-	 */
-	public function test_localRoot()
-	{
-		/** @var Eresus_HTTP_Request $request */
-		$request = Eresus_HTTP_Request::create('/example.com/admin.php', 'GET');
-		$this->assertEquals('/example.com/admin.php', $request->getLocalUrl());
+    /**
+     * @covers Eresus\CmsBundle\HTTP\Request::getLocalUrl
+     */
+    public function testLocalRoot()
+    {
+        /** @var Request $request */
+        $request = Request::create('/example.com/admin.php', 'GET');
+        $this->assertEquals('/example.com/admin.php', $request->getLocalUrl());
 
-		$request = Eresus_HTTP_Request::create('/example.com/path/file.php', 'GET', array(), array(),
-			array(), array (
-				'SCRIPT_FILENAME' => '/home/user/public_html/example.com/index.php',
-				'SCRIPT_NAME' => '/example.com/index.php',
-			));
-		$this->assertEquals('/path/file.php', $request->getLocalUrl());
-	}
+        $request = Request::create('/example.com/path/file.php', 'GET', array(), array(),
+            array(), array (
+                'SCRIPT_FILENAME' => '/home/user/public_html/example.com/index.php',
+                'SCRIPT_NAME' => '/example.com/index.php',
+            ));
+        $this->assertEquals('/path/file.php', $request->getLocalUrl());
+    }
 
-	/**
-	 * @covers Eresus_HTTP_Request::getFilename
-	 */
-	public function test_getFilename()
-	{
-		/** @var Eresus_HTTP_Request $request */
-		$request = Eresus_HTTP_Request::create('/example.com/admin.php', 'GET');
-		$this->assertEquals('admin.php', $request->getFilename());
-	}
+    /**
+     * @covers Eresus\CmsBundle\HTTP\Request::getFilename
+     */
+    public function testGetFilename()
+    {
+        /** @var Request $request */
+        $request = Request::create('/example.com/admin.php', 'GET');
+        $this->assertEquals('admin.php', $request->getFilename());
+    }
 
-	/**
-	 * @covers Eresus_HTTP_Request::getPath
-	 */
-	public function test_getPath()
-	{
-		/** @var Eresus_HTTP_Request $request */
-		$request = Eresus_HTTP_Request::create('/path/to/file.php', 'GET');
-		$this->assertEquals('/path/to', $request->getPath());
+    /**
+     * @covers Eresus\CmsBundle\HTTP\Request::getPath
+     */
+    public function testGetPath()
+    {
+        /** @var Request $request */
+        $request = Request::create('/path/to/file.php', 'GET');
+        $this->assertEquals('/path/to', $request->getPath());
 
-		$request = Eresus_HTTP_Request::create('/path/to/', 'GET');
-		$this->assertEquals('/path/to', $request->getPath());
-	}
+        $request = Request::create('/path/to/', 'GET');
+        $this->assertEquals('/path/to', $request->getPath());
+    }
 }
+

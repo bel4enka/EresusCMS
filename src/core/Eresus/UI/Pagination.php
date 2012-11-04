@@ -28,6 +28,8 @@
  * @package Eresus
  */
 
+use Eresus\CmsBundle\HTTP\Request;
+
 /**
  * Помощник нумерации
  *
@@ -406,7 +408,7 @@ class Eresus_UI_Pagination implements Iterator, Countable
 	{
 		if (!$this->urlTemplate)
 		{
-			/** @var Eresus_HTTP_Request $request */
+			/** @var Request $request */
 			$request = Eresus_Kernel::get('request');
 			$this->urlTemplate = $request->getPath() . '/p%d/';
 		}

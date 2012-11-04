@@ -28,6 +28,8 @@
  * @package Eresus
  */
 
+use Eresus\CmsBundle\HTTP\Request;
+
 /**
  * Расширение Twig
  *
@@ -56,7 +58,7 @@ class Eresus_Twig_Extension extends Twig_Extension
 	 */
 	public function getGlobals()
 	{
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 
 		$globals = array(

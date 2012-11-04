@@ -29,6 +29,7 @@
  */
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\HTTP\Request;
 
 /**
  * Название системы
@@ -207,7 +208,7 @@ function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAdd
 	}
 	if (mb_strpos($sender, '@') === false)
 	{
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::sc()->get('request');
 		$sender = 'no-reply@'.preg_replace('/^www\./', '', $request->getHost());
 	}
@@ -511,7 +512,7 @@ function replaceMacros($template, $source)
  */
 function arg($arg, $filter = null)
 {
-	/** @var Eresus_HTTP_Request $request */
+	/** @var Request $request */
 	$request = Eresus_Kernel::get('request');
 	$arg = $request->request->has($arg)
 		? $request->request->get($arg)
@@ -1214,7 +1215,7 @@ class Eresus
 	 */
 	function init_request()
 	{
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 		$this->request = array(
 			'method' => $request->getMethod(),

@@ -4,7 +4,7 @@
 Для работы сайта на Eresus необходимо, чтобы хостинг соответствовал следующим требованиям:
 
 PHP
-  5.2.1 или новее
+  5.3.3 или новее
 
 Модули PHP (обязательно)
   date, dom, filter, gd, hash, iconv, libxml, mbstring, mcrypt, pcre, PDO, posix, session, SimpleXML, tokenizer, zlib

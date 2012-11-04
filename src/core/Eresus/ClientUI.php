@@ -31,6 +31,7 @@
  */
 
 use Symfony\Component\HttpFoundation\Response;
+use Eresus\CmsBundle\HTTP\Request;
 
 /**
  * Признак клиентского интерфейса
@@ -113,7 +114,7 @@ class Eresus_ClientUI extends Eresus_WebPage
 	 */
 	public function replaceMacros($text)
 	{
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 		$section = $this->section;
 		if (siteTitleReverse)

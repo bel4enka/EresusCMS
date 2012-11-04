@@ -30,6 +30,7 @@
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\HTTP\Request;
 
 /**
  * Базовый класс для плагинов, предоставляющих тип контента
@@ -123,7 +124,7 @@ class Eresus_Extensions_ContentPlugin extends Eresus_Extensions_Plugin
 	{
 		/** @var Eresus_ClientUI $page */
 		$page = Eresus_Kernel::app()->getPage();
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 
 		/* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */

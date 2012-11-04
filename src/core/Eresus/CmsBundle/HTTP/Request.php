@@ -28,7 +28,9 @@
  * @package Eresus
  */
 
-use Symfony\Component\HttpFoundation\Request;
+namespace Eresus\CmsBundle\HTTP;
+
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
  * Запрос HTTP
@@ -36,46 +38,46 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Eresus
  * @since 3.01
  */
-class Eresus_HTTP_Request extends Request
+class Request extends SymfonyRequest
 {
-	/**
-	 * Возвращает URL относительно корня сайта
-	 *
-	 * @return string
-	 *
-	 * @see setLocalRoot()
-	 * @since 3.01
-	 */
-	public function getLocalUrl()
-	{
-		return substr($this->getRequestUri(), strlen($this->getBasePath()));
-	}
+    /**
+     * Возвращает URL относительно корня сайта
+     *
+     * @return string
+     *
+     * @see setLocalRoot()
+     * @since 3.01
+     */
+    public function getLocalUrl()
+    {
+        return substr($this->getRequestUri(), strlen($this->getBasePath()));
+    }
 
-	/**
-	 * Возвращает имя запрошенного в URL файла (без пути)
-	 */
-	public function getFilename()
-	{
-		return basename($this->getPathInfo());
-	}
+    /**
+     * Возвращает имя запрошенного в URL файла (без пути)
+     */
+    public function getFilename()
+    {
+        return basename($this->getPathInfo());
+    }
 
-
-	/**
-	 * Возвращает из URL путь без имени файла
-	 */
-	public function getPath()
-	{
-		$path = $this->getPathInfo();
-		if (substr($path, -1) == '/')
-		{
-			$path = substr($path, 0, -1);
-		}
-		else
-		{
-			$path = dirname($path);
-		}
-		return $path;
-	}
-	//@codeCoverageIgnoreStart
+    /**
+     * Возвращает из URL путь без имени файла
+     */
+    public function getPath()
+    {
+        $path = $this->getPathInfo();
+        if (substr($path, -1) == '/')
+        {
+            $path = substr($path, 0, -1);
+        }
+        else
+        {
+            $path = dirname($path);
+        }
+        return $path;
+    }
+    //@codeCoverageIgnoreStart
 }
 //@codeCoverageIgnoreEnd
+

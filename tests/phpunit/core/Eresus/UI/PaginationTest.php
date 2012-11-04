@@ -29,6 +29,8 @@
  * @subpackage Tests
  */
 
+use Eresus\CmsBundle\HTTP\Request;
+
 require_once __DIR__ . '/../../../bootstrap.php';
 
 /**
@@ -42,7 +44,7 @@ class Eresus_UI_PaginationTest extends PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
-		$request = Eresus_HTTP_Request::create('/root/');
+		$request = Request::create('/root/');
 		Eresus_Kernel::sc()->set('request', $request);
 	}
 

@@ -36,6 +36,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Eresus\CmsBundle\HTTP\Request;
 
 define('ADMINUI', true);
 
@@ -178,7 +179,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 */
 	public function replaceMacros($text)
 	{
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 		$result = str_replace(
 			array(
@@ -871,7 +872,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 		$routes->add('about',
 			new Route('/admin/about', array('controller' => 'Eresus_Admin_Controllers_About')));
 		$context = new RequestContext();
-		/** @var Eresus_HTTP_Request $request */
+		/** @var Request $request */
 		$request = Eresus_Kernel::get('request');
 		$context->fromRequest($request);
 		$matcher = new UrlMatcher($routes, $context);
@@ -1227,7 +1228,7 @@ class Eresus_AdminUI extends Eresus_WebPage
 	 */
 	private function auth()
 	{
-		/** @var Eresus_HTTP_Request $req */
+		/** @var Request $req */
 		$req = Eresus_Kernel::get('request');
 		$user = $req->request->get('user');
 		$user = preg_replace('/[^a-z0-9_\-\.\@]/', '', $user);

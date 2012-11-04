@@ -44,6 +44,7 @@ require TESTS_VENDORS .
 $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array(
     'Symfony' => TESTS_VENDORS . '/symfony/symfony/src',
+    'Eresus' => TESTS_SRC_DIR . '/core',
 ));
 $loader->registerPrefixes(array(
     'Eresus_' => TESTS_SRC_DIR . '/core',

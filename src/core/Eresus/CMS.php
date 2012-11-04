@@ -30,6 +30,7 @@
 
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Response;
+use Eresus\CmsBundle\HTTP\Request;
 
 /**
  * Класс приложения Eresus CMS
@@ -72,7 +73,7 @@ class Eresus_CMS
         $this->initWeb();
 
         $output = '';
-        /** @var Eresus_HTTP_Request $request */
+        /** @var Request $request */
         $request = Eresus_Kernel::get('request');
 
         switch (true)
@@ -160,7 +161,7 @@ class Eresus_CMS
 
         //$this->response = new HttpResponse();
 
-        /** @var Eresus_HTTP_Request $request */
+        /** @var Request $request */
         $request = Eresus_Kernel::get('request');
         TemplateSettings::setGlobalValue('siteRoot',
             $request->getScheme() . '://' . $request->getHost() . $request->getBasePath());
@@ -232,7 +233,7 @@ class Eresus_CMS
      */
     protected function call3rdPartyExtension()
     {
-        /** @var Eresus_HTTP_Request $request */
+        /** @var Request $request */
         $request = Eresus_Kernel::get('request');
         $extension = substr($request->getLocalUrl(), 9);
         $extension = substr($extension, 0, strpos($extension, '/'));
