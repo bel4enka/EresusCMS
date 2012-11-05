@@ -47,9 +47,9 @@ class ArrayFormTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstruct()
     {
-        $pValues = new ReflectionProperty('Eresus_UI_Admin_ArrayForm', 'values');
+        $pValues = new ReflectionProperty('Eresus\CmsBundle\UI\Admin\ArrayForm', 'values');
         $pValues->setAccessible(true);
-        $pForm = new ReflectionProperty('Eresus_UI_Admin_ArrayForm', 'form');
+        $pForm = new ReflectionProperty('Eresus\CmsBundle\UI\Admin\ArrayForm', 'form');
         $pForm->setAccessible(true);
 
         $values = array('foo' => 'bar');
