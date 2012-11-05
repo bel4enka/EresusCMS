@@ -28,12 +28,17 @@
  * @package Eresus
  */
 
+namespace Eresus\CmsBundle\UI\Admin;
+
+use Eresus_CMS;
+use Eresus_Kernel;
+
 /**
  * HTML-форма
  *
  * @package Eresus
  */
-class Eresus_UI_Admin_ArrayForm
+class ArrayForm
 {
     public $form;
     public $values;
@@ -43,20 +48,21 @@ class Eresus_UI_Admin_ArrayForm
     private $file = false;    # Признак наличия полей типа file
     public $html = false;    # Признак наличия WYSIWYG редакторов
     public $options = array();
+
     /**
      * Конструктор
      *
      * @param  array  $form    Описание формы
      * @param  array  $values  Значения полей по умолчанию (необязательно)
      */
-    function __construct($form, $values=array())
+    public function __construct($form, $values = array())
     {
         $this->form = $form;
         $this->values = $values;
     }
-    //------------------------------------------------------------------------------
+
     /**
-     * Подготоваливает поле формы для дальнейшей обработки
+     * Подготавливает поле формы для дальнейшей обработки
      *
      * @access  private
      *
@@ -121,7 +127,7 @@ class Eresus_UI_Admin_ArrayForm
     }
     //------------------------------------------------------------------------------
     /**
-     * Раделитель
+     * Разделитель
      *
      * @access  protected
      *

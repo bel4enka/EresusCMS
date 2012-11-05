@@ -49,7 +49,7 @@ class TinyMCEConnector extends Connector
 
     /**
      * Возвращает разметку для подключения WYSIWYG-редактора
-     * @param \Eresus_UI_Admin_ArrayForm  $form
+     * @param \Eresus\CmsBundle\UI\Admin\ArrayForm $form
      * @param array $field
      * @return array
      */

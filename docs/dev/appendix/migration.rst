@@ -28,7 +28,7 @@
 Функции
 ^^^^^^^
 
-- form — краткая форма для обращения к Eresus_UI_Admin_ArrayForm
+- form — краткая форма для обращения к Eresus\\CmsBundle\\UI\\Admin\\ArrayForm
 - useLib — все классы теперь загружаются автоматически
 - FatalError — используйте исключения
 - dbReorderItems
@@ -81,7 +81,7 @@
 - Templates ➙ Eresus\\CmsBundle\\Templates
 - EresusForm ➙ Eresus\\CmsBundle\\UI\\Form
 - Sections ➙ Eresus\\CmsBundle\\Sections
-- Form ➙ Eresus_UI_Admin_ArrayForm
+- Form ➙ Eresus\\CmsBundle\\UI\\Admin\\ArrayForm
 - PaginationHelper ➙ Eresus_UI_Pagination
 - EresusAccounts ➙ Eresus_Accounts
 - EresusCollection ➙ Eresus_Helpers_Collection

@@ -41,7 +41,7 @@ class EditAreaConnector extends Connector
     /**
      * Обработка поля "syntax" для старых форм
      *
-     * @param \Eresus_UI_Admin_ArrayForm  $form
+     * @param \Eresus\CmsBundle\UI\Admin\ArrayForm $form
      * @param array $field
      * @return array
      */

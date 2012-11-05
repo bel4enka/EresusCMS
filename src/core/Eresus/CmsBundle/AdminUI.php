@@ -40,13 +40,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Sections;
+use Eresus\CmsBundle\UI\Admin\ArrayForm;
+
 use Eresus_WebPage;
 use Eresus_Admin_Controllers_Abstract;
 use Eresus_Admin_Theme;
 use Eresus_CMS;
 use TemplateSettings;
 use Eresus_Kernel;
-use Eresus_UI_Admin_ArrayForm;
 use DomainException;
 use LogicException;
 use Twig_Environment;
@@ -857,7 +858,7 @@ class AdminUI extends Eresus_WebPage
         return $result;
     }
 
-    function renderForm($form, $values=array())
+    public function renderForm($form, $values = array())
     {
         $html = '';
         if (isset($form['tabs']))
@@ -865,7 +866,7 @@ class AdminUI extends Eresus_WebPage
             $html .= $this->renderTabs($form['tabs']);
         }
         $width = isset($form['width']) ? $form['width'] : '';
-        $formObj = new Eresus_UI_Admin_ArrayForm($form, $values);
+        $formObj = new ArrayForm($form, $values);
 
         $html .=
             '<table border="0" class="admWindow" style="width: ' . $width . ';"><tr><th>' .
@@ -879,7 +880,7 @@ class AdminUI extends Eresus_WebPage
      * Возвращает разметку области контента
      *
      * @throws DomainException
-     * @throws LogicException  если нет контероллера, указанного в маршруте
+     * @throws LogicException  если нет контроллера, указанного в маршруте
      *
      * @return Response|string
      */
