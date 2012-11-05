@@ -31,6 +31,8 @@
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use Eresus\CmsBundle\Accounts;
+
 /**
  * Управление пользователями
  *
@@ -42,18 +44,12 @@ class Eresus_Admin_Controllers_Users
 
 	public $access = ADMIN;
 
-	private $itemsPerPage = 30;
-
-	private $pagesDesc = false;
-
 	/**
 	 * Конструктор
-	 *
-	 * @return Eresus_Admin_Controllers_Users
 	 */
 	function __construct()
 	{
-		$this->accounts = new Eresus_Accounts();
+		$this->accounts = new Accounts();
 	}
 
 	function checkMail($mail)

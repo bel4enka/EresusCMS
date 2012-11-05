@@ -9,7 +9,7 @@
 - Eresus_PHP
 - Eresus_Kernel
 - Eresus_CMS
-- Eresus_Accounts
+- Eresus\\CmsBundle\\Accounts
 - Eresus\\CmsBundle\\Sections
 - Eresus\\CmsBundle\\Templates
 - Eresus_WebPage
