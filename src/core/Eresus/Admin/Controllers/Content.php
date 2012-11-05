@@ -31,6 +31,7 @@
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
+use Eresus\CmsBundle\Sections;
 
 /**
  * Управление контентом
@@ -51,7 +52,7 @@ class Eresus_Admin_Controllers_Content
             return '';
         }
         $result = '';
-        $sections = new Eresus_Sections();
+        $sections = new Sections();
         $item = $sections->get(arg('section', 'int'));
 
         Eresus_Kernel::app()->getPage()->id = $item['id'];
@@ -75,7 +76,7 @@ class Eresus_Admin_Controllers_Content
                     if (arg('update'))
                     {
                         $item['content'] = arg('content', 'dbsafe');
-                        /** @var Eresus_Sections $sections */
+                        /** @var Sections $sections */
                         $sections = Eresus_Kernel::get('sections');
                         $sections->update($item);
                         return new RedirectResponse(arg('submitURL'));
@@ -100,7 +101,7 @@ class Eresus_Admin_Controllers_Content
                     if (arg('update'))
                     {
                         $item['content'] = arg('url', 'dbsafe');
-                        /** @var Eresus_Sections $sections */
+                        /** @var Sections $sections */
                         $sections = Eresus_Kernel::get('sections');
                         $sections->update($item);
                         return new RedirectResponse(arg('submitURL'));

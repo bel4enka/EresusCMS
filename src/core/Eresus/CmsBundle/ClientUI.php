@@ -36,7 +36,6 @@ use Eresus\CmsBundle\Templates;
 use Eresus_WebPage;
 use Eresus_Kernel;
 use Eresus_CMS;
-use Eresus_Sections;
 
 /**
  * Признак клиентского интерфейса
@@ -238,13 +237,13 @@ class ClientUI extends Eresus_WebPage
         $item['id'] = 0;
         $url = '';
 
-        /** @var Eresus_Sections $sections */
+        /** @var Sections $sections */
         $sections = Eresus_Kernel::get('sections');
 
         do
         {
             $items = $sections->children($item['id'], Eresus_CMS::getLegacyKernel()->user['auth'] ?
-                Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, Eresus_Sections::SECTIONS_ACTIVE);
+                Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, Sections::SECTIONS_ACTIVE);
             $item = false;
             for ($i=0; $i<count($items); $i++)
             {

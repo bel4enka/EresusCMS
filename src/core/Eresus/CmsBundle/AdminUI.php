@@ -39,6 +39,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
+use Eresus\CmsBundle\Sections;
 use Eresus_WebPage;
 use Eresus_Admin_Controllers_Abstract;
 use Eresus_Admin_Theme;
@@ -54,7 +55,6 @@ use Eresus_I18n;
 use Core;
 use EresusRuntimeException;
 use EresusLogicException;
-use Eresus_Sections;
 
 define('ADMINUI', true);
 
@@ -1062,10 +1062,10 @@ class AdminUI extends Eresus_WebPage
 
         $result = '';
 
-        /** @var Eresus_Sections $sections */
+        /** @var Sections $sections */
         $sections = Eresus_Kernel::get('sections');
         $items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'],
-            Eresus_Sections::SECTIONS_ACTIVE);
+            Sections::SECTIONS_ACTIVE);
 
         if (count($items))
         {

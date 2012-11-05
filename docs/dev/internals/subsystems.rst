@@ -10,7 +10,7 @@
 - Eresus_Kernel
 - Eresus_CMS
 - Eresus_Accounts
-- Eresus_Sections
+- Eresus\\CmsBundle\\Sections
 - Eresus\\CmsBundle\\Templates
 - Eresus_WebPage
 - Eresus_WebServer

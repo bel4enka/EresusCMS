@@ -110,7 +110,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function selectList($skip = 0, $owner = 0, $level = 0)
     {
-        /** @var Eresus_Sections $sections */
+        /** @var \Eresus\CmsBundle\Sections $sections */
         $sections = Eresus_Kernel::get('sections');
         $items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access']);
         $result = array(array(), array());

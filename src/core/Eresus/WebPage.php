@@ -592,7 +592,7 @@ class Eresus_WebPage extends Controller
 	 */
 	public function clientURL($id)
 	{
-		/** @var Eresus_Sections $sections */
+		/** @var \Eresus\CmsBundle\Sections $sections */
 		$sections = Eresus_Kernel::get('sections');
 		$parents = $sections->parents($id);
 
