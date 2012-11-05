@@ -30,7 +30,7 @@
 Клиентский интерфейс
 --------------------
 
-#. Создание экземпляра `Eresus_ClientUI <../../api/Eresus/Eresus_ClientUI.html>`_
+#. Создание экземпляра `ClientUI <../../api/classes/Eresus.CmsBundle.ClientUI.html>`_
 #. Событие ``clientOnStart``
 #. Поиск запро запрошенного раздела сайта. Для него и каждого его родителя генерируется событие ``clientOnURLSplit``
 #. Выбор шаблона страницы

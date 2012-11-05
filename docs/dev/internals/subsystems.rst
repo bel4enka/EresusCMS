@@ -26,7 +26,7 @@
 
 - Eresus_Admin_Theme
 - Eresus_Admin_Controllers_About
-- Eresus_AdminUI
+- Eresus\\CmsBundle\\AdminUI
 - Eresus_Admin_Controllers_Content
 - Eresus_Admin_Controllers_Files
 - Eresus_Admin_Controllers_Pages
@@ -38,7 +38,7 @@
 Клиентский интерфейс (КИ)
 -------------------------
 
-- Eresus_ClientUI
+- Eresus\\CmsBundle\\ClientUI
 
 Библиотека UI
 -------------

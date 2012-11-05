@@ -38,12 +38,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
+use Eresus\CmsBundle\ClientUI;
 use Eresus_CMS;
 use Eresus_PluginInfo;
 use FS;
 use Eresus_I18n;
 use Core;
-use Eresus_ClientUI;
 use Eresus_Kernel;
 use Eresus_Templates;
 
@@ -291,7 +291,7 @@ class Registry
      */
     public function clientRenderContent()
     {
-        /* @var Eresus_ClientUI $page */
+        /* @var ClientUI $page */
         $page = Eresus_Kernel::app()->getPage();
         $result = '';
         switch ($page->type)

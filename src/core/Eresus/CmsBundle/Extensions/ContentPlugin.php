@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus_Kernel;
 use Eresus_CMS;
-use Eresus_ClientUI;
+use Eresus\CmsBundle\ClientUI;
 use Eresus\CmsBundle\AdminUI;
 
 /**
@@ -54,9 +54,9 @@ class ContentPlugin extends Plugin
     {
         parent::__construct();
 
-        /* @var Eresus_ClientUI $page */
+        /* @var ClientUI $page */
         $page = Eresus_Kernel::app()->getPage();
-        if ($page instanceof Eresus_ClientUI)
+        if ($page instanceof ClientUI)
         {
             $page->plugin = $this->name;
             if (isset($page->options) && count($page->options))

@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Extensions\Connector;
 use Eresus\CmsBundle\AdminUI;
+use Eresus\CmsBundle\ClientUI;
 
 /**
  * Класс приложения Eresus CMS
@@ -190,7 +191,7 @@ class Eresus_CMS
     {
         eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
-        $this->page = new Eresus_ClientUI();
+        $this->page = new ClientUI();
         $this->page->setContainer(Eresus_Kernel::sc());
         $this->page->init();
         return $this->page->render();
