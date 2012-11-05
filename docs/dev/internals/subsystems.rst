@@ -79,7 +79,7 @@
 Вспомогательные средства
 ------------------------
 
-- Eresus_Helpers_Collection
+- Eresus\\CmsBundle\\Helpers\\Collection
 - Eresus_Feed_Writer
 - Eresus_Feed_Writer_Item
 - Eresus_FS_NameFilter
