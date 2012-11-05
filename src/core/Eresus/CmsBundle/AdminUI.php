@@ -1257,24 +1257,29 @@ class AdminUI extends Eresus_WebPage
         $data['user'] = $user;
         $data['autologin'] = $autologin;
 
+        $legacyKernel = Eresus_CMS::getLegacyKernel();
+
         if ($req->getMethod() == 'POST')
         {
-            if (Eresus_CMS::getLegacyKernel()->login($req->request->get('user'),
-                Eresus_CMS::getLegacyKernel()->password_hash($password), $autologin))
+            if ($legacyKernel->login($req->request->get('user'),
+                $legacyKernel->password_hash($password), $autologin))
             {
-                return new RedirectResponse(Eresus_CMS::getLegacyKernel()->root . 'admin.php');
+                $url = mb_strpos($req->headers->get('REFERER'), $legacyKernel->root) !== false
+                    ? $req->headers->get('REFERER')
+                    : $legacyKernel->root . 'admin/';
+                return new RedirectResponse($url);
             }
         }
 
-        if (isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
-            count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))
+        if (isset($legacyKernel->session['msg']['errors']) &&
+            count($legacyKernel->session['msg']['errors']))
         {
-            foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
+            foreach ($legacyKernel->session['msg']['errors'] as $message)
             {
                 $data['errors'] []= $message;
             }
 
-            Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
+            $legacyKernel->session['msg']['errors'] = array();
         }
 
         $tmpl = $this->getUITheme()->getTemplate('auth.html');
