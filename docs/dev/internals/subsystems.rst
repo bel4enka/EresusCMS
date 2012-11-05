@@ -46,7 +46,7 @@
 - Eresus_HTML_Element
 - Eresus_HTML_ScriptElement
 - Eresus_UI_Pagination
-- Eresus_UI_Form
+- Eresus\\CmsBundle\\UI\\Form
 
 Библиотека UI АИ
 ----------------

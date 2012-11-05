@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
 use Eresus\CmsBundle\Templates;
+use Eresus\CmsBundle\UI\Form;
 
 /**
  * Настройки сайта
@@ -133,7 +134,7 @@ class Eresus_Admin_Controllers_Settings
 	{
 		$template = Eresus_Kernel::app()->getPage()->getUITheme()->
 			getResource('SiteSettings/form.html');
-		$form = new Eresus_UI_Form($template);
+		$form = new Form($template);
 		/* Основные */
 		$form->setValue('siteName', option('siteName'));
 		$form->setValue('siteTitle', option('siteTitle'));
