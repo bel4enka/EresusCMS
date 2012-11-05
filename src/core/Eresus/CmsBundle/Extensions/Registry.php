@@ -39,13 +39,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
 use Eresus\CmsBundle\ClientUI;
+use Eresus\CmsBundle\Templates;
 use Eresus_CMS;
 use Eresus_PluginInfo;
 use FS;
 use Eresus_I18n;
 use Core;
 use Eresus_Kernel;
-use Eresus_Templates;
 
 /**
  * Работа с плагинами
@@ -317,7 +317,7 @@ class Registry
                 {
                     $page->content = '$(items)';
                 }
-                $templates = new Eresus_Templates();
+                $templates = new Templates();
                 $template = $templates->get('SectionListItem', 'std');
                 if (false === $template)
                 {

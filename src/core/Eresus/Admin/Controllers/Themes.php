@@ -32,6 +32,7 @@
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\AdminUI;
+use Eresus\CmsBundle\Templates;
 
 /**
  * Управление темами оформления
@@ -110,7 +111,7 @@ class Eresus_Admin_Controllers_Themes
 			ErrorMessage(sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
 		}
 
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$templates->add($filename, '', arg('code'), arg('desc'));
 		return new RedirectResponse(arg('submitURL'));
 	}
@@ -121,7 +122,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionTemplatesUpdate()
 	{
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$templates->update(arg('name'), '', arg('code'), arg('desc'));
 		return new RedirectResponse(arg('submitURL'));
 	}
@@ -132,7 +133,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionTemplatesDelete()
 	{
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$templates->delete(arg('delete'));
 		return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
@@ -170,7 +171,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionTemplatesEdit()
 	{
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$item = $templates->get(arg('id'), '', true);
 		$form = array(
 			'name' => 'editForm',
@@ -220,7 +221,7 @@ class Eresus_Admin_Controllers_Themes
 				)
 			),
 		);
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$list = $templates->enum();
 		$items = array();
 		foreach ($list as $key=>$value)
@@ -278,7 +279,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	private function sectionStdInsert()
 	{
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$templates->add(arg('name'), 'std', arg('code'), $this->stdTemplates[arg('name')]['caption']);
         return new RedirectResponse(arg('submitURL'));
 	}
@@ -299,7 +300,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	private function sectionStdDelete()
 	{
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$templates->delete(arg('delete'), 'std');
 		return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
 	}
@@ -314,7 +315,7 @@ class Eresus_Admin_Controllers_Themes
 		/*
 		 * Создаём список имеющихся шаблонов чтобы отфильтровать их из списка доступных.
 		 */
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$list = array_keys($templates->enum('std'));
 		$existed = array();
 		foreach ($list as $key)
@@ -379,7 +380,7 @@ class Eresus_Admin_Controllers_Themes
 	 */
 	public function sectionStdEdit()
 	{
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$item = $templates->get(arg('id'), 'std', true);
 		$form = array(
 			'name' => 'editForm',
@@ -433,7 +434,7 @@ class Eresus_Admin_Controllers_Themes
 				)
 			),
 		);
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$list = $templates->enum('std');
 		$items = array();
 		foreach ($list as $key=>$value)

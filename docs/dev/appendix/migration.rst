@@ -73,25 +73,25 @@
 Переименованы классы
 ^^^^^^^^^^^^^^^^^^^^
 
-- Plugin в Eresus\\CmsBundle\\Extensions\\Plugin
-- ContentPlugin в Eresus\\CmsBundle\\Extensions\\ContentPlugin
-- EresusConnector в Eresus\\CmsBundle\\Extensions\\Connector
-- TAdminUI в Eresus\\CmsBundle\\AdminUI
-- TClientUI в Eresus\\CmsBundle\\ClientUI
-- Templates в Eresus_Templates
-- EresusForm в Eresus_UI_Form
-- Sections в Eresus_Sections
-- Form в Eresus_UI_Admin_ArrayForm
-- PaginationHelper в Eresus_UI_Pagination
-- EresusAccounts в Eresus_Accounts
-- EresusCollection в Eresus_Helpers_Collection
-- AdminList в Eresus_UI_Admin_List
-- AdminUITheme в Eresus_Admin_Theme
-- Plugins в Eresus\\CmsBundle\\Extensions\\Registry
-- EresusExtensions в Eresus\\CmsBundle\\Extensions\\VendorRegistry
-- WebServer в Eresus_WebServer
-- WebPage в Eresus_WebPage
-- i18n в Eresus_i18n
+- Plugin ➙ Eresus\\CmsBundle\\Extensions\\Plugin
+- ContentPlugin ➙ Eresus\\CmsBundle\\Extensions\\ContentPlugin
+- EresusConnector ➙ Eresus\\CmsBundle\\Extensions\\Connector
+- TAdminUI ➙ Eresus\\CmsBundle\\AdminUI
+- TClientUI ➙ Eresus\\CmsBundle\\ClientUI
+- Templates ➙ Eresus\\CmsBundle\\Templates
+- EresusForm ➙ Eresus_UI_Form
+- Sections ➙ Eresus_Sections
+- Form ➙ Eresus_UI_Admin_ArrayForm
+- PaginationHelper ➙ Eresus_UI_Pagination
+- EresusAccounts ➙ Eresus_Accounts
+- EresusCollection ➙ Eresus_Helpers_Collection
+- AdminList ➙ Eresus_UI_Admin_List
+- AdminUITheme ➙ Eresus_Admin_Theme
+- Plugins ➙ Eresus\\CmsBundle\\Extensions\\Registry
+- EresusExtensions ➙ Eresus\\CmsBundle\\Extensions\\VendorRegistry
+- WebServer ➙ Eresus_WebServer
+- WebPage ➙ Eresus_WebPage
+- i18n ➙ Eresus_i18n
 
 glib
 ^^^^

@@ -36,6 +36,7 @@ use Eresus\CmsBundle\Form\DataTransformer\NullToStringTransformer;
 use Eresus\CmsBundle\Entity\Section;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
 use Eresus\CmsBundle\AdminUI;
+use Eresus\CmsBundle\Templates;
 
 /**
  * Управление разделами сайта
@@ -514,7 +515,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     private function getForm(Section $section)
     {
         $isMainPage = 'main' == $section->name && null === $section->parent;
-        $templates = new Eresus_Templates();
+        $templates = new Templates();
 
         $null2string = new NullToStringTransformer();
 

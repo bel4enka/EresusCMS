@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
+use Eresus\CmsBundle\Templates;
 
 /**
  * Настройки сайта
@@ -170,7 +171,7 @@ class Eresus_Admin_Controllers_Settings
 		$form->setValue('contentTypeDefault', option('contentTypeDefault'));
 
 		/* Загружаем список шаблонов */
-		$templates = new Eresus_Templates();
+		$templates = new Templates();
 		$list = $templates->enum();
 		$templates = array();
 		foreach ($list as $key => $value)

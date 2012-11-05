@@ -32,10 +32,10 @@ namespace Eresus\CmsBundle;
 
 use Symfony\Component\HttpFoundation\Response;
 use Eresus\CmsBundle\HTTP\Request;
+use Eresus\CmsBundle\Templates;
 use Eresus_WebPage;
 use Eresus_Kernel;
 use Eresus_CMS;
-use Eresus_Templates;
 use Eresus_Sections;
 
 /**
@@ -201,7 +201,7 @@ class ClientUI extends Eresus_WebPage
         {
             $url = $this->url().'p%d/';
         }
-        $Templates = new Eresus_Templates();
+        $Templates = new Templates();
         $defaults = explode('---', $Templates->get('PageSelector', 'std'));
         if (!is_array($templates))
         {
@@ -413,7 +413,7 @@ class ClientUI extends Eresus_WebPage
         {
             return $content;
         }
-        $templates = new Eresus_Templates;
+        $templates = new Templates;
         $this->template = $templates->get($this->template);
         $content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
 
