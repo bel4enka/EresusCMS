@@ -64,4 +64,4 @@ swiftmailer:
 
 services:
   sections:
-    class: Eresus_Sections
+    class: Eresus\CmsBundle\Sections
