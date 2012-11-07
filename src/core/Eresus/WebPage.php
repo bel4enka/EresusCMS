@@ -61,12 +61,13 @@ class Eresus_WebPage extends Controller
 	/**
 	 * Описание секции HEAD
 	 *
-	 * -	meta-http - мета-теги HTTP-заголовков
-	 * -	meta-tags - мета-теги
-	 * -	link - подключение внешних ресурсов
-	 * -	style - CSS
-	 * -	script - Скрипты
-	 * -	content - прочее
+	 * - meta-http — мета-теги HTTP-заголовков
+	 * - meta-tags — мета-теги
+	 * - link — подключение внешних ресурсов
+	 * - style — CSS
+	 * - jslibs — библиотеки JavaScript
+	 * - script — скрипты
+	 * - content — прочее
 	 *
 	 * @var array
 	 */
@@ -75,6 +76,7 @@ class Eresus_WebPage extends Controller
 		'meta-tags' => array(),
 		'link' => array(),
 		'style' => array(),
+		'jslibs' => array(),
 		'scripts' => array(),
 		'content' => '',
 	);
@@ -230,6 +232,13 @@ class Eresus_WebPage extends Controller
 				return;
 			}
 		}
+		foreach ($this->head['jslibs'] as $script)
+		{
+			if ($script->getAttribute('src') == $url)
+			{
+				return;
+			}
+		}
 
 		$script = new Eresus_HTML_ScriptElement($url);
 
@@ -238,6 +247,7 @@ class Eresus_WebPage extends Controller
 		array_shift($args);
 
 		$top = false;
+		$lib = false;
 
 		foreach ($args as $arg)
 		{
@@ -271,6 +281,10 @@ class Eresus_WebPage extends Controller
 				case 'top':
 					$top = true;
 				break;
+
+				case 'lib':
+					$lib = true;
+					break;
 			}
 		}
 
@@ -280,7 +294,11 @@ class Eresus_WebPage extends Controller
 		}
 		else
 		{
-			if ($top)
+			if ($lib)
+			{
+				$this->head['jslibs'][] = $script;
+			}
+			elseif ($top)
 			{
 				array_unshift($this->head['scripts'], $script);
 			}
@@ -393,26 +411,26 @@ class Eresus_WebPage extends Controller
 		switch ($library)
 		{
 			case 'jquery':
-				if (in_array('ui', $args))
-				{
-					$this->linkScripts($root . 'core/jquery/jquery-ui.min.js', 'top');
-				}
+				$this->linkScripts($root . 'core/jquery/jquery.min.js', 'lib');
 				if (in_array('cookie', $args))
 				{
-					$this->linkScripts($root . 'core/jquery/jquery.cookie.js', 'top');
+					$this->linkScripts($root . 'core/jquery/jquery.cookie.js', 'lib');
 				}
-				$this->linkScripts($root . 'core/jquery/jquery.min.js', 'top');
+				if (in_array('ui', $args))
+				{
+					$this->linkScripts($root . 'core/jquery/jquery-ui.min.js', 'lib');
+				}
 			break;
 
 			case 'modernizr':
-				$this->linkScripts($root . 'core/js/modernizr/modernizr.min.js', 'top');
+				$this->linkScripts($root . 'core/js/modernizr/modernizr.min.js', 'lib');
 			break;
 
 			case 'webshim':
 			case 'webshims':
-				$this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'top');
-				$this->linkJsLib('modernizr');
 				$this->linkJsLib('jquery');
+				$this->linkJsLib('modernizr');
+				$this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'lib');
 				$this->addScripts('jQuery.webshims.polyfill();');
 			break;
 		}
@@ -457,6 +475,11 @@ class Eresus_WebPage extends Controller
 		/*
 		 * <script>
 		 */
+		foreach ($this->head['jslibs'] as $script)
+		{
+			/** @var HtmlScriptElement $script */
+			$result[] = $script->getHTML();
+		}
 		foreach ($this->head['scripts'] as $script)
 		{
 			/** @var Eresus_HTML_ScriptElement $script */
