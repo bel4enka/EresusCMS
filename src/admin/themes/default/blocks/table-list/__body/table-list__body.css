@@ -1,0 +1,19 @@
+.table-list__body > tr:nth-child(odd)
+{
+    background-color: #F5F5FF;
+}
+
+.table-list__body > tr:nth-child(even)
+{
+        background-color: #FFF8DA;
+}
+
+.table-list__body > tr:hover
+{
+    box-shadow: 0 0 2px #759e1a;
+}
+
+.table-list__body > tr > td
+{
+    padding: 1px 5px;
+}
