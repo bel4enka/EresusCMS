@@ -1,0 +1,29 @@
+<div class="box form">
+    <div class="box__header">Переместить {{ section.caption }}</div>
+    <div class="box__contents">
+        <form action="admin.php" method="post">
+            <input type="hidden" name="mod" value="pages">
+            <input type="hidden" name="action" value="move">
+            <input type="hidden" name="id" value="{{ section.id }}">
+            <div class="message message_type_warning">
+                <strong>Внимание!</strong><br>
+                После перемещения изменится адрес перемещаемого раздела и всех его подразделов.
+            </div>
+            <div class="form__row">
+                <label for="sections-target-input" class="form__label">Переместить в:</label>
+                <select name="target" id="sections-target-input" class="form__input">
+                    {% include 'CmsBundle:Sections:move-options.html.twig' with {'level': 0} %}
+                </select>
+            </div>
+            <div class="form__footer">
+                <button type="submit" class="button button_has_icon button_icon_ok">
+                    Переместить
+                </button>
+                <button type="button" class="button button_has_icon button_icon_cancel"
+                    onclick="history.back();">
+                    Отменить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
