@@ -88,7 +88,7 @@
             <div class="form__row">
                 <label class="form__label auth-dialog__checkbox" for="auth-dialog-autologin">
                     <input class="form__input" type="checkbox" name="autologin"
-                        id="auth-dialog-autologin" value="1"{if $autologin} checked{/if}>
+                        id="auth-dialog-autologin" value="1"{% if autologin %} checked{% endif %}>
                     <span class="form__label">Запомнить</span>
                 </label>
             </div>
