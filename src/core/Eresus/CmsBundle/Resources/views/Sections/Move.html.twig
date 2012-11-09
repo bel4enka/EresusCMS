@@ -12,7 +12,8 @@
             <div class="form__row">
                 <label for="sections-target-input" class="form__label">Переместить в:</label>
                 <select name="target" id="sections-target-input" class="form__input">
-                    {% include 'CmsBundle:Sections:move-options.html.twig' with {'level': 0} %}
+                    <option value="{{ root.id }}">{{ root.caption }}</option>
+                    {% include 'CmsBundle:Sections:MoveOptions.html.twig' with {'level': 0} %}
                 </select>
             </div>
             <div class="form__footer">

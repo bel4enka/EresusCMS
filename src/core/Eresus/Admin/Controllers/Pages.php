@@ -104,39 +104,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     }
 
     /**
-     * ???
-     * @param $skip
-     * @param $owner
-     * @param $level
-     *
-     * @return string
-     */
-    private function selectList($skip = 0, $owner = 0, $level = 0)
-    {
-        /** @var \Eresus\CmsBundle\Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access']);
-        $result = array(array(), array());
-        foreach ($items as $item)
-        {
-            if ($item['id'] != $skip)
-            {
-                $item['caption'] = trim($item['caption']);
-                if (empty($item['caption']))
-                {
-                    $item['caption'] = ADM_NA;
-                }
-                $result[0][] = $item['id'];
-                $result[1][] = str_repeat('&nbsp;', $level*2).$item['caption'];
-                $children = $this->selectList($skip, $item['id'], $level+1);
-                $result[0] = array_merge($result[0], $children[0]);
-                $result[1] = array_merge($result[1], $children[1]);
-            }
-        }
-        return $result;
-    }
-
-    /**
      * Функция перемещает страницу вверх в списке
      *
      * @param Request $request
@@ -255,8 +222,8 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         }
         else
         {
-            return $this->renderView('CmsBundle:Sections:move.html.twig',
-                array('root' => $repo->getPseudoRoot(), 'section' => $section));
+            return $this->renderView('CmsBundle:Sections:Move.html.twig',
+                array('root' => $repo->getRoot(), 'section' => $section));
 
         }
     }
