@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ i18n('Вход', 'admin.auth') }} &mdash; Eresus CMS</title>
+    <link rel="stylesheet" href="{{ siteRoot }}/admin/themes/default/theme.css">
+    <style>
+        .ie
+        {
+            background-color: #feefda;
+            border: 1px solid #f7941d;
+            height: 75px;
+            text-align: center;
+        }
+
+        .ie__contents
+        {
+            color: black;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 0;
+            text-align: left;
+            width: 640px;
+        }
+
+        .ie a img
+        {
+            border: none;
+        }
+    </style>
+</head>
+<body class="auth-page">
+
+<!--[if lt IE 8]>
+<div class="ie">
+    <div class="ie__contents">
+        <div style="width: 75px; float: left;">
+            <img src="http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg" alt="Внимание!" />
+        </div>
+        <div style="width: 275px; float: left; font-family: Arial, sans-serif;">
+            <div style="font-size: 14px; font-weight: bold; margin-top: 12px;">{i18n('Your browser is outdated')}</div>
+            <div style="font-size: 12px; margin-top: 6px; line-height: 12px;">
+                {i18n('Install a modern browser to view this site properly.')}
+            </div>
+        </div>
+        <div style="width: 75px; float: left;">
+            <a href="http://www.mozilla.com/ru/firefox/" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg" alt="Скачать Firefox 3.6" /></a>
+        </div>
+        <div style="width: 73px; float: left;">
+            <a href="http://www.google.com/chrome" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg" alt="Скачать Google Chrome" /></a>
+        </div>
+        <div style="width: 73px; float: left;">
+            <a href="http://www.apple.com/safari/download/" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg" alt="Скачать Safari 5" /></a>
+        </div>
+        <div style="float: left;">
+            <a href="http://www.browserforthebetter.com/download.html" target="_blank"><img src="http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg" alt="Скачать Internet Explorer 8" /></a>
+        </div>
+    </div>
+</div>
+<![endif]-->
+
+<div class="form box auth-dialog">
+    <form action="{{ siteRoot }}admin.php" method="post">
+
+        <div class="box__header">{{ i18n('Вход в панель управления', 'admin.auth') }}</div>
+        <div class="box__contents">
+            {% if errors is defined %}
+            {% for message in errors %}
+            <div class="message message_type_error">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            <div class="form__row">
+                <label class="form__label auth-dialog__label"
+                    for="auth-dialog-user">Пользователь:</label>
+                <input class="form__input auth-dialog__input" type="text" name="user"
+                    id="auth-dialog-user" autofocus required
+                    {% if user is defined %} value="{{ user }}"{% endif %}>
+            </div>
+            <div class="form__row">
+                <label class="form__label auth-dialog__label"
+                    for="auth-dialog-password">Пароль:</label>
+                <input class="form__input auth-dialog__input" type="password" name="password"
+                    id="auth-dialog-password">
+            </div>
+            <div class="form__row">
+                <label class="form__label auth-dialog__checkbox" for="auth-dialog-autologin">
+                    <input class="form__input" type="checkbox" name="autologin"
+                        id="auth-dialog-autologin" value="1"{if $autologin} checked{/if}>
+                    <span class="form__label">Запомнить</span>
+                </label>
+            </div>
+            <div class="form__footer auth-dialog__footer">
+                <button type="submit" class="button button_has_icon button_icon_ok">
+                    Войти
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
