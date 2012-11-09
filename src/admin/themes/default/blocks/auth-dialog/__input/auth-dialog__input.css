@@ -1,0 +1,5 @@
+.auth-dialog__input[type=text],
+.auth-dialog__input[type=password]
+{
+    width: 15em;
+}

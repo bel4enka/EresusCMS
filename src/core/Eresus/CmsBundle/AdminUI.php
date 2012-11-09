@@ -1282,9 +1282,8 @@ class AdminUI extends Eresus_WebPage
             $legacyKernel->session['msg']['errors'] = array();
         }
 
-        $tmpl = $this->getUITheme()->getTemplate('auth.html');
-        $html = $tmpl->compile($data);
-        return new Response($html);
+        return new Response($this
+            ->renderView('core/Eresus/CmsBundle/Resources/views/auth.html.twig', $data));
     }
 
     /**

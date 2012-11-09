@@ -1,0 +1,42 @@
+input[type=text],
+input[type=search],
+input[type=tel],
+input[type=email],
+input[type=password],
+input[type=number],
+textarea
+{
+    -moz-box-sizing: border-box;
+    background-color: white;
+    border-color: #aaa #ddd #ddd #aaa;
+	border-style: solid;
+	border-width: 1px;
+	box-shadow: 1px 1px 1px rgba(100, 100, 100, 0.3) inset;
+    box-sizing: border-box;
+    padding: 2px;
+}
+
+input[type=text]:disabled,
+input[type=search]:disabled,
+input[type=tel]:disabled,
+input[type=email]:disabled,
+input[type=password]:disabled,
+input[type=number]:disabled,
+textarea:disabled
+{
+    background-color: #eaeaea;
+}
+
+/**
+ * Неправильно заполненные поля форм
+ */
+input[type=text]:-moz-ui-invalid,
+input[type=search]:-moz-ui-invalid,
+input[type=tel]:-moz-ui-invalid,
+input[type=email]:-moz-ui-invalid,
+input[type=password]:-moz-ui-invalid,
+input[type=number]:-moz-ui-invalid,
+textarea:-moz-ui-invalid
+{
+    box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.5);
+}
