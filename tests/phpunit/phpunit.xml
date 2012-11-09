@@ -5,6 +5,7 @@
 		<whitelist addUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">../../src</directory>
 			<exclude>
+                <directory>../../src/cfg</directory>
                 <directory>../../src/core/framework</directory>
                 <file>../../src/core/errors.html.php</file>
 				<file>../../src/core/fatal.html.php</file>

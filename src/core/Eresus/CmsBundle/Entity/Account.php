@@ -38,17 +38,18 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Учётная запись пользователя
  *
- * @property int       $id
- * @property string    $login
- * @property string    $hash
- * @property bool      $active
- * @property \DateTime $lastVisit
- * @property int       $lastLoginTime
- * @property int       $loginErrors
- * @property int       $access
- * @property string    $name
- * @property string    $mail
- * @property array     $profile
+ * @property       int       $id
+ * @property       string    $login
+ * @property       string    $hash
+ * @property       bool      $active
+ * @property       \DateTime $lastVisit
+ * @property       int       $lastLoginTime
+ * @property       int       $loginErrors
+ * @property       int       $access
+ * @property       string    $name
+ * @property       string    $mail
+ * @property       array     $profile
+ * @property-write string    $password  свойство для установки нового пароля
  *
  * @package Eresus
  * @since 4.00
@@ -116,7 +117,7 @@ class Account extends AbstractEntity
     protected $lastLoginTime;
 
     /**
-     * Количество неудачных авторизаций
+     * Количество неудачных попыток входа
      *
      * @var int
      *
@@ -161,6 +162,30 @@ class Account extends AbstractEntity
     protected $profile;
 
     /**
+     * Возвращает хэш пароля
+     *
+     * @param string $password  пароль
+     *
+     * @return string
+     *
+     * @since 4.00
+     */
+    public static function passwordHash($password)
+    {
+        return md5(md5($password));
+    }
+
+    /**
+     * Устанавливает новый пароль
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->hash = self::passwordHash($password);
+    }
+
+    /**
      * Возвращает свойства учётной записи в виде массива
      *
      * @return array
@@ -178,4 +203,3 @@ class Account extends AbstractEntity
         );
     }
 }
-
