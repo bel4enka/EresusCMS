@@ -175,10 +175,6 @@
     -->
     <target name="build" description="Build project">
 
-        <php function="date" returnProperty="build.date">
-            <param value="d.m.y" />
-        </php>
-
         <!-- Копирование основных файлов -->
         <copy todir="${build.dir}">
             <fileset dir="src">
