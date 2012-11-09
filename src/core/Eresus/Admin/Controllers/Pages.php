@@ -148,25 +148,14 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $section = $em->find('CmsBundle:Section', $request->query->get('id'));
         if ($section->position > 0)
         {
-            $qb = $em->createQueryBuilder();
-            if (null === $section->parent)
-            {
-                $expr = $qb->expr()->isNull('s.parent');
-            }
-            else
-            {
-                $expr = $qb->expr()->eq('s.parent', ':parent');
-                $qb->setParameter('parent', $section->parent ? $section->parent : 0);
-            }
-            $qb->add('select', 's')
-                ->add('from', 'CmsBundle:Section s')
-                ->add('orderBy', 's.position DESC')
-                ->add('where',
-                    $qb->expr()->andX($expr, $qb->expr()->lt('s.position', ':position'))
-                );
-            $qb->setParameter('position', $section->position);
-            $qb->setMaxResults(1);
-            $q = $qb->getQuery();
+            $q = $em->createQuery(
+                'SELECT s FROM CmsBundle:Section s ' .
+                'WHERE s.parent = :parent AND s.position < :position ' .
+                'ORDER BY s.position DESC'
+            );
+            $q->setParameter('parent', $section->parent);
+            $q->setParameter('position', $section->position);
+            $q->setMaxResults(1);
             /** @var Section $swap */
             $swap = $q->getOneOrNullResult();
             if (null !== $swap)
@@ -417,66 +406,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
 
         return $this->renderView('CmsBundle:Sections:edit.html.twig',
             array('form' => $form->createView(), 'pageURL' => $urlAbs));
-    }
-
-    /**
-     * Отрисовывает подраздел индекса
-     *
-     * @param  Section|null $owner  Родительский раздел
-     * @param  int          $level  Уровень вложенности
-     *
-     * @return  string  Отрисованная часть таблицы
-     */
-    private function sectionIndexBranch($owner = null, $level = 0)
-    {
-        /** @var AdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $rootURL = Eresus_CMS::getLegacyKernel()->root;
-        $result = array();
-        if (null == $owner)
-        {
-            $owner = new Section;
-            $owner->children = $this->getDoctrine()->getManager()
-                ->getRepository('CmsBundle:Section')->findBy(array('parent' => null));
-        }
-        foreach ($owner->children as $section)
-        {
-            /** @var Section $section */
-            $content_type = isset($this->cache['content_types'][$section->type])
-                ? $this->cache['content_types'][$section->type]
-                : '<span class="admError">' . sprintf(ERR_CONTENT_TYPE, $section->type) . '</span>';
-            $row = array();
-            $row[] = array(
-                'text' => $section->caption,
-                'style'=>"padding-left: {$level}em;",
-                'href' =>$rootURL . 'admin.php?mod=content&amp;section=' . $section->id
-            );
-            $row[] = $section->name;
-            $row[] = array('text' => $content_type, 'align' => 'center');
-            $row[] = array('text' => constant('ACCESSLEVEL'.$section->access), 'align' => 'center');
-            if ($section->name == 'main' && null == $section->parent)
-            {
-                $root = $rootURL . 'admin.php?mod=pages&amp;';
-                $controls =
-                    $page->control('setup', $root.'id=%d').' '.
-                    $page->control('position',
-                        array($root.'action=up&amp;id=%d', $root.'action=down&amp;id=%d')).' '.
-                    $page->control('add', $root.'action=create&amp;owner=%d');
-            }
-            else
-            {
-                $controls = $this->cache['index_controls'];
-            }
-            $row[] = sprintf($controls, $section->id, $section->id, $section->id, $section->id,
-                $section->id, $section->id);
-            $result[] = $row;
-            $children = $this->sectionIndexBranch($section, $level + 1);
-            if (count($children))
-            {
-                $result = array_merge($result, $children);
-            }
-        }
-        return $result;
     }
 
     /**
