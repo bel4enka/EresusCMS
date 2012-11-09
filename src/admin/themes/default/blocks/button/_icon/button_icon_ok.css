@@ -1,7 +1,7 @@
 /**
  * Значок «OK»
  */
-.button_icon_ok
+.button.button_icon_ok:before
 {
 	background-position: 0 0;
 }

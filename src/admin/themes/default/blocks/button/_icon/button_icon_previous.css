@@ -1,7 +1,7 @@
 /**
  * Значок «Вернуться»
  */
-.button_icon_previous
+.button.button_icon_previous:before
 {
     background-position: 0 -16px;
 }

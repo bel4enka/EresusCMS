@@ -1,9 +1,10 @@
-.button_has_icon
+.button.button_has_icon
 {
+    padding-left: 25px;
     position: relative;
 }
 
-.button_has_icon:before
+.button.button_has_icon:before
 {
     background-image: url(img/icons-16.png);
     background-repeat: no-repeat;

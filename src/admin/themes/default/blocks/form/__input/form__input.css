@@ -4,6 +4,7 @@ input[type=tel],
 input[type=email],
 input[type=password],
 input[type=number],
+select,
 textarea
 {
     -moz-box-sizing: border-box;
@@ -22,6 +23,7 @@ input[type=tel]:disabled,
 input[type=email]:disabled,
 input[type=password]:disabled,
 input[type=number]:disabled,
+select:disabled,
 textarea:disabled
 {
     background-color: #eaeaea;
@@ -36,6 +38,7 @@ input[type=tel]:-moz-ui-invalid,
 input[type=email]:-moz-ui-invalid,
 input[type=password]:-moz-ui-invalid,
 input[type=number]:-moz-ui-invalid,
+select:-moz-ui-invalid,
 textarea:-moz-ui-invalid
 {
     box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.5);

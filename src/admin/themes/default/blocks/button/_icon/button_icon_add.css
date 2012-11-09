@@ -1,7 +1,7 @@
 /**
  * Значок «Добавить»
  */
-.button_icon_add
+.button.button_icon_add:before
 {
     background-position: -48px 0;
 }

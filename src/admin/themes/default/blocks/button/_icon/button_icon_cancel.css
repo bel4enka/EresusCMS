@@ -1,7 +1,7 @@
 /**
  * Значок «Отмена»
  */
-.button_icon_cancel
+.button.button_icon_cancel:before
 {
     background-position: -32px 0;
 }
