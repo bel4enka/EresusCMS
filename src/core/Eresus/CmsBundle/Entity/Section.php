@@ -60,7 +60,7 @@ use Eresus\CmsBundle\Repository\SectionRepository;
  * @property Section[] $children
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  *
  * @ORM\Entity(repositoryClass="Eresus\CmsBundle\Repository\SectionRepository")
  * @ORM\Table(name="pages")

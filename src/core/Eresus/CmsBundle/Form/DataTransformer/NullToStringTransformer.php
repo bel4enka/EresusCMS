@@ -37,7 +37,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  * Трансформер null в пустую строку
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  */
 class NullToStringTransformer implements DataTransformerInterface
 {

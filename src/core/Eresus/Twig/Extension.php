@@ -34,7 +34,7 @@ use Eresus\CmsBundle\HTTP\Request;
  * Расширение Twig
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  */
 class Eresus_Twig_Extension extends Twig_Extension
 {
@@ -43,7 +43,7 @@ class Eresus_Twig_Extension extends Twig_Extension
 	 *
 	 * @return string
 	 *
-	 * @since 3.01
+	 * @since 4.00
 	 */
 	public function getName()
 	{
@@ -54,7 +54,7 @@ class Eresus_Twig_Extension extends Twig_Extension
 	 * Возвращает глобальные переменные
 	 *
 	 * @return array
-	 * @since 3.01
+	 * @since 4.00
 	 */
 	public function getGlobals()
 	{
@@ -74,7 +74,7 @@ class Eresus_Twig_Extension extends Twig_Extension
 	 * Возвращает список функций
 	 *
 	 * @return array
-	 * @since 3.01
+	 * @since 4.00
 	 */
 	public function getFunctions()
 	{
@@ -97,7 +97,7 @@ class Eresus_Twig_Extension extends Twig_Extension
 	 * Подключает библиотеку JavaScript
 	 *
 	 * @see WebPage::linkJsLib()
-	 * @since 3.01
+	 * @since 4.00
 	 */
 	public function jslib()
 	{
@@ -114,7 +114,7 @@ class Eresus_Twig_Extension extends Twig_Extension
 	 *
 	 * @return string
 	 *
-	 * @since 3.01
+	 * @since 4.00
 	 */
 	public function call($object, $method)
 	{

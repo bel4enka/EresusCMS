@@ -68,7 +68,7 @@ class Eresus_Kernel extends Kernel
      * @param string $environment  окружение (prod, test, dev)
      * @param bool   $debug        включить или нет отладку
      *
-     * @since 3.01
+     * @since 4.00
      */
     public function __construct($environment, $debug)
     {
@@ -367,7 +367,7 @@ class Eresus_Kernel extends Kernel
      *
      * @return Container
      *
-     * @since 3.01
+     * @since 4.00
      */
     public static function sc()
     {
@@ -387,7 +387,7 @@ class Eresus_Kernel extends Kernel
      *
      * @return object
      *
-     * @since 3.01
+     * @since 4.00
      */
     public static function get($id)
     {
@@ -418,7 +418,7 @@ class Eresus_Kernel extends Kernel
      *
      * @return array
      *
-     * @since 3.01
+     * @since 4.00
      */
     public function registerBundles()
     {

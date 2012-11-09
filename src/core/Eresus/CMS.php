@@ -52,7 +52,7 @@ class Eresus_CMS
     /**
      * Старое ядро
      * @var Eresus
-     * @since 3.01
+     * @since 4.00
      */
     protected static $legacyKernel;
 

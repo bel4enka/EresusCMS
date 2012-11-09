@@ -37,7 +37,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  * Трансформер null в 0
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  */
 class NullToIntTransformer implements DataTransformerInterface
 {

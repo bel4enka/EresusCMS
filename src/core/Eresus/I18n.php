@@ -103,7 +103,7 @@ class Eresus_I18n
 	 *
 	 * @return string
 	 *
-	 * @since 3.01
+	 * @since 4.00
 	 */
 	public function getLocale()
 	{

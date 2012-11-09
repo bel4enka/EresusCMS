@@ -502,7 +502,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      *
      * @return Symfony\Component\Form\Form
      *
-     * @since 3.01
+     * @since 4.00
      */
     private function getForm(Section $section)
     {

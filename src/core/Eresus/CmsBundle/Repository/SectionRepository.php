@@ -38,7 +38,7 @@ use Eresus\CmsBundle\Entity\Section;
  * Хранилище разделов сайта
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  */
 class SectionRepository extends EntityRepository
 {

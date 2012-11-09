@@ -51,7 +51,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @property array     $profile
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  *
  * @ORM\Entity
  * @ORM\Table(name="users")
@@ -161,10 +161,10 @@ class Account extends AbstractEntity
     protected $profile;
 
     /**
-     * Возвращает своства учётной записи в виде массива
+     * Возвращает свойства учётной записи в виде массива
      *
      * @return array
-     * @since 3.01
+     * @since 4.00
      */
     public function toArray()
     {

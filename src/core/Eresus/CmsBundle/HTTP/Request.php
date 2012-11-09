@@ -36,7 +36,7 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
  * Запрос HTTP
  *
  * @package Eresus
- * @since 3.01
+ * @since 4.00
  */
 class Request extends SymfonyRequest
 {
@@ -46,7 +46,7 @@ class Request extends SymfonyRequest
      * @return string
      *
      * @see setLocalRoot()
-     * @since 3.01
+     * @since 4.00
      */
     public function getLocalUrl()
     {
