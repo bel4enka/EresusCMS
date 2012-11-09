@@ -54,7 +54,7 @@ AddDefaultCharset Off
 	### ДРУГИЕ ПЕРЕАДРЕСОВКИ ###
 
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(bundles|core/js|admin/themes|admin/logos|ext|data|style)/ - [last]
+	RewriteRule ^(bundles|core/js|admin|ext|data|style)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.[^\.]+|core/gziph.php.*)$ - [last]
 

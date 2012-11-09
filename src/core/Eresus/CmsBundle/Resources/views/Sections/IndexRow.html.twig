@@ -18,6 +18,12 @@
         {% endif %}
         <a href="admin.php?mod=pages&id={{ section.id }}&action=add" class="icon icon_img_add"
             title="Добавить подраздел в {{ section.caption|escape }}">&nbsp;</a>
+        {% if section.id != 1 %}
+        <a href="admin.php?mod=pages&id={{ section.id }}&action=move" class="icon icon_img_move-section"
+           title="Переместить раздел {{ section.caption|escape }}">&nbsp;</a>
+        <a href="admin.php?mod=pages&id={{ section.id }}&action=delete" class="icon icon_img_delete"
+           data-action="delete" title="Удалить раздел {{ section.caption|escape }}">&nbsp;</a>
+        {% endif %}
     </td>
 </tr>
 {% for subSection in section.children %}

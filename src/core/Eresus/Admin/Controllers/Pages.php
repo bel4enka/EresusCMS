@@ -66,7 +66,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     public function adminRender(Request $request)
     {
-        $result = '';
         if (UserRights($this->access))
         {
             switch ($request->get('action'))
@@ -84,7 +83,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                     $result = $this->move($request);
                     break;
                 case 'delete':
-                    $this->delete($request);
+                    $result = $this->delete($request);
                     break;
                 default:
                     if ($request->get('id') != null)
@@ -96,6 +95,10 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                         $result = $this->sectionIndex();
                     }
             }
+        }
+        else
+        {
+            $result = '';
         }
         return $result;
     }
@@ -422,26 +425,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
 
         return $this->renderView('CmsBundle:Sections:Index.html.twig',
             array('section' => $repo->getRoot()));
-
-
-        /** @var AdminUI $page * /
-        $page = Eresus_Kernel::app()->getPage();
-        $root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
-        $this->cache['index_controls'] =
-            $page->control('setup', $root.'id=%d').' '.
-            $page->control('position', array($root . 'action=up&amp;id=%d',
-                $root . 'action=down&amp;id=%d')).' '.
-            $page->control('add', $root.'action=create&amp;owner=%d').' '.
-            $page->control('move', $root.'action=move&amp;id=%d').' '.
-            $page->control('delete', $root.'action=delete&amp;id=%d');
-        $this->cache['content_types'] = $this->loadContentTypes();
-        $table = new Eresus_UI_Admin_List();
-        $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
-        $table->addRow(array(ADM_PAGES_ROOT, '', '', '',
-            array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
-        $table->addRows($this->sectionIndexBranch(1, 1));
-        $result = $table->render();
-        return $result;*/
     }
 
     /**

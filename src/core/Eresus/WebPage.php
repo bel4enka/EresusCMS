@@ -411,31 +411,30 @@ class Eresus_WebPage extends Controller
 		switch ($library)
 		{
 			case 'jquery':
-				$this->linkScripts($root . 'core/jquery/jquery.min.js', 'lib');
+				$this->linkScripts($root . 'bundles/jquery/jquery.min.js', 'lib');
 				if (in_array('cookie', $args))
 				{
-					$this->linkScripts($root . 'core/jquery/jquery.cookie.js', 'lib');
+					$this->linkScripts($root . 'bundles/jquery/jquery.cookie.js', 'lib');
 				}
 				if (in_array('ui', $args))
 				{
-					$this->linkScripts($root . 'core/jquery/jquery-ui.min.js', 'lib');
+					$this->linkScripts($root . 'bundles/jquery/jquery-ui.min.js', 'lib');
 				}
 			break;
 
 			case 'modernizr':
-				$this->linkScripts($root . 'core/js/modernizr/modernizr.min.js', 'lib');
+				$this->linkScripts($root . 'bundles/modernizr/modernizr.min.js', 'lib');
 			break;
 
 			case 'webshim':
 			case 'webshims':
 				$this->linkJsLib('jquery');
 				$this->linkJsLib('modernizr');
-				$this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'lib');
+				$this->linkScripts($root . 'bundles/webshim/polyfiller.js', 'lib');
 				$this->addScripts('jQuery.webshims.polyfill();');
 			break;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Отрисовка секции <head>
