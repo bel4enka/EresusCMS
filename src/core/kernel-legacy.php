@@ -502,7 +502,6 @@ function replaceMacros($template, $source)
  * - int, integer – целое число (используется {@link intval() intval()})
  * - float – вещественное число (используется {@link floatval() floatval()})
  * - word – только буквы и цифры
- * - dbsafe – строка, безопасная для использования в запросах к БД
  *
  * @param string $arg     Имя аргумента
  * @param mixed  $filter  Фильтр, применяемый к значению аргумента
@@ -516,34 +515,27 @@ function arg($arg, $filter = null)
 {
 	/** @var Request $request */
 	$request = Eresus_Kernel::get('request');
-	$arg = $request->request->has($arg)
-		? $request->request->get($arg)
-		: $request->query->get($arg, null);
+	$arg = $request->get($arg);
 
 	if ($arg !== false && !is_null($filter))
 	{
 		switch ($filter)
 		{
 			case 'dbsafe':
-				$arg = Eresus_CMS::getLegacyKernel()->db->escape($arg);
-			break;
-
+			    break;
 			case 'int':
 			case 'integer':
-					$arg = intval($arg);
-			break;
-
+			    $arg = intval($arg);
+			    break;
 			case 'float':
-					$arg = floatval($arg);
-			break;
-
+				$arg = floatval($arg);
+			    break;
 			case 'word':
-					$arg = preg_replace('/\W/', '', $arg);
-			break;
-
+				$arg = preg_replace('/\W/', '', $arg);
+			    break;
 			default:
 				$arg = preg_replace($filter, '', $arg);
-			break;
+			    break;
 		}
 	}
 	return $arg;
