@@ -7,13 +7,17 @@
         href="{{ siteRoot }}{{ section.clientURL }}">{{ section.name }}/</a></td>
     <td>{{ section.type }}</td>
     <td>{{ section.access }}</td>
-    <td>
+    <td class="table-list__controls">
         <a href="admin.php?mod=pages&id={{ section.id }}" class="icon icon_img_config"
             title="Свойства {{ section.caption|escape }}">&nbsp;</a>
+        {% if section.id != 1 %}
         <a href="admin.php?mod=pages&id={{ section.id }}&action=up" class="icon icon_img_up"
             title="Поднять {{ section.caption|escape }}">&nbsp;</a>
         <a href="admin.php?mod=pages&id={{ section.id }}&action=down" class="icon icon_img_down"
             title="Опустить {{ section.caption|escape }}">&nbsp;</a>
+        {% endif %}
+        <a href="admin.php?mod=pages&id={{ section.id }}&action=add" class="icon icon_img_add"
+            title="Добавить подраздел в {{ section.caption|escape }}">&nbsp;</a>
     </td>
 </tr>
 {% for subSection in section.children %}
