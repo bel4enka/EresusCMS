@@ -213,56 +213,48 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     {
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
+        $repo = $em->getRepository('CmsBundle:Section');
         /** @var Section $section */
-        $section = $em->find('CmsBundle:Section', $request->get('id'));
+        $section = $repo->find($request->get('id'));
 
         if ($request->getMethod() == 'POST')
         {
-            $section->parent = $request->request->get('to')
-                ? $em->find('CmsBundle:Section', $request->request->get('to'))
-                : null;
+            /** @var Section $newParent */
+            $newParent = $request->request->get('target')
+                ? $em->find('CmsBundle:Section', $request->request->get('target'))
+                : null /*$repo->getPseudoRoot()*/;
 
-            $q = $em->createQuery(
-                'SELECT MAX(s.position) FROM CmsBundle:Section s WHERE s.parent = :parent');
-            $q->setParameter('parent', $section->parent);
-            $max = $q->getSingleResult();
-            $section->position = $max[1] + 1;
-
-            /* Проверяем, нет ли в разделе назначения раздела с таким же именем */
-            $q = $em->createQuery(
-                'SELECT COUNT(s.id) count FROM CmsBundle:Section s ' .
-                'WHERE s.parent = :parent AND name = :name');
-            $q->setParameter('parent', $section->parent);
-            $q->setParameter('name', $section->name);
-            var_dump($q->getResult()); die; // TODO !!!
-            if ($count['count'])
+            /*
+             * Проверяем, нет ли в разделе назначения раздела с таким же именем и вычисляем
+             * новый порядковый номер
+             */
+            $section->position = 0;
+            if ($newParent && $newParent->children)
             {
-                ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
-                return new RedirectResponse($_SERVER['HTTP_REFERER']);
+                foreach ($newParent->children as $child)
+                {
+                    /** @var Section $child */
+                    if ($child->name == $section->name)
+                    {
+                        ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
+                        return new RedirectResponse($_SERVER['HTTP_REFERER']);
+                    }
+                    if ($child->position <= $section->position)
+                    {
+                        $section->position = $child->position + 1;
+                    }
+                }
             }
-
-            $sections->update($item);
+            $section->parent = $newParent;
+            $em->flush();
             return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
         }
         else
         {
-            $select = $this->selectList($section->id);
-            array_unshift($select[0], 0);
-            array_unshift($select[1], ADM_PAGES_ROOT);
-            $form = array(
-                'name' => 'MoveForm',
-                'caption' => admPagesMove,
-                'fields' => array(
-                    array('type'=>'hidden', 'name'=>'mod', 'value' => 'pages'),
-                    array('type'=>'hidden', 'name'=>'action', 'value' => 'move'),
-                    array('type'=>'hidden', 'name'=>'id', 'value' => $item['id']),
-                    array('type'=>'select', 'label'=>STR_MOVE.' "<b>'.$item['caption'].'</b>" в',
-                        'name'=>'to', 'items'=>$select[1], 'values'=>$select[0], 'value' => $item['owner']),
-                ),
-                'buttons' => array('ok', 'cancel'),
-            );
-            $result = Eresus_Kernel::app()->getPage()->renderForm($form);
-            return $result;
+            return $this->renderView('CmsBundle:Sections:move.html.twig',
+                array('root' => $repo->getPseudoRoot(), 'section' => $section));
+
         }
     }
 

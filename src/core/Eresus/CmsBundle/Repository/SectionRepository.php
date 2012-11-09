@@ -31,7 +31,8 @@
 namespace Eresus\CmsBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\DBAL\LockMode;
+
+use Eresus\CmsBundle\Entity\Section;
 
 /**
  * Хранилище разделов сайта
@@ -41,5 +42,28 @@ use Doctrine\DBAL\LockMode;
  */
 class SectionRepository extends EntityRepository
 {
+    /**
+     * Возвращает корневой раздел [ЭТОТ МЕТОД ЕЩЁ НЕ ГОТОВ, @link getPseudoRoot]
+     *
+     * @return Section
+     */
+    public function getRoot()
+    {
+        return $this->find(1);
+    }
+
+    /**
+     * Возвращает имитацию корневого раздела
+     *
+     * @return \stdClass
+     */
+    public function getPseudoRoot()
+    {
+        $root = new \stdClass();
+        $root->id = null;
+        $root->caption = 'КОРЕНЬ';
+        $root->children = $this->findBy(array('parent' => null));
+        return $root;
+    }
 }
 
