@@ -52,12 +52,6 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
     public $access = ADMIN;
 
     /**
-     * ???
-     * @var array
-     */
-    private $cache;
-
-    /**
      * Возвращает разметку интерфейса или готовый ответ
      *
      * @param Request $request
@@ -70,6 +64,9 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         {
             switch ($request->get('action'))
             {
+                case 'add':
+                    $result = $this->create($request);
+                    break;
                 case 'up':
                     $result = $this->moveUp($request);
                     break;
@@ -313,6 +310,9 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
             $form->bind($request);
             if ($form->isValid())
             {
+                /** @var \Doctrine\ORM\EntityManager $em */
+                $em = $this->getDoctrine()->getManager();
+
                 $ownerId = $request->request->get('owner');
                 if (0 == $ownerId)
                 {
@@ -320,16 +320,13 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
                 }
                 else
                 {
-                    $parent = $this->getDoctrine()->getManager()
-                        ->find('CmsBundle:Section', $request->request->get('owner'));
+                    $parent = $em->find('CmsBundle:Section', $request->request->get('owner'));
                     if (null === $parent)
                     {
                         throw $this->createNotFoundException();
                     }
                 }
                 $section->parent = $parent;
-                /** @var \Doctrine\ORM\EntityManager $em */
-                $em = $this->getDoctrine()->getManager();
                 $em->persist($section);
 
                 $q = $em->createQuery(
@@ -356,6 +353,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function edit(Request $request)
     {
+        /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Entity\Section $section */
         $section = $em->find('CmsBundle:Section', $request->get('id'));
