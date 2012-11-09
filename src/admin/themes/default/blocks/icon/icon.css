@@ -1,0 +1,10 @@
+.icon,
+.icon:visited,
+.icon:hover
+{
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 16px;
+    text-decoration: none;
+    width: 16px;
+}

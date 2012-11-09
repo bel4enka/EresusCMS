@@ -39,25 +39,26 @@ use Eresus\CmsBundle\Repository\SectionRepository;
 /**
  * Раздел сайта
  *
- * @property int       $id
- * @property string    $name
- * @property Section   $parent
- * @property string    $title
- * @property string    $caption
- * @property string    $description
- * @property string    $hint
- * @property string    $keywords
- * @property int       $position
- * @property bool      $active
- * @property int       $access
- * @property bool      $visible
- * @property string    $template
- * @property string    $type
- * @property string    $content
- * @property array     $options
- * @property \DateTime $created
- * @property \DateTime $updated
- * @property Section[] $children
+ * @property      int       $id
+ * @property      string    $name
+ * @property      Section   $parent
+ * @property      string    $title
+ * @property      string    $caption
+ * @property      string    $description  описание
+ * @property      string    $hint
+ * @property      string    $keywords
+ * @property      int       $position
+ * @property      bool      $active
+ * @property      int       $access
+ * @property      bool      $visible
+ * @property      string    $template
+ * @property      string    $type
+ * @property      string    $content
+ * @property      array     $options
+ * @property      \DateTime $created
+ * @property      \DateTime $updated
+ * @property      Section[] $children
+ * @property-read string    $clientURL    URL раздела в КИ
  *
  * @package Eresus
  * @since 4.00
@@ -238,6 +239,7 @@ class Section extends AbstractEntity
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Section", mappedBy="parent")
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $children;
 
@@ -247,6 +249,23 @@ class Section extends AbstractEntity
     public function __construct()
     {
         $this->children = new ArrayCollection();
+    }
+
+    /**
+     * Возвращает URL раздела в КИ
+     *
+     * @return string
+     */
+    public function getClientUrl()
+    {
+        $url = $this->name . '/';
+        $parent = $this->parent;
+        while ($parent)
+        {
+            $url = $parent->name . '/' . $url;
+            $parent = $parent->parent;
+        }
+        return $url;
     }
 }
 

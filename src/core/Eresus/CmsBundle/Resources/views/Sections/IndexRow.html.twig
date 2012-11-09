@@ -1,0 +1,21 @@
+<tr data-level="{{ level }}">
+    <td style="padding-left: {{ level }}.5em;">
+        <a href="admin.php?mod=content&id={{ section.id }}"
+            title="Перейти в раздел {{ section.caption|escape }}">{{ section.caption }}</a>
+    </td>
+    <td><a title="Открыть раздел в КИ" target="_blank"
+        href="{{ siteRoot }}{{ section.clientURL }}">{{ section.name }}/</a></td>
+    <td>{{ section.type }}</td>
+    <td>{{ section.access }}</td>
+    <td>
+        <a href="admin.php?mod=pages&id={{ section.id }}" class="icon icon_img_config"
+            title="Свойства {{ section.caption|escape }}">&nbsp;</a>
+        <a href="admin.php?mod=pages&id={{ section.id }}&action=up" class="icon icon_img_up"
+            title="Поднять {{ section.caption|escape }}">&nbsp;</a>
+        <a href="admin.php?mod=pages&id={{ section.id }}&action=down" class="icon icon_img_down"
+            title="Опустить {{ section.caption|escape }}">&nbsp;</a>
+    </td>
+</tr>
+{% for subSection in section.children %}
+    {% include 'CmsBundle:Sections:IndexRow.html.twig' with {'level': level + 1, 'section': subSection} only %}
+{% endfor %}

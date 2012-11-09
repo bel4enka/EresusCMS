@@ -43,27 +43,13 @@ use Eresus\CmsBundle\Entity\Section;
 class SectionRepository extends EntityRepository
 {
     /**
-     * Возвращает корневой раздел [ЭТОТ МЕТОД ЕЩЁ НЕ ГОТОВ, @link getPseudoRoot]
+     * Возвращает корневой раздел
      *
      * @return Section
      */
     public function getRoot()
     {
         return $this->find(1);
-    }
-
-    /**
-     * Возвращает имитацию корневого раздела
-     *
-     * @return \stdClass
-     */
-    public function getPseudoRoot()
-    {
-        $root = new \stdClass();
-        $root->id = null;
-        $root->caption = 'КОРЕНЬ';
-        $root->children = $this->findBy(array('parent' => null));
-        return $root;
     }
 }
 

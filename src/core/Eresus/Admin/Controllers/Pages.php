@@ -148,14 +148,25 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $section = $em->find('CmsBundle:Section', $request->query->get('id'));
         if ($section->position > 0)
         {
-            $q = $em->createQuery(
-                'SELECT s FROM CmsBundle:Section s ' .
-                'WHERE s.parent = :parent AND s.position < :position ' .
-                'ORDER BY s.position DESC'
-            );
-            $q->setParameter('parent', $section->parent);
-            $q->setParameter('position', $section->position);
-            $q->setMaxResults(1);
+            $qb = $em->createQueryBuilder();
+            if (null === $section->parent)
+            {
+                $expr = $qb->expr()->isNull('s.parent');
+            }
+            else
+            {
+                $expr = $qb->expr()->eq('s.parent', ':parent');
+                $qb->setParameter('parent', $section->parent ? $section->parent : 0);
+            }
+            $qb->add('select', 's')
+                ->add('from', 'CmsBundle:Section s')
+                ->add('orderBy', 's.position DESC')
+                ->add('where',
+                    $qb->expr()->andX($expr, $qb->expr()->lt('s.position', ':position'))
+                );
+            $qb->setParameter('position', $section->position);
+            $qb->setMaxResults(1);
+            $q = $qb->getQuery();
             /** @var Section $swap */
             $swap = $q->getOneOrNullResult();
             if (null !== $swap)
@@ -475,7 +486,16 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function sectionIndex()
     {
-        /** @var AdminUI $page */
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
+        $repo = $em->getRepository('CmsBundle:Section');
+
+        return $this->renderView('CmsBundle:Sections:Index.html.twig',
+            array('section' => $repo->getRoot()));
+
+
+        /** @var AdminUI $page * /
         $page = Eresus_Kernel::app()->getPage();
         $root = Eresus_CMS::getLegacyKernel()->root.'admin.php?mod=pages&amp;';
         $this->cache['index_controls'] =
@@ -490,9 +510,9 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
         $table->addRow(array(ADM_PAGES_ROOT, '', '', '',
             array($page->control('add', $root.'action=create&amp;owner=0'), 'align' => 'center')));
-        $table->addRows($this->sectionIndexBranch(null, 1));
+        $table->addRows($this->sectionIndexBranch(1, 1));
         $result = $table->render();
-        return $result;
+        return $result;*/
     }
 
     /**
