@@ -216,11 +216,11 @@ class Plugin
      * @param string $method  Имя вызванного метода
      * @param array  $args    Переданные аргументы
      *
-     * @throws EresusMethodNotExistsException
+     * @throws \EresusMethodNotExistsException
      */
     public function __call($method, $args)
     {
-        throw new EresusMethodNotExistsException($method, get_class($this));
+        throw new \EresusMethodNotExistsException($method, get_class($this));
     }
 
     /**

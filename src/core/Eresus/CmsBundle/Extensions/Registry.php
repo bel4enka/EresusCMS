@@ -40,6 +40,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
 use Eresus\CmsBundle\ClientUI;
+use Eresus\CmsBundle\Entity\Plugin as PluginEntity;
 use Eresus\CmsBundle\Templates;
 use Eresus_CMS;
 use Eresus_PluginInfo;
@@ -88,13 +89,17 @@ class Registry extends ContainerAware
      */
     public function init()
     {
-        $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        /** @var PluginEntity[] $items */
+        $items = $em->getRepository('CmsBundle:Plugin')->findBy(array('active' => true));
         if ($items)
         {
-            foreach ($items as &$item)
+            foreach ($items as $item)
             {
-                $item['info'] = unserialize($item['info']);
-                $this->list[$item['name']] = $item;
+                $this->list[$item->name] = $item;
             }
 
             /* Проверяем зависимости */
@@ -103,17 +108,17 @@ class Registry extends ContainerAware
                 $success = true;
                 foreach ($this->list as $plugin => $item)
                 {
-                    if (!($item['info'] instanceof Eresus_PluginInfo))
+                    if (!($item->info instanceof Eresus_PluginInfo))
                     {
                         continue;
                     }
-                    foreach ($item['info']->getRequiredPlugins() as $required)
+                    foreach ($item->info->getRequiredPlugins() as $required)
                     {
                         list ($name, $minVer, $maxVer) = $required;
                         if (
                             !isset($this->list[$name]) ||
-                            ($minVer && version_compare($this->list[$name]['info']->version, $minVer, '<')) ||
-                            ($maxVer && version_compare($this->list[$name]['info']->version, $maxVer, '>'))
+                            ($minVer && version_compare($this->list[$name]->info->version, $minVer, '<')) ||
+                            ($maxVer && version_compare($this->list[$name]->info->version, $maxVer, '>'))
                         )
                         {
                             $msg = 'Plugin "%s" requires plugin %s';
@@ -132,13 +137,12 @@ class Registry extends ContainerAware
             /* Загружаем плагины */
             foreach ($this->list as $item)
             {
-                $this->load($item['name']);
+                $this->load($item->name);
             }
         }
 
         spl_autoload_register(array($this, 'autoload'));
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Устанавливает плагин
@@ -178,11 +182,27 @@ class Registry extends ContainerAware
             $className = $name;
             if (class_exists($className, false))
             {
-                $this->items[$name] = new $className();
-                $this->items[$name]->install();
-                $item = $this->items[$name]->__item();
-                $item['info'] = serialize($info);
-                Eresus_CMS::getLegacyKernel()->db->insert('plugins', $item);
+                /** @var Plugin $plugin */
+                $plugin = new $className();
+                $this->items[$name] = $plugin;
+                $plugin->install();
+
+                $entity = new PluginEntity;
+                $entity->name = $plugin->name;
+                $entity->content = $plugin instanceof ContentPlugin;
+                $entity->active = true;
+                $entity->settings = $plugin->settings;
+                $entity->title = $plugin->title;
+                $entity->version = $plugin->version;
+                $entity->description = $plugin->description;
+                $entity->info = $info;
+
+                /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+                $doctrine = $this->container->get('doctrine');
+                /** @var \Doctrine\ORM\EntityManager $em */
+                $em = $doctrine->getManager();
+                $em->persist($entity);
+                $em->flush();
             }
             else
             {
@@ -198,7 +218,6 @@ class Registry extends ContainerAware
             ErrorMessage($msg);
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Исключает плагин из подключенных
@@ -215,13 +234,13 @@ class Registry extends ContainerAware
         {
             $this->items[$name]->uninstall();
         }
-        $item = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='".$name."'");
-        if (!is_null($item))
-        {
-            Eresus_CMS::getLegacyKernel()->db->delete('plugins', "`name`='".$name."'");
-        }
-        //$filename = filesRoot.'ext/'.$name.'.php';
-        //if (file_exists($filename)) unlink($filename);
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        $entity = $em->find('CmsBundle:Plugin', $name);
+        $em->remove($entity);
+        $em->flush();
     }
 
     /**
