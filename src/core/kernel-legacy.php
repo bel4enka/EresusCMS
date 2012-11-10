@@ -1297,6 +1297,7 @@ class Eresus
 	function init_plugins()
 	{
 		$this->plugins = new Registry;
+        $this->plugins->setContainer(Eresus_Kernel::sc());
 		$this->plugins->init();
 	}
 

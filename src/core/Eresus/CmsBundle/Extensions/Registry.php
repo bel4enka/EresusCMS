@@ -33,6 +33,7 @@ namespace Eresus\CmsBundle\Extensions;
 use DomainException;
 use RuntimeException;
 
+use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -52,7 +53,7 @@ use Eresus_Kernel;
  *
  * @package Eresus
  */
-class Registry
+class Registry extends ContainerAware
 {
     /**
      * Список всех активированных плагинов
@@ -293,6 +294,7 @@ class Registry
     {
         /* @var ClientUI $page */
         $page = Eresus_Kernel::app()->getPage();
+        $Eresus = Eresus_CMS::getLegacyKernel();
         $result = '';
         switch ($page->type)
         {
@@ -301,18 +303,24 @@ class Registry
                 $result = $plugin->clientRenderContent();
                 break;
             case 'list':
-                $request = Eresus_CMS::getLegacyKernel()->request;
+                $request = $Eresus->request;
                 /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
                 if ($request['file'] || $request['query'] || $page->subpage || $page->topic)
                 {
                     $page->httpError(404);
                 }
 
-                $subItems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" .
-                    $page->id .
-                    "') AND (`active`='1') AND (`access` >= '" .
-                    (Eresus_CMS::getLegacyKernel()->user['auth'] ?
-                        Eresus_CMS::getLegacyKernel()->user['access'] : GUEST)."')", "`position`");
+                /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+                $doctrine = $this->container->get('doctrine');
+                /** @var \Doctrine\ORM\EntityManager $em */
+                $em = $doctrine->getManager();
+
+                $q = $em->createQuery('SELECT s FROM CmsBundle:Section s ' .
+                    'WHERE s.parent.id = :parent AND s.active = 1 AND access >= :access ' .
+                    'ORDER BY s.position');
+                $q->setParameter('parent', $page->id);
+                $q->setParameter('access', $Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
+                $subItems = $q->getResult();
                 if (empty($page->content))
                 {
                     $page->content = '$(items)';
@@ -321,11 +329,13 @@ class Registry
                 $template = $templates->get('SectionListItem', 'std');
                 if (false === $template)
                 {
-                    $template = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
+                    $template = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>' .
+                        '$(description)';
                 }
                 $items = '';
                 foreach ($subItems as $item)
                 {
+                    /** @var \Eresus\CmsBundle\Entity\Section $item */
                     $items .= str_replace(
                         array(
                             '$(id)',
@@ -337,15 +347,13 @@ class Registry
                             '$(link)',
                         ),
                         array(
-                            $item['id'],
-                            $item['name'],
-                            $item['title'],
-                            $item['caption'],
-                            $item['description'],
-                            $item['hint'],
-                            Eresus_CMS::getLegacyKernel()->request['url'] .
-                                ($page->name == 'main' &&	!$page->owner ? 'main/' : '') .
-                                $item['name'].'/',
+                            $item->id,
+                            $item->name,
+                            $item->title,
+                            $item->caption,
+                            $item->description,
+                            $item->hint,
+                            $item->clientURL,
                         ),
                         $template
                     );
