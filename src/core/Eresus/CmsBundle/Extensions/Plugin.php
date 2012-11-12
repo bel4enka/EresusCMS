@@ -541,39 +541,6 @@ class Plugin
     }
 
     /**
-     * Изменение данных в БД
-     *
-     * @param string $table      Имя таблицы
-     * @param mixed  $data       Изменяемый эелемент / Изменения
-     * @param string $condition  Ключевое поле / Условие для замены
-     *
-     * @return bool Результат
-     */
-    public function dbUpdate($table, $data, $condition = '')
-    {
-        if (is_array($data))
-        {
-            if (empty($condition))
-            {
-                $condition = 'id';
-            }
-            $result = Eresus_CMS::getLegacyKernel()->db->
-                updateItem($this->__table($table), $data, "`$condition` = '{$data[$condition]}'");
-        }
-        elseif (is_string($data))
-        {
-            $result = Eresus_CMS::getLegacyKernel()->db->
-                update($this->__table($table), $data, $condition);
-        }
-        else
-        {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
