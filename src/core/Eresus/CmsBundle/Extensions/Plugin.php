@@ -591,21 +591,6 @@ class Plugin
     }
 
     /**
-     * Подсчёт количества записей в БД
-     *
-     * @param string $table      Имя таблицы
-     * @param string $condition  Условие для включения в подсчёт
-     *
-     * @return int Количество записей, удовлетворяющих условию
-     */
-    public function dbCount($table, $condition = '')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->count($this->__table($table), $condition);
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
