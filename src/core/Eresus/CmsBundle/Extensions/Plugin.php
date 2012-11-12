@@ -524,23 +524,6 @@ class Plugin
     }
 
     /**
-     * Вставка в таблицу БД
-     *
-     * @param string $table  Имя таблицы
-     * @param array  $item   Вставляемый элемент
-     * @param string $key    Имя ключевого поля. По умолчанию "id"
-     *
-     * @return array
-     */
-    public function dbInsert($table, $item, $key = 'id')
-    {
-        Eresus_CMS::getLegacyKernel()->db->insert($this->__table($table), $item);
-        $result = $this->dbItem($table, Eresus_CMS::getLegacyKernel()->db->getInsertedId(), $key);
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
