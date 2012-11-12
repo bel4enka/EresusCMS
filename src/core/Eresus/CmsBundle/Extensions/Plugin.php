@@ -507,23 +507,6 @@ class Plugin
     }
 
     /**
-     * Получение записи из БД
-     *
-     * @param string $table  Имя таблицы
-     * @param mixed  $id   	 Идентификатор элемента
-     * @param string $key    Имя ключевого поля
-     *
-     * @return array Элемент
-     */
-    public function dbItem($table, $id, $key = 'id')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->selectItem($this->__table($table),
-            "`$key` = '$id'");
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
