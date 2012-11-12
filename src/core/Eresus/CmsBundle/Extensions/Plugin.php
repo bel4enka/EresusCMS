@@ -574,23 +574,6 @@ class Plugin
     }
 
     /**
-     * Удаление элемента из БД
-     *
-     * @param string $table  Имя таблицы
-     * @param mixed  $item   Удаляемый элемент / Идентификатор
-     * @param string $key    Ключевое поле
-     *
-     * @return bool Результат
-     */
-    public function dbDelete($table, $item, $key = 'id')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->
-            delete($this->__table($table), "`$key` = '".(is_array($item)? $item[$key] : $item)."'");
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
