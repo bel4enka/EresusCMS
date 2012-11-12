@@ -484,29 +484,6 @@ class Plugin
     }
 
     /**
-     * Производит выборку из таблицы БД
-     *
-     * @param string	$table				Имя таблицы (пустое значение - таблица по умолчанию)
-     * @param string	$condition		Условие выборки
-     * @param string	$order				Порядок выборки
-     * @param string	$fields				Список полей
-     * @param int			$limit				Вернуть не больше полей чем limit
-     * @param int			$offset				Смещение выборки
-     * @param string  $group        поле для группировки
-     * @param bool		$distinct			Только уникальные результаты
-     *
-     * @return array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
-     */
-    public function dbSelect($table = '', $condition = '', $order = '', $fields = '', $limit = 0,
-        $offset = 0, $group = '', $distinct = false)
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->select($this->__table($table), $condition, $order,
-            $fields, $limit, $offset, $group, $distinct);
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
