@@ -606,21 +606,6 @@ class Plugin
     }
 
     /**
-     * Получение информации о таблицах
-     *
-     * @param string $table  Маска имени таблицы
-     * @param string $param  Вернуть только указанный параметр
-     *
-     * @return mixed
-     */
-    public function dbTable($table, $param = '')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->tableStatus($this->__table($table), $param);
-
-        return $result;
-    }
-
-    /**
      * Регистрация обработчиков событий
      *
      * @param string $event...  Имя события
