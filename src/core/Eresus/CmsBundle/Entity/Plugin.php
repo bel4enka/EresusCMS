@@ -30,6 +30,7 @@ namespace Eresus\CmsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Eresus\ORMBundle\AbstractEntity;
 use Eresus_PluginInfo;
 
@@ -59,6 +60,7 @@ class Plugin extends AbstractEntity
      *
      * @var string
      *
+     * @ORM\Id
      * @ORM\Column(length=32)
      */
     protected $name;
@@ -97,7 +99,7 @@ class Plugin extends AbstractEntity
      *
      * @ORM\Column(length=16)
      */
-    protected $caption;
+    protected $version;
 
     /**
      * Название
