@@ -68,7 +68,7 @@
       * Требуемая версия ядра
       * @var string
       */
-     public $kernel = '2.12';
+     public $kernel = '3.00';
 
      /**
       * Название плагина
@@ -77,7 +77,7 @@
      public $title = 'Мой плагин';
 
      /**
-      * Опиание плагина
+      * Описание плагина
       * @var string
       */
      public $description = 'Описание плагина';
@@ -98,10 +98,10 @@
 
   * ''myplugin/'' --- дополнительные файлы модуля (начиная с 2.16)
 
-    * ''plugin.xml'' --- [[plugin.xml|описание модуля]]
-  * ''myplugin.php'' --- [[cms:dev:manual:quick-start#основной файл модуля]]
+    * ''plugin.xml'' --- :doc:`описание модуля<plugin.xml>`
+  * ''myplugin.php'' --- основной файл модуля
 * ''tests/'' --- автоматические тесты
 
-  * ''phpunit'' --- тесты [[http://phpunit.de/|PHPUnit]] (до 2.16 папка называлась ''unit'')
-* ''build.xml'' --- файл сборки для [[http://phing.info/|phing]]
+  * ''phpunit'' --- тесты `PHPUnit <http://phpunit.de/>`_
+* ''build.xml'' --- файл сборки для `phing <http://phing.info/>`_
 * ''build.properties'' --- параметры сборки для ''build.xml''
