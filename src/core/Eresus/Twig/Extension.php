@@ -38,86 +38,86 @@ use Eresus\CmsBundle\HTTP\Request;
  */
 class Eresus_Twig_Extension extends Twig_Extension
 {
-	/**
-	 * Возвращает имя расширения
-	 *
-	 * @return string
-	 *
-	 * @since 4.00
-	 */
-	public function getName()
-	{
-		return 'eresus';
-	}
+    /**
+     * Возвращает имя расширения
+     *
+     * @return string
+     *
+     * @since 4.00
+     */
+    public function getName()
+    {
+        return 'eresus';
+    }
 
-	/**
-	 * Возвращает глобальные переменные
-	 *
-	 * @return array
-	 * @since 4.00
-	 */
-	public function getGlobals()
-	{
-		/** @var Request $request */
-		$request = Eresus_Kernel::get('request');
+    /**
+     * Возвращает глобальные переменные
+     *
+     * @return array
+     * @since 4.00
+     */
+    public function getGlobals()
+    {
+        /** @var Request $request */
+        $request = Eresus_Kernel::get('request');
 
-		$globals = array(
-			'Eresus' => Eresus_CMS::getLegacyKernel(),
-			'siteRoot' =>
-				$request->getScheme() . '://' . $request->getHost() . $request->getBasePath() . '/',
-		);
+        $globals = array(
+            'Eresus' => Eresus_CMS::getLegacyKernel(),
+            'siteRoot' =>
+            $request->getScheme() . '://' . $request->getHost() . $request->getBasePath() . '/',
+        );
 
-		return $globals;
-	}
+        return $globals;
+    }
 
-	/**
-	 * Возвращает список функций
-	 *
-	 * @return array
-	 * @since 4.00
-	 */
-	public function getFunctions()
-	{
-		return array(
-			'i18n' => new Twig_Function_Method($this, 'i18n'),
-			'jslib' => new Twig_Function_Method($this, 'jslib'),
-			'call' => new Twig_Function_Method($this, 'call'),
-		);
-	}
+    /**
+     * Возвращает список функций
+     *
+     * @return array
+     * @since 4.00
+     */
+    public function getFunctions()
+    {
+        return array(
+            'i18n' => new Twig_Function_Method($this, 'i18n'),
+            'jslib' => new Twig_Function_Method($this, 'jslib'),
+            'call' => new Twig_Function_Method($this, 'call'),
+        );
+    }
 
-	/**
-	 * Обёртка для {@link Eresus_i18n::getText()}
-	 */
-	public function i18n($key, $context = null)
-	{
-		return Eresus_I18n::getInstance()->getText($key, $context);
-	}
+    /**
+     * Обёртка для {@link Eresus_i18n::getText()}
+     */
+    public function i18n($key, $context = null)
+    {
+        return Eresus_I18n::getInstance()->getText($key, $context);
+    }
 
-	/**
-	 * Подключает библиотеку JavaScript
-	 *
-	 * @see WebPage::linkJsLib()
-	 * @since 4.00
-	 */
-	public function jslib()
-	{
-		$args = func_get_args();
-		call_user_func_array(array(Eresus_Kernel::app()->getPage(), 'linkJsLib'), $args);
-		return '';
-	}
+    /**
+     * Подключает библиотеку JavaScript
+     *
+     * @see WebPage::linkJsLib()
+     * @since 4.00
+     */
+    public function jslib()
+    {
+        $args = func_get_args();
+        call_user_func_array(array(Eresus_Kernel::app()->getPage(), 'linkJsLib'), $args);
+        return '';
+    }
 
-	/**
-	 * Вызывает метод объекта
-	 *
-	 * @param object $object
-	 * @param string $method
-	 *
-	 * @return string
-	 *
-	 * @since 4.00
-	 */
-	public function call($object, $method)
-	{
-		return call_user_func(array($object, $method));
-	}
+    /**
+     * Вызывает метод объекта
+     *
+     * @param object $object
+     * @param string $method
+     *
+     * @return string
+     *
+     * @since 4.00
+     */
+    public function call($object, $method)
+    {
+        return call_user_func(array($object, $method));
+    }
 }
