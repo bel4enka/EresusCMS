@@ -615,34 +615,19 @@ class WebPage extends Controller
      *
      * @since 2.10
      */
-    public function clientURL($id)
+    public function clientUrl($id)
     {
-        /** @var \Eresus\CmsBundle\Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $parents = $sections->parents($id);
-
-        if (is_null($parents))
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Entity\Section $section */
+        $section = $em->find('CmsBundle:Section', $id);
+        if (!$section)
         {
             return null;
         }
 
-        array_push($parents, $id);
-        $items = $sections->get( $parents);
-
-        $list = array();
-        for ($i = 0; $i < count($items); $i++)
-        {
-            $list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
-        }
-        $result = Eresus_CMS::getLegacyKernel()->root;
-        for ($i = 0; $i < count($list); $i++)
-        {
-            $result .= $list[$i].'/';
-        }
-
-        return $result;
+        return rtrim(Eresus_CMS::getLegacyKernel()->root, '/') . $section->clientURL;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовка переключателя страниц
