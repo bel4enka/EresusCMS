@@ -28,6 +28,7 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
@@ -38,14 +39,16 @@ use Eresus\CmsBundle\Sections;
  *
  * @package Eresus
  */
-class Eresus_Admin_Controllers_Content
+class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
 {
     /**
      * Возвращает разметку интерфейса управления контентом текущего раздела
      *
+     * @param Request $request
+     *
      * @return Response|string  HTML
      */
-    public function adminRender()
+    public function adminRender(Request $request)
     {
         if (!UserRights(EDITOR))
         {
@@ -53,7 +56,7 @@ class Eresus_Admin_Controllers_Content
         }
         $result = '';
         $sections = new Sections();
-        $item = $sections->get(arg('section', 'int'));
+        $item = $sections->get($request->get('section'));
 
         Eresus_Kernel::app()->getPage()->id = $item['id'];
         if (!array_key_exists($item['type'], Eresus_CMS::getLegacyKernel()->plugins->list))
@@ -62,7 +65,7 @@ class Eresus_Admin_Controllers_Content
             {
                 case 'default':
                     $editor = new ContentPlugin();
-                    if (arg('update'))
+                    if ($request->request->get('update'))
                     {
                         $editor->update();
                     }
@@ -71,15 +74,14 @@ class Eresus_Admin_Controllers_Content
                         $result = $editor->adminRenderContent();
                     }
                     break;
-
                 case 'list':
-                    if (arg('update'))
+                    if ($request->request->get('update'))
                     {
-                        $item['content'] = arg('content', 'dbsafe');
+                        $item['content'] = $request->request->get('content');
                         /** @var Sections $sections */
                         $sections = Eresus_Kernel::get('sections');
                         $sections->update($item);
-                        return new RedirectResponse(arg('submitURL'));
+                        return new RedirectResponse($request->request->get('submitURL'));
                     }
                     else
                     {
@@ -89,22 +91,25 @@ class Eresus_Admin_Controllers_Content
                             'width' => '100%',
                             'fields' => array (
                                 array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-                                array ('type' => 'html', 'name' => 'content', 'label' => admTemplListLabel, 'height' => '300px', 'value'=>isset($item['content'])?$item['content']:'$(items)'),
+                                array('type' => 'html', 'name' => 'content',
+                                    'label' => admTemplListLabel, 'height' => '300px',
+                                    'value'=>isset($item['content'])
+                                        ? $item['content']
+                                        : '$(items)'),
                             ),
                             'buttons' => array('apply', 'cancel'),
                         );
                         $result = Eresus_Kernel::app()->getPage()->renderForm($form);
                     }
                     break;
-
                 case 'url':
-                    if (arg('update'))
+                    if ($request->request->get('update'))
                     {
-                        $item['content'] = arg('url', 'dbsafe');
+                        $item['content'] = $request->request->get('url');
                         /** @var Sections $sections */
                         $sections = Eresus_Kernel::get('sections');
                         $sections->update($item);
-                        return new RedirectResponse(arg('submitURL'));
+                        return new RedirectResponse($request->request->get('submitURL'));
                     }
                     else
                     {
@@ -114,14 +119,16 @@ class Eresus_Admin_Controllers_Content
                             'width' => '100%',
                             'fields' => array (
                                 array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-                                array ('type' => 'edit', 'name' => 'url', 'label' => 'URL:', 'width' => '100%', 'value'=>isset($item['content'])?$item['content']:''),
+                                array('type' => 'edit', 'name' => 'url', 'label' => 'URL:',
+                                    'width' => '100%', 'value' => isset($item['content'])
+                                        ? $item['content']
+                                        : ''),
                             ),
                             'buttons' => array('apply', 'cancel'),
                         );
                         $result = Eresus_Kernel::app()->getPage()->renderForm($form);
                     }
                     break;
-
                 default:
                     $result = Eresus_Kernel::app()->getPage()->
                         box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
@@ -131,10 +138,12 @@ class Eresus_Admin_Controllers_Content
         else
         {
             Eresus_CMS::getLegacyKernel()->plugins->load($item['type']);
-            Eresus_Kernel::app()->getPage()->module = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
-            $result = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->adminRenderContent();
+            Eresus_Kernel::app()->getPage()->module
+                = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
+            $result = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]
+                ->adminRenderContent();
         }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 }
+
