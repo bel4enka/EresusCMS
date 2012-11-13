@@ -260,7 +260,6 @@ class Registry extends ContainerAware
      */
     public function load($name)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
         /* Если плагин уже был загружен возвращаем экземпляр из реестра */
         if (isset($this->items[$name]))
         {
@@ -296,9 +295,11 @@ class Registry extends ContainerAware
             throw new RuntimeException(sprintf(errClassNotFound, $name));
         }
 
+        /** @var Plugin $plugin */
+        $plugin = new $className();
+        $plugin->setContainer($this->container);
         // Заносим экземпляр в реестр
-        $this->items[$name] = new $className();
-        eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
+        $this->items[$name] = $plugin;
 
         return $this->items[$name];
     }

@@ -30,6 +30,9 @@
 
 namespace Eresus\CmsBundle\Extensions;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
 use Eresus_CMS;
 use FS;
 use Core;
@@ -39,7 +42,7 @@ use Core;
  *
  * @package Eresus
  */
-class Plugin
+class Plugin implements ContainerAwareInterface
 {
     /**
      * Имя плагина
@@ -92,6 +95,14 @@ class Plugin
      * @var array
      */
     public $settings = array();
+
+    /**
+     * Контейнер служб
+     *
+     * @var ContainerInterface
+     * @since 4.00
+     */
+    protected $container;
 
     /**
      * Директория данных
@@ -191,6 +202,15 @@ class Plugin
     }
 
     /**
+     * Устанавливает контейнер
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * Возвращает информацию о плагине
      *
      * @param array $item  Предыдущая версия информации (по умолчанию null)
@@ -257,6 +277,20 @@ class Plugin
     public function getStyleURL()
     {
         return $this->urlStyle;
+    }
+
+    /**
+     * Возвращает службу по её идентификатору
+     *
+     * @param string $id
+     *
+     * @return object
+     *
+     * @since 4.00
+     */
+    protected function get($id)
+    {
+        return $this->container->get($id);
     }
 
     /**
