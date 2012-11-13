@@ -41,8 +41,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Sections;
 use Eresus\CmsBundle\UI\Admin\ArrayForm;
+use \Eresus\CmsBundle\WebPage;
 
-use Eresus_WebPage;
 use Eresus_Admin_Controllers_Abstract;
 use Eresus_Admin_Theme;
 use Eresus_CMS;
@@ -64,7 +64,7 @@ define('ADMINUI', true);
  *
  * @package Eresus
  */
-class AdminUI extends Eresus_WebPage
+class AdminUI extends WebPage
 {
     /**
      * Загружаемый модуль

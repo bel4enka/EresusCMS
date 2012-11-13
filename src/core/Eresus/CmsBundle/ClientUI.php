@@ -33,7 +33,7 @@ namespace Eresus\CmsBundle;
 use Symfony\Component\HttpFoundation\Response;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Templates;
-use Eresus_WebPage;
+use Eresus\CmsBundle\WebPage;
 use Eresus_Kernel;
 use Eresus_CMS;
 
@@ -49,7 +49,7 @@ define('CLIENTUI', true);
  *
  * @package Eresus
  */
-class ClientUI extends Eresus_WebPage
+class ClientUI extends WebPage
 {
     public $dbItem = array(); # Информация о странице из БД
     public $name = ''; # Имя страницы

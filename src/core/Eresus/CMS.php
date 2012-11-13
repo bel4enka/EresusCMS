@@ -44,7 +44,7 @@ class Eresus_CMS
 {
     /**
      * Создаваемая страница
-     * @var Eresus_WebPage
+     * @var \Eresus\CmsBundle\WebPage
      * @since 3.00
      */
     protected $page;
@@ -145,7 +145,7 @@ class Eresus_CMS
      *
      * Метод нужен до отказа от переменной $page
      *
-     * @return Eresus_WebPage
+     * @return \Eresus\CmsBundle\WebPage
      *
      * @since 3.00
      */
