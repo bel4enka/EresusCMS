@@ -316,13 +316,14 @@ class Plugin implements ContainerAwareInterface
      */
     protected function saveSettings()
     {
-        $result = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='{$this->name}'");
-        $result = $this->__item($result);
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(encodeOptions($this->settings));
-        $result = Eresus_CMS::getLegacyKernel()->db->
-            updateItem('plugins', $result, "`name`='".$this->name."'");
-
-        return $result;
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->get('doctrine');
+        $em = $doctrine->getManager();
+        /** @var \Eresus\CmsBundle\Entity\Plugin $entity */
+        $entity = $em->getRepository('CmsBundle:Plugin')->find($this->name);
+        $entity->settings = $this->settings;
+        $em->flush();
+        return true;
     }
 
     /**
