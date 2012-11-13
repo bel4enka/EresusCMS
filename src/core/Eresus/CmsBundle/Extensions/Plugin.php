@@ -300,13 +300,13 @@ class Plugin implements ContainerAwareInterface
      */
     protected function loadSettings()
     {
-        $result = Eresus_CMS::getLegacyKernel()->db->
-            selectItem('plugins', "`name`='".$this->name."'");
-        if ($result)
-        {
-            $this->settings = decodeOptions($result['settings'], $this->settings);
-        }
-        return (bool) $result;
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->get('doctrine');
+        $em = $doctrine->getManager();
+        /** @var \Eresus\CmsBundle\Entity\Plugin $entity */
+        $entity = $em->getRepository('CmsBundle:Plugin')->find($this->name);
+        $this->settings = $entity->settings0000894: Plogin::loadSettings использует устаревший интерфейс к БД;
+        return true;
     }
 
     /**
