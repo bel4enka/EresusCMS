@@ -211,26 +211,6 @@ class Plugin implements ContainerAwareInterface
     }
 
     /**
-     * Возвращает информацию о плагине
-     *
-     * @param array $item  Предыдущая версия информации (по умолчанию null)
-     *
-     * @return array Массив информации, пригодный для записи в БД
-     */
-    public function __item($item = null)
-    {
-        $result['name'] = $this->name;
-        $result['content'] = false;
-        $result['active'] = is_null($item)? true : $item['active'];
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db->
-            escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
-        $result['title'] = $this->title;
-        $result['version'] = $this->version;
-        $result['description'] = $this->description;
-        return $result;
-    }
-
-    /**
      * Перехватчик обращений к несуществующим методам плагинов
      *
      * @param string $method  Имя вызванного метода

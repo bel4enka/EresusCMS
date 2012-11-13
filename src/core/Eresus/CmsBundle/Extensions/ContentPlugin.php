@@ -70,20 +70,6 @@ class ContentPlugin extends Plugin
     }
 
     /**
-     * Возвращает информацию о плагине
-     *
-     * @param  array  $item  Предыдущая версия информации (по умолчанию null)
-     *
-     * @return  array  Массив информации, пригодный для записи в БД
-     */
-    public function __item($item = null)
-    {
-        $result = parent::__item($item);
-        $result['content'] = true;
-        return $result;
-    }
-
-    /**
      * Действия при удалении раздела данного типа
      * @param int     $id     Идентификатор удаляемого раздела
      * @param string  $table  Имя таблицы
