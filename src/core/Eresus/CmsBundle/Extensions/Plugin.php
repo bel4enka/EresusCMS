@@ -305,7 +305,7 @@ class Plugin implements ContainerAwareInterface
         $em = $doctrine->getManager();
         /** @var \Eresus\CmsBundle\Entity\Plugin $entity */
         $entity = $em->getRepository('CmsBundle:Plugin')->find($this->name);
-        $this->settings = $entity->settings0000894: Plogin::loadSettings использует устаревший интерфейс к БД;
+        $this->settings = $entity->settings;
         return true;
     }
 
