@@ -32,7 +32,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
-use Eresus\CmsBundle\Sections;
 
 /**
  * Управление контентом
@@ -55,13 +54,13 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
             return '';
         }
         $result = '';
-        $sections = new Sections();
-        $item = $sections->get($request->get('section'));
+        $section = $this->getDoctrine()->getManager()
+            ->find('CmsBundle:Section', $request->get('section'));
 
-        Eresus_Kernel::app()->getPage()->id = $item['id'];
-        if (!array_key_exists($item['type'], Eresus_CMS::getLegacyKernel()->plugins->list))
+        Eresus_Kernel::app()->getPage()->id = $section->id;
+        if (!array_key_exists($section->type, Eresus_CMS::getLegacyKernel()->plugins->list))
         {
-            switch ($item['type'])
+            switch ($section->type)
             {
                 case 'default':
                     $editor = new ContentPlugin();
@@ -90,7 +89,7 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
                             'caption' => ADM_EDIT,
                             'width' => '100%',
                             'fields' => array (
-                                array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
+                                array('type'=>'hidden','name'=>'update', 'value' => $section->id),
                                 array('type' => 'html', 'name' => 'content',
                                     'label' => admTemplListLabel, 'height' => '300px',
                                     'value'=>isset($item['content'])
@@ -118,7 +117,7 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
                             'caption' => ADM_EDIT,
                             'width' => '100%',
                             'fields' => array (
-                                array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
+                                array('type'=>'hidden','name'=>'update', 'value' => $section->id),
                                 array('type' => 'edit', 'name' => 'url', 'label' => 'URL:',
                                     'width' => '100%', 'value' => isset($item['content'])
                                         ? $item['content']
@@ -131,16 +130,16 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
                     break;
                 default:
                     $result = Eresus_Kernel::app()->getPage()->
-                        box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
+                        box(sprintf(errContentPluginNotFound, $section->type), 'errorBox', errError);
                     break;
             }
         }
         else
         {
-            Eresus_CMS::getLegacyKernel()->plugins->load($item['type']);
+            Eresus_CMS::getLegacyKernel()->plugins->load($section->type);
             Eresus_Kernel::app()->getPage()->module
-                = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
-            $result = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]
+                = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type];
+            $result = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type]
                 ->adminRenderContent();
         }
         return $result;
