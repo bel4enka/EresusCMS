@@ -161,11 +161,14 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
         }
 
         /* Составляем список установленных плагинов */
-        $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', '', 'name, version');
+        /** @var \Doctrine\Common\Persistence\ObjectManager $om */
+        $om = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Entity\Plugin[] $items */
+        $items = $om->getRepository('CmsBundle:Plugin')->findAll();
         $installed = array();
         foreach ($items as $item)
         {
-            $installed []= Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $item['name'] . '.php';
+            $installed []= Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $item->name . '.php';
         }
         // Оставляем только неустановленные
         $files = array_diff($files, $installed);
@@ -241,7 +244,6 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
 
         return $html;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовка контента модуля
