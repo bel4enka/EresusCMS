@@ -1,5 +1,5 @@
 <li class="sections__item{% if section.id != 1 and section.children|length %} sections__item_has_children{% if level > 0 %} sections__item_state_collapsed{% endif %}{% endif %}">
-    <a href="#" class="sections__icon"></a>
+    <a href="#" class="sections__icon"{% if section.id != 1 and section.children|length %} title="Развернуть" data-inverse-title="Свернуть"{% endif %}></a>
     <a href="admin.php?mod=content&id={{ section.id }}" class="sections__link"
        title="Перейти в раздел {{ section.caption|escape }}">{{ section.caption }}</a>
     {% if section.children|length %}

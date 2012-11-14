@@ -78,6 +78,9 @@ $(document).on('click', '.sections__icon',
         {
             var children = item.children('.sections__children');
             item.toggleClass('sections__item_state_collapsed');
+            var title = icon.attr('title');
+            icon.attr('title', icon.attr('data-inverse-title'));
+            icon.attr('data-inverse-title', title);
         }
         icon.blur();
     }

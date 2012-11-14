@@ -1048,107 +1048,6 @@ class AdminUI extends WebPage
     }
 
     /**
-     * Отрисовывает ветку меню
-     *
-     * @param $opened
-     * @param $owner
-     * @param $level
-     *
-     * @return string
-     */
-    private function renderPagesMenu(&$opened, $owner = 0, $level = 0)
-    {
-        $theme = $this->getUITheme();
-
-        $result = '';
-
-        /** @var Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-        $items = $sections->children($owner, Eresus_CMS::getLegacyKernel()->user['access'],
-            Sections::SECTIONS_ACTIVE);
-
-        if (count($items))
-        {
-            foreach ($items as $item)
-            {
-                if (empty($item['caption']))
-                {
-                    $item['caption'] = ADM_NA;
-                }
-
-                if (
-                    isset(Eresus_CMS::getLegacyKernel()->request['arg']['section']) &&
-                    $item['id'] == arg('section')
-                )
-                {
-                    $this->title = $item['caption']; # title - массив?
-                }
-
-                $sub = $this->renderPagesMenu($opened, $item['id'], $level+1);
-                $current = (arg('mod') == 'content') && (arg('section') == $item['id']);
-
-                if ($current)
-                {
-                    $opened = $level;
-                }
-
-                // Альтернативный текст
-                $alt = '[&nbsp;]';
-                // Подсказка
-                $title = '';
-                // Классы пункта меню
-                $classes = array();
-
-                if ($opened == $level + 1)
-                {
-                    $display = 'block';
-                    $classes []= 'opened';
-                    $opened--;
-                }
-                else
-                {
-                    $display = 'none';
-                }
-
-                if ($sub)
-                {
-                    $classes []= 'parrent';
-                    $alt = '[+]';
-                    $title = 'Развернуть';
-                }
-
-                if ($current)
-                {
-                    $classes []= 'current';
-                }
-
-                if (!$item['visible'])
-                {
-                    $classes []= 'invisible';
-                }
-
-                $classes = implode(' ', $classes);
-
-                $result .=
-                    '<li' . ($classes ? ' class="' . $classes . '"' : '') . '>' .
-                        '<img src="' . Eresus_CMS::getLegacyKernel()->root . $theme->getImage('dot.gif') . '" alt="' .
-                        $alt . '" title="' . $title . '" /> ' .
-                        '<a href="' . Eresus_CMS::getLegacyKernel()->root . 'admin.php?mod=content&amp;section=' .
-                        $item['id'] .
-                        '" title="ID: '.$item['id'].' ('.$item['name'].')">'.$item['caption']."</a>\n";
-
-                if (!empty($sub))
-                {
-                    $result .= '<ul style="display: '.$display.';">'.$sub.'</ul>';
-                }
-            }
-        }
-
-        return $result;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
      * Отрисовывает меню плагинов и управления
      *
      * @return string  HTML
@@ -1290,7 +1189,7 @@ class AdminUI extends WebPage
      *
      * @return Response
      */
-    private function renderUI()
+    private function renderUi()
     {
         $response = $this->renderContent();
         if ($response instanceof Response)
@@ -1310,8 +1209,6 @@ class AdminUI extends WebPage
             'version' => CMSVERSION,
             'link' => CMSLINK,
         );
-        $opened = -1;
-        //$data['sectionMenu'] = $this->renderPagesMenu($opened);
         /** @var \Doctrine\Common\Persistence\ObjectManager $om */
         $om = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
