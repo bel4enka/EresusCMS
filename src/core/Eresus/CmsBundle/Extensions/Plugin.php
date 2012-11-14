@@ -324,21 +324,6 @@ class Plugin implements ContainerAwareInterface
     }
 
     /**
-     * Действия, выполняемые при деинсталляции плагина
-     */
-    public function uninstall()
-    {
-        $eresus = Eresus_CMS::getLegacyKernel();
-        $tables = $eresus->db->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}_%'");
-        $tables = array_merge($tables, $eresus->db->
-            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}'"));
-        for ($i=0; $i < count($tables); $i++)
-        {
-            $this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
-        }
-    }
-
-    /**
      * Действия при изменении настроек
      */
     public function onSettingsUpdate()
@@ -469,19 +454,6 @@ class Plugin implements ContainerAwareInterface
     protected function __table($table)
     {
         return $this->name.(empty($table)?'':'_'.$table);
-    }
-
-    /**
-     * Удаление таблицы БД
-     *
-     * @param string $name Имя таблицы
-     *
-     * @return bool Результат выполнения
-     */
-    protected function dbDropTable($name = '')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->drop($this->__table($name));
-        return $result;
     }
 
     /**
