@@ -1,0 +1,15 @@
+.sections__children
+{
+    list-style: none;
+    padding: 0;
+}
+
+.sections__item > .sections__children
+{
+    padding-left: 6px;
+}
+
+.sections__item.sections__item_state_collapsed > .sections__children
+{
+    display: none;
+}

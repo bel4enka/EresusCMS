@@ -1,0 +1,17 @@
+.sections__icon
+{
+    background: url(img/menu-tree.png) no-repeat 0 0 transparent;
+    display: inline-block;
+    height: 9px;
+    width: 9px;
+}
+
+.sections__item_has_children > .sections__icon
+{
+    background-position: -18px 0;
+}
+
+.sections__item_has_children.sections__item_state_collapsed > .sections__icon
+{
+    background-position: -9px 0;
+}

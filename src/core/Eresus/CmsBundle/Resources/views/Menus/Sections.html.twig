@@ -1,0 +1,12 @@
+<li class="sections__item{% if section.id != 1 and section.children|length %} sections__item_has_children{% if level > 0 %} sections__item_state_collapsed{% endif %}{% endif %}">
+    <a href="#" class="sections__icon"></a>
+    <a href="admin.php?mod=content&id={{ section.id }}" class="sections__link"
+       title="Перейти в раздел {{ section.caption|escape }}">{{ section.caption }}</a>
+    {% if section.children|length %}
+    <ul class="sections__children">
+        {% for subSection in section.children %}
+        {% include 'CmsBundle:Menus:Sections.html.twig' with {'section': subSection, 'level': level + 1} only %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</li>

@@ -52,7 +52,7 @@ function formApplyClick(strForm)
 /*
  * Запрос подтверждения при удалении
  */
-jQuery(document).on('click', 'a[data-action="delete"]',
+$(document).on('click', 'a[data-action="delete"]',
     /**
      * @param {Event} e
      */
@@ -62,5 +62,23 @@ jQuery(document).on('click', 'a[data-action="delete"]',
         {
             e.preventDefault();
         }
+    }
+);
+
+$(document).on('click', '.sections__icon',
+    /**
+     * @param {Event} e
+     */
+    function (e)
+    {
+        e.preventDefault();
+        var icon = $(this);
+        var item = icon.closest('.sections__item');
+        if (item.hasClass('sections__item_has_children'))
+        {
+            var children = item.children('.sections__children');
+            item.toggleClass('sections__item_state_collapsed');
+        }
+        icon.blur();
     }
 );

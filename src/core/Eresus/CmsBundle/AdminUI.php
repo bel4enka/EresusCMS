@@ -39,7 +39,6 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
-use Eresus\CmsBundle\Sections;
 use Eresus\CmsBundle\UI\Admin\ArrayForm;
 use \Eresus\CmsBundle\WebPage;
 
@@ -1312,7 +1311,13 @@ class AdminUI extends WebPage
             'link' => CMSLINK,
         );
         $opened = -1;
-        $data['sectionMenu'] = $this->renderPagesMenu($opened);
+        //$data['sectionMenu'] = $this->renderPagesMenu($opened);
+        /** @var \Doctrine\Common\Persistence\ObjectManager $om */
+        $om = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
+        $repo = $om->getRepository('CmsBundle:Section');
+        $data['rootSection'] = $repo->getRoot();
+
         $data['controlMenu'] = $this->renderControlMenu();
         $data['user'] = Eresus_CMS::getLegacyKernel()->user;
 
