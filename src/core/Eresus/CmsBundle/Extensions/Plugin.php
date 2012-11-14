@@ -472,20 +472,6 @@ class Plugin implements ContainerAwareInterface
     }
 
     /**
-     * Создание таблицы в БД
-     *
-     * @param string $SQL Описание таблицы
-     * @param string $name Имя таблицы
-     *
-     * @return bool Результат выполнения
-     */
-    protected function dbCreateTable($SQL, $name = '')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->create($this->__table($name), $SQL);
-        return $result;
-    }
-
-    /**
      * Удаление таблицы БД
      *
      * @param string $name Имя таблицы
