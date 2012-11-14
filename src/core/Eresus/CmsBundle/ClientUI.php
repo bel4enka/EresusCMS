@@ -31,7 +31,13 @@
 namespace Eresus\CmsBundle;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+
 use Eresus\CmsBundle\HTTP\Request;
+use Eresus\CmsBundle\Entity\Section;
 use Eresus\CmsBundle\Templates;
 use Eresus\CmsBundle\WebPage;
 use Eresus_Kernel;
@@ -69,6 +75,27 @@ class ClientUI extends WebPage
     public $scripts = ''; # Скрипты
     public $styles = ''; # Стили
     public $subpage = 0; # Подстраница списка элементов
+
+    /**
+     * Имя шаблона страницы
+     * @var string
+     * @since 4.00
+     */
+    public $template;
+
+    /**
+     * Дата создания раздела
+     * @var \DateTime
+     * @since 4.00
+     */
+    public $created;
+
+    /**
+     * Дата обновления раздела
+     * @var \DateTime
+     * @since 4.00
+     */
+    public $updated;
 
     /**
      * Идентификатор объекта контента
@@ -219,63 +246,45 @@ class ClientUI extends WebPage
     //------------------------------------------------------------------------------
 
     /**
+     * Добавляет маршрут к разделу в список маршрутов
+     *
+     * @param RouteCollection $routes
+     * @param Section         $section
+     *
+     * @since 4.00
+     */
+    private function addRoute(RouteCollection $routes, Section $section)
+    {
+        $url = $section->getClientUrl();
+        $route = new Route($url, array(
+            'section' => $section,
+        ));
+        $routes->add(str_replace('/', '_', $url), $route);
+
+        foreach ($section->children as $child)
+        {
+            $this->addRoute($routes, $child);
+        }
+    }
+
+    /**
      * Производит разбор URL и загрузку соответствующего раздела
      *
-     * @return  array|bool  Описание загруженного раздела или false если он не найден
+     * @return Section  запрошенный раздел сайта
      */
     private function loadPage()
     {
-        $result = false;
-        $main_fake = false;
-        if (!count(Eresus_CMS::getLegacyKernel()->request['params']) ||
-            Eresus_CMS::getLegacyKernel()->request['params'][0] != 'main')
-        {
-            array_unshift(Eresus_CMS::getLegacyKernel()->request['params'], 'main');
-            $main_fake = true;
-        }
-        reset(Eresus_CMS::getLegacyKernel()->request['params']);
-        $item['id'] = 0;
-        $url = '';
-
-        /** @var Sections $sections */
-        $sections = Eresus_Kernel::get('sections');
-
-        do
-        {
-            $items = $sections->children($item['id'], Eresus_CMS::getLegacyKernel()->user['auth'] ?
-                Eresus_CMS::getLegacyKernel()->user['access'] : GUEST, Sections::SECTIONS_ACTIVE);
-            $item = false;
-            for ($i=0; $i<count($items); $i++)
-            {
-                if ($items[$i]['name'] == current(Eresus_CMS::getLegacyKernel()->request['params']))
-                {
-                    $result = $item = $items[$i];
-                    if ($item['id'] != 1 || !$main_fake)
-                    {
-                        $url .= $item['name'].'/';
-                    }
-                    Eresus_CMS::getLegacyKernel()->plugins->clientOnURLSplit($item, $url);
-                    $this->section[] = $item['title'];
-                    next(Eresus_CMS::getLegacyKernel()->request['params']);
-                    array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
-                    break;
-                }
-            }
-            if ($item && $item['id'] == 1 && $main_fake)
-            {
-                $item['id'] = 0;
-            }
-        }
-        while ($item && current(Eresus_CMS::getLegacyKernel()->request['params']));
-        Eresus_CMS::getLegacyKernel()->request['path'] =
-        Eresus_CMS::getLegacyKernel()->request['path'] = Eresus_CMS::getLegacyKernel()->root . $url;
-        if ($result)
-        {
-            $result = $sections->get($result['id']);
-        }
-        return $result;
+        /** @var Request $req */
+        $req = $this->container->get('request');
+        $routes = new RouteCollection();
+        /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
+        $repo = $this->getDoctrine()->getManager()->getRepository('CmsBundle:Section');
+        $this->addRoute($routes, $repo->getRoot());
+        $context = new RequestContext($req->getLocalUrl());
+        $matcher = new UrlMatcher($routes, $context);
+        $params = $matcher->match($req->getLocalUrl());
+        return $params['section'];
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Проводит инициализацию страницы
@@ -285,54 +294,45 @@ class ClientUI extends WebPage
         Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
 
         $item = $this->loadPage();
-        if ($item)
+        if (count(Eresus_CMS::getLegacyKernel()->request['params']))
         {
+            if (preg_match('/p[\d]+/i', Eresus_CMS::getLegacyKernel()->request['params'][0]))
+            {
+                $this->subpage = substr(array_shift(Eresus_CMS::getLegacyKernel()->request['params']), 1);
+            }
+
             if (count(Eresus_CMS::getLegacyKernel()->request['params']))
             {
-                if (preg_match('/p[\d]+/i', Eresus_CMS::getLegacyKernel()->request['params'][0]))
-                {
-                    $this->subpage = substr(array_shift(Eresus_CMS::getLegacyKernel()->request['params']), 1);
-                }
-
-                if (count(Eresus_CMS::getLegacyKernel()->request['params']))
-                {
-                    $this->topic = array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
-                }
+                $this->topic = array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
             }
-            $this->dbItem = $item;
-            $this->id = $item['id'];
-            $this->name = $item['name'];
-            $this->owner = $item['owner'];
-            $this->title = $item['title'];
-            $this->description = $item['description'];
-            $this->keywords = $item['keywords'];
-            $this->caption = $item['caption'];
-            $this->hint = $item['hint'];
-            $this->access = $item['access'];
-            $this->visible = $item['visible'];
-            $this->type = $item['type'];
-            $this->template = $item['template'];
-            $this->created = $item['created'];
-            $this->updated = $item['updated'];
-            $this->content = $item['content'];
-            $this->scripts = '';
-            $this->styles = '';
-            $this->options = $item['options'];
         }
-        else
-        {
-            $this->httpError(404);
-        }
+        $this->dbItem = $item;
+        $this->id = $item->id;
+        $this->name = $item->name;
+        $this->owner = $item->parent;
+        $this->title = $item->title;
+        $this->description = $item->description;
+        $this->keywords = $item->keywords;
+        $this->caption = $item->caption;
+        $this->hint = $item->hint;
+        $this->access = $item->access;
+        $this->visible = $item->visible;
+        $this->type = $item->type;
+        $this->template = $item->template;
+        $this->created = $item->created;
+        $this->updated = $item->updated;
+        $this->content = $item->content;
+        $this->scripts = '';
+        $this->styles = '';
+        $this->options = $item->options;
     }
-    //-----------------------------------------------------------------------------
 
-    function Error404()
+    public function error404()
     {
         $this->httpError(404);
     }
-    //-----------------------------------------------------------------------------
 
-    function httpError($code)
+    public function httpError($code)
     {
         if (self::$error)
         {
