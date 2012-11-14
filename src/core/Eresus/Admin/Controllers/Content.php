@@ -45,6 +45,8 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return Response|string  HTML
      */
     public function adminRender(Request $request)
@@ -53,11 +55,15 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         {
             return '';
         }
+        /** @var \Eresus\CmsBundle\AdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
         $result = '';
-        $section = $this->getDoctrine()->getManager()
-            ->find('CmsBundle:Section', $request->get('section'));
+        /** @var \Doctrine\Common\Persistence\ObjectManager $om */
+        $om = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Entity\Section $section */
+        $section = $om->find('CmsBundle:Section', $request->get('section'));
 
-        Eresus_Kernel::app()->getPage()->id = $section->id;
+        $page->id = $section->id;
         if (!array_key_exists($section->type, Eresus_CMS::getLegacyKernel()->plugins->list))
         {
             switch ($section->type)
@@ -76,10 +82,8 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
                 case 'list':
                     if ($request->request->get('update'))
                     {
-                        $item['content'] = $request->request->get('content');
-                        /** @var Sections $sections */
-                        $sections = Eresus_Kernel::get('sections');
-                        $sections->update($item);
+                        $section->content = $request->request->get('content');
+                        $om->flush();
                         return new RedirectResponse($request->request->get('submitURL'));
                     }
                     else
@@ -98,16 +102,14 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
                             ),
                             'buttons' => array('apply', 'cancel'),
                         );
-                        $result = Eresus_Kernel::app()->getPage()->renderForm($form);
+                        $result = $page->renderForm($form);
                     }
                     break;
                 case 'url':
                     if ($request->request->get('update'))
                     {
-                        $item['content'] = $request->request->get('url');
-                        /** @var Sections $sections */
-                        $sections = Eresus_Kernel::get('sections');
-                        $sections->update($item);
+                        $section->content = $request->request->get('url');
+                        $om->flush();
                         return new RedirectResponse($request->request->get('submitURL'));
                     }
                     else
@@ -125,20 +127,18 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
                             ),
                             'buttons' => array('apply', 'cancel'),
                         );
-                        $result = Eresus_Kernel::app()->getPage()->renderForm($form);
+                        $result = $page->renderForm($form);
                     }
                     break;
                 default:
-                    $result = Eresus_Kernel::app()->getPage()->
-                        box(sprintf(errContentPluginNotFound, $section->type), 'errorBox', errError);
+                    throw new \Exception(sprintf(errContentPluginNotFound, $section->type));
                     break;
             }
         }
         else
         {
             Eresus_CMS::getLegacyKernel()->plugins->load($section->type);
-            Eresus_Kernel::app()->getPage()->module
-                = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type];
+            $page->module = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type];
             $result = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type]
                 ->adminRenderContent();
         }
