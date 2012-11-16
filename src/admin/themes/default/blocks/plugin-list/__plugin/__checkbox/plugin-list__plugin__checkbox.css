@@ -1,0 +1,16 @@
+.plugin-list__plugin__checkbox
+{
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 2em;
+}
+
+.plugin-list__plugin__checkbox > input
+{
+    left: 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -1em;
+}

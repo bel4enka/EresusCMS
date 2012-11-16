@@ -1,0 +1,97 @@
+<div class="box box_style_inline">
+    <div class="box__header">Установка модулей расширения</div>
+    <div class="box__contents">
+        <div class="">
+            <a href="#" class="link link_type_pseudo js-check-all">Отметить все</a>
+            /
+            <a href="#" class="link link_type_pseudo js-uncheck-all">Снять все отметки</a>
+        </div>
+        <form action="admin.php" class="form" method="post">
+            <input type="hidden" name="mod" value="plgmgr">
+            <input type="hidden" name="action" value="install">
+
+            <div class="plugin-list">
+                {% for plugin in plugins %}
+                {% set reqs = plugin.getUnresolvedRequirements %}
+                <div class="plugin-list__plugin">
+                    <div class="plugin-list__plugin__checkbox">
+                        {% if reqs|length == 0 %}
+                        <input type="checkbox" name="install[]" value="{{ plugin.namespace }}" checked>
+                        {% endif %}
+                    </div>
+                    <div class="plugin-list__plugin__info">
+                        <strong>{{ plugin.title }} {{ plugin.version }}</strong><br>
+                        {{ plugin.description }}
+                        {% if reqs|length > 0 %}
+                        <div class="message message_type_warning">
+                            Модуль не может быть установлен, т. к. требует наличия:
+                            <ul>
+                                {% for id, ver in reqs %}
+                                <li>{{ id}} {{ ver.min }}{% if ver.max != ver.min %}-{{ ver.max }}{% endif %}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form__footer">
+                <button type="submit" class="button button_has_icon button_icon_ok"
+                    id="plugins-install-submit">
+                    Установить
+                </button>
+                <button type="button" class="button button_has_icon button_icon_cancel"
+                    onclick="history.back();">
+                    Отменить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).on('click', '.js-check-all',
+    function (e)
+    {
+        $('input[name="install[]"]').attr("checked", "checked");
+        e.preventDefault();
+        $(this).blur();
+    }
+);
+
+$(document).on('click', '.js-uncheck-all',
+    function (e)
+    {
+        $('input[name="install[]"]').removeAttr("checked");
+        e.preventDefault();
+        $(this).blur();
+    }
+);
+$(document).on('change', 'input[name="install[]"]',
+    function (e)
+    {
+        var atLeastOneChecked = false;
+        $('input[name="install[]"]').each(
+            function ()
+            {
+                if (this.checked)
+                {
+                    atLeastOneChecked = true;
+                }
+            }
+        );
+
+        var submit = $('#plugins-install-submit');
+        if (atLeastOneChecked)
+        {
+            submit.removeAttr('disabled');
+        }
+        else
+        {
+            submit.attr('disabled', 'disabled');
+        }
+    }
+);
+</script>

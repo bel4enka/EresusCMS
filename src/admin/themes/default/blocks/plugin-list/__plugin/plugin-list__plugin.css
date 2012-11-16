@@ -1,0 +1,7 @@
+.plugin-list__plugin
+{
+    border: solid 1px #ddd;
+    margin: 5px 0;
+    padding: 0 5px;
+    position: relative;
+}
