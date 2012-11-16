@@ -45,11 +45,6 @@
         <include name="SDK/**" />
     </fileset>
 
-    <!-- Модульные тесты -->
-    <fileset dir="." id="files.tests.unit">
-        <include name="tests/phpunit/**.php" />
-    </fileset>
-
     <!--
     =====================================================================
     Загружает файлы сторонних компонентов
@@ -163,7 +158,9 @@
                 <include name="**/*.php" />
                 <exclude name="ext-3rd/**" />
             </fileset>
-            <fileset refid="files.tests.unit" />
+            <fileset dir="tests">
+                <include name="phpunit/**.php" />
+            </fileset>
         </phpcodesniffer>
 
     </target>
