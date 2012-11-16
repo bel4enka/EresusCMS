@@ -1,0 +1,14 @@
+.link_type_pseudo,
+.link_type_pseudo:visited
+{
+    border-bottom: 1px dotted #0077BB;
+    color: #07b;
+    text-decoration: none !important;
+}
+
+.link_type_pseudo:hover
+{
+    border-bottom: 1px dotted #FF0000;
+    color: red;
+    text-decoration: none !important;
+}
