@@ -6,3 +6,4 @@
 
    events
    migration
+   plugins.yml

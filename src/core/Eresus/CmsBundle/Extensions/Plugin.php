@@ -30,9 +30,15 @@
 
 namespace Eresus\CmsBundle\Extensions;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\Yaml\Yaml;
 
+use Eresus\CmsBundle\Extensions\Controllers\Config;
+use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
+
+use Eresus_Kernel;
 use Eresus_CMS;
 use FS;
 use Core;
@@ -40,61 +46,23 @@ use Core;
 /**
  * Родительский класс для всех плагинов
  *
+ * @property-read  string          $namespace    пространство имён
+ * @property-read  string          $title        название
+ * @property-read  string          $version      версия
+ * @property-read  string          $description  описание
+ * @property-read  ArrayCollection $settings     настройки
+ *
  * @package Eresus
  */
 class Plugin implements ContainerAwareInterface
 {
     /**
-     * Имя плагина
+     * Включен или отключен
      *
-     * @var string
+     * @var bool
+     * @since 4.00
      */
-    public $name;
-
-    /**
-     * Версия плагина
-     *
-     * Потомки должны перекрывать это своим значением
-     *
-     * @var string
-     */
-    public $version = '0.00';
-
-    /**
-     * Необходимая версия Eresus
-     *
-     * Потомки могут перекрывать это своим значением
-     *
-     * @var string
-     */
-    public $kernel = '3.00';
-
-    /**
-     * Название плагина
-     *
-     * Потомки должны перекрывать это своим значением
-     *
-     * @var string
-     */
-    public $title = 'no title';
-
-    /**
-     * Описание плагина
-     *
-     * Потомки должны перекрывать это своим значением
-     *
-     * @var string
-     */
-    public $description = '';
-
-    /**
-     * Настройки плагина
-     *
-     * Потомки могут перекрывать это своим значением
-     *
-     * @var array
-     */
-    public $settings = array();
+    public $enabled;
 
     /**
      * Контейнер служб
@@ -102,108 +70,117 @@ class Plugin implements ContainerAwareInterface
      * @var ContainerInterface
      * @since 4.00
      */
-    protected $container;
+    private $container;
 
     /**
-     * Директория данных
+     * Пространство имён
      *
-     * /data/имя_плагина
+     * @var string
+     * @since 4.00
+     */
+    private $namespace;
+
+    /**
+     * Название плагина
+     *
+     * @var string|array
+     */
+    private $title;
+
+    /**
+     * Версия плагина
      *
      * @var string
      */
-    protected $dirData;
+    private $version;
 
     /**
-     * URL данных
+     * Описание плагина
      *
-     * @var string
+     * @var string|array
      */
-    protected $urlData;
+    private $description;
 
     /**
-     * Директория скриптов
+     * Зависимости
      *
-     * /ext/имя_плагина
-     *
-     * @var string
+     * @var array
+     * @since 4.00
      */
-    protected $dirCode;
+    private $requirements;
 
     /**
-     * URL скриптов
+     * Настройки плагина
      *
-     * @var string
+     * @var ArrayCollection
      */
-    protected $urlCode;
+    private $settings;
 
     /**
-     * Директория оформления
-     *
-     * style/имя_плагина
-     *
-     * @var string
+     * Контроллер диалога настройки
+     * @var Config;
+     * @since 4.00
      */
-    protected $dirStyle;
+    private $configController = null;
 
     /**
-     * URL оформления
+     * Создаёт основной объект плагина из указанного пространства имён
      *
-     * @var string
+     * @param string $ns      пространство имён плагина
+     * @param array  $config  настройки плагина
+     *
+     * @throws LogicException
      */
-    protected $urlStyle;
-
-    /**
-     * Конструктор
-     *
-     * Производит чтение настроек плагина и подключение языковых файлов
-     *
-     * @uses $locale
-     * @uses FS::isFile
-     * @uses Core::safeInclude
-     * @uses Eresus_Extensions_Plugin::resetPlugin
-     */
-    public function __construct()
+    public function __construct($ns, array $config = null)
     {
-        global $locale; // TODO Удалить
+        $this->settings = new ArrayCollection;
+        $this->load($ns, $config);
+    }
 
-        $legacyKernel = Eresus_CMS::getLegacyKernel();
+    /**
+     * Проверяет, установлено ли свойство
+     *
+     * @param string $name  имя свойства
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return property_exists($this, $name) && isset($this->{$name});
+    }
 
-        $this->name = strtolower(get_class($this));
-        /* Удаляем пространство имён */
-        if (($pos = strrpos($this->name, '\\')) !== false)
+    /**
+     * Возвращает значение свойства
+     *
+     * @param string $name  имя свойства
+     *
+     * @throws LogicException
+     *
+     * @return mixed
+     *
+     * @since 4.00
+     */
+    public function __get($name)
+    {
+        if (!property_exists($this, $name))
         {
-            $this->name = substr($this->name, $pos + 1);
+            throw new LogicException(
+                'Access to unknown property "' . $name . '" of class "' . get_class($this) . '"');
         }
-        if (!empty($this->name) && isset($legacyKernel->plugins->list[$this->name]))
+
+        $value = $this->{$name};
+
+        if (in_array($name, array('title', 'description')) && is_array($value))
         {
-            $this->settings =
-                decodeOptions($legacyKernel->plugins->list[$this->name]['settings'],
-                    $this->settings);
-            /*
-             * Если установлена версия плагина отличная от установленной ранее
-             * то необходимо произвести обновление информации о плагине в БД
-             */
-            if ($this->version != $legacyKernel->plugins->list[$this->name]['version'])
-            {
-                $this->resetPlugin();
-            }
+            $value = $value['ru']; // TODO Переделать с текущей локалью
         }
-        $this->dirData = $legacyKernel->fdata . $this->name . '/';
-        $this->urlData = $legacyKernel->data . $this->name . '/';
-        $this->dirCode = $legacyKernel->froot . 'ext/' . $this->name . '/';
-        $this->urlCode = $legacyKernel->root . 'ext/' . $this->name . '/';
-        $this->dirStyle = $legacyKernel->fstyle . $this->name . '/';
-        $this->urlStyle = $legacyKernel->style . $this->name . '/';
-        $filename = $legacyKernel->froot . 'lang/' . $this->name . '/' . $locale['lang'] . '.php';
-        if (FS::isFile($filename))
-        {
-            Core::safeInclude($filename);
-        }
+        return $value;
     }
 
     /**
      * Устанавливает контейнер
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @since 4.00
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -211,52 +188,57 @@ class Plugin implements ContainerAwareInterface
     }
 
     /**
-     * Перехватчик обращений к несуществующим методам плагинов
+     * Возвращает контроллер диалога настройки
      *
-     * @param string $method  Имя вызванного метода
-     * @param array  $args    Переданные аргументы
-     *
-     * @throws \EresusMethodNotExistsException
+     * @return Controllers\Config
+     * @since 4.00
      */
-    public function __call($method, $args)
+    public function getConfigController()
     {
-        throw new \EresusMethodNotExistsException($method, get_class($this));
+        if (null === $this->configController)
+        {
+            $this->configController = new Config($this);
+            $this->configController->setContainer($this->container);
+        }
+        return $this->configController;
     }
 
     /**
-     * Возвращает URL директории данных плагина
+     * Возвращает список неудовлетворённых зависимостей
      *
-     * @return string
+     * @return array
      *
-     * @since 2.15
+     * @since 4.00
      */
-    public function getDataURL()
+    public function getUnresolvedRequirements()
     {
-        return $this->urlData;
-    }
+        $installed = Eresus_CMS::getLegacyKernel()->plugins->getInstalled();
+        $unresolved = array();
+        foreach ($this->requirements as $id => $versions)
+        {
+            /* Определяем требуемые минимальную и максимальную версии */
+            $min = isset($versions['min']) ? $versions['min'] : '99.99';
+            $max = isset($versions['max']) ? $versions['max'] : $min;
 
-    /**
-     * Возвращает URL директории файлов плагина
-     *
-     * @return string
-     *
-     * @since 2.15
-     */
-    public function getCodeURL()
-    {
-        return $this->urlCode;
-    }
+            /* Определяем наличие и версию зависимости */
+            if (0 === strcasecmp($id, 'cms'))
+            {
+                // Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
+                $actual = preg_replace('/[^\d\.]/', '', CMSVERSION);
+            }
+            else
+            {
+                $actual = isset($installed[$id]) ? $installed[$id]->version : false;
+            }
 
-    /**
-     * Возвращает URL директории стилей плагина
-     *
-     * @return string
-     *
-     * @since 2.15
-     */
-    public function getStyleURL()
-    {
-        return $this->urlStyle;
+            if (false === $actual
+                || version_compare($min, $actual, '>')
+                || version_compare($max, $actual, '<'))
+            {
+                $unresolved[$id] = array('min' => $min, 'max' => $max);
+            }
+        }
+        return $unresolved;
     }
 
     /**
@@ -268,205 +250,58 @@ class Plugin implements ContainerAwareInterface
      *
      * @since 4.00
      */
-    protected function get($id)
+    private function get($id)
     {
         return $this->container->get($id);
     }
 
     /**
-     * Чтение настроек плагина из БД
+     * Загружает сведения о плагине из файла
      *
-     * @return bool  Результат выполнения
-     */
-    protected function loadSettings()
-    {
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->get('doctrine');
-        $em = $doctrine->getManager();
-        /** @var \Eresus\CmsBundle\Entity\Plugin $entity */
-        $entity = $em->getRepository('CmsBundle:Plugin')->find($this->name);
-        $this->settings = $entity->settings;
-        return true;
-    }
-
-    /**
-     * Сохранение настроек плагина в БД
+     * @param string $ns      пространство имён плагина
+     * @param array  $config  настройки плагина
      *
-     * @return bool  Результат выполнения
+     * @throws LogicException
      */
-    protected function saveSettings()
+    private function load($ns, array $config = null)
     {
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->get('doctrine');
-        $em = $doctrine->getManager();
-        /** @var \Eresus\CmsBundle\Entity\Plugin $entity */
-        $entity = $em->getRepository('CmsBundle:Plugin')->find($this->name);
-        $entity->settings = $this->settings;
-        $em->flush();
-        return true;
-    }
-
-    /**
-     * Обновление данных о плагине в БД
-     */
-    protected function resetPlugin()
-    {
-        $this->loadSettings();
-        $this->saveSettings();
-    }
-
-    /**
-     * Действия, выполняемые при инсталляции плагина
-     */
-    public function install()
-    {
-
-    }
-
-    /**
-     * Действия при изменении настроек
-     */
-    public function onSettingsUpdate()
-    {
-    }
-
-    /**
-     * Сохраняет в БД изменения настроек плагина
-     */
-    public function updateSettings()
-    {
-        foreach ($this->settings as $key => $value)
+        $this->namespace = $ns;
+        // Путь к файлу описания плагина
+        $filename = '/plugins/' . str_replace('\\', '/', $ns) . '/plugin.yml';
+        if (!file_exists(dirname(Eresus_Kernel::app()->getFsRoot() . $filename)))
         {
-            if (!is_null(arg($key)))
-            {
-                $this->settings[$key] = arg($key);
-            }
+            throw new LogicException("Plugin not exists: $ns");
         }
-        $this->onSettingsUpdate();
-        $this->saveSettings();
-    }
-
-    /**
-     * Замена макросов
-     *
-     * @param string $template  Строка в которой требуется провести замену макросов
-     * @param mixed  $item      Ассоциативный массив со значениями для подстановки вместо макросов
-     *
-     * @return  string  Обработанная строка
-     */
-    protected function replaceMacros($template, $item)
-    {
-        $result = replaceMacros($template, $item);
-        return $result;
-    }
-
-    /**
-     * Создание новой директории
-     *
-     * @param string $name Имя директории
-     * @return bool Результат
-     */
-    protected function mkdir($name = '')
-    {
-        $result = true;
-        $umask = umask(0000);
-        // Проверка и создание корневой директории данных
-        if (!is_dir($this->dirData))
+        if (!file_exists(Eresus_Kernel::app()->getFsRoot() . $filename))
         {
-            $result = mkdir($this->dirData);
+            throw new LogicException("File not exists: $filename");
         }
-        if ($result)
-        {
-            // Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
-            $name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-            if ($name)
-            {
-                $name = explode('/', $name);
-                $root = substr($this->dirData, 0, -1);
-                for ($i=0; $i<count($name); $i++)
-                {
-                    if ($name[$i])
-                    {
-                        $root .= '/'.$name[$i];
-                        if (!is_dir($root))
-                        {
-                            $result = mkdir($root);
-                        }
-                        if (!$result)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        umask($umask);
-        return $result;
-    }
+        $info = Yaml::parse(Eresus_Kernel::app()->getFsRoot() . $filename);
 
-    /**
-     * Удаление директории и файлов
-     *
-     * @param string $name Имя директории
-     * @return bool Результат
-     */
-    protected function rmdir($name = '')
-    {
-        $result = true;
-        $name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-        $name = $this->dirData.$name;
-        if (is_dir($name))
+        /* Проверяем наличие необходимых полей */
+        $required = array('title', 'version', 'require');
+        $missed = array_diff($required, array_keys($info));
+        if (count($missed))
         {
-            $files = glob($name.'/{.*,*}', GLOB_BRACE);
-            for ($i = 0; $i < count($files); $i++)
-            {
-                if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..')
-                {
-                    continue;
-                }
-                if (is_dir($files[$i]))
-                {
-                    $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
-                }
-                elseif (is_file($files[$i]))
-                {
-                    $result = unlink($files[$i]);
-                }
-                if (!$result)
-                {
-                    break;
-                }
-            }
-            if ($result)
-            {
-                $result = rmdir($name);
-            }
+            throw new LogicException(sprintf('Missing required fields "%s" in plugin.yml of %s',
+                implode(', ', $missed), $ns));
         }
-        return $result;
-    }
 
-    /**
-     * Возвращает реальное имя таблицы
-     *
-     * @param string $table  Локальное имя таблицы
-     * @return string Реальное имя таблицы
-     */
-    protected function __table($table)
-    {
-        return $this->name.(empty($table)?'':'_'.$table);
-    }
+        $this->title = $info['title'];
+        $this->version = $info['version'];
+        $this->requirements = $info['require'];
+        $this->description = isset($info['description']) ? $info['description'] : '';
 
-    /**
-     * Регистрация обработчиков событий
-     *
-     * @param string $event...  Имя события
-     */
-    protected function listenEvents()
-    {
-        for ($i=0; $i < func_num_args(); $i++)
+        if (null === $config)
         {
-            Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->name;
+            $config = array('enabled' => false, 'settings' => array());
         }
+
+        $this->enabled = $config['enabled'];
+        $this->settings = new ArrayCollection(array_replace(
+            is_array($info['settings']) ? $info['settings'] : array(),
+            is_array($config['settings']) ? $config['settings'] : array()
+        ));
     }
 }
 

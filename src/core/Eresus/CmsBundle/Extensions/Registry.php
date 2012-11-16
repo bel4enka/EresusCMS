@@ -32,10 +32,12 @@ namespace Eresus\CmsBundle\Extensions;
 
 use DomainException;
 use RuntimeException;
+use DirectoryIterator;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Yaml\Yaml;
 
 use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\Extensions\ContentPlugin;
@@ -57,28 +59,20 @@ use Eresus_Kernel;
 class Registry extends ContainerAware
 {
     /**
-     * Список всех активированных плагинов
+     * Настройки плагинов
      *
      * @var array
-     * @todo сделать private
+     * @since 4.00
      */
-    public $list = array();
+    private $config = array();
 
     /**
-     * Массив плагинов
+     * Список плагинов
      *
-     * @var array
-     * @todo сделать private
+     * @var Plugin[]
+     * @since 4.00
      */
-    public $items = array();
-
-    /**
-     * Таблица обработчиков событий
-     *
-     * @var array
-     * @todo сделать private
-     */
-    public $events = array();
+    private $plugins = array();
 
     /**
      * Загружает активные плагины
@@ -89,419 +83,159 @@ class Registry extends ContainerAware
      */
     public function init()
     {
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $doctrine->getManager();
-        /** @var PluginEntity[] $items */
-        $items = $em->getRepository('CmsBundle:Plugin')->findBy(array('active' => true));
-        if ($items)
+        $this->config = Yaml::parse($this->getDbFilename());
+        foreach ($this->config as $ns => $config)
         {
-            foreach ($items as $item)
+            if (isset($config['enabled']) && $config['enabled'])
             {
-                $this->list[$item->name] = $item;
-            }
-
-            /* Проверяем зависимости */
-            do
-            {
-                $success = true;
-                foreach ($this->list as $plugin => $item)
-                {
-                    if (!($item->info instanceof Eresus_PluginInfo))
-                    {
-                        continue;
-                    }
-                    foreach ($item->info->getRequiredPlugins() as $required)
-                    {
-                        list ($name, $minVer, $maxVer) = $required;
-                        if (
-                            !isset($this->list[$name]) ||
-                            ($minVer && version_compare($this->list[$name]->info->version, $minVer, '<')) ||
-                            ($maxVer && version_compare($this->list[$name]->info->version, $maxVer, '>'))
-                        )
-                        {
-                            $msg = 'Plugin "%s" requires plugin %s';
-                            $requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
-                            eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
-                            /*$msg = Eresus_I18n::getInstance()->getText($msg, $this);
-                                   ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
-                            unset($this->list[$plugin]);
-                            $success = false;
-                        }
-                    }
-                }
-            }
-            while (!$success);
-
-            /* Загружаем плагины */
-            foreach ($this->list as $item)
-            {
-                $this->load($item->name);
+                $this->load($ns);
             }
         }
-
-        spl_autoload_register(array($this, 'autoload'));
-    }
-
-    /**
-     * Устанавливает плагин
-     *
-     * @param string $name  Имя плагина
-     *
-     * @throws DomainException
-     * @throws RuntimeException
-     *
-     * @return void
-     */
-    public function install($name)
-    {
-        eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
-
-        $filename = Eresus_CMS::getLegacyKernel()->froot.'ext/'.$name.'.php';
-        if (FS::exists($filename))
-        {
-            $info = Eresus_PluginInfo::loadFromFile($filename);
-            /*
-                * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
-                * ошибок. Хотя и не факт, что это сработает.
-                */
-            $code = file_get_contents($filename);
-            $code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
-            $code = str_replace('__FILE__', "'$filename'", $code);
-            ini_set('track_errors', true);
-            $valid = eval($code) !== false;
-            ini_set('track_errors', false);
-            if (!$valid)
-            {
-                throw new DomainException(
-                    sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg)
-                );
-            }
-
-            $className = $name;
-            if (class_exists($className, false))
-            {
-                /** @var Plugin $plugin */
-                $plugin = new $className();
-                $this->items[$name] = $plugin;
-                $plugin->install();
-
-                $entity = new PluginEntity;
-                $entity->name = $plugin->name;
-                $entity->content = $plugin instanceof ContentPlugin;
-                $entity->active = true;
-                $entity->settings = $plugin->settings;
-                $entity->title = $plugin->title;
-                $entity->version = $plugin->version;
-                $entity->description = $plugin->description;
-                $entity->info = $info;
-
-                /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-                $doctrine = $this->container->get('doctrine');
-                /** @var \Doctrine\ORM\EntityManager $em */
-                $em = $doctrine->getManager();
-                $em->persist($entity);
-                $em->flush();
-            }
-            else
-            {
-                throw new RuntimeException(sprintf(errClassNotFound, $className));
-            }
-        }
-        else
-        {
-            eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
-                $name);
-            $msg = Eresus_I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
-            $msg = sprintf($msg, $filename, $name);
-            ErrorMessage($msg);
-        }
-    }
-
-    /**
-     * Исключает плагин из подключенных
-     *
-     * @param string $name  Имя плагина
-     */
-    public function uninstall($name)
-    {
-        if (!isset($this->items[$name]))
-        {
-            $this->load($name);
-        }
-        if (isset($this->items[$name]))
-        {
-            $this->items[$name]->uninstall();
-        }
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $doctrine->getManager();
-        $entity = $em->find('CmsBundle:Plugin', $name);
-        $em->remove($entity);
-        $em->flush();
     }
 
     /**
      * Загружает плагин и возвращает его экземпляр
      *
-     * Метод пытается загрузить плагин с именем $name (если он не был загружен ранее). В случае
-     * успеха создаётся и возвращается экземпляр основного класса плагина (либо экземпляр,
+     * Метод пытается загрузить плагин с пространством именем $ns (если он не был загружен ранее).
+     * В случае успеха создаётся и возвращается экземпляр основного класса плагина (либо экземпляр,
      * созданный ранее).
      *
-     * @param string $name  Имя плагина
+     * @param string $ns  пространство имён плагина
      *
      * @throws RuntimeException
      *
-     * @return Plugin|bool  Экземпляр плагина или false
+     * @return Plugin|bool  экземпляр плагина или false
      *
      * @since 2.10
      */
-    public function load($name)
+    public function load($ns)
     {
         /* Если плагин уже был загружен возвращаем экземпляр из реестра */
-        if (isset($this->items[$name]))
+        if (isset($this->plugins[$ns]))
         {
-            eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
-            return $this->items[$name];
+            return $this->plugins[$ns];
         }
 
-        /* Если такой плагин не зарегистрирован, возвращаем false */
-        if (!isset($this->list[$name]))
+        /* Если такой плагин не зарегистрирован или отключен, возвращаем false */
+        if (
+            !isset($this->config[$ns])
+            || !isset($this->config[$ns]['enabled'])
+            || !$this->config[$ns]['enabled']
+        )
         {
-            eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
             return false;
         }
 
-        // Путь к файлу плагина
-        $filename = Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $name . '.php';
-
-        /* Если такого файла нет, возвращаем false */
-        if (!file_exists($filename))
-        {
-            eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
-                $name);
-            return false;
-        }
-
-        Core::safeInclude($filename);
-        $className = $name;
-
-        if (!class_exists($className, false))
-        {
-            eresus_log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
-                $className, $name, $filename);
-            throw new RuntimeException(sprintf(errClassNotFound, $name));
-        }
-
-        /** @var Plugin $plugin */
-        $plugin = new $className();
+        $plugin = new Plugin($ns, $this->config[$ns]);
         $plugin->setContainer($this->container);
-        // Заносим экземпляр в реестр
-        $this->items[$name] = $plugin;
+        $this->plugins[$ns] = $plugin;
 
-        return $this->items[$name];
+        return $plugin;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Отрисовка контента раздела
+     * Возвращает включенные плагины
      *
-     * @return string|Response  ответ
+     * @return Plugin[]
+     * @since 4.00
      */
-    public function clientRenderContent()
+    public function getEnabled()
     {
-        /* @var ClientUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $Eresus = Eresus_CMS::getLegacyKernel();
-        $result = '';
-        switch ($page->type)
+        return $this->plugins;
+    }
+
+    /**
+     * Возвращает установленные плагины (включая отключенные)
+     *
+     * @return Plugin[]
+     * @since 4.00
+     */
+    public function getInstalled()
+    {
+        $installed = $this->plugins;
+        foreach ($this->config as $ns => $config)
         {
-            case 'default':
-                $plugin = new ContentPlugin;
-                $result = $plugin->clientRenderContent();
-                break;
-            case 'list':
-                $request = $Eresus->request;
-                /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-                if ($request['file'] || $request['query'] || $page->subpage || $page->topic)
-                {
-                    $page->httpError(404);
-                }
+            if (!isset($installed[$ns]))
+            {
+                $installed[$ns] = new Plugin($ns);
+            }
+        }
+        return $installed;
+    }
 
-                /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-                $doctrine = $this->container->get('doctrine');
-                /** @var \Doctrine\ORM\EntityManager $em */
-                $em = $doctrine->getManager();
-
-                $q = $em->createQuery('SELECT s FROM CmsBundle:Section s ' .
-                    'WHERE s.parent.id = :parent AND s.active = 1 AND access >= :access ' .
-                    'ORDER BY s.position');
-                $q->setParameter('parent', $page->id);
-                $q->setParameter('access', $Eresus->user['auth'] ? $Eresus->user['access'] : GUEST);
-                $subItems = $q->getResult();
-                if (empty($page->content))
+    /**
+     * Возвращает все плагины
+     *
+     * @return Plugin[]
+     * @since 4.00
+     */
+    public function getAll()
+    {
+        $all = $this->plugins;
+        $vendors = new DirectoryIterator(Eresus_Kernel::app()->getFsRoot() . '/plugins');
+        foreach ($vendors as $vendor)
+        {
+            /** @var DirectoryIterator $vendor */
+            if ($vendor->isDir() && !$vendor->isDot())
+            {
+                $plugins = new DirectoryIterator($vendor->getPathname());
+                foreach ($plugins as $plugin)
                 {
-                    $page->content = '$(items)';
-                }
-                $templates = new Templates();
-                $template = $templates->get('SectionListItem', 'std');
-                if (false === $template)
-                {
-                    $template = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>' .
-                        '$(description)';
-                }
-                $items = '';
-                foreach ($subItems as $item)
-                {
-                    /** @var \Eresus\CmsBundle\Entity\Section $item */
-                    $items .= str_replace(
-                        array(
-                            '$(id)',
-                            '$(name)',
-                            '$(title)',
-                            '$(caption)',
-                            '$(description)',
-                            '$(hint)',
-                            '$(link)',
-                        ),
-                        array(
-                            $item->id,
-                            $item->name,
-                            $item->title,
-                            $item->caption,
-                            $item->description,
-                            $item->hint,
-                            $item->clientURL,
-                        ),
-                        $template
-                    );
-                }
-                $result = str_replace('$(items)', $items, $page->content);
-                break;
-            case 'url':
-                return new RedirectResponse($page->replaceMacros($page->content));
-            default:
-                if ($this->load($page->type))
-                {
-                    if (method_exists($this->items[$page->type], 'clientRenderContent'))
+                    /** @var DirectoryIterator $plugin */
+                    if ($plugin->isDir() && !$plugin->isDot())
                     {
-                        $result = $this->items[$page->type]->clientRenderContent();
-                    }
-                    else
-                    {
-                        ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent',
-                            get_class($this->items[$page->type])));
+                        $namespace = $vendor->getBasename() . '\\' . $plugin->getBasename();
+                        if (!isset($all[$namespace]))
+                        {
+                            $all[$namespace] = new Plugin($namespace);
+                        }
                     }
                 }
-                else
-                {
-                    ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
-                }
+            }
         }
-        return $result;
+        return $all;
     }
 
     /**
+     * Сохраняет изменения в плагине в БД
      *
-     */
-    public function clientOnStart()
-    {
-        if (isset($this->events['clientOnStart']))
-        {
-            foreach ($this->events['clientOnStart'] as $plugin)
-            {
-                $this->items[$plugin]->clientOnStart();
-            }
-        }
-    }
-
-    /**
-     * @param array  $item
-     * @param string $url
-     */
-    public function clientOnUrlSplit($item, $url)
-    {
-        if (isset($this->events['clientOnURLSplit']))
-        {
-            foreach ($this->events['clientOnURLSplit'] as $plugin)
-            {
-                $this->items[$plugin]->clientOnURLSplit($item, $url);
-            }
-        }
-    }
-
-    /**
-     * @param string $text
-     * @param mixed  $topic
+     * @param Plugin $plugin
      *
-     * @return string
+     * @since 4.00
      */
-    public function clientOnTopicRender($text, $topic = null)
+    public function update(Plugin $plugin)
     {
-        if (isset($this->events['clientOnTopicRender']))
-        {
-            foreach ($this->events['clientOnTopicRender'] as $plugin)
-            {
-                $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
-            }
-        }
-        return $text;
+        $this->config[$plugin->namespace] = array(
+            'enabled' => $plugin->enabled,
+            'settings' => $plugin->settings->toArray()
+        );
+        $yml = Yaml::dump($this->config);
+        file_put_contents($this->getDbFilename(), $yml);
     }
 
-    public function clientOnContentRender($text)
+    /**
+     * Устанавливает плагин
+     *
+     * @param Plugin $plugin
+     *
+     * @return void
+     */
+    public function install(Plugin $plugin)
     {
-        if (isset($this->events['clientOnContentRender']))
-        {
-            foreach ($this->events['clientOnContentRender'] as $plugin)
-            {
-                $text = $this->items[$plugin]->clientOnContentRender($text);
-            }
-        }
-        return $text;
+        $plugin->enabled = true;
+        $this->update($plugin);
     }
 
-    public function clientOnPageRender($text)
+    /**
+     * Удаляет плагин из БД
+     *
+     * @param Plugin $plugin
+     */
+    public function uninstall(Plugin $plugin)
     {
-        if (isset($this->events['clientOnPageRender']))
-        {
-            foreach ($this->events['clientOnPageRender'] as $plugin)
-            {
-                $text = $this->items[$plugin]->clientOnPageRender($text);
-            }
-        }
-        return $text;
-    }
-
-    public function clientBeforeSend($text)
-    {
-        if (isset($this->events['clientBeforeSend']))
-        {
-            foreach ($this->events['clientBeforeSend'] as $plugin)
-            {
-                $text = $this->items[$plugin]->clientBeforeSend($text);
-            }
-        }
-        return $text;
-    }
-
-    public function adminOnMenuRender()
-    {
-        if (isset($this->events['adminOnMenuRender']))
-        {
-            foreach ($this->events['adminOnMenuRender'] as $plugin)
-            {
-                if (method_exists($this->items[$plugin], 'adminOnMenuRender'))
-                {
-                    $this->items[$plugin]->adminOnMenuRender();
-                }
-                else
-                {
-                    ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
-                }
-            }
-        }
+        unset($this->config[$plugin->namespace]);
+        $yml = Yaml::dump($this->config);
+        file_put_contents($this->getDbFilename(), $yml);
     }
 
     /**
@@ -530,6 +264,17 @@ class Registry extends ContainerAware
         }
 
         return false;
+    }
+
+    /**
+     * Возвращает путь к файлу базы данных
+     *
+     * @return string
+     * @since 4.00
+     */
+    private function getDbFilename()
+    {
+        return Eresus_Kernel::app()->getFsRoot() . '/config/plugins.yml';
     }
 }
 

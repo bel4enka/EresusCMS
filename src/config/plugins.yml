@@ -1,0 +1,4 @@
+Eresus\Html:
+    enabled: true
+Acme\Foo:
+    enabled: true

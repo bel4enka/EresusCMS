@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\Extensions\Plugin;
+use Eresus\CmsBundle\Extensions\Registry;
 use Eresus\CmsBundle\AdminUI;
 
 /**
@@ -42,210 +43,6 @@ use Eresus\CmsBundle\AdminUI;
 class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
 {
     /**
-     * Уровень доступа к модулю
-     * @var int
-     */
-    private $access = ADMIN;
-
-    /**
-     * Включает или отключает плагин
-     *
-     * @return Response
-     */
-    private function toggle()
-    {
-        $q = DB::getHandler()->createUpdateQuery();
-        $e = $q->expr;
-        $q->update('plugins')
-            ->set('active', $e->not('active'))
-            ->where(
-            $e->eq('name', $q->bindValue(arg('toggle')))
-        );
-        DB::execute($q);
-
-        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
-    }
-
-    /**
-     * @return Response
-     */
-    private function delete()
-    {
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('delete'));
-        Eresus_CMS::getLegacyKernel()->plugins->uninstall(arg('delete'));
-        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
-    }
-
-    /**
-     * @return mixed
-     */
-    private function edit()
-    {
-        /** @var AdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('id'));
-        if (method_exists(Eresus_CMS::getLegacyKernel()->plugins->items[arg('id')], 'settings'))
-        {
-            $result = Eresus_CMS::getLegacyKernel()->plugins->items[arg('id', 'word')]->settings();
-        }
-        else
-        {
-            $form = array(
-                'name' => 'InfoWindow',
-                'caption' => $page->title,
-                'width' => '300px',
-                'fields' => array (
-                    array('type'=>'text','value'=>
-                    '<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
-                ),
-                'buttons' => array('cancel'),
-            );
-            $result = $page->renderForm($form);
-        }
-        return $result;
-    }
-
-    /**
-     * @return Response
-     */
-    private function update()
-    {
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('update'));
-        Eresus_CMS::getLegacyKernel()->plugins->items[arg('update')]->updateSettings();
-        return new RedirectResponse(arg('submitURL'));
-    }
-
-    /**
-     * Подключает плагины
-     *
-     * @return Response
-     */
-    private function insert()
-    {
-        $files = arg('files');
-        if ($files && is_array($files))
-        {
-            foreach ($files as $plugin => $install)
-            {
-                if ($install)
-                {
-                    try
-                    {
-                        Eresus_CMS::getLegacyKernel()->plugins->install($plugin);
-                    }
-                    catch (DomainException $e)
-                    {
-                        ErrorMessage($e->getMessage());
-                    }
-                }
-            }
-
-        }
-        return new RedirectResponse('admin.php?mod=plgmgr');
-    }
-
-    /**
-     * Возвращает диалог добавления плагина
-     *
-     * @return string  HTML
-     */
-    private function add()
-    {
-        $data = array();
-
-        /* Составляем список доступных плагинов */
-        $files = glob(Eresus_CMS::getLegacyKernel()->froot . 'ext/*.php');
-        if (false === $files)
-        {
-            $files = array();
-        }
-
-        /* Составляем список установленных плагинов */
-        /** @var \Doctrine\Common\Persistence\ObjectManager $om */
-        $om = $this->getDoctrine()->getManager();
-        /** @var \Eresus\CmsBundle\Entity\Plugin[] $items */
-        $items = $om->getRepository('CmsBundle:Plugin')->findAll();
-        $installed = array();
-        foreach ($items as $item)
-        {
-            $installed []= Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $item->name . '.php';
-        }
-        // Оставляем только неустановленные
-        $files = array_diff($files, $installed);
-
-        /*
-           * Собираем информацию о неустановленных плагинах
-           */
-        $data['plugins'] = array();
-        if (count($files))
-        {
-            // Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
-            $kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
-
-            foreach ($files as $file)
-            {
-                $errors = array();
-                try
-                {
-                    $info = Eresus_PluginInfo::loadFromFile($file);
-                    $required = $info->getRequiredKernel();
-                    if (
-                        version_compare($kernelVersion, $required[0], '<')/* ||
-						version_compare($kernelVersion, $required[1], '>')*/
-                    )
-                    {
-                        $msg =  Eresus_I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
-                        $errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
-                    }
-                }
-                catch (RuntimeException $e)
-                {
-                    $errors []= $e->getMessage();
-                    $info = new Plugin();
-                    $info->title = $info->name = basename($file, '.php');
-                    $info->version = '';
-                }
-                $available[$info->name] = $info->version;
-                $data['plugins'][$info->title] = array('info' => $info, 'errors' => $errors);
-            }
-        }
-
-        $plugins = Eresus_CMS::getLegacyKernel()->plugins;
-
-        foreach ($data['plugins'] as &$item)
-        {
-            if ($item['info'] instanceof Eresus_PluginInfo)
-            {
-                $required = $item['info']->getRequiredPlugins();
-                foreach ($required as $plugin)
-                {
-                    list ($name, $minVer, $maxVer) = $plugin;
-                    if (
-                        !isset($plugins->items[$name]) ||
-                        ($minVer && version_compare($plugins->items[$name]->version, $minVer, '<')) ||
-                        ($maxVer && version_compare($plugins->items[$name]->version, $maxVer, '>'))
-                    )
-                    {
-                        {
-                            $msg = Eresus_I18n::getInstance()->getText('Requires plugin: %s', $this);
-                            $item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
-                        }
-                    }
-                }
-            }
-        }
-
-        ksort($data['plugins']);
-
-        /* @var AdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
-        $html = $tmpl->compile($data);
-
-        return $html;
-    }
-
-    /**
      * Отрисовка контента модуля
      *
      * @param Request $request
@@ -254,61 +51,165 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
      */
     public function adminRender(Request $request)
     {
-        if (!UserRights($this->access))
+        if (!UserRights(ADMIN))
         {
             return '';
         }
 
-        Eresus_Kernel::app()->getPage()->title = admPlugins;
-
-        switch (true)
+        switch ($request->get('action'))
         {
-            case arg('update') !== null:
-                return $this->update();
+            case null:
+                $response = $this->indexAction($request);
                 break;
-            case arg('toggle') !== null:
-                return $this->toggle();
+            case 'config':
+                $response = $this->configAction($request);
                 break;
-            case arg('delete') !== null:
-                return $this->delete();
+            case 'toggle':
+                $response = $this->toggleAction($request);
                 break;
-            case arg('id') !== null:
-                $result = $this->edit();
+            case 'install':
+                $response = $this->installAction($request);
                 break;
-            case arg('action') == 'add':
-                $result = $this->add();
-                break;
-            case arg('action') == 'insert':
-                return $this->insert();
+            case 'uninstall':
+                $response = $this->uninstallAction($request);
                 break;
             default:
-                $table = array (
-                    'name' => 'plugins',
-                    'key' => 'name',
-                    'sortMode' => 'title',
-                    'columns' => array(
-                        array('name' => 'title', 'caption' => admPlugin, 'width' => '90px', 'wrap'=>false),
-                        array('name' => 'description', 'caption' => admDescription),
-                        array('name' => 'version', 'caption' => admVersion, 'width'=>'70px','align'=>'center'),
-                    ),
-                    'controls' => array (
-                        'delete' => '',
-                        'edit' => '',
-                        'toggle' => '',
-                    ),
-                    'tabs' => array(
-                        'width'=>'180px',
-                        'items'=>array(
-                            array('caption'=>admPluginsAdd, 'name'=>'action', 'value'=>'add')
-                        )
-                    )
-                );
-                /** @var AdminUI $page */
-                $page = Eresus_Kernel::app()->getPage();
-                $result = $page->renderTable($table);
-                break;
+                $response = '';
         }
-        return $result;
+        return $response;
+    }
+
+    /**
+     * Выводит список плагинов
+     *
+     * @param Request $request
+     *
+     * @return Response|string
+     *
+     * @since 4.00
+     */
+    public function indexAction(/** @noinspection PhpUnusedParameterInspection */
+        Request $request)
+    {
+        $registry = Eresus_CMS::getLegacyKernel()->plugins;
+        $plugins = $registry->getInstalled();
+        usort($plugins,
+            function ($a, $b)
+            {
+                if ($a->title == $b->title)
+                {
+                    return 0;
+                }
+                return $a->title > $b->title ? 1 : -1;
+            }
+        );
+        return $this->renderView('CmsBundle:PluginManager:Index.html.twig',
+            array('plugins' => $plugins));
+    }
+
+    /**
+     * Включает или отключает плагин
+     *
+     * @param Request $request
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response
+     * @since 4.00
+     */
+    public function toggleAction(Request $request)
+    {
+        $namespace = $request->query->get('id');
+        $registry = Eresus_CMS::getLegacyKernel()->plugins;
+        $installed = $registry->getInstalled();
+        if (!array_key_exists($namespace, $installed))
+        {
+            throw $this->createNotFoundException();
+        }
+        $plugin = $installed[$namespace];
+        $plugin->enabled = !$plugin->enabled;
+        $registry->update($plugin);
+
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
+    }
+
+    /**
+     * Установка плагина
+     *
+     * @param Request $req
+     *
+     * @return Response|string
+     * @since 4.00
+     */
+    public function installAction(Request $req)
+    {
+        $registry = Eresus_CMS::getLegacyKernel()->plugins;
+        if ('POST' === $req->getMethod())
+        {
+            $install = $req->request->get('install');
+            foreach ($install as $namespace)
+            {
+                $plugin = new Plugin($namespace);
+                $registry->install($plugin);
+            }
+            return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
+        }
+
+        $installed = $registry->getInstalled();
+        $all = $registry->getAll();
+        // Плагины, доступные для установки
+        $available = array_diff_key($all, $installed);
+        usort($available,
+            function ($a, $b)
+            {
+                if ($a->title == $b->title)
+                {
+                    return 0;
+                }
+                return $a->title > $b->title ? 1 : -1;
+            }
+        );
+        return $this->renderView('CmsBundle:PluginManager:Install.html.twig',
+            array('plugins' => $available));
+    }
+
+    /**
+     * Удаляет плагин
+     *
+     * @param Request $req
+     *
+     * @return Response
+     *
+     * @since 4.00
+     */
+    public function uninstallAction(Request $req)
+    {
+        $registry = Eresus_CMS::getLegacyKernel()->plugins;
+        $plugin = $registry->load($req->query->get('id'));
+        $registry->uninstall($plugin);
+        return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
+    }
+
+    /**
+     * Диалог настройки плагина
+     *
+     * @param Request $req
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response|string
+     * @since 4.00
+     */
+    public function configAction(Request $req)
+    {
+        $registry = Eresus_CMS::getLegacyKernel()->plugins;
+        $plugin = $registry->load($req->get('id'));
+        $controller = $plugin->getConfigController();
+        if (!$controller->isAvailable())
+        {
+            throw $this->createNotFoundException();
+        }
+        return $controller->mainAction($req);
     }
 }
 

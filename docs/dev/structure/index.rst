@@ -4,6 +4,6 @@
 .. toctree::
    :maxdepth: 2
 
-   skeleton
+   files
    plugin.xml
    classes

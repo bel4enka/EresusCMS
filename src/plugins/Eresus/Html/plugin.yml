@@ -1,0 +1,9 @@
+title:
+    ru: "HTML"
+version: "1.00"
+description:
+    ru: "Позволяет создавать разделы, содержимое которых задаётся в виде разметки HTML."
+require:
+    CMS: {min: "4.00"}
+settings:
+    value1: "param1"

@@ -1054,7 +1054,7 @@ class AdminUI extends WebPage
      */
     private function renderControlMenu()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->adminOnMenuRender();
+        //Eresus_CMS::getLegacyKernel()->plugins->adminOnMenuRender();
 
         $menu = '';
         for ($section = 0; $section < count($this->extmenu); $section++)
