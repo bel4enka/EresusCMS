@@ -40,57 +40,10 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 class PluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers Eresus\CmsBundle\Extensions\Plugin::getDataURL
+     *
      */
-    public function testGetDataUrl()
+    public function testNone()
     {
-        $Eresus = new \stdClass();
-        $Eresus->froot = '/home/exmaple.org/';
-        $Eresus->fdata = '/home/exmaple.org/data/';
-        $Eresus->fstyle = '/home/exmaple.org/style/';
-        $Eresus->root = 'http://exmaple.org/';
-        $Eresus->data = 'http://exmaple.org/data/';
-        $Eresus->style = 'http://exmaple.org/style/';
-        Eresus_Tests::setStatic('Eresus_CMS', $Eresus, 'legacyKernel');
-        $test = new Plugin();
-        $this->assertEquals('http://exmaple.org/data/plugin/',
-            $test->getDataURL());
-    }
-
-    /**
-     * @covers Eresus\CmsBundle\Extensions\Plugin::getCodeURL
-     */
-    public function testGetCodeUrl()
-    {
-        $Eresus = new \stdClass();
-        $Eresus->froot = '/home/exmaple.org/';
-        $Eresus->fdata = '/home/exmaple.org/data/';
-        $Eresus->fstyle = '/home/exmaple.org/style/';
-        $Eresus->root = 'http://exmaple.org/';
-        $Eresus->data = 'http://exmaple.org/data/';
-        $Eresus->style = 'http://exmaple.org/style/';
-        Eresus_Tests::setStatic('Eresus_CMS', $Eresus, 'legacyKernel');
-        $test = new Plugin();
-        $this->assertEquals('http://exmaple.org/ext/plugin/',
-            $test->getCodeURL());
-    }
-
-    /**
-     * @covers Eresus\CmsBundle\Extensions\Plugin::getStyleURL
-     */
-    public function testGetStyleUrl()
-    {
-        $Eresus = new \stdClass();
-        $Eresus->froot = '/home/exmaple.org/';
-        $Eresus->fdata = '/home/exmaple.org/data/';
-        $Eresus->fstyle = '/home/exmaple.org/style/';
-        $Eresus->root = 'http://exmaple.org/';
-        $Eresus->data = 'http://exmaple.org/data/';
-        $Eresus->style = 'http://exmaple.org/style/';
-        Eresus_Tests::setStatic('Eresus_CMS', $Eresus, 'legacyKernel');
-        $test = new Plugin();
-        $this->assertEquals('http://exmaple.org/style/plugin/',
-            $test->getStyleURL());
     }
 }
 

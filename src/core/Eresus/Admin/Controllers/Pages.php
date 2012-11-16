@@ -34,7 +34,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Eresus\CmsBundle\Form\DataTransformer\OptionsTransformer;
 use Eresus\CmsBundle\Form\DataTransformer\NullToStringTransformer;
 use Eresus\CmsBundle\Entity\Section;
-use Eresus\CmsBundle\Extensions\ContentPlugin;
 use Eresus\CmsBundle\AdminUI;
 use Eresus\CmsBundle\Templates;
 

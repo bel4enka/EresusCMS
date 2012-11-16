@@ -31,7 +31,6 @@
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
-use Eresus\CmsBundle\Extensions\ContentPlugin;
 use Eresus\CmsBundle\Templates;
 use Eresus\CmsBundle\UI\Form;
 
