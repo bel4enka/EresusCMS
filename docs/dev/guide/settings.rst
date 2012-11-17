@@ -1,51 +1,52 @@
-Диалог настроек
-===============
+Настройки модуля
+================
 
-Для создания диалога, позволяющего изменять настройки модуля, надо определить метод ``settings``, который должен иметь следующий вид:
+Чтобы добавить модулю настройки, надо сделать две вещи:
 
-.. code-block:: php
+#. описать настройки в файле ``plugin.yml``;
+#. описать диалог настроек.
 
-   <?php
-   class MyPlugin extends Plugin
-   {
-     /**
-      * Возвращает диалог настроек
-      *
-      * @return string  HTML
-      */
-     public function settings()
-     {
-       $form = array(
-         'name' => 'SettingsForm',
-         'caption' => $this->title . ' ' . $this->version,
-         'width' => '500px',
-         'fields' => array (
-           array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
-           /* Здесь надо определить нужные вам поля формы */
-         ),
-        'buttons' => array('ok', 'apply', 'cancel'),
-       );
-       $result = Eresus_Kernel::app()->getPage()->renderForm($form, $this->settings);
-       return $result;
-     }
+Описание настроек
+-----------------
 
+В файле ``plugin.yml`` в разделе ``settings`` надо перечислить все необходимые настройки и их значения
+по умолчанию. Подробное описание см. в :doc:`../reference/plugin.yml`.
 
-Имена полей формы должны совпадать с ключами массива в свойстве `Plugin::$settings <../../api/Eresus/Plugin.html#$settings>`_ вашего плагина. Тогда система автоматически изменит значения настроек после того, как пользователь нажмёт в диалоге настроек кнопку "Сохранить".
+Пример:
 
-Дополнительные действия при сохранении
---------------------------------------
+.. code-block:: yaml
 
-Если при сохранении пользователем настроек вам надо выполнить какие-либо дополнительные действия, вы можете переопределить метод `Plugin::onSettingsUpdate() <../../api/Eresus/Plugin.html#onSettingsUpdate>`_, например так:
+   title: Foo
+   version: "1.00"
+   description: "Foo plugin"
+   require:
+       CMS: {min: "4.00"}
+   settings:
+       param1: "foo bar"
+       param2: false
 
-.. code-block:: php
+После установки модуля, его настройки будут скопированы в файл ``config/plugins.yml``.
 
-   <?php
-   public function onSettingsUpdate()
-   {
-     if (is_uploaded_file($_FILES['logo']['tmp_name']))
-     {
-       // загружаем логотип
-     }
-   }
+Диалог настройки
+----------------
+
+Для описания диалога надо создать файл ``Resources/views/AdminConfigDialog.html.twig``, содержащий
+разметку полей формы.
+
+.. code-block:: html
+
+   <div class="form__row">
+       <label for="param1-input">Настройка param1</label>
+       <input name="settings[param1]" type="text" id="param1-input"
+           value="{{ plugin.settings.value1 }}>
+   </div>
+   <div class="form__row">
+       <label>
+           <input name="settings[param2]" type="checkbox" value="1"
+               {% if plugin.settings.param2 %} checked{% endif %}>
+           <input name="settings[param2]" type="hidden" value="0">
+           Настройка param2
+       </label>
+   </div>
 
 
