@@ -32,7 +32,7 @@ namespace Eresus\CmsBundle\Extensions;
 
 use DirectoryIterator;
 
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
 use Eresus\CmsBundle\Exceptions\ConfigException;
@@ -44,8 +44,15 @@ use Eresus\CmsBundle\Extensions\Plugin;
  * @package Eresus
  * @since 4.00
  */
-class Registry extends ContainerAware
+class Registry
 {
+    /**
+     * Контейнер служб
+     * @var ContainerInterface
+     * @since 4.00
+     */
+    private $container;
+
     /**
      * Настройки плагинов
      *
@@ -65,10 +72,13 @@ class Registry extends ContainerAware
     /**
      * Конструктор
      *
+     * @param ContainerInterface $container
+     *
      * @since 4.00
      */
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
         $this->init();
     }
 

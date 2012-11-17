@@ -1412,8 +1412,6 @@ class Eresus
 		$this->init_extensions();
 		# Подключение к источнику данных
 		$this->init_datasource();
-		# Инициализация механизма плагинов
-		$this->init_plugins();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута
