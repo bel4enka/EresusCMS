@@ -1,0 +1,22 @@
+<div class="box box_style_inline">
+    <div class="box__header">Настройки модуля «{{ plugin.title }}»</div>
+    <div class="box__contents">
+        <form action="admin.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="mod" value="plgmgr">
+            <input type="hidden" name="id" value="{{ plugin.namespace }}">
+            <input type="hidden" name="action" value="config">
+
+            {{ contents }}
+
+            <div class="form__footer">
+                <button type="submit" class="button button_has_icon button_icon_ok">
+                    Сохранить
+                </button>
+                <button type="button" onclick="window.location='admin.php?mod=plgmgr'"
+                    class="button button_has_icon button_icon_cancel">
+                    Отменить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

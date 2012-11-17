@@ -66,7 +66,7 @@ class Config extends AbstractController
     {
         if ('POST' === $req->getMethod())
         {
-            $settings = $req->request->get('settings');
+            $settings = $req->request->get('settings', array());
             foreach ($settings as $key => $value)
             {
                 $this->plugin->settings[$key] = $value;
@@ -77,9 +77,16 @@ class Config extends AbstractController
         }
         $vars = array(
             'plugin' => $this->plugin,
-            'form' => array('action' => 'admin.php', 'method' => 'post')
         );
-        return $this->renderView($this->getDialogTemplateFilename(), $vars);
+
+        $contents = $this->renderView($this->getDialogTemplateFilename(), $vars);
+
+        $vars = array(
+            'plugin' => $this->plugin,
+            'contents' => $contents,
+        );
+
+        return $this->renderView('CmsBundle:Extensions:ConfigDialog.html.twig', $vars);
     }
 
     /**

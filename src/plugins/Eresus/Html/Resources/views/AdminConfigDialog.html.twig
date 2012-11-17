@@ -1,7 +1,8 @@
-<form action="{{ form.action }}" method="{{ form.method}}">
-    <input type="hidden" name="mod" value="plgmgr">
-    <input type="hidden" name="id" value="{{ plugin.namespace }}">
-    <input type="hidden" name="action" value="config">
-    <input name="settings[value1]" value="{{ plugin.settings.value1 }}">
-    <button type="submit">Сохранить</button>
-</form>
+<div class="form__row">
+    <label>
+        <input name="settings[highlight]" type="checkbox" value="1"
+            {% if plugin.settings.highlight %} checked{% endif %}>
+        <input name="settings[highlight]" type="hidden" value="0">
+        Подсветка синтаксиса
+    </label>
+</div>

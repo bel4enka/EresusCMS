@@ -6,4 +6,4 @@ description:
 require:
     CMS: {min: "4.00"}
 settings:
-    value1: "param1"
+    highlight: true
