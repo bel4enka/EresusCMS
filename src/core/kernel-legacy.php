@@ -1012,12 +1012,6 @@ class Eresus
 	public $db;
 
 	/**
-	 * Плагины
-	 * @var Registry
-	 */
-	public $plugins;
-
-	/**
 	 * Учётная запись пользователя
 	 *
 	 * @var array
@@ -1289,16 +1283,6 @@ class Eresus
 		$this->db = new MySQL;
 		$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
 			$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
-	}
-
-	/**
-	 * Инициализация механизма плагинов
-	 */
-	function init_plugins()
-	{
-		/*$this->plugins = new Registry;
-        $this->plugins->setContainer(Eresus_Kernel::sc());
-		$this->plugins->init();*/
 	}
 
 	/**
