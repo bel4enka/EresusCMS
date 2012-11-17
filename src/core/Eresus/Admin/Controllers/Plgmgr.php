@@ -154,7 +154,7 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
             $install = $req->request->get('install');
             foreach ($install as $namespace)
             {
-                $plugin = new Plugin($namespace);
+                $plugin = new Plugin($namespace, $this->container);
                 $this->extensions->install($plugin);
             }
             return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));

@@ -32,16 +32,13 @@ namespace Eresus\CmsBundle\Extensions;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Yaml\Yaml;
 
-use Eresus\CmsBundle\Extensions\Controllers\Config;
+use Eresus\CmsBundle\Extensions\Controllers\ConfigDialog;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
 use Eresus_Kernel;
 use Eresus_CMS;
-use FS;
-use Core;
 
 /**
  * Родительский класс для всех плагинов
@@ -54,7 +51,7 @@ use Core;
  *
  * @package Eresus
  */
-class Plugin implements ContainerAwareInterface
+class Plugin
 {
     /**
      * Включен или отключен
@@ -118,7 +115,7 @@ class Plugin implements ContainerAwareInterface
 
     /**
      * Контроллер диалога настройки
-     * @var Config;
+     * @var ConfigDialog
      * @since 4.00
      */
     private $configController = null;
@@ -126,14 +123,16 @@ class Plugin implements ContainerAwareInterface
     /**
      * Создаёт основной объект плагина из указанного пространства имён
      *
-     * @param string $ns      пространство имён плагина
-     * @param array  $config  настройки плагина
+     * @param string             $ns         пространство имён плагина
+     * @param ContainerInterface $container  контейнер служб
+     * @param array              $config     настройки плагина
      *
      * @throws LogicException
      */
-    public function __construct($ns, array $config = null)
+    public function __construct($ns, ContainerInterface $container, array $config = null)
     {
         $this->settings = new ArrayCollection;
+        $this->container = $container;
         $this->load($ns, $config);
     }
 
@@ -178,26 +177,32 @@ class Plugin implements ContainerAwareInterface
     }
 
     /**
-     * Устанавливает контейнер
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-     * @since 4.00
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
      * Возвращает контроллер диалога настройки
      *
-     * @return Controllers\Config
+     * @throws LogicException
+     *
+     * @return ConfigDialog
      * @since 4.00
      */
     public function getConfigController()
     {
         if (null === $this->configController)
         {
-            $this->configController = new Config($this);
+            $className = $this->namespace . '\Controllers\Admin\ConfigDialog';
+            if (class_exists($className))
+            {
+                $controller = new $className($this);
+                if (!($controller instanceof ConfigDialog))
+                {
+                    throw new LogicException(sprintf('Class %s" should be descendant of "%s"',
+                        get_class($controller), get_class(new ConfigDialog($this))));
+                }
+                $this->configController = $controller;
+            }
+            else
+            {
+                $this->configController = new ConfigDialog($this);
+            }
             $this->configController->setContainer($this->container);
         }
         return $this->configController;
@@ -288,6 +293,10 @@ class Plugin implements ContainerAwareInterface
             throw new LogicException(sprintf('Missing required fields "%s" in plugin.yml of %s',
                 implode(', ', $missed), $ns));
         }
+
+        /** @var Eresus_Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+        $kernel->getClassLoader()->add($this->namespace, $kernel->getRootDir() . '/plugins');
 
         $this->title = $info['title'];
         $this->version = $info['version'];

@@ -50,3 +50,23 @@
    </div>
 
 
+Собственный контроллер диалога настройки
+----------------------------------------
+
+Если описанных выше возможностей окажется недостаточно, можно создать собственный контроллер диалога
+настройки. Для этого нужно в файле ``Controllers/Admin/ConfigDialog.php`` описать класс
+``ConfigDialog``, унаследованный от `Eresus\\CmsBundle\\Extensions\\Controllers\\ConfigDialog <../../api/classes/Eresus.CmsBundle.Extensions.Controllers.ConfigDialog.html>`_.
+Это изменить любое поведение диалога настройки.
+
+.. code-block:: php
+
+   <?php
+   namespace Acme\Foo\Controllers\Admin;
+
+   use Symfony\Component\HttpFoundation\Request;
+   use Eresus\CmsBundle\Extensions\Controllers\ConfigDialog as NativeConfigDialog;
+
+   class ConfigDialog extends NativeConfigDialog
+   {
+       // Здесь переопределите нужные вам методы.
+   }

@@ -34,7 +34,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Eresus_Kernel;
-use Eresus_CMS;
 
 /**
  * Контроллер диалога настройки плагина
@@ -42,7 +41,7 @@ use Eresus_CMS;
  * @package Eresus
  * @since 4.00
  */
-class Config extends AbstractController
+class ConfigDialog extends AbstractController
 {
     /**
      * Возвращает true, если у плагина есть диалог настроек

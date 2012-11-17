@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Пакет Eresus CMS
+ * Расширение «HTML» для Eresus CMS
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -25,19 +25,19 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Eresus
+ * @package Html
  */
-
-namespace Eresus\CmsBundle;
+namespace Eresus\Html;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Пакет Eresus CMS
+ * Расширение «HTML» для Eresus CMS
  *
- * @package Eresus
+ * @package Html
  */
-class CmsBundle extends Bundle
+class EresusHtmlBundle extends Bundle
 {
+
 }
 

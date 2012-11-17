@@ -33,6 +33,7 @@ namespace Eresus\CmsBundle\Extensions;
 use DirectoryIterator;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Yaml\Yaml;
 
 use Eresus\CmsBundle\Exceptions\ConfigException;
@@ -44,7 +45,7 @@ use Eresus\CmsBundle\Extensions\Plugin;
  * @package Eresus
  * @since 4.00
  */
-class Registry
+class Registry implements ContainerAwareInterface
 {
     /**
      * Контейнер служб
@@ -83,6 +84,15 @@ class Registry
     }
 
     /**
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @since 4.00
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * Загружает плагин и возвращает его экземпляр
      *
      * Метод пытается загрузить плагин с пространством именем $ns (если он не был загружен ранее).
@@ -114,7 +124,6 @@ class Registry
         }
 
         $plugin = $this->createPluginInstance($ns, $this->config[$ns]);
-        $plugin->setContainer($this->container);
         $this->plugins[$ns] = $plugin;
 
         return $plugin;
@@ -146,7 +155,7 @@ class Registry
         {
             if (!isset($installed[$ns]))
             {
-                $installed[$ns] = new Plugin($ns);
+                $installed[$ns] = new Plugin($ns, $this->container);
             }
         }
         return $installed;
@@ -179,7 +188,7 @@ class Registry
                         $namespace = $vendor->getBasename() . '\\' . $plugin->getBasename();
                         if (!isset($all[$namespace]))
                         {
-                            $all[$namespace] = new Plugin($namespace);
+                            $all[$namespace] = new Plugin($namespace, $this->container);
                         }
                     }
                 }
@@ -247,7 +256,7 @@ class Registry
      */
     protected function createPluginInstance($namespace, array $config = array())
     {
-        return new Plugin($namespace, $config);
+        return new Plugin($namespace, $this->container, $config);
     }
 
     /**

@@ -28,6 +28,7 @@
  * @package Eresus
  */
 
+use Composer\Autoload\ClassLoader;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\ClassLoader\UniversalClassLoader;
@@ -53,6 +54,12 @@ class Eresus_Kernel extends Kernel
      * @var int
      */
     const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
+
+    /**
+     * @var ClassLoader
+     * @since 4.00
+     */
+    private $classLoader;
 
     /**
      * Для тестирования
@@ -98,6 +105,31 @@ class Eresus_Kernel extends Kernel
         date_default_timezone_set($timezone);
 
         $this->initExceptionHandling();
+    }
+
+    /**
+     * Устанавливает автозагрузчик классов
+     *
+     * @param Composer\Autoload\ClassLoader $loader
+     *
+     * @return void
+     *
+     * @since 4.00
+     */
+    public function setClassLoader(ClassLoader $loader)
+    {
+        $this->classLoader = $loader;
+    }
+
+    /**
+     * Возвращает автозагрузчик классов
+     *
+     * @return Composer\Autoload\ClassLoader
+     * @since 4.00
+     */
+    public function getClassLoader()
+    {
+        return $this->classLoader;
     }
 
     /**

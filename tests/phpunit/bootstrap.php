@@ -35,6 +35,50 @@ namespace
     define('TESTS_TEST_DIR', __DIR__ );
     define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
 
+    /**
+     * Универсальная заглушка
+     *
+     * @package Eresus
+     * @subpackage Tests
+     */
+    class UniversalStub implements ArrayAccess
+    {
+        public function __get($a)
+        {
+            return $this;
+        }
+
+        public function __call($a, $b)
+        {
+            return $this;
+        }
+
+        public function offsetExists($offset)
+        {
+            return true;
+        }
+
+        public function offsetGet($offset)
+        {
+            return $this;
+        }
+
+        public function offsetSet($offset, $value)
+        {
+            ;
+        }
+
+        public function offsetUnset($offset)
+        {
+            ;
+        }
+
+        public function __toString()
+        {
+            return '';
+        }
+    }
+
     require_once __DIR__ . '/stubs.php';
 
     define('TESTS_VENDORS', TESTS_SRC_DIR . '/../vendor');
@@ -97,59 +141,7 @@ namespace
         }
     }
 
-    /**
-     * Универсальная заглушка
-     *
-     * @package Eresus
-     * @subpackage Tests
-     */
-    class UniversalStub implements ArrayAccess
-    {
-        public function __get($a)
-        {
-            return $this;
-        }
-
-        public function __call($a, $b)
-        {
-            return $this;
-        }
-
-        public function offsetExists($offset)
-        {
-            return true;
-        }
-
-        public function offsetGet($offset)
-        {
-            return $this;
-        }
-
-        public function offsetSet($offset, $value)
-        {
-            ;
-        }
-
-        public function offsetUnset($offset)
-        {
-            ;
-        }
-
-        public function __toString()
-        {
-            return '';
-        }
-    }
-
     $kernel = new stdClass();
     $kernel->container = new Tests\Container;
     $GLOBALS['kernel'] = $kernel;
-}
-
-namespace Doctrine\Common\Collections
-
-{
-    class ArrayCollection extends \UniversalStub
-    {
-    }
 }

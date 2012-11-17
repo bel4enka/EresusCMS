@@ -81,6 +81,7 @@ $kernel = new Eresus_Kernel('dev', true);
 // Восстанавливаем состояние вывода ошибок
 ini_set('track_errors', $displayErrors);
 
+$kernel->setClassLoader($loader);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);

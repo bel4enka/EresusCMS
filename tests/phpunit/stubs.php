@@ -102,7 +102,13 @@ namespace Eresus\ORMBundle
     class AbstractEntity {}
 }
 
+namespace Doctrine\Common\Collections
+{
+    class ArrayCollection extends \UniversalStub {}
+}
+
 namespace Doctrine\ORM
 {
     class EntityRepository {}
 }
+
