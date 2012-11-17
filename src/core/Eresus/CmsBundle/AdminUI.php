@@ -983,7 +983,9 @@ class AdminUI extends WebPage
             elseif (substr($module, 0, 4) == 'ext-')
             {
                 $name = substr($module, 4);
-                $this->module = Eresus_CMS::getLegacyKernel()->plugins->get($name);
+                /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
+                $extensions = $this->get('extensions');
+                $this->module = $extensions->get($name);
             }
             else
             {

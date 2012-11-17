@@ -63,22 +63,13 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         /** @var \Eresus\CmsBundle\Entity\Section $section */
         $section = $om->find('CmsBundle:Section', $request->get('section'));
 
+        /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
+        $extensions = $this->get('extensions');
         $page->id = $section->id;
-        if (!array_key_exists($section->type, Eresus_CMS::getLegacyKernel()->plugins->list))
+        if (false === $extensions->get($section->type))
         {
             switch ($section->type)
             {
-                case 'default':
-                    $editor = new ContentPlugin();
-                    if ($request->request->get('update'))
-                    {
-                        $editor->update();
-                    }
-                    else
-                    {
-                        $result = $editor->adminRenderContent();
-                    }
-                    break;
                 case 'list':
                     if ($request->request->get('update'))
                     {
@@ -137,10 +128,8 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         }
         else
         {
-            Eresus_CMS::getLegacyKernel()->plugins->get($section->type);
-            $page->module = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type];
-            $result = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type]
-                ->adminRenderContent();
+            $page->module = $extensions->get($section->type);
+            $result = $page->module->adminRenderContent(); // TODO Исправить!
         }
         return $result;
     }

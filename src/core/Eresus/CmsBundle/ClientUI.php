@@ -291,7 +291,7 @@ class ClientUI extends WebPage
      */
     public function init()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
+        // TODO Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
 
         $item = $this->loadPage();
         if (count(Eresus_CMS::getLegacyKernel()->request['params']))
@@ -407,14 +407,14 @@ class ClientUI extends WebPage
             $this->httpError(arg('HTTP_ERROR', 'int'));
         }
         # Отрисовываем контент
-        $content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
+        // TODO $content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
         if ($content instanceof Response)
         {
             return $content;
         }
         $templates = new Templates;
         $this->template = $templates->get($this->template);
-        $content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
+        // TODO $content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
 
         if (
             isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
@@ -450,7 +450,7 @@ class ClientUI extends WebPage
             $this->addStyles($this->styles);
         }
 
-        $result = Eresus_CMS::getLegacyKernel()->plugins->clientOnPageRender($result);
+        // TODO $result = Eresus_CMS::getLegacyKernel()->plugins->clientOnPageRender($result);
 
         // FIXME: Обратная совместимость
         if (!empty($this->scripts))
@@ -471,7 +471,7 @@ class ClientUI extends WebPage
             }
         }
 
-        $result = Eresus_CMS::getLegacyKernel()->plugins->clientBeforeSend($result);
+        // TODO $result = Eresus_CMS::getLegacyKernel()->plugins->clientBeforeSend($result);
         return new Response($result);
     }
 

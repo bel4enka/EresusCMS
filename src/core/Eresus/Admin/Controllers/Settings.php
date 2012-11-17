@@ -159,6 +159,7 @@ class Eresus_Admin_Controllers_Settings
 			array('name' => 'url','caption' => ADM_PAGES_CONTENT_URL)
 		);
 
+        // TODO Исправить!
 		foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
 		{
 			if ($plugin instanceof ContentPlugin)

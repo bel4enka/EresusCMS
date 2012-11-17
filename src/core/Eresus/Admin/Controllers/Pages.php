@@ -265,6 +265,7 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
 
         /*
          * Типы контентов из плагинов
+         * TODO Исправить!
          */
         if (count(Eresus_CMS::getLegacyKernel()->plugins->items))
         {

@@ -71,7 +71,9 @@ class Config extends AbstractController
             {
                 $this->plugin->settings[$key] = $value;
             }
-            Eresus_CMS::getLegacyKernel()->plugins->update($this->plugin);
+            /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
+            $extensions = $this->get('extensions');
+            $extensions->update($this->plugin);
         }
         $vars = array(
             'plugin' => $this->plugin,

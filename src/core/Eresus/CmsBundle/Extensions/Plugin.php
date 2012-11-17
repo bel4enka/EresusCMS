@@ -212,7 +212,9 @@ class Plugin implements ContainerAwareInterface
      */
     public function getUnresolvedRequirements()
     {
-        $installed = Eresus_CMS::getLegacyKernel()->plugins->getInstalled();
+        /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
+        $extensions = $this->get('extensions');
+        $installed = $extensions->getInstalled();
         $unresolved = array();
         foreach ($this->requirements as $id => $versions)
         {

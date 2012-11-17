@@ -43,6 +43,13 @@ use Eresus\CmsBundle\AdminUI;
 class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
 {
     /**
+     * Реестр плагинов
+     * @var Registry
+     * @since 4.00
+     */
+    private $extensions;
+
+    /**
      * Отрисовка контента модуля
      *
      * @param Request $request
@@ -56,6 +63,7 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
             return '';
         }
 
+        $this->extensions = $this->get('extensions');
         switch ($request->get('action'))
         {
             case null:
@@ -91,8 +99,7 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
     public function indexAction(/** @noinspection PhpUnusedParameterInspection */
         Request $request)
     {
-        $registry = Eresus_CMS::getLegacyKernel()->plugins;
-        $plugins = $registry->getInstalled();
+        $plugins = $this->extensions->getInstalled();
         usort($plugins,
             function ($a, $b)
             {
@@ -120,15 +127,14 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
     public function toggleAction(Request $request)
     {
         $namespace = $request->query->get('id');
-        $registry = Eresus_CMS::getLegacyKernel()->plugins;
-        $installed = $registry->getInstalled();
+        $installed = $this->extensions->getInstalled();
         if (!array_key_exists($namespace, $installed))
         {
             throw $this->createNotFoundException();
         }
         $plugin = $installed[$namespace];
         $plugin->enabled = !$plugin->enabled;
-        $registry->update($plugin);
+        $this->extensions->update($plugin);
 
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
     }
@@ -143,20 +149,19 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
      */
     public function installAction(Request $req)
     {
-        $registry = Eresus_CMS::getLegacyKernel()->plugins;
         if ('POST' === $req->getMethod())
         {
             $install = $req->request->get('install');
             foreach ($install as $namespace)
             {
                 $plugin = new Plugin($namespace);
-                $registry->install($plugin);
+                $this->extensions->install($plugin);
             }
             return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
         }
 
-        $installed = $registry->getInstalled();
-        $all = $registry->getAll();
+        $installed = $this->extensions->getInstalled();
+        $all = $this->extensions->getAll();
         // Плагины, доступные для установки
         $available = array_diff_key($all, $installed);
         usort($available,
@@ -184,9 +189,8 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
      */
     public function uninstallAction(Request $req)
     {
-        $registry = Eresus_CMS::getLegacyKernel()->plugins;
-        $plugin = $registry->get($req->query->get('id'));
-        $registry->uninstall($plugin);
+        $plugin = $this->extensions->get($req->query->get('id'));
+        $this->extensions->uninstall($plugin);
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
     }
 
@@ -202,8 +206,7 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
      */
     public function configAction(Request $req)
     {
-        $registry = Eresus_CMS::getLegacyKernel()->plugins;
-        $plugin = $registry->get($req->get('id'));
+        $plugin = $this->extensions->get($req->get('id'));
         $controller = $plugin->getConfigController();
         if (!$controller->isAvailable())
         {
