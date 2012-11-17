@@ -137,7 +137,7 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         }
         else
         {
-            Eresus_CMS::getLegacyKernel()->plugins->load($section->type);
+            Eresus_CMS::getLegacyKernel()->plugins->get($section->type);
             $page->module = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type];
             $result = Eresus_CMS::getLegacyKernel()->plugins->items[$section->type]
                 ->adminRenderContent();

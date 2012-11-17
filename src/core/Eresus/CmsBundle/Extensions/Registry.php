@@ -30,22 +30,19 @@
 
 namespace Eresus\CmsBundle\Extensions;
 
-use DomainException;
-use RuntimeException;
 use DirectoryIterator;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Yaml\Yaml;
 
+use Eresus\CmsBundle\Exceptions\ConfigException;
 use Eresus\CmsBundle\Extensions\Plugin;
-use Eresus_Kernel;
 
 /**
  * Работа с плагинами
  *
  * @package Eresus
+ * @since 4.00
  */
 class Registry extends ContainerAware
 {
@@ -66,22 +63,13 @@ class Registry extends ContainerAware
     private $plugins = array();
 
     /**
-     * Загружает активные плагины
+     * Конструктор
      *
-     * @return void
-     *
-     * @since 2.16
+     * @since 4.00
      */
-    public function init()
+    public function __construct()
     {
-        $this->config = Yaml::parse($this->getDbFilename());
-        foreach ($this->config as $ns => $config)
-        {
-            if (isset($config['enabled']) && $config['enabled'])
-            {
-                $this->load($ns);
-            }
-        }
+        $this->init();
     }
 
     /**
@@ -93,13 +81,11 @@ class Registry extends ContainerAware
      *
      * @param string $ns  пространство имён плагина
      *
-     * @throws RuntimeException
-     *
      * @return Plugin|bool  экземпляр плагина или false
      *
-     * @since 2.10
+     * @since 4.00
      */
-    public function load($ns)
+    public function get($ns)
     {
         /* Если плагин уже был загружен возвращаем экземпляр из реестра */
         if (isset($this->plugins[$ns]))
@@ -117,7 +103,7 @@ class Registry extends ContainerAware
             return false;
         }
 
-        $plugin = new Plugin($ns, $this->config[$ns]);
+        $plugin = $this->createPluginInstance($ns, $this->config[$ns]);
         $plugin->setContainer($this->container);
         $this->plugins[$ns] = $plugin;
 
@@ -128,6 +114,7 @@ class Registry extends ContainerAware
      * Возвращает включенные плагины
      *
      * @return Plugin[]
+     *
      * @since 4.00
      */
     public function getEnabled()
@@ -139,6 +126,7 @@ class Registry extends ContainerAware
      * Возвращает установленные плагины (включая отключенные)
      *
      * @return Plugin[]
+     *
      * @since 4.00
      */
     public function getInstalled()
@@ -158,12 +146,15 @@ class Registry extends ContainerAware
      * Возвращает все плагины
      *
      * @return Plugin[]
+     *
      * @since 4.00
      */
     public function getAll()
     {
+        /** @var \Eresus_Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+        $vendors = new DirectoryIterator($kernel->getRootDir() . '/plugins');
         $all = $this->plugins;
-        $vendors = new DirectoryIterator(Eresus_Kernel::app()->getFsRoot() . '/plugins');
         foreach ($vendors as $vendor)
         {
             /** @var DirectoryIterator $vendor */
@@ -210,6 +201,8 @@ class Registry extends ContainerAware
      * @param Plugin $plugin
      *
      * @return void
+     *
+     * @since 4.00
      */
     public function install(Plugin $plugin)
     {
@@ -221,6 +214,9 @@ class Registry extends ContainerAware
      * Удаляет плагин из БД
      *
      * @param Plugin $plugin
+     *
+     * @return void
+     * @since 4.00
      */
     public function uninstall(Plugin $plugin)
     {
@@ -230,42 +226,58 @@ class Registry extends ContainerAware
     }
 
     /**
-     * Автозагрузка классов плагинов
+     * Создаёт экземпляр плагина
      *
-     * @param string $className
+     * @param string $namespace
+     * @param array  $config
      *
-     * @return boolean
+     * @return Plugin
      *
-     * @since 3.00
+     * @since 4.00
      */
-    public function autoload($className)
+    protected function createPluginInstance($namespace, array $config = array())
     {
-        $pluginName = strtolower(substr($className, 0, strpos($className, '_')));
-
-        if ($this->load($pluginName))
-        {
-            $filename = Eresus_Kernel::app()->getFsRoot() . '/ext/' . $pluginName . '/classes/' .
-                str_replace('_', '/', substr($className, strlen($pluginName) + 1)) . '.php';
-            if (file_exists($filename))
-            {
-                /** @noinspection PhpIncludeInspection */
-                include $filename;
-                return class_exists($className, false) || interface_exists($className, false);
-            }
-        }
-
-        return false;
+        return new Plugin($namespace, $config);
     }
 
     /**
      * Возвращает путь к файлу базы данных
      *
      * @return string
+     *
      * @since 4.00
      */
     private function getDbFilename()
     {
-        return Eresus_Kernel::app()->getFsRoot() . '/config/plugins.yml';
+        /** @var \Symfony\Component\Config\FileLocator $locator */
+        $locator = $this->container->get('config_locator');
+        return $locator->locate('plugins.yml');
+    }
+
+    /**
+     * Загружает активные плагины
+     *
+     * @throws ConfigException
+     *
+     * @return void
+     *
+     * @since 4.00
+     */
+    private function init()
+    {
+        $filename = $this->getDbFilename();
+        $this->config = Yaml::parse($filename);
+        if (!is_array($this->config))
+        {
+            throw new ConfigException('Error reading ' . $filename);
+        }
+        foreach ($this->config as $ns => $config)
+        {
+            if (isset($config['enabled']) && $config['enabled'])
+            {
+                $this->get($ns);
+            }
+        }
     }
 }
 

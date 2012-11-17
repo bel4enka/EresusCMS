@@ -61,3 +61,13 @@ swiftmailer:
     username:  %mailer_user%
     password:  %mailer_password%
     spool:     { type: memory }
+
+services:
+  config_locator:
+    class: Symfony\Component\Config\FileLocator
+    arguments:
+    - %kernel.root_dir%/config
+
+  extensions:
+    class: Eresus\CmsBundle\Extensions\Registry
+    arguments: [@service_container]

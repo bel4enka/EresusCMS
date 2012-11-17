@@ -185,7 +185,7 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
     public function uninstallAction(Request $req)
     {
         $registry = Eresus_CMS::getLegacyKernel()->plugins;
-        $plugin = $registry->load($req->query->get('id'));
+        $plugin = $registry->get($req->query->get('id'));
         $registry->uninstall($plugin);
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id' => '')));
     }
@@ -203,7 +203,7 @@ class Eresus_Admin_Controllers_Plgmgr extends Eresus_Admin_Controllers_Abstract
     public function configAction(Request $req)
     {
         $registry = Eresus_CMS::getLegacyKernel()->plugins;
-        $plugin = $registry->load($req->get('id'));
+        $plugin = $registry->get($req->get('id'));
         $controller = $plugin->getConfigController();
         if (!$controller->isAvailable())
         {

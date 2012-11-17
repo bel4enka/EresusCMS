@@ -28,126 +28,128 @@
  * @package Eresus
  */
 
-use Symfony\Component\ClassLoader\UniversalClassLoader;
+namespace
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-define('TESTS_TEST_DIR', __DIR__ );
-define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
+{
+    define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
+    define('TESTS_TEST_DIR', __DIR__ );
+    define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
 
-require_once __DIR__ . '/stubs.php';
+    require_once __DIR__ . '/stubs.php';
 
-define('TESTS_VENDORS', TESTS_SRC_DIR . '/../vendor');
+    define('TESTS_VENDORS', TESTS_SRC_DIR . '/../vendor');
 
-require TESTS_VENDORS .
-    '/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+    require TESTS_VENDORS .
+        '/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
-$loader = new UniversalClassLoader();
-$loader->registerNamespaces(array(
-    'Symfony' => TESTS_VENDORS . '/symfony/symfony/src',
-    'Eresus' => TESTS_SRC_DIR . '/core',
-));
-$loader->registerPrefixes(array(
-    'Eresus_' => TESTS_SRC_DIR . '/core',
-));
-$loader->register();
+    $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
+    $loader->registerNamespaces(array(
+        'Symfony' => TESTS_VENDORS . '/symfony/symfony/src',
+        'Eresus' => TESTS_SRC_DIR . '/core',
+    ));
+    $loader->registerPrefixes(array(
+        'Eresus_' => TESTS_SRC_DIR . '/core',
+    ));
+    $loader->register();
 
-require_once TESTS_SRC_DIR . '/lang/ru.php';
+    require_once TESTS_SRC_DIR . '/lang/ru.php';
+}
 
-/**
- * Вспомогательный инструментарий для тестов
- *
- * @package Eresus
- * @subpackage Tests
- * @since 3.00
- */
-class Eresus_Tests
+namespace Tests
+
 {
     /**
-     * Устанавливает статическое приватное свойство класса
+     * Эмулятор контейнера служб
+     */
+    class Container extends \Symfony\Component\DependencyInjection\Container
+    {
+    }
+}
+
+namespace
+
+{
+    /**
+     * Вспомогательный инструментарий для тестов
      *
-     * @param string $className
-     * @param mixed  $value
-     * @param string $propertyName
-     *
-     * @return void
-     *
+     * @package Eresus
+     * @subpackage Tests
      * @since 3.00
      */
-    public static function setStatic($className, $value, $propertyName = 'instance')
+    class Eresus_Tests
     {
-        $property = new ReflectionProperty($className, $propertyName);
-        $property->setAccessible(true);
-        $property->setValue($className, $value);
-    }
-}
-
-/**
- * Универсальная заглушка
- *
- * @package Eresus
- * @subpackage Tests
- */
-class UniversalStub implements ArrayAccess
-{
-    public function __get($a)
-    {
-        return $this;
-    }
-
-    public function __call($a, $b)
-    {
-        return $this;
-    }
-
-    public function offsetExists($offset)
-    {
-        return true;
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this;
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        ;
-    }
-
-    public function offsetUnset($offset)
-    {
-        ;
-    }
-
-    public function __toString()
-    {
-        return '';
-    }
-}
-
-/**
- * Эмулятор контейнера служб
- */
-class Container
-{
-    private $services = array();
-
-    public function set($id, $service)
-    {
-        $this->services[$id] = $service;
-    }
-
-    public function get($id)
-    {
-        if (!array_key_exists($id, $this->services))
+        /**
+         * Устанавливает статическое приватное свойство класса
+         *
+         * @param string $className
+         * @param mixed  $value
+         * @param string $propertyName
+         *
+         * @return void
+         *
+         * @since 3.00
+         */
+        public static function setStatic($className, $value, $propertyName = 'instance')
         {
-            throw new Exception("Unknown service: \"$id\"");
+            $property = new ReflectionProperty($className, $propertyName);
+            $property->setAccessible(true);
+            $property->setValue($className, $value);
         }
-        return $this->services[$id];
     }
+
+    /**
+     * Универсальная заглушка
+     *
+     * @package Eresus
+     * @subpackage Tests
+     */
+    class UniversalStub implements ArrayAccess
+    {
+        public function __get($a)
+        {
+            return $this;
+        }
+
+        public function __call($a, $b)
+        {
+            return $this;
+        }
+
+        public function offsetExists($offset)
+        {
+            return true;
+        }
+
+        public function offsetGet($offset)
+        {
+            return $this;
+        }
+
+        public function offsetSet($offset, $value)
+        {
+            ;
+        }
+
+        public function offsetUnset($offset)
+        {
+            ;
+        }
+
+        public function __toString()
+        {
+            return '';
+        }
+    }
+
+    $kernel = new stdClass();
+    $kernel->container = new Tests\Container;
+    $GLOBALS['kernel'] = $kernel;
 }
 
-$kernel = new stdClass();
-$kernel->container = new Container;
-$GLOBALS['kernel'] = $kernel;
+namespace Doctrine\Common\Collections
 
+{
+    class ArrayCollection extends \UniversalStub
+    {
+    }
+}

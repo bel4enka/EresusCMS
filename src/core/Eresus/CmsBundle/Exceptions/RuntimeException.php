@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Ошибка в логике приложения
+ * Ошибка времени исполнения
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -30,11 +30,11 @@
 namespace Eresus\CmsBundle\Exceptions;
 
 /**
- * Ошибка в логике приложения
+ * Ошибка времени исполнения
  *
  * @package Eresus
  */
-class LogicException extends \LogicException
+class RuntimeException extends \RuntimeException
 {
 }
 
