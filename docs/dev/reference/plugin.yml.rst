@@ -93,8 +93,8 @@ controller
 
 Имя контроллера, обрабатывающего этот тип контента. Обязательный параметр. Если имя модуля
 "Acme\\Foo", а в поле "controller" указано "Bar", то для обработки разделов этого типа будет
-использоваться в КИ класс ``Acme\\Foo\\Controllers\\Client\\BarContent``, а в АИ ---
-``Acme\\Foo\\Controllers\\Admin\\BarContent``.
+использоваться в КИ класс ``Acme\\Foo\\Controller\\BarContentClientController``, а в АИ ---
+``Acme\\Foo\\Controller\\BarContentAdminController``.
 
 description
 ^^^^^^^^^^^

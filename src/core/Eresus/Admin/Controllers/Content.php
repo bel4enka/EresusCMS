@@ -31,7 +31,6 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Eresus\CmsBundle\Extensions\ContentPlugin;
 
 /**
  * Управление контентом
@@ -61,12 +60,12 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         /** @var \Doctrine\Common\Persistence\ObjectManager $om */
         $om = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Entity\Section $section */
-        $section = $om->find('CmsBundle:Section', $request->get('section'));
+        $section = $om->find('CmsBundle:Section', $request->query->getInt('id'));
 
-        /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
-        $extensions = $this->get('extensions');
         $page->id = $section->id;
-        if (false === $extensions->get($section->type))
+        /** @var \Eresus\CmsBundle\CmsBundle $cms */
+        $cms = $this->get('cms');
+        if (null === ($contentType = $cms->getContentType($section->type)))
         {
             switch ($section->type)
             {
@@ -128,8 +127,8 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         }
         else
         {
-            $page->module = $extensions->get($section->type);
-            $result = $page->module->adminRenderContent(); // TODO Исправить!
+            $controller = $contentType->getAdminController();
+            $result = $controller->indexAction();
         }
         return $result;
     }

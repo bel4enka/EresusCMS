@@ -77,5 +77,21 @@ class CmsBundle extends Bundle
     {
         return $this->contentTypes;
     }
+
+    /**
+     * Возвращает тип контента по его идентификатору
+     *
+     * @param string $id
+     *
+     * @return ContentType|null
+     *
+     * @since 4.00
+     */
+    public function getContentType($id)
+    {
+        return array_key_exists($id, $this->contentTypes)
+            ? $this->contentTypes[$id]
+            : null;
+    }
 }
 

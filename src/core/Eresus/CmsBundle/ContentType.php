@@ -71,6 +71,20 @@ class ContentType
     private $description = null;
 
     /**
+     * Контроллер для АИ
+     * @var \Symfony\Bundle\FrameworkBundle\Controller\Controller
+     * @since 4.00
+     */
+    private $adminController = null;
+
+    /**
+     * Контроллер для КИ
+     * @var \Symfony\Bundle\FrameworkBundle\Controller\Controller
+     * @since 4.00
+     */
+    private $clientController = null;
+
+    /**
      * Конструктор
      *
      * @param string          $namespace
@@ -122,6 +136,36 @@ class ContentType
         return is_array($this->description)
             ? $this->description['ru'] // TODO исправить на локаль из настроек
             : $this->description;
+    }
+
+    /**
+     * Возвращает контроллер для АИ или false, если такого контроллера нет
+     *
+     * @return \Symfony\Bundle\FrameworkBundle\Controller\Controller|bool
+     */
+    public function getAdminController()
+    {
+        if (null === $this->adminController)
+        {
+            $className = $this->createControllerClassName('Admin');
+            $this->adminController = new $className;
+            //TODO $this->adminController->setContainer();
+        }
+        return $this->adminController;
+    }
+
+    /**
+     * Создаёт имя класса контроллера для указанного интерфейса
+     *
+     * @param string $ui  интерфейс: Admin или Client
+     *
+     * @return string
+     *
+     * @since 4.00
+     */
+    private function createControllerClassName($ui)
+    {
+        return "{$this->namespace}\\Controller\\{$this->controller}Content{$ui}Controller";
     }
 }
 
