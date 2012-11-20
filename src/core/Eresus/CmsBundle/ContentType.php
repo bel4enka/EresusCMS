@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Пакет Eresus CMS
+ * Тип контента
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -30,52 +30,98 @@
 
 namespace Eresus\CmsBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
 /**
- * Пакет Eresus CMS
+ * Тип контента
  *
- * @since 4.00
  * @package Eresus
+ * @since 4.00
  */
-class CmsBundle extends Bundle
+class ContentType
 {
     /**
-     * Доступные типы контента
-     * @var ContentType[]
+     * Пространство имён, где содержатся контроллеры этого типа
+     *
+     * @var string
      * @since 4.00
      */
-    private $contentTypes = array();
+    private $namespace;
 
     /**
-     * Действия при включении пакета
+     * Имя контроллеров этого типа
+     *
+     * @var string
      * @since 4.00
      */
-    public function boot()
+    private $controller;
+
+    /**
+     * Название
+     *
+     * @var string|string[]
+     * @since 4.00
+     */
+    private $title;
+
+    /**
+     * Описание
+     *
+     * @var string|string[]
+     * @since 4.00
+     */
+    private $description = null;
+
+    /**
+     * Конструктор
+     *
+     * @param string          $namespace
+     * @param string          $controller
+     * @param string|string[] $title
+     * @param string|string[] $description
+     * @since 4.00
+     */
+    public function __construct($namespace, $controller, $title, $description = null)
     {
-        $this->container->set('cms', $this);
+        $this->namespace = $namespace;
+        $this->controller = $controller;
+        $this->title = $title;
+        $this->description = $description;
     }
 
     /**
-     * Регистрирует тип контента
+     * Возвращает уникальный идентификатор типа контента
      *
-     * @param ContentType $type
+     * @return string
      * @since 4.00
      */
-    public function registerContentType(ContentType $type)
+    public function getId()
     {
-        $this->contentTypes[$type->getId()] = $type;
+        return $this->namespace . '.' . $this->controller;
     }
 
     /**
-     * Возвращает список доступных типов контента
+     * Возвращает название
      *
-     * @return ContentType[]
+     * @return string|string[]
      * @since 4.00
      */
-    public function getContentTypes()
+    public function getTitle()
     {
-        return $this->contentTypes;
+        return is_array($this->title)
+            ? $this->title['ru'] // TODO исправить на локаль из настроек
+            : $this->title;
+    }
+
+    /**
+     * Возвращает описание
+     *
+     * @return string|string[]
+     * @since 4.00
+     */
+    public function getDescription()
+    {
+        return is_array($this->description)
+            ? $this->description['ru'] // TODO исправить на локаль из настроек
+            : $this->description;
     }
 }
 

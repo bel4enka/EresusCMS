@@ -78,6 +78,44 @@ settings
        param1: true
        param2: "foo bar"
 
+content_types
+-------------
+
+Список типов контента, предоставляемых модулем. Каждый тип описывается набором полей.
+
+title
+^^^^^
+
+Название типа. Обязательный параметр.
+
+controller
+^^^^^^^^^^
+
+Имя контроллера, обрабатывающего этот тип контента. Обязательный параметр. Если имя модуля
+"Acme\\Foo", а в поле "controller" указано "Bar", то для обработки разделов этого типа будет
+использоваться в КИ класс ``Acme\\Foo\\Controllers\\Client\\BarContent``, а в АИ ---
+``Acme\\Foo\\Controllers\\Admin\\BarContent``.
+
+description
+^^^^^^^^^^^
+
+Описание типа.
+
+.. code-block:: yaml
+
+   content_types:
+       -
+           title: "Овощи"
+           controller: Vegetables
+           description: "Раздел для размещения овощей"
+       -
+           title:
+               ru: "Фрукты"
+               en: "Fruits"
+           controller: Fruits
+           description:
+               ru: "Раздел для размещения фруктов"
+
 Пример файла
 ------------
 
@@ -96,3 +134,7 @@ settings
    settings:
      param1: true
      param2: "foo bar"
+   content_types:
+       -
+           title: "Название типа контента"
+           controller: Default

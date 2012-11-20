@@ -34,6 +34,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
+use Eresus\CmsBundle\ContentType;
 use Eresus\CmsBundle\Extensions\Controllers\ConfigDialog;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
@@ -294,10 +295,6 @@ class Plugin
                 implode(', ', $missed), $ns));
         }
 
-        /** @var Eresus_Kernel $kernel */
-        $kernel = $this->container->get('kernel');
-        $kernel->getClassLoader()->add($this->namespace, $kernel->getRootDir() . '/plugins');
-
         $this->title = $info['title'];
         $this->version = $info['version'];
         $this->requirements = $info['require'];
@@ -313,6 +310,29 @@ class Plugin
             is_array($info['settings']) ? $info['settings'] : array(),
             is_array($config['settings']) ? $config['settings'] : array()
         ));
+
+        /*
+         * Регистрируем пространство имён в автозагрузчике классов
+         */
+        /** @var Eresus_Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+        $kernel->getClassLoader()->add($this->namespace, $kernel->getRootDir() . '/plugins');
+
+        /*
+         * Регистрируем типы контента
+         */
+        if ($info['content_types'])
+        {
+            /** @var \Eresus\CmsBundle\CmsBundle $cms */
+            $cms = $this->get('cms');
+            foreach ($info['content_types'] as $item)
+            {
+                $cms->registerContentType(
+                    new ContentType($this->namespace, $item['controller'], $item['title'],
+                        isset($item['description']) ? $item['description'] : null)
+                );
+            }
+        }
     }
 }
 

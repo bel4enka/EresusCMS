@@ -7,3 +7,8 @@ require:
     CMS: {min: "4.00"}
 settings:
     highlight: true
+content_types:
+    -
+        title: "HTML"
+        controller: Default
+        description: "Раздел, содержимое которого задаётся в виде разметки HTML"

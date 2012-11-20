@@ -254,28 +254,13 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function loadContentTypes()
     {
+        /** @var \Eresus\CmsBundle\CmsBundle $cms */
+        $cms = $this->get('cms');
+
         $result = array();
-
-        /*
-         * Стандартные типы контента
-         */
-        $result['default'] = ADM_PAGES_CONTENT_DEFAULT;
-        $result['list'] = ADM_PAGES_CONTENT_LIST;
-        $result['url'] = ADM_PAGES_CONTENT_URL;
-
-        /*
-         * Типы контентов из плагинов
-         * TODO Исправить!
-         */
-        if (count(Eresus_CMS::getLegacyKernel()->plugins->items))
+        foreach ($cms->getContentTypes() as $type)
         {
-            foreach (Eresus_CMS::getLegacyKernel()->plugins->items as $plugin)
-            {
-                if ($plugin instanceof ContentPlugin)
-                {
-                    $result[$plugin->name] = $plugin->title;
-                }
-            }
+            $result[$type->getId()] = $type->getTitle();
         }
 
         return $result;

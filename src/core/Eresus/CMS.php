@@ -63,6 +63,8 @@ class Eresus_CMS
      */
     public function main()
     {
+        Eresus_Kernel::sc()->get('extensions');
+
         self::$legacyKernel = new Eresus;
         $this->initConf();
 

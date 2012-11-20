@@ -195,7 +195,7 @@ class Section extends AbstractEntity
      *
      * @var string
      *
-     * @ORM\Column(length=32)
+     * @ORM\Column(length=255)
      */
     protected $type;
 
