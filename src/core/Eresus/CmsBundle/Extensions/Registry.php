@@ -38,6 +38,8 @@ use Symfony\Component\Yaml\Yaml;
 
 use Eresus\CmsBundle\Exceptions\ConfigException;
 use Eresus\CmsBundle\Extensions\Plugin;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * Работа с плагинами
@@ -227,6 +229,10 @@ class Registry implements ContainerAwareInterface
     {
         $plugin->enabled = true;
         $this->update($plugin);
+
+        $em = $this->getEntityManager();
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->updateSchema($em->getMetadataFactory()->getAllMetadata());
     }
 
     /**
@@ -239,6 +245,21 @@ class Registry implements ContainerAwareInterface
      */
     public function uninstall(Plugin $plugin)
     {
+        $em = $this->getEntityManager();
+        $entityMetaData = $em->getMetadataFactory()->getAllMetadata();
+        $targetNamespace = $plugin->namespace . '\Entity';
+        $classes = array();
+        foreach ($entityMetaData as $classMetaData)
+        {
+            /** @var \Doctrine\ORM\Mapping\ClassMetadata $classMetaData */
+            if ($classMetaData->namespace == $targetNamespace)
+            {
+                $classes []= $classMetaData;
+            }
+        }
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->dropSchema($classes);
+
         unset($this->config[$plugin->namespace]);
         $yml = Yaml::dump($this->config);
         file_put_contents($this->getDbFilename(), $yml);
@@ -286,9 +307,13 @@ class Registry implements ContainerAwareInterface
     {
         $filename = $this->getDbFilename();
         $this->config = Yaml::parse($filename);
-        if (!is_array($this->config))
+        if (is_string($this->config))
         {
-            throw new ConfigException('Error reading ' . $filename);
+            throw new ConfigException('Error parsing ' . $filename);
+        }
+        if (null === $this->config)
+        {
+            $this->config = array();
         }
         foreach ($this->config as $ns => $config)
         {
@@ -297,6 +322,22 @@ class Registry implements ContainerAwareInterface
                 $this->get($ns);
             }
         }
+    }
+
+    /**
+     * Возвращает менеджер сущностей
+     *
+     * @return EntityManager
+     *
+     * @since 4.00
+     */
+    private function getEntityManager()
+    {
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        /** @var EntityManager $em */
+        $em = $doctrine->getManager();
+        return $em;
     }
 }
 

@@ -31,6 +31,8 @@
 namespace Eresus\CmsBundle\Extensions;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -115,6 +117,14 @@ class Plugin
     private $settings;
 
     /**
+     * Путь к папке плагина относительно корня сайта
+     *
+     * @var string
+     * @since 4.00
+     */
+    private $path;
+
+    /**
      * Контроллер диалога настройки
      * @var ConfigDialog
      * @since 4.00
@@ -134,6 +144,7 @@ class Plugin
     {
         $this->settings = new ArrayCollection;
         $this->container = $container;
+        $this->path = '/plugins/' . str_replace('\\', '/', $ns);
         $this->load($ns, $config);
     }
 
@@ -275,7 +286,7 @@ class Plugin
     {
         $this->namespace = $ns;
         // Путь к файлу описания плагина
-        $filename = '/plugins/' . str_replace('\\', '/', $ns) . '/plugin.yml';
+        $filename = $this->path . '/plugin.yml';
         if (!file_exists(dirname(Eresus_Kernel::app()->getFsRoot() . $filename)))
         {
             throw new LogicException("Plugin not exists: $ns");
@@ -318,6 +329,8 @@ class Plugin
         $kernel = $this->container->get('kernel');
         $kernel->getClassLoader()->add($this->namespace, $kernel->getRootDir() . '/plugins');
 
+        $this->registerEntities();
+
         /*
          * Регистрируем типы контента
          */
@@ -333,6 +346,23 @@ class Plugin
                 );
             }
         }
+    }
+
+    /**
+     * Регистрирует классы сущностей модуля
+     *
+     * @since 4.00
+     */
+    private function registerEntities()
+    {
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
+        $chain = $em->getConfiguration()->getMetadataDriverImpl();
+        $driver = new AnnotationDriver(new AnnotationReader(), ltrim($this->path, '/') . '/Entity');
+        $chain->addDriver($driver, $this->namespace);
     }
 }
 
