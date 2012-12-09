@@ -30,6 +30,8 @@
 
 namespace Eresus\CmsBundle;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Тип контента
  *
@@ -38,6 +40,13 @@ namespace Eresus\CmsBundle;
  */
 class ContentType
 {
+    /**
+     * Контейнер служб
+     * @var ContainerInterface
+     * @since 4.00
+     */
+    private $container;
+
     /**
      * Пространство имён, где содержатся контроллеры этого типа
      *
@@ -82,19 +91,22 @@ class ContentType
      * @var \Symfony\Bundle\FrameworkBundle\Controller\Controller
      * @since 4.00
      */
-    private $clientController = null;
+    //private $clientController = null;
 
     /**
      * Конструктор
      *
-     * @param string          $namespace
-     * @param string          $controller
-     * @param string|string[] $title
-     * @param string|string[] $description
+     * @param ContainerInterface $container
+     * @param string             $namespace
+     * @param string             $controller
+     * @param string|string[]    $title
+     * @param string|string[]    $description
      * @since 4.00
      */
-    public function __construct($namespace, $controller, $title, $description = null)
+    public function __construct(ContainerInterface $container, $namespace, $controller, $title,
+        $description = null)
     {
+        $this->container = $container;
         $this->namespace = $namespace;
         $this->controller = $controller;
         $this->title = $title;
@@ -149,7 +161,7 @@ class ContentType
         {
             $className = $this->createControllerClassName('Admin');
             $this->adminController = new $className;
-            //TODO $this->adminController->setContainer();
+            $this->adminController->setContainer($this->container);
         }
         return $this->adminController;
     }

@@ -341,8 +341,8 @@ class Plugin
             foreach ($info['content_types'] as $item)
             {
                 $cms->registerContentType(
-                    new ContentType($this->namespace, $item['controller'], $item['title'],
-                        isset($item['description']) ? $item['description'] : null)
+                    new ContentType($this->container, $this->namespace, $item['controller'],
+                        $item['title'], isset($item['description']) ? $item['description'] : null)
                 );
             }
         }
