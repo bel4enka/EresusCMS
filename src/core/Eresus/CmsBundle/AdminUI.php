@@ -1007,6 +1007,10 @@ class AdminUI extends WebPage
                     }
                     catch (Exception $e)
                     {
+                        if (Eresus_CMS::getLegacyKernel()->conf['debug'])
+                        {
+                            throw $e;
+                        }
                         if (isset($name))
                         {
                             $logMsg = 'Error in plugin "' . $name . '"';
@@ -1016,7 +1020,7 @@ class AdminUI extends WebPage
                         else
                         {
                             $logMsg = 'Error in module "' . $module . '"';
-                            $msg = Eresus_I18n::getInstance()->getText('An error occurred module "%s".', __CLASS__);
+                            $msg = Eresus_I18n::getInstance()->getText('An error occurred in module "%s".', __CLASS__);
                             $msg = sprintf($msg, $module);
                         }
 
