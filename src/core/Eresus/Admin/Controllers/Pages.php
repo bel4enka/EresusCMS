@@ -388,14 +388,16 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function getForm(Section $section)
     {
-        $isMainPage = 'main' == $section->name && null === $section->parent;
         $templates = new Templates();
 
         $null2string = new NullToStringTransformer();
 
         $builder = $this->createFormBuilder($section);
+        if (null !== $section->parent)
+        {
+            $builder->add('name', 'text', array('label'  => 'Имя'));
+        }
         $builder
-            ->add('name', 'text', array('label'  => 'Имя', 'read_only' => $isMainPage))
             ->add('title', 'text', array('label'  => 'Заголовок'))
             ->add('caption', 'text', array('label'  => 'Пункт меню'))
             ->add($builder->create('hint', 'text', array('label'  => 'Подсказка',
