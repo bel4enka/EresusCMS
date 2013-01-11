@@ -31,8 +31,6 @@
 namespace Eresus\CmsBundle\Extensions;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -51,6 +49,7 @@ use Eresus_CMS;
  * @property-read  string          $version      версия
  * @property-read  string          $description  описание
  * @property-read  ArrayCollection $settings     настройки
+ * @property-read  string          $path         путь к папке плагина относительно корня сайта
  *
  * @package Eresus
  */
@@ -125,6 +124,14 @@ class Plugin
     private $path;
 
     /**
+     * Типы контента, предоставляемые модулем
+     *
+     * @var ContentType[]
+     * @since 4.00
+     */
+    private $contentTypes = array();
+
+    /**
      * Контроллер диалога настройки
      * @var ConfigDialog
      * @since 4.00
@@ -134,18 +141,20 @@ class Plugin
     /**
      * Создаёт основной объект плагина из указанного пространства имён
      *
-     * @param string             $ns         пространство имён плагина
-     * @param ContainerInterface $container  контейнер служб
-     * @param array              $config     настройки плагина
+     * @param string             $ns          пространство имён плагина
+     * @param ContainerInterface $container   контейнер служб
+     * @param array              $localConfig локальная конфигурация плагина
      *
      * @throws LogicException
      */
-    public function __construct($ns, ContainerInterface $container, array $config = null)
+    public function __construct($ns, ContainerInterface $container, array $localConfig = null)
     {
-        $this->settings = new ArrayCollection;
         $this->container = $container;
+        $this->namespace = $ns;
+        $this->settings = new ArrayCollection;
         $this->path = '/plugins/' . str_replace('\\', '/', $ns);
-        $this->load($ns, $config);
+        $config = $this->loadConfig($localConfig);
+        $this->applyConfig($config, $localConfig);
     }
 
     /**
@@ -261,6 +270,17 @@ class Plugin
     }
 
     /**
+     * Возвращает список типов контента, предоставляемых модулем
+     *
+     * @return ContentType[]
+     * @since 4.00
+     */
+    public function getContentTypes()
+    {
+        return $this->contentTypes;
+    }
+
+    /**
      * Возвращает службу по её идентификатору
      *
      * @param string $id
@@ -275,94 +295,89 @@ class Plugin
     }
 
     /**
-     * Загружает сведения о плагине из файла
+     * Загружает конфигурацию плагина
      *
-     * @param string $ns      пространство имён плагина
-     * @param array  $config  настройки плагина
+     * @throws Exceptions\LogicException
      *
-     * @throws LogicException
+     * @since 4.00
      */
-    private function load($ns, array $config = null)
+    private function loadConfig()
     {
-        $this->namespace = $ns;
         // Путь к файлу описания плагина
         $filename = $this->path . '/plugin.yml';
         if (!file_exists(dirname(Eresus_Kernel::app()->getFsRoot() . $filename)))
         {
-            throw new LogicException("Plugin not exists: $ns");
+            throw new LogicException("Plugin folder not exists: {$this->namespace}");
         }
         if (!file_exists(Eresus_Kernel::app()->getFsRoot() . $filename))
         {
             throw new LogicException("File not exists: $filename");
         }
-        $info = Yaml::parse(Eresus_Kernel::app()->getFsRoot() . $filename);
+        $config = Yaml::parse(Eresus_Kernel::app()->getFsRoot() . $filename);
+        $this->validateConfig($config);
+        return $config;
+    }
 
+    /**
+     * Проверяет конфигурацию плагина
+     *
+     * @param array $config  конфигурация, которую надо проверить
+     *
+     * @throws Exceptions\LogicException
+     */
+    private function validateConfig(array $config)
+    {
         /* Проверяем наличие необходимых полей */
         $required = array('title', 'version', 'require');
-        $missed = array_diff($required, array_keys($info));
+        $missed = array_diff($required, array_keys($config));
         if (count($missed))
         {
             throw new LogicException(sprintf('Missing required fields "%s" in plugin.yml of %s',
-                implode(', ', $missed), $ns));
-        }
-
-        $this->title = $info['title'];
-        $this->version = $info['version'];
-        $this->requirements = $info['require'];
-        $this->description = isset($info['description']) ? $info['description'] : '';
-
-        if (null === $config)
-        {
-            $config = array('enabled' => false, 'settings' => array());
-        }
-
-        $this->enabled = $config['enabled'];
-        $this->settings = new ArrayCollection(array_replace(
-            is_array($info['settings']) ? $info['settings'] : array(),
-            is_array($config['settings']) ? $config['settings'] : array()
-        ));
-
-        /*
-         * Регистрируем пространство имён в автозагрузчике классов
-         */
-        /** @var Eresus_Kernel $kernel */
-        $kernel = $this->container->get('kernel');
-        $kernel->getClassLoader()->add($this->namespace, $kernel->getRootDir() . '/plugins');
-
-        $this->registerEntities();
-
-        /*
-         * Регистрируем типы контента
-         */
-        if ($info['content_types'])
-        {
-            /** @var \Eresus\CmsBundle\CmsBundle $cms */
-            $cms = $this->get('cms');
-            foreach ($info['content_types'] as $item)
-            {
-                $cms->registerContentType(
-                    new ContentType($this->container, $this->namespace, $item['controller'],
-                        $item['title'], isset($item['description']) ? $item['description'] : null)
-                );
-            }
+                implode(', ', $missed), $this->namespace));
         }
     }
 
     /**
-     * Регистрирует классы сущностей модуля
+     * Применяет конфигурацию к объекту плагина
+     *
+     * @param array $config       конфигурация по умолчанию
+     * @param array $localConfig  локальная конфигурация
      *
      * @since 4.00
      */
-    private function registerEntities()
+    private function applyConfig(array $config, array $localConfig = null)
     {
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->get('doctrine');
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $doctrine->getManager();
-        /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
-        $chain = $em->getConfiguration()->getMetadataDriverImpl();
-        $driver = new AnnotationDriver(new AnnotationReader(), ltrim($this->path, '/') . '/Entity');
-        $chain->addDriver($driver, $this->namespace);
+        $this->title = $config['title'];
+        $this->version = $config['version'];
+        $this->requirements = $config['require'];
+        $this->description = isset($config['description'])
+            ? $config['description']
+            : '';
+
+        if (null === $localConfig)
+        {
+            $localConfig = array('enabled' => false, 'settings' => array());
+        }
+
+        $defaultSettings = is_array($config['settings']) ? $config['settings'] : array();
+        $localSettings = is_array($localConfig['settings']) ? $localConfig['settings'] : array();
+
+        $this->enabled = $localConfig['enabled'];
+        $this->settings = new ArrayCollection(array_replace($defaultSettings, $localSettings));
+
+        /*
+         * Определяем типы контента
+         */
+        $this->contentTypes = array();
+        if ($config['content_types'])
+        {
+            foreach ($config['content_types'] as $item)
+            {
+                $this->contentTypes []= new ContentType($this->container, $this->namespace,
+                    $item['controller'], $item['title'],
+                    isset($item['description']) ? $item['description'] : null);
+            }
+        }
     }
 }
 

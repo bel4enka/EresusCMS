@@ -35,7 +35,8 @@ use DirectoryIterator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Yaml\Yaml;
-
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Eresus\CmsBundle\Exceptions\ConfigException;
 use Eresus\CmsBundle\Extensions\Plugin;
 use Doctrine\ORM\EntityManager;
@@ -95,40 +96,62 @@ class Registry implements ContainerAwareInterface
     }
 
     /**
-     * Загружает плагин и возвращает его экземпляр
-     *
-     * Метод пытается загрузить плагин с пространством именем $ns (если он не был загружен ранее).
-     * В случае успеха создаётся и возвращается экземпляр основного класса плагина (либо экземпляр,
-     * созданный ранее).
+     * Возвращает объект плагина
      *
      * @param string $ns  пространство имён плагина
      *
-     * @return Plugin|bool  экземпляр плагина или false
+     * @return Plugin|bool  экземпляр плагина или false, если такого плагина нет или он отключен
      *
      * @since 4.00
      */
     public function get($ns)
     {
-        /* Если плагин уже был загружен возвращаем экземпляр из реестра */
         if (isset($this->plugins[$ns]))
         {
             return $this->plugins[$ns];
         }
+        return false;
+    }
 
-        /* Если такой плагин не зарегистрирован или отключен, возвращаем false */
-        if (
-            !isset($this->config[$ns])
-            || !isset($this->config[$ns]['enabled'])
-            || !$this->config[$ns]['enabled']
-        )
+    /**
+     * Регистрирует плагин в системе
+     *
+     * @param Plugin $plugin
+     *
+     * @since 4.00
+     */
+    public function register(Plugin $plugin)
+    {
+        /*
+         * Регистрируем пространство имён в автоматическом загрузчике классов
+         */
+        /** @var \Eresus_Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+        $kernel->getClassLoader()->add($plugin->namespace, $kernel->getRootDir() . '/plugins');
+
+        /*
+         * Регистрируем классы сущностей модуля
+         */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
+        $chain = $em->getConfiguration()->getMetadataDriverImpl();
+        $driver = new AnnotationDriver(new AnnotationReader(), ltrim($plugin->path, '/') . '/Entity');
+        $chain->addDriver($driver, $plugin->namespace);
+
+        /*
+         * Регистрируем типы контента
+         */
+        /** @var \Eresus\CmsBundle\CmsBundle $cms */
+        $cms = $this->container->get('cms');
+        foreach ($plugin->getContentTypes() as $type)
         {
-            return false;
+            $cms->registerContentType($type);
         }
 
-        $plugin = $this->createPluginInstance($ns, $this->config[$ns]);
-        $this->plugins[$ns] = $plugin;
-
-        return $plugin;
+        $this->plugins[$plugin->namespace] = $plugin;
     }
 
     /**
@@ -153,7 +176,7 @@ class Registry implements ContainerAwareInterface
     public function getInstalled()
     {
         $installed = $this->plugins;
-        foreach ($this->config as $ns => $config)
+        foreach (array_keys($this->config) as $ns)
         {
             if (!isset($installed[$ns]))
             {
@@ -266,21 +289,6 @@ class Registry implements ContainerAwareInterface
     }
 
     /**
-     * Создаёт экземпляр плагина
-     *
-     * @param string $namespace
-     * @param array  $config
-     *
-     * @return Plugin
-     *
-     * @since 4.00
-     */
-    protected function createPluginInstance($namespace, array $config = array())
-    {
-        return new Plugin($namespace, $this->container, $config);
-    }
-
-    /**
      * Возвращает путь к файлу базы данных
      *
      * @return string
@@ -319,7 +327,9 @@ class Registry implements ContainerAwareInterface
         {
             if (isset($config['enabled']) && $config['enabled'])
             {
-                $this->get($ns);
+                $plugin = new Plugin($ns, $this->container, $this->config[$ns]);
+                $this->plugins[$ns] = $plugin;
+                $this->register($plugin);
             }
         }
     }
