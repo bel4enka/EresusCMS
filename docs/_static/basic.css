@@ -262,17 +262,13 @@ div.body p, div.body dd, div.body li
 	line-height: 1.5em;
 }
 
-div.admonition p.admonition-title + p {
+div.admonition p.admonition-title + p
+{
 	display: inline;
 }
 
 div.highlight{
 	background-color: white;
-}
-
-div.note {
-	background-color: #eee;
-	border: 1px solid #ccc;
 }
 
 div.seealso {
@@ -289,24 +285,16 @@ div.warning {
 	border: 1px solid #f66;
 }
 
-p.admonition-title {
-	display: inline;
-}
-
-p.admonition-title:after {
-	content: ":";
-}
-
-pre {
+pre
+{
 	padding: 10px;
 	background-color: White;
+    box-shadow: 1px 1px 1px #d8d8d8;
 	color: #222;
 	line-height: 1.2em;
 	border: 1px solid #C6C9CB;
 	font-size: 1.1em;
 	margin: 1.5em 0 1.5em 0;
-	-webkit-box-shadow: 1px 1px 1px #d8d8d8;
-	-moz-box-shadow: 1px 1px 1px #d8d8d8;
 }
 
 tt {
@@ -339,9 +327,18 @@ div.viewcode-block:target {
 
 .admonition
 {
+    background: #eee no-repeat 7px 7px;
+    border: #ccc solid 1px;
+    border-radius: 10px;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	padding: 7px;
+	padding: 7px 7px 7px 45px;
+}
+
+.admonition.note
+{
+    background-color: #e0eaef;
+    background-image: url(note.png);
 }
 
 .admonition dt
