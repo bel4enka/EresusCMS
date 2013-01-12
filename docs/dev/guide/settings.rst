@@ -30,8 +30,8 @@
 Диалог настройки
 ----------------
 
-Для описания диалога надо создать файл ``Resources/views/AdminConfigDialog.html.twig``, содержащий
-разметку полей формы.
+Для описания диалога надо создать файл ``Resources/views/AdminSettings/Dialog.html.twig``,
+содержащий разметку полей формы.
 
 .. code-block:: html
 
@@ -54,19 +54,19 @@
 ----------------------------------------
 
 Если описанных выше возможностей окажется недостаточно, можно создать собственный контроллер диалога
-настройки. Для этого нужно в файле ``Controllers/Admin/ConfigDialog.php`` описать класс
-``ConfigDialog``, унаследованный от `Eresus\\CmsBundle\\Extensions\\Controllers\\ConfigDialog <../../api/classes/Eresus.CmsBundle.Extensions.Controllers.ConfigDialog.html>`_.
+настройки. Для этого нужно в файле ``Controller/AdminSettings.php`` описать класс
+``AdminSettings``, унаследованный от `Eresus\\CmsBundle\\Extensions\\Controller\\AdminSettings <../../api/classes/Eresus.CmsBundle.Extensions.Controller.AdminSettings.html>`_.
 Это изменить любое поведение диалога настройки.
 
 .. code-block:: php
 
    <?php
-   namespace Acme\Foo\Controllers\Admin;
+   namespace Acme\Foo\Controller;
 
    use Symfony\Component\HttpFoundation\Request;
-   use Eresus\CmsBundle\Extensions\Controllers\ConfigDialog as NativeConfigDialog;
+   use Eresus\CmsBundle\Extensions\Controller\AdminSettings as NativeSettings;
 
-   class ConfigDialog extends NativeConfigDialog
+   class AdminSettings extends NativeSettings
    {
        // Здесь переопределите нужные вам методы.
    }

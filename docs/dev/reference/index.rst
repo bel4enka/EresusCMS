@@ -6,3 +6,5 @@
 
    arch
    plugin.yml
+   Bundle.php
+   responses

@@ -1,13 +1,16 @@
 Руководство
 ===========
 
+Этот раздел поможет вам научиться создавать модули расширения для Eresus CMS и решать типовые
+задачи, возникающие перед разработчиком расширений.
+
 .. toctree::
    :maxdepth: 1
 
-   responses
+   first_steps
    install
    uninstall
-   providing_content_type
+   providing_content_types
    events
    settings
    link-js-css
