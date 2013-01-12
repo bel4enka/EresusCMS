@@ -341,6 +341,12 @@ div.viewcode-block:target {
     background-image: url(note.png);
 }
 
+.admonition.tip
+{
+    background-color: #ffffcf;
+    background-image: url(tip.png);
+}
+
 .admonition dt
 {
 	font-weight: bold;
