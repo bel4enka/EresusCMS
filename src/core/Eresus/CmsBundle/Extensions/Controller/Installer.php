@@ -2,7 +2,7 @@
 /**
  * ${product.title}
  *
- * Расширение «HTML» для Eresus CMS
+ * Контроллер установки плагина
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -25,19 +25,27 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package Html
+ * @package Eresus
  */
-namespace Eresus\Html;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+namespace Eresus\CmsBundle\Extensions\Controller;
 
 /**
- * Расширение «HTML» для Eresus CMS
+ * Контроллер установки плагина
  *
- * @package Html
+ * @package Eresus
+ * @since 4.00
  */
-class EresusHtmlBundle extends Bundle
+class Installer extends AbstractController
 {
+    /**
+     * Выполняет установку
+     *
+     * @since 4.00
+     */
+    public function install()
+    {
 
+    }
 }
 

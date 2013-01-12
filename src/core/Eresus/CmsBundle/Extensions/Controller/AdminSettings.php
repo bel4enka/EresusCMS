@@ -28,7 +28,7 @@
  * @package Eresus
  */
 
-namespace Eresus\CmsBundle\Extensions\Controllers;
+namespace Eresus\CmsBundle\Extensions\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +41,7 @@ use Eresus_Kernel;
  * @package Eresus
  * @since 4.00
  */
-class ConfigDialog extends AbstractController
+class AdminSettings extends AbstractController
 {
     /**
      * Возвращает true, если у плагина есть диалог настроек
@@ -50,7 +50,8 @@ class ConfigDialog extends AbstractController
      */
     public function isAvailable()
     {
-        return file_exists(Eresus_Kernel::app()->getFsRoot() . $this->getDialogTemplateFilename());
+        return file_exists(Eresus_Kernel::app()->getFsRoot() . $this->getPlugin()->path .
+            '/Resources/views/' . str_replace(':', '/', $this->getDialogTemplateName()));
     }
 
     /**
@@ -78,26 +79,26 @@ class ConfigDialog extends AbstractController
             'plugin' => $this->plugin,
         );
 
-        $contents = $this->renderView($this->getDialogTemplateFilename(), $vars);
+        $contents = $this->renderView($this->getPlugin()->getBundle()->getName() . ':'
+            . $this->getDialogTemplateName(), $vars);
 
         $vars = array(
             'plugin' => $this->plugin,
             'contents' => $contents,
         );
 
-        return $this->renderView('CmsBundle:Extensions:ConfigDialog.html.twig', $vars);
+        return $this->renderView('CmsBundle:Extensions:AdminSettingsDialog.html.twig', $vars);
     }
 
     /**
-     * Возвращает путь к файлу шаблона диалога относительно корня сайта
+     * Возвращает имя файла шаблона диалога (в папке Resources/views)
      *
      * @return string
      * @since 4.00
      */
-    protected function getDialogTemplateFilename()
+    protected function getDialogTemplateName()
     {
-        return '/plugins/' . str_replace('\\', '/', $this->plugin->namespace) .
-            '/Resources/views/AdminConfigDialog.html.twig';
+        return 'AdminSettings:Dialog.html.twig';
     }
 }
 

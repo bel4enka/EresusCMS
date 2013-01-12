@@ -28,7 +28,7 @@
  * @package Eresus
  */
 
-namespace Eresus\CmsBundle\Extensions\Controllers;
+namespace Eresus\CmsBundle\Extensions\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 

@@ -36,7 +36,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 use Eresus\CmsBundle\ContentType;
-use Eresus\CmsBundle\Extensions\Controllers\ConfigDialog;
+use Eresus\CmsBundle\Extensions\Controller\AdminSettings;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
 use Eresus_Kernel;
@@ -140,7 +140,7 @@ class Plugin
 
     /**
      * Контроллер диалога настройки
-     * @var ConfigDialog
+     * @var AdminSettingsDialog
      * @since 4.00
      */
     private $configController = null;
@@ -207,7 +207,8 @@ class Plugin
     /**
      * Возвращает пакет плагина
      *
-     * @throws LogicException если класс «пространство\имён\плагина\Bundle» не найден
+     * @throws LogicException  если класс «пространство\имён\плагина\Bundle» не найден или он
+     *                         унаследован не от Eresus\CmsBundle\Extensions\PluginBundle
      *
      * @return Bundle
      */
@@ -220,7 +221,13 @@ class Plugin
             {
                 throw new LogicException(sprintf('Plugin bundle class «%s» not found', $class));
             }
-            $this->bundle = new $class;
+            $bundle = new $class;
+            if (!($bundle instanceof PluginBundle))
+            {
+                throw new LogicException(sprintf('Class «%s» must be descendant of «%s»', $class,
+                    'Eresus\CmsBundle\Extensions\PluginBundle'));
+            }
+            $this->bundle = $bundle;
         }
         return $this->bundle;
     }
@@ -230,27 +237,27 @@ class Plugin
      *
      * @throws LogicException
      *
-     * @return ConfigDialog
+     * @return AdminSettingsDialog
      * @since 4.00
      */
     public function getConfigController()
     {
         if (null === $this->configController)
         {
-            $className = $this->namespace . '\Controllers\Admin\ConfigDialog';
+            $className = $this->namespace . '\Controllers\Admin\AdminSettings';
             if (class_exists($className))
             {
                 $controller = new $className($this);
-                if (!($controller instanceof ConfigDialog))
+                if (!($controller instanceof AdminSettings))
                 {
                     throw new LogicException(sprintf('Class %s" should be descendant of "%s"',
-                        get_class($controller), get_class(new ConfigDialog($this))));
+                        get_class($controller), get_class(new AdminSettings($this))));
                 }
                 $this->configController = $controller;
             }
             else
             {
-                $this->configController = new ConfigDialog($this);
+                $this->configController = new AdminSettings($this);
             }
             $this->configController->setContainer($this->container);
         }
