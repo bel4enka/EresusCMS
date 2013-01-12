@@ -124,22 +124,17 @@ class Registry implements ContainerAwareInterface
     {
         /*
          * Регистрируем пространство имён в автоматическом загрузчике классов
+         * Это действие нельзя перенести в ядро потому что для работы метода Plugin::getBundle
+         * нужно чтобы автозагрузка уже работала для пространства имён плагина. И не только чтобы
+         * найти сам класс Bundle (файл с которым можно подключить и ручками), но и чтобы найти все
+         * классы, которые может использовать Bundle.
          */
         /** @var \Eresus_Kernel $kernel */
         $kernel = $this->container->get('kernel');
         $kernel->getClassLoader()->add($plugin->namespace, $kernel->getRootDir() . '/plugins');
 
-        /*
-         * Регистрируем классы сущностей модуля
-         */
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $doctrine->getManager();
-        /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
-        $chain = $em->getConfiguration()->getMetadataDriverImpl();
-        $driver = new AnnotationDriver(new AnnotationReader(), ltrim($plugin->path, '/') . '/Entity');
-        $chain->addDriver($driver, $plugin->namespace);
+        /*Регистрируем пакет плагина в ядре */
+        $kernel->registerBundle($plugin->getBundle());
 
         /*
          * Регистрируем типы контента

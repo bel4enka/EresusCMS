@@ -31,8 +31,10 @@
 use Composer\Autoload\ClassLoader;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\ClassLoader\UniversalClassLoader;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 
 /**
  * Ядро CMS
@@ -478,6 +480,29 @@ class Eresus_Kernel extends Kernel
         }
 
         return $bundles;
+    }
+
+    /**
+     * Регистрирует пакет во время работы приложения
+     *
+     * @param Symfony\Component\HttpKernel\Bundle\Bundle $bundle
+     */
+    public function registerBundle(Bundle $bundle)
+    {
+        $this->bundleMap[$bundle->getName()] = array($bundle);
+        $bundle->boot();
+
+        /*
+         * Регистрируем классы сущностей модуля
+         */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
+        $chain = $em->getConfiguration()->getMetadataDriverImpl();
+        $driver = new AnnotationDriver(new AnnotationReader(), $bundle->getPath() . '/Entity');
+        $chain->addDriver($driver, $bundle->getNamespace());
     }
 
     /**

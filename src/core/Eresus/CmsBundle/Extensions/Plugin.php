@@ -33,6 +33,7 @@ namespace Eresus\CmsBundle\Extensions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 use Eresus\CmsBundle\ContentType;
 use Eresus\CmsBundle\Extensions\Controllers\ConfigDialog;
@@ -132,6 +133,12 @@ class Plugin
     private $contentTypes = array();
 
     /**
+     * Пакет плагина
+     * @var Bundle
+     */
+    private $bundle = null;
+
+    /**
      * Контроллер диалога настройки
      * @var ConfigDialog
      * @since 4.00
@@ -195,6 +202,27 @@ class Plugin
             $value = $value['ru']; // TODO Переделать с текущей локалью
         }
         return $value;
+    }
+
+    /**
+     * Возвращает пакет плагина
+     *
+     * @throws LogicException если класс «пространство\имён\плагина\Bundle» не найден
+     *
+     * @return Bundle
+     */
+    public function getBundle()
+    {
+        if (null === $this->bundle)
+        {
+            $class = $this->namespace . '\\Bundle';
+            if (!class_exists($class))
+            {
+                throw new LogicException(sprintf('Plugin bundle class «%s» not found', $class));
+            }
+            $this->bundle = new $class;
+        }
+        return $this->bundle;
     }
 
     /**
