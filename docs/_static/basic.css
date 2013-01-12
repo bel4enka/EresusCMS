@@ -335,6 +335,13 @@ div.viewcode-block:target {
 	padding: 7px 7px 7px 45px;
 }
 
+.admonition.danger
+{
+    background-color: #ffa07a;
+    background-image: url(danger.png);
+    border-color: #cd0a0a;
+}
+
 .admonition.note
 {
     background-color: #e0eaef;
