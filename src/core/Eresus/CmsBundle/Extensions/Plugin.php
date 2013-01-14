@@ -36,7 +36,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 use Eresus\CmsBundle\ContentType;
-use Eresus\CmsBundle\Extensions\Controller\AdminSettings;
+use Eresus\CmsBundle\Extensions\Controller\AdminSettingsController;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
 use Eresus_Kernel;
@@ -244,20 +244,20 @@ class Plugin
     {
         if (null === $this->configController)
         {
-            $className = $this->namespace . '\Controllers\Admin\AdminSettings';
+            $className = $this->namespace . '\Controller\AdminSettingsController';
             if (class_exists($className))
             {
                 $controller = new $className($this);
-                if (!($controller instanceof AdminSettings))
+                if (!($controller instanceof AdminSettingsController))
                 {
                     throw new LogicException(sprintf('Class %s" should be descendant of "%s"',
-                        get_class($controller), get_class(new AdminSettings($this))));
+                        get_class($controller), get_class(new AdminSettingsController($this))));
                 }
                 $this->configController = $controller;
             }
             else
             {
-                $this->configController = new AdminSettings($this);
+                $this->configController = new AdminSettingsController($this);
             }
             $this->configController->setContainer($this->container);
         }

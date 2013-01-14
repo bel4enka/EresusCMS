@@ -41,7 +41,7 @@ use Eresus_Kernel;
  * @package Eresus
  * @since 4.00
  */
-class AdminSettings extends AbstractController
+class AdminSettingsController extends AbstractController
 {
     /**
      * Возвращает true, если у плагина есть диалог настроек

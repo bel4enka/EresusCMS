@@ -54,8 +54,8 @@
 ----------------------------------------
 
 Если описанных выше возможностей окажется недостаточно, можно создать собственный контроллер диалога
-настройки. Для этого нужно в файле ``Controller/AdminSettings.php`` описать класс
-``AdminSettings``, унаследованный от `Eresus\\CmsBundle\\Extensions\\Controller\\AdminSettings <../../api/classes/Eresus.CmsBundle.Extensions.Controller.AdminSettings.html>`_.
+настройки. Для этого нужно в файле ``Controller/AdminSettingsControllerController.php`` описать класс
+``AdminSettingsController``, унаследованный от `Eresus\\CmsBundle\\Extensions\\Controller\\AdminSettingsController <../../api/classes/Eresus.CmsBundle.Extensions.Controller.AdminSettingsController.html>`_.
 Это изменить любое поведение диалога настройки.
 
 .. code-block:: php
@@ -64,9 +64,9 @@
    namespace Acme\Foo\Controller;
 
    use Symfony\Component\HttpFoundation\Request;
-   use Eresus\CmsBundle\Extensions\Controller\AdminSettings as NativeSettings;
+   use Eresus\CmsBundle\Extensions\Controller\AdminSettingsController as NativeSettingsController;
 
-   class AdminSettings extends NativeSettings
+   class AdminSettingsController extends NativeSettingsController
    {
        // Здесь переопределите нужные вам методы.
    }
