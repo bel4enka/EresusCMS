@@ -424,17 +424,18 @@ class WebPage extends Controller
                     $this->linkScripts($root . 'bundles/jquery/jquery-ui.min.js', 'lib');
                 }
                 break;
-
             case 'modernizr':
                 $this->linkScripts($root . 'bundles/modernizr/modernizr.min.js', 'lib');
                 break;
-
             case 'webshim':
             case 'webshims':
                 $this->linkJsLib('jquery');
                 $this->linkJsLib('modernizr');
                 $this->linkScripts($root . 'bundles/webshim/polyfiller.js', 'lib');
-                $this->addScripts('jQuery.webshims.polyfill();');
+                $this->addScripts(
+                    'jQuery.webshims.polyfill();' . "\n" .
+                    'jQuery.webshims.setOptions("forms-ext", {datepicker: {dateFormat: "yy-mm-dd"}});'
+                );
                 break;
         }
     }
