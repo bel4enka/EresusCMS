@@ -26,10 +26,7 @@
  *
  * @package Eresus
  * @subpackage Tests
- *
- * $Id$
  */
-require_once 'PHPUnit/Extensions/OutputTestCase.php';
 
 require_once dirname(__FILE__) . '/../stubs.php';
 require_once dirname(__FILE__) . '/../../../src/core/Kernel.php';
