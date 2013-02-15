@@ -278,7 +278,7 @@ class ClientUI extends WebPage
         $this->addRoute($routes, $repo->getRoot());
         $context = new RequestContext($req->getLocalUrl());
         $matcher = new UrlMatcher($routes, $context);
-        $params = $matcher->match($req->getLocalUrl());
+        $params = $matcher->match($req->getPathInfo());
         return $params['section'];
     }
 
