@@ -63,9 +63,9 @@ class Eresus_Admin_Controllers_Content extends Eresus_Admin_Controllers_Abstract
         $section = $om->find('CmsBundle:Section', $request->query->getInt('id'));
 
         $page->id = $section->id;
-        /** @var \Eresus\CmsBundle\CmsBundle $cms */
-        $cms = $this->get('cms');
-        if (null === ($contentType = $cms->getContentType($section->type)))
+        /** @var \Eresus\CmsBundle\Content\ContentTypeRegistry $registry */
+        $registry = $this->get('content_types');
+        if (null === ($contentType = $registry->getByID($section->type)))
         {
             switch ($section->type)
             {

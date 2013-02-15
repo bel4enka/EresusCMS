@@ -34,7 +34,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Eresus\ORMBundle\AbstractEntity;
-use Eresus\CmsBundle\Repository\SectionRepository;
+use Eresus\CmsBundle\Content\ContentType;
+use Eresus\CmsBundle\Content\ContentTypeRegistry;
 
 /**
  * Раздел сайта
@@ -266,6 +267,18 @@ class Section extends AbstractEntity
             $parent = $parent->parent;
         }
         return $url;
+    }
+
+    /**
+     * Возвращает тип контента
+     *
+     * @return ContentType|null
+     */
+    public function getContentType()
+    {
+        /** @var ContentTypeRegistry $registry */
+        $registry = $this->get('content_types');
+        return $registry->getByID($this->type);
     }
 }
 

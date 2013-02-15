@@ -57,7 +57,13 @@ define('CLIENTUI', true);
  */
 class ClientUI extends WebPage
 {
-    public $dbItem = array(); # Информация о странице из БД
+    /**
+     * Текущий раздел
+     *
+     * @var Section
+     */
+    private $currentSection = null;
+
     public $name = ''; # Имя страницы
     public $owner = 0; # Идентификатор родительской страницы
     public $section = array(); # Массив заголовков страниц
@@ -126,16 +132,6 @@ class ClientUI extends WebPage
      * @see httpError()
      */
     private static $error = false;
-
-    /**
-     * Конструктор
-     *
-     * @access  public
-     */
-    function __construct()
-    {
-    }
-    //------------------------------------------------------------------------------
 
     /**
      * Подставляет значения макросов
@@ -293,7 +289,7 @@ class ClientUI extends WebPage
     {
         // TODO Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
 
-        $item = $this->loadPage();
+        $section = $this->loadPage();
         if (count(Eresus_CMS::getLegacyKernel()->request['params']))
         {
             if (preg_match('/p[\d]+/i', Eresus_CMS::getLegacyKernel()->request['params'][0]))
@@ -306,25 +302,25 @@ class ClientUI extends WebPage
                 $this->topic = array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
             }
         }
-        $this->dbItem = $item;
-        $this->id = $item->id;
-        $this->name = $item->name;
-        $this->owner = $item->parent;
-        $this->title = $item->title;
-        $this->description = $item->description;
-        $this->keywords = $item->keywords;
-        $this->caption = $item->caption;
-        $this->hint = $item->hint;
-        $this->access = $item->access;
-        $this->visible = $item->visible;
-        $this->type = $item->type;
-        $this->template = $item->template;
-        $this->created = $item->created;
-        $this->updated = $item->updated;
-        $this->content = $item->content;
+        $this->currentSection = $section;
+        $this->id = $section->id;
+        $this->name = $section->name;
+        $this->owner = $section->parent;
+        $this->title = $section->title;
+        $this->description = $section->description;
+        $this->keywords = $section->keywords;
+        $this->caption = $section->caption;
+        $this->hint = $section->hint;
+        $this->access = $section->access;
+        $this->visible = $section->visible;
+        $this->type = $section->type;
+        $this->template = $section->template;
+        $this->created = $section->created;
+        $this->updated = $section->updated;
+        $this->content = $section->content;
         $this->scripts = '';
         $this->styles = '';
-        $this->options = $item->options;
+        $this->options = $section->options;
     }
 
     public function error404()
@@ -406,7 +402,15 @@ class ClientUI extends WebPage
         {
             $this->httpError(arg('HTTP_ERROR', 'int'));
         }
-        # Отрисовываем контент
+        /* Отрисовываем контент */
+        $contentType = $this->currentSection->getContentType();
+        if (null === $contentType)
+        {
+            throw new \DomainException('Unknown content type: ' . $this->currentSection->type);
+        }
+        $content = $contentType->getClientController()
+            ->indexAction($this->container->get('request'));
+
         // TODO $content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
         if ($content instanceof Response)
         {

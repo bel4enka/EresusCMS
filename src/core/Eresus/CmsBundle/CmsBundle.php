@@ -41,57 +41,12 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class CmsBundle extends Bundle
 {
     /**
-     * Доступные типы контента
-     * @var ContentType[]
-     * @since 4.00
-     */
-    private $contentTypes = array();
-
-    /**
      * Действия при включении пакета
      * @since 4.00
      */
     public function boot()
     {
         $this->container->set('cms', $this);
-    }
-
-    /**
-     * Регистрирует тип контента
-     *
-     * @param ContentType $type
-     * @since 4.00
-     */
-    public function registerContentType(ContentType $type)
-    {
-        $this->contentTypes[$type->getId()] = $type;
-    }
-
-    /**
-     * Возвращает список доступных типов контента
-     *
-     * @return ContentType[]
-     * @since 4.00
-     */
-    public function getContentTypes()
-    {
-        return $this->contentTypes;
-    }
-
-    /**
-     * Возвращает тип контента по его идентификатору
-     *
-     * @param string $id
-     *
-     * @return ContentType|null
-     *
-     * @since 4.00
-     */
-    public function getContentType($id)
-    {
-        return array_key_exists($id, $this->contentTypes)
-            ? $this->contentTypes[$id]
-            : null;
     }
 }
 

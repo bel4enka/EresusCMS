@@ -71,3 +71,7 @@ services:
   extensions:
     class: Eresus\CmsBundle\Extensions\Registry
     arguments: [@service_container]
+
+  content_types:
+    class: Eresus\CmsBundle\Content\ContentTypeRegistry
+    arguments: [@service_container]

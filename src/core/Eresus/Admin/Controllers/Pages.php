@@ -254,11 +254,11 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
      */
     private function loadContentTypes()
     {
-        /** @var \Eresus\CmsBundle\CmsBundle $cms */
-        $cms = $this->get('cms');
+        /** @var \Eresus\CmsBundle\Content\ContentTypeRegistry $registry */
+        $registry = $this->get('content_types');
 
         $result = array();
-        foreach ($cms->getContentTypes() as $type)
+        foreach ($registry->getAll() as $type)
         {
             $result[$type->getId()] = $type->getTitle();
         }

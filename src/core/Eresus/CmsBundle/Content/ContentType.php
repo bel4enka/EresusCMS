@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Тип контента
  *
  * @version ${product.version}
@@ -28,12 +26,14 @@
  * @package Eresus
  */
 
-namespace Eresus\CmsBundle;
+namespace Eresus\CmsBundle\Content;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Тип контента
+ *
+ * Описывает тип контента и предоставляет доступ к его контроллерам.
  *
  * @package Eresus
  * @since 4.00
@@ -91,7 +91,7 @@ class ContentType
      * @var \Symfony\Bundle\FrameworkBundle\Controller\Controller
      * @since 4.00
      */
-    //private $clientController = null;
+    private $clientController = null;
 
     /**
      * Конструктор
@@ -164,6 +164,22 @@ class ContentType
             $this->adminController->setContainer($this->container);
         }
         return $this->adminController;
+    }
+
+    /**
+     * Возвращает контроллер для КИ или false, если такого контроллера нет
+     *
+     * @return \Symfony\Bundle\FrameworkBundle\Controller\Controller|bool
+     */
+    public function getClientController()
+    {
+        if (null === $this->clientController)
+        {
+            $className = $this->createControllerClassName('Client');
+            $this->clientController = new $className;
+            $this->clientController->setContainer($this->container);
+        }
+        return $this->clientController;
     }
 
     /**

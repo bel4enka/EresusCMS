@@ -39,6 +39,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Eresus\CmsBundle\Exceptions\ConfigException;
 use Eresus\CmsBundle\Extensions\Plugin;
+use Eresus\CmsBundle\Content\ContentTypeRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -139,11 +140,11 @@ class Registry implements ContainerAwareInterface
         /*
          * Регистрируем типы контента
          */
-        /** @var \Eresus\CmsBundle\CmsBundle $cms */
-        $cms = $this->container->get('cms');
+        /** @var ContentTypeRegistry $registry */
+        $registry = $this->container->get('content_types');
         foreach ($plugin->getContentTypes() as $type)
         {
-            $cms->registerContentType($type);
+            $registry->register($type);
         }
 
         $this->plugins[$plugin->namespace] = $plugin;

@@ -8,9 +8,9 @@
    :maxdepth: 1
 
    first_steps
+   providing_content_types
    install
    uninstall
-   providing_content_types
    events
    settings
    link-js-css

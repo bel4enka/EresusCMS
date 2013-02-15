@@ -35,7 +35,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-use Eresus\CmsBundle\ContentType;
+use Eresus\CmsBundle\Content\ContentType;
 use Eresus\CmsBundle\Extensions\Controller\AdminSettingsController;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
