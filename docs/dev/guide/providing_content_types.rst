@@ -37,20 +37,3 @@ plugin.yml
 ``Client[Имя типа контента]Controller``. Если имя вашего типа контента — «Default», то класс
 должен называться ``ClientDefaultController``.
 
-Этот метод будет вызван при выборе в :doc:`меню разделов</manage/ui/menu-content>` раздела, обслуживаемого вашим модулем.
-
-Метод должен ваозвращать разметку HTML, которая будет показана в :doc:`рабочей области</manage/ui/overview>`.
-
-.. code-block:: php
-
-   <?php
-   class MyPlugin extends ContentPlugin
-   {
-      ...
-      public function adminRenderContent()
-      {
-        ... // К примеру, создаём здесь разметку диалога и помещаем её в переменную $html;
-	return $html;
-      }
-
-
