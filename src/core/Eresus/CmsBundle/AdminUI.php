@@ -340,7 +340,7 @@ class AdminUI extends WebPage
             );
             $ptr = &$this->extmenu[count($this->extmenu)-1];
         }
-        $ptr['items'][] = encodeHTML($item);
+        $ptr['items'][] = $item;
         if ($ptr['access'] < $item['access'])
         {
             $ptr['access'] = $item['access'];
@@ -798,7 +798,7 @@ class AdminUI extends WebPage
                                 {
                                     if (isset($item[$macros]))
                                     {
-                                        $value = str_replace('$('.$macros.')', encodeHTML($item[$macros]), $value);
+                                        $value = str_replace('$('.$macros.')', $item[$macros], $value);
                                     }
                                 }
                             }
@@ -936,19 +936,6 @@ class AdminUI extends WebPage
             return $result;
         }
 
-        if (
-            isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
-            count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
-        )
-        {
-            $messages = '';
-            foreach (Eresus_CMS::getLegacyKernel()->session['msg']['information'] as $message)
-            {
-                $messages .= InfoBox($message);
-            }
-            $result = $messages . $result;
-            Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
-        }
         if (
             isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
             count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))

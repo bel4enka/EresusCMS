@@ -63,7 +63,7 @@ class TinyMCEConnector extends Connector
             '<br /><textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
             '" cols="80" rows="25" style="width: 100%; height: ' .
             $field['height'].';">'.str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root,
-            EncodeHTML($value)).'</textarea></td></tr>'."\n";
+            $value).'</textarea></td></tr>'."\n";
 
         if (!self::$scriptsInstalled)
         {
@@ -90,7 +90,7 @@ class TinyMCEConnector extends Connector
         $preset = isset($field['preset']) ? $field['preset'] : 'default';
         $html = '<textarea name="wyswyg_' . $field['name'] . '" class="tinymce_' . $preset .
             '" cols="80" rows="25" style="height: ' . $field['height'] . ';">' .
-            str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root, EncodeHTML($value)) . '</textarea>';
+            str_replace('$(httpRoot)', Eresus_CMS::getLegacyKernel()->root, $value) . '</textarea>';
 
         if (!self::$scriptsInstalled)
         {

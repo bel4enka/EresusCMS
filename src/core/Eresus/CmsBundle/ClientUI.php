@@ -391,19 +391,6 @@ class ClientUI extends WebPage
         // TODO $content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
 
         if (
-            isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
-            count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
-        )
-        {
-            $messages = '';
-            foreach (Eresus_CMS::getLegacyKernel()->session['msg']['information'] as $message)
-            {
-                $messages .= InfoBox($message);
-            }
-            $content = $messages.$content;
-            Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
-        }
-        if (
             isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
             count(Eresus_CMS::getLegacyKernel()->session['msg']['errors'])
         )

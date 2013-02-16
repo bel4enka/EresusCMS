@@ -43,17 +43,6 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * 
 	 */
-	public function test_FormatSize()
-	{
-		$this->assertEquals('1 023 Байт', FormatSize(1023)); 
-		$this->assertEquals('1.00 Кб', FormatSize(1025)); 
-		$this->assertEquals('1.00 Мб', FormatSize(1048577)); 
-		$this->assertEquals('1.00 Гб', FormatSize(1073741825)); 
-	}
-        
-	/**
-	 * 
-	 */
 	public function test_ErrorBox()
 	{
 		$this->assertEquals(
@@ -64,77 +53,7 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 			"<div class=\"errorBoxCap\">заголовок</div>\n<div class=\"errorBox\">\n</div>\n",
 			ErrorBox('','заголовок'));
 	}
-        
-	/**
-	 *  
-	 */
-	public function test_InfoBox()
-	{
-		$this->assertEquals(
-			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\nтекст</div>\n",
-			InfoBox('текст','заголовок')); 
-		$this->assertEquals("<div class=\"infoBox\">\nтекст</div>\n", InfoBox('текст',''));
-		$this->assertEquals(
-			"<div class=\"infoBoxCap\">заголовок</div>\n<div class=\"infoBox\">\n</div>\n",
-			InfoBox('','заголовок'));
-	}
-    
-	/**
-	 *  
-	 */
-	public function test_encodeHTML()
-	{
-		$test_encodeHTML_str='<a href="#">foo</a>';
-		$test_encodeHTML_mas_in= array('<a href="#">foo</a>');
-		$test_encodeHTML_mas_out= array ('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;');
-		$this->assertEquals('&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;',
-			encodeHTML($test_encodeHTML_str)); 
-		$this->assertEquals($test_encodeHTML_mas_out, encodeHTML($test_encodeHTML_mas_in));
-	}
-	
-	/**
-	 *  
-	 */
-	public function test_decodeHTML()
-	{
-		$this->assertEquals('(<a href="#">foo</a>)',
-			decodeHTML('%28&lt;a href=&quot;#&quot;&gt;foo&lt;/a&gt;%29')); 
-	}
-	
-	/**
-	 *  
-	 */
-	public function test_text2array()
-	{
-		$test_mas1 = array
-			(
-				'foo'=>'bar',
-				'key'=>'value'
-			);
-		$test_mas2 =	array('foo=bar', 'key=value');	
-		$test_mas3 =	array();
-		$this->assertEquals($test_mas1, text2array("foo=bar\nkey=value", true)); 
-		$this->assertEquals($test_mas2, text2array("foo=bar\nkey=value"));
-		$this->assertEquals($test_mas3, text2array(""));
-	}
-	
-	/**
-	 *  
-	 */
-	public function test_array2text()
-	{
-		$test_mas1 = array
-			(
-				'foo'=>'bar',
-				'key'=>'value'
-			);
-		$test_mas2 =	array('foo=bar', 'key=value');	
-		$test_mas3 =	array();
-		$this->assertEquals("foo=bar\nkey=value", array2text($test_mas1, true)); 
-		$this->assertEquals("foo=bar\nkey=value", array2text($test_mas2));
-		$this->assertEquals("", array2text($test_mas3));
-	}
-	
+
 	/**
 	 *  
 	 */
@@ -151,17 +70,4 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($options, decodeOptions('', $options));
 		$this->assertEquals($options, decodeOptions('foo' . $encoded, $options));
 	}
-	
-	/**
-	 *
-	 */
-	public function test_imageCreateFromFile()
-	{
-		$folder = TESTS_FIXT_DIR . '/core/lib/glib';
-
-		$this->assertInternalType('resource', imageCreateFromFile($folder . '/gif.gif'));
-		$this->assertInternalType('resource', imageCreateFromFile($folder . '/jpeg.jpg'));
-		$this->assertInternalType('resource', imageCreateFromFile($folder . '/png.png'));
-	}
-
 }
