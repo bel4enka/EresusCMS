@@ -225,8 +225,11 @@ class AdminUI extends WebPage
             ),
             $text
         );
-        $result = preg_replace_callback('/\$\(const:(.*?)\)/i', '__macroConst', $result);
-        $result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i', '__macroVar', $result);
+        $result = preg_replace_callback('/\$\(const:(.*?)\)/i',
+            function ($m) {return constant($m[1]);}, $result);
+        $result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i',
+            function ($m) {$r=$GLOBALS[$m[2]];if(!empty($m[3]))@eval('$r = $r'.$m[3].';');return $r;},
+            $result);
         $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
         return $result;
     }
@@ -911,7 +914,7 @@ class AdminUI extends WebPage
             $controller = new $match['controller'];
             if ($controller instanceof ContainerAwareInterface)
             {
-                $controller->setContainer(Eresus_Kernel::sc());
+                $controller->setContainer($this->container);
             }
             if ($controller instanceof Eresus_Admin_Controllers_Abstract)
             {
@@ -977,7 +980,7 @@ class AdminUI extends WebPage
                 $this->module = new $class;
                 if ($this->module instanceof ContainerAwareInterface)
                 {
-                    $this->module->setContainer(Eresus_Kernel::sc());
+                    $this->module->setContainer($this->container);
                 }
             }
             elseif (substr($module, 0, 4) == 'ext-')

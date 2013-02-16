@@ -28,8 +28,8 @@
  * @package Eresus
  */
 
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Eresus\CmsBundle\HTTP\Request;
 use Eresus\CmsBundle\Extensions\Connector;
 use Eresus\CmsBundle\AdminUI;
@@ -57,13 +57,26 @@ class Eresus_CMS
     protected static $legacyKernel;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param Symfony\Component\DependencyInjection\ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * Основной метод приложения
      *
      * @return Response
      */
     public function main()
     {
-        Eresus_Kernel::sc()->get('extensions');
+        $this->container->get('extensions');
 
         self::$legacyKernel = new Eresus;
         $this->initConf();
@@ -174,11 +187,11 @@ class Eresus_CMS
             $request->getScheme() . '://' . $request->getHost() . $request->getBasePath());
 
         /** @var Twig_Environment $twigEnv */
-        $twigEnv = Eresus_Kernel::sc()->get('twig');
+        $twigEnv = $this->container->get('twig');
         $twigEnv->addExtension(new Eresus_Twig_Extension());
 
         /** @var Twig_Loader_Filesystem $loader */
-        $loader = Eresus_Kernel::sc()->get('twig.loader');
+        $loader = $this->container->get('twig.loader');
         $loader->addPath($this->getFsRoot());
 
         //$this->initRoutes();
@@ -194,7 +207,7 @@ class Eresus_CMS
         eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
         $this->page = new ClientUI();
-        $this->page->setContainer(Eresus_Kernel::sc());
+        $this->page->setContainer($this->container);
         $this->page->init();
         return $this->page->render();
     }
@@ -207,7 +220,7 @@ class Eresus_CMS
     protected function runWebAdminUi()
     {
         $this->page = new AdminUI();
-        $this->page->setContainer(Eresus_Kernel::sc());
+        $this->page->setContainer($this->container);
         return $this->page->render();
     }
 

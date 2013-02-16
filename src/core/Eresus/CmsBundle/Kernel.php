@@ -1,8 +1,6 @@
 <?php
 /**
- * ${product.title}
- *
- * Ядро
+ * Ядро CMS
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -28,8 +26,10 @@
  * @package Eresus
  */
 
+namespace Eresus\CmsBundle;
+
 use Composer\Autoload\ClassLoader;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\Kernel as ParentKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -48,7 +48,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
  * @package Eresus
  * @since 3.00
  */
-class Eresus_Kernel extends Kernel
+class Kernel extends ParentKernel
 {
     /**
      * Резервный буфер для отлова ошибок переполнения памяти (в Кб)
@@ -168,7 +168,7 @@ class Eresus_Kernel extends Kernel
          * Но только не в режиме CLI.
          */
         // @codeCoverageIgnoreStart
-        if (PHP_SAPI != 'cli')
+        if (! self::isCLI())
         {
             if (ob_start(array($this, 'fatalErrorHandler'), 4096))
             {
@@ -296,7 +296,7 @@ class Eresus_Kernel extends Kernel
             }
 
             //Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
-            if (PHP_SAPI != 'cli')
+            if (!self::isCLI())
             //@codeCoverageIgnoreStart
             {
                 header('Internal Server Error', true, 500);
@@ -311,6 +311,89 @@ class Eresus_Kernel extends Kernel
 
         // возвращаем false для вывода буфера
         return false;
+    }
+
+    /**
+     * Возвращает true если PHP запущен на UNIX-подобной ОС
+     *
+     * @return bool
+     *
+     * @since 3.00
+     */
+    public static function isUnixLike()
+    {
+        return DIRECTORY_SEPARATOR == '/';
+    }
+
+    /**
+     * Возвращает true если PHP запущен на Microsoft® Windows™
+     *
+     * @return bool
+     *
+     * @since 3.00
+     */
+    public static function isWindows()
+    {
+        return strncasecmp(PHP_OS, 'WIN', 3) == 0;
+    }
+
+    /**
+     * Возвращает true если PHP запущен на MacOS
+     *
+     * @return bool
+     *
+     * @since 3.00
+     */
+    public static function isMac()
+    {
+        return strncasecmp(PHP_OS, 'MAC', 3) == 0;
+    }
+
+    /**
+     * Возвращает true, если используется
+     * {@link http://php.net/manual/en/features.commandline.php CLI}
+     * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI}
+     *
+     * @return bool
+     *
+     * @since 3.00
+     */
+    public static function isCli()
+    {
+        //@codeCoverageIgnoreStart
+        if (self::$override_isCLI !== null)
+        {
+            return self::$override_isCLI;
+        }
+        //@codeCoverageIgnoreEnd
+
+        return PHP_SAPI == 'cli';
+    }
+
+    /**
+     * Возвращает true, если используется CGI
+     * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI}
+     *
+     * @return bool
+     *
+     * @since 3.00
+     */
+    public static function isCgi()
+    {
+        return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
+    }
+
+    /**
+     * Возвращает true, если используется
+     * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI} модуля веб-сервера
+     *
+     * @return bool
+     *
+     * @since 3.00
+     */
+    public static function isModule()
+    {
+        return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
     }
 
     /**
@@ -362,6 +445,110 @@ class Eresus_Kernel extends Kernel
     public static function app()
     {
         return self::sc()->get('app');
+    }
+
+    /**
+     * Возвращает используемые пакеты
+     *
+     * @return array
+     *
+     * @since 4.00
+     */
+    public function registerBundles()
+    {
+        $bundles = array(
+            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new Symfony\Bundle\TwigBundle\TwigBundle(),
+            new Symfony\Bundle\MonologBundle\MonologBundle(),
+            new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new JMS\AopBundle\JMSAopBundle(),
+            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new Eresus\CommonBundle\CommonBundle(),
+            new Eresus\ORMBundle\ORMBundle(),
+            new Eresus\CmsBundle\CmsBundle()
+        );
+
+        if (in_array($this->getEnvironment(), array('dev', 'test')))
+        {
+            $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+            $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
+        }
+
+        return $bundles;
+    }
+
+    /**
+     * Регистрирует пакет во время работы приложения
+     *
+     * @param Symfony\Component\HttpKernel\Bundle\Bundle $bundle
+     */
+    public function registerBundle(Bundle $bundle)
+    {
+        $this->bundleMap[$bundle->getName()] = array($bundle);
+        $bundle->boot();
+
+        /*
+         * Регистрируем классы сущностей модуля
+         */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $this->get('doctrine');
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $doctrine->getManager();
+        /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
+        $chain = $em->getConfiguration()->getMetadataDriverImpl();
+        $driver = new AnnotationDriver(new AnnotationReader(), $bundle->getPath() . '/Entity');
+        $chain->addDriver($driver, $bundle->getNamespace());
+    }
+
+    /**
+     * Возвращает настройки контейнера служб
+     *
+     * @param Symfony\Component\Config\Loader\LoaderInterface $loader
+     */
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
+        $loader->load($this->getRootDir() . '/core/Eresus/CmsBundle/Resources/config/config_'
+            . $this->getEnvironment() . '.yml');
+    }
+
+    /**
+     * Возвращает корневую папку приложения (app/)
+     *
+     * @return string
+     */
+    public function getRootDir()
+    {
+        if (null === $this->rootDir)
+        {
+            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../..'));
+        }
+
+        return $this->rootDir;
+    }
+
+    /**
+     * Возвращает папку журналов
+     *
+     * @return string
+     */
+    public function getLogDir()
+    {
+        return $this->getRootDir() . '/var/logs';
+    }
+
+    /**
+     * Возвращает папку кэша
+     *
+     * @return string
+     */
+    public function getCacheDir()
+    {
+        return $this->getRootDir() . '/var/cache/' . $this->environment;
     }
 }
 

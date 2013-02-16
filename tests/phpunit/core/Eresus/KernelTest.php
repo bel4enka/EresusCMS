@@ -160,37 +160,4 @@ class Eresus_KernelTest extends PHPUnit_Framework_TestCase
             "FATAL ERROR\nSee application log for more info.\n",
             Eresus_Kernel::fatalErrorHandler('Fatal error: A in B on line C'));
     }*/
-
-    /**
-     * Just make sure that method can be executed
-     *
-     * @covers Eresus_Kernel::isCGI
-     */
-    public function testIsCgi()
-    {
-        Eresus_Kernel::isCGI();
-        $this->assertTrue(true);
-    }
-
-    /**
-     * Just make sure that method can be executed
-     *
-     * @covers Eresus_Kernel::isCLI
-     */
-    public function testIsCli()
-    {
-        Eresus_Kernel::isCLI();
-        $this->assertTrue(true);
-    }
-
-    /**
-     * Just make sure that method can be executed
-     *
-     * @covers Eresus_Kernel::isModule
-     */
-    public function testIsModule()
-    {
-        Eresus_Kernel::isModule();
-        $this->assertTrue(true);
-    }
 }

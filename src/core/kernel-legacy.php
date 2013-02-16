@@ -48,41 +48,6 @@ define('EDITOR', 3); # Редактор
 define('USER',   4); # Пользователь
 define('GUEST',  5); # Гость (не зарегистрирован)
 
-
-
-/**
- * Возвращает константу для подстановки в макросы
- *
- * @param array $matches
- *
- * @return mixed
- *
- * @since 2.14
- */
-function __macroConst(array $matches)
-{
-	return constant($matches[1]);
-}
-
-/**
- * Возвращает глобальную переменную для подстановки в макросы
- *
- * @param array $matches
- *
- * @return mixed
- *
- * @since 2.14
- */
-function __macroVar(array $matches)
-{
-	$result = $GLOBALS[$matches[2]];
-	if (!empty($matches[3]))
-	{
-		@eval('$result = $result'.$matches[3].';');
-	}
-	return $result;
-}
-
 /**
  * Возвращает разметку сообщения о пользовательской ошибке
  *
@@ -155,123 +120,6 @@ function UserRights($level)
 		) ||
 		($level == GUEST)
 	);
-}
-
-/**
- * Функция отсылает письмо по указанному адресу
- *
- * @param string $address
- * @param string $subject
- * @param string $text
- * @param bool   $html
- * @param string $fromName
- * @param string $fromAddr
- * @param string $fromOrg
- * @param string $fromSign
- * @param string $replyTo
- *
- * @return bool
- */
-function sendMail($address, $subject, $text, $html=false, $fromName='', $fromAddr='', $fromOrg='',
-	$fromSign='', $replyTo='')
-{
-	if (empty($fromName))
-	{
-		$fromName = option('mailFromName');
-	}
-	if (empty($fromAddr))
-	{
-		$fromAddr = option('mailFromAddr');
-	}
-	if (empty($fromOrg))
-	{
-		$fromOrg = option('mailFromOrg');
-	}
-	if (empty($fromSign))
-	{
-		$fromSign = option('mailFromSign');
-	}
-	if (empty($replyTo))
-	{
-		$replyTo = option('mailReplyTo');
-	}
-	if (empty($replyTo))
-	{
-		$replyTo = $fromAddr;
-	}
-
-	$charset = CHARSET;
-
-	$sender = strlen($fromName) ? "=?".$charset."?B?".base64_encode($fromName)."?= <$fromAddr>" :
-		$fromAddr;
-	if (strlen($fromOrg))
-	{
-		$sender .= ' (=?'.$charset.'?B?'.base64_encode($fromOrg).'?=)';
-	}
-	if (mb_strpos($sender, '@') === false)
-	{
-		/** @var Request $request */
-		$request = Eresus_Kernel::sc()->get('request');
-		$sender = 'no-reply@'.preg_replace('/^www\./', '', $request->getHost());
-	}
-	$fromSign = "\n-- \n".$fromSign;
-	if ($html)
-	{
-		$fromSign = nl2br($fromSign);
-	}
-	if (strlen($fromSign))
-	{
-		$text .= $fromSign;
-	}
-
-	$headers =
-		"MIME-Version: 1.0\n".
-		"From: $sender\n".
-		"Subject: $subject\n".
-		"Reply-To: $replyTo\n".
-		"X-Mailer: PHP/" . phpversion()."\n";
-
-	if ($html)
-	{
-		$text = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n" .
-			"<html>\n<head></head>\n<body>\n".$text."\n</body>\n</html>";
-
-		$boundary="=_".md5(uniqid(time()));
-		$headers.="Content-Type: multipart/mixed; boundary=$boundary\n";
-		$multipart="";
-		$multipart.="This is a MIME encoded message.\n\n";
-
-		$multipart.="--$boundary\n";
-		$multipart.="Content-Type: text/html; charset=$charset\n";
-		$multipart.="Content-Transfer-Encoding: Base64\n\n";
-		$multipart.=chunk_split(base64_encode($text))."\n\n";
-		$multipart.="--$boundary--\n";
-		$text = $multipart;
-	}
-	else
-	{
-		$headers .= "Content-type: text/plain; charset=$charset\n";
-	}
-
-	$conf = Eresus_CMS::getLegacyKernel()->conf;
-	if ($conf['debug']['enable'] && $conf['debug']['mail'] !== true)
-	{
-		if (is_string($conf['debug']['mail']))
-		{
-			$hnd = @fopen($conf['debug']['mail'], 'a');
-			if ($hnd)
-			{
-				fputs($hnd, "\n====================\n$headers\nTo: $address\nSubject: $subject\n\n$text\n");
-				fclose($hnd);
-			}
-			return true;
-		}
-	}
-	else
-	{
-		return (mail($address, $subject, $text, $headers)===0);
-	}
-	return false;
 }
 
 /**
@@ -438,58 +286,6 @@ function decodeOptions($options, $defaults = array())
 }
 
 /**
- * Заменяет макросы на их значения
- *
- * Функция находит в шаблоне все подстроки вида $(имя_макроса), затем ищет соответствующие ключи
- * или свойства в $source и заменяет подстроки на значения из $source.
- *
- * Если $source не содержит ключа или свойства с требуемым именем, замена не производится.
- *
- * Можно использовать «условные макросы», действующие по принципу тернарного (с 3 операндами)
- * условного оператора языка PHP и записывающиеся в виде:
- *
- * $(имя_макроса ? строка1 : строка 2)
- *
- * Если значение с именем «имя_макроса» в $source не ложно по правилам PHP, то макрос заменяется
- * значением строка 1, в противном случае значением строка 2.
- *
- * @param string        $template  шаблон
- * @param array|object  $source    источник для замены (ассоциативный массив или объект)
- *
- * @return string  шаблон template в котором макросы заменены на значения из аргумента source
- */
-function replaceMacros($template, $source)
-{
-	# Замена условных макросов
-	preg_match_all('/\$\(([^\)\?:]+)\?([^:\)]*):([^\)]*)\)/U', $template, $matches, PREG_SET_ORDER);
-	if (count($matches))
-	{
-		foreach ($matches as $macros)
-		{
-			if (__isset($source, $macros[1]))
-			{
-				$template = str_replace($macros[0], __property($source, $macros[1])?$macros[2]:$macros[3],
-					$template);
-			}
-		}
-	}
-
-	// Замена обычных макросов
-	preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
-	if (count($matches[1]))
-	{
-		foreach ($matches[1] as $macros)
-		{
-			if (__isset($source, $macros))
-			{
-				$template = str_replace('$('.$macros.')', __property($source, $macros), $template);
-			}
-		}
-	}
-	return $template;
-}
-
-/**
  * Возвращает значение аргумента запроса HTTP
  *
  * Проверяет, был ли передан GET или POST аргумент $arg (в {@link Eresus::$request}), и, если он был
@@ -539,26 +335,6 @@ function arg($arg, $filter = null)
 		}
 	}
 	return $arg;
-}
-
-/**
- * Функция сохраняет в сессии текущие аргументы
- */
-function saveRequest()
-{
-	Eresus_CMS::getLegacyKernel()->session['request'] = Eresus_CMS::getLegacyKernel()->request;
-}
-
-/**
- * Функция сохраняет в сессии текущие аргументы
- */
-function restoreRequest()
-{
-	if (isset(Eresus_CMS::getLegacyKernel()->session['request']))
-	{
-		Eresus_CMS::getLegacyKernel()->request = Eresus_CMS::getLegacyKernel()->session['request'];
-		unset(Eresus_CMS::getLegacyKernel()->session['request']);
-	}
 }
 
 /**
@@ -862,86 +638,6 @@ function imageConvert($srcFile, $dstFile, $format = IMG_JPG)
 	return $result;
 }
 
-
-function __clearargs($args)
-{
-	if (count($args))
-	{
-		foreach ($args as $key => $value)
-		{
-			if (gettype($args[$key]) == 'array')
-			{
-				$args[$key] = __clearargs($args[$key]);
-			}
-			else
-			{
-				if (strpos($key, 'wyswyg_') === 0)
-				{
-					unset($args[$key]);
-					$key = substr($key, 7);
-					$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
-					$value = str_replace(array('%28', '%29'), array('(',')'), $value);
-					$value = str_replace(Eresus_CMS::getLegacyKernel()->root, '$(httpRoot)', $value);
-					preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
-					if (count($images[0]))
-					{
-						$images = $images[0];
-						$delta = 0;
-						for ($i = 0; $i < count($images); $i++)
-						{
-							if (!preg_match('/alt=/i', $images[$i][0]))
-							{
-								$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
-								$value = substr_replace($value, $s, $images[$i][1]+$delta,
-									mb_strlen($images[$i][0]));
-								$delta += mb_strlen($s) - mb_strlen($images[$i][0]);
-							}
-						}
-					}
-				}
-				$args[$key] = $value;
-			}
-		}
-	}
-	return $args;
-}
-
-/**
- * Определяет установлено ли свойство у элемента
- *
- * @param mixed  $object    Элемент
- * @param string $property  Свойство
- * @return bool Значение
- *
- * @see replaceMacros
- */
-function __isset($object, $property)
-{
-	return
-		is_object($object) ? isset($object->$property) : (
-			is_array ($object) ? isset($object[$property]) :
-			false
-		);
-}
-
-/**
- * Возвращает свойство элемента
- *
- * @param mixed  $object    Элемент
- * @param string $property  Свойство
- * @return string Значение
- *
- * @see replaceMacros
- */
-function __property($object, $property)
-{
-	return
-		is_object($object) ? $object->$property : (
-			is_array ($object) ? $object[$property] :
-			''
-		);
-}
-
 /**
  * Основной класс приложения
  *
@@ -1228,8 +924,7 @@ class Eresus
 		$this->style = $this->root . '/style';
 
 		// Сбор аргументов вызова
-		$this->request['arg'] = __clearargs(array_merge($request->query->all(),
-			$request->request->all()));
+		$this->request['arg'] = array_merge($request->query->all(), $request->request->all());
 		// Разбивка параметров вызова скрипта
 		$this->request['params'] = explode('/', $request->getLocalUrl());
 	}

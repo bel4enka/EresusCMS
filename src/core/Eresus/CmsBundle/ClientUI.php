@@ -201,42 +201,12 @@ class ClientUI extends WebPage
             ),
             $text
         );
-        $result = preg_replace_callback('/\$\(const:(.*?)\)/i', '__macroConst', $result);
-        $result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i', '__macroVar', $result);
+        $result = preg_replace_callback('/\$\(const:(.*?)\)/i',
+            function ($m) {return constant($m[1]);}, $result);
+        $result = preg_replace_callback('/\$\(var:(([\w]*)(\[.*?\]){0,1})\)/i',
+            function ($m) {$r=$GLOBALS[$m[2]];if(!empty($m[3]))@eval('$r = $r'.$m[3].';');return $r;},
+            $result);
         $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
-        return $result;
-    }
-    //------------------------------------------------------------------------------
-
-    /**
-     * Отрисовка переключателя страниц
-     *
-     * @param int     $total      Общее количество страниц
-     * @param int     $current    Номер текущей страницы
-     * @param string  $url        Шаблон адреса для перехода к подстранице.
-     * @param array   $templates  Шаблоны оформления
-     * @return string
-     */
-    function pageSelector($total, $current, $url = null, $templates = null)
-    {
-        if (is_null($url))
-        {
-            $url = $this->url().'p%d/';
-        }
-        $Templates = new Templates();
-        $defaults = explode('---', $Templates->get('PageSelector', 'std'));
-        if (!is_array($templates))
-        {
-            $templates = array();
-        }
-        for ($i=0; $i < 5; $i++)
-        {
-            if (!isset($templates[$i]))
-            {
-                $templates[$i] = $defaults[$i];
-            }
-        }
-        $result = parent::pageSelector($total, $current, $url, $templates);
         return $result;
     }
     //------------------------------------------------------------------------------

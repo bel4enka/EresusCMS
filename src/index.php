@@ -1,8 +1,6 @@
 <?php
 /**
- * ${product.title}
- *
- * Запускающий скрипт для режима Web
+ * Запускающий скрипт для режима веб
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -76,7 +74,7 @@ ini_set('track_errors', false);
  * @global Eresus_Kernel $kernel
  */
 //TODO Заменить на prod, для dev сделать index.dev.php
-$kernel = new Eresus_Kernel('dev', true);
+$kernel = new Eresus\CmsBundle\Kernel('dev', true);
 
 // Восстанавливаем состояние вывода ошибок
 ini_set('track_errors', $displayErrors);

@@ -135,7 +135,6 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
         }
         if ($error)
         {
-            saveRequest();
             return new RedirectResponse(Eresus_CMS::getLegacyKernel()->request['referer']);
         }
         $em->persist($account);
@@ -226,7 +225,6 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
 
     function create()
     {
-        restoreRequest();
         $form = array(
             'name'=>'UserForm',
             'caption' => admUsersCreate,
