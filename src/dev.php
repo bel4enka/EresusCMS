@@ -70,10 +70,6 @@ if (isset($php_errormsg))
 // Выключаем отслеживание ошибок, теперь полагаемся на ядро
 ini_set('track_errors', false);
 
-/**
- * @global Eresus_Kernel $kernel
- */
-//TODO Заменить на prod, для dev сделать index.dev.php
 $kernel = new Eresus\CmsBundle\Kernel('dev', true);
 
 // Восстанавливаем состояние вывода ошибок

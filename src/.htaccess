@@ -54,12 +54,12 @@ AddDefaultCharset Off
 	### ДРУГИЕ ПЕРЕАДРЕСОВКИ ###
 
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(bundles|core/js|admin|ext|data|style)/ - [last]
+	RewriteRule ^(bundles|core/js|ext|data|style)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
-	RewriteRule ^(robots.txt|favicon.[^\.]+|core/gziph.php.*)$ - [last]
+	RewriteRule ^(dev\.php|robots.txt|favicon.[^\.]+)$ - [last]
 
 	# Все остальные запросы должны перехватываться запускающим скриптом
-	RewriteRule .* index.php
+	RewriteRule .* prod.php
 </IfModule>
 
 # Если mod_rewrite не сработал (модуль не подключен, нет нужного файла), то...
