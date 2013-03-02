@@ -34,11 +34,6 @@ $displayErrors = ini_set('display_errors', true);
 // Временно включаем отслеживание ошибок
 ini_set('track_errors', true);
 
-/**
- * Полный путь к корню сайта
- */
-define('ERESUS_PATH', __DIR__);
-
 /** @var \Composer\Autoload\ClassLoader $loader */
 /** @noinspection PhpIncludeInspection */
 $loader = require __DIR__ . '/vendor/autoload.php';
@@ -59,7 +54,7 @@ if (!function_exists('intl_get_error_code'))
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', ERESUS_PATH . '/core');
+$loader->add('Eresus_', __DIR__ . '/core');
 
 /* Если произошли какие-то ошибки, прерываем работу приложения */
 if (isset($php_errormsg))
