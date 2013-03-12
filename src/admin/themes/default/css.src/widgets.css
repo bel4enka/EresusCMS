@@ -46,7 +46,7 @@
 /**
  * Бокс
  *
- * Бокс - это самостоятельный блок, содержимое которого независит от своего окружения бокса.
+ * Бокс - это самостоятельный блок, содержимое которого не зависит от своего окружения бокса.
  *
  * @applicable div
  * @children .title, .content
@@ -350,9 +350,9 @@ table.ui-grid.ui-hlines
 
 /* Interaction Cues
 ----------------------------------*/
-.ui-state-highlight, .ui-widget-content .ui-state-highlight {border: 1px solid #007acc; background: #e4eefb url(images/ui-bg_flat_55_e4eefb_40x100.png) 50% 50% repeat-x; color: #363636; }
+.ui-state-highlight, .ui-widget-content .ui-state-highlight {border: 1px solid #007acc; background: #e4eefb; color: #363636; }
 .ui-state-highlight a, .ui-widget-content .ui-state-highlight a { color: #363636; }
-.ui-state-error, .ui-widget-content .ui-state-error {border: 1px solid #cd0a0a; background: #fef1ec url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x; color: #cd0a0a; }
+.ui-state-error, .ui-widget-content .ui-state-error {border: 1px solid #cd0a0a; background: #fef1ec; color: #cd0a0a; }
 .ui-state-error a, .ui-widget-content .ui-state-error a { color: #cd0a0a; }
 .ui-state-error-text, .ui-widget-content .ui-state-error-text { color: #cd0a0a; }
 .ui-state-disabled,
@@ -379,14 +379,14 @@ table.ui-grid.ui-hlines
 {
 	width: 16px;
 	height: 16px;
-	background-image: url(images/ui-icons_0055aa_256x240.png);
+	background-image: url(images/ui-icons_217bc0_256x240.png);
 }
-.ui-widget-content .ui-icon {background-image: url(images/ui-icons_0055aa_256x240.png); }
+.ui-widget-content .ui-icon {background-image: url(images/ui-icons_217bc0_256x240.png); }
 
-.ui-widget-header .ui-icon {background-image: url(images/ui-icons_e0eeff_256x240.png); }
-.ui-state-default .ui-icon { background-image: url(images/ui-icons_0066bb_256x240.png); }
+.ui-widget-header .ui-icon {background-image: url(images/ui-icons_f9bd01_256x240.png); }
+.ui-state-default .ui-icon { background-image: url(images/ui-icons_469bdd_256x240.png); }
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_217bc0_256x240.png); }
-.ui-state-active .ui-icon {background-image: url(images/ui-icons_000055_256x240.png); }
+.ui-state-active .ui-icon {background-image: url(images/ui-icons_2e83ff_256x240.png); }
 .ui-state-highlight .ui-icon {background-image: url(images/ui-icons_2e83ff_256x240.png); }
 .ui-state-error .ui-icon, .ui-state-error-text .ui-icon {background-image: url(images/ui-icons_cd0a0a_256x240.png); }
 
@@ -617,8 +617,21 @@ table.ui-grid.ui-hlines
 .ui-datepicker .ui-datepicker-next { right:2px; }
 .ui-datepicker .ui-datepicker-prev-hover { left:1px; }
 .ui-datepicker .ui-datepicker-next-hover { right:1px; }
-.ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span { display: block; position: absolute; left: 50%; margin-left: -8px; top: 50%; margin-top: -8px;  }
-.ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; }
+
+.ui-datepicker .ui-datepicker-prev span,
+.ui-datepicker .ui-datepicker-next span
+{
+	display: block;
+	position: absolute;
+	top: 50%;
+}
+.ui-datepicker .ui-datepicker-title
+{
+	color: white;
+	line-height: 1.8em;
+	margin: 0 2.3em;
+	text-align: center;
+}
 .ui-datepicker .ui-datepicker-title select { float:left; font-size:1em; margin:1px 0; }
 .ui-datepicker select.ui-datepicker-month-year {width: 100%;}
 .ui-datepicker select.ui-datepicker-month,

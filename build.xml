@@ -237,12 +237,17 @@
 			<fileset refid="files.3rd.modernizr" />
 		</copy>
 
-		<!-- Webshims -->
+		<!-- Webshim -->
 		<copy todir="${build.dir}/core/js/webshim">
 			<fileset dir="3rdparty/webshim">
 				<include name="**" />
 			</fileset>
 		</copy>
+		<patch
+			patchfile="${project.basedir}/patches/webshim.shim.css.patch"
+			dir="${build.dir}"
+			strip="0"
+		/>
 
 		<!-- Tiny MCE -->
 		<copy todir="${build.dir}/ext-3rd/tinymce">

@@ -1,0 +1,58 @@
+--- core/js/webshim/shims/shim.css
++++ core/js/webshim/shims/shim.css
+@@ -312,55 +312,10 @@
+ .polyfill-important .input-date-datepicker-control {
+ 	z-index: 999999999 !important;
+ }
+-.input-date-datepicker-control .ui-datepicker-header {
+-	position: relative;
+-	margin: 0 0 3px;
+-	padding: 2px 0;
+-}
+-.input-date-datepicker-control .ui-datepicker-header select {
+-    border: 1px solid #333;
+-    padding: 1px 2px 2px;
+-}
+-.input-date-datepicker-control .ui-datepicker-header option {
+-	padding-right: 8px;
+-}
+-.input-date-datepicker-control .ui-datepicker-header .ui-icon {
+-	position: absolute;
+-	display: block;
+-	top: 0.2em;
+-	width: 15px;
+-	height: 18px;
+-	text-indent: -9999em;
+-	font-size: 10px;
+-	line-height: 0;
+-	background: url(forms.png) no-repeat;
+-	cursor: pointer;
+-}
+-.input-date-datepicker-control .ui-datepicker-header .ui-state-disabled .ui-icon {
+-	cursor: default;
+-}
+-.input-date-datepicker-control .ui-datepicker-header .ui-icon-circle-triangle-w {
+-	left: 3px;
+-	background-position: -235px 3px;
+-}
+-.input-date-datepicker-control .ui-datepicker-header .ui-state-hover .ui-icon-circle-triangle-w {
+-	background-position: -235px -17px;
+-}
+-.input-date-datepicker-control .ui-datepicker-header .ui-icon-circle-triangle-e {
+-	right: 3px;
+-	background-position: -248px 3px;
+-}
+-.input-date-datepicker-control .ui-datepicker-header .ui-state-hover .ui-icon-circle-triangle-e {
+-	background-position: -248px -17px;
+-}
+ .input-date-datepicker-control table {
+ 	font-size: 100%;
+ 	border-spacing: 1px;
+ }
+-.input-date-datepicker-control .ui-datepicker-title {
+-	margin: 0 20px;
+-}
+-.input-date-datepicker-control .ui-datepicker-title,
+ .input-date-datepicker-control th {
+ 	color: #069;
+ 	text-align: center;
