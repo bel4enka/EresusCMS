@@ -1,6 +1,8 @@
---- core/js/webshim/shims/shim.css
-+++ core/js/webshim/shims/shim.css
-@@ -312,55 +312,10 @@
+Удаляем стили, перекрывающие стили из темы
+===================================================================
+--- core/js/webshim/shims/styles/shim.css
++++ core/js/webshim/shims/styles/shim.css
+@@ -312,117 +312,6 @@
  .polyfill-important .input-date-datepicker-control {
  	z-index: 999999999 !important;
  }
@@ -45,14 +47,76 @@
 -.input-date-datepicker-control .ui-datepicker-header .ui-state-hover .ui-icon-circle-triangle-e {
 -	background-position: -248px -17px;
 -}
- .input-date-datepicker-control table {
- 	font-size: 100%;
- 	border-spacing: 1px;
- }
+-.input-date-datepicker-control table {
+-	font-size: 100%;
+-	border-spacing: 1px;
+-}
 -.input-date-datepicker-control .ui-datepicker-title {
 -	margin: 0 20px;
 -}
 -.input-date-datepicker-control .ui-datepicker-title,
- .input-date-datepicker-control th {
- 	color: #069;
- 	text-align: center;
+-.input-date-datepicker-control th {
+-	color: #069;
+-	text-align: center;
+-	font-weight: bold;
+-}
+-
+-.input-date-datepicker-control td,
+-.input-date-datepicker-control th {
+-	padding: 0 2px;
+-	text-align: center;
+-	font-weight: normal;
+-}
+-
+-.input-date-datepicker-control td {
+-	padding: 0 4px;
+-	cursor: pointer;
+-	text-align: right;
+-	border: 1px solid #fff;
+-	border-radius: 2px;
+-}
+-
+-.input-date-datepicker-control td.ui-datepicker-current-day {
+-	background-color: #adf;
+-	color: #000;
+-	border-color: #06c;
+-}
+-.input-date-datepicker-control td.ui-datepicker-today{
+-	border-color: #06c;
+-}
+-.input-date-datepicker-control td.ui-datepicker-current-day a {
+-	color: #000;
+-}
+-.input-date-datepicker-control td a {
+-	color: #000;
+-	text-decoration: none;
+-}
+-
+-.input-date-datepicker-control td:hover {
+-	background-color: #bef;
+-	border-color: #06c;
+-}
+-.input-date-datepicker-control td.ui-state-disabled {
+-	cursor: default;
+-	border-color: #fff;
+-	color: #bbb;
+-	background-color: transparent;
+-}
+-
+-.input-date-datepicker-control .ui-datepicker-buttonpane {
+-	margin: 4px 0 0;
+-}
+-.input-date-datepicker-control .ui-datepicker-cover {
+-	display: none; /*sorry for IE5*/
+-	display/**/: block; /*sorry for IE5*/
+-	position: absolute; /*must have*/
+-	z-index: -1; /*must have*/
+-	filter: mask(); /*must have*/
+-	top: -4px; /*must have*/
+-	left: -4px; /*must have*/
+-	width: 200px; /*must have*/
+-	height: 200px; /*must have*/
+-}
+ 
+ datalist {
+ 	display: none;

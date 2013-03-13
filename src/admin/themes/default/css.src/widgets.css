@@ -622,6 +622,9 @@ table.ui-grid.ui-hlines
 .ui-datepicker .ui-datepicker-next span
 {
 	display: block;
+	left: 50%;
+	margin-left: -8px;
+	margin-top: -8px;
 	position: absolute;
 	top: 50%;
 }
