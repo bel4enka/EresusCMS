@@ -9,7 +9,7 @@ admin.login:
 admin.login_check:
     pattern: /admin/login_check
 
-logout:
+admin.logout:
     pattern: /admin/logout
 
 main:
