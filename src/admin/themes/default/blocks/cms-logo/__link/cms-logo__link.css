@@ -1,0 +1,11 @@
+.cms-logo__link,
+.cms-logo__link:visited
+{
+    color: white;
+    text-decoration: none;
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 2px 1px 1px rgba(0, 0, 0, .7);
+}

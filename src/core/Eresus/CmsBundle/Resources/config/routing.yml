@@ -1,7 +1,3 @@
-admin.dashboard:
-    pattern: /admin/
-    defaults: { _controller: CmsBundle:AdminDashboard:index }
-
 admin.login:
     pattern: /admin/login
     defaults: { _controller: CmsBundle:AdminSecurity:login }
@@ -11,6 +7,19 @@ admin.login_check:
 
 admin.logout:
     pattern: /admin/logout
+
+admin.dashboard:
+    pattern: /admin/
+    defaults: { _controller: CmsBundle:AdminDashboard:index }
+
+admin.settings:
+    pattern: /admin/settings
+    defaults: { _controller: CmsBundle:AdminSettings:index }
+
+admin.accounts:
+    pattern: /admin/accounts
+    defaults: { _controller: CmsBundle:AdminAccounts:index }
+
 
 main:
     pattern:  /

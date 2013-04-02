@@ -15,6 +15,33 @@
     <div class="page__layout">
 
         <header class="page__header">
+            <div class="cms-logo">
+                <a href="{{ path('admin.dashboard') }}" class="cms-logo__link">
+                    <img src="{{ asset('admin/themes/default/img/logo.png') }}"
+                        alt="Eresus" class="cms-logo__image">
+                    EresusCMS ${product.version}
+                </a>
+            </div>
+
+            <h1 class="site-title">{ { siteName } } &ndash; { { page.title } }</h1>
+
+            <nav class="main-menu">
+                <ul class="main-menu__items">
+                    <li class="main-menu__item">
+                        <a href="{{ path('admin.settings') }}" class="main-menu__link">
+                            <span class="icon icon_img_settings"></span>
+                            Настройки
+                        </a>
+                    </li>
+                    <li class="main-menu__item">
+                        <a href="{{ path('admin.accounts') }}" class="main-menu__link">
+                            <span class="icon icon_img_users"></span>
+                            Пользователи и группы
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
             <div class="user-box">
                 <span class="user-box__intro">Вы</span>
                 <span class="user-box__username">{{ app.user.username }}</span>
@@ -23,14 +50,6 @@
                 </div>
             </div>
 
-            <div class="cms-logo">
-                <a href="{{ path('admin.dashboard') }}" class="cms-logo__link">
-                    <img src="{{ asset('admin/themes/default/img/logo.png') }}"
-                        alt="{#{ cms.name }#} {#{ cms.version }#}" class="cms-logo__image">
-                </a>
-            </div>
-            <h1 class="site-title">{#{ siteName }} &ndash; {{ page.title }#}</h1>
-            <div class="cms-title">Eresus CMS {#{ cms.name }} {{ cms.version }#}</div>
         </header>
 
         <nav class="page__sidebar">
@@ -42,10 +61,6 @@
                         {#% include 'CmsBundle:Menus:Sections.html.twig' with {'section': rootSection, 'level': 0} only %#}
                     </ul>
                 </div>
-            </div>
-
-            <div class="box menu">
-                {#{ controlMenu }#}
             </div>
         </nav>
 

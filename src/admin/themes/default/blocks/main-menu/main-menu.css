@@ -1,0 +1,9 @@
+/**
+ * Главное меню
+ */
+.main-menu
+{
+    bottom: -1px;
+    position: absolute;
+    left: 210px;
+}

@@ -1,0 +1,14 @@
+.main-menu__item
+{
+    background: #eee;
+    border: solid 1px #99bbe8;
+    border-radius: 3px 3px 0 0;
+    display: inline-block;
+    margin: 0 2px 0 0;
+    padding: 1px 5px;
+}
+
+.main-menu__item:hover
+{
+    background: white;
+}

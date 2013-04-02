@@ -1,6 +1,7 @@
 .cms-logo
 {
-    position: absolute;
-    right: 10px;
-    top: 3px;
+    float: right;
+    height: 24px;
+    line-height: 24px;
+    margin: 5px;
 }

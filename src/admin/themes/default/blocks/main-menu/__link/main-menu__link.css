@@ -1,0 +1,8 @@
+.main-menu__link,
+.main-menu__link:visited,
+.main-menu__link:hover,
+.main-menu__link:active
+{
+    color: #08c;
+    text-decoration: none;
+}
