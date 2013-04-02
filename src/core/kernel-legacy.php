@@ -30,8 +30,8 @@
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eresus\CmsBundle\HTTP\Request;
-use Eresus\CmsBundle\Extensions\Registry;
 use Eresus\CmsBundle\Extensions\VendorRegistry;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Название системы
@@ -96,57 +96,6 @@ function UserRights($level)
 }
 
 /**
- * Собирает настройки из массива в строку
- *
- * @param array $options
- *
- * @return string
- */
-function encodeOptions($options)
-{
-	$result = serialize($options);
-	return $result;
-}
-
-/**
- * Функция разбивает записанные в строковом виде опции на массив
- *
- * @param string $options
- * @param array  $defaults
- *
- * @return array
- */
-function decodeOptions($options, $defaults = array())
-{
-	if (empty($options))
-	{
-		$result = $defaults;
-	}
-	else
-	{
-		@$result = unserialize($options);
-		if (gettype($result) != 'array')
-		{
-			$result = $defaults;
-		}
-		else
-		{
-			if (count($defaults))
-			{
-				foreach ($defaults as $key => $value)
-				{
-					if (!array_key_exists($key, $result))
-					{
-						$result[$key] = $value;
-					}
-				}
-			}
-		}
-	}
-	return $result;
-}
-
-/**
  * Возвращает значение аргумента запроса HTTP
  *
  * Проверяет, был ли передан GET или POST аргумент $arg (в {@link Eresus::$request}), и, если он был
@@ -170,8 +119,10 @@ function decodeOptions($options, $defaults = array())
  */
 function arg($arg, $filter = null)
 {
-	/** @var Request $request */
-	$request = Eresus_Kernel::get('request');
+    /** @var \Eresus\CmsBundle\Kernel $kernel */
+    $kernel = $GLOBALS['kernel'];
+    /** @var Request $request */
+	$request = $kernel->get('request');
 	$arg = $request->get($arg);
 
 	if ($arg !== false && !is_null($filter))
@@ -519,6 +470,19 @@ class Eresus
 	 */
 	public $request;
 
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param Symfony\Component\DependencyInjection\ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
 	/**
 	 * Инициирует сессии
 	 */
@@ -611,7 +575,7 @@ class Eresus
 	function init_request()
 	{
 		/** @var Request $request */
-		$request = Eresus_Kernel::get('request');
+		$request = $this->container->get('request');
 		$this->request = array(
 			'method' => $request->getMethod(),
 			'scheme' => $request->getScheme(),
@@ -767,7 +731,7 @@ class Eresus
 					$this->user['name'] = $item['name'];
 					$this->user['mail'] = $item['mail'];
 					$this->user['access'] = $item['access'];
-					$this->user['profile'] = decodeOptions($item['profile']);
+					$this->user['profile'] = $item['profile'];
 				}
 				else
 				{
@@ -894,7 +858,7 @@ class Eresus
 		}
 
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = Eresus_Kernel::get('doctrine');
+        $doctrine = $this->container->get('doctrine');
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $doctrine->getManager();
         /** @var \Eresus\CmsBundle\Entity\Account $account */

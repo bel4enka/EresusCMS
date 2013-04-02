@@ -53,21 +53,5 @@ class Functions_Test extends PHPUnit_Framework_TestCase
 			"<div class=\"errorBoxCap\">заголовок</div>\n<div class=\"errorBox\">\n</div>\n",
 			ErrorBox('','заголовок'));
 	}
-
-	/**
-	 *  
-	 */
-	public function test_encodeOptions_decodeOptions()
-	{	
-		$options = array('foo' => 'bar', 'baz' => false);
-		$encoded = encodeOptions($options);
-		$actual = decodeOptions($encoded);
-		$this->assertEquals($options, $actual); 
-		
-		$options['key'] = 'value';
-		$actual = decodeOptions($encoded, array('key' => 'value'));
-		$this->assertEquals($options, $actual); 
-		$this->assertEquals($options, decodeOptions('', $options));
-		$this->assertEquals($options, decodeOptions('foo' . $encoded, $options));
-	}
 }
+
