@@ -22,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Controller;
@@ -34,7 +32,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Контроллер панели приборов АИ
  *
  * @since 4.0.0
- * @package Eresus
  */
 class AdminDashboardController extends AdminAbstractController
 {
@@ -44,9 +41,8 @@ class AdminDashboardController extends AdminAbstractController
      */
     public function indexAction()
     {
-        $response = new Response('foo');
-        return $response;
+        $data = array();
+        return $this->render('CmsBundle:Base:default.html.twig', $data);
     }
-
 }
 

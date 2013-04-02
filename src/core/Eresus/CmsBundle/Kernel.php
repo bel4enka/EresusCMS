@@ -98,7 +98,7 @@ class Kernel extends ParentKernel
         /**
          * Подключение Eresus Core
          */
-        require __DIR__ . '/../../framework/core/eresus-core.php';
+        //require __DIR__ . '/../../framework/core/eresus-core.php';
 
         // Устанавливаем кодировку по умолчанию для операций mb_*
         mb_internal_encoding('utf-8');

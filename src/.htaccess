@@ -56,7 +56,8 @@ AddDefaultCharset Off
 	# Отключаем перехват запросов в следующих директориях
 	RewriteRule ^(bundles|core/js|ext|data|style|admin)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
-	RewriteRule ^(dev\.php|robots.txt|favicon.[^\.]+)$ - [last]
+	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [last]
+	RewriteRule ^dev\.php - [last]
 
 	# Все остальные запросы должны перехватываться запускающим скриптом
 	RewriteRule .* prod.php

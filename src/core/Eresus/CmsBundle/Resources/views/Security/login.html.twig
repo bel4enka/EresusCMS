@@ -61,23 +61,18 @@
 <![endif]-->
 
 <div class="form box auth-dialog">
-    <form action="admin.php" method="post">
+    <form action="{{ path('login_check') }}" method="post">
 
         <div class="box__header">Вход в панель управления</div>
         <div class="box__contents">
-            {% if errors is defined %}
-            {% for message in errors %}
-            <div class="message message_type_error">
-                {{ message }}
-            </div>
-            {% endfor %}
+            {% if error %}
+                <div class="message message_type_error">{{ error.message }}</div>
             {% endif %}
             <div class="form__row">
                 <label class="form__label auth-dialog__label"
                     for="auth-dialog-user">Пользователь:</label>
-                <input class="form__input auth-dialog__input" type="text" name="user"
-                    id="auth-dialog-user" autofocus required
-                    {% if user is defined %} value="{{ user }}"{% endif %}>
+                <input class="form__input auth-dialog__input" type="text" name="username"
+                    id="auth-dialog-user" autofocus required value="{{ last_username }}">
             </div>
             <div class="form__row">
                 <label class="form__label auth-dialog__label"
@@ -88,7 +83,8 @@
             <div class="form__row">
                 <label class="form__label auth-dialog__checkbox" for="auth-dialog-autologin">
                     <input class="form__input" type="checkbox" name="autologin"
-                        id="auth-dialog-autologin" value="1"{% if autologin is defined and autologin %} checked{% endif %}>
+                        id="auth-dialog-autologin" value="1"
+                        {% if autologin is defined and autologin %} checked{% endif %}>
                     <span class="form__label">Запомнить</span>
                 </label>
             </div>

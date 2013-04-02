@@ -5,6 +5,7 @@ namespace Eresus\CmsBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Eresus_CMS;
 use Eresus\CmsBundle\Kernel;
+use Symfony\Component\HttpFoundation\Response;
 
 class LegacyController extends Controller
 {
@@ -14,12 +15,12 @@ class LegacyController extends Controller
         $app = new Eresus_CMS($this->container);
         $this->container->set('app', $app);
 
-        /** @var Kernel $kernel */
-        $kernel = $this->get('kernel');
+        /* * @var Kernel $kernel */
+        //$kernel = $this->get('kernel');
         /* Подключение старого ядра */
-        include $kernel->getRootDir() . '/core/kernel-legacy.php';
+        //include $kernel->getRootDir() . '/core/kernel-legacy.php';
 
-        $response = $app->main();
+        $response = new Response('OK');//$app->main();
 
         return $response;
     }

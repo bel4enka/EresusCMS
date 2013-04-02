@@ -3,14 +3,14 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>{{ siteName }} - {{ page.title }}</title>
-	<link rel="stylesheet" href="{{ siteRoot }}admin/themes/default/theme.css">
-	<link rel="stylesheet" href="{{ siteRoot }}admin/themes/default/main.css">
+	<title>{#{ siteName }#} - {#{ page.title }#}</title>
+	<link rel="stylesheet" href="{#{ siteRoot }#}admin/themes/default/theme.css">
+	<link rel="stylesheet" href="{#{ siteRoot }#}admin/themes/default/main.css">
 	<script>
-		window.Eresus = {siteRoot: "{{ siteRoot }}"};
+		window.Eresus = {siteRoot: "{#{ siteRoot }#}"};
 	</script>
-	{{ jslib('jquery', 'ui', 'cookie') }}
-	{{ call(page, 'renderHeadSection') }}
+	{#{ jslib('jquery', 'ui', 'cookie') }#}
+	{#{ call(page, 'renderHeadSection') }#}
 </head>
 <body class="page">
 
@@ -18,40 +18,40 @@
 
         <header class="page__header">
             <div class="cms-logo">
-                <a href="{ { path('about') } }" class="cms-logo__link">
-                    <img src="{{ siteRoot }}admin/themes/default/img/logo.png"
-                        alt="{{ cms.name }} {{ cms.version }}" class="cms-logo__image">
+                <a href="{# { path('about') } #}" class="cms-logo__link">
+                    <img src="{#{ siteRoot }#}admin/themes/default/img/logo.png"
+                        alt="{#{ cms.name }#} {#{ cms.version }#}" class="cms-logo__image">
                 </a>
             </div>
-            <h1 class="site-title">{{ siteName }} &ndash; {{ page.title }}</h1>
-            <div class="cms-title">CMS {{ cms.name }} {{ cms.version }}</div>
+            <h1 class="site-title">{#{ siteName }} &ndash; {{ page.title }#}</h1>
+            <div class="cms-title">CMS {#{ cms.name }} {{ cms.version }#}</div>
         </header>
 
         <nav class="page__sidebar">
 
             <div class="box">
-                <div class="box__header">{{ i18n('ADM_CONTENT') }}</div>
+                <div class="box__header">{#{ i18n('ADM_CONTENT') }#}</div>
                 <div class="box__content sections">
                     <ul class="sections__children">
-                        {% include 'CmsBundle:Menus:Sections.html.twig' with {'section': rootSection, 'level': 0} only %}
+                        {#% include 'CmsBundle:Menus:Sections.html.twig' with {'section': rootSection, 'level': 0} only %#}
                     </ul>
                 </div>
             </div>
 
             <div class="box menu">
-                {{ controlMenu }}
+                {#{ controlMenu }#}
             </div>
 
             <div class="box">
-                <div class="box__header">{{ user.name }}</div>
+                <div class="box__header">{#{ user.name }#}</div>
                 <div class="box__content user-box">
-                    <a href="{{ siteRoot }}admin.php?mod=users&amp;id={$user.id}">
-                        {{ i18n('admUsersChangePassword') }}
+                    <a href="{#{ siteRoot }#}admin.php?mod=users&amp;id={$user.id}">
+                        {#{ i18n('admUsersChangePassword') }#}
                     </a>
-                    <form action="{{ siteRoot }}admin.php" method="post">
+                    <form action="{#{ siteRoot }#}admin.php" method="post">
                         <div class="ui-button-box">
                             <input type="hidden" name="action" value="logout">
-                            <button type="submit">{{ i18n('STR_EXIT') }}</button>
+                            <button type="submit">{#{ i18n('STR_EXIT') }#}</button>
                         </div>
                     </form>
                 </div>
@@ -66,18 +66,18 @@
                     сайтом невозможна, и может привести к потере информации!
                 </div>
             </noscript>
-            {% if Eresus.conf.debug.enable %}
+            {#% if Eresus.conf.debug.enable %#}
             <div class="message message_type_warning">
                 Внимание! Включен режим отладки. На общедоступном сайте это может быть небезопасно.
                 Отключить режим отладки можно в файле <code>cfg/main.php</code>.
             </div>
-            {% endif %}
-            {{ content }}
+            {#% endif %#}
+            {#{ content }#}
         </div>
     </div>
 
-	<script src="{{ siteRoot }}admin/themes/default/theme.js"></script>
-	<script src="{{ siteRoot }}bundles/eresus/admin.js"></script>
-	{{ body }}
+	<script src="{#{ siteRoot }#}admin/themes/default/theme.js"></script>
+	<script src="{#{ siteRoot }#}bundles/eresus/admin.js"></script>
+	{#{ body }#}
 </body>
 </html>

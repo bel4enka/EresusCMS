@@ -23,15 +23,17 @@ security:
             security: false
 
         login:
-            pattern:  ^/demo/secured/login$
+            pattern:  ^/login$
             security: false
 
         admin:
-            pattern:    ^/admin/
+            pattern:    ^/
             anonymous: ~
             form_login:
-                login_path: admin.login
-                check_path: admin.login_check
+                login_path: login
+                check_path: login_check
+                username_parameter: username
+                password_parameter: password
             #logout:
             #    path:   /demo/secured/logout
             #    target: /demo/
