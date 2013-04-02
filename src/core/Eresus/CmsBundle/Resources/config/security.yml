@@ -34,9 +34,9 @@ security:
                 check_path: login_check
                 username_parameter: username
                 password_parameter: password
-            #logout:
-            #    path:   /demo/secured/logout
-            #    target: /demo/
+            logout:
+                path: /admin/logout
+                target: /
 
     access_control:
         - { path: ^/admin/, roles: ROLE_ADMIN }

@@ -9,6 +9,9 @@ login:
 login_check:
     pattern: /login_check
 
+logout:
+    pattern: /admin/logout
+
 main:
     pattern:  /
     defaults: { _controller: CmsBundle:Legacy:index }
