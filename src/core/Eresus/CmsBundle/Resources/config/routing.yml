@@ -2,12 +2,12 @@ admin.dashboard:
     pattern: /admin/
     defaults: { _controller: CmsBundle:AdminDashboard:index }
 
-login:
-    pattern: /login
+admin.login:
+    pattern: /admin/login
     defaults: { _controller: CmsBundle:AdminSecurity:login }
 
-login_check:
-    pattern: /login_check
+admin.login_check:
+    pattern: /admin/login_check
 
 logout:
     pattern: /admin/logout
