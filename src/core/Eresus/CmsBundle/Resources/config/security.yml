@@ -37,6 +37,12 @@ security:
             logout:
                 path: /admin/logout
                 target: /
+            remember_me:
+                key: "%secret%"
+                lifetime: 31536000 # 365 дней
+                path: /
+                domain: ~
+                remember_me_parameter: autologin
 
     access_control:
         - { path: ^/admin/, roles: ROLE_ADMIN }
