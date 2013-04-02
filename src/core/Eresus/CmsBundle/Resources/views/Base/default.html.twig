@@ -15,6 +15,14 @@
     <div class="page__layout">
 
         <header class="page__header">
+            <div class="user-box">
+                <span class="user-box__intro">Вы</span>
+                <span class="user-box__username">{{ app.user.username }}</span>
+                <div class="user-box__links">
+                    <a href="{{ path('admin.logout') }}" class="user-box__exit">Выйти</a>
+                </div>
+            </div>
+
             <div class="cms-logo">
                 <a href="{{ path('admin.dashboard') }}" class="cms-logo__link">
                     <img src="{{ asset('admin/themes/default/img/logo.png') }}"
@@ -39,19 +47,6 @@
             <div class="box menu">
                 {#{ controlMenu }#}
             </div>
-
-            <div class="box">
-                <div class="box__header">{#{ user.name }#}</div>
-                <div class="box__content user-box">
-                    <a href="{#{ siteRoot }#}admin.php?mod=users&amp;id={$user.id}">
-                        {#{ i18n('admUsersChangePassword') }#}
-                    </a>
-                    <div class="ui-button-box">
-                        <a href="{{ path('admin.logout') }}" class="button button_type_default">Выйти</a>
-                    </div>
-                </div>
-            </div>
-
         </nav>
 
         <div class="page__content">

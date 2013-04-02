@@ -1,0 +1,16 @@
+/**
+ * Блок с информацией о пользователе
+ */
+.user-box
+{
+    background: #eee;
+    border: solid 1px #99bbe8;
+    border-radius: 3px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3);
+    font-size: 11px;
+    line-height: 16px;
+    padding: 0 5px;
+    position: absolute;
+    right: 180px;
+    top: 3px;
+}
