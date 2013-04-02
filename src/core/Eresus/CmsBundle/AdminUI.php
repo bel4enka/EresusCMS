@@ -197,7 +197,7 @@ class AdminUI extends WebPage
     public function replaceMacros($text)
     {
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $this->container->get('request');
         $result = str_replace(
             array(
                 '$(httpHost)',
@@ -893,7 +893,7 @@ class AdminUI extends WebPage
             new Route('/admin/about', array('controller' => 'Eresus_Admin_Controllers_About')));
         $context = new RequestContext();
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $this->container->get('request');
         $context->fromRequest($request);
         $matcher = new UrlMatcher($routes, $context);
 
@@ -1141,7 +1141,7 @@ class AdminUI extends WebPage
     private function auth()
     {
         /** @var Request $req */
-        $req = Eresus_Kernel::get('request');
+        $req = $this->container->get('request');
         $user = $req->request->get('user');
         $user = preg_replace('/[^a-z0-9_\-\.\@]/', '', $user);
         $password = $req->request->get('password');

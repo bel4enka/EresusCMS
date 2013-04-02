@@ -78,7 +78,7 @@ class Eresus_CMS
     {
         $this->container->get('extensions');
 
-        self::$legacyKernel = new Eresus;
+        //self::$legacyKernel = new Eresus($this->container);
         $this->initConf();
 
         $i18n = Eresus_I18n::getInstance();
@@ -94,7 +94,7 @@ class Eresus_CMS
 
         $output = '';
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $this->container->get('request');
 
         switch (true)
         {
@@ -124,10 +124,9 @@ class Eresus_CMS
      *
      * @since 2.16
      */
-    public function fatalError(/** @noinspection PhpUnusedParameterInspection */ $error = null,
-        $exit = true)
+    public function fatalError($error = null, $exit = true)
     {
-        include ERESUS_PATH . '/core/fatal.html.php';
+        include __DIR__ . '/../fatal.html.php';
         die;
     }
 
@@ -138,7 +137,7 @@ class Eresus_CMS
      */
     public function getFsRoot()
     {
-        return ERESUS_PATH;
+        return __DIR__ . '/../..';
     }
 
     /**
@@ -182,7 +181,7 @@ class Eresus_CMS
         //$this->response = new HttpResponse();
 
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $this->container->get('request');
         TemplateSettings::setGlobalValue('siteRoot',
             $request->getScheme() . '://' . $request->getHost() . $request->getBasePath());
 
@@ -254,7 +253,7 @@ class Eresus_CMS
     protected function call3rdPartyExtension()
     {
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $this->container->get('request');
         $extension = substr($request->getLocalUrl(), 9);
         $extension = substr($extension, 0, strpos($extension, '/'));
 

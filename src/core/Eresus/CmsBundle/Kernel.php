@@ -28,6 +28,7 @@
 
 namespace Eresus\CmsBundle;
 
+use ErrorException;
 use Composer\Autoload\ClassLoader;
 use Symfony\Component\HttpKernel\Kernel as ParentKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -51,7 +52,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 class Kernel extends ParentKernel
 {
     /**
-     * Резервный буфер для отлова ошибок переполнения памяти (в Кб)
+     * Размер резервного буфера для отлова ошибок переполнения памяти (в Кб)
      *
      * @var int
      */
@@ -64,12 +65,12 @@ class Kernel extends ParentKernel
     private $classLoader;
 
     /**
-     * Для тестирования
+     * Резервный буфер для отлова ошибок переполнения памяти
      *
-     * @var bool
-     * @ignore
+     * @var string
+     * @since 4.00
      */
-    private static $override_isCLI = null;
+    private $memoryOverflowBuffer = '';
 
     /**
      * Конструктор ядра
@@ -87,7 +88,7 @@ class Kernel extends ParentKernel
          * Установка имени файла журнала
          * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
          */
-        ini_set('error_log', ERESUS_PATH . '/var/logs/eresus.log');
+        ini_set('error_log', __DIR__ . '/../../../var/logs/eresus.log');
 
         /**
          * Уровень детализации журнала
@@ -97,7 +98,7 @@ class Kernel extends ParentKernel
         /**
          * Подключение Eresus Core
          */
-        require ERESUS_PATH . '/core/framework/core/eresus-core.php';
+        require __DIR__ . '/../../framework/core/eresus-core.php';
 
         // Устанавливаем кодировку по умолчанию для операций mb_*
         mb_internal_encoding('utf-8');
@@ -112,7 +113,7 @@ class Kernel extends ParentKernel
     /**
      * Устанавливает автозагрузчик классов
      *
-     * @param Composer\Autoload\ClassLoader $loader
+     * @param ClassLoader $loader
      *
      * @return void
      *
@@ -126,7 +127,7 @@ class Kernel extends ParentKernel
     /**
      * Возвращает автозагрузчик классов
      *
-     * @return Composer\Autoload\ClassLoader
+     * @return ClassLoader
      * @since 4.00
      */
     public function getClassLoader()
@@ -150,13 +151,13 @@ class Kernel extends ParentKernel
     private function initExceptionHandling()
     {
         /* Резервируем буфер на случай переполнения памяти */
-        $GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+        $this->memoryOverflowBuffer =
             str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
 
         /* Меняем значения php.ini */
         ini_set('html_errors', 0); // Немного косметики
 
-        set_error_handler(array('Eresus_Kernel', 'errorHandler'));
+        set_error_handler(array($this, 'errorHandler'));
         //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
 
         //set_exception_handler('Eresus_Kernel::handleException');
@@ -168,7 +169,7 @@ class Kernel extends ParentKernel
          * Но только не в режиме CLI.
          */
         // @codeCoverageIgnoreStart
-        if (! self::isCLI())
+        if (PHP_SAPI != 'cli')
         {
             if (ob_start(array($this, 'fatalErrorHandler'), 4096))
             {
@@ -271,7 +272,7 @@ class Kernel extends ParentKernel
     public function fatalErrorHandler($output)
     {
         // Освобождает резервный буфер
-        unset($GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER']);
+        unset($this->memoryOverflowBuffer);
         if (preg_match('/(parse|fatal) error:.*in .* on line/Ui', $output, $m))
         {
             $GLOBALS['ERESUS_CORE_FATAL_ERROR_HANDLER'] = true;
@@ -296,7 +297,7 @@ class Kernel extends ParentKernel
             }
 
             //Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
-            if (!self::isCLI())
+            if (PHP_SAPI != 'cli')
             //@codeCoverageIgnoreStart
             {
                 header('Internal Server Error', true, 500);
@@ -306,145 +307,11 @@ class Kernel extends ParentKernel
 
             return $message;
         }
-        $GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+        $this->memoryOverflowBuffer =
             str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
 
         // возвращаем false для вывода буфера
         return false;
-    }
-
-    /**
-     * Возвращает true если PHP запущен на UNIX-подобной ОС
-     *
-     * @return bool
-     *
-     * @since 3.00
-     */
-    public static function isUnixLike()
-    {
-        return DIRECTORY_SEPARATOR == '/';
-    }
-
-    /**
-     * Возвращает true если PHP запущен на Microsoft® Windows™
-     *
-     * @return bool
-     *
-     * @since 3.00
-     */
-    public static function isWindows()
-    {
-        return strncasecmp(PHP_OS, 'WIN', 3) == 0;
-    }
-
-    /**
-     * Возвращает true если PHP запущен на MacOS
-     *
-     * @return bool
-     *
-     * @since 3.00
-     */
-    public static function isMac()
-    {
-        return strncasecmp(PHP_OS, 'MAC', 3) == 0;
-    }
-
-    /**
-     * Возвращает true, если используется
-     * {@link http://php.net/manual/en/features.commandline.php CLI}
-     * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI}
-     *
-     * @return bool
-     *
-     * @since 3.00
-     */
-    public static function isCli()
-    {
-        //@codeCoverageIgnoreStart
-        if (self::$override_isCLI !== null)
-        {
-            return self::$override_isCLI;
-        }
-        //@codeCoverageIgnoreEnd
-
-        return PHP_SAPI == 'cli';
-    }
-
-    /**
-     * Возвращает true, если используется CGI
-     * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI}
-     *
-     * @return bool
-     *
-     * @since 3.00
-     */
-    public static function isCgi()
-    {
-        return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
-    }
-
-    /**
-     * Возвращает true, если используется
-     * {@link http://php.net/manual/en/function.php-sapi-name.php SAPI} модуля веб-сервера
-     *
-     * @return bool
-     *
-     * @since 3.00
-     */
-    public static function isModule()
-    {
-        return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
-    }
-
-    /**
-     * Возвращает контейнер служб
-     *
-     * @return Container
-     *
-     * @since 4.00
-     */
-    public static function sc()
-    {
-        /** @var Eresus_Kernel $kernel */
-        $kernel = $GLOBALS['kernel'];
-        return $kernel->container;
-    }
-
-    /**
-     * Возвращает службу
-     *
-     * Доступные службы:
-     *
-     * - app — текущее приложение, обычно {@link Eresus_CMS}
-     *
-     * @param string $id  идентификатор службы
-     *
-     * @return object
-     *
-     * @since 4.00
-     */
-    public static function get($id)
-    {
-        return self::sc()->get($id);
-    }
-
-    /**
-     * Возвращает выполняемое приложение или null, если приложение не запущено
-     *
-     * Пример: получение корневой директории приложения.
-     *
-     * <code>
-     * $appRootDir = Eresus_Kernel::app()->getRootDir();
-     * </code>
-     *
-     * @return Eresus_CMS  выполняемое приложение
-     *
-     * @see $app, exec()
-     * @since 3.00
-     */
-    public static function app()
-    {
-        return self::sc()->get('app');
     }
 
     /**
@@ -457,26 +324,26 @@ class Kernel extends ParentKernel
     public function registerBundles()
     {
         $bundles = array(
-            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
-            new Symfony\Bundle\TwigBundle\TwigBundle(),
-            new Symfony\Bundle\MonologBundle\MonologBundle(),
-            new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new JMS\AopBundle\JMSAopBundle(),
-            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
-            new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
-            new Eresus\CommonBundle\CommonBundle(),
-            new Eresus\ORMBundle\ORMBundle(),
-            new Eresus\CmsBundle\CmsBundle()
+            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new \Symfony\Bundle\TwigBundle\TwigBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
+            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+            new \Symfony\Bundle\AsseticBundle\AsseticBundle(),
+            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new \JMS\AopBundle\JMSAopBundle(),
+            new \JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new \JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new \Eresus\CommonBundle\CommonBundle(),
+            new \Eresus\ORMBundle\ORMBundle(),
+            new \Eresus\CmsBundle\CmsBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test')))
         {
-            $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-            $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
+            $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+            $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
         }
 
         return $bundles;
@@ -485,7 +352,7 @@ class Kernel extends ParentKernel
     /**
      * Регистрирует пакет во время работы приложения
      *
-     * @param Symfony\Component\HttpKernel\Bundle\Bundle $bundle
+     * @param Bundle $bundle
      */
     public function registerBundle(Bundle $bundle)
     {
@@ -496,7 +363,7 @@ class Kernel extends ParentKernel
          * Регистрируем классы сущностей модуля
          */
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->get('doctrine');
+        $doctrine = $this->getContainer()->get('doctrine');
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $doctrine->getManager();
         /** @var \Doctrine\ORM\Mapping\Driver\DriverChain $chain */
@@ -508,7 +375,7 @@ class Kernel extends ParentKernel
     /**
      * Возвращает настройки контейнера служб
      *
-     * @param Symfony\Component\Config\Loader\LoaderInterface $loader
+     * @param LoaderInterface $loader
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
@@ -517,7 +384,7 @@ class Kernel extends ParentKernel
     }
 
     /**
-     * Возвращает корневую папку приложения (app/)
+     * Возвращает корневую папку приложения
      *
      * @return string
      */
@@ -525,7 +392,7 @@ class Kernel extends ParentKernel
     {
         if (null === $this->rootDir)
         {
-            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../..'));
+            $this->rootDir = str_replace('\\', '/', realpath(__DIR__ . '/../../..'));
         }
 
         return $this->rootDir;

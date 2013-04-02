@@ -143,7 +143,7 @@ class ClientUI extends WebPage
     public function replaceMacros($text)
     {
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $this->container->get('request');
         $section = $this->section;
         if (siteTitleReverse)
         {
