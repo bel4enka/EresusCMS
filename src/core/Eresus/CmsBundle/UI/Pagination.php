@@ -415,8 +415,10 @@ class Pagination implements Iterator, Countable
     {
         if (!$this->urlTemplate)
         {
+            /** @var \Eresus\CmsBundle\Kernel $kernel */
+            $kernel = $GLOBALS['kernel'];
             /** @var Request $request */
-            $request = Eresus_Kernel::get('request');
+            $request = $kernel->get('request');
             $this->urlTemplate = $request->getPath() . '/p%d/';
         }
     }

@@ -197,8 +197,10 @@ class Eresus_Admin_Controllers_Settings
 			return '';
 		}
 
+        /** @var \Eresus\CmsBundle\Kernel $kernel */
+        $kernel = $GLOBALS['kernel'];
 		/** @var Request $request */
-		$request = Eresus_Kernel::get('request');
+		$request = $kernel->get('request');
 
 		if ($request->getMethod() == 'POST')
 		{

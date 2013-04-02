@@ -58,8 +58,10 @@ class Eresus_Twig_Extension extends Twig_Extension
      */
     public function getGlobals()
     {
+        /** @var \Eresus\CmsBundle\Kernel $kernel */
+        $kernel = $GLOBALS['kernel'];
         /** @var Request $request */
-        $request = Eresus_Kernel::get('request');
+        $request = $kernel->get('request');
 
         $globals = array(
             'Eresus' => Eresus_CMS::getLegacyKernel(),
