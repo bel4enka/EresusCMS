@@ -1,3 +1,14 @@
+admin.dashboard:
+    pattern: /admin/
+    defaults: { _controller: CmsBundle:AdminDashboard:index }
+
+admin.login:
+    pattern: /login
+    defaults: { _controller: CmsBundle:AdminSecurity:login }
+
+admin.login_check:
+    pattern: /login_check
+
 main:
     pattern:  /
     defaults: { _controller: CmsBundle:Legacy:index }

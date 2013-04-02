@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Учётная запись пользователя
  *
  * @version ${product.version}
@@ -30,35 +28,28 @@
 
 namespace Eresus\CmsBundle\Entity;
 
-use LogicException;
-use InvalidArgumentException;
 use Eresus\ORMBundle\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Учётная запись пользователя
  *
  * @property       int       $id
- * @property       string    $login
- * @property       string    $hash
- * @property       bool      $active
- * @property       \DateTime $lastVisit
- * @property       int       $lastLoginTime
- * @property       int       $loginErrors
- * @property       int       $access
- * @property       string    $name
- * @property       string    $mail
- * @property       array     $profile
- * @property-write string    $password  свойство для установки нового пароля
+ * @property       string    $username
+ * @property       string    $salt
+ * @property       string    $password
+ * @property       bool      $isActive
+ * @property       string    $email
  *
  * @package Eresus
  * @since 4.00
  *
  * @ORM\Entity
- * @ORM\Table(name="users")
+ * @ORM\Table(name="accounts")
  * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */
-class Account extends AbstractEntity
+class Account extends AbstractEntity implements UserInterface
 {
     /**
      * Идентификатор
@@ -67,139 +58,94 @@ class Account extends AbstractEntity
      *
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * Имя входа
-     *
-     * @var string
-     *
-     * @ORM\Column(length=16)
-     */
-    protected $login;
-
-    /**
-     * Хэш пароля
-     *
-     * @var string
-     *
-     * @ORM\Column(length=32)
-     */
-    protected $hash;
-
-    /**
-     * Активность
-     *
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
-    protected $active;
-
-    /**
-     * Дата последнего визита
-     *
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $lastVisit;
-
-    /**
-     * Дата последней авторизации
-     *
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    protected $lastLoginTime;
-
-    /**
-     * Количество неудачных попыток входа
-     *
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    protected $loginErrors;
-
-    /**
-     * Уровень доступа
-     *
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    protected $access;
 
     /**
      * Имя
      *
      * @var string
      *
-     * @ORM\Column(length=64)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    protected $name;
+    protected $username;
+
+    /**
+     * Соль для хэширования пароля
+     *
+     * @var string
+     *
+     * @ORM\Column(type="string", length=32)
+     */
+    protected $salt;
+
+    /**
+     * Хэш пароля
+     *
+     * @var string
+     *
+     * @ORM\Column(type="string", length=40)
+     */
+    protected $password;
+
+    /**
+     * Активность
+     *
+     * @var bool
+     *
+     * @ORM\Column(name="is_active", type="boolean")
+     */
+    protected $isActive;
 
     /**
      * E-mail
      *
      * @var string
      *
-     * @ORM\Column(length=64)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    protected $mail;
+    protected $email;
 
     /**
-     * Профиль
      *
-     * @var array
-     *
-     * @ORM\Column(type="array")
      */
-    protected $profile;
+    public function __construct()
+    {
+        $this->isActive = true;
+        $this->salt = '';//md5(uniqid(null, true));
+    }
 
     /**
-     * Возвращает хэш пароля
-     *
-     * @param string $password  пароль
-     *
+     * Возвращает имя пользователя
      * @return string
-     *
-     * @since 4.00
      */
-    public static function passwordHash($password)
+    public function getUsername()
     {
-        return md5(md5($password));
+        return $this->username;
     }
 
     /**
-     * Устанавливает новый пароль
-     *
-     * @param string $password
+     * @return string
      */
-    public function setPassword($password)
+    public function getSalt()
     {
-        $this->hash = self::passwordHash($password);
+        var_dump($this->salt); die;
+        return $this->salt;
     }
 
-    /**
-     * Возвращает свойства учётной записи в виде массива
-     *
-     * @return array
-     * @since 4.00
-     */
-    public function toArray()
+    public function getPassword()
     {
-        return array(
-            'id' => $this->id,
-            'login' => $this->login,
-            'name' => $this->name,
-            'hash' => $this->hash,
-            'access' => $this->access,
-            'profile' => $this->profile,
-        );
+        return $this->password;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_USER', 'ROLE_ADMIN');
+    }
+
+    public function eraseCredentials()
+    {
     }
 }
+

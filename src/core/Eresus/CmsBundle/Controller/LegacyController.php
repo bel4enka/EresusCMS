@@ -4,6 +4,7 @@ namespace Eresus\CmsBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Eresus_CMS;
+use Eresus\CmsBundle\Kernel;
 
 class LegacyController extends Controller
 {
@@ -13,7 +14,7 @@ class LegacyController extends Controller
         $app = new Eresus_CMS($this->container);
         $this->container->set('app', $app);
 
-        /** @var Eresus_Kernel $kernel */
+        /** @var Kernel $kernel */
         $kernel = $this->get('kernel');
         /* Подключение старого ядра */
         include $kernel->getRootDir() . '/core/kernel-legacy.php';
