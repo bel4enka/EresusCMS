@@ -113,7 +113,7 @@ class Account extends AbstractEntity implements UserInterface
     public function __construct()
     {
         $this->isActive = true;
-        $this->salt = '';//md5(uniqid(null, true));
+        $this->salt = md5(uniqid(null, true));
     }
 
     /**
@@ -130,7 +130,6 @@ class Account extends AbstractEntity implements UserInterface
      */
     public function getSalt()
     {
-        var_dump($this->salt); die;
         return $this->salt;
     }
 
