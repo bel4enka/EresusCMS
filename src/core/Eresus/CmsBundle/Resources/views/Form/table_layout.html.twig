@@ -1,0 +1,24 @@
+{% extends 'form_table_layout.html.twig' %}
+
+{% block field_row %}
+    {% spaceless %}
+        <tr class="form__row">
+            <td class="form__label">{{ form_label(form) }}</td>
+            <td class="form__field">{{ form_errors(form) }}{{ form_widget(form) }}</td>
+        </tr>
+    {% endspaceless %}
+{% endblock field_row %}
+
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            <div class="message message_type_error">
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}

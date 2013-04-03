@@ -3,7 +3,7 @@
 {% block title %}Настройки сайта{% endblock %}
 
 {% block contents %}
-<form action="{{ path(currentRoute) }}" id="settingsForm" {{ form_enctype(form) }}
+<form action="{{ path(currentRoute) }}" method="post" id="settingsForm" {{ form_enctype(form) }}
     class="ui-widget ui-widget-content ui-corner-all">
 
 	<div id="settings-tabs" class="ui-padding">
@@ -47,9 +47,11 @@
                 </tr>
                 <tr>
                     <td>
-                        {{ form_errors(form.siteTitleReverse) }}
-                        {{ form_widget(form.siteTitleReverse) }}
-                        {{ form_label(form.siteTitleReverse, 'Обратный порядок разделов в {{ globals.sectionTitle }}') }}<br>
+                        <div class="nowrap">
+                            {{ form_errors(form.siteTitleReverse) }}
+                            {{ form_widget(form.siteTitleReverse) }}
+                            {{ form_label(form.siteTitleReverse, 'Обратный порядок разделов в {{ globals.sectionTitle }}') }}<br>
+                        </div>
 
                         <div class="ui-minor">
                             <em>Пример:</em> <div id="settings-siteTitleReverse-example" style="display: inline">
@@ -167,13 +169,15 @@
                 <table>
                     <tr>
                         <td>
-                            <label>
-                                <input type="checkbox" name="filesModeSetOnUpload" value="1"{if $filesModeSetOnUpload} checked="checked"{/if} />
-                                Устанавливать на загружаемые файлы права:
-                            </label><br />
+                            <div class="nowrap">
+                                {{ form_errors(form.filesModeSetOnUpload) }}
+                                {{ form_errors(form.filesModeDefault) }}
+                                {{ form_widget(form.filesModeSetOnUpload) }}
+                                {{ form_label(form.filesModeSetOnUpload, 'Устанавливать на загружаемые файлы права') }}<br>
+                            </div>
                         </td>
                         <td>
-                            <input type="text" name="filesModeDefault" value="{$filesModeDefault|escape}" size="4" />
+                            {{ form_widget(form.filesModeDefault, {'attr': {'size': 4}}) }}
                         </td>
                     </tr>
                 </table>
@@ -216,8 +220,13 @@
 
 	</div>
 
+    {{ form_rest(form) }}
+
 	<div class="ui-button-box">
-		<button type="submit" class="button">Сохранить</button>
+		<button type="submit" class="button button_type_default">
+            <span class="icon icon_img_apply"></span>
+            Сохранить
+        </button>
 	</div>
 	
 	<script>

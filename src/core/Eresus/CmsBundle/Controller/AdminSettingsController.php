@@ -27,6 +27,9 @@
 namespace Eresus\CmsBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Eresus\CmsBundle\HTTP\Request;
+use Symfony\Component\HttpKernel\Config\FileLocator;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Контроллер настроек сайта
@@ -36,24 +39,45 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminSettingsController extends AdminAbstractController
 {
     /**
+     * @param Request $request
+     *
      * @return Response
+     *
      * @since 4.0.0
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $form = $this->createFormBuilder($this->get('cms')->getGlobals())
+        $globals = $this->get('cms')->getGlobals();
+        $form = $this->createFormBuilder($globals)
             ->add('siteName', 'text', array('required' => true, 'max_length' => 30))
             ->add('siteTitle', 'textarea', array('required' => true))
-            ->add('siteTitleReverse', 'checkbox')
+            ->add('siteTitleReverse', 'checkbox', array('required' => false, 'value' => true))
             ->add('siteTitleDivider', 'text', array('required' => true, 'max_length' => 10))
-            ->add('siteKeywords', 'textarea')
-            ->add('siteDescription', 'textarea')
-            ->add('mailFromAddr', 'text', array('required' => true))
-            ->add('mailFromName', 'text')
-            ->add('mailFromOrg', 'text')
-            ->add('mailReplyTo', 'text')
-            ->add('mailFromSign', 'textarea')
+            ->add('siteKeywords', 'textarea', array('required' => false))
+            ->add('siteDescription', 'textarea', array('required' => false))
+            ->add('mailFromAddr', 'email', array('required' => true))
+            ->add('mailFromName', 'text', array('required' => false))
+            ->add('mailFromOrg', 'text', array('required' => false))
+            ->add('mailReplyTo', 'email', array('required' => false))
+            ->add('mailFromSign', 'textarea', array('required' => false))
+            ->add('filesModeSetOnUpload', 'checkbox', array('required' => false, 'value' => true))
+            ->add('filesModeDefault', 'text', array('required' => true))
             ->getForm();
+
+        if ($request->isMethod('POST'))
+        {
+            $form->bind($request);
+            if ($form->isValid())
+            {
+                /** @var FileLocator $locator */
+                $locator = $this->container->get('config_locator');
+                $filename = $locator->locate('global.yml');
+                file_put_contents($filename, Yaml::dump($globals, 2));
+
+                return $this->redirect($this->generateUrl('admin.settings'));
+            }
+        }
+
         $data = array(
             'form' => $form->createView()
         );

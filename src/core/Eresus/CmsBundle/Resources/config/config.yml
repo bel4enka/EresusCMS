@@ -24,7 +24,8 @@ twig:
     autoescape:       false
     form:
         resources:
-            - 'CmsBundle:Form:fields.html.twig'
+            - 'CmsBundle:Form:div_layout.html.twig'
+            - 'CmsBundle:Form:table_layout.html.twig'
 
 # Assetic Configuration
 assetic:

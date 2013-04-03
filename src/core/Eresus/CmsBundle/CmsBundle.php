@@ -58,11 +58,11 @@ class CmsBundle extends Bundle
         /** @var FileLocator $locator */
         $locator = $this->container->get('config_locator');
         $filename = $locator->locate('global.yml');
-        if (!file_exists($filename))
+        if (!$filename)
         {
             throw new RuntimeException('"config/global.yml" not found');
         }
-        $this->globals = Yaml::parse(file_get_contents($filename));
+        $this->globals = Yaml::parse($filename);
     }
 
     /**

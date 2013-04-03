@@ -10,7 +10,6 @@ mailFromOrg: 'Компания'
 mailReplyTo: 'reply-to@example.com'
 mailFromSign: "Система управления сайтом."
 filesModeSetOnUpload: true
-filesModeDefault: 0666
-filesTranslitNames: true
+filesModeDefault: '0666'
 contentTypeDefault: 'html'
 pageTemplateDefault: 'default'
