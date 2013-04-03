@@ -1,0 +1,16 @@
+siteName: 'Новый сайт'
+siteTitle: 'Новый сайт'
+siteTitleReverse: true
+siteTitleDivider: ' - '
+siteKeywords: 'ключевые слова'
+siteDescription: 'описание'
+mailFromAddr: 'me@example.org'
+mailFromName: 'Имя'
+mailFromOrg: 'Компания'
+mailReplyTo: 'reply-to@example.com'
+mailFromSign: "Система управления сайтом."
+filesModeSetOnUpload: true
+filesModeDefault: 0666
+filesTranslitNames: true
+contentTypeDefault: 'html'
+pageTemplateDefault: 'default'

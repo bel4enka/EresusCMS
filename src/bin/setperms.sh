@@ -31,7 +31,7 @@ function makeWritable
   fi
 }
 
-makeWritable "$home/../cfg/settings.php"
+makeWritable "$home/../config/global.yml"
 makeWritable "$home/../config/plugins.yml"
 makeWritable "$home/../data"
 makeWritable "$home/../style"

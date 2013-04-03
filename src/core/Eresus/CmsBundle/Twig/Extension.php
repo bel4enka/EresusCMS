@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Расширение Twig
  *
  * @version ${product.version}
@@ -24,20 +22,37 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
-use Eresus\CmsBundle\HTTP\Request;
+namespace Eresus\CmsBundle\Twig;
+
+use Twig_Extension;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Eresus\CmsBundle\CmsBundle;
 
 /**
  * Расширение Twig
  *
- * @package Eresus
  * @since 4.00
  */
-class Eresus_Twig_Extension extends Twig_Extension
+class Extension extends Twig_Extension
 {
+    /**
+     * @var ContainerInterface
+     * @since 4.00
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @since 4.00
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * Возвращает имя расширения
      *
@@ -58,26 +73,18 @@ class Eresus_Twig_Extension extends Twig_Extension
      */
     public function getGlobals()
     {
-        /** @var \Eresus\CmsBundle\Kernel $kernel */
-        $kernel = $GLOBALS['kernel'];
-        /** @var Request $request */
-        $request = $kernel->get('request');
-
-        $globals = array(
-            'Eresus' => Eresus_CMS::getLegacyKernel(),
-            'siteRoot' =>
-            $request->getScheme() . '://' . $request->getHost() . $request->getBasePath() . '/',
-        );
-
+        /** @var CmsBundle $cms */
+        $cms = $this->container->get('cms');
+        $globals = array('globals' => $cms->getGlobals());
         return $globals;
     }
 
-    /**
+    /* *
      * Возвращает список функций
      *
      * @return array
      * @since 4.00
-     */
+     * /
     public function getFunctions()
     {
         return array(
@@ -87,20 +94,20 @@ class Eresus_Twig_Extension extends Twig_Extension
         );
     }
 
-    /**
+    /* *
      * Обёртка для {@link Eresus_i18n::getText()}
-     */
+     * /
     public function i18n($key, $context = null)
     {
         return Eresus_I18n::getInstance()->getText($key, $context);
     }
 
-    /**
+    /* *
      * Подключает библиотеку JavaScript
      *
      * @see WebPage::linkJsLib()
      * @since 4.00
-     */
+     * /
     public function jslib()
     {
         $args = func_get_args();
@@ -108,7 +115,7 @@ class Eresus_Twig_Extension extends Twig_Extension
         return '';
     }
 
-    /**
+    /* *
      * Вызывает метод объекта
      *
      * @param object $object
@@ -117,9 +124,10 @@ class Eresus_Twig_Extension extends Twig_Extension
      * @return string
      *
      * @since 4.00
-     */
+     * /
     public function call($object, $method)
     {
         return call_user_func(array($object, $method));
-    }
+    }*/
 }
+

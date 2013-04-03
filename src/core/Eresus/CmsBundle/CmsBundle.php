@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Пакет Eresus CMS
  *
  * @version ${product.version}
@@ -24,29 +22,56 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Yaml\Yaml;
+use Eresus\CmsBundle\Exceptions\RuntimeException;
 
 /**
  * Пакет Eresus CMS
  *
  * @since 4.00
- * @package Eresus
  */
 class CmsBundle extends Bundle
 {
     /**
+     * Глобальные настройки сайта
+     * @var array
+     * @since 4.00
+     */
+    private $globals;
+
+    /**
      * Действия при включении пакета
+     *
+     * @throws RuntimeException
+     *
      * @since 4.00
      */
     public function boot()
     {
         $this->container->set('cms', $this);
+        /** @var FileLocator $locator */
+        $locator = $this->container->get('config_locator');
+        $filename = $locator->locate('global.yml');
+        if (!file_exists($filename))
+        {
+            throw new RuntimeException('"config/global.yml" not found');
+        }
+        $this->globals = Yaml::parse(file_get_contents($filename));
+    }
+
+    /**
+     * Возвращает глобальные настройки сайта.
+     * @return array
+     */
+    public function getGlobals()
+    {
+        return $this->globals;
     }
 }
 

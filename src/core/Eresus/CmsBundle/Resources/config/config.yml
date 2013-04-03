@@ -63,21 +63,27 @@ swiftmailer:
     spool:     { type: memory }
 
 services:
-  config_locator:
-    class: Symfony\Component\Config\FileLocator
-    arguments:
-    - %kernel.root_dir%/config
+    config_locator:
+        class: Symfony\Component\Config\FileLocator
+        arguments:
+            - %kernel.root_dir%/config
 
-  file_locator:
-    class: %file_locator.class%
-    arguments:
-    - @kernel
-    - %kernel.root_dir%/core/Eresus/CmsBundle/Resources
+    file_locator:
+        class: %file_locator.class%
+        arguments:
+            - @kernel
+            - %kernel.root_dir%/core/Eresus/CmsBundle/Resources
 
-  extensions:
-    class: Eresus\CmsBundle\Extensions\Registry
-    arguments: [@service_container]
+    twig.extension.eresus:
+        class: Eresus\CmsBundle\Twig\Extension
+        arguments: [@service_container]
+        tags:
+            - { name: twig.extension }
 
-  content_types:
-    class: Eresus\CmsBundle\Content\ContentTypeRegistry
-    arguments: [@service_container]
+    extensions:
+        class: Eresus\CmsBundle\Extensions\Registry
+        arguments: [@service_container]
+
+    content_types:
+        class: Eresus\CmsBundle\Content\ContentTypeRegistry
+        arguments: [@service_container]
