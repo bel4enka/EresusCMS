@@ -51,6 +51,13 @@ h6
     border-width: 0;
 }
 
+h1
+{
+    font-size: 23px;
+    margin: 0 0 5px;
+    padding: 0;
+}
+
 p
 {
     margin: 0 0 .1em;

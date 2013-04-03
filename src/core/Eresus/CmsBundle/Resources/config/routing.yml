@@ -30,8 +30,11 @@ admin.style:
 
 admin.plugins:
     pattern: /admin/settings/plugins/
-    defaults: { _controller: CmsBundle:AdminSettings:plugins }
+    defaults: { _controller: CmsBundle:AdminPlugins:index }
 
+admin.plugins.install:
+    pattern: /admin/settings/plugins/install
+    defaults: { _controller: CmsBundle:AdminPlugins:install }
 
 main:
     pattern:  /

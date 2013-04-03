@@ -1,3 +1,8 @@
+{% extends 'CmsBundle:Settings:base.html.twig' %}
+
+{% set pageTitle = 'Модули расширения' %}
+
+{% block contents %}
 <div class="box box_style_inline">
     <div class="box__header">Установка модулей расширения</div>
     <div class="box__contents">
@@ -6,12 +11,10 @@
             /
             <a href="#" class="link link_type_pseudo js-uncheck-all">Снять все отметки</a>
         </div>
-        <form action="admin.php" class="form" method="post">
-            <input type="hidden" name="mod" value="plgmgr">
-            <input type="hidden" name="action" value="install">
+        <form action="{{ path('admin.plugins.install') }}" class="form" method="post">
 
             <div class="plugin-list">
-                {% for plugin in plugins %}
+                {% for plugin in available %}
                 {% set reqs = plugin.getUnresolvedRequirements %}
                 <div class="plugin-list__plugin">
                     <div class="plugin-list__plugin__checkbox">
@@ -19,9 +22,13 @@
                         <input type="checkbox" name="install[]" value="{{ plugin.namespace }}" checked>
                         {% endif %}
                     </div>
-                    <div class="plugin-list__plugin__info">
-                        <strong>{{ plugin.title }} {{ plugin.version }}</strong><br>
-                        {{ plugin.description }}
+                    <div class="plugin-list__plugin__info plugin">
+                        <div class="plugin__title">
+                            {{ plugin.title }} <span class="plugin__version">{{ plugin.version }}</span>
+                        </div>
+                        <div class="plugin__description">
+                            {{ plugin.description }}
+                        </div>
                         {% if reqs|length > 0 %}
                         <div class="message message_type_warning">
                             Модуль не может быть установлен, т. к. требует наличия:
@@ -95,3 +102,4 @@ $(document).on('change', 'input[name="install[]"]',
     }
 );
 </script>
+{% endblock %}

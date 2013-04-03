@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Родительский класс для всех плагинов
  *
  * @version ${product.version}
@@ -24,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Extensions;
@@ -41,6 +37,7 @@ use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
 use Eresus_Kernel;
 use Eresus_CMS;
+use Eresus\CmsBundle\Kernel;
 
 /**
  * Родительский класс для всех плагинов
@@ -52,7 +49,7 @@ use Eresus_CMS;
  * @property-read  ArrayCollection $settings     настройки
  * @property-read  string          $path         путь к папке плагина относительно корня сайта
  *
- * @package Eresus
+ * @since 4.0.0
  */
 class Plugin
 {
@@ -338,17 +335,20 @@ class Plugin
      */
     private function loadConfig()
     {
+        /** @var Kernel $kernel */
+        $kernel = $this->get('kernel');
         // Путь к файлу описания плагина
-        $filename = $this->path . '/plugin.yml';
-        if (!file_exists(dirname(Eresus_Kernel::app()->getFsRoot() . $filename)))
+        $relPath = $this->path . '/plugin.yml';
+        $filename = $kernel->getRootDir() . $relPath;
+        if (!file_exists(dirname($filename)))
         {
-            throw new LogicException("Plugin folder not exists: {$this->namespace}");
+            throw new LogicException("Plugin folder ;not exists: {$this->namespace}");
         }
-        if (!file_exists(Eresus_Kernel::app()->getFsRoot() . $filename))
+        if (!file_exists($filename))
         {
-            throw new LogicException("File not exists: $filename");
+            throw new LogicException("File not exists: $relPath");
         }
-        $config = Yaml::parse(Eresus_Kernel::app()->getFsRoot() . $filename);
+        $config = Yaml::parse($filename);
         $this->validateConfig($config);
         return $config;
     }

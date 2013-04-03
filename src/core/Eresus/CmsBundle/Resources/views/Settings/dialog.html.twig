@@ -1,6 +1,6 @@
 {% extends 'CmsBundle:Settings:base.html.twig' %}
 
-{% block title %}Настройки сайта{% endblock %}
+{% set pageTitle = 'Настройки сайта' %}
 
 {% block contents %}
 <form action="{{ path(currentRoute) }}" method="post" id="settingsForm" {{ form_enctype(form) }}

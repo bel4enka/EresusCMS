@@ -1,8 +1,6 @@
 <?php
 /**
- * ${product.title}
- *
- * Работа с плагинами
+ * Реестр модулей расширения
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Extensions;
@@ -42,11 +38,11 @@ use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\Content\ContentTypeRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use Eresus\CmsBundle\Kernel;
 
 /**
- * Работа с плагинами
+ * Реестр модулей расширения
  *
- * @package Eresus
  * @since 4.00
  */
 class Registry implements ContainerAwareInterface
@@ -191,7 +187,7 @@ class Registry implements ContainerAwareInterface
      */
     public function getAll()
     {
-        /** @var \Eresus_Kernel $kernel */
+        /** @var Kernel $kernel */
         $kernel = $this->container->get('kernel');
         $vendors = new DirectoryIterator($kernel->getRootDir() . '/plugins');
         $all = $this->plugins;

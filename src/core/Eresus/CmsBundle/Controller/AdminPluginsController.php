@@ -1,6 +1,6 @@
 <?php
 /**
- * Контроллер настроек сайта
+ * Контроллер управления расширениями
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -31,58 +31,85 @@ use Eresus\CmsBundle\HTTP\Request;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
 use Eresus\CmsBundle\Extensions\Registry;
+use Eresus\CmsBundle\Extensions\Plugin;
 
 /**
- * Контроллер настроек сайта
+ * Контроллер управления расширениями
  *
  * @since 4.0.0
  */
-class AdminSettingsController extends AdminAbstractController
+class AdminPluginsController extends AdminAbstractController
 {
     /**
+     * Список установленных модулей расширения
+     *
+     * @return Response
+     *
+     * @since 4.0.0
+     */
+    public function indexAction()
+    {
+        $vars = $this->createTemplateVars();
+
+        /** @var Registry $registry */
+        $registry = $this->get('extensions');
+        $extensions = $registry->getInstalled();
+        usort($extensions,
+            function ($a, $b)
+            {
+                if ($a->title == $b->title)
+                {
+                    return 0;
+                }
+                return $a->title > $b->title ? 1 : -1;
+            }
+        );
+        $vars['extensions'] = $extensions;
+        return $this->render('CmsBundle:Plugins:index.html.twig', $vars);
+    }
+
+    /**
+     * Установка нового модуля расширения
+     *
      * @param Request $request
      *
      * @return Response
      *
      * @since 4.0.0
      */
-    public function indexAction(Request $request)
+    public function installAction(Request $request)
     {
-        $globals = $this->get('cms')->getGlobals();
-        $form = $this->createFormBuilder($globals)
-            ->add('siteName', 'text', array('required' => true, 'max_length' => 30))
-            ->add('siteTitle', 'textarea', array('required' => true))
-            ->add('siteTitleReverse', 'checkbox', array('required' => false, 'value' => true))
-            ->add('siteTitleDivider', 'text', array('required' => true, 'max_length' => 10))
-            ->add('siteKeywords', 'textarea', array('required' => false))
-            ->add('siteDescription', 'textarea', array('required' => false))
-            ->add('mailFromAddr', 'email', array('required' => true))
-            ->add('mailFromName', 'text', array('required' => false))
-            ->add('mailFromOrg', 'text', array('required' => false))
-            ->add('mailReplyTo', 'email', array('required' => false))
-            ->add('mailFromSign', 'textarea', array('required' => false))
-            ->add('filesModeSetOnUpload', 'checkbox', array('required' => false, 'value' => true))
-            ->add('filesModeDefault', 'text', array('required' => true))
-            ->getForm();
-
-        if ($request->isMethod('POST'))
+        /** @var Registry $registry */
+        $registry = $this->get('extensions');
+        if ('POST' === $request->getMethod())
         {
-            $form->bind($request);
-            if ($form->isValid())
+            $install = $request->request->get('install');
+            foreach ($install as $namespace)
             {
-                /** @var FileLocator $locator */
-                $locator = $this->container->get('config_locator');
-                $filename = $locator->locate('global.yml');
-                file_put_contents($filename, Yaml::dump($globals, 2));
-
-                return $this->redirect($this->generateUrl('admin.settings'));
+                $plugin = new Plugin($namespace, $this->container);
+                $registry->install($plugin);
             }
+            return $this->redirect('admin.plugins');
         }
 
         $vars = $this->createTemplateVars();
-        $vars['form'] = $form->createView();
 
-        return $this->render('CmsBundle:Settings:dialog.html.twig', $vars);
+        $installed = $registry->getInstalled();
+        $all = $registry->getAll();
+        // Плагины, доступные для установки
+        $available = array_diff_key($all, $installed);
+        usort($available,
+            function ($a, $b)
+            {
+                if ($a->title == $b->title)
+                {
+                    return 0;
+                }
+                return $a->title > $b->title ? 1 : -1;
+            }
+        );
+        $vars['available'] = $available;
+        return $this->render('CmsBundle:Plugins:install.html.twig', $vars);
     }
 
     /**
