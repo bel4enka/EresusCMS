@@ -3,8 +3,8 @@
 {% block field_row %}
     {% spaceless %}
         <tr class="form__row">
-            <td class="formLabel">{{ form_label(form) }}</td>
-            <td>{{ form_errors(form) }}{{ form_widget(form) }}</td>
+            <td class="form__label">{{ form_label(form) }}</td>
+            <td class="form__field">{{ form_errors(form) }}{{ form_widget(form) }}</td>
         </tr>
     {% endspaceless %}
 {% endblock field_row %}

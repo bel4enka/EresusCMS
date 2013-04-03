@@ -12,13 +12,21 @@ admin.dashboard:
     pattern: /admin/
     defaults: { _controller: CmsBundle:AdminDashboard:index }
 
-admin.settings:
-    pattern: /admin/settings
-    defaults: { _controller: CmsBundle:AdminSettings:index }
+admin.files:
+    pattern: /admin/files/
+    defaults: { _controller: CmsBundle:AdminFiles:index }
 
 admin.accounts:
-    pattern: /admin/accounts
+    pattern: /admin/accounts/
     defaults: { _controller: CmsBundle:AdminAccounts:index }
+
+admin.style:
+    pattern: /admin/style/
+    defaults: { _controller: CmsBundle:AdminStyle:index }
+
+admin.settings:
+    pattern: /admin/settings/
+    defaults: { _controller: CmsBundle:AdminSettings:index }
 
 
 main:

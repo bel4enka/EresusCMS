@@ -34,16 +34,29 @@
                         </a>
                     </li>
 
+                    <li class="main-menu__item{% if 'admin.files' == currentRoute %} main-menu__item_is_current{% endif %}">
+                        <a href="{{ path('admin.files') }}" class="main-menu__link">
+                            <span class="icon icon_img_documents"></span>
+                            Файлы
+                        </a>
+                    </li>
+
                     <li class="main-menu__item{% if 'admin.accounts' == currentRoute %} main-menu__item_is_current{% endif %}">
                         <a href="{{ path('admin.accounts') }}" class="main-menu__link">
                             <span class="icon icon_img_users"></span>
-                            Пользователи и группы
+                            Пользователи
+                        </a>
+                    </li>
+                    <li class="main-menu__item{% if 'admin.style' == currentRoute %} main-menu__item_is_current{% endif %}">
+                        <a href="{{ path('admin.style') }}" class="main-menu__link">
+                            <span class="icon icon_img_style"></span>
+                            Внешний вид
                         </a>
                     </li>
                     <li class="main-menu__item{% if 'admin.settings' == currentRoute %} main-menu__item_is_current{% endif %}">
                         <a href="{{ path('admin.settings') }}" class="main-menu__link">
                             <span class="icon icon_img_settings"></span>
-                            Настройки сайта
+                            Настройки
                         </a>
                     </li>
                 </ul>
