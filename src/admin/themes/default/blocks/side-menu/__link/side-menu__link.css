@@ -1,0 +1,16 @@
+.side-menu__link,
+.side-menu__link:visited
+{
+    color: #08c;
+    display: block;
+    padding: 1px 5px;
+    text-decoration: none;
+}
+
+.side-menu__link:hover,
+.side-menu__link:active,
+.side-menu__item_is_current > .side-menu__link
+{
+    color: red;
+    text-decoration: none;
+}

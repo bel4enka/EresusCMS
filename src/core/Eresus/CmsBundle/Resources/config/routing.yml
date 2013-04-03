@@ -16,17 +16,21 @@ admin.files:
     pattern: /admin/files/
     defaults: { _controller: CmsBundle:AdminFiles:index }
 
-admin.accounts:
-    pattern: /admin/accounts/
-    defaults: { _controller: CmsBundle:AdminAccounts:index }
-
-admin.style:
-    pattern: /admin/style/
-    defaults: { _controller: CmsBundle:AdminStyle:index }
-
 admin.settings:
     pattern: /admin/settings/
     defaults: { _controller: CmsBundle:AdminSettings:index }
+
+admin.accounts:
+    pattern: /admin/settings/accounts/
+    defaults: { _controller: CmsBundle:AdminSettings:accounts }
+
+admin.style:
+    pattern: /admin/settings/style/
+    defaults: { _controller: CmsBundle:AdminSettings:style }
+
+admin.plugins:
+    pattern: /admin/settings/plugins/
+    defaults: { _controller: CmsBundle:AdminSettings:plugins }
 
 
 main:

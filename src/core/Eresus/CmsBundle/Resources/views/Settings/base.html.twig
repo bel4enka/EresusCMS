@@ -1,0 +1,38 @@
+{% extends 'CmsBundle:Base:default.html.twig' %}
+
+{% block title %}Настройки сайта{% endblock %}
+
+{% block sidebar %}
+    {% set sideMenuRoute = currentRoute %}
+    <div class="box">
+        <div class="box__header">Настройки сайта</div>
+        <div class="box__content">
+            <ul class="side-menu">
+                <li class="side-menu__item{% if 'admin.settings' == sideMenuRoute %} side-menu__item_is_current{% endif %}">
+                    <a href="{{ path('admin.settings') }}" class="side-menu__link">
+                        <span class="icon icon_img_settings"></span>
+                        Общие настройки
+                    </a>
+                </li>
+                <li class="side-menu__item{% if 'admin.accounts' == sideMenuRoute %} side-menu__item_is_current{% endif %}">
+                    <a href="{{ path('admin.accounts') }}" class="side-menu__link">
+                        <span class="icon icon_img_users"></span>
+                        Пользователи
+                    </a>
+                </li>
+                <li class="side-menu__item{% if 'admin.style' == sideMenuRoute %} side-menu__item_is_current{% endif %}">
+                    <a href="{{ path('admin.style') }}" class="side-menu__link">
+                        <span class="icon icon_img_style"></span>
+                        Внешний вид
+                    </a>
+                </li>
+                <li class="side-menu__item{% if 'admin.plugins' == sideMenuRoute %} side-menu__item_is_current{% endif %}">
+                    <a href="{{ path('admin.plugins') }}" class="side-menu__link">
+                        <span class="icon icon_img_plugin"></span>
+                        Модули расширения
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

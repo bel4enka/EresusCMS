@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 
 <html>
+{% spaceless %}
 {% set currentRoute = app.request.attributes.get('_route') %}
+{% set mainMenuRoute = mainMenuRoute|default(currentRoute) %}
+{% endspaceless %}
 <head>
 	<meta charset="UTF-8">
 	<title>{% block title %}{% endblock %} – {{ globals.siteName }}</title>
@@ -27,33 +30,21 @@
 
             <nav class="main-menu">
                 <ul class="main-menu__items">
-                    <li class="main-menu__item{% if 'admin.dashboard' == currentRoute %} main-menu__item_is_current{% endif %}">
+                    <li class="main-menu__item{% if 'admin.dashboard' == mainMenuRoute %} main-menu__item_is_current{% endif %}">
                         <a href="{{ path('admin.dashboard') }}" class="main-menu__link">
                             <span class="icon icon_img_home"></span>
                             Обзор
                         </a>
                     </li>
 
-                    <li class="main-menu__item{% if 'admin.files' == currentRoute %} main-menu__item_is_current{% endif %}">
+                    <li class="main-menu__item{% if 'admin.files' == mainMenuRoute %} main-menu__item_is_current{% endif %}">
                         <a href="{{ path('admin.files') }}" class="main-menu__link">
                             <span class="icon icon_img_documents"></span>
                             Файлы
                         </a>
                     </li>
 
-                    <li class="main-menu__item{% if 'admin.accounts' == currentRoute %} main-menu__item_is_current{% endif %}">
-                        <a href="{{ path('admin.accounts') }}" class="main-menu__link">
-                            <span class="icon icon_img_users"></span>
-                            Пользователи
-                        </a>
-                    </li>
-                    <li class="main-menu__item{% if 'admin.style' == currentRoute %} main-menu__item_is_current{% endif %}">
-                        <a href="{{ path('admin.style') }}" class="main-menu__link">
-                            <span class="icon icon_img_style"></span>
-                            Внешний вид
-                        </a>
-                    </li>
-                    <li class="main-menu__item{% if 'admin.settings' == currentRoute %} main-menu__item_is_current{% endif %}">
+                    <li class="main-menu__item{% if 'admin.settings' == mainMenuRoute %} main-menu__item_is_current{% endif %}">
                         <a href="{{ path('admin.settings') }}" class="main-menu__link">
                             <span class="icon icon_img_settings"></span>
                             Настройки
@@ -74,6 +65,7 @@
 
         <nav class="page__sidebar">
 
+            {% block sidebar %}
             <div class="box">
                 <div class="box__header">Разделы сайта</div>
                 <div class="box__content sections">
@@ -82,6 +74,7 @@
                     </ul>
                 </div>
             </div>
+            {% endblock %}
         </nav>
 
         <div class="page__content">

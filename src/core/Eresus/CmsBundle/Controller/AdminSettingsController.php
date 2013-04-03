@@ -78,10 +78,37 @@ class AdminSettingsController extends AdminAbstractController
             }
         }
 
-        $data = array(
-            'form' => $form->createView()
+        $vars = $this->createTemplateVars();
+        $vars['form'] = $form->createView();
+
+        return $this->render('CmsBundle:Settings:dialog.html.twig', $vars);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @since 4.0.0
+     */
+    public function pluginsAction(Request $request)
+    {
+        $vars = $this->createTemplateVars();
+        return $this->render('CmsBundle:Settings:base.html.twig', $vars);
+    }
+
+    /**
+     * Возвращает массив переменных для подстановки в шаблон
+     *
+     * @return array
+     *
+     * @since 4.0.0
+     */
+    private function createTemplateVars()
+    {
+        return array(
+            'mainMenuRoute' => 'admin.settings',
         );
-        return $this->render('CmsBundle:Settings:dialog.html.twig', $data);
     }
 }
 
