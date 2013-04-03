@@ -28,15 +28,15 @@
             <nav class="main-menu">
                 <ul class="main-menu__items">
                     <li class="main-menu__item">
-                        <a href="{{ path('admin.settings') }}" class="main-menu__link">
-                            <span class="icon icon_img_settings"></span>
-                            Настройки
-                        </a>
-                    </li>
-                    <li class="main-menu__item">
                         <a href="{{ path('admin.accounts') }}" class="main-menu__link">
                             <span class="icon icon_img_users"></span>
                             Пользователи и группы
+                        </a>
+                    </li>
+                    <li class="main-menu__item">
+                        <a href="{{ path('admin.settings') }}" class="main-menu__link">
+                            <span class="icon icon_img_settings"></span>
+                            Настройки сайта
                         </a>
                     </li>
                 </ul>
@@ -55,7 +55,7 @@
         <nav class="page__sidebar">
 
             <div class="box">
-                <div class="box__header">Наполнение</div>
+                <div class="box__header">Разделы сайта</div>
                 <div class="box__content sections">
                     <ul class="sections__children">
                         {#% include 'CmsBundle:Menus:Sections.html.twig' with {'section': rootSection, 'level': 0} only %#}
