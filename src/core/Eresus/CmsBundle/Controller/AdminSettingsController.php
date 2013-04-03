@@ -42,7 +42,7 @@ class AdminSettingsController extends AdminAbstractController
     public function indexAction()
     {
         $data = array();
-        return $this->render('CmsBundle:Base:default.html.twig', $data);
+        return $this->render('CmsBundle:Settings:dialog.html.twig', $data);
     }
 }
 

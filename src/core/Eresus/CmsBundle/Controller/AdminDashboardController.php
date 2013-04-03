@@ -42,7 +42,7 @@ class AdminDashboardController extends AdminAbstractController
     public function indexAction()
     {
         $data = array();
-        return $this->render('CmsBundle:Base:default.html.twig', $data);
+        return $this->render('CmsBundle:Dashboard:index.html.twig', $data);
     }
 }
 
