@@ -3,7 +3,8 @@
 {% block title %}Настройки сайта{% endblock %}
 
 {% block contents %}
-<form action="" id="settingsForm" class="ui-widget ui-widget-content ui-corner-all">
+<form action="{{ path(currentRoute) }}" id="settingsForm" {{ form_enctype(form) }}
+    class="ui-widget ui-widget-content ui-corner-all">
 
 	<div id="settings-tabs" class="ui-padding">
 
@@ -15,57 +16,65 @@
         </ul>
 
         <div id="main">
+
+            {{ form_errors(form) }}
+
             <table class="ui-grid ui-hlines">
                 <tr>
                     <td>
-                        <label for="settigs-siteName">Название сайта</label><br />
-                        <input type="text" name="siteName" value="{$siteName|escape}" size="20"
-                            id="settigs-siteName" tabindex="1" fc:required="Укажите название сайта" />
+                        {{ form_label(form.siteName, 'Название сайта') }}<br>
+                        {{ form_errors(form.siteName) }}
+                        {{ form_widget(form.siteName) }}
                     </td>
                     <td class="ui-minor">
-                        Предназначено только для внутреннего использования, и не будет отображаться нигде,
-                        кроме панели управления. Желательно чтобы название сайта было коротким.
+                        Предназначено только для внутреннего использования, и не будет отображаться
+                        нигде, кроме панели управления. Желательно чтобы название сайта было
+                        коротким.
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>Заголовок сайта</label><br />
-                        <textarea name="siteTitle" cols="50" rows="3" tabindex="2">{$siteTitle|escape}</textarea>
+                        {{ form_label(form.siteTitle, 'Заголовок сайта') }}<br>
+                        {{ form_errors(form.siteTitle) }}
+                        {{ form_widget(form.siteTitle, {'attr': {'cols': 50}}) }}
                     </td>
                     <td class="ui-minor">
-                        Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em> Чтобы этот
-                        текст подставлялся в заголовок, надо вставить макрос <b>$(siteTitle)</b> в нужные
-                        <a href="admin.php?mod=themes">шаблоны страниц</a>.
+                        Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em>
+                        Чтобы этот текст подставлялся в заголовок, надо вставить переменную
+                        <b>{{ '{{ globals.siteTitle }}' }}</b> в нужные
+                        <a href="{{ path('admin.style') }}">шаблоны страниц</a>.
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>
-                            <input type="checkbox" name="siteTitleReverse" value="1"{if $siteTitleReverse} checked="checked"{/if} tabindex="3" />
-                            Обратный порядок разделов в $(sectionTitle)
-                        </label>
+                        {{ form_errors(form.siteTitleReverse) }}
+                        {{ form_widget(form.siteTitleReverse) }}
+                        {{ form_label(form.siteTitleReverse, 'Обратный порядок разделов в {{ globals.sectionTitle }}') }}<br>
+
                         <div class="ui-minor">
-                            <em>Пример:</em> <span id="settings-siteTitleReverse-example">
-                                <span class="checked"{if !$siteTitleReverse} style="display: none;"{/if}>Главная - Категория - Товар</span>
-                                <span class="unchecked"{if $siteTitleReverse} style="display: none;"{/if}>Товар - Категория - Главная</span>
-                            </span>
+                            <em>Пример:</em> <div id="settings-siteTitleReverse-example" style="display: inline">
+                                <span class="checked"{% if not globals.siteTitleReverse %} style="display: none;"{% endif %}>Главная - Категория - Товар</span>
+                                <span class="unchecked"{% if globals.siteTitleReverse %} style="display: none;"{% endif %}>Товар - Категория - Главная</span>
+                            </div>
                         </div>
                     </td>
                     <td class="ui-minor">
-                        Макрос <b>$(sectionTitle)</b> заменяется на название открытой страницы и списка всех
-                        родительских страниц. Этот переключатель определяет в каком порядке будут выводиться
-                        их названия: от открытой страницы к корню (по умолчанию) или наоборот.
+                        Переменная <b>{{ '{{ globals.sectionTitle  }}' }}</b> заменяется на название
+                        открытой страницы и списка всех родительских страниц. Этот переключатель
+                        определяет в каком порядке будут выводиться их названия: от открытой
+                        страницы к корню (по умолчанию) или наоборот.
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>Разделитель названий разделов в $(sectionTitle):</label><br />
+                        {{ form_errors(form.siteTitleDivider) }}
+                        {{ form_label(form.siteTitleDivider, 'Разделитель названий разделов в {{ globals.sectionTitle }}') }}<br>
+
                         <div class="nowrap">
-                            <input type="text" name="siteTitleDivider" value="{$siteTitleDivider|escape}"
-                                size="4" tabindex="4" />
+                            {{ form_widget(form.siteTitleDivider, {'attr': {'size': 4}}) }}
                             <span class="ui-minor">
                                 <em>Пример:</em> <span id="settings-siteTitleDivider-example">
-                                    Товар<span>{$siteTitleDivider}</span>Категория<span>{$siteTitleDivider}</span>Каталог
+                                    Товар<span>{{ globals.siteTitleDivider }}</span>Категория<span>{{ globals.siteTitleDivider }}</span>Каталог
                                 </span>
                             </span>
                         </div>
@@ -77,65 +86,74 @@
                 </tr>
                 <tr>
                     <td>
-                        <label>Ключевые слова</label><br />
-                        <textarea name="siteKeywords" cols="50" rows="3" tabindex="5">{$siteKeywords|escape}</textarea>
+                        {{ form_label(form.siteKeywords, 'Ключевые слова сайта') }}<br>
+                        {{ form_errors(form.siteKeywords) }}
+                        {{ form_widget(form.siteKeywords, {'attr': {'cols': 50}}) }}
                     </td>
                     <td class="ui-minor">
-                        Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц. <em>Внимание!</em>
-                        Чтобы эти слова подставлялись в мета-тег, надо вставить макрос <b>$(siteKeywords)</b>
-                        в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+                        Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц.
+                        <em>Внимание!</em> Чтобы эти слова подставлялись в мета-тег, надо вставить
+                        переменную <b>{{ '{{ globals.siteKeywords }}' }}</b>
+                        в нужные <a href="{{ path('admin.style') }}">шаблоны страниц</a>.
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>Описание</label><br />
-                        <textarea name="siteDescription" cols="50" rows="3" tabindex="6">{$siteDescription|escape}</textarea>
+                        {{ form_label(form.siteDescription, 'Описание сайта') }}<br>
+                        {{ form_errors(form.siteDescription) }}
+                        {{ form_widget(form.siteDescription, {'attr': {'cols': 50}}) }}
                     </td>
                     <td class="ui-minor">
                         Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
-                        Чтобы этот текст подставлялся в мета-тег, надо вставить макрос <b>$(siteDescription)</b>
-                        в нужные <a href="admin.php?mod=themes">шаблоны страниц</a>.
+                        Чтобы этот текст подставлялся в мета-тег, надо вставить переменную
+                        <b>{{ '{{ globals.siteDescription }}' }}</b>
+                        в нужные <a href="{{ path('admin.style') }}">шаблоны страниц</a>.
                     </td>
                 </tr>
             </table>
         </div>
 
         <div id="mail" class="ui-tabs-hide">
+            {{ form_errors(form) }}
             <fieldset>
                 <legend>Параметры писем, отсылаемых с сайта</legend>
                 <table>
                     <tr>
                         <td>
-                            <label for="settings-mailFromAddr">Адрес отправителя</label><br />
-                            <input type="text" name="mailFromAddr" value="{$mailFromAddr|escape}" size="20"
-                                id="settings-mailFromAddr" tabindex="2" />
+                            {{ form_label(form.mailFromAddr, 'Адрес отправителя') }}<br>
+                            {{ form_errors(form.mailFromAddr) }}
+                            {{ form_widget(form.mailFromAddr, {'attr': {'size': 20}}) }}
                             <div class="ui-minor nowrap">Пример: <em>robot@example.org</em></div>
                         </td>
                         <td>
-                            <label>Имя отправителя</label><br />
-                            <input type="text" name="mailFromName" value="{$mailFromName|escape}" size="20" tabindex="3" />
+                            {{ form_label(form.mailFromName, 'Имя отправителя') }}<br>
+                            {{ form_errors(form.mailFromName) }}
+                            {{ form_widget(form.mailFromName, {'attr': {'size': 20}}) }}
                             <div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
                         </td>
                         <td style="width: 80%">
-                            <label>Организация</label><br />
-                            <input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="20" tabindex="4" />
+                            {{ form_label(form.mailFromOrg, 'Организация') }}<br>
+                            {{ form_errors(form.mailFromOrg) }}
+                            {{ form_widget(form.mailFromOrg, {'attr': {'size': 20}}) }}
                             <div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <label>Обратный адрес</label><br />
-                            <input type="text" name="mailReplyTo" value="{$mailReplyTo|escape}" size="20" tabindex="5" />
+                            {{ form_label(form.mailReplyTo, 'Обратный адрес') }}<br>
+                            {{ form_errors(form.mailReplyTo) }}
+                            {{ form_widget(form.mailReplyTo, {'attr': {'size': 20}}) }}
                         </td>
                         <td class="ui-minor" colspan="2">
-                            <br/>
+                            <br>
                             Вы можете указать адрес для ответа, отличный от адреса отправителя.
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <label>Подпись, добавляемая к тексту письма</label><br />
-                            <textarea name="mailFromSign" cols="60" rows="4" tabindex="6">{$mailFromSign}</textarea>
+                            {{ form_label(form.mailFromSign, 'Подпись, добавляемая к тексту письма') }}<br>
+                            {{ form_errors(form.mailFromSign) }}
+                            {{ form_widget(form.mailFromSign, {'attr': {'cols': 60, 'rows': 4}}) }}
                         </td>
                     </tr>
                 </table>
@@ -143,6 +161,7 @@
         </div>
 
         <div id="files" class="ui-tabs-hide">
+            {{ form_errors(form) }}
             <fieldset>
                 <legend>Загрузка файлов на сайт</legend>
                 <table>
@@ -162,6 +181,7 @@
         </div>
 
         <div id="other" class="ui-tabs-hide">
+            {{ form_errors(form) }}
             <table class="ui-grid ui-hlines">
                 <tr>
                     <td>
@@ -204,16 +224,22 @@
 		$(function ()
         {
             $('#settings-tabs').tabs();
-			/*$("#settingsForm input[name=siteTitleReverse]").click(function (){
-				var root = $("#settings-siteTitleReverse-example");
-				$("span", root).hide();
-				$("." + (this.checked ? "checked" : "unchecked"), root).show();
-			});
+			$('#{{ form.siteTitleReverse.vars.id }}').on('click',
+                function ()
+                {
+                    var root = $("#settings-siteTitleReverse-example");
+                    $("span", root).hide();
+                    $("." + (this.checked ? "checked" : "unchecked"), root).show();
+                }
+            );
 
-			$("#settingsForm input[name=siteTitleDivider]").keyup(function (){
-				$("#settings-siteTitleDivider-example span").text(this.value);
-			});
-
+			$('#{{ form.siteTitleDivider.vars.id }}').on('keyup',
+                function ()
+                {
+				    $('span', $('#settings-siteTitleDivider-example')).text(this.value);
+			    }
+            );
+            /*
 			$("#settingsForm textarea[name=siteDescription]").keydown(function (event){
 				if (event.keyCode == 9)
 				{

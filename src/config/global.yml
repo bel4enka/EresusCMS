@@ -4,7 +4,7 @@ siteTitleReverse: true
 siteTitleDivider: ' - '
 siteKeywords: 'ключевые слова'
 siteDescription: 'описание'
-mailFromAddr: 'me@example.org'
+mailFromAddr: 'me@example.com'
 mailFromName: 'Имя'
 mailFromOrg: 'Компания'
 mailReplyTo: 'reply-to@example.com'

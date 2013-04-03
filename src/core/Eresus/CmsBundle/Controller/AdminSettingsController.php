@@ -41,7 +41,22 @@ class AdminSettingsController extends AdminAbstractController
      */
     public function indexAction()
     {
-        $data = array();
+        $form = $this->createFormBuilder($this->get('cms')->getGlobals())
+            ->add('siteName', 'text', array('required' => true, 'max_length' => 30))
+            ->add('siteTitle', 'textarea', array('required' => true))
+            ->add('siteTitleReverse', 'checkbox')
+            ->add('siteTitleDivider', 'text', array('required' => true, 'max_length' => 10))
+            ->add('siteKeywords', 'textarea')
+            ->add('siteDescription', 'textarea')
+            ->add('mailFromAddr', 'text', array('required' => true))
+            ->add('mailFromName', 'text')
+            ->add('mailFromOrg', 'text')
+            ->add('mailReplyTo', 'text')
+            ->add('mailFromSign', 'textarea')
+            ->getForm();
+        $data = array(
+            'form' => $form->createView()
+        );
         return $this->render('CmsBundle:Settings:dialog.html.twig', $data);
     }
 }
