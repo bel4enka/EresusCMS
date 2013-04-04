@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Контроллер диалога настройки плагина
  *
  * @version ${product.version}
@@ -24,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Extensions\Controller;
@@ -34,11 +30,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Eresus_Kernel;
+use Eresus\CmsBundle\Kernel;
 
 /**
  * Контроллер диалога настройки плагина
  *
- * @package Eresus
  * @since 4.00
  */
 class AdminSettingsController extends AbstractController
@@ -50,44 +46,67 @@ class AdminSettingsController extends AbstractController
      */
     public function isAvailable()
     {
-        return file_exists(Eresus_Kernel::app()->getFsRoot() . $this->getPlugin()->path .
+        /** @var Kernel $kernel */
+        $kernel = $this->get('kernel');
+        return file_exists($kernel->getRootDir() . $this->getPlugin()->path .
             '/Resources/views/' . str_replace(':', '/', $this->getDialogTemplateName()));
     }
 
     /**
      * Основное действие
      *
-     * @param Request $req
+     * Создаёт диалог настройки и сохраняет изменения, сделанные пользователем
+     *
+     * @param Request $request
      *
      * @return Response
      * @since 4.00
      */
-    public function mainAction(Request $req)
+    public function mainAction(Request $request)
     {
-        if ('POST' === $req->getMethod())
+        $values = $this->plugin->settings->toArray();
+        $form = $this->createFormBuilder($values);
+        foreach ($values as $key => $value)
         {
-            $settings = $req->request->get('settings', array());
-            foreach ($settings as $key => $value)
+            switch (true)
             {
-                $this->plugin->settings[$key] = $value;
+                case is_bool($value):
+                    $type = 'checkbox';
+                    break;
+                default:
+                    $type = null;
             }
-            /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
-            $extensions = $this->get('extensions');
-            $extensions->update($this->plugin);
+            $form->add($key, $type, array('required' => false));
         }
+        $form = $form->getForm();
+
+        if ('POST' === $request->getMethod())
+        {
+            $form->bind($request);
+            $values = $form->getData();
+            if ($form->isValid())
+            {
+                foreach ($this->plugin->settings->getKeys() as $key)
+                {
+                    $this->plugin->settings[$key] = $values[$key];
+                }
+                /** @var \Eresus\CmsBundle\Extensions\Registry $extensions */
+                $extensions = $this->get('extensions');
+                $extensions->update($this->plugin);
+                $this->redirect($this->generateUrl('admin.plugins.config',
+                    array('id' => $this->plugin->namespace)));
+            }
+        }
+
         $vars = array(
             'plugin' => $this->plugin,
+            'form' => $form->createView()
         );
 
-        $contents = $this->renderView($this->getPlugin()->getBundle()->getName() . ':'
-            . $this->getDialogTemplateName(), $vars);
+        $template = $this->getPlugin()->getBundle()->getName() . ':'
+            . $this->getDialogTemplateName();
 
-        $vars = array(
-            'plugin' => $this->plugin,
-            'contents' => $contents,
-        );
-
-        return $this->renderView('CmsBundle:Extensions:AdminSettingsDialog.html.twig', $vars);
+        return $this->renderView($template, $vars);
     }
 
     /**

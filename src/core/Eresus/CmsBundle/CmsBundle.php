@@ -30,6 +30,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
 use Eresus\CmsBundle\Exceptions\RuntimeException;
+use Eresus\CmsBundle\Exceptions\LogicException;
 
 /**
  * Пакет Eresus CMS
@@ -38,6 +39,11 @@ use Eresus\CmsBundle\Exceptions\RuntimeException;
  */
 class CmsBundle extends Bundle
 {
+    /**
+     * Версия CMS
+     */
+    const VERSION = '${product.version}';
+
     /**
      * Глобальные настройки сайта
      * @var array
@@ -73,5 +79,32 @@ class CmsBundle extends Bundle
     {
         return $this->globals;
     }
+}
+
+
+/**
+ * Возвращает указанный элемент массива или значение по умолчанию, если такого элемента нет
+ *
+ * @param array|\ArrayAccess $array    массив, элемент которого надо вернуть
+ * @param mixed              $key      ключ элемента, которые надо вернуть
+ * @param mixed              $default  значение, которое надо вернуть если указанного элемента нет
+ *
+ * @throws Exceptions\LogicException
+ *
+ * @return mixed
+ */
+function getElementOrDefault($array, $key, $default)
+{
+    if (!is_array($array) && !($array instanceof \ArrayAccess))
+    {
+        throw new LogicException(
+            'First argument should be an array or implement ArrayAccess interface.');
+    }
+
+    if (array_key_exists($key, $array))
+    {
+        return $array[$key];
+    }
+    return $default;
 }
 

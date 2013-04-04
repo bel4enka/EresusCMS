@@ -35,9 +35,9 @@ use Eresus\CmsBundle\Content\ContentType;
 use Eresus\CmsBundle\Extensions\Controller\AdminSettingsController;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 
-use Eresus_Kernel;
 use Eresus_CMS;
 use Eresus\CmsBundle\Kernel;
+use Eresus\CmsBundle\CmsBundle;
 
 /**
  * Родительский класс для всех плагинов
@@ -137,7 +137,7 @@ class Plugin
 
     /**
      * Контроллер диалога настройки
-     * @var AdminSettingsDialog
+     * @var AdminSettingsController
      * @since 4.00
      */
     private $configController = null;
@@ -234,13 +234,16 @@ class Plugin
      *
      * @throws LogicException
      *
-     * @return AdminSettingsDialog
+     * @return AdminSettingsController
      * @since 4.00
      */
     public function getConfigController()
     {
         if (null === $this->configController)
         {
+            /*
+             * Сначала проверяем, нет ли у расширения своего контроллера диалога настроек…
+             */
             $className = $this->namespace . '\Controller\AdminSettingsController';
             if (class_exists($className))
             {
@@ -252,6 +255,9 @@ class Plugin
                 }
                 $this->configController = $controller;
             }
+            /*
+             * …если нет, используем стандартный контроллер.
+             */
             else
             {
                 $this->configController = new AdminSettingsController($this);
@@ -284,7 +290,7 @@ class Plugin
             if (0 === strcasecmp($id, 'cms'))
             {
                 // Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
-                $actual = preg_replace('/[^\d\.]/', '', CMSVERSION);
+                $actual = preg_replace('/[^\d\.]/', '', CmsBundle::VERSION);
             }
             else
             {
@@ -342,7 +348,7 @@ class Plugin
         $filename = $kernel->getRootDir() . $relPath;
         if (!file_exists(dirname($filename)))
         {
-            throw new LogicException("Plugin folder ;not exists: {$this->namespace}");
+            throw new LogicException("Plugin folder not exists: {$this->namespace}");
         }
         if (!file_exists($filename))
         {
@@ -385,9 +391,7 @@ class Plugin
         $this->title = $config['title'];
         $this->version = $config['version'];
         $this->requirements = $config['require'];
-        $this->description = isset($config['description'])
-            ? $config['description']
-            : '';
+        $this->description = \Eresus\CmsBundle\getElementOrDefault($config, 'description', '');
 
         if (null === $localConfig)
         {
@@ -410,7 +414,7 @@ class Plugin
             {
                 $this->contentTypes []= new ContentType($this->container, $this->namespace,
                     $item['controller'], $item['title'],
-                    isset($item['description']) ? $item['description'] : null);
+                    \Eresus\CmsBundle\getElementOrDefault($item, 'description', null));
             }
         }
     }

@@ -1,8 +1,1 @@
-<div class="form__row">
-    <label>
-        <input name="settings[highlight]" type="checkbox" value="1"
-            {% if plugin.settings.highlight %} checked{% endif %}>
-        <input name="settings[highlight]" type="hidden" value="0">
-        Подсветка синтаксиса
-    </label>
-</div>
+{% extends 'CmsBundle:Extensions:AdminSettingsDialog.html.twig' %}

@@ -227,7 +227,7 @@ class Registry implements ContainerAwareInterface
             'enabled' => $plugin->enabled,
             'settings' => $plugin->settings->toArray()
         );
-        $yml = Yaml::dump($this->config);
+        $yml = Yaml::dump($this->config, 3);
         file_put_contents($this->getDbFilename(), $yml);
     }
 
