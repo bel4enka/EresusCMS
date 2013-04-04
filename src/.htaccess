@@ -51,10 +51,10 @@ AddDefaultCharset Off
 	# Проксируем все запросы к сторонним расширениям через их коннекторы
 	RewriteRule ^ext-3rd/.* index.php [last]
 
-	### ДРУГИЕ ПЕРЕАДРЕСОВКИ ###
+	### ДРУГИЕ ПРАВИЛА ###
 
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(bundles|core/js|ext|data|style|admin)/ - [last]
+	RewriteRule ^(bundles|core/js|ext|data|style)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [last]
 	RewriteRule ^dev\.php - [last]
