@@ -113,6 +113,24 @@ class AdminPluginsController extends AdminAbstractController
     }
 
     /**
+     * Удаляет плагин
+     *
+     * @param string $id
+     *
+     * @return Response
+     *
+     * @since 4.0.0
+     */
+    public function uninstallAction($id)
+    {
+        /** @var Registry $registry */
+        $registry = $this->get('extensions');
+        $plugin = $registry->get($id);
+        $registry->uninstall($plugin);
+        return $this->redirect($this->generateUrl('admin.plugins'));
+    }
+
+    /**
      * Включает или отключает плагин
      *
      * @param string $id
