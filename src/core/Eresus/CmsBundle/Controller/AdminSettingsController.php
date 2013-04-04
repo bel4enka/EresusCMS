@@ -30,7 +30,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Eresus\CmsBundle\HTTP\Request;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
-use Eresus\CmsBundle\Extensions\Registry;
 
 /**
  * Контроллер настроек сайта
@@ -73,7 +72,7 @@ class AdminSettingsController extends AdminAbstractController
                 /** @var FileLocator $locator */
                 $locator = $this->container->get('config_locator');
                 $filename = $locator->locate('global.yml');
-                file_put_contents($filename, Yaml::dump($globals, 2));
+                file_put_contents($filename, Yaml::dump($form->getData(), 2));
 
                 return $this->redirect($this->generateUrl('admin.settings'));
             }

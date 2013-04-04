@@ -89,7 +89,7 @@ class AdminPluginsController extends AdminAbstractController
                 $plugin = new Plugin($namespace, $this->container);
                 $registry->install($plugin);
             }
-            return $this->redirect('admin.plugins');
+            return $this->redirect($this->generateUrl('admin.plugins'));
         }
 
         $vars = $this->createTemplateVars();
@@ -110,6 +110,61 @@ class AdminPluginsController extends AdminAbstractController
         );
         $vars['available'] = $available;
         return $this->render('CmsBundle:Plugins:install.html.twig', $vars);
+    }
+
+    /**
+     * Включает или отключает плагин
+     *
+     * @param string $id
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response
+     * @since 4.00
+     */
+    public function toggleAction($id)
+    {
+        /** @var Registry $registry */
+        $registry = $this->get('extensions');
+        $installed = $registry->getInstalled();
+        if (!array_key_exists($id, $installed))
+        {
+            throw $this->createNotFoundException();
+        }
+        $plugin = $installed[$id];
+        $plugin->enabled = !$plugin->enabled;
+        $registry->update($plugin);
+
+        return $this->redirect($this->generateUrl('admin.plugins'));
+    }
+
+    /**
+     * Диалог настройки плагина
+     *
+     * @param string $id
+     * @param Request $request
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response
+     * @since 4.00
+     */
+    public function configAction($id, Request $request)
+    {
+        /** @var Registry $registry */
+        $registry = $this->get('extensions');
+        $plugin = $registry->get($id);
+        if (false === $plugin)
+        {
+            throw $this->createNotFoundException();
+        }
+        $controller = $plugin->getConfigController();
+        if (!$controller->isAvailable())
+        {
+            throw $this->createNotFoundException();
+        }
+        return $this->render('CmsBundle:Plugins:config.html.twig',
+            array('contents' => $controller->mainAction($request)));
     }
 
     /**

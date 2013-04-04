@@ -22,14 +22,15 @@
             <tr>
                 <td class="table-list__controls">
                     {% if plugin.enabled and plugin.getConfigController.isAvailable %}
-                        <a href="admin.php?mod=plgmgr&id={{ plugin.namespace }}&action=config"
+                        <a href="{{ path('admin.plugins.config', {'id': plugin.namespace}) }}"
                            class="icon icon_img_config" title="Настроить {{ plugin.title|escape }}">&nbsp;</a>
                     {% endif %}
-                    <a href="admin.php?mod=plgmgr&id={{ plugin.namespace }}&action=toggle"
+                    <a href="{{ path('admin.plugins.toggle', {'id': plugin.namespace}) }}"
                        class="icon icon_img_{% if plugin.enabled %}on{% else %}off{% endif %}"
                        title="{% if plugin.enabled %}Отключить{% else %}Включить{% endif %} {{ plugin.title|escape }}">&nbsp;</a>
-                    <a href="admin.php?mod=plgmgr&id={{ plugin.namespace }}&action=uninstall" data-action="delete"
-                       class="icon icon_img_delete" title="Удалить {{ plugin.title|escape }}">&nbsp;</a>
+                    <a href="{{ path('admin.plugins.uninstall', {'id': plugin.namespace}) }}"
+                       data-action="delete" class="icon icon_img_delete"
+                       title="Удалить {{ plugin.title|escape }}">&nbsp;</a>
                 </td>
                 <td>
                     {{ plugin.title }}
