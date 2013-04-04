@@ -1,5 +1,5 @@
 imports:
-    - { resource: ../../../../../cfg/local.yml }
+    - { resource: ../../../../../config/local.yml }
     - { resource: security.yml }
 
 framework:
