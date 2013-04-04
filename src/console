@@ -6,25 +6,25 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 /** @var \Composer\Autoload\ClassLoader $loader */
 /** @noinspection PhpIncludeInspection */
-$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader = require __DIR__ . '/vendor/autoload.php';
 
 /* intl */
 if (!function_exists('intl_get_error_code'))
 {
     /** @noinspection PhpIncludeInspection */
     require_once __DIR__
-        . '/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+        . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
 
     $loader->add(
         '',
-        __DIR__ . '/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs'
+        __DIR__ . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs'
     );
 }
 
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', __DIR__ . '/../core');
+$loader->add('Eresus_', __DIR__ . '/core');
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
