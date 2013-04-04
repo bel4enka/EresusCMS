@@ -168,8 +168,7 @@
         </copy>
 
         <!-- Обработка файлов CSS темы default -->
-        <exec command="find src/bundles/eresus/admin/themes/default/blocks -name '*.css'\
-            | xargs cat >> ${build.dir}/bundles/eresus/admin/themes/default/theme.css" />
+        <exec command="find src/bundles/eresus/admin/themes/default/blocks -name '*.css' | xargs cat >> ${build.dir}/bundles/eresus/admin/themes/default/theme.css" />
 
         <!-- Сторонние компоненты -->
         <copy todir="${build.dir}/vendor">
