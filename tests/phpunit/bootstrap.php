@@ -29,8 +29,10 @@
  */
 
 namespace
-
 {
+
+    require_once __DIR__ . '/../../vendor/autoload.php';
+
     define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
     define('TESTS_TEST_DIR', __DIR__ );
     define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
@@ -89,14 +91,12 @@ namespace
     $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
     $loader->registerNamespaces(array(
         'Symfony' => TESTS_VENDORS . '/symfony/symfony/src',
-        'Eresus' => TESTS_SRC_DIR . '/core',
+        'Eresus' => TESTS_SRC_DIR,
     ));
     $loader->registerPrefixes(array(
-        'Eresus_' => TESTS_SRC_DIR . '/core',
+        'Eresus_' => TESTS_SRC_DIR,
     ));
     $loader->register();
-
-    require_once TESTS_SRC_DIR . '/lang/ru.php';
 }
 
 namespace Tests

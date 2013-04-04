@@ -24,7 +24,7 @@ if (!function_exists('intl_get_error_code'))
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', __DIR__ . '/core');
+$loader->add('Eresus_', __DIR__);
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');

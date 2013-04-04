@@ -31,12 +31,10 @@
 
 namespace Tests\Eresus\CmsBundle\Extensions;
 
-use Eresus_Kernel;
-use vfsStreamWrapper;
-use vfsStream;
+use org\bovigo\vfs\vfsStreamWrapper;
+use org\bovigo\vfs\vfsStream;
 
 require_once __DIR__ . '/../../../../bootstrap.php';
-require_once 'vfsStream/vfsStream.php';
 
 /**
  * @package Eresus

@@ -1,7 +1,5 @@
 /**
- * ${product.title} ${product.version}
- *
- * ${product.description}
+ * Скрипты АИ
  *
  * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
  * @copyright 2007, Eresus Project, http://eresus.ru/
@@ -24,30 +22,6 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  */
-
-function replaceMacros(sURL)
-{
-	var macros = new Array();
-	macros['httpRoot'] = '$(httpRoot)';
-	macros['httpHost'] = '$(httpHost)';
-	macros['httpPath'] = '$(httpPath)';
-	macros['styleRoot'] = '$(styleRoot)';
-	macros['dataRoot'] = '$(dataRoot)';
-
-	function __replace(sMatch, sMacros)
-	{
-		return macros[sMacros];
-	}
-
-	sURL = sURL.replace(/\$\(([^\)]+)\)/, __replace);
-	return sURL;
-}
-
-function formApplyClick(strForm)
-{
-	var objForm = document.forms[strForm];
-	objForm.submitURL.value = document.URL;
-}
 
 /*
  * Запрос подтверждения при удалении
@@ -76,7 +50,6 @@ $(document).on('click', '.sections__icon',
         var item = icon.closest('.sections__item');
         if (item.hasClass('sections__item_has_children'))
         {
-            var children = item.children('.sections__children');
             item.toggleClass('sections__item_state_collapsed');
             var title = icon.attr('title');
             icon.attr('title', icon.attr('data-inverse-title'));

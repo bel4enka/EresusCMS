@@ -1,6 +1,6 @@
 {
     "autoload": {
-        "psr-0": { "": "core/" }
+        "psr-0": { "": "" }
     },
     "require":
     {
@@ -23,7 +23,9 @@
         "sensio/generator-bundle": "2.1.*",
         "jms/security-extra-bundle": "1.2.*",
         "jms/di-extra-bundle": "1.1.*",
-        "components/modernizr": "dev-master"
+        "components/modernizr": "dev-master",
+
+        "mikey179/vfsStream": "dev-master"
     },
     "repositories":
     [

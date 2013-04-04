@@ -54,7 +54,7 @@ if (!function_exists('intl_get_error_code'))
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', __DIR__ . '/core');
+$loader->add('Eresus_', __DIR__);
 
 /* Если произошли какие-то ошибки, прерываем работу приложения */
 if (isset($php_errormsg))

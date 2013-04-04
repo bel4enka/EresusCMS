@@ -310,11 +310,7 @@
           destdir="${docs.dir}/api"
           template="${docs.api.template}">
           <fileset dir=".">
-              <include name="src/core/**/*.php" />
-              <include name="framework/core/**/*.php" />
-              <exclude name="framework/core/3rdparty/**" />
-              <include name="src/ext-3rd/**/*.php" />
-              <exclude name="src/ext-3rd/tinymce/plugins/images/**" />
+              <include name="src/Eresus/**/*.php" />
           </fileset>
       </phpdoc2>
 

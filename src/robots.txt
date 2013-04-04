@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: /core/
-Disallow: /ext/
-Disallow: /style/
+Disallow: /bundles/
+Disallow: /public/
