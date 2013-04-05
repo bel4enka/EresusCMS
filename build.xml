@@ -34,7 +34,7 @@
     Загружает файлы сторонних компонентов
     =====================================================================
     -->
-    <target name="vendors" description="Fetch 3rd party components">
+    <target name="vendor" description="Fetch 3rd party components">
 
         <property environment="env" />
 
@@ -64,6 +64,8 @@
                 </if>
             </else>
         </if>
+
+        <exec command="tools/jquery-ui.downloader.php" />
 
     </target>
 
@@ -212,10 +214,8 @@
         <!-- jQuery -->
         <copy todir="${build.dir}/bundles/jquery">
             <filelist dir="vendor/components/jquery" files="jquery.min.js" />
-            <filelist dir="vendor/components/jqueryui/ui/minified"
-                files="jquery-ui.custom.min.js" />
-            <fileset dir="vendor/components/jqueryui/ui/minified/i18n">
-                <exclude name="**/*" />
+            <fileset dir="vendor/components/jqueryui">
+                <include name="**/*"/>
             </fileset>
             <filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
         </copy>

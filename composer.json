@@ -17,7 +17,6 @@
         "symfony/monolog-bundle": "2.1.*",
         "mekras/botobor" : "0.3.*",
         "components/jquery" : "dev-master",
-        "components/jqueryui": "1.10.*",
         "carhartl/jquery-cookie" : "1.1",
         "sensio/framework-extra-bundle": "2.1.*",
         "sensio/generator-bundle": "2.1.*",
