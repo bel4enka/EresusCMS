@@ -1,7 +1,5 @@
 <?php
 /**
- * ${product.title}
- *
  * Раздел сайта
  *
  * @version ${product.version}
@@ -24,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Entity;
@@ -49,23 +45,19 @@ use Eresus\CmsBundle\Content\ContentTypeRegistry;
  * @property      string    $hint
  * @property      string    $keywords
  * @property      int       $position
- * @property      bool      $active
- * @property      int       $access
+ * @property      bool      $enabled
  * @property      bool      $visible
  * @property      string    $template
  * @property      string    $type
- * @property      string    $content
  * @property      array     $options
  * @property      \DateTime $created
- * @property      \DateTime $updated
  * @property      Section[] $children
- * @property-read string    $clientURL    URL раздела в КИ
+ * @property-read string    $clientUrl    URL раздела в КИ
  *
- * @package Eresus
  * @since 4.00
  *
  * @ORM\Entity(repositoryClass="Eresus\CmsBundle\Repository\SectionRepository")
- * @ORM\Table(name="pages")
+ * @ORM\Table(name="sections")
  * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */
 class Section extends AbstractEntity
@@ -96,7 +88,7 @@ class Section extends AbstractEntity
      * @var Section
      *
      * @ORM\ManyToOne(targetEntity="Section", inversedBy="children")
-     * @ORM\JoinColumn(name="owner", referencedColumnName="id")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent;
 
@@ -114,7 +106,7 @@ class Section extends AbstractEntity
      *
      * @var string
      *
-     * @ORM\Column(length=64)
+     * @ORM\Column(length=255)
      */
     protected $caption;
 
@@ -156,22 +148,13 @@ class Section extends AbstractEntity
     protected $position;
 
     /**
-     * Активность
+     * Вкл/выкл
      *
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    protected $active;
-
-    /**
-     * Уровень доступа
-     *
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    protected $access;
+    protected $enabled;
 
     /**
      * Видимость
@@ -187,7 +170,7 @@ class Section extends AbstractEntity
      *
      * @var string
      *
-     * @ORM\Column(length=64)
+     * @ORM\Column(length=255)
      */
     protected $template;
 
@@ -199,15 +182,6 @@ class Section extends AbstractEntity
      * @ORM\Column(length=255)
      */
     protected $type;
-
-    /**
-     * Содержимое
-     *
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    protected $content;
 
     /**
      * Опции
@@ -226,15 +200,6 @@ class Section extends AbstractEntity
      * @ORM\Column(type="datetime")
      */
     protected $created;
-
-    /**
-     * Время обновления
-     *
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $updated;
 
     /**
      * @var ArrayCollection

@@ -1,0 +1,26 @@
+{% extends 'CmsBundle:Content:Section.html.twig' %}
+
+{% set pageTitle = 'Свойства раздела' %}
+
+{% block local_contents %}
+    <div class="box box_style_inline">
+        <div class="box__header">
+            Свойства раздела «{{ section.caption }}»
+        </div>
+        <form action="{{ currentRoute }}" class="form" method="post" {{ form_enctype(form) }}>
+            {{ form_widget(form) }}
+            <div>
+                {# URL этой страницы: <a href="{{ pageURL }}">{{ pageURL }}</a> #}
+            </div>
+            <div class="form__footer">
+                <button type="submit" class="button button_has_icon button_icon_ok">
+                    Сохранить
+                </button>
+                <button type="button" class="button button_has_icon button_icon_cancel"
+                        onclick="history.back();">
+                    Отменить
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

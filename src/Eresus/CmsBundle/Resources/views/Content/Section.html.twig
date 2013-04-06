@@ -1,0 +1,32 @@
+{% extends 'CmsBundle:Base:Default.html.twig' %}
+
+{% set pageTitle = 'Свойства раздела' %}
+
+{% block contents %}
+    <div>
+        {% if 'admin.content.edit' == currentRoute %}
+        <span class="button button_state_disabled">
+            <i class="icon icon_img_edit"></i>
+            Наполнение раздела
+        </span>
+        {% else %}
+        <a href="{{ path('admin.content.edit', {'id': section.id}) }}" class="button">
+            <i class="icon icon_img_edit"></i>
+            Наполнение раздела
+        </a>
+        {% endif %}
+
+        {% if 'admin.content.properties' == currentRoute %}
+        <span class="button button_state_disabled">
+            <i class="icon icon_img_config"></i>
+            Свойства раздела
+        </span>
+        {% else %}
+        <a href="{{ path('admin.content.properties', {'id': section.id}) }}" class="button">
+            <i class="icon icon_img_config"></i>
+            Свойства раздела
+        </a>
+        {% endif %}
+    </div>
+    {% block local_contents %}{% endblock %}
+{% endblock %}

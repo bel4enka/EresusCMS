@@ -1,0 +1,41 @@
+{% extends 'CmsBundle:Base:Default.html.twig' %}
+
+{% set pageTitle = 'Добавление раздела' %}
+
+{% block contents %}
+<div class="box box_style_inline">
+    <div class="box__header">Добавление раздела</div>
+    <div class="box__contents">
+        <div id="add-section-tabs">
+            <ul>
+                <li><a href="#add-section-main">Основные свойства</a></li>
+                <li><a href="#add-section-meta">Мета-теги</a></li>
+                <li><a href="#add-section-extra">Дополнительно</a></li>
+            </ul>
+            <div id="add-section-main">
+                <form action="{{ path('admin.content.add', {'parent': parentId}) }}" class="form" method="post" {{ form_enctype(form) }}>
+                    {{ form_widget(form) }}
+                </form>
+            </div>
+            <div id="add-section-meta">
+            </div>
+            <div id="add-section-extra">
+            </div>
+        </div>
+    </div>
+    <div class="form__footer">
+        <button type="submit" class="button button_has_icon button_icon_ok">
+            Создать
+        </button>
+        <button type="button" class="button button_has_icon button_icon_cancel"
+                onclick="window.location='{{ path('admin.content') }}'">
+            Отменить
+        </button>
+    </div>
+    <script>
+        $('#add-section-tabs').tabs({
+            event: 'mouseover'
+        });
+    </script>
+</div>
+{% endblock %}

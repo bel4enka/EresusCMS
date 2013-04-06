@@ -29,12 +29,14 @@
 
 $jqueryUiVersion = '1.10.2';
 
-$components = array('accordion', 'autocomplete', 'button', 'core', 'datepicker', 'dialog',
-    'draggable', 'droppable', 'effect', 'effect-blind', 'effect-bounce', 'effect-clip',
-    'effect-drop', 'effect-explode', 'effect-fade', 'effect-fold', 'effect-highlight',
-    'effect-pulsate', 'effect-scale', 'effect-shake', 'effect-slide', 'effect-transfer', 'menu',
-    'mouse', 'position', 'progressbar', 'resizable', 'selectable', 'slider', 'sortable', 'spinner',
-    'tabs', 'tooltip', 'widget');
+$components = array('core', 'widget', 'mouse', 'position', 'draggable', 'droppable', 'resizable',
+    'selectable', 'sortable', 'accordion', 'autocomplete', 'button', 'datepicker', 'dialog', 'menu',
+    'progressbar', 'slider', 'spinner', 'tabs', 'tooltip', 'effect', 'effect-blind',
+    'effect-bounce', 'effect-clip', 'effect-drop', 'effect-explode', 'effect-fade', 'effect-fold',
+    'effect-highlight', 'effect-pulsate', 'effect-scale', 'effect-shake', 'effect-slide',
+    'effect-transfer');
+
+
 
 $theme = array(
     'ffDefault'=> 'Verdana,Helvetica,sans-serif',
@@ -97,11 +99,17 @@ $theme = array(
     'cornerRadiusShadow' => '8px',
 );
 
+/**
+ * Рекурсивно удаляет папку
+ *
+ * @param string $folder
+ */
 function remove($folder)
 {
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($folder,
         FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $path)
     {
+        /** @var SplFileInfo $path */
         $path->isFile() ? unlink($path->getPathname()) : rmdir($path->getPathname());
     }
     rmdir($folder);
@@ -132,7 +140,7 @@ foreach ($theme as $key => $value)
 {
     $themeEncoded []= $key . '=' . urlencode($value);
 }
-$themeEncoded = implode('&amp;', $themeEncoded);
+$themeEncoded = implode('&', $themeEncoded);
 $req->addPostParameter('theme', $themeEncoded);
 
 $response = $req->send();
@@ -166,7 +174,7 @@ $zip->close();
 unlink($filename);
 
 $source = "$folder/jquery-ui-$jqueryUiVersion.custom";
-rename("$source/development-bundle/ui/minified/jquery-ui.custom.min.js",
+rename("$source/js/jquery-ui-$jqueryUiVersion.custom.min.js",
     "$folder/jquery-ui.min.js");
 rename("$source/development-bundle/ui/minified/i18n/jquery-ui-i18n.min.js",
     "$folder/jquery-ui-i18n.min.js");

@@ -1,0 +1,14 @@
+.button.button_state_disabled,
+.button.button_state_disabled:visited,
+.button.button_state_disabled:hover,
+.button.button_state_disabled:active
+{
+    box-shadow:
+        0 1px 2px 0 rgba(0, 0, 0, .5),
+        0 .3em 5px 0 rgba(255, 255, 255, .8) inset,
+        0 -.7em 5px 0 rgba(0, 0, 0, .1) inset;
+    color: #555;
+    cursor: default;
+    left: 0;
+    top: 0;
+}

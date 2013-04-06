@@ -12,6 +12,22 @@ admin.dashboard:
     pattern: /admin/
     defaults: { _controller: CmsBundle:AdminDashboard:index }
 
+admin.content:
+    pattern: /admin/content/
+    defaults: { _controller: CmsBundle:AdminContent:index }
+
+admin.content.add:
+    pattern: /admin/content/{parent}/add
+    defaults: { _controller: CmsBundle:AdminContent:add }
+
+admin.content.edit:
+    pattern: /admin/content/{id}/
+    defaults: { _controller: CmsBundle:AdminContent:edit }
+
+admin.content.properties:
+    pattern: /admin/content/{id}/properties
+    defaults: { _controller: CmsBundle:AdminContent:properties }
+
 admin.files:
     pattern: /admin/files/
     defaults: { _controller: CmsBundle:AdminFiles:index }

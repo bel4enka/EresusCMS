@@ -1,25 +1,27 @@
 <tr data-level="{{ level }}">
     <td style="padding-left: {{ level }}.5em;">
-        <a href="admin.php?mod=content&id={{ section.id }}"
+        <a href="{{ section.id }}"
             title="Перейти в раздел {{ section.caption|escape }}">{{ section.caption }}</a>
     </td>
     <td><a title="Открыть раздел в КИ" target="_blank"
-        href="{{ siteRoot }}{{ section.clientURL }}">{{ section.name }}/</a></td>
+        href="{{ section.clientURL }}">{{ section.name }}/</a></td>
     <td>{{ section.type }}</td>
-    <td>{{ section.access }}</td>
     <td class="table-list__controls">
-        <a href="admin.php?mod=pages&id={{ section.id }}" class="icon icon_img_config"
-            title="Свойства {{ section.caption|escape }}">&nbsp;</a>
+        <a href="{{ path('admin.content.edit', {'id': section.id}) }}" class="icon icon_img_edit"
+            title="Редактировать раздел «{{ section.caption|escape }}»">&nbsp;</a>
+        <a href="{{ path('admin.content.properties', {'id': section.id}) }}"
+           class="icon icon_img_config"
+           title="Свойства раздела «{{ section.caption|escape }}»">&nbsp;</a>
         {% if section.id != 1 %}
         <a href="admin.php?mod=pages&id={{ section.id }}&action=up" class="icon icon_img_up"
             title="Поднять {{ section.caption|escape }}">&nbsp;</a>
         <a href="admin.php?mod=pages&id={{ section.id }}&action=down" class="icon icon_img_down"
             title="Опустить {{ section.caption|escape }}">&nbsp;</a>
         {% endif %}
-        <a href="admin.php?mod=pages&id={{ section.id }}&action=add" class="icon icon_img_add"
-            title="Добавить подраздел в {{ section.caption|escape }}">&nbsp;</a>
+        <a href="{{ path('admin.content.add', {'parent': section.id}) }}" class="icon icon_img_add"
+            title="Добавить подраздел в «{{ section.caption|escape }}»">&nbsp;</a>
         {% if section.id != 1 %}
-        <a href="admin.php?mod=pages&id={{ section.id }}&action=move" class="icon icon_img_move-section"
+        <a href="admin.php?mod=pages&id={{ section.id }}action=move" class="icon icon_img_move-section"
            title="Переместить раздел {{ section.caption|escape }}">&nbsp;</a>
         <a href="admin.php?mod=pages&id={{ section.id }}&action=delete" class="icon icon_img_delete"
            data-action="delete" title="Удалить раздел {{ section.caption|escape }}">&nbsp;</a>

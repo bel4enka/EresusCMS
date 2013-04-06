@@ -162,7 +162,7 @@
         <copy todir="${build.dir}">
             <fileset dir="src">
                 <include name="**" />
-                <exclude name="admin/themes/default/blocks/**" />
+                <exclude name="themes/default/blocks/**" />
             </fileset>
             <filterchain>
                 <expandproperties />
@@ -170,7 +170,7 @@
         </copy>
 
         <!-- Обработка файлов CSS темы default -->
-        <exec command="find src/bundles/eresus/admin/themes/default/blocks -name '*.css' | xargs cat >> ${build.dir}/bundles/eresus/admin/themes/default/theme.css" />
+        <exec command="find src/bundles/eresus/themes/default/blocks -name '*.css' | xargs cat >> ${build.dir}/bundles/eresus/themes/default/theme.css" />
 
         <!-- Сторонние компоненты -->
         <copy todir="${build.dir}/vendor">
@@ -215,10 +215,17 @@
         <copy todir="${build.dir}/bundles/jquery">
             <filelist dir="vendor/components/jquery" files="jquery.min.js" />
             <fileset dir="vendor/components/jqueryui">
-                <include name="**/*"/>
+                <include name="**/*.js"/>
             </fileset>
             <filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
         </copy>
+        <copy todir="${build.dir}/bundles/eresus/themes/default">
+            <fileset dir="vendor/components/jqueryui">
+                <include name="images/*"/>
+            </fileset>
+        </copy>
+        <append destFile="${build.dir}/bundles/eresus/themes/default/theme.css"
+            file="vendor/components/jqueryui/jquery-ui.min.css"/>
 
         <!-- Modernizr -->
         <copy todir="${build.dir}/bundles/modernizr">

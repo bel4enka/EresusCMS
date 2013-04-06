@@ -1,0 +1,15 @@
+.tabs__button
+{
+    background: #eee;
+    border: solid #99bbe8;
+    border-radius: 3px 3px 0 0;
+    border-width: 1px 1px 0 1px;
+    display: inline-block;
+    margin: 0 1px 0 0;
+    padding: 1px 5px;
+}
+
+.tabs__button:hover
+{
+    background: white;
+}
