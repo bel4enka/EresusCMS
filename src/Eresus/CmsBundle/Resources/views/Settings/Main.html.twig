@@ -1,0 +1,283 @@
+{% extends 'CmsBundle:Settings:Base.html.twig' %}
+
+{% set pageTitle = 'Настройки сайта' %}
+
+{% block contents %}
+<div class="box">
+    <div class="box__header">
+        Основные настройки сайта
+    </div>
+    <div class="box__contents">
+        <form action="{{ path(currentRoute) }}" method="post" {{ form_enctype(form) }}>
+
+            <div id="settings-tabs">
+
+                <ul>
+                    <li><a href="#settings-main">Основные</a></li>
+                    <li><a href="#settings-mail">Почта</a></li>
+                    <li><a href="#settings-files">Файлы</a></li>
+                    <li><a href="#settings-other">Прочее</a></li>
+                </ul>
+
+                <div id="settings-main">
+
+                    {{ form_errors(form) }}
+
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td>
+                                {{ form_label(form.siteName, 'Название сайта') }}<br>
+                                {{ form_errors(form.siteName) }}
+                                {{ form_widget(form.siteName) }}
+                            </td>
+                            <td class="form__comment">
+                                Предназначено только для внутреннего использования, и не будет отображаться
+                                нигде, кроме панели управления. Желательно чтобы название сайта было
+                                коротким.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td>
+                                {{ form_label(form.siteTitle, 'Заголовок сайта') }}<br>
+                                {{ form_errors(form.siteTitle) }}
+                                {{ form_widget(form.siteTitle, {'attr': {'cols': 50}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Текст для тега &lt;title&gt;, общий для всех страниц. <em>Внимание!</em>
+                                Чтобы этот текст подставлялся в заголовок, надо вставить переменную
+                                <b>{{ '{{ globals.siteTitle }}' }}</b> в нужные
+                                <a href="{{ path('admin.style') }}">шаблоны страниц</a>.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td>
+                                <div class="nowrap">
+                                    {{ form_errors(form.siteTitleReverse) }}
+                                    {{ form_widget(form.siteTitleReverse) }}
+                                    {{ form_label(form.siteTitleReverse, 'Обратный порядок разделов в {{ globals.sectionTitle }}') }}<br>
+                                </div>
+
+                                <div class="ui-minor">
+                                    <em>Пример:</em> <div id="settings-siteTitleReverse-example" style="display: inline">
+                                        <span class="checked"{% if not globals.siteTitleReverse %} style="display: none;"{% endif %}>Главная - Категория - Товар</span>
+                                        <span class="unchecked"{% if globals.siteTitleReverse %} style="display: none;"{% endif %}>Товар - Категория - Главная</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="form__comment">
+                                Переменная <b>{{ '{{ globals.sectionTitle  }}' }}</b> заменяется на название
+                                открытой страницы и списка всех родительских страниц. Этот переключатель
+                                определяет в каком порядке будут выводиться их названия: от открытой
+                                страницы к корню (по умолчанию) или наоборот.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td>
+                                {{ form_errors(form.siteTitleDivider) }}
+                                {{ form_label(form.siteTitleDivider, 'Разделитель названий разделов в {{ globals.sectionTitle }}') }}<br>
+
+                                <div class="nowrap">
+                                    {{ form_widget(form.siteTitleDivider, {'attr': {'size': 4}}) }}
+                                    <span class="ui-minor">
+                                        <em>Пример:</em> <span id="settings-siteTitleDivider-example">
+                                            Товар<span>{{ globals.siteTitleDivider }}</span>Категория<span>{{ globals.siteTitleDivider }}</span>Каталог
+                                        </span>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="form__comment">
+                                Этот разделитель используется для объединения названий разделов в макросе
+                                <b>$(sectionTitle)</b>.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td>
+                                {{ form_label(form.siteKeywords, 'Ключевые слова сайта') }}<br>
+                                {{ form_errors(form.siteKeywords) }}
+                                {{ form_widget(form.siteKeywords, {'attr': {'cols': 50}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Ключевые слова для мета-тега <b>keywords</b>, общего для всех страниц.
+                                <em>Внимание!</em> Чтобы эти слова подставлялись в мета-тег, надо вставить
+                                переменную <b>{{ '{{ globals.siteKeywords }}' }}</b>
+                                в нужные <a href="{{ path('admin.style') }}">шаблоны страниц</a>.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td>
+                                {{ form_label(form.siteDescription, 'Описание сайта') }}<br>
+                                {{ form_errors(form.siteDescription) }}
+                                {{ form_widget(form.siteDescription, {'attr': {'cols': 50}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Текст для мета-тега <b>description</b>, общего для всех страниц. <em>Внимание!</em>
+                                Чтобы этот текст подставлялся в мета-тег, надо вставить переменную
+                                <b>{{ '{{ globals.siteDescription }}' }}</b>
+                                в нужные <a href="{{ path('admin.style') }}">шаблоны страниц</a>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="settings-mail">
+                    <div class="form__info">
+                        Параметры писем, отсылаемых с сайта.
+                    </div>
+                    {{ form_errors(form) }}
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            {{ form_label(form.mailFromAddr, 'Адрес отправителя') }}<br>
+                                            {{ form_errors(form.mailFromAddr) }}
+                                            {{ form_widget(form.mailFromAddr, {'attr': {'size': 20}}) }}
+                                            <div class="ui-minor nowrap">Пример: <em>robot@example.org</em></div>
+                                        </td>
+                                        <td>
+                                            {{ form_label(form.mailFromName, 'Имя отправителя') }}<br>
+                                            {{ form_errors(form.mailFromName) }}
+                                            {{ form_widget(form.mailFromName, {'attr': {'size': 20}}) }}
+                                            <div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
+                                        </td>
+                                        <td style="width: 80%">
+                                            {{ form_label(form.mailFromOrg, 'Организация') }}<br>
+                                            {{ form_errors(form.mailFromOrg) }}
+                                            {{ form_widget(form.mailFromOrg, {'attr': {'size': 20}}) }}
+                                            <div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="form__comment">
+                                Эти данные будут указываться в письмах, как сведения об отправителе.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td>
+                                {{ form_label(form.mailReplyTo, 'Обратный адрес') }}<br>
+                                {{ form_errors(form.mailReplyTo) }}
+                                {{ form_widget(form.mailReplyTo, {'attr': {'size': 20}}) }}
+                            </td>
+                            <td class="form__comment" colspan="2">
+                                <br>
+                                Вы можете указать адрес для ответа, отличный от адреса отправителя.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td colspan="3">
+                                {{ form_label(form.mailFromSign, 'Подпись, добавляемая к тексту письма') }}<br>
+                                {{ form_errors(form.mailFromSign) }}
+                                {{ form_widget(form.mailFromSign, {'attr': {'cols': 60, 'rows': 4}}) }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="settings-files">
+                    <div class="form__info">Настройки загрузки файлов на сайт.</div>
+                    {{ form_errors(form) }}
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td>
+                                <div class="nowrap">
+                                    {{ form_errors(form.filesModeSetOnUpload) }}
+                                    {{ form_errors(form.filesModeDefault) }}
+                                    {{ form_widget(form.filesModeSetOnUpload) }}
+                                    {{ form_label(form.filesModeSetOnUpload, 'Устанавливать на загружаемые файлы права') }}<br>
+                                </div>
+                            </td>
+                            <td>
+                                {{ form_widget(form.filesModeDefault, {'attr': {'size': 4, 'pattern': '^0[0-7]{3}$'}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Вы можете указать права UNIX, которые будут устанавливаться на все
+                                загружаемые файлы.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="settings-other">
+                    {{ form_errors(form) }}
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td>
+                                <label>Шаблон по умолчанию</label><br />
+                                <select name="pageTemplateDefault">
+                                    {foreach $templates item}
+                                    <option value="{$item.name}"{if $pageTemplateDefault == $item.name} selected="selected"{/if}>{$item.caption}</option>
+                                    {/foreach}
+                                </select>
+                            </td>
+                            <td class="form__comment">
+                                <br />
+                                Будет использован для вновь создаваемых разделов.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            {{ form_rest(form) }}
+
+            <div class="form__footer">
+                <button type="submit" class="button button_type_default">
+                    <span class="icon icon_img_apply"></span>
+                    Сохранить
+                </button>
+            </div>
+
+            <script>
+                $(function ()
+                {
+                    $('#settings-tabs').tabs({event: 'mouseover'});
+                    $('#{{ form.siteTitleReverse.vars.id }}').on('click',
+                        function ()
+                        {
+                            var root = $("#settings-siteTitleReverse-example");
+                            $("span", root).hide();
+                            $("." + (this.checked ? "checked" : "unchecked"), root).show();
+                        }
+                    );
+
+                    $('#{{ form.siteTitleDivider.vars.id }}').on('keyup',
+                        function ()
+                        {
+                            $('span', $('#settings-siteTitleDivider-example')).text(this.value);
+                        }
+                    );
+                    /*
+                    $("#settingsForm textarea[name=siteDescription]").keydown(function (event){
+                        if (event.keyCode == 9)
+                        {
+                            $("#settingsFormTabs").tabs("select", 1);
+                         setTimeout(function(){$("#settingsForm input[name=mailFromAddr]").focus();}, 10);
+                        }
+                    });
+
+                    $("#settingsForm textarea[name=mailFromSign]").keydown(function (event){
+                        if (event.keyCode == 9)
+                        {
+                            $("#settingsFormTabs").tabs("select", 2);
+                         setTimeout(function()\{$("#settingsForm input[name=filesModeSetOnUpload]").focus();}, 10);
+                        }
+                    });
+
+                    $("#settingsForm input[name=filesModeDefault]").keydown(function (event){
+                        if (event.keyCode == 9)
+                        {
+                            $("#settingsFormTabs").tabs("select", 3);
+                            //noinspection UnterminatedStatementJS
+                         setTimeout(function()\{$("#settingsForm select[name=contentTypeDefault]").focus();}, //noinspection UnterminatedStatementJS
+                         10);
+                        }
+                    });*/
+                });
+            </script>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+/**
+ * Блок информации о форме или её части
+ */
+.form__info
+{
+    background: #eee;
+    border-radius: 7px;
+    box-shadow:
+        0 0 3px 0 rgba(0, 0, 0, 0.2),
+        0 15px 10px 0 rgba(255, 255, 255, 0.6) inset;
+    margin: 0 0 7px;
+    padding: 5px 10px;
+    position: relative;
+}

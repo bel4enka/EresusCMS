@@ -73,7 +73,21 @@ class AdminContentController extends AdminAbstractController
      */
     public function addAction($parent, Request $request)
     {
-        $vars = array('parentId' => $parent);
+        $vars = array();
+
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Section $parent */
+        $parent = $em->find('CmsBundle:Section', $parent);
+        if (null === $parent)
+        {
+            throw $this->createNotFoundException();
+        }
+        $vars['parentId'] = $parent->id;
+        $vars['parentUrl'] = $parent->clientUrl;
+
+
         $section = new Section();
         $section->description = '';
         $section->keywords = '';
@@ -81,8 +95,6 @@ class AdminContentController extends AdminAbstractController
         $section->enabled = true;
         $section->visible = true;
         $section->created = new \DateTime();
-
-        //$null2string = new NullToStringTransformer();
 
         /** @var ContentTypeRegistry $contentTypeRegistry */
         $contentTypeRegistry = $this->get('content_types');
@@ -95,35 +107,30 @@ class AdminContentController extends AdminAbstractController
         }
         $vars['contentTypeDescriptions'] = $contentTypeDescriptions;
 
+        $null2string = new NullToStringTransformer();
         $builder = $this->createFormBuilder($section);
         $builder
-            ->add('type', 'choice', array('label' => 'Тип раздела',
+            ->add('type', 'choice', array('label' => 'Выберите тип раздела',
                 'choices' => $contentTypes))
-            /*->add('name', 'text', array('label'  => 'Имя'))
-            ->add('title', 'text', array('label'  => 'Заголовок'))
-            ->add('caption', 'text', array('label'  => 'Пункт меню'))
-            ->add($builder->create('hint', 'text', array('label'  => 'Подсказка',
-                'required' => false))->addModelTransformer($null2string))
-            ->add($builder->create('description', 'text',
-                array('label'  => 'Описание', 'required' => false))
-                ->addModelTransformer($null2string))
-            ->add($builder->create('keywords', 'text',
-                array('label'  => 'Ключевые слова', 'required' => false))
-                ->addModelTransformer($null2string))
-            ->add('template', 'choice', array('label'  => 'Шаблон',
-                'choices' => $templates->enum()))
+            ->add('caption', 'text', array('label'  => 'Название пункта меню'))
+            ->add('name', 'text', array('label'  => 'Адрес раздела',
+                'attr' => array('pattern' => '^[a-zA-Z0-9_-]+$')))
 
-            ->add('active', 'checkbox', array('label'  => 'Включить'))
-            ->add('visible', 'checkbox', array('label'  => 'Показывать в меню'))*/;
-            //$builder->add('position', 'integer', array('label'  => 'Порядковый номер'));
-        /*$builder
-            ->add($builder->create('options', 'textarea',
-                array('label'  => 'Опции', 'required' => false))
-                ->addModelTransformer(new OptionsTransformer()))
-            ->add('created', 'datetime', array('label'  => 'Дата создания',
-                'widget' => 'single_text', 'format' => \IntlDateFormatter::SHORT))
-            ->add('updated', 'datetime', array('label'  => 'Дата изменения',
-                'widget' => 'single_text', 'format' => \IntlDateFormatter::SHORT));*/
+            ->add('title', 'textarea',
+                array('label'  => 'Заголовок &lt;title&gt;', 'required' => false))
+            ->add($builder->create('description', 'textarea',
+                array('label'  => 'Описание (description)', 'required' => false))
+                ->addModelTransformer($null2string))
+            ->add($builder->create('keywords', 'textarea',
+                array('label'  => 'Ключевые слова (keywords)', 'required' => false))
+                ->addModelTransformer($null2string))
+
+            ->add('enabled', 'checkbox', array('label'  => 'Включить', 'required' => false))
+            ->add('visible', 'checkbox',
+                array('label'  => 'Показывать в меню', 'required' => false));
+            /*
+            ->add('template', 'choice', array('label'  => 'Шаблон',
+                'choices' => $templates->enum()))*/
 
         $form = $builder->getForm();
 
@@ -132,22 +139,11 @@ class AdminContentController extends AdminAbstractController
             $form->bind($request);
             if ($form->isValid())
             {
-                /** @var \Doctrine\ORM\EntityManager $em */
-                $em = $this->getDoctrine()->getManager();
-
-                if (0 == $parent)
-                {
-                    $parent = null;
-                }
-                else
-                {
-                    $parent = $em->find('CmsBundle:Section', $parent);
-                    if (null === $parent)
-                    {
-                        throw $this->createNotFoundException();
-                    }
-                }
                 $section->parent = $parent;
+                if (empty($section->title))
+                {
+                    $section->title = $section->caption;
+                }
                 $em->persist($section);
 
                 $q = $em->createQuery(
@@ -157,7 +153,7 @@ class AdminContentController extends AdminAbstractController
                 $section->position = $max[1] + 1;
 
                 $em->flush();
-                return $this->redirect(Eresus_Kernel::app()->getPage()->url());
+                return $this->redirect($this->generateUrl('admin.content'));
             }
         }
         $vars['form'] = $form->createView();

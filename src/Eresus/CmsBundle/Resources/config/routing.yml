@@ -28,6 +28,22 @@ admin.content.properties:
     pattern: /admin/content/{id}/properties
     defaults: { _controller: CmsBundle:AdminContent:properties }
 
+admin.content.up:
+    pattern: /admin/content/{id}/
+    defaults: { _controller: CmsBundle:AdminContent:edit }
+
+admin.content.down:
+    pattern: /admin/content/{id}/
+    defaults: { _controller: CmsBundle:AdminContent:edit }
+
+admin.content.move:
+    pattern: /admin/content/{id}/
+    defaults: { _controller: CmsBundle:AdminContent:edit }
+
+admin.content.delete:
+    pattern: /admin/content/{id}/
+    defaults: { _controller: CmsBundle:AdminContent:edit }
+
 admin.files:
     pattern: /admin/files/
     defaults: { _controller: CmsBundle:AdminFiles:index }

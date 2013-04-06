@@ -1,0 +1,5 @@
+.form_style_commented > tbody > .form__row > td
+{
+    border-bottom: solid 1px #aaa;
+    padding-bottom: 10px;
+}

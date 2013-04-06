@@ -1,0 +1,6 @@
+.admin__content-add__url-example
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 20em;
+}

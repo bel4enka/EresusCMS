@@ -3,24 +3,25 @@
 {% set pageTitle = 'Добавление раздела' %}
 
 {% block contents %}
-<div class="box box_style_inline">
+<div class="box box_style_inline admin__content-add">
     <div class="box__header">Добавление раздела</div>
     <div class="box__contents">
-        <div id="add-section-tabs">
-            <ul>
-                <li><a href="#add-section-main">Основные свойства</a></li>
-                <li><a href="#add-section-meta">Мета-теги</a></li>
-                <li><a href="#add-section-extra">Дополнительно</a></li>
-            </ul>
-            <div id="add-section-main">
-                <form action="{{ path('admin.content.add', {'parent': parentId}) }}" method="post" {{ form_enctype(form) }}>
+        <form action="{{ path('admin.content.add', {'parent': parentId}) }}" method="post" {{ form_enctype(form) }}>
+            <div id="add-section-tabs">
+                <ul>
+                    <li><a href="#add-section-main">Основные свойства</a></li>
+                    <li><a href="#add-section-meta">Мета-теги</a></li>
+                    <li><a href="#add-section-access">Доступ</a></li>
+                    <li><a href="#add-section-extra">Дополнительно</a></li>
+                </ul>
+                <div id="add-section-main">
                     <table class="form form_style_commented">
                         <tr class="form__row">
                             <td class="form__field">
                                 {{ form_label(form.type) }}<br>
-                                {{ form_widget(form.type, {'attr': {'size': 7}}) }}
+                                {{ form_widget(form.type, {'attr': {'size': 7, 'class': 'full-width'}}) }}
                             </td>
-                            <td class="form__comment">
+                            <td class="admin__content-add__content-type-desc">
                                 <div id="{{ form.type.vars.id }}_desc"></div>
                                 <script>
                                     $(function () {
@@ -33,34 +34,122 @@
                                                 $('#{{ form.type.vars.id }}_desc')
                                                     .html(desc[this.value]);
                                             }
-                                        );
+                                        ).change();
                                     });
                                 </script>
                             </td>
                         </tr>
+                        <tr class="form__row">
+                            <td class="form__field">
+                                {{ form_label(form.caption) }}<br>
+                                {{ form_widget(form.caption, {'attr': {'size': 30}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Укажите какое название выводить в меню для нового раздела. Желательно
+                                чтобы название не было очень длинным.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td class="form__field">
+                                {{ form_label(form.name) }}<br>
+                                {{ form_widget(form.name, {'attr': {'size': 30}}) }}
+                                <div class="admin__content-add__url-example">
+                                    <code>{{ parentUrl }}<b id="{{ form.name.vars.id }}_example"></b>/</code>
+                                    <script>
+                                        $('#{{ form.name.vars.id }}').on('keyup change',
+                                            function ()
+                                            {
+                                                $('#{{ form.name.vars.id }}_example')
+                                                    .text(this.value);
+                                            }
+                                        ).change();
+                                    </script>
+                                </div>
+                            </td>
+                            <td class="form__comment">
+                                Адрес раздела может содержать только латинские буквы (a-z, A-Z),
+                                цифры, символ подчёркивания (_) и дефисоминус (-).
+                            </td>
+                        </tr>
                     </table>
+                </div>
+                <div id="add-section-meta">
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td class="form__field">
+                                {{ form_label(form.title) }}<br>
+                                {{ form_widget(form.title, {'attr': {'cols': 40, 'rows': 3}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Заголовок раздела.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td class="form__field">
+                                {{ form_label(form.description) }}<br>
+                                {{ form_widget(form.description, {'attr': {'cols': 40, 'rows': 3}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Описание раздела.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td class="form__field">
+                                {{ form_label(form.keywords) }}<br>
+                                {{ form_widget(form.keywords, {'attr': {'cols': 40, 'rows': 3}}) }}
+                            </td>
+                            <td class="form__comment">
+                                Ключевые слова раздела.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="add-section-access">
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td class="form__field">
+                                <div class="nowrap">{{ form_widget(form.enabled) }}{{ form_label(form.enabled) }}</div>
+                            </td>
+                            <td class="form__comment">
+                                Вы можете снять этот флажок чтобы временно сделать раздел
+                                недоступным для посетителей.
+                            </td>
+                        </tr>
+                        <tr class="form__row">
+                            <td class="form__field">
+                                <div class="nowrap">{{ form_widget(form.visible) }}{{ form_label(form.visible) }}</div>
+                            </td>
+                            <td class="form__comment">
+                                Если снять этот флажок, то раздел не будет показываться в меню,
+                                но по-прежнему будет по прямым ссылкам на него. <em>Внимание!</em>
+                                Этот параметр является лишь рекомендацией модулям меню не показывать
+                                раздел. Однако в зависимости от модуля меню и его настроек, значение
+                                этого параметра может быть проигнорировано.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="add-section-extra">
+                    <table class="form form_style_commented">
                     {{ form_rest(form) }}
-                </form>
+                    </table>
+                </div>
             </div>
-            <div id="add-section-meta">
+            <script>
+                $('#add-section-tabs').tabs({
+                    event: 'mouseover'
+                });
+            </script>
+            <div class="form__footer">
+                <button type="submit" class="button button_has_icon button_icon_ok">
+                    Создать
+                </button>
+                <button type="button" class="button button_has_icon button_icon_cancel"
+                        onclick="window.location='{{ path('admin.content') }}'">
+                    Отменить
+                </button>
             </div>
-            <div id="add-section-extra">
-            </div>
-        </div>
+        </form>
     </div>
-    <div class="form__footer">
-        <button type="submit" class="button button_has_icon button_icon_ok">
-            Создать
-        </button>
-        <button type="button" class="button button_has_icon button_icon_cancel"
-                onclick="window.location='{{ path('admin.content') }}'">
-            Отменить
-        </button>
-    </div>
-    <script>
-        $('#add-section-tabs').tabs({
-            event: 'mouseover'
-        });
-    </script>
 </div>
 {% endblock %}

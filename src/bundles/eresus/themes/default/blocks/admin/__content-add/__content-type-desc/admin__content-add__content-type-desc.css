@@ -1,0 +1,11 @@
+.admin__content-add__content-type-desc
+{
+    vertical-align: top;
+}
+
+.admin__content-add__content-type-desc > div
+{
+    border: solid 1px #eee;
+    height: 9em;
+    margin-top: 1.54em;
+}

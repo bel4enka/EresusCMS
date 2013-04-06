@@ -42,7 +42,6 @@ use Eresus\CmsBundle\Content\ContentTypeRegistry;
  * @property      string    $title
  * @property      string    $caption
  * @property      string    $description  описание
- * @property      string    $hint
  * @property      string    $keywords
  * @property      int       $position
  * @property      bool      $enabled
@@ -121,15 +120,6 @@ class Section extends AbstractEntity
     protected $description;
 
     /**
-     * Подсказка
-     *
-     * @var int
-     *
-     * @ORM\Column(type="text")
-     */
-    protected $hint;
-
-    /**
      * Ключевые слова
      *
      * @var int
@@ -170,7 +160,7 @@ class Section extends AbstractEntity
      *
      * @var string
      *
-     * @ORM\Column(length=255)
+     * @ORM\Column(length=255, nullable=true)
      */
     protected $template;
 
