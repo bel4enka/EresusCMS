@@ -95,17 +95,17 @@ class Registry implements ContainerAwareInterface
     /**
      * Возвращает объект плагина
      *
-     * @param string $ns  пространство имён плагина
+     * @param string $id  идентификатор плагина
      *
      * @return Plugin|bool  экземпляр плагина или false, если такого плагина нет или он отключен
      *
      * @since 4.00
      */
-    public function get($ns)
+    public function get($id)
     {
-        if (isset($this->plugins[$ns]))
+        if (isset($this->plugins[$id]))
         {
-            return $this->plugins[$ns];
+            return $this->plugins[$id];
         }
         return false;
     }
@@ -126,7 +126,7 @@ class Registry implements ContainerAwareInterface
          * найти сам класс Bundle (файл с которым можно подключить и ручками), но и чтобы найти все
          * классы, которые может использовать Bundle.
          */
-        /** @var \Eresus_Kernel $kernel */
+        /** @var Kernel $kernel */
         $kernel = $this->container->get('kernel');
         $kernel->getClassLoader()->add($plugin->namespace, $kernel->getRootDir() . '/plugins');
 
@@ -143,7 +143,7 @@ class Registry implements ContainerAwareInterface
             $registry->register($type);
         }
 
-        $this->plugins[$plugin->namespace] = $plugin;
+        $this->plugins[$plugin->id] = $plugin;
     }
 
     /**
@@ -275,7 +275,7 @@ class Registry implements ContainerAwareInterface
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema($classes);
 
-        unset($this->config[$plugin->namespace]);
+        unset($this->config[$plugin->id]);
         $yml = Yaml::dump($this->config);
         file_put_contents($this->getDbFilename(), $yml);
     }
@@ -315,12 +315,12 @@ class Registry implements ContainerAwareInterface
         {
             $this->config = array();
         }
-        foreach ($this->config as $ns => $config)
+        foreach ($this->config as $id => $config)
         {
             if (isset($config['enabled']) && $config['enabled'])
             {
-                $plugin = new Plugin($ns, $this->container, $this->config[$ns]);
-                $this->plugins[$ns] = $plugin;
+                $plugin = new Plugin($id, $this->container, $this->config[$id]);
+                $this->plugins[$id] = $plugin;
                 $this->register($plugin);
             }
         }

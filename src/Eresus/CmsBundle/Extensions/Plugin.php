@@ -30,18 +30,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-
 use Eresus\CmsBundle\Content\ContentType;
 use Eresus\CmsBundle\Extensions\Controller\AdminSettingsController;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
-
-use Eresus_CMS;
 use Eresus\CmsBundle\Kernel;
 use Eresus\CmsBundle\CmsBundle;
 
 /**
  * Родительский класс для всех плагинов
  *
+ * @property-read  string          $id           идентификатор
  * @property-read  string          $namespace    пространство имён
  * @property-read  string          $title        название
  * @property-read  string          $version      версия
@@ -68,6 +66,14 @@ class Plugin
      * @since 4.00
      */
     private $container;
+
+    /**
+     * Идентификатор
+     *
+     * @var string
+     * @since 4.00
+     */
+    private $id;
 
     /**
      * Пространство имён
@@ -145,15 +151,17 @@ class Plugin
     /**
      * Создаёт основной объект плагина из указанного пространства имён
      *
-     * @param string             $ns          пространство имён плагина
+     * @param string             $nsOrId      пространство имён или идентификатор плагина
      * @param ContainerInterface $container   контейнер служб
      * @param array              $localConfig локальная конфигурация плагина
      *
      * @throws LogicException
      */
-    public function __construct($ns, ContainerInterface $container, array $localConfig = null)
+    public function __construct($nsOrId, ContainerInterface $container, array $localConfig = null)
     {
+        $ns = str_replace('.', '\\', $nsOrId);
         $this->container = $container;
+        $this->id = str_replace('\\', '.', $ns);
         $this->namespace = $ns;
         $this->settings = new ArrayCollection;
         $this->path = '/plugins/' . str_replace('\\', '/', $ns);
@@ -283,8 +291,8 @@ class Plugin
         foreach ($this->requirements as $id => $versions)
         {
             /* Определяем требуемые минимальную и максимальную версии */
-            $min = isset($versions['min']) ? $versions['min'] : '99.99';
-            $max = isset($versions['max']) ? $versions['max'] : $min;
+            $min = \Eresus\CmsBundle\getElementOrDefault($versions, 'min', '99.99');
+            $max = \Eresus\CmsBundle\getElementOrDefault($versions, 'max', $min);
 
             /* Определяем наличие и версию зависимости */
             if (0 === strcasecmp($id, 'cms'))
@@ -348,7 +356,7 @@ class Plugin
         $filename = $kernel->getRootDir() . $relPath;
         if (!file_exists(dirname($filename)))
         {
-            throw new LogicException("Plugin folder not exists: {$this->namespace}");
+            throw new LogicException('Plugin folder not exists: ' . dirname($filename));
         }
         if (!file_exists($filename))
         {

@@ -96,6 +96,8 @@ class ContentTypeRegistry implements ContainerAwareInterface
      */
     public function getAll()
     {
+        // Убеждаемся, что модули зарегистрировали свои типы контента.
+        $this->container->get('extensions');
         return $this->registry;
     }
 
@@ -109,6 +111,8 @@ class ContentTypeRegistry implements ContainerAwareInterface
     public function getByID($id)
     {
         assert('is_string($id)');
+        // Убеждаемся, что модули зарегистрировали свои типы контента.
+        $this->container->get('extensions');
         return array_key_exists($id, $this->registry)
             ? $this->registry[$id]
             : null;

@@ -121,7 +121,7 @@ class ContentType
      */
     public function getId()
     {
-        return $this->namespace . '.' . $this->controller;
+        return str_replace('\\', '.', $this->namespace) . '.' . $this->controller;
     }
 
     /**

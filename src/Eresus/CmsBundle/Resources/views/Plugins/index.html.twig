@@ -11,8 +11,8 @@
         <thead class="table-list__header">
         <tr>
             <th></th>
-            <th>Модуль</th>
-            <th>Имя</th>
+            <th>Название</th>
+            <th>Идентификатор</th>
             <th>Версия</th>
             <th>Описание</th>
         </tr>
@@ -22,13 +22,13 @@
             <tr>
                 <td class="table-list__controls">
                     {% if plugin.enabled and plugin.getConfigController.isAvailable %}
-                        <a href="{{ path('admin.plugins.config', {'id': plugin.namespace}) }}"
+                        <a href="{{ path('admin.plugins.config', {'id': plugin.id}) }}"
                            class="icon icon_img_config" title="Настроить {{ plugin.title|escape }}">&nbsp;</a>
                     {% endif %}
-                    <a href="{{ path('admin.plugins.toggle', {'id': plugin.namespace}) }}"
+                    <a href="{{ path('admin.plugins.toggle', {'id': plugin.id}) }}"
                        class="icon icon_img_{% if plugin.enabled %}on{% else %}off{% endif %}"
                        title="{% if plugin.enabled %}Отключить{% else %}Включить{% endif %} {{ plugin.title|escape }}">&nbsp;</a>
-                    <a href="{{ path('admin.plugins.uninstall', {'id': plugin.namespace}) }}"
+                    <a href="{{ path('admin.plugins.uninstall', {'id': plugin.id}) }}"
                        data-action="delete" class="icon icon_img_delete"
                        title="Удалить {{ plugin.title|escape }}">&nbsp;</a>
                 </td>
@@ -36,7 +36,7 @@
                     {{ plugin.title }}
                 </td>
                 <td>
-                    {{ plugin.namespace }}
+                    {{ plugin.id }}
                 </td>
                 <td>
                     {{ plugin.version }}

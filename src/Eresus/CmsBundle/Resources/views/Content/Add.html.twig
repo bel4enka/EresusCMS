@@ -13,8 +13,33 @@
                 <li><a href="#add-section-extra">Дополнительно</a></li>
             </ul>
             <div id="add-section-main">
-                <form action="{{ path('admin.content.add', {'parent': parentId}) }}" class="form" method="post" {{ form_enctype(form) }}>
-                    {{ form_widget(form) }}
+                <form action="{{ path('admin.content.add', {'parent': parentId}) }}" method="post" {{ form_enctype(form) }}>
+                    <table class="form form_style_commented">
+                        <tr class="form__row">
+                            <td class="form__field">
+                                {{ form_label(form.type) }}<br>
+                                {{ form_widget(form.type, {'attr': {'size': 7}}) }}
+                            </td>
+                            <td class="form__comment">
+                                <div id="{{ form.type.vars.id }}_desc"></div>
+                                <script>
+                                    $(function () {
+                                        var desc = {};
+                                        {% for i, d in contentTypeDescriptions %}desc['{{ i }}'] = '{{ d }}';
+                                        {% endfor %}
+                                        $('#{{ form.type.vars.id }}').on('change',
+                                            function ()
+                                            {
+                                                $('#{{ form.type.vars.id }}_desc')
+                                                    .html(desc[this.value]);
+                                            }
+                                        );
+                                    });
+                                </script>
+                            </td>
+                        </tr>
+                    </table>
+                    {{ form_rest(form) }}
                 </form>
             </div>
             <div id="add-section-meta">

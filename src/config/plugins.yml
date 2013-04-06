@@ -1,4 +1,6 @@
-Eresus\Html:
+Eresus.Html:
   enabled: true
   settings:
     highlight: true
+Acme.Foo:
+  enabled: true

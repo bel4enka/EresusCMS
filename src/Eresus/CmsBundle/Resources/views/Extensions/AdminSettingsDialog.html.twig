@@ -1,7 +1,7 @@
 <div class="box box_style_inline">
     <div class="box__header">Настройки модуля «{{ plugin.title }}»</div>
     <div class="box__contents">
-        <form action="{{ path('admin.plugins.config', {'id': plugin.namespace}) }}" method="post"
+        <form action="{{ path('admin.plugins.config', {'id': plugin.id}) }}" method="post"
             {{ form_enctype(form) }}>
 
             {% block rows %}

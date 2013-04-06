@@ -246,24 +246,5 @@ class Eresus_Admin_Controllers_Pages extends Eresus_Admin_Controllers_Abstract
         $em->remove($section);
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
-
-    /**
-     * Возвращает список типов контента в виде, пригодном для построения выпадающего списка
-     *
-     * @return array
-     */
-    private function loadContentTypes()
-    {
-        /** @var \Eresus\CmsBundle\Content\ContentTypeRegistry $registry */
-        $registry = $this->get('content_types');
-
-        $result = array();
-        foreach ($registry->getAll() as $type)
-        {
-            $result[$type->getId()] = $type->getTitle();
-        }
-
-        return $result;
-    }
 }
 

@@ -94,7 +94,7 @@ class AdminSettingsController extends AbstractController
                 $extensions = $this->get('extensions');
                 $extensions->update($this->plugin);
                 $this->redirect($this->generateUrl('admin.plugins.config',
-                    array('id' => $this->plugin->namespace)));
+                    array('id' => $this->plugin->id)));
             }
         }
 

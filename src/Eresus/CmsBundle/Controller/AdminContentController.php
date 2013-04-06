@@ -26,6 +26,7 @@
 
 namespace Eresus\CmsBundle\Controller;
 
+use Eresus\CmsBundle\Content\ContentTypeRegistry;
 use Eresus\CmsBundle\Entity\Section;
 use Eresus\CmsBundle\Form\DataTransformer\NullToStringTransformer;
 use Eresus\CmsBundle\Form\DataTransformer\OptionsTransformer;
@@ -72,6 +73,7 @@ class AdminContentController extends AdminAbstractController
      */
     public function addAction($parent, Request $request)
     {
+        $vars = array('parentId' => $parent);
         $section = new Section();
         $section->description = '';
         $section->keywords = '';
@@ -80,7 +82,50 @@ class AdminContentController extends AdminAbstractController
         $section->visible = true;
         $section->created = new \DateTime();
 
-        $form = $this->getForm($section);
+        //$null2string = new NullToStringTransformer();
+
+        /** @var ContentTypeRegistry $contentTypeRegistry */
+        $contentTypeRegistry = $this->get('content_types');
+        $contentTypes = array();
+        $contentTypeDescriptions = array();
+        foreach ($contentTypeRegistry->getAll() as $type)
+        {
+            $contentTypes[$type->getId()] = $type->getTitle();
+            $contentTypeDescriptions[$type->getId()] = $type->getDescription();
+        }
+        $vars['contentTypeDescriptions'] = $contentTypeDescriptions;
+
+        $builder = $this->createFormBuilder($section);
+        $builder
+            ->add('type', 'choice', array('label' => 'Тип раздела',
+                'choices' => $contentTypes))
+            /*->add('name', 'text', array('label'  => 'Имя'))
+            ->add('title', 'text', array('label'  => 'Заголовок'))
+            ->add('caption', 'text', array('label'  => 'Пункт меню'))
+            ->add($builder->create('hint', 'text', array('label'  => 'Подсказка',
+                'required' => false))->addModelTransformer($null2string))
+            ->add($builder->create('description', 'text',
+                array('label'  => 'Описание', 'required' => false))
+                ->addModelTransformer($null2string))
+            ->add($builder->create('keywords', 'text',
+                array('label'  => 'Ключевые слова', 'required' => false))
+                ->addModelTransformer($null2string))
+            ->add('template', 'choice', array('label'  => 'Шаблон',
+                'choices' => $templates->enum()))
+
+            ->add('active', 'checkbox', array('label'  => 'Включить'))
+            ->add('visible', 'checkbox', array('label'  => 'Показывать в меню'))*/;
+            //$builder->add('position', 'integer', array('label'  => 'Порядковый номер'));
+        /*$builder
+            ->add($builder->create('options', 'textarea',
+                array('label'  => 'Опции', 'required' => false))
+                ->addModelTransformer(new OptionsTransformer()))
+            ->add('created', 'datetime', array('label'  => 'Дата создания',
+                'widget' => 'single_text', 'format' => \IntlDateFormatter::SHORT))
+            ->add('updated', 'datetime', array('label'  => 'Дата изменения',
+                'widget' => 'single_text', 'format' => \IntlDateFormatter::SHORT));*/
+
+        $form = $builder->getForm();
 
         if ($request->getMethod() == 'POST')
         {
@@ -115,9 +160,8 @@ class AdminContentController extends AdminAbstractController
                 return $this->redirect(Eresus_Kernel::app()->getPage()->url());
             }
         }
-
-        return $this->render('CmsBundle:Content:Add.html.twig',
-            array('form' => $form->createView(), 'parentId' => $parent));
+        $vars['form'] = $form->createView();
+        return $this->render('CmsBundle:Content:Add.html.twig', $vars);
     }
 
     /**
