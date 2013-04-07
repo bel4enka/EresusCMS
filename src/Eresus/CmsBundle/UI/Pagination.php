@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\UI;
@@ -39,8 +37,6 @@ use Eresus_Kernel;
 
 /**
  * Помощник нумерации
- *
- * @package Eresus
  *
  * @since 2.14
  */

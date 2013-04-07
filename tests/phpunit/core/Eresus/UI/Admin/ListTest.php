@@ -24,17 +24,12 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/Eresus/UI/Admin/List.php';
 
 /**
- * @package Eresus_CMS
- * @subpackage Tests
  */
 class Eresus_UI_Admin_ListTest extends PHPUnit_Framework_TestCase
 {

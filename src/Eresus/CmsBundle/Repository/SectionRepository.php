@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Repository;
@@ -37,7 +35,6 @@ use Eresus\CmsBundle\Entity\Section;
 /**
  * Хранилище разделов сайта
  *
- * @package Eresus
  * @since 4.00
  */
 class SectionRepository extends EntityRepository

@@ -24,9 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
 namespace Tests\Eresus\CmsBundle\HTTP;
@@ -36,8 +33,6 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 use Eresus\CmsBundle\HTTP\Request;
 
 /**
- * @package Eresus
- * @subpackage Tests
  */
 class RequestTest extends \PHPUnit_Framework_TestCase
 {

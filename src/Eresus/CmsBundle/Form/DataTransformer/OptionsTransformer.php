@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Form\DataTransformer;
@@ -36,7 +34,6 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 /**
  * Трансформер опций
  *
- * @package Eresus
  * @since 4.00
  */
 class OptionsTransformer implements DataTransformerInterface

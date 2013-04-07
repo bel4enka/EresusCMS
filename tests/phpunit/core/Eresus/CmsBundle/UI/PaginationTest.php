@@ -24,9 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
 namespace Tests\Eresus\CmsBundle\UI;
@@ -38,8 +35,6 @@ use Eresus_Kernel;
 require_once __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * @package Eresus
- * @subpackage Tests
  */
 class PaginationTest extends \PHPUnit_Framework_TestCase
 {

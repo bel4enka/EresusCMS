@@ -24,18 +24,12 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Extensions;
 
-use Eresus_CMS;
-
 /**
  * Класс для работы с расширениями системы
- *
- * @package Eresus
  */
 class VendorRegistry
 {

@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 use Symfony\Component\HttpFoundation\Request;
@@ -36,8 +34,6 @@ use Eresus\CmsBundle\Entity\Account;
 
 /**
  * Управление пользователями
- *
- * @package Eresus
  */
 class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
 {

@@ -24,9 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
 namespace Tests\Eresus\CmsBundle\Extensions;
@@ -37,8 +34,6 @@ use org\bovigo\vfs\vfsStream;
 require_once __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * @package Eresus
- * @subpackage Tests
  */
 class RegistryTest extends \PHPUnit_Framework_TestCase
 {

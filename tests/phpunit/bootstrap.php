@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace
@@ -39,9 +37,6 @@ namespace
 
     /**
      * Универсальная заглушка
-     *
-     * @package Eresus
-     * @subpackage Tests
      */
     class UniversalStub implements ArrayAccess
     {
@@ -116,8 +111,6 @@ namespace
     /**
      * Вспомогательный инструментарий для тестов
      *
-     * @package Eresus
-     * @subpackage Tests
      * @since 3.00
      */
     class Eresus_Tests

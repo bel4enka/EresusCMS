@@ -1,10 +1,6 @@
 <?php
 /**
- * [Краткое название плагина]
- *
- * Модульные тесты
- *
- * @version ${product.version}
+ * Тесты класса Class1
  *
  * @copyright [год], [владелец], [адрес, если нужен]
  * @license http://www.gnu.org/licenses/gpl.txt	GPL License 3
@@ -26,11 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package [Имя пакета]
- * @subpackage Tests
- *
- * $Id: AllTests.php 1263 2011-10-03 17:11:17Z mk $
  */
 
 
@@ -38,10 +29,9 @@ require_once __DIR__ . '/../bootstrap.php';
 require_once TESTS_SRC_DIR . '/myplugin/classes/Class1.php';
 
 /**
- * @package [Имя пакета]
- * @subpackage Tests
+ * Тесты класса Class1
  */
-class Class1_Test extends PHPUnit_Framework_TestCase
+class Class1Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers Class1::method1
@@ -49,5 +39,4 @@ class Class1_Test extends PHPUnit_Framework_TestCase
 	public function test_method1()
 	{
 	}
-	//-----------------------------------------------------------------------------
 }

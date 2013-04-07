@@ -26,20 +26,12 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package [Имя пакета]
- * @subpackage Tests
- *
- * $Id$
  */
 
 define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 
 /**
  * Универсальная заглушка
- *
- * @package [Имя пакета]
- * @subpackage Tests
  */
 class UniversalStub implements ArrayAccess
 {
@@ -90,9 +82,6 @@ class UniversalStub implements ArrayAccess
 
 /**
  * Фасад к моку для эмуляции статичных методов
- *
- * @package [Имя пакета]
- * @subpackage Tests
  */
 class MockFacade
 {
@@ -139,36 +128,3 @@ class MockFacade
 	}
 	//-----------------------------------------------------------------------------
 }
-
-
-/**
- * Заглушка для класса Plugin
- *
- * @package [Имя пакета]
- * @subpackage Tests
- */
-class Plugin extends UniversalStub {}
-
-/**
- * Заглушка для класса DB
- *
- * @package [Имя пакета]
- * @subpackage Tests
- */
-class DB extends MockFacade {}
-
-/**
- * Заглушка для класса ezcQuery
- *
- * @package [Имя пакета]
- * @subpackage Tests
- */
-class ezcQuery extends UniversalStub {}
-
-/**
- * Заглушка для класса ezcQuerySelect
- *
- * @package [Имя пакета]
- * @subpackage Tests
- */
-class ezcQuerySelect extends ezcQuery {}

@@ -13,7 +13,6 @@
    <?php
    /**
     * Тестовый плагин
-    * @package Demo
     */
    class MyPlugin extends Plugin
    {

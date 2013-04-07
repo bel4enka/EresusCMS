@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 // TODO: Проверить, нет ли доступа к внешним директориям
@@ -36,8 +34,6 @@ use Eresus\CmsBundle\Templates;
 
 /**
  * Управление темами оформления
- *
- * @package Eresus
  */
 class Eresus_Admin_Controllers_Themes
 {

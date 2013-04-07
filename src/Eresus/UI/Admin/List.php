@@ -24,15 +24,11 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 /** @noinspection PhpDocSignatureInspection */
 /**
  * Виджет списка
- *
- * @package Eresus
  */
 class Eresus_UI_Admin_List
 {

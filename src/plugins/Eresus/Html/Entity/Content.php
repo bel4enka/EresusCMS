@@ -24,9 +24,7 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Html
- */
+*/
 
 namespace Eresus\Html\Entity;
 
@@ -43,7 +41,6 @@ use Eresus\CmsBundle\Entity\Section;
  * @property      Section   $section
  * @property      string    $contents
  *
- * @package Html
  * @since 4.00
  *
  * @ORM\Entity

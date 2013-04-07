@@ -72,8 +72,6 @@ namespace
     }
 
     /**
-     * @package EresusCMS
-     * @subpackage Tests
      * @since 2.15
      */
     class TemplateSettings

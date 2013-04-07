@@ -26,8 +26,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 /**
@@ -38,7 +36,6 @@
  * @author Anis uddin Ahmad <anisniit@gmail.com>, http://www.ajaxray.com/projects/rss
  * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
- * @package Eresus
  * @since 2.16
  */
 class Eresus_Feed_Writer

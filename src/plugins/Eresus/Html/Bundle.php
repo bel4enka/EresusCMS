@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Html
  */
 namespace Eresus\Html;
 
@@ -33,8 +31,6 @@ use Eresus\CmsBundle\Extensions\PluginBundle;
 
 /**
  * Расширение «HTML» для Eresus CMS
- *
- * @package Html
  */
 class Bundle extends PluginBundle
 {

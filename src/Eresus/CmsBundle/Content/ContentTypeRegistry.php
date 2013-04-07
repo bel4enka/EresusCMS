@@ -22,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Content;
@@ -36,7 +34,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
  *
  * Реестр хранит объекты класса {@link ContentType} зарегистрированных типов контента.
  *
- * @package Eresus
  * @since 4.00
  */
 class ContentTypeRegistry implements ContainerAwareInterface

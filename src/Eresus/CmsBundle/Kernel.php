@@ -22,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle;
@@ -41,12 +39,9 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
  * Ядро CMS
  *
  * Основные функции ядра
- * 1. запуск {@link Eresus_CMS основного класса приложения};
- * 2. перехват ошибок и исключений;
- * 3. {@link autoload() автозагрузка классов};
- * 4. получение основных сведений о системе.
+ * 1. регистрация пакетов (включая модули расширения);
+ * 2. перехват ошибок и исключений.
  *
- * @package Eresus
  * @since 3.00
  */
 class Kernel extends ParentKernel

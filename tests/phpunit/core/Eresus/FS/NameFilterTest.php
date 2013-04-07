@@ -24,17 +24,12 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
 require_once __DIR__ . '/../../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/Eresus/FS/NameFilter.php';
 
 /**
- * @package Eresus
- * @subpackage Tests
  */
 class Eresus_FS_NameFilterTest extends PHPUnit_Framework_TestCase
 {

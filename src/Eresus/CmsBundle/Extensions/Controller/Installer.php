@@ -24,8 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Extensions\Controller;
@@ -33,7 +31,6 @@ namespace Eresus\CmsBundle\Extensions\Controller;
 /**
  * Контроллер установки плагина
  *
- * @package Eresus
  * @since 4.00
  */
 class Installer extends AbstractController

@@ -1,10 +1,6 @@
 <?php
 /**
- * [Краткое название плагина]
- *
- * Модульные тесты
- *
- * @version ${product.version}
+ * Тесты класса MyPlugin
  *
  * @copyright [год], [владелец], [адрес, если нужен]
  * @license http://www.gnu.org/licenses/gpl.txt	GPL License 3
@@ -26,11 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package [Имя пакета]
- * @subpackage Tests
- *
- * $Id$
  */
 
 
@@ -38,10 +29,9 @@ require_once __DIR__ . '/bootstrap.php';
 require_once TESTS_SRC_DIR . '/myplugin.php';
 
 /**
- * @package [Имя пакета]
- * @subpackage Tests
+ * Тесты класса MyPlugin
  */
-class MyPlugin_Test extends PHPUnit_Framework_TestCase
+class MyPluginTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers MyPlugin::__construct
@@ -50,5 +40,5 @@ class MyPlugin_Test extends PHPUnit_Framework_TestCase
 	{
 
 	}
-	//-----------------------------------------------------------------------------
 }
+

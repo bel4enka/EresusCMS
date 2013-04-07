@@ -22,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\CmsBundle\Controller;
@@ -40,7 +38,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Абстрактный контроллер АИ
  *
  * @since 4.0.0
- * @package Eresus
  */
 abstract class AdminAbstractController extends Controller
 {

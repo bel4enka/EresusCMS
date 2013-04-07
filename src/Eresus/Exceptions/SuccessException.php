@@ -24,14 +24,11 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 /**
  * Исключительная ситуация, не связанная с ошибкой
  *
- * @package Eresus
  * @since 3.00
  */
 class Eresus_SuccessException extends Exception

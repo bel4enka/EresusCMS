@@ -24,9 +24,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
 namespace Tests\Eresus\CmsBundle\Helpers;
@@ -36,8 +33,6 @@ use Eresus\CmsBundle\Helpers\Collection;
 require_once __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * @package Eresus
- * @subpackage Tests
  */
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
