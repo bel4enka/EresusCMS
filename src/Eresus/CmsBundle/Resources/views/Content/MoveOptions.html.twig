@@ -1,0 +1,6 @@
+{% for item in root.children %}
+    {% if item.id != section.id %}
+    <option value="{{ item.id }}"{% if newParent is defined and newParent.id == item.id %} selected{% endif %}>{% for i in 0..level %}-{% endfor %} {{ item.caption }}</option>
+    {% include 'CmsBundle:Content:MoveOptions.html.twig' with {'level': level + 1, 'root': item} %}
+    {% endif %}
+{% endfor %}

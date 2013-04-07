@@ -267,6 +267,60 @@ class AdminContentController extends AdminAbstractController
     }
 
     /**
+     * Перемещает раздел в другой раздел
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function moveAction($id, Request $request)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
+        $repo = $em->getRepository('CmsBundle:Section');
+        /** @var Section $section */
+        $section = $repo->find($id);
+
+        $vars = array('root' => $repo->getRoot(), 'section' => $section);
+
+        if ($request->getMethod() == 'POST')
+        {
+            /** @var Section $newParent */
+            $newParent = $em->find('CmsBundle:Section', $request->request->get('target'));
+
+            /*
+             * Проверяем, нет ли в разделе назначения раздела с таким же именем и вычисляем
+             * новый порядковый номер
+             */
+            $section->position = 0;
+            if ($newParent->children)
+            {
+                foreach ($newParent->children as $child)
+                {
+                    /** @var Section $child */
+                    if ($child->name == $section->name)
+                    {
+                        $vars['errors']
+                            = array('В разделе назначения уже есть раздел с таким же именем!');
+                        $vars['newParent'] = $newParent;
+                        return $this->render('CmsBundle:Content:Move.html.twig', $vars);
+                    }
+                    if ($child->position <= $section->position)
+                    {
+                        $section->position = $child->position + 1;
+                    }
+                }
+            }
+            $section->parent = $newParent;
+            $em->flush();
+            return $this->redirect($this->generateUrl('admin.content'));
+        }
+        return $this->render('CmsBundle:Content:Move.html.twig', $vars);
+    }
+
+    /**
      * Возвращает массив переменных для подстановки в шаблон
      *
      * @return array
