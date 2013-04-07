@@ -1,4 +1,4 @@
-{% extends 'CmsBundle:Base:Default.html.twig' %}
+{% extends 'EresusCmsBundle:Base:Default.html.twig' %}
 
 {% set pageTitle = 'Добавление раздела' %}
 
@@ -8,7 +8,7 @@
         <div class="box__contents">
             <form action="{{ path('admin.content.add', {'parent': section.parent.id}) }}"
                 method="post" {{ form_enctype(form) }}>
-                {% include 'CmsBundle:Content:BaseDialog.html.twig' %}
+                {% include 'EresusCmsBundle:Content:BaseDialog.html.twig' %}
                 <div class="form__footer">
                     <button type="submit" class="button button_has_icon button_icon_ok">
                         Создать

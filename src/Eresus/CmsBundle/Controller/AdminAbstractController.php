@@ -30,7 +30,7 @@ namespace Eresus\CmsBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Eresus\CmsBundle\CmsBundle;
+use Eresus\CmsBundle\EresusCmsBundle;
 use Eresus\CmsBundle\Kernel;
 use Eresus\CmsBundle\Repository\SectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -57,11 +57,11 @@ abstract class AdminAbstractController extends Controller
             /** @var EntityManager $em */
             $em = $doctrine->getManager();
             /** @var SectionRepository $repo */
-            $repo = $em->getRepository('CmsBundle:Section');
+            $repo = $em->getRepository('EresusCmsBundle:Section');
             /** @var Kernel $kernel */
             $kernel = $this->get('kernel');
-            /** @var CmsBundle $bundle */
-            $bundle = $kernel->getBundle('CmsBundle');
+            /** @var EresusCmsBundle $bundle */
+            $bundle = $kernel->getBundle('EresusCmsBundle');
             $bundle->setGlobalVar('rootSection', $repo->getRoot());
         }
     }

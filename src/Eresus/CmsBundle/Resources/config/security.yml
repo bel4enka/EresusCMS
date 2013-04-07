@@ -15,7 +15,7 @@ security:
 
     providers:
         administrators:
-            entity: {class: CmsBundle:Account, property: username}
+            entity: {class: EresusCmsBundle:Account, property: username}
 
     firewalls:
         dev:
@@ -66,7 +66,7 @@ security:
 #                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
 #        administrators:
 #            entity:
-#                class: CmsBundle:Account
+#                class: EresusCmsBundle:Account
 #                property: username
 
 #    firewalls:

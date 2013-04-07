@@ -1,4 +1,4 @@
-{% extends 'CmsBundle:Content:Section.html.twig' %}
+{% extends 'EresusCmsBundle:Content:Section.html.twig' %}
 
 {% set pageTitle = 'Свойства раздела' %}
 
@@ -9,7 +9,7 @@
         </div>
         <form action="{{ path('admin.content.properties', {'id': section.id}) }}" method="post"
             {{ form_enctype(form) }}>
-            {% include 'CmsBundle:Content:BaseDialog.html.twig' %}
+            {% include 'EresusCmsBundle:Content:BaseDialog.html.twig' %}
             <div>
                 {# URL этой страницы: <a href="{{ pageURL }}">{{ pageURL }}</a> #}
             </div>

@@ -28,7 +28,7 @@ namespace Eresus\CmsBundle\Twig;
 
 use Twig_Extension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Eresus\CmsBundle\CmsBundle;
+use Eresus\CmsBundle\EresusCmsBundle;
 
 /**
  * Расширение Twig
@@ -73,7 +73,7 @@ class Extension extends Twig_Extension
      */
     public function getGlobals()
     {
-        /** @var CmsBundle $cms */
+        /** @var EresusCmsBundle $cms */
         $cms = $this->container->get('cms');
         $globals = array('globals' => $cms->getGlobals());
         return $globals;

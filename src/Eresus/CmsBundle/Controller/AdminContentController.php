@@ -56,9 +56,9 @@ class AdminContentController extends AdminAbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
-        $repo = $em->getRepository('CmsBundle:Section');
+        $repo = $em->getRepository('EresusCmsBundle:Section');
         $vars['section'] = $repo->getRoot();
-        return $this->render('CmsBundle:Content:Index.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Content:Index.html.twig', $vars);
     }
 
     /**
@@ -79,7 +79,7 @@ class AdminContentController extends AdminAbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var Section $parent */
-        $parent = $em->find('CmsBundle:Section', $parent);
+        $parent = $em->find('EresusCmsBundle:Section', $parent);
         if (null === $parent)
         {
             throw $this->createNotFoundException();
@@ -118,7 +118,7 @@ class AdminContentController extends AdminAbstractController
                 $em->persist($section);
 
                 $q = $em->createQuery(
-                    'SELECT MAX(s.position) FROM CmsBundle:Section s WHERE s.parent = :parent');
+                    'SELECT MAX(s.position) FROM EresusCmsBundle:Section s WHERE s.parent = :parent');
                 $q->setParameter('parent', $parent);
                 $max = $q->getSingleResult();
                 $section->position = $max[1] + 1;
@@ -128,7 +128,7 @@ class AdminContentController extends AdminAbstractController
             }
         }
         $vars['form'] = $form->createView();
-        return $this->render('CmsBundle:Content:Add.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Content:Add.html.twig', $vars);
     }
 
     /**
@@ -147,14 +147,14 @@ class AdminContentController extends AdminAbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Entity\Section $section */
-        $section = $em->find('CmsBundle:Section', $id);
+        $section = $em->find('EresusCmsBundle:Section', $id);
         if (null === $section)
         {
             throw $this->createNotFoundException();
         }
         $vars['section'] = $section;
 
-        return $this->render('CmsBundle:Content:Edit.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Content:Edit.html.twig', $vars);
     }
 
     /**
@@ -173,7 +173,7 @@ class AdminContentController extends AdminAbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Entity\Section $section */
-        $section = $em->find('CmsBundle:Section', $id);
+        $section = $em->find('EresusCmsBundle:Section', $id);
         if (null === $section)
         {
             throw $this->createNotFoundException();
@@ -194,7 +194,7 @@ class AdminContentController extends AdminAbstractController
 
         $vars['form'] = $form->createView();
 
-        return $this->render('CmsBundle:Content:Properties.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Content:Properties.html.twig', $vars);
     }
 
     /**
@@ -209,11 +209,11 @@ class AdminContentController extends AdminAbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var Section $section */
-        $section = $em->find('CmsBundle:Section', $id);
+        $section = $em->find('EresusCmsBundle:Section', $id);
         if ($section->position > 0)
         {
             $q = $em->createQuery(
-                'SELECT s FROM CmsBundle:Section s ' .
+                'SELECT s FROM EresusCmsBundle:Section s ' .
                     'WHERE s.parent = :parent AND s.position < :position ' .
                     'ORDER BY s.position DESC'
             );
@@ -245,9 +245,9 @@ class AdminContentController extends AdminAbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var Section $section */
-        $section = $em->find('CmsBundle:Section', $id);
+        $section = $em->find('EresusCmsBundle:Section', $id);
         $q = $em->createQuery(
-            'SELECT s FROM CmsBundle:Section s ' .
+            'SELECT s FROM EresusCmsBundle:Section s ' .
                 'WHERE s.parent = :parent AND s.position > :position ' .
                 'ORDER BY s.position ASC'
         );
@@ -279,7 +279,7 @@ class AdminContentController extends AdminAbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Repository\SectionRepository $repo */
-        $repo = $em->getRepository('CmsBundle:Section');
+        $repo = $em->getRepository('EresusCmsBundle:Section');
         /** @var Section $section */
         $section = $repo->find($id);
 
@@ -288,7 +288,7 @@ class AdminContentController extends AdminAbstractController
         if ($request->getMethod() == 'POST')
         {
             /** @var Section $newParent */
-            $newParent = $em->find('CmsBundle:Section', $request->request->get('target'));
+            $newParent = $em->find('EresusCmsBundle:Section', $request->request->get('target'));
 
             /*
              * Проверяем, нет ли в разделе назначения раздела с таким же именем и вычисляем
@@ -305,7 +305,7 @@ class AdminContentController extends AdminAbstractController
                         $vars['errors']
                             = array('В разделе назначения уже есть раздел с таким же именем!');
                         $vars['newParent'] = $newParent;
-                        return $this->render('CmsBundle:Content:Move.html.twig', $vars);
+                        return $this->render('EresusCmsBundle:Content:Move.html.twig', $vars);
                     }
                     if ($child->position <= $section->position)
                     {
@@ -317,7 +317,7 @@ class AdminContentController extends AdminAbstractController
             $em->flush();
             return $this->redirect($this->generateUrl('admin.content'));
         }
-        return $this->render('CmsBundle:Content:Move.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Content:Move.html.twig', $vars);
     }
 
     /**
@@ -333,7 +333,7 @@ class AdminContentController extends AdminAbstractController
     {
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        $section = $em->find('CmsBundle:Section', $id);
+        $section = $em->find('EresusCmsBundle:Section', $id);
         if (null === $section)
         {
             throw $this->createNotFoundException();

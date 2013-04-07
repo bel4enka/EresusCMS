@@ -11,7 +11,7 @@ class DefaultContentAdminController extends Controller
         /** @var \Doctrine\ORM\EntityManager $em */
         //$em = $this->getDoctrine()->getManager();
         /** @var \Eresus\CmsBundle\Entity\Section $section */
-        /*$section = $em->find('CmsBundle:Section', $request->get('id'));
+        /*$section = $em->find('EresusCmsBundle:Section', $request->get('id'));
         $form = $this->getForm($section);
 
         if ($request->getMethod() == 'POST')

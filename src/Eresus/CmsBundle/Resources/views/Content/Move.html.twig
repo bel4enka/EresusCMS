@@ -1,4 +1,4 @@
-{% extends 'CmsBundle:Base:Default.html.twig' %}
+{% extends 'EresusCmsBundle:Base:Default.html.twig' %}
 
 {% set pageTitle = 'Перемещение раздела' %}
 
@@ -24,7 +24,7 @@
                 <label for="sections-target-input" class="form__label">Переместить в:</label>
                 <select name="target" id="sections-target-input" class="form__input">
                     <option value="{{ root.id }}">{{ root.caption }}</option>
-                    {% include 'CmsBundle:Content:MoveOptions.html.twig' with {'level': 0} %}
+                    {% include 'EresusCmsBundle:Content:MoveOptions.html.twig' with {'level': 0} %}
                 </select>
             </div>
             <div class="form__footer">

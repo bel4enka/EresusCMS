@@ -54,7 +54,7 @@ class AdminSecurityController extends Controller
         }
 
         return $this->render(
-            'CmsBundle:Security:Login.html.twig',
+            'EresusCmsBundle:Security:Login.html.twig',
             array(
                 'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                 'error' => $error,

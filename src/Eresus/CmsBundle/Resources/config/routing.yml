@@ -1,6 +1,6 @@
 admin.login:
     pattern: /admin/login
-    defaults: { _controller: CmsBundle:AdminSecurity:login }
+    defaults: { _controller: EresusCmsBundle:AdminSecurity:login }
 
 admin.login_check:
     pattern: /admin/login_check
@@ -10,82 +10,82 @@ admin.logout:
 
 admin.dashboard:
     pattern: /admin/
-    defaults: { _controller: CmsBundle:AdminDashboard:index }
+    defaults: { _controller: EresusCmsBundle:AdminDashboard:index }
 
 admin.content:
     pattern: /admin/content/
-    defaults: { _controller: CmsBundle:AdminContent:index }
+    defaults: { _controller: EresusCmsBundle:AdminContent:index }
 
 admin.content.add:
     pattern: /admin/content/{parent}/add
-    defaults: { _controller: CmsBundle:AdminContent:add }
+    defaults: { _controller: EresusCmsBundle:AdminContent:add }
 
 admin.content.edit:
     pattern: /admin/content/{id}/
-    defaults: { _controller: CmsBundle:AdminContent:edit }
+    defaults: { _controller: EresusCmsBundle:AdminContent:edit }
 
 admin.content.properties:
     pattern: /admin/content/{id}/properties
-    defaults: { _controller: CmsBundle:AdminContent:properties }
+    defaults: { _controller: EresusCmsBundle:AdminContent:properties }
 
 admin.content.up:
     pattern: /admin/content/{id}/up
-    defaults: { _controller: CmsBundle:AdminContent:up }
+    defaults: { _controller: EresusCmsBundle:AdminContent:up }
 
 admin.content.down:
     pattern: /admin/content/{id}/down
-    defaults: { _controller: CmsBundle:AdminContent:down }
+    defaults: { _controller: EresusCmsBundle:AdminContent:down }
 
 admin.content.move:
     pattern: /admin/content/{id}/move
-    defaults: { _controller: CmsBundle:AdminContent:move }
+    defaults: { _controller: EresusCmsBundle:AdminContent:move }
 
 admin.content.delete:
     pattern: /admin/content/{id}/delete
-    defaults: { _controller: CmsBundle:AdminContent:delete }
+    defaults: { _controller: EresusCmsBundle:AdminContent:delete }
 
 admin.files:
     pattern: /admin/files/
-    defaults: { _controller: CmsBundle:AdminFiles:index }
+    defaults: { _controller: EresusCmsBundle:AdminFiles:index }
 
 admin.settings:
     pattern: /admin/settings/
-    defaults: { _controller: CmsBundle:AdminSettings:index }
+    defaults: { _controller: EresusCmsBundle:AdminSettings:index }
 
 admin.accounts:
     pattern: /admin/settings/accounts/
-    defaults: { _controller: CmsBundle:AdminSettings:accounts }
+    defaults: { _controller: EresusCmsBundle:AdminSettings:accounts }
 
 admin.style:
     pattern: /admin/settings/style/
-    defaults: { _controller: CmsBundle:AdminSettings:style }
+    defaults: { _controller: EresusCmsBundle:AdminSettings:style }
 
 admin.plugins:
     pattern: /admin/settings/plugins/
-    defaults: { _controller: CmsBundle:AdminPlugins:index }
+    defaults: { _controller: EresusCmsBundle:AdminPlugins:index }
 
 admin.plugins.install:
     pattern: /admin/settings/plugins/install
-    defaults: { _controller: CmsBundle:AdminPlugins:install }
+    defaults: { _controller: EresusCmsBundle:AdminPlugins:install }
 
 admin.plugins.config:
     pattern: /admin/settings/plugins/{id}/config
-    defaults: { _controller: CmsBundle:AdminPlugins:config }
+    defaults: { _controller: EresusCmsBundle:AdminPlugins:config }
 
 admin.plugins.toggle:
     pattern: /admin/settings/plugins/{id}/toggle
-    defaults: { _controller: CmsBundle:AdminPlugins:toggle }
+    defaults: { _controller: EresusCmsBundle:AdminPlugins:toggle }
 
 admin.plugins.uninstall:
     pattern: /admin/settings/plugins/{id}/uninstall
-    defaults: { _controller: CmsBundle:AdminPlugins:uninstall }
+    defaults: { _controller: EresusCmsBundle:AdminPlugins:uninstall }
 
 main:
     pattern:  /
-    defaults: { _controller: CmsBundle:Legacy:index }
+    defaults: { _controller: EresusCmsBundle:Legacy:index }
 
 _legacy:
     pattern:  /{path}
-    defaults: { _controller: CmsBundle:Legacy:index }
+    defaults: { _controller: EresusCmsBundle:Legacy:index }
     requirements:
         path: ".+"

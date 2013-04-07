@@ -81,7 +81,7 @@ class AdminSettingsController extends AdminAbstractController
         $vars = $this->createTemplateVars();
         $vars['form'] = $form->createView();
 
-        return $this->render('CmsBundle:Settings:Main.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Settings:Main.html.twig', $vars);
     }
 
     /**

@@ -1,4 +1,4 @@
-{% extends 'CmsBundle:Base:Default.html.twig' %}
+{% extends 'EresusCmsBundle:Base:Default.html.twig' %}
 
 {% set pageTitle = 'Наполнение сайта' %}
 
@@ -15,7 +15,7 @@
         </tr>
         </thead>
         <tbody class="table-list__body">
-        {% include 'CmsBundle:Content:IndexRow.html.twig' with {'level': 0} %}
+        {% include 'EresusCmsBundle:Content:IndexRow.html.twig' with {'level': 0} %}
         </tbody>
     </table>
 {% endblock %}

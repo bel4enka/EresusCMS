@@ -65,7 +65,7 @@ class AdminPluginsController extends AdminAbstractController
             }
         );
         $vars['extensions'] = $extensions;
-        return $this->render('CmsBundle:Plugins:index.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Plugins:index.html.twig', $vars);
     }
 
     /**
@@ -109,7 +109,7 @@ class AdminPluginsController extends AdminAbstractController
             }
         );
         $vars['available'] = $available;
-        return $this->render('CmsBundle:Plugins:install.html.twig', $vars);
+        return $this->render('EresusCmsBundle:Plugins:install.html.twig', $vars);
     }
 
     /**
@@ -181,7 +181,7 @@ class AdminPluginsController extends AdminAbstractController
         {
             throw $this->createNotFoundException();
         }
-        return $this->render('CmsBundle:Plugins:config.html.twig',
+        return $this->render('EresusCmsBundle:Plugins:config.html.twig',
             array('contents' => $controller->mainAction($request)));
     }
 

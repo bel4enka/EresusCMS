@@ -30,5 +30,5 @@
     <td>{% if section.contentType %}{{ section.contentType.getTitle }}{% endif %}</td>
 </tr>
 {% for subSection in section.children %}
-    {% include 'CmsBundle:Content:IndexRow.html.twig' with {'level': level + 1, 'section': subSection} only %}
+    {% include 'EresusCmsBundle:Content:IndexRow.html.twig' with {'level': level + 1, 'section': subSection} only %}
 {% endfor %}

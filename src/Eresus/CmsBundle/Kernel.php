@@ -325,7 +325,7 @@ class Kernel extends ParentKernel
             new \JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new \Eresus\CommonBundle\CommonBundle(),
             new \Eresus\ORMBundle\ORMBundle(),
-            new \Eresus\CmsBundle\CmsBundle()
+            new \Eresus\CmsBundle\EresusCmsBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test')))

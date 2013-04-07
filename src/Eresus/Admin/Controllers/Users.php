@@ -62,7 +62,7 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var Account $account */
-        $account = $em->getRepository('CmsBundle:Account')->find(arg('toggle', 'int'));
+        $account = $em->getRepository('EresusCmsBundle:Account')->find(arg('toggle', 'int'));
         $account->active = !$account->active;
         $em->flush();
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
@@ -76,7 +76,7 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var Account $account */
-        $account = $em->getRepository('CmsBundle:Account')->find(arg('update', 'int'));
+        $account = $em->getRepository('EresusCmsBundle:Account')->find(arg('update', 'int'));
         $account->login = arg('login', '/[^a-z0-9_]/');
         $account->password = arg('pswd1');
         $account->active = arg('active');
@@ -127,7 +127,7 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
 
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        $tmp = $em->getRepository('CmsBundle:Account')->findBy(array('login' => $account->login));
+        $tmp = $em->getRepository('EresusCmsBundle:Account')->findBy(array('login' => $account->login));
         if (count($tmp) > 0)
         {
             ErrorMessage(admUsersLoginExists);
@@ -151,7 +151,7 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
     {
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        $account = $em->getRepository('CmsBundle:Account')->find(arg('delete', 'int'));
+        $account = $em->getRepository('EresusCmsBundle:Account')->find(arg('delete', 'int'));
         $em->remove($account);
         $em->flush();
         return new RedirectResponse(Eresus_Kernel::app()->getPage()->url());
@@ -169,7 +169,7 @@ class Eresus_Admin_Controllers_Users extends Eresus_Admin_Controllers_Abstract
             /** @var \Doctrine\ORM\EntityManager $em */
             $em = $this->getDoctrine()->getManager();
             /** @var Account $account */
-            $account = $em->getRepository('CmsBundle:Account')->find(arg('password', 'int'));
+            $account = $em->getRepository('EresusCmsBundle:Account')->find(arg('password', 'int'));
             $account->password = arg('pswd1');
             $em->flush();
         }

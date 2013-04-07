@@ -34,7 +34,7 @@ use Eresus\CmsBundle\Content\ContentType;
 use Eresus\CmsBundle\Extensions\Controller\AdminSettingsController;
 use Eresus\CmsBundle\Extensions\Exceptions\LogicException;
 use Eresus\CmsBundle\Kernel;
-use Eresus\CmsBundle\CmsBundle;
+use Eresus\CmsBundle\EresusCmsBundle;
 
 /**
  * Родительский класс для всех плагинов
@@ -298,7 +298,7 @@ class Plugin
             if (0 === strcasecmp($id, 'cms'))
             {
                 // Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
-                $actual = preg_replace('/[^\d\.]/', '', CmsBundle::VERSION);
+                $actual = preg_replace('/[^\d\.]/', '', EresusCmsBundle::VERSION);
             }
             else
             {

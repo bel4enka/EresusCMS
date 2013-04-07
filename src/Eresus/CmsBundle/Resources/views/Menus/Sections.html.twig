@@ -5,7 +5,7 @@
     {% if section.children|length %}
     <ul class="sections__children">
         {% for subSection in section.children %}
-        {% include 'CmsBundle:Menus:Sections.html.twig' with {'section': subSection, 'level': level + 1} only %}
+        {% include 'EresusCmsBundle:Menus:Sections.html.twig' with {'section': subSection, 'level': level + 1} only %}
         {% endfor %}
     </ul>
     {% endif %}

@@ -24,8 +24,8 @@ twig:
     autoescape:       false
     form:
         resources:
-            - 'CmsBundle:Form:div_layout.html.twig'
-            - 'CmsBundle:Form:table_layout.html.twig'
+            - 'EresusCmsBundle:Form:div_layout.html.twig'
+            - 'EresusCmsBundle:Form:table_layout.html.twig'
 
 # Assetic Configuration
 assetic:
@@ -73,7 +73,7 @@ services:
         class: %file_locator.class%
         arguments:
             - @kernel
-            - %kernel.root_dir%/Eresus/CmsBundle/Resources
+            - %kernel.root_dir%/Eresus/EresusCmsBundle/Resources
 
     twig.extension.eresus:
         class: Eresus\CmsBundle\Twig\Extension

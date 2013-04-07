@@ -40,7 +40,7 @@ use Eresus\CmsBundle\Exceptions\LogicException;
  *
  * @since 4.00
  */
-class CmsBundle extends Bundle
+class EresusCmsBundle extends Bundle
 {
     /**
      * Версия CMS
