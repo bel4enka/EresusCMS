@@ -60,6 +60,13 @@
                             Настройки
                         </a>
                     </li>
+
+                    <li class="main-menu__item{% if 'admin.help' == mainMenuRoute %} main-menu__item_is_current{% endif %}">
+                        <a href="{{ path('admin.help') }}" class="main-menu__link">
+                            <span class="icon icon_img_help"></span>
+                            Помощь
+                        </a>
+                    </li>
                 </ul>
             </nav>
 

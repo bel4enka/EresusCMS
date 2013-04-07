@@ -205,12 +205,6 @@
             </fileset>
         </copy>
 
-        <!-- copy todir="${build.dir}/bundles/webprofiler">
-            <fileset dir="vendor/symfony/symfony/src/Symfony/Bundle/WebProfilerBundle/Resources/public">
-                <include name="**/*" />
-            </fileset>
-        </copy -->
-
         <!-- jQuery -->
         <copy todir="${build.dir}/bundles/jquery">
             <filelist dir="vendor/components/jquery" files="jquery.min.js" />
@@ -249,14 +243,16 @@
             <fileset refid="files.3rd.editarea" />
         </copy>
 
+        <!-- Прочие файлы -->
         <mkdir dir="${build.dir}/distrib" />
-        
         <copy todir="${build.dir}/distrib">
             <fileset refid="files.sdk" />
             <filterchain>
                 <expandproperties />
           </filterchain>
         </copy>
+        <copy file="LICENSE" todir="${build.dir}/Eresus/CmsBundle/Resources/meta"
+            overwrite="true" />
 
         <!--
             Удаляем файлы *.orig (остаются от применения патчей под FreeBSD)

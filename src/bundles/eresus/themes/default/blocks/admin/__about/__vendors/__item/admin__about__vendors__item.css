@@ -1,0 +1,5 @@
+.admin__about__vendors__item > td
+{
+    border-top: solid 1px #ccc;
+    padding: 10px;
+}

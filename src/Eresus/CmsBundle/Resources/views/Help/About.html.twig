@@ -1,0 +1,47 @@
+{% extends 'EresusCmsBundle:Base:Default.html.twig' %}
+
+{% set pageTitle = 'Об Eresus CMS' %}
+
+{% block contents %}
+    <article class="article">
+        <h1>Об {{ about.product.title }} {{ about.product.version }}</h1>
+
+        <ul>
+            {% for copyright in about.copyright %}
+                <li>
+                    © {{ copyright.year }}
+                    {% if copyright.url is defined %}
+                        <a href="{{ copyright.url }}">{{ copyright.owner }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Лицензия <a href="{{ about.license.url }}">{{ about.license.title }}</a></h2>
+        <textarea cols="80" rows="20" readonly>{{ about.license.text|escape }}</textarea>
+
+        <h2>Сторонние компоненты</h2>
+
+        <div>В составе продукта присутствуют компоненты, разработанные третьими лицами:</div>
+
+        <table class="admin__about__vendors">
+            {% for vendor in about.vendor %}
+                <tr class="admin__about__vendors__item">
+                    <td class="admin__about__vendors__item__logo">
+                        {% if vendor.logo is defined %}
+                            <img src="{{ asset("Eresus/CmsBundle/Resources/public/vendor/#{vendor.logo}") }}"
+                                alt="{{ vendor.title|e }}">
+                        {% endif %}
+                    </td>
+                    <td class="admin__about__vendors__item__info">
+                        <h2 class="admin__about__vendors__item__title">{{ vendor.title }}</h2>
+                        {% if vendor.url is defined %}
+                            <div><a href="{{ vendor.url }}">{{ vendor.url }}</a></div>
+                        {% endif %}
+                        {{ vendor.about.ru }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </article>
+{% endblock %}

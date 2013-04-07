@@ -1,0 +1,11 @@
+.admin__about__vendors__item__logo
+{
+    text-align: center;
+    vertical-align: top;
+    width: 200px;
+}
+
+.admin__about__vendors__item__logo > img
+{
+    max-width: 200px;
+}

@@ -80,6 +80,10 @@ admin.plugins.uninstall:
     pattern: /admin/settings/plugins/{id}/uninstall
     defaults: { _controller: EresusCmsBundle:AdminPlugins:uninstall }
 
+admin.help:
+    pattern: /admin/help
+    defaults: { _controller: EresusCmsBundle:AdminHelp:about }
+
 main:
     pattern:  /
     defaults: { _controller: EresusCmsBundle:Legacy:index }

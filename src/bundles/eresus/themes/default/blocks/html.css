@@ -88,6 +88,15 @@ p
     text-indent: 1em;
 }
 
+section > h1
+{
+    font-size: 18px;
+}
+
+section > h2
+{
+    font-size: 17px;
+}
 sup
 {
     font-size: 90%;

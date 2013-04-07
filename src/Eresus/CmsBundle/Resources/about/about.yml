@@ -1,0 +1,77 @@
+product:
+    title: "${product.title}"
+    version: "${product.version}"
+copyright:
+    -
+        year: "2004-2013"
+        owner: "Михаил Красильников"
+        url: "http://eresus.ru/"
+license:
+    title: "${license.name}"
+    url: "${license.uri}"
+
+vendor:
+    -
+        title: 'Symfony'
+        url: "http://symfony.com/"
+        logo: "symfony.png"
+        about:
+            ru: "Фреймворк для разработки веб-приложений на PHP."
+    -
+        title: "Twig"
+        url: "http://twig.sensiolabs.org/"
+        logo: "twig.png"
+        about:
+            ru: "Современный шаблонизатор для PHP."
+            en: "Modern template engine for PHP."
+    -
+        title: "Doctrine"
+        url: "http://doctrine-project.org/"
+        logo: "doctrine.png"
+        about:
+            ru: "Объектно-реляционный проектор (ORM) для PHP и слой абстракции доступа к БД (DBAL)."
+            en: "Set of PHP libraries primarily focused on providing persistence services and related functionality."
+    -
+        title: "jQuery"
+        url: "http://jquery.com/"
+        logo: "jquery.png"
+        about:
+            ru: "Библиотека JavaScript для простой и быстрой работы с документами HTML."
+    -
+        title: "jQuery UI"
+        url: "http://jqueryui.com/"
+        logo: "jquery-ui.gif"
+        about:
+            ru: "Библиотека JavaScript для создания насыщенного пользовательского интерфейса в веб-приложениях. Построена поверх главной библиотеки jQuery и предоставляет разработчику упрощенный доступ к её функциям взаимодействия, анимации и эффектов, а также набор виджетов."
+            en: "Curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library."
+    -
+        title: "Modernizr"
+        url: "http://modernizr.com/"
+        logo: "modernizr.png"
+        about:
+            ru: "Библиотека JavaScript, которая определяет возможности HTML5 и CSS3 браузера пользователя."
+            en: "JavaScript library that detects HTML5 and CSS3 features in the user’s browser."
+    -
+        title: "Webshim"
+        url: "http://afarkas.github.com/webshim/demos/"
+        logo: "webshim.png"
+        about:
+            ru: "Поддержка HTML5 в старых браузерах."
+            en: "HTML5 support in old browsers."
+    -
+        title: "EditArea"
+        url: "http://www.cdolivet.com/editarea/"
+        about:
+            ru: "Редактор исходного кода с подсветкой синтаксиса."
+            en: "JavaScript editor for source code."
+    -
+        title: "jquery-cookie"
+        url: "https://github.com/carhartl/jquery-cookie"
+        about:
+            ru: "Простой, легковесный плагин для jQuery для чтения, записи и удаления куки."
+            en: "A simple, lightweight jQuery plugin for reading, writing and deleting cookies."
+    -
+        title: "Ботобор"
+        url: "https://github.com/mekras/botobor"
+        about:
+            ru: "Библиотека для защиты форм от спам-ботов."
