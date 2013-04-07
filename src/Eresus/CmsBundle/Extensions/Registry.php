@@ -306,15 +306,22 @@ class Registry implements ContainerAwareInterface
     private function init()
     {
         $filename = $this->getDbFilename();
-        $this->config = Yaml::parse($filename);
+        if (!file_exists($filename))
+        {
+            throw new ConfigException("Plugin registry file ($filename) not found");
+        }
+
+        $this->config = Yaml::parse($filename, true);
         if (is_string($this->config))
         {
             throw new ConfigException('Error parsing ' . $filename);
         }
+
         if (null === $this->config)
         {
             $this->config = array();
         }
+
         foreach ($this->config as $id => $config)
         {
             if (isset($config['enabled']) && $config['enabled'])

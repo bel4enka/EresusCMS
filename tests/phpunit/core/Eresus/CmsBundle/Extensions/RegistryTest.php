@@ -1,8 +1,6 @@
 <?php
 /**
- * ${product.title}
- *
- * Тесты
+ * Тесты реестра модулей расширения
  *
  * @version ${product.version}
  * @copyright 2012, Михаил Красильников <m.krasilnikov@yandex.ru>
@@ -28,6 +26,8 @@
 
 namespace Tests\Eresus\CmsBundle\Extensions;
 
+use Eresus\CmsBundle\Extensions\Registry;
+use Tests\Container as TestContainer;
 use org\bovigo\vfs\vfsStreamWrapper;
 use org\bovigo\vfs\vfsStream;
 
@@ -82,27 +82,6 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Eresus\CmsBundle\Extensions\Registry::get
-     */
-    public function testGetNew()
-    {
-        $conf = array('enabled' => true, 'settings' => array('a' => 'b'));
-        $plugin = $this->getMock('stdClass', array('setContainer'));
-
-        $registry = $this->getMockBuilder('Eresus\CmsBundle\Extensions\Registry')
-            ->disableOriginalConstructor()->setMethods(array('createPluginInstance'))->getMock();
-        $registry->expects($this->once())->method('createPluginInstance')
-            ->with('Acme\Foo', $conf)->will($this->returnValue($plugin));
-
-        $config = new \ReflectionProperty('Eresus\CmsBundle\Extensions\Registry', 'config');
-        $config->setAccessible(true);
-        $config->setValue($registry, array('Acme\Foo' => $conf));
-
-        $this->assertSame($plugin, $registry->get('Acme\Foo'));
-        $this->assertSame($plugin, $registry->get('Acme\Foo')); // Проверяем помещение кэш
-    }
-
-    /**
      * @covers \Eresus\CmsBundle\Extensions\Registry::getDbFilename
      */
     public function testGetDbFilename()
@@ -131,25 +110,41 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     public function testInit()
     {
         vfsStreamWrapper::register();
-        vfsStream::setup('root', null, array('config' => array(
-            'plugins.yml' => "Acme\\Bundle:\n enabled: true\n"
-        )));
+        vfsStream::setup('root', null, array(
+            'config' => array(
+                'plugins.yml' => "Acme\\Bundle:\n enabled: true\n"
+            ),
+            'plugins' => array(
+                'Acme' => array(
+                    'Bundle' => array(
+                        'plugin.yml' =>
+                            "title: 'Foo'\nversion: '1.00'\nrequire: {CMS: {min: '4.00'}}",
+                    )
+                ),
+            ),
+        ));
 
         $configLocator = $this->getMock('stdClass', array('locate'));
         $configLocator->expects($this->any())->method('locate')->with('plugins.yml')
-            ->will($this->returnValue(vfsStream::url('config/plugins.yml')));
+            ->will($this->returnValue(vfsStream::url('root/config/plugins.yml')));
 
-        $container = new \Tests\Container();
+        $container = new TestContainer();
         $container->set('config_locator', $configLocator);
 
+        $kernel = $this->getMock('stdClass', array('getRootDir'));
+        $kernel->expects($this->any())->method('getRootDir')
+            ->will($this->returnValue(vfsStream::url('root')));
+        $container->set('kernel', $kernel);
+
         $registry = $this->getMockBuilder('Eresus\CmsBundle\Extensions\Registry')
-            ->disableOriginalConstructor()->setMethods(array('get'))->getMock();
-        $registry->expects($this->once())->method('get')->with('Acme\Bundle');
+            ->disableOriginalConstructor()->setMethods(array('register'))->getMock();
         $registry->setContainer($container);
 
         $init = new \ReflectionMethod('Eresus\CmsBundle\Extensions\Registry', 'init');
         $init->setAccessible(true);
 
+        // Загружаем функции
+        class_exists('\Eresus\CmsBundle\EresusCmsBundle');
         $init->invoke($registry);
     }
 }

@@ -406,8 +406,8 @@ class Plugin
             $localConfig = array('enabled' => false, 'settings' => array());
         }
 
-        $defaultSettings = is_array($config['settings']) ? $config['settings'] : array();
-        $localSettings = is_array($localConfig['settings']) ? $localConfig['settings'] : array();
+        $defaultSettings = \Eresus\CmsBundle\getElementOrDefault($config, 'settings', array());
+        $localSettings = \Eresus\CmsBundle\getElementOrDefault($localConfig, 'settings', array());
 
         $this->enabled = $localConfig['enabled'];
         $this->settings = new ArrayCollection(array_replace($defaultSettings, $localSettings));
@@ -416,7 +416,7 @@ class Plugin
          * Определяем типы контента
          */
         $this->contentTypes = array();
-        if ($config['content_types'])
+        if (array_key_exists('content_types', $config))
         {
             foreach ($config['content_types'] as $item)
             {
