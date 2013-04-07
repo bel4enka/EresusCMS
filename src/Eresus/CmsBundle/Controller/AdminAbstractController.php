@@ -28,7 +28,13 @@
 
 namespace Eresus\CmsBundle\Controller;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
+use Eresus\CmsBundle\CmsBundle;
+use Eresus\CmsBundle\Kernel;
+use Eresus\CmsBundle\Repository\SectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Абстрактный контроллер АИ
@@ -38,5 +44,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  */
 abstract class AdminAbstractController extends Controller
 {
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        if (null !== $container)
+        {
+            /** @var Registry $doctrine */
+            $doctrine = $this->get('doctrine');
+            /** @var EntityManager $em */
+            $em = $doctrine->getManager();
+            /** @var SectionRepository $repo */
+            $repo = $em->getRepository('CmsBundle:Section');
+            /** @var Kernel $kernel */
+            $kernel = $this->get('kernel');
+            /** @var CmsBundle $bundle */
+            $bundle = $kernel->getBundle('CmsBundle');
+            $bundle->setGlobalVar('rootSection', $repo->getRoot());
+        }
+    }
 }
 

@@ -41,8 +41,8 @@ admin.content.move:
     defaults: { _controller: CmsBundle:AdminContent:move }
 
 admin.content.delete:
-    pattern: /admin/content/{id}/
-    defaults: { _controller: CmsBundle:AdminContent:edit }
+    pattern: /admin/content/{id}/delete
+    defaults: { _controller: CmsBundle:AdminContent:delete }
 
 admin.files:
     pattern: /admin/files/

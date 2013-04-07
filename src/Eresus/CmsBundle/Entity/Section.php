@@ -57,6 +57,7 @@ use Eresus\CmsBundle\Content\ContentTypeRegistry;
  *
  * @ORM\Entity(repositoryClass="Eresus\CmsBundle\Repository\SectionRepository")
  * @ORM\Table(name="sections")
+ * @ORM\HasLifecycleCallbacks
  * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */
 class Section extends AbstractEntity
@@ -194,7 +195,7 @@ class Section extends AbstractEntity
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Section", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="parent", cascade={"remove"})
      * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $children;
@@ -234,6 +235,16 @@ class Section extends AbstractEntity
         /** @var ContentTypeRegistry $registry */
         $registry = $this->get('content_types');
         return $registry->getByID($this->type);
+    }
+
+    /**
+     * Действия при удалении раздела
+     *
+     * @ORM\PreRemove
+     */
+    public function onRemove()
+    {
+        // TODO Сделать удаление наполнения раздела
     }
 }
 

@@ -72,14 +72,6 @@ class CmsBundle extends Bundle
             throw new RuntimeException('"config/global.yml" not found');
         }
         $this->globals = Yaml::parse($filename);
-
-        /** @var Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        /** @var EntityManager $em */
-        $em = $doctrine->getManager();
-        /** @var SectionRepository $repo */
-        $repo = $em->getRepository('CmsBundle:Section');
-        $this->globals['rootSection'] = $repo->getRoot();
     }
 
     /**
@@ -89,6 +81,17 @@ class CmsBundle extends Bundle
     public function getGlobals()
     {
         return $this->globals;
+    }
+
+    /**
+     * Задаёт глобальную переменную для шаблонов
+     *
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function setGlobalVar($name, $value)
+    {
+        $this->globals[$name] = $value;
     }
 }
 

@@ -321,6 +321,30 @@ class AdminContentController extends AdminAbstractController
     }
 
     /**
+     * Удаляет раздел
+     *
+     * @param int $id
+     *
+     * @throws NotFoundHttpException
+     *
+     * @return Response
+     */
+    public function deleteAction($id)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $section = $em->find('CmsBundle:Section', $id);
+        if (null === $section)
+        {
+            throw $this->createNotFoundException();
+        }
+
+        $em->remove($section);
+        $em->flush();
+        return $this->redirect($this->generateUrl('admin.content'));
+    }
+
+    /**
      * Возвращает массив переменных для подстановки в шаблон
      *
      * @return array
