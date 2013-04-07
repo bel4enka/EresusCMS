@@ -22,3 +22,46 @@
         {% endif %}
     {% endspaceless %}
 {% endblock form_errors %}
+
+{% block datetime_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            <div class="nowrap" {{ block('widget_container_attributes') }}>
+                {{ form_errors(form.date) }}
+                {{ form_errors(form.time) }}
+                {{ form_widget(form.date) }}&nbsp;{{ form_widget(form.time) }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock datetime_widget %}
+
+{% block date_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            <div class="form__field_type_date" {{ block('widget_container_attributes') }}>
+                {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}':   form_widget(form.day),
+                })|raw }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock date_widget %}
+
+{% block time_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            {% set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} %}
+            <div class="form__field_type_time" {{ block('widget_container_attributes') }}>
+            {{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
+        </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock time_widget %}

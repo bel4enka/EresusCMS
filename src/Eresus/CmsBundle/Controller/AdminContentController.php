@@ -187,7 +187,8 @@ class AdminContentController extends AdminAbstractController
             if ($form->isValid())
             {
                 $em->flush();
-                return $this->redirect($this->generateUrl('admin.content'));
+                return $this->redirect($this->generateUrl('admin.content.properties',
+                    array('id' => $section->id)));
             }
         }
 
@@ -268,8 +269,7 @@ class AdminContentController extends AdminAbstractController
 
         if (null !== $section->id)
         {
-            $builder->add('created', 'datetime', array('label'  => 'Дата создания',
-                'widget' => 'single_text', 'format' => \IntlDateFormatter::SHORT));
+            $builder->add('created', 'datetime', array('label'  => 'Дата и время создания'));
         }
 
         return $builder->getForm();

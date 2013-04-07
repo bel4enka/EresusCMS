@@ -205,11 +205,11 @@
             </fileset>
         </copy>
 
-        <copy todir="${build.dir}/bundles/webprofiler">
+        <!-- copy todir="${build.dir}/bundles/webprofiler">
             <fileset dir="vendor/symfony/symfony/src/Symfony/Bundle/WebProfilerBundle/Resources/public">
                 <include name="**/*" />
             </fileset>
-        </copy>
+        </copy -->
 
         <!-- jQuery -->
         <copy todir="${build.dir}/bundles/jquery">
