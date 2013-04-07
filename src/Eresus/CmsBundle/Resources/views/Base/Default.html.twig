@@ -80,7 +80,7 @@
                 <div class="box__header">Разделы сайта</div>
                 <div class="box__content sections">
                     <ul class="sections__children">
-                        {#% include 'CmsBundle:Menus:Sections.html.twig' with {'section': rootSection, 'level': 0} only %#}
+                        {% include 'CmsBundle:Menus:Sections.html.twig' with {'section': globals.rootSection, 'level': 0} only %}
                     </ul>
                 </div>
             </div>

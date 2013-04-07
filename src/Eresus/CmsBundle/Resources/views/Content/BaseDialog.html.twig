@@ -1,0 +1,162 @@
+<div id="section-properties-tabs">
+    <ul>
+        <li><a href="#section-properties-main">Основные свойства</a></li>
+        <li><a href="#section-properties-meta">Мета-теги</a></li>
+        <li><a href="#section-properties-access">Доступ</a></li>
+        <li><a href="#section-properties-extra">Дополнительно</a></li>
+    </ul>
+    <div id="section-properties-main">
+        <table class="form form_style_commented">
+            <tr class="form__row">
+                {% if form.type is defined %}
+                <td class="form__field">
+                    {{ form_label(form.type) }}<br>
+                    {{ form_widget(form.type, {'attr': {'size': 7, 'class': 'full-width'}}) }}
+                </td>
+                <td class="admin__content-add__content-type-desc">
+                    <div id="{{ form.type.vars.id }}_desc"></div>
+                    <script>
+                        $(function () {
+                            var desc = {};
+                            {% for i, d in contentTypeDescriptions %}desc['{{ i }}'] = '{{ d }}';
+                            {% endfor %}
+                            $('#{{ form.type.vars.id }}').on('change',
+                                function ()
+                                {
+                                    $('#{{ form.type.vars.id }}_desc')
+                                        .html(desc[this.value]);
+                                }
+                            ).change();
+                        });
+                    </script>
+                </td>
+                {% else %}
+                <td>
+                    Тип раздела: {{ section.contentType.getTitle }}
+                </td>
+                <td class="form__comment">
+                    <p>Изменить тип раздела нельзя. Но вы можете удалить этот раздел и создать его
+                    заново, выбрав другой тип.</p>
+                </td>
+                {% endif %}
+            </tr>
+            <tr class="form__row">
+                <td class="form__field">
+                    {{ form_label(form.caption) }}<br>
+                    {{ form_widget(form.caption, {'attr': {'size': 30}}) }}
+                </td>
+                <td class="form__comment">
+                    <p>Укажите какое название выводить в меню для этого раздела. Желательно
+                    чтобы название не было очень длинным.</p>
+                </td>
+            </tr>
+            <tr class="form__row">
+                <td class="form__field">
+                    {{ form_label(form.name) }}<br>
+                    {{ form_widget(form.name, {'attr': {'size': 30}}) }}
+                    <div class="admin__content-add__url-example">
+                        <code>{{ section.parent.clientUrl }}<b id="{{ form.name.vars.id }}_example"></b>/</code>
+                        <script>
+                            $('#{{ form.name.vars.id }}').on('keyup change',
+                                function ()
+                                {
+                                    $('#{{ form.name.vars.id }}_example')
+                                        .text(this.value);
+                                }
+                            ).change();
+                        </script>
+                    </div>
+                </td>
+                <td class="form__comment">
+                    <p>Адрес раздела может содержать только латинские буквы (a-z, A-Z),
+                    цифры, символ подчёркивания (_) и дефисоминус (-).</p>
+                    {% if section.id %}
+                    <p>
+                        <em>Внимание!</em> После изменения адреса раздела, не забудьте изменить
+                        адреса (URL) в ссылках на этот раздел и его подразделы.
+                    </p>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="section-properties-meta">
+        <table class="form form_style_commented">
+            <tr class="form__row">
+                <td class="form__field">
+                    {{ form_label(form.title) }}<br>
+                    {{ form_widget(form.title, {'attr': {'cols': 40, 'rows': 3}}) }}
+                </td>
+                <td class="form__comment">
+                    <p>Заголовок раздела.</p>
+                </td>
+            </tr>
+            <tr class="form__row">
+                <td class="form__field">
+                    {{ form_label(form.description) }}<br>
+                    {{ form_widget(form.description, {'attr': {'cols': 40, 'rows': 3}}) }}
+                </td>
+                <td class="form__comment">
+                    <p>Описание раздела.</p>
+                </td>
+            </tr>
+            <tr class="form__row">
+                <td class="form__field">
+                    {{ form_label(form.keywords) }}<br>
+                    {{ form_widget(form.keywords, {'attr': {'cols': 40, 'rows': 3}}) }}
+                </td>
+                <td class="form__comment">
+                    <p>Ключевые слова раздела.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="section-properties-access">
+        <table class="form form_style_commented">
+            <tr class="form__row">
+                <td class="form__field">
+                    <div class="nowrap">{{ form_widget(form.enabled) }}{{ form_label(form.enabled) }}</div>
+                </td>
+                <td class="form__comment">
+                    <p>Вы можете снять этот флажок чтобы временно сделать раздел
+                    недоступным для посетителей.</p>
+                </td>
+            </tr>
+            <tr class="form__row">
+                <td class="form__field">
+                    <div class="nowrap">{{ form_widget(form.visible) }}{{ form_label(form.visible) }}</div>
+                </td>
+                <td class="form__comment">
+                    <p>Если снять этот флажок, то раздел не будет показываться в меню,
+                    но по-прежнему будет по прямым ссылкам на него.</p>
+                    <p><em>Внимание!</em> Этот параметр является лишь рекомендацией модулям меню не показывать
+                    раздел. Однако в зависимости от модуля меню и его настроек, значение
+                    этого параметра может быть проигнорировано.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="section-properties-extra">
+        <table class="form form_style_commented">
+            {% if form.created is defined %}
+                <tr class="form__row">
+                    <td class="form__field">
+                        {{ form_label(form.created) }}<br>
+                        {{ form_widget(form.created) }}
+                    </td>
+                    <td class="form__comment">
+                        <p>
+                            Дата и время, когда был создан этот раздел.
+                        </p>
+                    </td>
+                </tr>
+            {% endif %}
+        {{ form_rest(form) }}
+        </table>
+    </div>
+</div>
+<script>
+    $('#section-properties-tabs').tabs({
+        event: 'mouseover'
+    });
+</script>

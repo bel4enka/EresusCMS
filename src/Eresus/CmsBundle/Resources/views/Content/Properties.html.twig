@@ -3,12 +3,12 @@
 {% set pageTitle = 'Свойства раздела' %}
 
 {% block local_contents %}
-    <div class="box box_style_inline">
+    <div class="box box_style_inline admin__section-properties">
         <div class="box__header">
             Свойства раздела «{{ section.caption }}»
         </div>
-        <form action="{{ currentRoute }}" class="form" method="post" {{ form_enctype(form) }}>
-            {{ form_widget(form) }}
+        <form action="{{ currentRoute }}" method="post" {{ form_enctype(form) }}>
+            {% include 'CmsBundle:Content:BaseDialog.html.twig' %}
             <div>
                 {# URL этой страницы: <a href="{{ pageURL }}">{{ pageURL }}</a> #}
             </div>

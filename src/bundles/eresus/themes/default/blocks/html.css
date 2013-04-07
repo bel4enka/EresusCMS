@@ -1,27 +1,3 @@
-html
-{
-    font-family: Verdana, Helvetica, sans-serif;
-    font-size: 13px;
-    height: 100%;
-    line-height: 1.54;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-body
-{
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-img
-{
-    border-width: 0;
-}
-
 a
 {
     color: #08c;
@@ -38,6 +14,20 @@ a:hover
 {
     color: #f00;
     text-decoration: underline;
+}
+
+body
+{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+em
+{
+    color: red;
+    font-style: normal;
 }
 
 h1,
@@ -58,17 +48,20 @@ h1
     padding: 0;
 }
 
-p
+html
 {
-    margin: 0 0 .1em;
-    text-indent: 1em;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 13px;
+    height: 100%;
+    line-height: 1.54;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-ul,
-ol
+img
 {
-    margin: .1em 0;
-    padding: 0 0 0 15px;
+    border-width: 0;
 }
 
 label
@@ -80,6 +73,19 @@ label.required::after
 {
     color: red;
     content: '*';
+}
+
+ol,
+ul
+{
+    margin: .1em 0;
+    padding: 0 0 0 15px;
+}
+
+p
+{
+    margin: 0 0 .1em;
+    text-indent: 1em;
 }
 
 sup

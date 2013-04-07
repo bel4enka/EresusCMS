@@ -26,6 +26,9 @@
 
 namespace Eresus\CmsBundle;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
+use Eresus\CmsBundle\Repository\SectionRepository;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
@@ -69,6 +72,14 @@ class CmsBundle extends Bundle
             throw new RuntimeException('"config/global.yml" not found');
         }
         $this->globals = Yaml::parse($filename);
+
+        /** @var Registry $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        /** @var EntityManager $em */
+        $em = $doctrine->getManager();
+        /** @var SectionRepository $repo */
+        $repo = $em->getRepository('CmsBundle:Section');
+        $this->globals['rootSection'] = $repo->getRoot();
     }
 
     /**
