@@ -1,4 +1,9 @@
 <tr data-level="{{ level }}">
+    <td{% if level > 0 %} style="padding-left: {{ level-1 }}em;"{% endif %}>
+        {% if level > 0 %}<span class="icon icon_img_tree-line"></span>{% endif %}
+        <a href="{{ path('admin.content.edit', {'id': section.id}) }}"
+           title="Редактировать раздел «{{ section.caption|escape }}»">{{ section.caption }}</a>
+    </td>
     <td class="table-list__controls">
         <a href="{{ path('admin.content.edit', {'id': section.id}) }}" class="icon icon_img_edit"
            title="Редактировать раздел «{{ section.caption|escape }}»">&nbsp;</a>
@@ -19,11 +24,6 @@
             <a href="{{ path('admin.content.delete', {'id': section.id}) }}" class="icon icon_img_delete"
                data-action="delete" title="Удалить раздел «{{ section.caption|escape }}»">&nbsp;</a>
         {% endif %}
-    </td>
-    <td{% if level > 0 %} style="padding-left: {{ level-1 }}em;"{% endif %}>
-        {% if level > 0 %}<span class="icon icon_img_tree-line"></span>{% endif %}
-        <a href="{{ path('admin.content.edit', {'id': section.id}) }}"
-            title="Редактировать раздел «{{ section.caption|escape }}»">{{ section.caption }}</a>
     </td>
     <td><a title="Открыть раздел в КИ" target="_blank"
         href="{{ app.request.getBasePath }}{{ section.clientURL }}">{{ section.clientURL }}</a></td>

@@ -198,6 +198,75 @@ class AdminContentController extends AdminAbstractController
     }
 
     /**
+     * Перемещает страницу выше в списке
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function upAction($id)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Section $section */
+        $section = $em->find('CmsBundle:Section', $id);
+        if ($section->position > 0)
+        {
+            $q = $em->createQuery(
+                'SELECT s FROM CmsBundle:Section s ' .
+                    'WHERE s.parent = :parent AND s.position < :position ' .
+                    'ORDER BY s.position DESC'
+            );
+            $q->setParameter('parent', $section->parent);
+            $q->setParameter('position', $section->position);
+            $q->setMaxResults(1);
+            /** @var Section $swap */
+            $swap = $q->getOneOrNullResult();
+            if (null !== $swap)
+            {
+                $pos = $section->position;
+                $section->position = $swap->position;
+                $swap->position = $pos;
+                $em->flush();
+            }
+        }
+        return $this->redirect($this->generateUrl('admin.content'));
+    }
+
+    /**
+     * Перемещает раздел ниже в списке
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function downAction($id)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Section $section */
+        $section = $em->find('CmsBundle:Section', $id);
+        $q = $em->createQuery(
+            'SELECT s FROM CmsBundle:Section s ' .
+                'WHERE s.parent = :parent AND s.position > :position ' .
+                'ORDER BY s.position ASC'
+        );
+        $q->setParameter('parent', $section->parent);
+        $q->setParameter('position', $section->position);
+        $q->setMaxResults(1);
+        /** @var Section $swap */
+        $swap = $q->getOneOrNullResult();
+        if (null !== $swap)
+        {
+            $pos = $section->position;
+            $section->position = $swap->position;
+            $swap->position = $pos;
+            $em->flush();
+        }
+        return $this->redirect($this->generateUrl('admin.content'));
+    }
+
+    /**
      * Возвращает массив переменных для подстановки в шаблон
      *
      * @return array
