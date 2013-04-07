@@ -3,7 +3,7 @@
  * [Описание файла]
  *
  * @version ${product.version}
- * @copyright ${product.copyright}
+ * @copyright 2013, Михаил Красильников <m.krasilnikov@yandex.ru>
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *

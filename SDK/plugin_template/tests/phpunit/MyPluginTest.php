@@ -2,7 +2,7 @@
 /**
  * Тесты класса MyPlugin
  *
- * @copyright [год], [владелец], [адрес, если нужен]
+ * @copyright [год], [владелец] [адрес, если нужен]
  * @license http://www.gnu.org/licenses/gpl.txt	GPL License 3
  * @author [Автор1 <E-mail автора1>]
  * @author [АвторN <E-mail автораN>]

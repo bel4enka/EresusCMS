@@ -2,12 +2,12 @@
 /**
  * ${product.title}
  *
- * Родительский класс для всех плагинов
+ * Родительский класс для пакетов плагинов
  *
  * @version ${product.version}
- * @copyright ${product.copyright}
+ * @copyright 2012, Михаил Красильников <m.krasilnikov@yandex.ru>
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -31,7 +31,7 @@ namespace Eresus\CmsBundle\Extensions;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Родительский класс для пакетов всех плагинов
+ * Родительский класс для пакетов плагинов
  *
  * @since 4.00
  */

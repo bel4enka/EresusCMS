@@ -1,11 +1,11 @@
 <?php
 /**
- * ${product.title}
+ * Тесты класса Eresus\CmsBundle\Extensions\Plugin
  *
  * @version ${product.version}
- * @copyright ${product.copyright}
+ * @copyright 2012, Михаил Красильников <m.krasilnikov@yandex.ru>
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с

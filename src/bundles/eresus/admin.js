@@ -1,10 +1,9 @@
 /**
  * Скрипты АИ
  *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @copyright 2004, Михаил Красильников <m.krasilnikov@yandex.ru>
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
