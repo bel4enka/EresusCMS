@@ -388,7 +388,7 @@ class Kernel extends ParentKernel
      */
     public function getLogDir()
     {
-        return $this->getRootDir() . '/logs';
+        return $this->getRootDir() . '/app/logs';
     }
 
     /**
@@ -398,7 +398,7 @@ class Kernel extends ParentKernel
      */
     public function getCacheDir()
     {
-        return $this->getRootDir() . '/cache/' . $this->environment;
+        return $this->getRootDir() . '/app/cache/' . $this->environment;
     }
 }
 
