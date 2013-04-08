@@ -136,6 +136,14 @@ class Plugin
     private $contentTypes = array();
 
     /**
+     * Возможности, предоставляемые модулем
+     *
+     * @var array[]
+     * @since 4.00
+     */
+    private $features = array();
+
+    /**
      * Пакет плагина
      * @var Bundle
      */
@@ -327,6 +335,17 @@ class Plugin
     }
 
     /**
+     * Возвращает поставщиков возможностей, предоставляемых модулем
+     *
+     * @return array[]
+     * @since 4.00
+     */
+    public function getFeatures()
+    {
+        return $this->features;
+    }
+
+    /**
      * Возвращает службу по её идентификатору
      *
      * @param string $id
@@ -424,6 +443,15 @@ class Plugin
                     $item['controller'], $item['title'],
                     \Eresus\CmsBundle\getElementOrDefault($item, 'description', null));
             }
+        }
+
+        /*
+         * Определяем возможности
+         */
+        $this->features = array();
+        if (array_key_exists('features', $config))
+        {
+            $this->features = $config['features'];
         }
     }
 }

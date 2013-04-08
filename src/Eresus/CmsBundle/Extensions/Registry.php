@@ -36,6 +36,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Eresus\CmsBundle\Exceptions\ConfigException;
 use Eresus\CmsBundle\Extensions\Plugin;
 use Eresus\CmsBundle\Content\ContentTypeRegistry;
+use Eresus\CmsBundle\Features\Registry as FeatureRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Eresus\CmsBundle\Kernel;
@@ -141,6 +142,16 @@ class Registry implements ContainerAwareInterface
         foreach ($plugin->getContentTypes() as $type)
         {
             $registry->register($type);
+        }
+
+        /*
+         * Регистрируем поставщиков возможностей
+         */
+        /** @var FeatureRegistry $registry */
+        $registry = $this->container->get('features');
+        foreach ($plugin->getFeatures() as $feature => $provider)
+        {
+            $registry->register($feature, $provider['class']);
         }
 
         $this->plugins[$plugin->id] = $plugin;

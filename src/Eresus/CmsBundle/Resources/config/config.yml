@@ -88,3 +88,7 @@ services:
     content_types:
         class: Eresus\CmsBundle\Content\ContentTypeRegistry
         arguments: [@service_container]
+
+    features:
+        class: Eresus\CmsBundle\Features\Registry
+        arguments: [@service_container]

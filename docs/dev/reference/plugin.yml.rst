@@ -116,6 +116,22 @@ description
            description:
                ru: "Раздел для размещения фруктов"
 
+features
+-------------
+
+Список возможностей, предоставляемых модулем. Каждая возможность идентифицируется именем интерфейса.
+
+class
+^^^^^
+
+Полное имя класса, являющегося поставщиком этой возможности. Обязательный параметр.
+
+.. code-block:: yaml
+
+   features:
+       Eresus\CmsBundle\Features\WysiwygFeature:
+           class: Acme\MyPlugin\Features\WysiwygFeature
+
 Пример файла
 ------------
 
@@ -138,3 +154,6 @@ description
        -
            title: "Название типа контента"
            controller: Default
+   features:
+       Eresus\CmsBundle\Features\WysiwygFeature:
+           class: Acme\MyPlugin\Features\WysiwygFeature

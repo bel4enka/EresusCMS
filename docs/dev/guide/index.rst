@@ -9,6 +9,7 @@
 
    first_steps
    providing_content_types
+   feature_providers
    install
    uninstall
    events
