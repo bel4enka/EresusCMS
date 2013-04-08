@@ -28,7 +28,7 @@ namespace Eresus\CmsBundle;
 
 use ErrorException;
 use Composer\Autoload\ClassLoader;
-use Symfony\Component\HttpKernel\Kernel as ParentKernel;
+use Symfony\Component\HttpKernel\Kernel as SymfonyKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -44,7 +44,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
  *
  * @since 3.00
  */
-class Kernel extends ParentKernel
+class Kernel extends SymfonyKernel
 {
     /**
      * Размер резервного буфера для отлова ошибок переполнения памяти (в Кб)
@@ -79,14 +79,8 @@ class Kernel extends ParentKernel
     {
         parent::__construct($environment, $debug);
 
-        /*
-         * Установка имени файла журнала
-         * ВАЖНО! Путь должен существовать быть доступен для записи скриптам PHP.
-         */
-        ini_set('error_log', __DIR__ . '/../../../logs/eresus.log');
-
         // Устанавливаем кодировку по умолчанию для операций mb_*
-        mb_internal_encoding('utf-8');
+        mb_internal_encoding('UTF-8');
 
         /* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
         @$timezone = date_default_timezone_get();
