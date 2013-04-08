@@ -14,27 +14,19 @@ if (!function_exists('intl_get_error_code'))
     /** @noinspection PhpIncludeInspection */
     require_once __DIR__
         . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
-
-    $loader->add(
-        '',
-        __DIR__ . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs'
-    );
 }
 
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', __DIR__);
-
 $input = new ArgvInput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
-$debug =
-    getenv('SYMFONY_DEBUG') !== '0'
-        && !$input->hasParameterOption(array('--no-debug', ''))
-        && $env !== 'prod';
+$debug = getenv('SYMFONY_DEBUG') !== '0'
+    && !$input->hasParameterOption(array('--no-debug', ''))
+    && $env !== 'prod';
 
 $kernel = new Eresus\CmsBundle\Kernel($env, $debug);
 
-$kernel->loadClassCache();
+$kernel->setClassLoader($loader);
 $application = new Application($kernel);
 $application->run($input);

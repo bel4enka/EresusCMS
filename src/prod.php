@@ -3,7 +3,7 @@
  * Запускающий скрипт для режима веб
  *
  * @version ${product.version}
- * @copyright ${product.copyright}
+ * @copyright 2012, Михаил Красильников <m.krasilnikov@yandex.ru>
  * @license ${license.uri} ${license.name}
  * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
@@ -27,11 +27,6 @@
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Eresus\CmsBundle\HTTP\Request;
 
-// Временно включаем вывод ошибок, пока не инициализированы средства журналирования
-$displayErrors = ini_set('display_errors', true);
-// Временно включаем отслеживание ошибок
-ini_set('track_errors', true);
-
 /** @var \Composer\Autoload\ClassLoader $loader */
 /** @noinspection PhpIncludeInspection */
 $loader = require __DIR__ . '/vendor/autoload.php';
@@ -42,34 +37,16 @@ if (!function_exists('intl_get_error_code'))
     /** @noinspection PhpIncludeInspection */
     require_once __DIR__
         . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
-
-    $loader->add(
-        '',
-        __DIR__ . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs'
-    );
 }
 
 /** @noinspection PhpParamsInspection */
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('Eresus_', __DIR__);
-
-/* Если произошли какие-то ошибки, прерываем работу приложения */
-if (isset($php_errormsg))
-{
-    die($php_errormsg);
-}
-
-// Выключаем отслеживание ошибок, теперь полагаемся на ядро
-ini_set('track_errors', false);
-
-$kernel = new Eresus\CmsBundle\Kernel('prod', true);
-
-// Восстанавливаем состояние вывода ошибок
-ini_set('track_errors', $displayErrors);
+$kernel = new Eresus\CmsBundle\Kernel(isset($env) ? $env : 'prod', true);
 
 $kernel->setClassLoader($loader);
 $kernel->loadClassCache();
+Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
