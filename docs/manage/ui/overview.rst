@@ -22,7 +22,7 @@
 
 .. figure:: info-message.png
 
-   Инофрмационное сообщение
+   Информационное сообщение
 
 .. figure:: error-message.png
 

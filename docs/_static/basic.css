@@ -19,6 +19,11 @@ a:hover
 	text-decoration: underline;
 }
 
+em
+{
+    font-style: normal;
+}
+
 .main-nav
 {
 	background: #007acc;
@@ -257,6 +262,24 @@ dt:hover > a.headerlink
 	color: white;
 }
 
+/**
+ * Сноска
+ */
+.footnote-reference
+{
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: super;
+}
+
+/**
+ * Таблица сносок
+ */
+.footnote
+{
+    font-size: 12px;
+}
+
 div.body p, div.body dd, div.body li
 {
 	line-height: 1.5em;
@@ -282,19 +305,6 @@ div.seealso {
 
 div.topic {
 	background-color: #eee;
-}
-
-div.warning {
-	background-color: #ffe4e4;
-	border: 1px solid #f66;
-}
-
-p.admonition-title {
-	display: inline;
-}
-
-p.admonition-title:after {
-	content: ":";
 }
 
 pre {
@@ -339,10 +349,31 @@ div.viewcode-block:target {
 
 .admonition
 {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	padding: 7px;
+    background: #eee;
+    border-radius: 7px;
+    box-shadow:
+        0 0 3px 0 rgba(0, 0, 0, 0.5),
+        0 15px 10px 0 rgba(255, 255, 255, 0.6) inset;
+    margin: 7px 0;
+    min-height: 30px;
+    padding: 5px 5px 5px 45px;
+    position: relative;
 }
+
+    .admonition:before
+    {
+        background-image: url(icons-32.png);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        content: ' ';
+        display: block;
+        height: 32px;
+        left: 5px;
+        margin-top: -16px;
+        position: absolute;
+        top: 50%;
+        width: 32px;
+    }
 
 .admonition dt
 {
@@ -360,8 +391,82 @@ div.viewcode-block:target {
 	font-weight: bold;
 }
 
+/**
+ * Подсказка
+ * Совет
+ */
+.admonition.hint,
+.admonition.tip
+{
+    background-color: #d7f3c2;
+}
+
+    .admonition.hint:before,
+    .admonition.tip:before
+    {
+        background-position: -128px 0;
+    }
+
+/**
+ * Информация
+ */
+.admonition.note
+{
+    background-color: #cddef3;
+}
+
+    .admonition.note:before
+    {
+        background-position: -96px 0;
+    }
+
+/**
+ * Внимание
+ * Важно
+ */
+.admonition.attention,
+.admonition.important
+{
+    background-color: #ffe87f;
+}
+
+    .admonition.attention:before,
+    .admonition.important:before
+    {
+        background-position: -64px 0;
+    }
+
+/**
+ * Осторожно!
+ * Предупреждение
+ */
+.admonition.caution,
+.admonition.warning
+{
+    background-color: #ffcabf;
+}
+
+    .admonition.caution:before,
+    .admonition.warning:before
+    {
+        background-position: -160px 0;
+    }
+
 p.centered
 {
 	text-align: center;
 	margin-top: 25px;
+}
+
+/**
+ * Рубрика
+ */
+.rubric
+{
+    border-top: dotted 1px #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0 0;
+    padding: 0;
+    text-indent: 0;
 }
