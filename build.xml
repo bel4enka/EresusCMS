@@ -158,19 +158,21 @@
     -->
     <target name="build" description="Build project">
 
+        <!-- Сборка темы default -->
+        <exec command="make" dir="src/Eresus/CmsBundle/Resources/public/themes/default"
+            checkreturn="true" />
+
         <!-- Копирование основных файлов -->
         <copy todir="${build.dir}">
             <fileset dir="src">
                 <include name="**" />
-                <exclude name="themes/default/blocks/**" />
+                <exclude name="**/themes/*/blocks/**" />
+                <exclude name="**/themes/*/Makefile" />
             </fileset>
             <filterchain>
                 <expandproperties />
           </filterchain>
         </copy>
-
-        <!-- Обработка файлов CSS темы default -->
-        <exec command="find src/bundles/eresus/themes/default/blocks -name '*.css' | xargs cat >> ${build.dir}/bundles/eresus/themes/default/theme.css" />
 
         <!-- Сторонние компоненты -->
         <copy todir="${build.dir}/vendor">
@@ -199,35 +201,29 @@
             </fileset>
         </copy>
 
-        <copy todir="${build.dir}/bundles/framework">
-            <fileset dir="vendor/symfony/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/public">
-                <include name="**/*" />
-            </fileset>
-        </copy>
-
         <!-- jQuery -->
-        <copy todir="${build.dir}/bundles/jquery">
+        <copy todir="${build.dir}/web/bundles/jquery">
             <filelist dir="vendor/components/jquery" files="jquery.min.js" />
             <fileset dir="vendor/components/jqueryui">
                 <include name="**/*.js"/>
             </fileset>
             <filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
         </copy>
-        <copy todir="${build.dir}/bundles/eresus/themes/default">
+        <copy todir="${build.dir}/Eresus/CmsBundle/Resources/public/themes/default">
             <fileset dir="vendor/components/jqueryui">
                 <include name="images/*"/>
             </fileset>
         </copy>
-        <append destFile="${build.dir}/bundles/eresus/themes/default/theme.css"
+        <append destFile="${build.dir}/Eresus/CmsBundle/Resources/public/themes/default/theme.css"
             file="vendor/components/jqueryui/jquery-ui.min.css"/>
 
         <!-- Modernizr -->
-        <copy todir="${build.dir}/bundles/modernizr">
+        <copy todir="${build.dir}/web/bundles/modernizr">
             <filelist dir="vendor/components/modernizr" files="modernizr.js" />
         </copy>
 
         <!-- Webshims -->
-        <copy todir="${build.dir}/bundles/webshim">
+        <copy todir="${build.dir}/web/bundles/webshim">
             <fileset dir="3rdparty/webshim">
                 <include name="**" />
             </fileset>

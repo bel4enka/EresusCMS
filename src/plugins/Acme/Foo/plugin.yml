@@ -1,0 +1,11 @@
+title:
+    ru: "Foo"
+version: "1.00"
+description: "Foo plugin"
+require:
+    cms: {min: "4.00"}
+content_types:
+    -
+        title: "Список товаров"
+        controller: Default
+        description: "В этом разделе вы можете разместить неструктурированный список товаров"

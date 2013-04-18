@@ -1,0 +1,7 @@
+title:
+    ru: "Bar"
+version: "1.00"
+description: "Bar plugin"
+require:
+    CMS: {min: "4.00"}
+    Acme\Foo: {min: "2.00", max: "2.15"}
