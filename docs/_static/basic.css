@@ -339,10 +339,30 @@ div.viewcode-block:target {
 
 .admonition
 {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	padding: 7px;
+    background: #eee;
+    border-radius: 7px;
+    box-shadow:
+        0 0 3px 0 rgba(0, 0, 0, 0.5),
+        0 15px 10px 0 rgba(255, 255, 255, 0.6) inset;
+    margin: 7px 0;
+    min-height: 30px;
+    padding: 5px 5px 5px 45px;
+    position: relative;
 }
+
+    .admonition:before
+    {
+        background-image: url(icons-32.png);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        content: ' ';
+        display: block;
+        height: 32px;
+        left: 5px;
+        position: absolute;
+        top: 3px;
+        width: 32px;
+    }
 
 .admonition dt
 {
@@ -359,6 +379,58 @@ div.viewcode-block:target {
 	margin: 0px 10px 5px 0px;
 	font-weight: bold;
 }
+
+/**
+ * Подсказка
+ */
+.admonition.hint
+{
+    background-color: #d7f3c2;
+}
+
+    .admonition.hint:before
+    {
+        background-position: -128px 0;
+    }
+
+/**
+ * Информация
+ */
+.admonition.note
+{
+    background-color: #cddef3;
+}
+
+    .admonition.note:before
+    {
+        background-position: -96px 0;
+    }
+
+/**
+ * Внимание
+ */
+.admonition.attention
+{
+    background-color: #ffe87f;
+}
+
+    .admonition.attention:before
+    {
+        background-position: -64px 0;
+    }
+
+/**
+ * Осторожно!
+ */
+.admonition.caution
+{
+    background-color: #ffcabf;
+}
+
+    .admonition.caution:before
+    {
+        background-position: -160px 0;
+    }
 
 p.centered
 {
