@@ -46,14 +46,19 @@ class TContentPlugin extends TPlugin
 	function __construct()
 	{
 	  parent::__construct();
-		Eresus_Kernel::app()->getPage()->plugin = $this->name;
-    if (count(Eresus_Kernel::app()->getPage()->options))
-    {
-      foreach (Eresus_Kernel::app()->getPage()->options as $key=>$value)
-      {
-        $this->settings[$key] = $value;
-      }
-    }
+		/** @var TClientUI|TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
+		if ($page)
+		{
+			$page->plugin = $this->name;
+			if (count($page->options))
+			{
+				foreach ($page->options as $key=>$value)
+				{
+					$this->settings[$key] = $value;
+				}
+			}
+		}
 	}
 	//------------------------------------------------------------------------------
 /**
