@@ -262,6 +262,24 @@ dt:hover > a.headerlink
 	color: white;
 }
 
+/**
+ * Сноска
+ */
+.footnote-reference
+{
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: super;
+}
+
+/**
+ * Таблица сносок
+ */
+.footnote
+{
+    font-size: 12px;
+}
+
 div.body p, div.body dd, div.body li
 {
 	line-height: 1.5em;
@@ -287,19 +305,6 @@ div.seealso {
 
 div.topic {
 	background-color: #eee;
-}
-
-div.warning {
-	background-color: #ffe4e4;
-	border: 1px solid #f66;
-}
-
-p.admonition-title {
-	display: inline;
-}
-
-p.admonition-title:after {
-	content: ":";
 }
 
 pre {
@@ -364,8 +369,9 @@ div.viewcode-block:target {
         display: block;
         height: 32px;
         left: 5px;
+        margin-top: -16px;
         position: absolute;
-        top: 3px;
+        top: 50%;
         width: 32px;
     }
 
@@ -387,13 +393,16 @@ div.viewcode-block:target {
 
 /**
  * Подсказка
+ * Совет
  */
-.admonition.hint
+.admonition.hint,
+.admonition.tip
 {
     background-color: #d7f3c2;
 }
 
-    .admonition.hint:before
+    .admonition.hint:before,
+    .admonition.tip:before
     {
         background-position: -128px 0;
     }
@@ -413,26 +422,32 @@ div.viewcode-block:target {
 
 /**
  * Внимание
+ * Важно
  */
-.admonition.attention
+.admonition.attention,
+.admonition.important
 {
     background-color: #ffe87f;
 }
 
-    .admonition.attention:before
+    .admonition.attention:before,
+    .admonition.important:before
     {
         background-position: -64px 0;
     }
 
 /**
  * Осторожно!
+ * Предупреждение
  */
-.admonition.caution
+.admonition.caution,
+.admonition.warning
 {
     background-color: #ffcabf;
 }
 
-    .admonition.caution:before
+    .admonition.caution:before,
+    .admonition.warning:before
     {
         background-position: -160px 0;
     }
@@ -441,4 +456,17 @@ p.centered
 {
 	text-align: center;
 	margin-top: 25px;
+}
+
+/**
+ * Рубрика
+ */
+.rubric
+{
+    border-top: dotted 1px #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0 0;
+    padding: 0;
+    text-indent: 0;
 }
