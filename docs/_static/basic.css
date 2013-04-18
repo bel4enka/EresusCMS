@@ -19,6 +19,11 @@ a:hover
 	text-decoration: underline;
 }
 
+em
+{
+    font-style: normal;
+}
+
 .main-nav
 {
 	background: #007acc;
