@@ -29,7 +29,7 @@ namespace Eresus\CmsBundle\Command;
 use Eresus\CmsBundle\Kernel;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -77,16 +77,14 @@ class InstallCommand extends ContainerAwareCommand
             $this->output = $output;
             $this->subCommand('doctrine:schema:create');
             $this->subCommand('doctrine:query:sql', array(
-                'sql' =>
-                    "INSERT INTO accounts (username, salt, password, is_active, email) " .
-                    "VALUES ('root', '', SHA1('pass'), '1', 'support@example.org');")
+                "INSERT INTO accounts (username, salt, password, is_active, email) " .
+                "VALUES ('root', '', SHA1('pass'), '1', 'support@example.org');")
             );
             $this->subCommand('doctrine:query:sql', array(
-                'sql' =>
-                    "INSERT INTO sections (id, parent_id, name, title, caption, description, " .
-                    "keywords, position, enabled, visible, template, type, options, created) " .
-                    "VALUES ('1', NULL, '', 'Главная страница', 'Главная', '', '', '0', '1', " .
-                    "'1', 'default', 'Eresus.Html.Default', 'a:0:{}', '0000-00-00 00:00:00');")
+                "INSERT INTO sections (id, parent_id, name, title, caption, description, " .
+                "keywords, position, enabled, visible, template, type, options, created) " .
+                "VALUES ('1', NULL, '', 'Главная страница', 'Главная', '', '', '0', '1', " .
+                "'1', 'default', 'Eresus.Html.Default', 'a:0:{}', '0000-00-00 00:00:00');")
             );
         }
         catch (Exception $e)
@@ -98,24 +96,18 @@ class InstallCommand extends ContainerAwareCommand
     /**
      * Выполняет команду
      *
-     * @param string $command
+     * @param string $name
      * @param array  $args
      *
      * @return void
      */
-    private function subCommand($command, array $args = array())
+    private function subCommand($name, array $args = array())
     {
-        /** @var Kernel $kernel */
-        $kernel = $this->getContainer()->get('kernel');
-        $app = new Application($kernel);
-        $app->setAutoExit(false);
-
-        $input = new StringInput($command);
-        foreach ($args as $name => $value)
-        {
-            $input->setArgument($name, $value);
-        }
-        $app->run($input, $this->output);
+        $command = $this->getApplication()->find($name);
+        array_unshift($args, $name);
+        array_unshift($args, $GLOBALS['argv'][0]);
+        $input = new ArgvInput($args);
+        $command->run($input, $this->output);
     }
 }
 
