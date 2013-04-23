@@ -53,7 +53,7 @@ AddDefaultCharset Off
 	### ДРУГИЕ ПРАВИЛА ###
 
 	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(bundles|plugins|public|Eresus/CmsBundle/Resources/public)/ - [last]
+	RewriteRule ^(web|plugins|public|Eresus/CmsBundle/Resources/public)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [last]
 	RewriteRule ^dev\.php - [last]

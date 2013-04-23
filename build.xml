@@ -158,21 +158,33 @@
     -->
     <target name="build" description="Build project">
 
-        <!-- Сборка темы default -->
-        <exec command="make" dir="src/Eresus/CmsBundle/Resources/public/themes/default"
-            checkreturn="true" />
-
         <!-- Копирование основных файлов -->
         <copy todir="${build.dir}">
             <fileset dir="src">
                 <include name="**" />
-                <exclude name="**/themes/*/blocks/**" />
-                <exclude name="**/themes/*/Makefile" />
+                <exclude name="**/themes/**" />
             </fileset>
             <filterchain>
                 <expandproperties />
-          </filterchain>
+            </filterchain>
         </copy>
+
+        <!-- Сборка темы default -->
+        <property name="theme.path" value="Eresus/CmsBundle/Resources/public/themes/default" />
+        <copy todir="${build.dir}/${theme.path}">
+            <fileset dir="src/${theme.path}">
+                <include name="**" />
+                <exclude name="blocks/**" />
+            </fileset>
+            <filterchain>
+                <expandproperties />
+            </filterchain>
+        </copy>
+        <append destFile="${build.dir}/${theme.path}/theme.css">
+            <fileset dir="src/${theme.path}/blocks">
+                <include name="**/*.css" />
+            </fileset>
+        </append>
 
         <!-- Сторонние компоненты -->
         <copy todir="${build.dir}/vendor">

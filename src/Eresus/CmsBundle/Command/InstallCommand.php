@@ -75,6 +75,7 @@ class InstallCommand extends ContainerAwareCommand
         try
         {
             $this->output = $output;
+            $this->subCommand('assets:install');
             $this->subCommand('doctrine:schema:create');
             $this->subCommand('doctrine:query:sql', array(
                 "INSERT INTO accounts (username, salt, password, is_active, email) " .
