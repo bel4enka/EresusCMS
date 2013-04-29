@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>500</title>
+  </head>
+<body>
+    <article lang="en">
+        <hgroup>
+            <h1>Error!</h1>
+            <h2>URL-translation engine inactive</h2>
+        </hgroup>
+        <p>Possible reasons:</p>
+        <ol>
+            <li>mod_rewrite module is not exists or not installed</li>
+            <li>.htaccess file missing or incorrect</li>
+            <li>Your web-server is not Apache compatible</li>
+        </ol>
+    </article>
+
+    <article lang="ru">
+        <hgroup>
+            <h1>Ошибка!</h1>
+            <h2>Не работает механизм URL-преобразований</h2>
+        </hgroup>
+        <p>Возможные причины:</p>
+        <ol>
+            <li>На сервере отсутствует или не подключен модуль mod_rewrite</li>
+            <li>Отсутствует или неверно составлен файл .htaccess</li>
+            <li>Вы используете сервер несовместимый с Apache</li>
+        </ol>
+    </article>
+
+    <script>
+        if (window.navigator.language)
+        {
+            var articles = window.document.getElementsByTagName('article');
+            var index = [];
+            for (var i = 0; i < articles.length; i++)
+            {
+                index[articles[i].getAttribute('lang')] = articles[i];
+            }
+            var preferredLang = window.navigator.language.toLowerCase();
+            if (index[preferredLang] === undefined)
+            {
+                preferredLang = 'en';
+            }
+            for (var lang in index)
+            {
+                if (lang != preferredLang)
+                {
+                    index[lang].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
