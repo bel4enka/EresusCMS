@@ -31,7 +31,7 @@ twig:
 assetic:
     debug:          %kernel.debug%
     use_controller: false
-    bundles:        [ ]
+    bundles:        [ EresusCmsBundle ]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
@@ -73,7 +73,7 @@ services:
         class: %file_locator.class%
         arguments:
             - @kernel
-            - %kernel.root_dir%/Eresus/EresusCmsBundle/Resources
+            - %kernel.root_dir%/Eresus/CmsBundle/Resources
 
     twig.extension.eresus:
         class: Eresus\CmsBundle\Twig\Extension
