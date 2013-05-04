@@ -29,14 +29,14 @@ use Eresus\CmsBundle\HTTP\Request;
 
 /** @var \Composer\Autoload\ClassLoader $loader */
 /** @noinspection PhpIncludeInspection */
-$loader = require __DIR__ . '/vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
 
 /* intl */
 if (!function_exists('intl_get_error_code'))
 {
     /** @noinspection PhpIncludeInspection */
     require_once __DIR__
-        . '/vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+        . '/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
 }
 
 /** @noinspection PhpParamsInspection */
