@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
- Eresus CMS
-
- Файл сборки проекта
- -->
 <project name="eresus-cms" default="build" basedir="./">
 
     <property file="build.properties" />
 
     <!-- Основные файлы проекта. Только PHP -->
-    <fileset dir="src" id="files.sources.php">
+    <fileset dir="src/main" id="files.sources.php">
         <include name="**/*.php" />
     </fileset>
 
@@ -41,31 +36,31 @@
         <if>
             <available file="composer" property="." filepath="${env.PATH}" />
             <then>
-                <exec command="composer update" passthru="true" />
+                <exec command="composer update" dir="src/main" passthru="true" />
             </then>
 
             <else>
 
                 <if>
-                    <available file="composer.phar" property="." />
+                    <available file="src/main/composer.phar" property="." />
 
                     <then>
-                        <exec command="php composer.phar update" passthru="true" />
+                        <exec command="php composer.phar update" dir="src/main" passthru="true" />
                     </then>
 
                     <else>
                         <echo message="download" />
                         <httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
-                                 filename="composer.php"/>
-                        <exec command="php composer.php" passthru="true" />
-                        <delete file="composer.php" />
-                        <exec command="php composer.phar install" passthru="true" />
+                                 filename="src/main/composer.php"/>
+                        <exec command="php composer.php" dir="src/main" passthru="true" />
+                        <delete file="src/main/composer.php" />
+                        <exec command="php composer.phar install" dir="src/main" passthru="true" />
                     </else>
                 </if>
             </else>
         </if>
 
-        <exec command="tools/jquery-ui.downloader.php" />
+        <exec command="tools/jquery-ui.downloader.php" passthru="true" />
 
     </target>
 
@@ -133,16 +128,16 @@
 
         <phpcodesniffer
             encoding="UTF-8"
-            standard="Eresus"
+            standard="PSR2DS"
             haltonerror="false"
         >
             <formatter
                 type="${phpcs.format}"
                 outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
             />
-            <fileset dir="src">
+            <fileset dir="src/main">
                 <include name="**/*.php" />
-                <exclude name="ext-3rd/**" />
+                <exclude name="vendor/**" />
             </fileset>
             <fileset dir="tests">
                 <include name="phpunit/**.php" />
@@ -158,44 +153,24 @@
     -->
     <target name="build" description="Build project">
 
+        <!--
+            Делаем путь к папке сборки абсолютным
+        -->
+        <php function="preg_replace" returnProperty="build.dir">
+            <param value="/^\./" />
+            <param value="${project.basedir}" />
+            <param value="${build.dir}" />
+        </php>
+
         <!-- Копирование основных файлов -->
         <copy todir="${build.dir}">
-            <fileset dir="src">
+            <fileset dir="src/main">
                 <include name="**" />
-                <exclude name="**/themes/**" />
-            </fileset>
-            <filterchain>
-                <expandproperties />
-            </filterchain>
-        </copy>
-
-        <!-- Сборка темы default -->
-        <property name="theme.path" value="Eresus/CmsBundle/Resources/public/themes/default" />
-        <copy todir="${build.dir}/${theme.path}">
-            <fileset dir="src/${theme.path}">
-                <include name="**" />
-                <exclude name="blocks/**" />
-            </fileset>
-            <filterchain>
-                <expandproperties />
-            </filterchain>
-        </copy>
-        <append destFile="${build.dir}/${theme.path}/theme.css">
-            <fileset dir="src/${theme.path}/blocks">
-                <include name="**/*.css" />
-            </fileset>
-        </append>
-
-        <!-- Сторонние компоненты -->
-        <copy todir="${build.dir}/vendor">
-            <fileset dir="vendor/">
-                <include name="**/*" />
                 <exclude name="**/Tests/**" />
                 <exclude name="**/tests/**" />
                 <exclude name="**/test/**" />
                 <exclude name=".git" />
                 <exclude name="**/*.dist" />
-                <exclude name="**/composer.json" />
                 <exclude name="**/.travis.yml" />
                 <exclude name="**/build.xml" />
                 <exclude name="**/build.properties" />
@@ -207,32 +182,20 @@
                 <!-- Twig -->
                 <exclude name="**/twig/doc/**" />
                 <exclude name="**/twig/package.*" />
-                <!-- JavaScript -->
-                <exclude name="carhartl/**" />
-                <exclude name="components/**" />
             </fileset>
+            <filterchain>
+                <expandproperties />
+            </filterchain>
         </copy>
 
-        <!-- jQuery -->
-        <copy todir="${build.dir}/web/bundles/jquery">
-            <filelist dir="vendor/components/jquery" files="jquery.min.js" />
-            <fileset dir="vendor/components/jqueryui">
-                <include name="**/*.js"/>
-            </fileset>
-            <filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
-        </copy>
-        <copy todir="${build.dir}/Eresus/CmsBundle/Resources/public/themes/default">
-            <fileset dir="vendor/components/jqueryui">
-                <include name="images/*"/>
-            </fileset>
-        </copy>
-        <append destFile="${build.dir}/Eresus/CmsBundle/Resources/public/themes/default/theme.css"
-            file="vendor/components/jqueryui/jquery-ui.min.css"/>
+        <!-- Сборка темы default -->
+        <exec
+            command="make BUILD_DIR=${build.dir}/Eresus/CmsBundle/Resources/public/themes/default"
+            dir="src/themes/default" passthru="true" />
 
-        <!-- Modernizr -->
-        <copy todir="${build.dir}/web/bundles/modernizr">
-            <filelist dir="vendor/components/modernizr" files="modernizr.js" />
-        </copy>
+        <!-- jQuery.Cookie -->
+        <copy file="${build.dir}/vendor/carhartl/jquery-cookie/jquery.cookie.js"
+            todir="${build.dir}/web/libs/jquery" />
 
         <!-- Webshims -->
         <copy todir="${build.dir}/web/bundles/webshim">
@@ -340,9 +303,9 @@
         <delete dir="${docs.dir}" includeemptydirs="true" />
         <delete dir="${logs.dir}" includeemptydirs="true" />
         <delete dir="${phpunit.coverage.html}" includeemptydirs="true" />
-        <delete dir="vendor" includeemptydirs="true" />
-        <delete dir="composer.lock" />
-        <delete dir="composer.php" />
+        <delete file="src/main/composer.lock" />
+        <delete dir="src/main/vendor" includeemptydirs="true" />
+        <delete dir="src/main/web/components" includeemptydirs="true" />
 
     </target>
 
