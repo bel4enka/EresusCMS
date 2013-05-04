@@ -83,13 +83,3 @@ admin.plugins.uninstall:
 admin.help:
     pattern: /admin/help
     defaults: { _controller: EresusCmsBundle:AdminHelp:about }
-
-main:
-    pattern:  /
-    defaults: { _controller: EresusCmsBundle:Legacy:index }
-
-_legacy:
-    pattern:  /{path}
-    defaults: { _controller: EresusCmsBundle:Legacy:index }
-    requirements:
-        path: ".+"
