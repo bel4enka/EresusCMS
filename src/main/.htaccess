@@ -1,8 +1,4 @@
 ##
-# ${product.title} ${product.version}
-#
-# ${product.description}
-#
 # Конфигурация для веб-сервера Apache
 #
 # @copyright 2004, Михаил Красильников <m.krasilnikov@yandex.ru>
@@ -36,33 +32,12 @@ AddDefaultCharset Off
 	CharsetDisable On
 </IfModule>
 
-#
-# Конфигурация трансформации URL
-#
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-
-	### БЕЗОПАСНОСТЬ ###
-
-	# Запрещаем запуск потенциально опасных файлов из недоверенных директорий
-	RewriteRule ^(data|style)/((.*/)?\.[^/]$|.*\.(ph(p[2-6]?|tml)|pl)$) - [forbidden]
-
-	# Проксируем все запросы к сторонним расширениям через их коннекторы
-	RewriteRule ^ext-3rd/.* index.php [last]
-
-	### ДРУГИЕ ПРАВИЛА ###
-
-	# Отключаем перехват запросов в следующих директориях
-	RewriteRule ^(web|plugins|public|Eresus/CmsBundle/Resources/public)/ - [last]
 	# Отключаем перехват запросов к следующим файлам
 	RewriteRule ^(robots.txt|favicon.[^\.]+)$ - [last]
-	RewriteRule ^dev\.php - [last]
-
-	# Все остальные запросы должны перехватываться запускающим скриптом
-	RewriteRule .* prod.php
-</IfModule>
-
-# Если mod_rewrite не сработал (модуль не подключен, нет нужного файла), то...
-<IfModule mod_dir.c>
-	DirectoryIndex index.htm
+	# Отключаем перехват запросов в следующих директориях
+	RewriteRule ^(web)/ - [last]
+	# Все остальные запросы передаём в папку web
+	RewriteRule ^(.*)$ web/$1
 </IfModule>
