@@ -9,7 +9,7 @@ build:
 	@mv i $(BUILD_DIR)/i
 	@cp theme.js $(BUILD_DIR)/theme.js
 	@cp theme.yml $(BUILD_DIR)/theme.yml
-	@cp -r images $(BUILD_DIR)/i
+	@cp -r images/* $(BUILD_DIR)/i
 
 clean:
 	@if [ -d $(BUILD_DIR) ]; then rm -r $(BUILD_DIR); fi
