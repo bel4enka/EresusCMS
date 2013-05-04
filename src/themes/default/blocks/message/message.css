@@ -13,7 +13,7 @@
 
 .message:before
 {
-    background-image: url(img/icons-32.png);
+    background-image: url(../icon/_img/icon.32.png);
     background-repeat: no-repeat;
     background-position: 0 0;
     content: ' ';

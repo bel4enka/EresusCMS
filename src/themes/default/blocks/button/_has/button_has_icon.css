@@ -6,7 +6,7 @@
 
 .button.button_has_icon:before
 {
-    background-image: url(img/icons-16.png);
+    background-image: url(../../icon/_img/icon.16.png);
     background-repeat: no-repeat;
     content: ' ';
     display: block;
