@@ -8,13 +8,14 @@
 <head>
 	<meta charset="UTF-8">
 	<title>{{ pageTitle }} – {{ globals.siteName }}</title>
-	<link rel="stylesheet" href="{{ asset('web/bundles/eresuscms/themes/default/theme.css') }}">
-    <script src="{{ asset('web/bundles/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('web/bundles/jquery/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('web/bundles/jquery/jquery-ui-i18n.min.js') }}"></script>
-    <script src="{{ asset('web/bundles/jquery/jquery.cookie.js') }}" async defer></script>
-    <script src="{{ asset('web/bundles/eresuscms/themes/default/theme.js') }}" async defer></script>
-    <script src="{{ asset('web/bundles/eresuscms/admin.js') }}" async defer></script>
+	<link rel="stylesheet" href="{{ asset('bundles/eresuscms/themes/default/theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/jqueryui/jquery-ui.min.css') }}">
+    <script src="{{ asset('libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('libs/jqueryui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('libs/jqueryui/jquery-ui-i18n.min.js') }}"></script>
+    <script src="{{ asset('libs/jquery/jquery.cookie.js') }}" async defer></script>
+    <script src="{{ asset('bundles/eresuscms/themes/default/theme.js') }}" async defer></script>
+    <script src="{{ asset('bundles/eresuscms/admin.js') }}" async defer></script>
 </head>
 <body class="page">
 
@@ -23,7 +24,7 @@
         <header class="page__header">
             <div class="cms-logo">
                 <a href="{{ path('admin.dashboard') }}" class="cms-logo__link">
-                    <img src="{{ asset('web/bundles/eresuscms/themes/default/img/logo.png') }}"
+                    <img src="{{ asset('bundles/eresuscms/themes/default/i/logo.png') }}"
                         alt="Eresus" class="cms-logo__image">
                     EresusCMS ${product.version}
                 </a>
