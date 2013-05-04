@@ -142,6 +142,7 @@ foreach ($theme as $key => $value)
 $themeEncoded = implode('&', $themeEncoded);
 $req->addPostParameter('theme', $themeEncoded);
 
+echo "Downloading jQuery UI\n";
 $response = $req->send();
 if ($response->getStatus() != 200)
 {
@@ -152,7 +153,7 @@ if ($response->getStatus() != 200)
 $content = $response->getBody();
 $disposition = $response->getHeader('content-disposition');
 
-$folder = __DIR__ . '/../vendor/components/jqueryui';
+$folder = __DIR__ . '/../src/main/web/libs/jqueryui';
 $filename = "$folder/jquery-ui.zip";
 if (!is_dir($folder))
 {
