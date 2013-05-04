@@ -1,10 +1,17 @@
 {
-    "autoload": {
+    "name": "eresus/eresus-cms",
+    "autoload":
+    {
         "psr-0": { "": "" }
+    },
+    "config":
+    {
+        "component-dir": "web/libs",
+        "component-baseurl": "/libs"
     },
     "require":
     {
-        "php" : ">= 5.3.3",
+        "php": ">= 5.3.3",
         "symfony/symfony": "2.2.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "v1.2.0-beta1",
@@ -35,8 +42,18 @@
             "url": "https://github.com/Eresus/ORMBundle"
         },
         {
-            "type": "vcs",
-            "url": "https://github.com/mekras/botobor"
+            "type": "package",
+            "package":
+            {
+                "name": "mekras/botobor",
+                "version": "0.3.1",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/mekras/botobor",
+                    "reference": "v0.3.1"
+                }
+            }
         },
         {
             "type": "package",
