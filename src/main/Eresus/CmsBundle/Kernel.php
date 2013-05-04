@@ -312,7 +312,6 @@ class Kernel extends SymfonyKernel
             new \JMS\AopBundle\JMSAopBundle(),
             new \JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new \JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
-            new \Eresus\CommonBundle\CommonBundle(),
             new \Eresus\ORMBundle\ORMBundle(),
             new \Eresus\CmsBundle\EresusCmsBundle()
         );
