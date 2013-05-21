@@ -10,4 +10,5 @@
 
    overview/index
    manage/index
+   markup/index
    dev/index
