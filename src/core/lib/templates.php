@@ -38,6 +38,36 @@ class Templates
     private $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
 
     /**
+     * Экземпляр-одиночка
+     * @var null|Templates
+     * @since 3.01
+     */
+    private static $instance = null;
+
+    /**
+     * Возвращает экземпляр-одиночку
+     *
+     * @return Templates
+     * @since 3.01
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance)
+        {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * @deprecated с 3.01 используйте метод {@link getInstance()}
+     */
+    public function __construct()
+    {
+        // TODO Добавить генерацию сообщения об ошибке в будущих версиях
+    }
+
+    /**
      * Возвращает список шаблонов
      *
      * @param string $type Тип шаблонов (соответствует поддиректории в /templates)
@@ -200,6 +230,13 @@ class Templates
         $filename .= "$name.html";
         $result = filedelete($filename);
         return $result;
+    }
+
+    /**
+     * Запрещаем клонирование объекта
+     */
+    private function __clone()
+    {
     }
 }
 
