@@ -260,28 +260,33 @@ class HTTP
         }
         return self::$request;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Redirect UA to another URI and terminate program
+     * Направляет браузер на новый адрес и прекращает выполнение программы
      *
-     * @param string $uri                  New URI
-     * @param bool   $permanent[optional]  Send '301 Moved permanently'
+     * @param string $uri        новый адрес
+     * @param bool   $permanent  отправлять заголовок '301 Moved permanently'
      */
-    static public function redirect($uri, $permanent = false)
+    public static function redirect($uri, $permanent = false)
     {
         eresus_log(__METHOD__, LOG_DEBUG, $uri);
 
         $header = 'Location: '.$uri;
 
         if ($permanent)
+        {
             header($header, true, 301);
+        }
         else
+        {
             header($header);
+        }
 
-        if (!Core::testMode()) exit;
+        if (!Core::testMode())
+        {
+            exit;
+        }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Redirect UA to previous URI
