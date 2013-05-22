@@ -73,7 +73,7 @@ class Templates
      * @param string $type Тип шаблонов (соответствует поддиректории в /templates)
      * @return array
      */
-    function enum($type = '')
+    public function enum($type = '')
     {
         $result = array();
         $dir = filesRoot.'templates/';
@@ -102,7 +102,6 @@ class Templates
         }
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Возвращает шаблон
@@ -157,7 +156,6 @@ class Templates
         }
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Новый шаблон
@@ -168,7 +166,7 @@ class Templates
      * @param string $desc Описание шаблона (необязательно)
      * @return bool Результат выполнения
      */
-    function add($name, $type, $code, $desc = '')
+    public function add($name, $type, $code, $desc = '')
     {
         $result = false;
         $filename = filesRoot.'templates/';
@@ -181,7 +179,6 @@ class Templates
         $result = filewrite($filename, $content);
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Изменяет шаблон
@@ -192,7 +189,7 @@ class Templates
      * @param string $desc Описание шаблона (необязательно)
      * @return bool Результат выполнения
      */
-    function update($name, $type, $code, $desc = null)
+    public function update($name, $type, $code, $desc = null)
     {
         $result = false;
         $filename = filesRoot.'templates/';
