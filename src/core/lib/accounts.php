@@ -108,60 +108,56 @@ class EresusAccounts
      * @param $name
      * @return array
      */
-    function getByName($name)
+    public function getByName($name)
     {
         return $this->get("`login` = '$name'");
     }
 
     /**
-     *	Добавляет	учётную	запись
+     * Добавляет учётную запись
      *
-     *	@access	public
+     * @param array $item Учётная запись
      *
-     *	@param	array	$item	Учётная	запись
-     *
-     *	@return	mixed	Описание	записи	или	false	в	случае	неудачи
+     * @return mixed Описание записи или false в случае неудачи
      */
-    function add($item)
+    public function add($item)
     {
-        $result	=	false;
-        if	(isset($item['id']))	unset($item['id']);
-        if	(!isset($item['profile']))	$item['profile']	=	array();
-        $item['profile']	=	encodeOptions($item['profile']);
-        if (Eresus_CMS::getLegacyKernel()->db->insert($this->table,	$item))
-            $result	=	$this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
-        return	$result;
+        $result = false;
+        if (isset($item['id'])) unset($item['id']);
+        if (!isset($item['profile'])) $item['profile'] = array();
+        $item['profile'] = encodeOptions($item['profile']);
+        if (Eresus_CMS::getLegacyKernel()->db->insert($this->table, $item))
+            $result = $this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
+        return $result;
     }
 
     /**
-     *	Изменяет	учётную	запись
+     * Изменяет учётную запись
      *
-     *	@access	public
+     * @param array $item Учётная запись
      *
-     *	@param	array	$item	Учётная	запись
-     *
-     *	@return	mixed	Описание	изменённой	записи	или	false	в	случае	неудачи
+     * @return mixed Описание изменённой записи или false в случае неудачи
      */
-    function update($item)
+    public function update($item)
     {
         $item['profile'] = encodeOptions($item['profile']);
-        $result	=	Eresus_CMS::getLegacyKernel()->db->
+        $result = Eresus_CMS::getLegacyKernel()->db->
             updateItem($this->table, $item, "`id`={$item['id']}");
         return $result;
     }
 
     /**
-     *	Удаляет	учётную	запись
+     * Удаляет учётную запись
      *
-     *	@access	public
+     * @access public
      *
-     *	@param	int	$id	Идентификатор	записи
+     * @param int $id Идентификатор записи
      *
-     *	@return	bool	Результат	операции
+     * @return bool Результат операции
      */
-    function delete($id)
+    public function delete($id)
     {
-        $result	=	Eresus_CMS::getLegacyKernel()->db->delete($this->table,	"`id`=$id");
+        $result = Eresus_CMS::getLegacyKernel()->db->delete($this->table, "`id`=$id");
         return $result;
     }
 }
