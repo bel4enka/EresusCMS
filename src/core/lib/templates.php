@@ -30,6 +30,7 @@
  * Работа с шаблонами
  *
  * @package Eresus
+ * @subpackage Templates
  *
  * @since 2.10
  */
