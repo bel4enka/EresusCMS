@@ -33,6 +33,7 @@
  * $Id$
  */
 
+define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
 define('TESTS_TEST_DIR', __DIR__ );
 define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
 
