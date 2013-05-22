@@ -1,4 +1,13 @@
 {
+    "name": "eresus/eresus-cms",
+    "description": "Система управления сайтом",
+    "authors":
+    [
+        {
+            "name": "Михаил Красильников",
+            "email": "m.krasilnikov@yandex.ru"
+        }
+    ],
 	"require":
 	{
 		"mekras/botobor" : "0.3.*",
