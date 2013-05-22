@@ -34,10 +34,7 @@
 /*
  * Including Dwoo
  */
-if ( ERESUS_CORE_COMPILED )
-	include_once '3rdparty/dwoo/Dwoo.compiled.php';
-else
-	include_once '3rdparty/dwoo/dwooAutoload.php';
+include_once __DIR__ . '/../3rdparty/dwoo/dwooAutoload.php';
 
 /**
  * Template package settings
