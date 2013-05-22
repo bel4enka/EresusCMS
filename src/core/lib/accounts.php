@@ -65,7 +65,6 @@ class EresusAccounts
         }
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Возвращает учётную запись или список записей
@@ -104,12 +103,16 @@ class EresusAccounts
         }
         return $result;
     }
-    //------------------------------------------------------------------------------
+
+    /**
+     * @param $name
+     * @return array
+     */
     function getByName($name)
     {
         return $this->get("`login` = '$name'");
     }
-    //-----------------------------------------------------------------------------
+
     /**
      *	Добавляет	учётную	запись
      *
@@ -129,7 +132,7 @@ class EresusAccounts
             $result	=	$this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
         return	$result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      *	Изменяет	учётную	запись
      *
@@ -146,7 +149,7 @@ class EresusAccounts
             updateItem($this->table, $item, "`id`={$item['id']}");
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      *	Удаляет	учётную	запись
      *
@@ -161,13 +164,5 @@ class EresusAccounts
         $result	=	Eresus_CMS::getLegacyKernel()->db->delete($this->table,	"`id`=$id");
         return $result;
     }
-    //------------------------------------------------------------------------------
 }
-
-/**
- * @deprecated since Eresus 2.11
- *
- * @package Eresus
- */
-class Accounts extends EresusAccounts {}
 
