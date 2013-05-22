@@ -135,10 +135,10 @@ class TemplateFile extends Dwoo_Template_File {
 class Template
 {
 	/**
-	 * Dwoo object
-	 * @var Dwoo
+	 * Объект Dwoo
+	 * @var null|Dwoo
 	 */
-	protected $dwoo;
+	protected static $dwoo = null;
 
 	/**
 	 * Template file object
@@ -152,12 +152,16 @@ class Template
 	 */
 	public function __construct($filename = null)
 	{
-		$compileDir = $this->detectCompileDir();
-		$compileDir = FS::nativeForm($compileDir);
-		$this->dwoo = new Dwoo($compileDir);
-
-		if (Core::getValue('core.template.charset'))
-			$this->dwoo->setCharset(Core::getValue('core.template.charset'));
+        if (null == self::$dwoo)
+        {
+            $compileDir = $this->detectCompileDir();
+            $compileDir = FS::nativeForm($compileDir);
+            self::$dwoo = new Dwoo($compileDir);
+            if (Core::getValue('core.template.charset'))
+            {
+                self::$dwoo->setCharset(Core::getValue('core.template.charset'));
+            }
+        }
 
 		if ($filename) $this->loadFile($filename);
 	}
@@ -192,7 +196,7 @@ class Template
 		else
 			$data = TemplateSettings::getGlobalValues();
 
-		return $this->dwoo->get($this->file, $data);
+		return self::$dwoo->get($this->file, $data);
 	}
 	//-----------------------------------------------------------------------------
 
