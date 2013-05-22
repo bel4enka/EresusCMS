@@ -22,8 +22,6 @@
  * расширение. Формат данных пока не определён, используйте значение null.
  *
  * @package Eresus
- *
- * $Id$
  */
 
 $GLOBALS['Eresus']->conf['extensions'] = array(
