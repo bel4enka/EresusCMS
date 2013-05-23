@@ -29,16 +29,32 @@
 /**
  * Класс приложения Eresus CMS
  *
+ * @property-read string $version  версия CMS
+ *
  * @package Eresus
  */
 class Eresus_CMS extends EresusApplication
 {
+    /**
+     * Версия CMS
+     * @var string
+     * @since 3.01
+     */
+    private $version = 'unknown';
+
     /**
      * HTTP-запрос
      *
      * @var HttpRequest
      */
     protected $request;
+
+    /**
+     * Описание сайта
+     * @var Eresus_Site
+     * @since 3.01
+     */
+    private $site;
 
     /**
      * Объект создаваемой страницы
@@ -72,10 +88,15 @@ class Eresus_CMS extends EresusApplication
             /* Подключение старого ядра */
             include_once 'kernel-legacy.php';
 
+            $this->version = CMSVERSION;
+
             /**
              * @global Eresus Eresus
              */
             $GLOBALS['Eresus'] = new Eresus;
+
+            TemplateSettings::setGlobalValue('cms', $this);
+
             $this->initConf();
             if (Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
             {
@@ -107,7 +128,23 @@ class Eresus_CMS extends EresusApplication
         }
         return 0;
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Магический метод для обеспечения доступа к свойствам только на чтение
+     *
+     * @param string $property
+     * @return mixed
+     * @throws LogicException  если свойства $property нет
+     */
+    public function __get($property)
+    {
+        if (property_exists($this, $property))
+        {
+            return $this->{$property};
+        }
+        throw new LogicException(sprintf('Trying to access unknown property %s of %s',
+            $property, __CLASS__));
+    }
 
     /**
      * Выводит сообщение о фатальной ошибке и прекращает работу приложения
@@ -276,8 +313,8 @@ class Eresus_CMS extends EresusApplication
         //$this->response = new HttpResponse();
         $this->detectWebRoot();
         //$this->initRoutes();
+        $this->initSite();
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Запуск КИ
@@ -458,7 +495,22 @@ class Eresus_CMS extends EresusApplication
             echo '404 Not Found';
         }
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Инициализирует сайт
+     *
+     * @return void
+     *
+     * @since 3.01
+     */
+    private function initSite()
+    {
+        $this->site = new Eresus_Site($this->getLegacyKernel());
+        $this->site->setTitle(siteTitle);
+        $this->site->setDescription(siteDescription);
+        $this->site->setKeywords(siteKeywords);
+        TemplateSettings::setGlobalValue('site', $this->site);
+    }
 }
 
 
