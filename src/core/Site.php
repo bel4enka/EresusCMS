@@ -30,6 +30,7 @@
  * Описание сайта
  *
  * @property-read string $webRoot      адрес корня сайта (без слэша на конце)
+ * @property-read string $webStyle     адрес папки оформления (без слэша на конце)
  * @property-read string $host         хост сайта
  * @property-read string $title        заголовок сайта
  * @property-read string $description  описание сайта
@@ -52,7 +53,14 @@ class Eresus_Site
      * @var string
      * @since 3.01
      */
-    private $webRoot = 'http://localhost';
+    private $webRoot = '';
+
+    /**
+     * URL папки стиля
+     * @var string
+     * @since 3.01
+     */
+    private $webStyle = '/styles';
 
     /**
      * Хост сайта
@@ -91,6 +99,7 @@ class Eresus_Site
     {
         $this->legacyKernel = $legacyKernel;
         $this->webRoot = rtrim($this->legacyKernel->root, '/');
+        $this->webStyle = $this->webRoot . '/style';
         $this->host = $this->legacyKernel->request['host'];
     }
 
