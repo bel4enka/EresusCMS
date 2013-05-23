@@ -6,10 +6,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>$(sectionTitle) &ndash; $(siteTitle)</title>
-  <meta name="keywords" content="$(siteKeywords)">
-  <meta name="description" content="$(siteDescription)">
-  <link rel="stylesheet" href="$(styleRoot)default.css">
+  <title>$(sectionTitle) &ndash; {$site->title}</title>
+  <meta name="keywords" content="{$site->keywords}">
+  <meta name="description" content="{$site->description}">
+  <link rel="stylesheet" href="{$site->webStyle}/default.css">
 </head>
 
 <body>
@@ -18,18 +18,18 @@
 
 		<div class="page-header">
 			<div>
-				<a href="$(httpRoot)" title="Перейти на главную страницу">
-                    <img src="$(styleRoot)example-logo.png" alt="Eresus CMS">
+				<a href="{$site->webRoot}" title="Перейти на главную страницу">
+                    <img src="{$site->webStyle}/example-logo.png" alt="Eresus CMS">
                 </a>
 			</div>
 			<div>
-				Eresus CMS $(const:CMSVERSION) успешно установлена
+				Eresus CMS {$cms->version} успешно установлена
 			</div>
 		</div>
 
 		<div class="main-menu">
-			<a href="$(httpRoot)admin/">Управление сайтом</a> -
-			<a href="http://docs.eresus.ru/cms/$(const:CMSVERSION)/">Документация</a> -
+			<a href="{$site->webRoot}/admin/">Управление сайтом</a> -
+			<a href="http://docs.eresus.ru/cms/{$cms->version}/">Документация</a> -
 			<a href="http://docs.eresus.ru/cms-plugins/">Модули расширения</a>
 		</div>
 
