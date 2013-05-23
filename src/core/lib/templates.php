@@ -105,7 +105,7 @@ class Templates
     }
 
     /**
-     * Возвращает шаблон
+     * Возвращает содержимое шаблона
      *
      * Если имя ($name) не указано, будет использовано имя «default».
      *
@@ -156,6 +156,33 @@ class Templates
             }
         }
         return $result;
+    }
+
+    /**
+     * Возвращает шаблон
+     *
+     * Если имя ($name) не указано, будет использовано имя «default».
+     *
+     * Если шаблон не найден и имя ($name) НЕ «default», будет предпринята попытка загрузить шаблон
+     * с именем «default» из той же папки ($type).
+     *
+     * @param string $name   имя шаблона
+     * @param string $type   тип шаблона (соответствует поддиректории в /templates)
+     *
+     * @return Template|null  шаблон или null, если шаблон не найден
+     *
+     * @since 3.01
+     */
+    public function load($name = '', $type = '')
+    {
+        $contents = $this->get($name, $type);
+        if (false === $contents)
+        {
+            return null;
+        }
+        $template = new Template();
+        $template->setContents($contents);
+        return $template;
     }
 
     /**

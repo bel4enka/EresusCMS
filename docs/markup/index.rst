@@ -4,5 +4,6 @@
 .. toctree::
    :maxdepth: 2
 
-   engines
+   intro
+   page-templates
    reference/index

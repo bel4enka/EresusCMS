@@ -50,13 +50,33 @@ class TClientUI extends WebPage
     public $keywords = ''; # Ключевые слова страницы
     public $access = GUEST; # Базовый уровень доступа к странице
     public $visible = true; # Видимость страницы
+
+    /**
+     * Шаблон страницы
+     * @var Template
+     * @since 3.01
+     */
+    private $template;
+
     public $type = 'default'; # Тип страницы
     public $content = ''; # Контент страницы
     public $options = array(); # Опции страницы
     public $Document; # DOM-интерфейс к странице
     public $plugin; # Плагин контента
-    public $scripts = ''; # Скрипты
-    public $styles = ''; # Стили
+
+    /**
+     * Дополнительные скрипты
+     * @var string
+     * @deprecated
+     */
+    public $scripts = '';
+
+    /**
+     * Дополнительные стили
+     * @var string
+     * @deprecated
+     */
+    public $styles = '';
     public $subpage = 0; # Подстраница списка элементов
 
     /**
@@ -83,16 +103,12 @@ class TClientUI extends WebPage
     public $topic = false;
 
     /**
-     * Конструктор
+     * Подставляет значения макросов
      *
-     * @access  public
+     * @param string $text
+     * @return mixed
      */
-    function __construct()
-    {
-    }
-
-    # Подставляет значения макросов
-    function replaceMacros($text)
+    public function replaceMacros($text)
     {
         $section = $this->section;
         if (siteTitleReverse)
@@ -166,7 +182,7 @@ class TClientUI extends WebPage
      * @param array   $templates  Шаблоны оформления
      * @return string
      */
-    function pageSelector($total, $current, $url = null, $templates = null)
+    public function pageSelector($total, $current, $url = null, $templates = null)
     {
         if (is_null($url))
         {
@@ -278,7 +294,7 @@ class TClientUI extends WebPage
             $this->access = $item['access'];
             $this->visible = $item['visible'];
             $this->type = $item['type'];
-            $this->template = $item['template'];
+            $this->setTemplate($item['template']);
             $this->created = $item['created'];
             $this->updated = $item['updated'];
             $this->content = $item['content'];
@@ -292,12 +308,22 @@ class TClientUI extends WebPage
         }
     }
 
-    function Error404()
+    /**
+     * Выводит сообщение об ошибке HTTP 404 и прекращает выполнение программы
+     *
+     * @deprecated используйте {@link httpError()}
+     */
+    public function Error404()
     {
         $this->httpError(404);
     }
 
-    function httpError($code)
+    /**
+     * Выводит сообщение об ошибке и прекращает выполнение программы
+     *
+     * @param int $code  код ошибки HTTP
+     */
+    public function httpError($code)
     {
         global $KERNEL;
 
@@ -346,15 +372,12 @@ class TClientUI extends WebPage
         $this->access = GUEST;
         $this->visible = true;
         $this->type = 'default';
-        if (file_exists(filesRoot.'templates/std/'.$code.'.html'))
+        $this->content = '';
+        $this->setTemplate($code, 'std');
+        if (null === $this->template)
         {
-            $this->template = 'std/'.$code;
-            $this->content = '';
-        }
-        else
-        {
-            $this->template = 'default';
-            $this->content = '<h1>HTTP ERROR '.$code.': '.$message.'</h1>';
+            $this->setTemplate('default');
+            $this->content = "<h1>HTTP {$code}: {$message}</h1>";
         }
         $KERNEL['ERROR'] = true;
         $this->render();
@@ -370,11 +393,10 @@ class TClientUI extends WebPage
         {
             $this->httpError(arg('HTTP_ERROR', 'int'));
         }
-        # Отрисовываем контент
-        $content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
-        $templates = new Templates;
-        $this->template = $templates->get($this->template);
-        $content = Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($content);
+
+        $this->content = Eresus_CMS::getLegacyKernel()->plugins->clientRenderContent();
+        $this->content =
+            Eresus_CMS::getLegacyKernel()->plugins->clientOnContentRender($this->content);
 
         if (
             isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
@@ -386,7 +408,7 @@ class TClientUI extends WebPage
             {
                 $messages .= InfoBox($message);
             }
-            $content = $messages.$content;
+            $this->content = $messages . $this->content;
             Eresus_CMS::getLegacyKernel()->session['msg']['information'] = array();
         }
         if (
@@ -399,10 +421,10 @@ class TClientUI extends WebPage
             {
                 $messages .= ErrorBox($message);
             }
-            $content = $messages.$content;
+            $this->content = $messages . $this->content;
             Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
         }
-        $result = str_replace('$(Content)', $content, $this->template);
+        $html = $this->template->compile(array('page' => $this));
 
         # FIX: Обратная совместимость
         if (!empty($this->styles))
@@ -410,7 +432,7 @@ class TClientUI extends WebPage
             $this->addStyles($this->styles);
         }
 
-        $result = Eresus_CMS::getLegacyKernel()->plugins->clientOnPageRender($result);
+        $html = Eresus_CMS::getLegacyKernel()->plugins->clientOnPageRender($html);
 
         // FIXME: Обратная совместимость
         if (!empty($this->scripts))
@@ -418,10 +440,10 @@ class TClientUI extends WebPage
             $this->addScripts($this->scripts);
         }
 
-        $result = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $result);
+        $html = preg_replace('|(.*)</head>|i', '$1'.$this->renderHeadSection()."\n</head>", $html);
 
         # Замена макросов
-        $result = $this->replaceMacros($result);
+        $html = $this->replaceMacros($html);
 
         if (count($this->headers))
         {
@@ -431,12 +453,12 @@ class TClientUI extends WebPage
             }
         }
 
-        $result = Eresus_CMS::getLegacyKernel()->plugins->clientBeforeSend($result);
+        $html = Eresus_CMS::getLegacyKernel()->plugins->clientBeforeSend($html);
         if (!Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
         {
             ob_start('ob_gzhandler');
         }
-        echo $result;
+        echo $html;
         if (!Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
         {
             ob_end_flush();
@@ -452,7 +474,7 @@ class TClientUI extends WebPage
      *
      * @return string
      */
-    function pages($pagesCount, $itemsPerPage, $reverse = false)
+    public function pages($pagesCount, $itemsPerPage, $reverse = false)
     {
         $eresus = Eresus_CMS::getLegacyKernel();
 
@@ -549,6 +571,33 @@ class TClientUI extends WebPage
         {
             return '';
         }
+    }
+
+    /**
+     * Задаёт шаблон страницы
+     *
+     * @param string|Template $template  имя файла шаблона или уже созданный объект шаблон
+     * @param string          $type      тип шаблона, только если $template — строка
+     *
+     * @throws InvalidArgumentException
+     *
+     * @since 3.01
+     */
+    public function setTemplate($template, $type = '')
+    {
+        if (!is_string($template)
+            && (!is_object($template) || !($template instanceof Template)))
+        {
+            throw new InvalidArgumentException(
+                sprintf('Argument 1 of %s expected to be a string or an instance of Template',
+                    __METHOD__)
+            );
+        }
+        if (is_string($template))
+        {
+            $template = Templates::getInstance()->load($template, $type);
+        }
+        $this->template = $template;
     }
 }
 

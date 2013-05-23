@@ -15,7 +15,17 @@
 Добавлено
 ---------
 
+TClientUI
+^^^^^^^^^
+
+* Метод `setTemplate <../../api/classes/TClientUI.html#method_setTemplate>`_
+
 Template
 ^^^^^^^^
 
-* Метод `setContents <../../api/classes/Template.html#method_setContents>`_, позволяющий создавать шаблоны из строк
+* Метод `setContents <../../api/classes/Template.html#method_setContents>`_
+
+Templates
+^^^^^^^^
+
+* Метод `load <../../api/classes/Templates.html#method_load>`_
