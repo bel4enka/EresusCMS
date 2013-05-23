@@ -40,7 +40,7 @@ class Eresus_CMS extends EresusApplication
      * @var string
      * @since 3.01
      */
-    private $version = 'unknown';
+    private /** @noinspection PhpUnusedPrivateFieldInspection */ $version = '${product.version}';
 
     /**
      * HTTP-запрос
@@ -87,8 +87,6 @@ class Eresus_CMS extends EresusApplication
 
             /* Подключение старого ядра */
             include_once 'kernel-legacy.php';
-
-            $this->version = CMSVERSION;
 
             /**
              * @global Eresus Eresus

@@ -161,7 +161,7 @@ class TPlgMgr
         if (count($files))
         {
             // Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
-            $kernelVersion = preg_replace('/[^\d\.]/', '', CMSVERSION);
+            $kernelVersion = preg_replace('/[^\d\.]/', '', Eresus_Kernel::app()->version);
 
             foreach ($files as $file)
             {

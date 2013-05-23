@@ -1,13 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * Старое ядро
  *
- * ${product.description}
- *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -28,12 +26,19 @@
  * @package Eresus
  */
 
+
 /**
  * Название системы
  * @var string
  */
 define('CMSNAME', 'Eresus');
-define('CMSVERSION', '${product.version}'); # Версия системы
+
+/**
+ * Версия системы
+ *
+ * @deprecated с 3.01 используйте {@link Eresus_CMS::$version}
+ */
+define('CMSVERSION', '${product.version}');
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
