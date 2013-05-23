@@ -1322,11 +1322,6 @@ class TAdminUI extends WebPage
 		$data['content'] = $this->renderContent();
 		$data['siteName'] = option('siteName');
 		$data['body'] = $this->renderBodySection();
-		$data['cms'] = array(
-			'name' => CMSNAME,
-			'version' => Eresus_Kernel::app()->version,
-			'link' => CMSLINK,
-		);
 		$opened = -1;
 		$data['sectionMenu'] = $this->renderPagesMenu($opened);
 		$data['controlMenu'] = $this->renderControlMenu();
