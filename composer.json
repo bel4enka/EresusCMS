@@ -10,7 +10,7 @@
     ],
 	"require":
 	{
-		"mekras/botobor" : "0.3.*",
+		"mekras/botobor" : "0.4.0",
 		"carhartl/jquery-cookie" : "1.1"
 	},
 	"repositories":

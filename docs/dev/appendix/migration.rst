@@ -12,6 +12,8 @@
 Обновлены
 ^^^^^^^^^
 
+* `Botobor <https://github.com/mekras/botobor>`_ до 0.4.0
+
 Добавлено
 ---------
 
