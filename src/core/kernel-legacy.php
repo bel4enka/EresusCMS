@@ -30,6 +30,7 @@
 /**
  * Название системы
  * @var string
+ * @deprecated с 3.01 используйте {@link Eresus_CMS::$name}
  */
 define('CMSNAME', 'Eresus');
 

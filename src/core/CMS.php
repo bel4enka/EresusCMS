@@ -36,6 +36,12 @@
 class Eresus_CMS extends EresusApplication
 {
     /**
+     * Название CMS
+     * @var string
+     * 2since 3.01
+     */
+    private /** @noinspection PhpUnusedPrivateFieldInspection */ $name = 'Eresus';
+    /**
      * Версия CMS
      * @var string
      * @since 3.01
@@ -362,6 +368,7 @@ class Eresus_CMS extends EresusApplication
         $this->request->setLocalRoot($SUFFIX);
         eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
+        // TODO Удалить где-нибудь в 3.03-04
         TemplateSettings::setGlobalValue('siteRoot',
             $this->request->getScheme() . '://' .
                 $this->request->getHost() .
@@ -369,7 +376,6 @@ class Eresus_CMS extends EresusApplication
         );
 
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Выполнение в режиме CLI
