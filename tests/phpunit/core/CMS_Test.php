@@ -30,6 +30,10 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
+require_once TESTS_SRC_DIR . '/core/framework/core/EresusApplication.php';
+require_once TESTS_SRC_DIR . '/core/framework/core/kernel.php';
+FS::init();
+require_once TESTS_SRC_DIR . '/core/framework/core/WWW/HTTP/HttpRequest.php';
 require_once TESTS_SRC_DIR . '/core/CMS.php';
 require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 
@@ -44,22 +48,19 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_detectWebRoot()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
 		$documentRoot->setAccessible(true);
 		$documentRoot->setValue($webServer, '/home/user/public_html');
 
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html';
-		$httpRequest = new HttpRequest();
+        $obj = new Eresus_CMS;
+        // Подменяем результат getFsRoot
+        $fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+        $fsRoot->setAccessible(true);
+		$fsRoot->setValue($obj, '/home/user/public_html');
 
+        $httpRequest = new HttpRequest();
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
@@ -68,9 +69,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
-		$this->assertEquals('', $httpRequest->localRoot);
+        $localRoot = new ReflectionProperty('HttpRequest', 'localRoot');
+        $localRoot->setAccessible(true);
+		$this->assertEquals('', $localRoot->getValue($httpRequest));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * @covers Eresus_CMS::detectWebRoot
@@ -90,9 +92,11 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
-		$obj->fsRoot = '/home/user/public_html/example.org';
-		$httpRequest = new HttpRequest();
+        $fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+        $fsRoot->setAccessible(true);
+        $fsRoot->setValue($obj, '/home/user/public_html/example.org');
 
+		$httpRequest = new HttpRequest();
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
@@ -101,20 +105,17 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
-		$this->assertEquals('/example.org', $httpRequest->localRoot);
+        $localRoot = new ReflectionProperty('HttpRequest', 'localRoot');
+        $localRoot->setAccessible(true);
+        $this->assertEquals('/example.org', $localRoot->getValue($httpRequest));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * @covers Eresus_CMS::detectWebRoot
 	 */
 	public function test_detectWebRoot_windows()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			$this->markTestSkipped('PHP 5.3 required');
-		}
-
+        FS::init(new WindowsFS());
 		/* Подменяем DOCUMENT_ROOT */
 		$webServer = WebServer::getInstance();
 		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
@@ -123,9 +124,12 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 
 		$obj = new Eresus_CMS;
 		// Подменяем результат getFsRoot
-		$obj->fsRoot = FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org');
-		$httpRequest = new HttpRequest();
+        $fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
+        $fsRoot->setAccessible(true);
+        $fsRoot->setValue($obj,
+            FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org'));
 
+		$httpRequest = new HttpRequest();
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
@@ -134,9 +138,10 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
-		$this->assertEquals('/example.org', $httpRequest->localRoot);
+        $localRoot = new ReflectionProperty('HttpRequest', 'localRoot');
+        $localRoot->setAccessible(true);
+        $this->assertEquals('/example.org', $localRoot->getValue($httpRequest));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * @covers Eresus_CMS::getPage

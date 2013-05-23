@@ -15,3 +15,7 @@
 Добавлено
 ---------
 
+Template
+^^^^^^^^
+
+* Метод `setContents <../../api/classes/Template.html#method_setContents>`_, позволяющий создавать шаблоны из строк

@@ -45,6 +45,9 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$GLOBALS['Eresus'] = new stdClass();
 		$GLOBALS['Eresus']->request = array('path' => '/root/');
+        $dwoo = $this->getMock('stdClass', array('get'));
+        $dwoo->expects($this->any())->method('get')->will($this->returnArgument(1));
+        Eresus_Tests::setStatic('Template', $dwoo, 'dwoo');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -54,6 +57,7 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
+        Eresus_Tests::setStatic('Template', null, 'dwoo');
 		unset($GLOBALS['Eresus']);
 	}
 	//-----------------------------------------------------------------------------

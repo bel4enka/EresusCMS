@@ -101,67 +101,79 @@ class TemplateSettings {
 
 
 /**
- * Template file
+ * Файл шаблона
  *
- * @package Template
- *
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @package Eresus
+ * @subpackage Templates
  */
-class TemplateFile extends Dwoo_Template_File {
-
+class TemplateFile extends Dwoo_Template_File
+{
 }
 
 
 /**
- * Template
+ * Шаблон
  *
- * <b>CONFIGURATION</b>
- * Templte uses Core::getValue to read its configuration:
+ * <b>Настройка</b>
  *
- * <b>core.template.templateDir</b>
- * Directory where templates located.
+ * Template использует {@link Core::getValue()} чтобы получать свои настройки:
  *
- * <b>core.template.compileDir</b>
- * Directory to store compiled templates.
+ * - <b>core.template.templateDir</b> — Directory where templates located.
+ * - <b>core.template.compileDir</b> — Directory to store compiled templates.
+ * - <b>core.template.charset</b> — Charset of template files.
+ * - <b>core.template.fileExtension</b> — Default extensions of template files.
  *
- * <b>core.template.charset</b>
- * Charset of template files.
- *
- * <b>core.template.fileExtension</b>
- * Default extensions of template files.
- *
- * @package Template
+ * @package Eresus
+ * @subpackage Templates
  */
 class Template
 {
 	/**
-	 * Dwoo object
-	 * @var Dwoo
+	 * Объект Dwoo
+	 * @var null|Dwoo
 	 */
-	protected $dwoo;
+	protected static $dwoo = null;
 
 	/**
-	 * Template file object
-	 * @var TemplateFile
+	 * Внутреннее представление шаблона
+	 * @var Dwoo_Template_String
+     * @since 3.01
 	 */
-	protected $file;
+	protected $template;
 
 	/**
 	 * Constructor
-	 * @var string $filename [optional]  Template file name
+	 * @var string $filename  Template file name
 	 */
 	public function __construct($filename = null)
 	{
-		$compileDir = $this->detectCompileDir();
-		$compileDir = FS::nativeForm($compileDir);
-		$this->dwoo = new Dwoo($compileDir);
-
-		if (Core::getValue('core.template.charset'))
-			$this->dwoo->setCharset(Core::getValue('core.template.charset'));
+        if (null == self::$dwoo)
+        {
+            $compileDir = $this->detectCompileDir();
+            $compileDir = FS::nativeForm($compileDir);
+            self::$dwoo = new Dwoo($compileDir);
+            if (Core::getValue('core.template.charset'))
+            {
+                self::$dwoo->setCharset(Core::getValue('core.template.charset'));
+            }
+        }
 
 		if ($filename) $this->loadFile($filename);
 	}
-	//-----------------------------------------------------------------------------
+
+    /**
+     * Задаёт содержимое шаблона в виде строки
+     *
+     * @param string $contents
+     *
+     * @return void
+     *
+     * @since 3.01
+     */
+    public function setContents($contents)
+    {
+        $this->template = new Dwoo_Template_String($contents);
+    }
 
 	/**
 	 * Load template file
@@ -174,27 +186,29 @@ class Template
 		$templateDir = FS::normalize($templateDir);
 		$template = $templateDir . '/' . $filename . $fileExtension;
 		$template = FS::nativeForm($template);
-		$this->file = new TemplateFile($template, null, $filename, $filename);
+		$this->template = new TemplateFile($template, null, $filename, $filename);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
-	 * Compile template
+	 * Компилирует шаблон
 	 *
-	 * @param array $data [optional]  Data for template
+	 * @param array $data  данные для подстановки в шаблон
 	 *
 	 * @return string
 	 */
-	function compile($data = null)
+	public function compile($data = null)
 	{
 		if ($data)
+        {
 			$data = array_merge($data, TemplateSettings::getGlobalValues());
+        }
 		else
+        {
 			$data = TemplateSettings::getGlobalValues();
+        }
 
-		return $this->dwoo->get($this->file, $data);
+		return self::$dwoo->get($this->template, $data);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Detect directory where templates located
