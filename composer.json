@@ -15,20 +15,6 @@
 	},
 	"repositories":
 	[
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "mekras/botobor",
-                "version": "0.3.0",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/mekras/botobor",
-                    "reference": "v0.3.0"
-                }
-            }
-        },
 		{
 			"type": "package",
 			"package":
