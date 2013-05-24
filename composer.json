@@ -11,7 +11,8 @@
 	"require":
 	{
 		"mekras/botobor" : "0.4.0",
-		"carhartl/jquery-cookie" : "1.1"
+		"carhartl/jquery-cookie" : "1.1",
+        "mekras/test-doubles": "v0.1.0"
 	},
 	"repositories":
 	[
