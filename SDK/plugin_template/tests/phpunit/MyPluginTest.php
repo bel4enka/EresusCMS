@@ -1,8 +1,6 @@
 <?php
 /**
- * [Краткое название плагина]
- *
- * Модульные тесты
+ * Тесты класса MyPlugin
  *
  * @version ${product.version}
  *
@@ -29,8 +27,6 @@
  *
  * @package [Имя пакета]
  * @subpackage Tests
- *
- * $Id$
  */
 
 
@@ -38,17 +34,17 @@ require_once __DIR__ . '/bootstrap.php';
 require_once TESTS_SRC_DIR . '/myplugin.php';
 
 /**
+ * Тесты класса MyPlugin
  * @package [Имя пакета]
  * @subpackage Tests
  */
-class MyPlugin_Test extends PHPUnit_Framework_TestCase
+class MyPluginTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers MyPlugin::__construct
-	 */
-	public function test_construct()
-	{
-
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers MyPlugin::__construct
+     */
+    public function testConstruct()
+    {
+    }
 }
+

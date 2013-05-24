@@ -1,0 +1,15 @@
+{
+    "name": "[разработчик]/[название]",
+    "description": "[описание]",
+    "authors":
+    [
+        {
+            "name": "[имя]",
+            "email": "[e-mail]"
+        }
+    ],
+    "require":
+    {
+        "mekras/test-doubles": "dev-master"
+    }
+}

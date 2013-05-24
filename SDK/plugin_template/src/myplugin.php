@@ -71,10 +71,6 @@ class MyPlugin extends Plugin
 
     /**
      * Конструктор
-     *
-     * @return MyPlugin
-     *
-     * @since 1.00
      */
     public function __construct()
     {
@@ -84,7 +80,7 @@ class MyPlugin extends Plugin
     /**
      * Диалог настроек плагина
      *
-     * @return string  Форма настроек
+     * @return string  разметка формы настроек
      */
     public function settings()
     {
@@ -98,7 +94,9 @@ class MyPlugin extends Plugin
             ),
             'buttons' => array('ok', 'apply', 'cancel'),
         );
-        $html = $GLOBALS['page']->renderForm($form, $this->settings);
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $html = $page->renderForm($form, $this->settings);
         return $html;
     }
 }
