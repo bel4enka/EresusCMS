@@ -9,6 +9,12 @@
 Изменено
 --------
 
+TClientUI
+^^^^^^^^^
+
+* Свойство ``template`` сделано приватным. Для чтения его значения используйте
+  `TClientUI::getTemplateName <../../api/classes/TClientUI.html#method_getTemplateName>`_
+
 Обновлены
 ^^^^^^^^^
 
@@ -20,6 +26,7 @@
 TClientUI
 ^^^^^^^^^
 
+* Метод `getTemplateName <../../api/classes/TClientUI.html#method_getTemplateName>`_
 * Метод `setTemplate <../../api/classes/TClientUI.html#method_setTemplate>`_
 
 Template

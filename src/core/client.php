@@ -40,7 +40,12 @@ define('CLIENTUI', true);
  */
 class TClientUI extends WebPage
 {
-    public $dbItem = array(); # Информация о странице из БД
+    /**
+     * Информация о странице из БД
+     * @var array
+     * @deprecated с 3.01
+     */
+    public $dbItem = array();
     public $name = ''; # Имя страницы
     public $owner = 0; # Идентификатор родительской страницы
     public $section = array(); # Массив заголовков страниц
@@ -53,6 +58,11 @@ class TClientUI extends WebPage
 
     /**
      * Шаблон страницы
+     *
+     * Ранее это свойство создавалось динамически и не было документировано. Если ваш модуль
+     * использует эту недокументированную возможность, вы можете вместо чтения свойства $template
+     * использовать метод {@link getTemplateName()}.
+     *
      * @var Template
      * @since 3.01
      */
@@ -574,7 +584,25 @@ class TClientUI extends WebPage
     }
 
     /**
+     * Возвращает имя шаблона страницы, заданного по умолчанию
+     *
+     * <b>Обратите внимание!</b> Этот метод всегда возвращает имя шаблона, назначенного разделу
+     * в АИ. Метод {@link setTemplate()} не влияет на результат, возвращаемый getTemplateName.
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getTemplateName()
+    {
+        return $this->dbItem['template'];
+    }
+
+    /**
      * Задаёт шаблон страницы
+     *
+     * <b>Обратите внимание!</b> Этот метод не влияет на результат, возвращаемый
+     * {@link getTemplateName()}.
      *
      * @param string|Template $template  имя файла шаблона или уже созданный объект шаблон
      * @param string          $type      тип шаблона, только если $template — строка
