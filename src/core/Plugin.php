@@ -38,6 +38,7 @@ abstract class Eresus_Plugin
      *
      * @var string
      * @deprecated с 3.01 используйте {@link getName()}
+     * @todo сделать приватным
      */
     public $name = null;
 

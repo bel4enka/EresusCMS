@@ -39,6 +39,23 @@ require_once TESTS_SRC_DIR . '/core/Plugin/Templates.php';
 class Eresus_PluginTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * Тест метода getName
+     * @covers Eresus_Plugin::getName
+     */
+    public function testGetName()
+    {
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('_'))->getMock();
+        /** @var Eresus_Plugin $plugin */
+        $this->assertRegExp('/^mock_eresus_plugin_/', $plugin->getName());
+;
+        $name = new ReflectionProperty('Eresus_Plugin', 'name');
+        $name->setAccessible(true);
+        $name->setValue($plugin, 'foo');
+        $this->assertEquals('foo', $plugin->getName());
+    }
+
+    /**
      * @covers Eresus_Plugin::getDataURL
      */
     public function testGetDataURL()
@@ -50,8 +67,13 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $GLOBALS['Eresus']->root = 'http://example.org/';
         $GLOBALS['Eresus']->data = 'http://example.org/data/';
         $GLOBALS['Eresus']->style = 'http://example.org/style/';
-        $plugin = $this->getMock('Eresus_Plugin', array('_'));
+        $GLOBALS['Eresus']->plugins = new stdClass();
+        $GLOBALS['Eresus']->plugins->list = array();
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('getName'))->getMock();
+        $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
         /** @var Eresus_Plugin $plugin */
+        $plugin->__construct();
         $this->assertEquals('http://example.org/data/plugin/', $plugin->getDataURL());
     }
 
@@ -67,8 +89,13 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $GLOBALS['Eresus']->root = 'http://example.org/';
         $GLOBALS['Eresus']->data = 'http://example.org/data/';
         $GLOBALS['Eresus']->style = 'http://example.org/style/';
-        $plugin = $this->getMock('Eresus_Plugin', array('_'));
+        $GLOBALS['Eresus']->plugins = new stdClass();
+        $GLOBALS['Eresus']->plugins->list = array();
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('getName'))->getMock();
+        $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
         /** @var Eresus_Plugin $plugin */
+        $plugin->__construct();
         $this->assertEquals('http://example.org/ext/plugin/', $plugin->getCodeURL());
     }
 
@@ -84,8 +111,13 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $GLOBALS['Eresus']->root = 'http://example.org/';
         $GLOBALS['Eresus']->data = 'http://example.org/data/';
         $GLOBALS['Eresus']->style = 'http://example.org/style/';
-        $plugin = $this->getMock('Eresus_Plugin', array('_'));
+        $GLOBALS['Eresus']->plugins = new stdClass();
+        $GLOBALS['Eresus']->plugins->list = array();
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('getName'))->getMock();
+        $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
         /** @var Eresus_Plugin $plugin */
+        $plugin->__construct();
         $this->assertEquals('http://example.org/style/plugin/', $plugin->getStyleURL());
     }
 
@@ -97,6 +129,8 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
     public function testTemplates()
     {
         $legacyKernel = $this->getMock('Eresus');
+        $legacyKernel->plugins = new stdClass();
+        $legacyKernel->plugins->list = array();
         $GLOBALS['Eresus'] = $legacyKernel;
         $plugin = $this->getMock('Eresus_Plugin', array('_'));
         /** @var Eresus_Plugin $plugin */
