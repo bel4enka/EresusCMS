@@ -61,7 +61,7 @@
 ---------------------------------
 
 - Plugins
-- Plugin
+- Eresus_Plugin
 - ContentPlugin
 - TPlugin
 - TContentPlugin

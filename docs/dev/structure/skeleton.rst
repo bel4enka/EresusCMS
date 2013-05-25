@@ -13,7 +13,7 @@
 
 Основной класс модуля должен быть унаследован от одного из базовых классов:
 
-  * `Plugin <../../api/classes/Plugin.html>`_
+  * `Eresus_Plugin <../../api/classes/Eresus_Plugin.html>`_
   * `ContentPlugin <../../api/classes/ContentPlugin.html>`_
 
 Имя класса плагина должно совпадать с именем плагина и, соответственно, его файла (пример: "MyPlugin").
@@ -23,7 +23,8 @@
 
 Если ваш плагин должен :doc:`предоставлять тип контента (тип раздела)<../guide/providing_content_type>`, то он должен быть унаследован от `ContentPlugin <../../api/classes/ContentPlugin.html>`_.
 
-Во всех остальных случаях в качестве базового класса следует использовать `Plugin <../../api/classes/Plugin.html>`_.
+Во всех остальных случаях в качестве базового класса следует использовать
+`Eresus_Plugin <../../api/classes/Eresus_Plugin.html>`_.
 
 .. code-block:: php
 
@@ -32,7 +33,7 @@
     * Тестовый плагин
     * @package Demo
     */
-   class MyPlugin extends Plugin
+   class MyPlugin extends Eresus_Plugin
    {
      ...
    }
@@ -42,10 +43,10 @@
 
 В объявлении основного класса плагина обязательно должен быть установлен ряд публичных свойств:
 
-* `Plugin::$version <../../api/classes/Plugin.html#$version>`_ — строковое свойство, задающее версию плагина.
-* `Plugin::$kernel <../../api/classes/Plugin.html#$kernel>`_ — строковое свойство, задающее минимальную необходимую для плагина версию CMS.
-* `Plugin::$title <../../api/classes/Plugin.html#$title>`_ — строковое свойство, задающее название плагина.
-* `Plugin::$description <../../api/classes/Plugin.html#$description>`_ — строковое свойство, задающее описание плагина.
+* `Eresus_Plugin::$version <../../api/classes/Eresus_Plugin.html#$version>`_ — строковое свойство, задающее версию плагина.
+* `Eresus_Plugin::$kernel <../../api/classes/Eresus_Plugin.html#$kernel>`_ — строковое свойство, задающее минимальную необходимую для плагина версию CMS.
+* `Eresus_Plugin::$title <../../api/classes/Eresus_Plugin.html#$title>`_ — строковое свойство, задающее название плагина.
+* `Eresus_Plugin::$description <../../api/classes/Eresus_Plugin.html#$description>`_ — строковое свойство, задающее описание плагина.
 
 Пример:
 
@@ -56,7 +57,7 @@
     * Тестовый плагин
     * @package Demo
     */
-   class MyPlugin extends Plugin
+   class MyPlugin extends Eresus_Plugin
    {
      /**
       * Версия плагина

@@ -9,7 +9,8 @@
 Метод-обработчик
 ----------------
 
-Метод-обработчик — это открытый метод, имя которого совпадает с именем события (см. :doc:`../appendix/events`).
+Метод-обработчик — это открытый метод, имя которого совпадает с именем события
+(см. :doc:`../appendix/events`).
 
 Пример
 ^^^^^^
@@ -17,7 +18,7 @@
 .. code-block:: php
 
    <?php
-   class MyPlugin extends Plugin
+   class MyPlugin extends Eresus_Plugin
    {
      /**
       * Обработчик события "clientOnStart"
@@ -30,7 +31,9 @@
 Регистрация обработчика
 -----------------------
 
-Регистрация выполняется при помощи метода `Plugin::listenEvents() <../../api/Eresus/Plugin.html#listenEvents>`_. Обычно метод вызывается в конструкторе, но он может также вызываться и в любом другом месте.
+Регистрация выполняется при помощи метода
+`Eresus_Plugin::listenEvents() <../../api/classes/Eresus_Plugin.html#listenEvents>`_. Обычно метод
+вызывается в конструкторе, но он может также вызываться и в любом другом месте.
 
 Пример 1
 ^^^^^^^^
@@ -38,7 +41,7 @@
 .. code-block:: php
 
    <?php
-   class MyPlugin extends Plugin
+   class MyPlugin extends Eresus_Plugin
    {
      /**
       * Конструктор
@@ -57,7 +60,7 @@
 .. code-block:: php
 
    <?php
-   class MyPlugin extends Plugin
+   class MyPlugin extends Eresus_Plugin
    {
      /**
       * Конструктор

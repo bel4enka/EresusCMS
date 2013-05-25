@@ -14,7 +14,8 @@
 
 Для предоставления типа раздела надо сделать следующее:
 
-#. Унаследовать :doc:`основной класс модуля<../structure/skeleton>` от класса `ContentPlugin <../../api/Eresus/ContentPlugin.html>`_ или его потомка.
+#. Унаследовать :doc:`основной класс модуля<../structure/skeleton>` от класса
+   `ContentPlugin <../../api/classes/ContentPlugin.html>`_ или его потомка.
 #. Переопределить в нём метод `clientRenderContent <../../api/Eresus/ContentPlugin.html#clientRenderContent>`_.
 #. Это не обязательно, но можно переопределить метод `adminRenderContent <../../api/Eresus/ContentPlugin.html#adminRenderContent>`_, чтобы предоставить администратору интерфейс для управления контентом в разделах предоставляемого вашим модулем типа.
 
