@@ -1,6 +1,8 @@
 {
     "name": "eresus/eresus-cms",
+    "type": "project",
     "description": "Система управления сайтом",
+    "license": "GPL-3.0",
     "authors":
     [
         {
@@ -11,7 +13,10 @@
 	"require":
 	{
 		"mekras/botobor" : "0.4.0",
-		"carhartl/jquery-cookie" : "1.1",
+		"carhartl/jquery-cookie" : "1.1"
+    },
+    "require-dev":
+    {
         "mekras/test-doubles": "v0.1.0"
 	},
 	"repositories":
