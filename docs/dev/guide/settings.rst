@@ -20,7 +20,7 @@
          'caption' => $this->title . ' ' . $this->version,
          'width' => '500px',
          'fields' => array (
-           array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
+           array('type' => 'hidden', 'name' => 'update', 'value' => $this->getName()),
            /* Здесь надо определить нужные вам поля формы */
          ),
         'buttons' => array('ok', 'apply', 'cancel'),

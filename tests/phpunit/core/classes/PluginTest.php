@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../../stubs.php';
+require_once TESTS_SRC_DIR . '/core/Plugin.php';
 require_once TESTS_SRC_DIR . '/core/classes.php';
 
 /**
@@ -38,56 +39,57 @@ require_once TESTS_SRC_DIR . '/core/classes.php';
  */
 class PluginTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Plugin::getDataURL
-	 */
-	public function test_getDataURL()
-	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
-		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
-		$GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
-		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
-		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
-		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/data/plugin/', $test->getDataURL());
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Plugin::getDataURL
+     */
+    public function test_getDataURL()
+    {
+        $GLOBALS['Eresus'] = new stdClass();
+        $GLOBALS['Eresus']->froot = '/home/exmaple.org/';
+        $GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
+        $GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
+        $GLOBALS['Eresus']->root = 'http://exmaple.org/';
+        $GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
+        $GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
+        $test = new Plugin();
+        $this->assertEquals('http://exmaple.org/data/plugin/', $test->getDataURL());
+    }
+    //-----------------------------------------------------------------------------
 
-	/**
-	 * @covers Plugin::getCodeURL
-	 */
-	public function test_getCodeURL()
-	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
-		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
-		$GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
-		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
-		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
-		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/ext/plugin/', $test->getCodeURL());
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Plugin::getCodeURL
+     */
+    public function test_getCodeURL()
+    {
+        $GLOBALS['Eresus'] = new stdClass();
+        $GLOBALS['Eresus']->froot = '/home/exmaple.org/';
+        $GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
+        $GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
+        $GLOBALS['Eresus']->root = 'http://exmaple.org/';
+        $GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
+        $GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
+        $test = new Plugin();
+        $this->assertEquals('http://exmaple.org/ext/plugin/', $test->getCodeURL());
+    }
+    //-----------------------------------------------------------------------------
 
-	/**
-	 * @covers Plugin::getStyleURL
-	 */
-	public function test_getStyleURL()
-	{
-		$GLOBALS['Eresus'] = new stdClass();
-		$GLOBALS['Eresus']->froot = '/home/exmaple.org/';
-		$GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
-		$GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
-		$GLOBALS['Eresus']->root = 'http://exmaple.org/';
-		$GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
-		$GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
-		$test = new Plugin();
-		$this->assertEquals('http://exmaple.org/style/plugin/', $test->getStyleURL());
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Plugin::getStyleURL
+     */
+    public function test_getStyleURL()
+    {
+        $GLOBALS['Eresus'] = new stdClass();
+        $GLOBALS['Eresus']->froot = '/home/exmaple.org/';
+        $GLOBALS['Eresus']->fdata = '/home/exmaple.org/data/';
+        $GLOBALS['Eresus']->fstyle = '/home/exmaple.org/style/';
+        $GLOBALS['Eresus']->root = 'http://exmaple.org/';
+        $GLOBALS['Eresus']->data = 'http://exmaple.org/data/';
+        $GLOBALS['Eresus']->style = 'http://exmaple.org/style/';
+        $test = new Plugin();
+        $this->assertEquals('http://exmaple.org/style/plugin/', $test->getStyleURL());
+    }
+    //-----------------------------------------------------------------------------
 
-	/* */
+    /* */
 }
+

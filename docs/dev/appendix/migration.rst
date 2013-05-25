@@ -12,6 +12,12 @@
 * Класс Plugin переименован в Eresus_Plugin. Для обратной совместимости имя Plugin оставлено как
 псевдоним к Eresus_Plugin.
 
+Eresus_Plugin
+^^^^^^^^^^^^^
+
+* Свойство ``name`` объявлено устаревшим, вместо него следует использовать метод
+`Eresus_Plugin::getName <../../api/classes/Eresus_Plugin.html#method_getName>`_.
+
 TClientUI
 ^^^^^^^^^
 
@@ -25,6 +31,8 @@ TClientUI
 
 Добавлено
 ---------
+
+* `Eresus_Template_Service <../../api/classes/Eresus_Template_Service.html`_
 
 TClientUI
 ^^^^^^^^^

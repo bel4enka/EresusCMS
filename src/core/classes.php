@@ -509,7 +509,7 @@ class ContentPlugin extends Plugin
 		$page = Eresus_Kernel::app()->getPage();
 		if ($page instanceof TClientUI)
 		{
-			$page->plugin = $this->name;
+			$page->plugin = $this->getName();
 			if (isset($page->options) && count($page->options))
 			{
 				foreach ($page->options as $key=>$value)

@@ -37,8 +37,9 @@ abstract class Eresus_Plugin
      * Имя плагина
      *
      * @var string
+     * @deprecated с 3.01 используйте {@link getName()}
      */
-    public $name;
+    public $name = null;
 
     /**
      * Версия плагина
@@ -134,6 +135,13 @@ abstract class Eresus_Plugin
     protected $urlStyle;
 
     /**
+     * Шаблоны плагина
+     * @var Eresus_Plugin_Templates
+     * @since 3.01
+     */
+    private $templates = null;
+
+    /**
      * Конструктор
      *
      * Производит чтение настроек плагина и подключение языковых файлов
@@ -147,30 +155,33 @@ abstract class Eresus_Plugin
     {
         global $locale;
 
-        $this->name = strtolower(get_class($this));
-        if (!empty($this->name) && isset(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]))
+        if (array_key_exists($this->getName(), Eresus_CMS::getLegacyKernel()->plugins->list))
         {
-            $this->settings =
-                decodeOptions(Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['settings'],
-                    $this->settings);
-            # Если установлена версия плагина отличная от установленной ранее
-            # то необходимо произвести обновление информации о плагине в БД
-            if ($this->version != Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['version'])
+            $info = Eresus_CMS::getLegacyKernel()->plugins->list[$this->getName()];
+            $this->settings = decodeOptions($info['settings'], $this->settings);
+            /*
+             * Если установлена версия плагина отличная от установленной ранее, то необходимо
+             * произвести обновление информации о плагине в БД
+             */
+            if ($this->version != $info['version'])
+            {
                 $this->resetPlugin();
+            }
         }
-        $this->dirData = Eresus_CMS::getLegacyKernel()->fdata . $this->name . '/';
-        $this->urlData = Eresus_CMS::getLegacyKernel()->data . $this->name . '/';
-        $this->dirCode = Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $this->name . '/';
-        $this->urlCode = Eresus_CMS::getLegacyKernel()->root . 'ext/' . $this->name . '/';
-        $this->dirStyle = Eresus_CMS::getLegacyKernel()->fstyle . $this->name . '/';
-        $this->urlStyle = Eresus_CMS::getLegacyKernel()->style . $this->name . '/';
-        $filename = filesRoot . 'lang/' . $this->name . '/' . $locale['lang'] . '.php';
-        if (FS::isFile($filename))
+        $legacyKernel = Eresus_CMS::getLegacyKernel();
+        $this->dirData = $legacyKernel->fdata . $this->getName() . '/';
+        $this->urlData = $legacyKernel->data . $this->getName() . '/';
+        $this->dirCode = $legacyKernel->froot . 'ext/' . $this->getName() . '/';
+        $this->urlCode = $legacyKernel->root . 'ext/' . $this->getName() . '/';
+        $this->dirStyle = $legacyKernel->fstyle . $this->getName() . '/';
+        $this->urlStyle = $legacyKernel->style . $this->getName() . '/';
+        $filename = $legacyKernel->froot . 'lang/' . $this->getName() . '/' . $locale['lang']
+            . '.php';
+        if (file_exists($filename))
         {
-            Core::safeInclude($filename);
+            include_once $filename;
         }
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Возвращает информацию о плагине
@@ -181,7 +192,7 @@ abstract class Eresus_Plugin
      */
     public function __item($item = null)
     {
-        $result['name'] = $this->name;
+        $result['name'] = $this->getName();
         $result['content'] = false;
         $result['active'] = is_null($item)? true : $item['active'];
         $result['settings'] = Eresus_CMS::getLegacyKernel()->db->
@@ -205,7 +216,21 @@ abstract class Eresus_Plugin
     {
         throw new EresusMethodNotExistsException($method, get_class($this));
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Возвращает имя плагина
+     *
+     * @return string
+     * @since 3.01
+     */
+    public function getName()
+    {
+        if (null === $this->name)
+        {
+            $this->name = strtolower(get_class($this));
+        }
+        return $this->name;
+    }
 
     /**
      * Возвращает URL директории данных плагина
@@ -254,7 +279,7 @@ abstract class Eresus_Plugin
     protected function loadSettings()
     {
         $result = Eresus_CMS::getLegacyKernel()->db->
-            selectItem('plugins', "`name`='".$this->name."'");
+            selectItem('plugins', "`name`='" . $this->getName() . "'");
         if ($result)
         {
             $this->settings = decodeOptions($result['settings'], $this->settings);
@@ -270,11 +295,13 @@ abstract class Eresus_Plugin
      */
     protected function saveSettings()
     {
-        $result = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='{$this->name}'");
+        $result = Eresus_CMS::getLegacyKernel()->db
+            ->selectItem('plugins', "`name`='{$this->getName()}'");
         $result = $this->__item($result);
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db->escape(encodeOptions($this->settings));
+        $result['settings'] = Eresus_CMS::getLegacyKernel()->db
+            ->escape(encodeOptions($this->settings));
         $result = Eresus_CMS::getLegacyKernel()->db->
-            updateItem('plugins', $result, "`name`='".$this->name."'");
+            updateItem('plugins', $result, "`name`='".$this->getName()."'");
 
         return $result;
     }
@@ -304,12 +331,13 @@ abstract class Eresus_Plugin
     {
         # TODO: Перенести в IDataSource
         $eresus = Eresus_CMS::getLegacyKernel();
-        $tables = $eresus->db->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}_%'");
+        $tables = $eresus->db
+            ->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}_%'");
         $tables = array_merge($tables, $eresus->db->
-            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->name}'"));
+            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}'"));
         for ($i=0; $i < count($tables); $i++)
         {
-            $this->dbDropTable(substr(current($tables[$i]), strlen($this->name)+1));
+            $this->dbDropTable(substr(current($tables[$i]), strlen($this->getName())+1));
         }
     }
     //------------------------------------------------------------------------------
@@ -417,9 +445,8 @@ abstract class Eresus_Plugin
      */
     protected function __table($table)
     {
-        return $this->name.(empty($table)?'':'_'.$table);
+        return $this->getName() . (empty($table)?'':'_'.$table);
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Создание таблицы в БД
@@ -586,7 +613,21 @@ abstract class Eresus_Plugin
 
         return $result;
     }
-    //------------------------------------------------------------------------------
+
+    /**
+     * Возвращает объект для работы с шаблонами плагина
+     *
+     * @return Eresus_Plugin_Templates|null
+     * @since 3.01
+     */
+    public function templates()
+    {
+        if (null === $this->templates)
+        {
+            $this->templates = new Eresus_Plugin_Templates($this);
+        }
+        return $this->templates;
+    }
 
     /**
      * Регистрация обработчиков событий
@@ -599,9 +640,8 @@ abstract class Eresus_Plugin
     {
         for ($i=0; $i < func_num_args(); $i++)
         {
-            Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->name;
+            Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->getName();
         }
     }
-    //------------------------------------------------------------------------------
 }
 

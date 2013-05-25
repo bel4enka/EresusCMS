@@ -89,7 +89,7 @@ class MyPlugin extends Eresus_Plugin
             'caption' => $this->title . ' ' . $this->version,
             'width' => '500px',
             'fields' => array (
-                array('type' => 'hidden', 'name' => 'update', 'value' => $this->name),
+                array('type' => 'hidden', 'name' => 'update', 'value' => $this->getName()),
                 // Необходимые поля формы
             ),
             'buttons' => array('ok', 'apply', 'cancel'),

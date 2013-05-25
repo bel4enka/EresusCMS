@@ -32,7 +32,7 @@
    {
      Eresus_Kernel::app()->getPage()->addMenuItem(admExtensions, array(
        'access'  => EDITOR,
-       'link'  => $this->name,
+       'link'  => $this->getName(),
        'caption'  => $this->title,
        'hint'  => $this->description
      ));

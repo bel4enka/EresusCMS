@@ -1,6 +1,6 @@
 <?php
 /**
- * Тесты класса Template
+ * Шаблоны плагина
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,34 +24,58 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage Tests
  */
-
-require_once dirname(__FILE__) . '/../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/framework/core/kernel.php';
-require_once TESTS_SRC_DIR . '/core/framework/core/Template/Template.php';
 
 /**
- * Тесты класса Template
+ * Шаблоны плагина
+ *
  * @package Eresus
- * @subpackage Tests
+ * @since 3.01
  */
-class Eresus_TemplateTest extends PHPUnit_Framework_TestCase
+class Eresus_Plugin_Templates
 {
     /**
-     * Тест метода setContents
-     *
-     * @covers Template::setContents
+     * Плагин
+     * @var Eresus_Plugin
+     * @since 3.01
      */
-    public function testSetContents()
+    private $plugin;
+
+    /**
+     * @param Eresus_Plugin $plugin
+     * @since 3.01
+     */
+    public function __construct(Eresus_Plugin $plugin)
     {
-        $dwoo = $this->getMock('stdClass', array('get'));
-        $dwoo->expects($this->once())->method('get')->will($this->returnArgument(0));
-        Eresus_Tests::setStatic('Template', $dwoo, 'dwoo');
-        $tmpl = new Template();
-        $tmpl->setContents('foo');
-        $template = $tmpl->compile();
-        $this->assertInstanceOf('Dwoo_Template_String', $template);
+        $this->plugin = $plugin;
+    }
+
+    /**
+     * Возвращает шаблон для административного интерфейса
+     *
+     * @param string $filename  имя файла шаблона относительно папки административных шаблонов
+     *
+     * @return Template
+     *
+     * @since 3.01
+     */
+    public function admin($filename)
+    {
+        return new Template();
+    }
+
+    /**
+     * Возвращает шаблон для административного интерфейса
+     *
+     * @param string $filename  имя файла шаблона относительно папки клиентских шаблонов
+     *
+     * @return Template
+     *
+     * @since 3.01
+     */
+    public function client($filename)
+    {
+        return new Template();
     }
 }
 
