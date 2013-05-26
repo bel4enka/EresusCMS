@@ -129,21 +129,49 @@ class Template
 
     /**
      * Внутреннее представление шаблона
-     * @var Dwoo_Template_String
+     * @var null|Dwoo_Template_String
      * @since 3.01
      */
-    protected $template;
+    protected $template = null;
+
+    /**
+     * Загружает шаблон из файла
+     *
+     * Если $filename — относительный путь, то он будет расценен как путь относительно
+     * core.template.templateDir.
+     *
+     * @param string $filename  имя файла шаблона
+     *
+     * @return Template
+     *
+     * @since 3.01
+     */
+    public static function loadFromFile($filename)
+    {
+        $fileExtension = Core::getValue('core.template.fileExtension', '');
+        $path = $filename . $fileExtension;
+        /* Если это относительный путь, добавляем папку шаблонов */
+        if (!preg_match('#^(/|\w{1,10}://|[A-Z]:\\\)#', $filename))
+        {
+            $templateDir = Core::getValue('core.template.templateDir', '');
+            $path = $templateDir . '/' . $path;
+        }
+        $template = new self();
+        $template->template = new TemplateFile($path, null, $filename, $filename);
+        return $template;
+    }
 
     /**
      * Constructor
      * @var string $filename  Template file name
+     * @todo заменить имя файла на исходник шаблона и сделать обязательным, а файл загружать через
+     *       статический метод loadFromFile
      */
     public function __construct($filename = null)
     {
         if (null == self::$dwoo)
         {
             $compileDir = $this->detectCompileDir();
-            $compileDir = FS::nativeForm($compileDir);
             self::$dwoo = new Dwoo($compileDir);
             if (Core::getValue('core.template.charset'))
             {
@@ -151,21 +179,39 @@ class Template
             }
         }
 
-        if ($filename) $this->loadFile($filename);
+        if ($filename)
+        {
+            $this->loadFile($filename);
+        }
     }
 
     /**
-     * Задаёт содержимое шаблона в виде строки
+     * Возвращает исходный код шаблона или null, если шаблон не загружен
      *
-     * @param string $contents
+     * @return null|string
+     * @since 3.01
+     */
+    public function getSource()
+    {
+        if (null === $this->template)
+        {
+            return null;
+        }
+        return $this->template->getSource();
+    }
+
+    /**
+     * Задаёт исходный код шаблона в виде строки
+     *
+     * @param string $source
      *
      * @return void
      *
      * @since 3.01
      */
-    public function setContents($contents)
+    public function setSource($source)
     {
-        $this->template = new Dwoo_Template_String($contents);
+        $this->template = new Dwoo_Template_String($source);
     }
 
     /**
