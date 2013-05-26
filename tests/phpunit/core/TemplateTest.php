@@ -41,7 +41,7 @@ class Eresus_TemplateTest extends PHPUnit_Framework_TestCase
     /**
      * Тест метода setContents
      *
-     * @covers Template::setContents
+     * @covers Template::setSource
      */
     public function testSetContents()
     {
@@ -49,7 +49,7 @@ class Eresus_TemplateTest extends PHPUnit_Framework_TestCase
         $dwoo->expects($this->once())->method('get')->will($this->returnArgument(0));
         Eresus_Tests::setStatic('Template', $dwoo, 'dwoo');
         $tmpl = new Template();
-        $tmpl->setContents('foo');
+        $tmpl->setSource('foo');
         $template = $tmpl->compile();
         $this->assertInstanceOf('Dwoo_Template_String', $template);
     }

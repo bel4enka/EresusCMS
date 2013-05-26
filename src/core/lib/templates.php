@@ -181,7 +181,7 @@ class Templates
             return null;
         }
         $template = new Template();
-        $template->setContents($contents);
+        $template->setSource($contents);
         return $template;
     }
 

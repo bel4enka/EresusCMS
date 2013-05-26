@@ -32,6 +32,7 @@ TClientUI
 Добавлено
 ---------
 
+* :doc:`Новый механизм работы с шаблонами<../guide/templates>`
 * `Eresus_Template_Service <../../api/classes/Eresus_Template_Service.html`_
 
 TClientUI
@@ -43,7 +44,9 @@ TClientUI
 Template
 ^^^^^^^^
 
-* Метод `setContents <../../api/classes/Template.html#method_setContents>`_
+* Метод `loadFromFile <../../api/classes/Template.html#method_loadFromFile>`_
+* Метод `getSource <../../api/classes/Template.html#method_getSource>`_
+* Метод `setSource <../../api/classes/Template.html#method_setSource>`_
 
 Templates
 ^^^^^^^^

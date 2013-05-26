@@ -61,11 +61,12 @@ class Eresus_Plugin_Templates
      */
     public function admin($filename)
     {
-        return new Template();
+        $path = "ext/{$this->plugin->getName()}/templates/admin/$filename";
+        return Template::loadFromFile($path);
     }
 
     /**
-     * Возвращает шаблон для административного интерфейса
+     * Возвращает шаблон для клиентского интерфейса
      *
      * @param string $filename  имя файла шаблона относительно папки клиентских шаблонов
      *
@@ -75,7 +76,65 @@ class Eresus_Plugin_Templates
      */
     public function client($filename)
     {
-        return new Template();
+        $path = $this->composeClientPath($filename);
+        return Template::loadFromFile($path);
+    }
+
+    /**
+     * Возвращает содержимое шаблона для клиентского интерфейса
+     *
+     * @param string $filename  имя файла шаблона относительно папки клиентских шаблонов
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function clientRead($filename)
+    {
+        $path = $this->getFullPath($this->composeClientPath($filename));
+        return file_get_contents($path);
+    }
+
+    /**
+     * Записывает новый исходный код в шаблон для клиентского интерфейса
+     *
+     * @param string $filename  имя файла шаблона относительно папки клиентских шаблонов
+     * @param string $source    новый исходный код шаблона
+     *
+     * @return void
+     *
+     * @since 3.01
+     */
+    public function clientWrite($filename, $source)
+    {
+        $path = $this->getFullPath($this->composeClientPath($filename));
+        file_put_contents($path, $source);
+    }
+
+    /**
+     * Возвращает путь к клиентскому шаблону
+     *
+     * @param string $filename
+     * @return string
+     *
+     * @since 3.01
+     */
+    private function composeClientPath($filename)
+    {
+        return "templates/{$this->plugin->getName()}/$filename";
+    }
+
+    /**
+     * Возвращает полный путь к шаблону
+     *
+     * @param string $filename
+     * @return string
+     *
+     * @since 3.01
+     */
+    private function getFullPath($filename)
+    {
+        return Core::getValue('core.template.templateDir', '') . '/' . $filename;
     }
 }
 
