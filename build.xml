@@ -56,7 +56,7 @@
             <available file="vendor" property="." />
 
             <then>
-                <composer command="update" />
+                <property name="composer.command" value="update" />
             </then>
 
             <else>
@@ -70,9 +70,23 @@
                         <chmod file="${project.basedir}/composer.phar" mode="0777" />
                     </then>
                 </if>
-                <composer command="install" />
+                <property name="composer.command" value="install" />
             </else>
         </if>
+
+        <if>
+            <equals arg1="${devel}" arg2="yes" />
+            <then>
+                <property name="composer.args.dev" value="--dev" />
+            </then>
+            <else>
+                <property name="composer.args.dev" value="" />
+            </else>
+        </if>
+
+        <composer command="${composer.command}">
+            <arg value="${composer.args.dev}" />
+        </composer>
 
     </target>
 
@@ -82,6 +96,11 @@
     =====================================================================
     -->
     <target name="tests" description="Run unit tests">
+
+        <available file="vendor/mekras/test-doubles" property="vendor.devel" />
+        <fail
+            message="You must execute «vendors» target with «devel=yes» before executing this one!"
+            unless="vendor.devel" />
 
         <phplint>
             <fileset refid="files.sources.php" />
@@ -161,6 +180,11 @@
     =====================================================================
     -->
     <target name="build" description="Build basic set of modules">
+
+        <available file="vendor" property="vendor.main" />
+        <fail
+            message="You must execute «vendors» target before executing this one!"
+            unless="vendor.main" />
 
         <php function="date" returnProperty="build.date">
             <param value="d.m.y" />
@@ -320,6 +344,9 @@
         <delete dir="${docs.dir}" includeemptydirs="true" />
         <delete dir="${logs.dir}" includeemptydirs="true" />
         <delete dir="${phpunit.coverage.html}" includeemptydirs="true" />
+        <delete dir="vendor" includeemptydirs="true" />
+        <delete file="composer.lock" />
+        <delete file="composer.phar" />
 
     </target>
 
