@@ -33,6 +33,13 @@ TClientUI
 ---------
 
 * :doc:`Новый механизм работы с шаблонами<../guide/templates>`
+* `Eresus_CMS_Excpetion_NotFound <../../api/classes/Eresus_CMS_Excpetion_NotFound.html`_
+* `Eresus_Plugin_Component <../../api/classes/Eresus_Plugin_Component.html`_
+* `Eresus_Plugin_Controller_Abstract <../../api/classes/Eresus_Plugin_Controller_Abstract.html`_
+* `Eresus_Plugin_Controller_Admin <../../api/classes/Eresus_Plugin_Controller_Admin.html`_
+* `Eresus_Plugin_Controller_Admin_Content <../../api/classes/Eresus_Plugin_Controller_Admin_Content.html`_
+* `Eresus_Plugin_Controller_Client <../../api/classes/Eresus_Plugin_Controller_Client.html`_
+* `Eresus_Plugin_Controller_Client_Content <../../api/classes/Eresus_Plugin_Controller_Client_Content.html`_
 * `Eresus_Template_Service <../../api/classes/Eresus_Template_Service.html`_
 
 TClientUI
