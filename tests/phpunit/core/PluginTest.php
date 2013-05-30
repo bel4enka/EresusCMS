@@ -56,7 +56,7 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Eresus_Plugin::getDataURL
+     * @covers Eresus_Plugin::getDataUrl
      */
     public function testGetDataURL()
     {
@@ -74,11 +74,11 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
         /** @var Eresus_Plugin $plugin */
         $plugin->__construct();
-        $this->assertEquals('http://example.org/data/plugin/', $plugin->getDataURL());
+        $this->assertEquals('http://example.org/data/plugin/', $plugin->getDataUrl());
     }
 
     /**
-     * @covers Eresus_Plugin::getCodeURL
+     * @covers Eresus_Plugin::getCodeUrl
      */
     public function testGetCodeURL()
     {
@@ -96,11 +96,11 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
         /** @var Eresus_Plugin $plugin */
         $plugin->__construct();
-        $this->assertEquals('http://example.org/ext/plugin/', $plugin->getCodeURL());
+        $this->assertEquals('http://example.org/ext/plugin/', $plugin->getCodeUrl());
     }
 
     /**
-     * @covers Eresus_Plugin::getStyleURL
+     * @covers Eresus_Plugin::getStyleUrl
      */
     public function testGetStyleURL()
     {
@@ -118,7 +118,7 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
         /** @var Eresus_Plugin $plugin */
         $plugin->__construct();
-        $this->assertEquals('http://example.org/style/plugin/', $plugin->getStyleURL());
+        $this->assertEquals('http://example.org/style/plugin/', $plugin->getStyleUrl());
     }
 
     /**

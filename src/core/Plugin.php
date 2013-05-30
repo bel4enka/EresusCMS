@@ -156,9 +156,10 @@ abstract class Eresus_Plugin
     {
         global $locale;
 
-        if (array_key_exists($this->getName(), Eresus_CMS::getLegacyKernel()->plugins->list))
+        $legacyKernel = Eresus_CMS::getLegacyKernel();
+        if (array_key_exists($this->getName(), $legacyKernel->plugins->list))
         {
-            $info = Eresus_CMS::getLegacyKernel()->plugins->list[$this->getName()];
+            $info = $legacyKernel->plugins->list[$this->getName()];
             $this->settings = decodeOptions($info['settings'], $this->settings);
             /*
              * Если установлена версия плагина отличная от установленной ранее, то необходимо
@@ -169,7 +170,6 @@ abstract class Eresus_Plugin
                 $this->resetPlugin();
             }
         }
-        $legacyKernel = Eresus_CMS::getLegacyKernel();
         $this->dirData = $legacyKernel->fdata . $this->getName() . '/';
         $this->urlData = $legacyKernel->data . $this->getName() . '/';
         $this->dirCode = $legacyKernel->froot . 'ext/' . $this->getName() . '/';
@@ -180,6 +180,7 @@ abstract class Eresus_Plugin
             . '.php';
         if (file_exists($filename))
         {
+            /** @noinspection PhpIncludeInspection */
             include_once $filename;
         }
     }
@@ -203,7 +204,6 @@ abstract class Eresus_Plugin
         $result['description'] = $this->description;
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Перехватчик обращений к несуществующим методам плагинов
@@ -234,17 +234,42 @@ abstract class Eresus_Plugin
     }
 
     /**
+     * Возвращает файловый путь к папке данных плагина
+     *
+     * Обратите внимание, что путь НЕ заканчивается слэшем
+     *
+     * @return string
+     * @since 3.01
+     */
+    public function getDataDir()
+    {
+        return rtrim($this->dirData, '/');
+    }
+
+    /**
      * Возвращает URL директории данных плагина
      *
      * @return string
      *
      * @since 2.15
      */
-    public function getDataURL()
+    public function getDataUrl()
     {
         return $this->urlData;
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Возвращает файловый путь к папке файлов плагина
+     *
+     * Обратите внимание, что путь НЕ заканчивается слэшем
+     *
+     * @return string
+     * @since 3.01
+     */
+    public function getCodeDir()
+    {
+        return rtrim($this->dirCode, '/');
+    }
 
     /**
      * Возвращает URL директории файлов плагина
@@ -253,11 +278,23 @@ abstract class Eresus_Plugin
      *
      * @since 2.15
      */
-    public function getCodeURL()
+    public function getCodeUrl()
     {
         return $this->urlCode;
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Возвращает файловый путь к папке стилей плагина
+     *
+     * Обратите внимание, что путь НЕ заканчивается слэшем
+     *
+     * @return string
+     * @since 3.01
+     */
+    public function getStyleDir()
+    {
+        return rtrim($this->dirStyle, '/');
+    }
 
     /**
      * Возвращает URL директории стилей плагина
@@ -266,11 +303,10 @@ abstract class Eresus_Plugin
      *
      * @since 2.15
      */
-    public function getStyleURL()
+    public function getStyleUrl()
     {
         return $this->urlStyle;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Чтение настроек плагина из БД
@@ -287,7 +323,6 @@ abstract class Eresus_Plugin
         }
         return (bool) $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Сохранение настроек плагина в БД
@@ -306,7 +341,6 @@ abstract class Eresus_Plugin
 
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Обновление данных о плагине в БД
@@ -322,7 +356,6 @@ abstract class Eresus_Plugin
      */
     public function install()
     {
-
     }
 
     /**
@@ -330,7 +363,6 @@ abstract class Eresus_Plugin
      */
     public function uninstall()
     {
-        # TODO: Перенести в IDataSource
         $eresus = Eresus_CMS::getLegacyKernel();
         $tables = $eresus->db
             ->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}_%'");
@@ -341,7 +373,6 @@ abstract class Eresus_Plugin
             $this->dbDropTable(substr(current($tables[$i]), strlen($this->getName())+1));
         }
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Действия при изменении настроек
@@ -349,7 +380,6 @@ abstract class Eresus_Plugin
     public function onSettingsUpdate()
     {
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Сохраняет в БД изменения настроек плагина

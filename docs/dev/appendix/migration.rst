@@ -42,6 +42,14 @@ TClientUI
 * `Eresus_Plugin_Controller_Client_Content <../../api/classes/Eresus_Plugin_Controller_Client_Content.html`_
 * `Eresus_Template_Service <../../api/classes/Eresus_Template_Service.html`_
 
+Eresus_Plugin
+^^^^^^^^^^^^^
+
+* Метод `getCodeDir <../../api/classes/Eresus_Plugin.html#method_getCodeUrl>`_
+* Метод `getDataDir <../../api/classes/Eresus_Plugin.html#method_getDataUrl>`_
+* Метод `getStyleDir <../../api/classes/Eresus_Plugin.html#method_getStyleUrl>`_
+
+
 TClientUI
 ^^^^^^^^^
 
