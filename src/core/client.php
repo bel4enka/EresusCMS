@@ -113,6 +113,14 @@ class TClientUI extends WebPage
     public $topic = false;
 
     /**
+     * Признак того, что сейчас обрабатывается ошибка
+     *
+     * @var bool
+     * @since 3.01
+     */
+    private $processingError = false;
+
+    /**
      * Подставляет значения макросов
      *
      * @param string $text
@@ -335,13 +343,11 @@ class TClientUI extends WebPage
      */
     public function httpError($code)
     {
-        global $KERNEL;
-
-        if (isset($KERNEL['ERROR']))
+        if (true === $this->processingError)
         {
             return;
         }
-        $ERROR = array(
+        $httpErrors = array(
             '400' => array('response' => 'Bad Request'),
             '401' => array('response' => 'Unauthorized'),
             '402' => array('response' => 'Payment Required'),
@@ -362,7 +368,7 @@ class TClientUI extends WebPage
             '417' => array('response' => 'Expectation Failed'),
         );
 
-        Header($_SERVER['SERVER_PROTOCOL'].' '.$code.' '.$ERROR[$code]['response']);
+        header($_SERVER['SERVER_PROTOCOL'] . ' ' . $code . ' ' . $httpErrors[$code]['response']);
 
         if (defined('HTTP_CODE_'.$code))
         {
@@ -370,7 +376,7 @@ class TClientUI extends WebPage
         }
         else
         {
-            $message = $ERROR[$code]['response'];
+            $message = $httpErrors[$code]['response'];
         }
 
         $this->section = array(siteTitle, $message);
@@ -389,7 +395,7 @@ class TClientUI extends WebPage
             $this->setTemplate('default');
             $this->content = "<h1>HTTP {$code}: {$message}</h1>";
         }
-        $KERNEL['ERROR'] = true;
+        $this->processingError = true;
         $this->render();
         exit;
     }
