@@ -38,14 +38,8 @@ define('CLIENTUI', true);
  *
  * @package Eresus
  */
-class TClientUI extends WebPage
+class TClientUI extends Eresus_CMS_Page_Client
 {
-    /**
-     * Информация о странице из БД
-     * @var array
-     * @deprecated с 3.01
-     */
-    public $dbItem = array();
     public $name = ''; # Имя страницы
     public $owner = 0; # Идентификатор родительской страницы
     public $section = array(); # Массив заголовков страниц

@@ -27,8 +27,10 @@
  * @subpackage Tests
  */
 
-require_once dirname(__FILE__) . '/../stubs.php';
+require_once dirname(__FILE__) . '/../bootstrap.php';
+require_once TESTS_SRC_DIR . '/core/CMS/Page.php';
 require_once TESTS_SRC_DIR . '/core/classes/WebPage.php';
+require_once TESTS_SRC_DIR . '/core/CMS/Page/Client.php';
 require_once TESTS_SRC_DIR . '/core/client.php';
 
 /**

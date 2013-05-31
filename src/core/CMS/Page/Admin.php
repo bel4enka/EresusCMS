@@ -1,6 +1,6 @@
 <?php
 /**
- * Контроллер контента КИ
+ * Страница АИ
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,19 +27,54 @@
  */
 
 /**
- * Контроллер контента КИ
+ * Страница АИ
  *
  * @package Eresus
  * @since 3.01
+ * @todo Унаследовать напрямую от Eresus_CMS_page после удаления WebPage
  */
-abstract class Eresus_Plugin_Controller_Client_Content extends Eresus_Plugin_Controller_Client
+class Eresus_CMS_Page_Admin extends WebPage
 {
     /**
-     * Возвращает разметку области контента
+     * Возвращает полный заголовок страницы
+     *
+     * Этот метод возвращает полный заголовок страницы, куда, в зависимости от настроек сайта, могут
+     * входить: имя сайта, заголовок сайта, заголовок раздела и т. д.
      *
      * @return string
      * @since 3.01
      */
-    abstract public function actionContent();
+    protected function getTitle()
+    {
+    }
+
+    /**
+     * Возвращает описание страницы
+     *
+     * Этот метод возвращает полное описание страницы для мета-тега description. В зависимости от
+     * настроек сайта, в него могут входить: описание сайта и описание раздела.
+     *
+     * @return string
+     * @since 3.01
+     */
+    protected function getDescription()
+    {
+        return '';
+    }
+
+    /**
+     * Возвращает ключевые слова страницы
+     *
+     * Этот метод возвращает полный набор ключевых слов страницы для мета-тега keywords. В
+     * зависимости от настроек сайта, в него могут входить: ключевые слова сайта и ключевые слова
+     * раздела.
+     *
+     * @return string
+     * @since 3.01
+     */
+    protected function getKeywords()
+    {
+        return '';
+    }
 }
 

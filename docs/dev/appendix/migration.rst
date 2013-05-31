@@ -4,25 +4,30 @@
 Удалено
 -------
 
-* Псевдоним ``Accounts`` класса ``EresusAccounts``.
+* Псевдоним ``Accounts`` класса `EresusAccounts <../../api/classes/EresusAccounts.html>`_.
 
 Изменено
 --------
 
 * Класс Plugin переименован в Eresus_Plugin. Для обратной совместимости имя Plugin оставлено как
-псевдоним к Eresus_Plugin.
+  псевдоним к Eresus_Plugin.
 
 Eresus_Plugin
 ^^^^^^^^^^^^^
 
 * Свойство ``name`` объявлено устаревшим, вместо него следует использовать метод
-`Eresus_Plugin::getName <../../api/classes/Eresus_Plugin.html#method_getName>`_.
+  `Eresus_Plugin::getName <../../api/classes/Eresus_Plugin.html#method_getName>`_.
 
 TClientUI
 ^^^^^^^^^
 
 * Свойство ``template`` сделано приватным. Для чтения его значения используйте
   `TClientUI::getTemplateName <../../api/classes/TClientUI.html#method_getTemplateName>`_
+
+WebPage
+^^^^^^^
+
+* Унаследован от `Eresus_CMS_Page <../../api/classes/Eresus_CMS_Page.html>`_ и сделан абстрактным.
 
 Обновлены
 ^^^^^^^^^
@@ -33,14 +38,14 @@ TClientUI
 ---------
 
 * :doc:`Новый механизм работы с шаблонами<../guide/templates>`
-* `Eresus_CMS_Excpetion_NotFound <../../api/classes/Eresus_CMS_Excpetion_NotFound.html`_
-* `Eresus_Plugin_Component <../../api/classes/Eresus_Plugin_Component.html`_
-* `Eresus_Plugin_Controller_Abstract <../../api/classes/Eresus_Plugin_Controller_Abstract.html`_
-* `Eresus_Plugin_Controller_Admin <../../api/classes/Eresus_Plugin_Controller_Admin.html`_
-* `Eresus_Plugin_Controller_Admin_Content <../../api/classes/Eresus_Plugin_Controller_Admin_Content.html`_
-* `Eresus_Plugin_Controller_Client <../../api/classes/Eresus_Plugin_Controller_Client.html`_
-* `Eresus_Plugin_Controller_Client_Content <../../api/classes/Eresus_Plugin_Controller_Client_Content.html`_
-* `Eresus_Template_Service <../../api/classes/Eresus_Template_Service.html`_
+* `Eresus_CMS_Exception_NotFound <../../api/classes/Eresus_CMS_Exception_NotFound.html>`_
+* `Eresus_Plugin_Component <../../api/classes/Eresus_Plugin_Component.html>`_
+* `Eresus_Plugin_Controller_Abstract <../../api/classes/Eresus_Plugin_Controller_Abstract.html>`_
+* `Eresus_Plugin_Controller_Admin <../../api/classes/Eresus_Plugin_Controller_Admin.html>`_
+* `Eresus_Plugin_Controller_Admin_Content <../../api/classes/Eresus_Plugin_Controller_Admin_Content.html>`_
+* `Eresus_Plugin_Controller_Client <../../api/classes/Eresus_Plugin_Controller_Client.html>`_
+* `Eresus_Plugin_Controller_Client_Content <../../api/classes/Eresus_Plugin_Controller_Client_Content.html>`_
+* `Eresus_Template_Service <../../api/classes/Eresus_Template_Service.html>`_
 
 Eresus_Plugin
 ^^^^^^^^^^^^^

@@ -154,7 +154,7 @@ define('ADMINUI', true);
  *
  * @package Eresus
  */
-class TAdminUI extends WebPage
+class TAdminUI extends Eresus_CMS_Page_Admin
 {
 	/**
 	 * Загружаемый модуль
@@ -206,7 +206,7 @@ class TAdminUI extends WebPage
 	protected $uiTheme;
 
 	/**
-	 * Констурктор
+	 * Конструктор
 	 * @return TAdminUI
 	 */
 	public function __construct()

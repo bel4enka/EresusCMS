@@ -181,7 +181,18 @@ class Eresus_CMS extends EresusApplication
     {
         return $GLOBALS['Eresus'];
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Возвращает экземпляр класса Eresus_Site
+     *
+     * @return Eresus_Site
+     *
+     * @since 3.01
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
 
     /**
      * Возвращает экземпляр класса TClientUI или TAdminUI
@@ -196,7 +207,6 @@ class Eresus_CMS extends EresusApplication
     {
         return $this->page;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Проверка окружения

@@ -29,6 +29,9 @@
 /**
  * Описание сайта
  *
+ * <b>Внимание!</b> Не создавайте экземпляров этого класса самостоятельно, используйте метод
+ * {@link Eresus_CMS::getSite()}.
+ *
  * @property-read string $webRoot      адрес корня сайта (без слэша на конце)
  * @property-read string $webStyle     адрес папки оформления (без слэша на конце)
  * @property-read string $host         хост сайта

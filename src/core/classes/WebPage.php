@@ -225,7 +225,7 @@ class HtmlScriptElement extends HtmlElement
  *
  * @package Eresus
  */
-class WebPage
+abstract class WebPage extends Eresus_CMS_Page
 {
     /**
      * Идентификатор текущего раздела
