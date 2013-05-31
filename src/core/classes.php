@@ -481,6 +481,8 @@ class Plugins
 /**
  * Класс для обратной совместимости
  *
+ * @package Eresus
+ * @subpackage BC
  * @deprecated с 3.01 используйте {@link Eresus_Plugin}
  */
 class Plugin extends Eresus_Plugin
