@@ -309,53 +309,11 @@ abstract class Eresus_Plugin
     }
 
     /**
-     * Чтение настроек плагина из БД
-     *
-     * @return bool  Результат выполнения
-     */
-    protected function loadSettings()
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->
-            selectItem('plugins', "`name`='" . $this->getName() . "'");
-        if ($result)
-        {
-            $this->settings = decodeOptions($result['settings'], $this->settings);
-        }
-        return (bool) $result;
-    }
-
-    /**
-     * Сохранение настроек плагина в БД
-     *
-     * @return bool  Результат выполнения
-     */
-    protected function saveSettings()
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db
-            ->selectItem('plugins', "`name`='{$this->getName()}'");
-        $result = $this->__item($result);
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db
-            ->escape(encodeOptions($this->settings));
-        $result = Eresus_CMS::getLegacyKernel()->db->
-            updateItem('plugins', $result, "`name`='".$this->getName()."'");
-
-        return $result;
-    }
-
-    /**
-     * Обновление данных о плагине в БД
-     */
-    protected function resetPlugin()
-    {
-        $this->loadSettings();
-        $this->saveSettings();
-    }
-
-    /**
      * Действия, выполняемые при инсталляции плагина
      */
     public function install()
     {
+        $this->installTemplates();
     }
 
     /**
@@ -363,15 +321,8 @@ abstract class Eresus_Plugin
      */
     public function uninstall()
     {
-        $eresus = Eresus_CMS::getLegacyKernel();
-        $tables = $eresus->db
-            ->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}_%'");
-        $tables = array_merge($tables, $eresus->db->
-            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}'"));
-        for ($i=0; $i < count($tables); $i++)
-        {
-            $this->dbDropTable(substr(current($tables[$i]), strlen($this->getName())+1));
-        }
+        $this->cleanupDB();
+        $this->uninstallTemplates();
     }
 
     /**
@@ -395,116 +346,6 @@ abstract class Eresus_Plugin
         }
         $this->onSettingsUpdate();
         $this->saveSettings();
-    }
-    //------------------------------------------------------------------------------
-
-    /**
-     * Замена макросов
-     *
-     * @param  string  $template  Строка в которой требуется провести замену макросов
-     * @param  mixed   $item      Ассоциативный массив со значениями для подстановки вместо макросов
-     *
-     * @return  string  Обработанная строка
-     */
-    protected function replaceMacros($template, $item)
-    {
-        $result = replaceMacros($template, $item);
-        return $result;
-    }
-    //------------------------------------------------------------------------------
-
-    /**
-     * Создание новой директории
-     *
-     * @param string $name Имя директории
-     * @return bool Результат
-     */
-    protected function mkdir($name = '')
-    {
-        $result = true;
-        $umask = umask(0000);
-        # Проверка и создание корневой директории данных
-        if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
-        if ($result) {
-            # Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
-            $name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-            if ($name) {
-                $name = explode('/', $name);
-                $root = substr($this->dirData, 0, -1);
-                for($i=0; $i<count($name); $i++) if ($name[$i]) {
-                    $root .= '/'.$name[$i];
-                    if (!is_dir($root)) $result = mkdir($root);
-                    if (!$result) break;
-                }
-            }
-        }
-        umask($umask);
-        return $result;
-    }
-    //------------------------------------------------------------------------------
-
-    /**
-     * Удаление директории и файлов
-     *
-     * @param string $name Имя директории
-     * @return bool Результат
-     */
-    protected function rmdir($name = '')
-    {
-        $result = true;
-        $name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
-        $name = $this->dirData.$name;
-        if (is_dir($name)) {
-            $files = glob($name.'/{.*,*}', GLOB_BRACE);
-            for ($i = 0; $i < count($files); $i++) {
-                if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
-                if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
-                elseif (is_file($files[$i])) $result = filedelete($files[$i]);
-                if (!$result) break;
-            }
-            if ($result) $result = rmdir($name);
-        }
-        return $result;
-    }
-    //------------------------------------------------------------------------------
-
-    /**
-     * Возвращает реальное имя таблицы
-     *
-     * @param string $table  Локальное имя таблицы
-     * @return string Реальное имя таблицы
-     */
-    protected function __table($table)
-    {
-        return $this->getName() . (empty($table)?'':'_'.$table);
-    }
-
-    /**
-     * Создание таблицы в БД
-     *
-     * @param string $SQL Описание таблицы
-     * @param string $name Имя таблицы
-     *
-     * @return bool Результат выполенения
-     */
-    protected function dbCreateTable($SQL, $name = '')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->create($this->__table($name), $SQL);
-        return $result;
-    }
-    //------------------------------------------------------------------------------
-
-    /**
-     * Удаление таблицы БД
-     *
-     * @param string $name Имя таблицы
-     *
-     * @return bool Результат выполнения
-     */
-    protected function dbDropTable($name = '')
-    {
-        $result = Eresus_CMS::getLegacyKernel()->db->drop($this->__table($name));
-        return $result;
     }
     //------------------------------------------------------------------------------
 
@@ -661,6 +502,49 @@ abstract class Eresus_Plugin
     }
 
     /**
+     * Чтение настроек плагина из БД
+     *
+     * @return bool  Результат выполнения
+     */
+    protected function loadSettings()
+    {
+        $result = Eresus_CMS::getLegacyKernel()->db->
+            selectItem('plugins', "`name`='" . $this->getName() . "'");
+        if ($result)
+        {
+            $this->settings = decodeOptions($result['settings'], $this->settings);
+        }
+        return (bool) $result;
+    }
+
+    /**
+     * Сохранение настроек плагина в БД
+     *
+     * @return bool  Результат выполнения
+     */
+    protected function saveSettings()
+    {
+        $result = Eresus_CMS::getLegacyKernel()->db
+            ->selectItem('plugins', "`name`='{$this->getName()}'");
+        $result = $this->__item($result);
+        $result['settings'] = Eresus_CMS::getLegacyKernel()->db
+            ->escape(encodeOptions($this->settings));
+        $result = Eresus_CMS::getLegacyKernel()->db->
+            updateItem('plugins', $result, "`name`='".$this->getName()."'");
+
+        return $result;
+    }
+
+    /**
+     * Обновление данных о плагине в БД
+     */
+    protected function resetPlugin()
+    {
+        $this->loadSettings();
+        $this->saveSettings();
+    }
+
+    /**
      * Регистрация обработчиков событий
      *
      * @param string $event1  Имя события1
@@ -673,6 +557,167 @@ abstract class Eresus_Plugin
         {
             Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->getName();
         }
+    }
+
+    /**
+     * Устанавливает шаблоны КИ в общую папку шаблонов
+     */
+    protected function installTemplates()
+    {
+        $path = $this->getCodeDir() . '/templates/client';
+        if (file_exists($path))
+        {
+            $ts = Eresus_Template_Service::getInstance();
+            $it = new DirectoryIterator($path);
+            foreach ($it as $fileInfo)
+            {
+                /** @var DirectoryIterator $fileInfo */
+                if (!$fileInfo->isDot())
+                {
+                    $ts->install($fileInfo->getPathname(), $this->getName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Удаляет шаблоны КИ из общей папки шаблонов
+     */
+    protected function uninstallTemplates()
+    {
+        $path = $this->getCodeDir() . '/templates/client';
+        if (file_exists($path))
+        {
+            $ts = Eresus_Template_Service::getInstance();
+            $ts->remove($this->getName());
+        }
+    }
+
+    /**
+     * Удаляет таблицы БД при удалении плагина
+     *
+     * @since 3.01
+     */
+    protected function cleanupDB()
+    {
+        $eresus = Eresus_CMS::getLegacyKernel();
+        $tables = $eresus->db
+            ->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}_%'");
+        $tables = array_merge($tables, $eresus->db->
+            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}'"));
+        for ($i = 0; $i < count($tables); $i++)
+        {
+            $this->dbDropTable(substr(current($tables[$i]), strlen($this->getName()) + 1));
+        }
+    }
+
+    /**
+     * Замена макросов
+     *
+     * @param  string  $template  Строка в которой требуется провести замену макросов
+     * @param  mixed   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+     *
+     * @return  string  Обработанная строка
+     */
+    protected function replaceMacros($template, $item)
+    {
+        $result = replaceMacros($template, $item);
+        return $result;
+    }
+
+    /**
+     * Создание новой директории
+     *
+     * @param string $name Имя директории
+     * @return bool Результат
+     */
+    protected function mkdir($name = '')
+    {
+        $result = true;
+        $umask = umask(0000);
+        # Проверка и создание корневой директории данных
+        if (!is_dir($this->dirData)) $result = mkdir($this->dirData);
+        if ($result)
+        {
+            # Удаляем директории вида "." и "..", а также финальный и лидирующий слэши
+            $name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
+            if ($name)
+            {
+                $name = explode('/', $name);
+                $root = substr($this->dirData, 0, -1);
+                for($i=0; $i<count($name); $i++) if ($name[$i]) {
+                    $root .= '/'.$name[$i];
+                    if (!is_dir($root)) $result = mkdir($root);
+                    if (!$result) break;
+                }
+            }
+        }
+        umask($umask);
+        return $result;
+    }
+
+    /**
+     * Удаление директории и файлов
+     *
+     * @param string $name Имя директории
+     * @return bool Результат
+     */
+    protected function rmdir($name = '')
+    {
+        $result = true;
+        $name = preg_replace(array('!\.{1,2}/!', '!^/!', '!/$!'), '', $name);
+        $name = $this->dirData.$name;
+        if (is_dir($name))
+        {
+            $files = glob($name.'/{.*,*}', GLOB_BRACE);
+            for ($i = 0; $i < count($files); $i++)
+            {
+                if (substr($files[$i], -2) == '/.' || substr($files[$i], -3) == '/..') continue;
+                if (is_dir($files[$i])) $result = $this->rmdir(substr($files[$i], strlen($this->dirData)));
+                elseif (is_file($files[$i])) $result = filedelete($files[$i]);
+                if (!$result) break;
+            }
+            if ($result) $result = rmdir($name);
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает реальное имя таблицы
+     *
+     * @param string $table  Локальное имя таблицы
+     * @return string Реальное имя таблицы
+     */
+    protected function __table($table)
+    {
+        return $this->getName() . (empty($table)?'':'_'.$table);
+    }
+
+    /**
+     * Создание таблицы в БД
+     *
+     * @param string $SQL Описание таблицы
+     * @param string $name Имя таблицы
+     *
+     * @return bool Результат выполнения
+     */
+    protected function dbCreateTable($SQL, $name = '')
+    {
+        $result = Eresus_CMS::getLegacyKernel()->db->create($this->__table($name), $SQL);
+        return $result;
+    }
+
+    /**
+     * Удаление таблицы БД
+     *
+     * @param string $name Имя таблицы
+     *
+     * @return bool Результат выполнения
+     */
+    protected function dbDropTable($name = '')
+    {
+        $result = Eresus_CMS::getLegacyKernel()->db->drop($this->__table($name));
+        return $result;
     }
 }
 

@@ -129,6 +129,7 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
     public function testTemplates()
     {
         $legacyKernel = $this->getMock('Eresus');
+        /** @var Eresus $legacyKernel */
         $legacyKernel->plugins = new stdClass();
         $legacyKernel->plugins->list = array();
         $GLOBALS['Eresus'] = $legacyKernel;
@@ -137,6 +138,35 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $templates = $plugin->templates();
         $this->assertInstanceOf('Eresus_Plugin_Templates', $templates);
         $this->assertSame($templates, $plugin->templates());
+    }
+
+    /**
+     * Тест метода Eresus_Plugin::install
+     *
+     * @covers Eresus_Plugin::install
+     */
+    public function testInstall()
+    {
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('installTemplates'))->getMock();
+        $plugin->expects($this->once())->method('installTemplates');
+        /** @var Eresus_Plugin $plugin */
+        $plugin->install();
+    }
+
+    /**
+     * Тест метода Eresus_Plugin::uninstall
+     *
+     * @covers Eresus_Plugin::uninstall
+     */
+    public function testUninstall()
+    {
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('uninstallTemplates', 'cleanupDB'))->getMock();
+        $plugin->expects($this->once())->method('uninstallTemplates');
+        $plugin->expects($this->once())->method('cleanupDB');
+        /** @var Eresus_Plugin $plugin */
+        $plugin->uninstall();
     }
 }
 

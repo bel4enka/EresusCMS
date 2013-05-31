@@ -43,6 +43,9 @@ class Eresus_Template_ServiceTest extends PHPUnit_Framework_TestCase
      */
     private $tempDir = null;
 
+    /**
+     * Очищаем окружение после теста
+     */
     protected function tearDown()
     {
         if (null !== $this->tempDir)
