@@ -68,16 +68,18 @@ class HttpRequest
                 if ($this->getQuery()) {
                     $this->request['local'] .= '?' . $this->getQuery();
                     parse_str($this->getQuery(), $this->request['args']);
-                    if (Core::testModeGet('magic_quotes_gpc') && !get_magic_quotes_gpc()) {
+                    if (!get_magic_quotes_gpc())
+                    {
                         /* Emulating parse_str behavor... */
                         foreach ($this->request['args'] as $key => $value)
+                        {
                             $this->request['args'][$key] = addslashes($value);
+                        }
                     }
-                    if (
-                        $this->request['args'] &&
-                        (get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc'))
-                    )
+                    if ($this->request['args'] && get_magic_quotes_gpc())
+                    {
                         $this->request['args'] = ecStripSlashes($this->request['args']);
+                    }
                 }
                 break;
 
@@ -90,12 +92,10 @@ class HttpRequest
                         if (!isset($this->request['args'][$key]))
                             $this->request['args'][$key] = $value;
 
-                    if (
-                        $this->request['args'] &&
-                        (get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc'))
-                    )
+                    if ($this->request['args'] && get_magic_quotes_gpc())
+                    {
                         $this->request['args'] = ecStripSlashes($this->request['args']);
-
+                    }
                 }
                 break;
 
@@ -271,12 +271,13 @@ class HttpRequest
     {
         $result = $this->request['args'];
 
-        if (get_magic_quotes_gpc() || Core::testModeGet('magic_quotes_gpc'))
+        if (get_magic_quotes_gpc())
+        {
             $result = array_map('stripslashes', $result);
+        }
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает значение аргумента GET или POST

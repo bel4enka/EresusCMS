@@ -30,11 +30,6 @@
  */
 
 /**
- * Eresus Core version
- */
-define('ERESUS_CORE_VERSION', '0.1.3');
-
-/**
  * Emergency memory buffer size in KiB
  *
  * @see EresusFatalErrorHandler
@@ -111,13 +106,12 @@ function eresus_log($sender, $priority, $message)
 	$message = '[' . $priorityName . '] ' . $message;
 
 	/* Log message */
-	if (!error_log($message)) {
-
-		if (!syslog($priority, $message)) {
+	if (!error_log($message))
+    {
+		if (!syslog($priority, $message))
+        {
 			fputs(STDERR, "Can not log message!\n");
-			if (Core::testMode()) exit(-1);
 		}
-
 	}
 
 }
@@ -206,17 +200,14 @@ class EresusRuntimeException extends RuntimeException implements EresusException
 		if (is_null($message))
 			$message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
 
-		if (Core::testMode()) $message .= " ($description)";
-
-		if (PHP::checkVersion('5.3')) {
-
+		if (PHP::checkVersion('5.3'))
+        {
 			parent::__construct($message, 0, $previous);
-
-		} else {
-
+		}
+        else
+        {
 			parent::__construct($message, 0);
 			$this->previous = $previous;
-
 		}
 
 		$this->description = $description;
@@ -291,22 +282,18 @@ class EresusLogicException extends LogicException implements EresusExceptionInte
 		if (is_null($message))
 			$message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
 
-		if (Core::testMode()) $message .= " ($description)";
-
-		if (PHP::checkVersion('5.3')) {
-
+		if (PHP::checkVersion('5.3'))
+        {
 			parent::__construct($message, 0, $previous);
-
-		} else {
-
+		}
+        else
+        {
 			parent::__construct($message, 0);
 			$this->previous = $previous;
-
 		}
 
 		$this->description = $description;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Returns value of the $description property
@@ -630,9 +617,8 @@ class PHP {
 	 */
 	public static function iniGet($key)
 	{
-		return Core::testModeIsSet("ini.$key") ? Core::testModeGet("ini.$key") : ini_get($key);
+		return ini_get($key);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Check for CLI SAPI
@@ -643,10 +629,8 @@ class PHP {
 	 */
 	static function isCLI()
 	{
-		if (Core::testModeIsSet('PHP::isCLI')) return Core::testModeGet('PHP::isCLI');
 		return PHP_SAPI == 'cli';
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Check for CGI SAPI
@@ -757,14 +741,11 @@ class System {
 	 * @return bool
 	 *
 	 * @since 0.0.1
-	 * @todo UnitTest for OSes  other then UNIX
 	 */
 	static function isWindows()
 	{
-		if (Core::testModeGet('System::isWindows')) return true;
 		return strncasecmp(PHP_OS, 'WIN', 3) == 0;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Check if system is a MacOS
@@ -772,13 +753,11 @@ class System {
 	 * @return bool
 	 *
 	 * @since 0.0.1
-	 * @todo UnitTest for OSes  other then UNIX
 	 */
 	static function isMac()
 	{
 		return strncasecmp(PHP_OS, 'MAC', 3) == 0;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Get system time zone
@@ -1741,18 +1720,6 @@ class Core {
 	static private $registry = array();
 
 	/**
-	 * Test mode switch
-	 * @var bool
-	 */
-	static private $testMode = false;
-
-	/**
-	 * Test mode settings
-	 * @var array
-	 */
-	static private $testModeOptions;
-
-	/**
 	 * Application
 	 * @var EresusApplication
 	 * @see exec, app()
@@ -2026,13 +1993,12 @@ class Core {
 			if ($e instanceof EresusExceptionInterface)
 				echo ': ' . $e->getMessage();
 
-			if (PHP::isCLI() && !self::testMode())
+			if (PHP::isCLI())
+            {
 				exit($e->getCode());
-
+            }
 		}
-
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Set value in internal registry
@@ -2275,91 +2241,6 @@ class Core {
 
 		}
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Switch test mode
-	 *
-	 * @param bool $state
-	 * @return bool  Current state
-	 */
-	static public function testMode($state = null)
-	{
-		if (!is_null($state)) self::$testMode = $state;
-		return self::$testMode;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Set test mode option
-	 *
-	 * @param string $option
-	 * @param mixed  $value
-	 */
-	static public function testModeSet($option, $value)
-	{
-		self::$testModeOptions[$option] = $value;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Check if test mode option is set
-	 *
-	 * @param string $option
-	 * @return bool
-	 */
-	static public function testModeIsSet($option)
-	{
-		if (!self::testMode()) return null;
-		return isset(self::$testModeOptions[$option]);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get test mode option
-	 *
-	 * @param string $option
-	 * @return mixed
-	 */
-	static public function testModeGet($option)
-	{
-		return self::testMode() ? ecArrayValue(self::$testModeOptions, $option) : null;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Unset test mode option
-	 *
-	 * @param string $option
-	 */
-	static public function testModeUnset($option)
-	{
-		if (isset(self::$testModeOptions[$option]))
-			unset(self::$testModeOptions[$option]);
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Object to be returned by app() method in a test mode
-	 *
-	 * @param object $app
-	 */
-	static public function testSetApplication($app)
-	{
-		if (self::testMode()) self::$app = $app;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Test initExceptionHandling method
-	 */
-	static public function testInitExceptionHandling()
-	{
-		if (self::testMode())
-			self::initExceptionHandling();
-	}
-	//-----------------------------------------------------------------------------
-
 }
 
 

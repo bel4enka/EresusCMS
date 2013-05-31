@@ -65,7 +65,7 @@ class TemplateSettings
      */
     public static function getGlobalValue($name)
     {
-        return ecArrayValue(self::$globalValues, $name);
+        return array_key_exists($name, self::$globalValues) ? self::$globalValues[$name] : null;
     }
 
     /**
