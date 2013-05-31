@@ -988,7 +988,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 			$module = arg('mod', '/[^\w-]/');
 			if (file_exists(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php"))
 			{
-				Core::safeInclude(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php");
+				include Eresus_CMS::getLegacyKernel()->froot . "core/$module.php";
 				$class = "T$module";
 				$this->module = new $class;
 			}

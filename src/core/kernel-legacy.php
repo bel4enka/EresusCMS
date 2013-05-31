@@ -1104,13 +1104,6 @@ function __clearargs($args)
 			}
 			else
 			{
-				if ( ! PHP::checkVersion('5.3') )
-				{
-					if (get_magic_quotes_gpc())
-					{
-						$value = StripSlashes($value);
-					}
-				}
 				if (strpos($key, 'wyswyg_') === 0)
 				{
 					unset($args[$key]);
@@ -1744,11 +1737,6 @@ class Eresus
 	 */
 	public function init()
 	{
-		// Отключение закавычивания передаваемых данных
-		if (!PHP::checkVersion('5.3'))
-		{
-			set_magic_quotes_runtime(0);
-		}
 		if ($this->conf['timezone'])
 		{
 			date_default_timezone_set($this->conf['timezone']);
