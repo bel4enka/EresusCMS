@@ -91,7 +91,7 @@ class TPlugin
 				$this->resetPlugin();
 		}
 		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
-		if (FS::isFile($filename))
+		if (is_file($filename))
         {
 			include $filename;
         }

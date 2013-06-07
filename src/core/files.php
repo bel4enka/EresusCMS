@@ -365,7 +365,7 @@ class TFiles
 	{
 		$pathname = Eresus_CMS::getLegacyKernel()->froot . $this->root .
 			$this->panels[$this->sp] . arg('mkdir', FILES_FILTER);
-		FS::mkDir($pathname, 0777, true);
+		mkdir($pathname, 0777, true);
 		HTTP::redirect(str_replace('&amp;', '&', $this->url()));
 	}
 

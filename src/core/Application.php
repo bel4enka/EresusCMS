@@ -129,15 +129,12 @@ abstract class Eresus_Application
             case Eresus_Kernel::isCLI():
                 $path = reset($GLOBALS['argv']);
                 Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Using global $argv variable: %s', $path);
-                $path = FS::canonicalForm($path);
-                $path = FS::dirname($path);
+                $path = dirname($path);
                 break;
             default:
                 Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Using $_SERVER["SCRIPT_FILENAME"]: %s',
                     $_SERVER['SCRIPT_FILENAME']);
-
-                $path = FS::canonicalForm($_SERVER['SCRIPT_FILENAME']);
-                $path = FS::dirname($path);
+                $path = dirname($_SERVER['SCRIPT_FILENAME']);
         }
 
         $path = FS::normalize($path);

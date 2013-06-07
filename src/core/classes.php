@@ -145,7 +145,7 @@ class Plugins
 		eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
 		$filename = filesRoot.'ext/'.$name.'.php';
-		if (FS::exists($filename))
+		if (file_exists($filename))
 		{
 			$info = Eresus_PluginInfo::loadFromFile($filename);
 			/*
@@ -695,12 +695,12 @@ class EresusExtensionConnector
 		$filename = Eresus_CMS::getLegacyKernel()->froot . substr($filename,
 			strlen(Eresus_CMS::getLegacyKernel()->root));
 
-		if (FS::isDir($filename))
+		if (is_dir($filename))
 		{
 			$filename = FS::normalize($filename . '/index.php');
 		}
 
-		if (!FS::isFile($filename))
+		if (!is_file($filename))
 		{
 			header('Not found', true, 404);
 			die('<h1>Not found.</h1>');

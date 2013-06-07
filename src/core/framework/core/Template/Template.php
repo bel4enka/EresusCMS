@@ -224,7 +224,6 @@ class Template
         $fileExtension = $this->detectFileExtension();
         $templateDir = FS::normalize($templateDir);
         $template = $templateDir . '/' . $filename . $fileExtension;
-        $template = FS::nativeForm($template);
         $this->template = new TemplateFile($template, null, $filename, $filename);
     }
 

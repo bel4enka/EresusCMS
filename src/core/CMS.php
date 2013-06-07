@@ -221,7 +221,7 @@ class Eresus_CMS extends Eresus_Application
         $required = array('cfg/main.php');
         foreach ($required as $filename)
         {
-            if (!FS::exists($filename))
+            if (!file_exists($filename))
             {
                 $errors []= array('file' => $filename, 'problem' => 'missing');
             }
@@ -237,7 +237,7 @@ class Eresus_CMS extends Eresus_Application
         );
         foreach ($writable as $filename)
         {
-            if (!FS::isWritable($filename))
+            if (!is_writable($filename))
             {
                 $errors []= array('file' => $filename, 'problem' => 'non-writable');
             }
@@ -272,16 +272,15 @@ class Eresus_CMS extends Eresus_Application
 
         foreach ($dirs as $dir)
         {
-            if (!FS::exists($this->getFsRoot() . $dir))
+            if (!file_exists($this->getFsRoot() . $dir))
             {
                 $umask = umask(0000);
-                mkdir(FS::nativeForm($this->getFsRoot() . $dir), 0777);
+                mkdir($this->getFsRoot() . $dir, 0777);
                 umask($umask);
             }
             // TODO Сделать проверку на запись в созданные директории
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Выполнение в режиме Web
