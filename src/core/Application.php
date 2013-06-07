@@ -123,37 +123,28 @@ abstract class Eresus_Application
      */
     protected function detectFsRoot()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
-        $path = false;
-
-        switch (true) {
-
-            case PHP::isCLI():
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'start');
+        switch (true)
+        {
+            case Eresus_Kernel::isCLI():
                 $path = reset($GLOBALS['argv']);
-                eresus_log(__METHOD__, LOG_DEBUG, 'Using global $argv variable: %s', $path);
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Using global $argv variable: %s', $path);
                 $path = FS::canonicalForm($path);
                 $path = FS::dirname($path);
                 break;
-
             default:
-                eresus_log(__METHOD__, LOG_DEBUG, 'Using $_SERVER["SCRIPT_FILENAME"]: %s',
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Using $_SERVER["SCRIPT_FILENAME"]: %s',
                     $_SERVER['SCRIPT_FILENAME']);
 
                 $path = FS::canonicalForm($_SERVER['SCRIPT_FILENAME']);
                 $path = FS::dirname($path);
-            /*
-             * TODO: The CGI SAPI supports CLI SAPI behaviour with a -C switch
-             * when run from the command line.
-             */
-
         }
 
         $path = FS::normalize($path);
-        eresus_log(__METHOD__, LOG_DEBUG, '"%s"', $path);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '"%s"', $path);
 
         return $path;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Get application root directory

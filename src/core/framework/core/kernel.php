@@ -344,63 +344,6 @@ class EresusMethodNotExistsException extends EresusLogicException {
 }
 
 /**
- * PHP information
- *
- * Part of functions was taken from a {@link http://limb-project.com/ Limb3 project}
- *
- * @package Core
- * @since 0.0.1
- * @todo Перенести в {@link Eresus_PHP}
- */
-class PHP
-{
-	/**
-	 * Check for CLI SAPI
-	 *
-	 * @return bool
-	 *
-	 * @since 0.0.1
-	 */
-	static function isCLI()
-	{
-		return PHP_SAPI == 'cli';
-	}
-
-	/**
-	 * Check for CGI SAPI
-	 *
-	 * @return bool
-	 *
-	 * @since 0.0.1
-	 */
-	static function isCGI()
-	{
-		return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
-	}
-
-	/**
-	 * Check for web server SAPI
-	 *
-	 * @return bool
-	 *
-	 * @since 0.0.1
-	 */
-	static function isModule()
-	{
-		return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
-	}
-}
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- *   System Functions
- *
- *   ...
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-/**
  * System information
  *
  * Part of functions was taken from a Limb3 project -

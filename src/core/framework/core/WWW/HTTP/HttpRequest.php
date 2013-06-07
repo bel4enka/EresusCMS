@@ -84,7 +84,8 @@ class HttpRequest
                 break;
 
             case is_null($source):
-                if (!PHP::isCLI()) {
+                if (!Eresus_Kernel::isCLI())
+                {
                     if (isset($_SERVER['REQUEST_URI'])) $this->request = @parse_url($_SERVER['REQUEST_URI']);
                     $this->request['local'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
                     $this->request['args'] = $_POST;

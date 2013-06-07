@@ -90,15 +90,6 @@ class Eresus_Kernel
     static private $app = null;
 
     /**
-     * Для тестирования
-     *
-     * @var bool
-     * @ignore
-     */
-    private static $override_isCLI = null;
-
-
-    /**
      * Записывает сообщение в журнал
      *
      * @param string|array $sender    отправитель (используйте __METHOD__ и __FUNCTION__)
@@ -443,13 +434,6 @@ class Eresus_Kernel
      */
     public static function isCLI()
     {
-        //@codeCoverageIgnoreStart
-        if (self::$override_isCLI !== null)
-        {
-            return self::$override_isCLI;
-        }
-        //@codeCoverageIgnoreEnd
-
         return PHP_SAPI == 'cli';
     }
 

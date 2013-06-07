@@ -85,7 +85,7 @@ class HttpMessage
      */
     public static function fromEnv($messageType, $className = 'HttpMessage')
     {
-        if (PHP::isCLI())
+        if (Eresus_Kernel::isCLI())
         {
             return null;
         }

@@ -115,7 +115,7 @@ class Eresus_CMS extends Eresus_Application
             Eresus_CMS::getLegacyKernel()->init();
             TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
 
-            if (PHP::isCLI())
+            if (Eresus_Kernel::isCLI())
             {
                 return $this->runCLI();
             }
@@ -245,7 +245,7 @@ class Eresus_CMS extends Eresus_Application
 
         if ($errors)
         {
-            if (!PHP::isCLI())
+            if (!Eresus_Kernel::isCLI())
             {
                 require_once 'errors.html.php';
             }
