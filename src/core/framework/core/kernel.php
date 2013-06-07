@@ -1402,40 +1402,6 @@ class Core {
 		if ($previous)
 			self::logException($previous, 'Previous exception:');
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Default Eresus Core exception handler.
-	 *
-	 * If exception was not caught by application it will be handled with this method.
-	 *
-	 * @param Exception $e
-	 */
-	static public function handleException($e)
-	{
-		$app = self::app();
-		if ($app && method_exists($app, 'handleException')) {
-
-			$app->handleException($e);
-
-		} else {
-
-			Core::logException($e, 'Unhandled exception:');
-
-			if (!PHP::isCLI())
-				header('Content-type: text/plain', true);
-
-			echo get_class($e);
-
-			if ($e instanceof EresusExceptionInterface)
-				echo ': ' . $e->getMessage();
-
-			if (PHP::isCLI())
-            {
-				exit($e->getCode());
-            }
-		}
-	}
 
 	/**
 	 * Set value in internal registry
