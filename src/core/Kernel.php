@@ -52,6 +52,7 @@ class Eresus_ExitException extends Eresus_SuccessException {}
  * 1. запуск {@link Eresus_CMS основного класса приложения};
  * 2. перехват ошибок и исключений;
  * 3. {@link autoload() автозагрузка классов};
+ * 4. журналирование;
  * 4. получение основных сведений о системе.
  *
  * @package Eresus
@@ -65,6 +66,13 @@ class Eresus_Kernel
      * @var int
      */
     const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
+
+    /**
+     * Порог важности сообщений для записи в журнал
+     * @var int
+     * @since 3.01
+     */
+    static public $logLevel = LOG_ERR;
 
     /**
      * Признак инициализации ядра
@@ -89,7 +97,75 @@ class Eresus_Kernel
      */
     private static $override_isCLI = null;
 
-    // @codeCoverageIgnoreStart
+
+    /**
+     * Записывает сообщение в журнал
+     *
+     * @param string|array $sender    отправитель (используйте __METHOD__ и __FUNCTION__)
+     * @param int          $priority  уровень важности (используйте константы LOG_xxx)
+     * @param string       $message   текст сообщение
+     * @param mixed        ...        аргументы для вставки в $message через {@link sprintf}
+     *
+     * @see $logLevel
+     * @since 3.01
+     */
+    public static function log($sender, $priority, $message)
+    {
+        if ($priority > self::$logLevel)
+        {
+            return;
+        }
+
+        if (is_array($sender))
+        {
+            $sender = implode('/', $sender);
+        }
+        if (empty($sender))
+        {
+            $sender = 'unknown';
+        }
+
+
+        /* Если есть аргументы для подстановки — вставляем их */
+        if (@func_num_args() > 3)
+        {
+            $args = array();
+            for ($i = 3; $i < @func_num_args(); $i++)
+            {
+                $var = func_get_arg($i);
+                if (is_object($var))
+                {
+                    $var = get_class($var);
+                }
+                $args []= $var;
+            }
+            $message = vsprintf($message, $args);
+        }
+
+        $message = $sender . ': ' . $message;
+
+        $priorities = array(
+            LOG_DEBUG => 'debug',
+            LOG_INFO => 'info',
+            LOG_NOTICE => 'notice',
+            LOG_WARNING => 'warning',
+            LOG_ERR => 'error',
+            LOG_CRIT => 'critical',
+            LOG_ALERT => 'ALERT',
+            LOG_EMERG => 'PANIC'
+        );
+        $message = '[' . (array_key_exists($priority, $priorities)
+            ? $priorities[$priority] : 'unknown') . '] ' . $message;
+
+        if (!error_log($message))
+        {
+            if (!syslog($priority, $message))
+            {
+                fputs(STDERR, $message);
+            }
+        }
+    }
+
     /**
      * Инициализация ядра
      *
@@ -102,7 +178,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static public function init()
+    public static function init()
     {
         /* Разрешаем только однократный вызов этого метода */
         if (self::$inited)
@@ -117,65 +193,22 @@ class Eresus_Kernel
         @$timezone = date_default_timezone_get();
         date_default_timezone_set($timezone);
 
-        // Регистрация автозагрузчика классов
-        spl_autoload_register(array('Eresus_Kernel', 'autoload'));
-
         self::initExceptionHandling();
 
-        self::$inited = true;
-    }
-    // @codeCoverageIgnoreEnd
-
-    /**
-     * Инициализирует обработчики ошибок
-     *
-     * Этот метод:
-     * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
-     * 2. отключает HTML-оформление стандартных сообщений об ошибках;
-     * 3. регистрирует {@link errorHandler()};
-     * 4. регистрирует {@link fatalErrorHandler()}.
-     *
-     * @return void
-     *
-     * @since 3.00
-     * @uses Eresus_Logger::log()
-     */
-    static private function initExceptionHandling()
-    {
-        /* Резервируем буфер на случай переполнения памяти */
-        $GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
-            str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
-
-        /* Меняем значения php.ini */
-        ini_set('html_errors', 0); // Немного косметики
-
-        set_error_handler(array('Eresus_Kernel', 'errorHandler'));
-        //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
-
-        //set_exception_handler('Eresus_Kernel::handleException');
-        //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Exception handler installed');
+        // Регистрация автозагрузчика классов
+        spl_autoload_register(array('Eresus_Kernel', 'autoload'), true, true);
 
         /*
-         * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
-         * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
-         * Но только не в режиме CLI.
+         * Подключение устаревшего кода
          */
-        // @codeCoverageIgnoreStart
-        if (! self::isCLI())
-        {
-            if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
-            {
-                //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
-            }
-            else
-            {
-                /*Eresus_Logger::log(
-                    LOG_NOTICE, __METHOD__,
-                    'Fatal error handler not installed! Fatal error will be not handled!'
-                );*/
-            }
-        }
-        // @codeCoverageIgnoreEnd
+
+        /**
+         * Подключение Eresus Core
+         */
+        include __DIR__ . '/framework/core/kernel.php';
+        Core::init();
+
+        self::$inited = true;
     }
 
     /**
@@ -274,23 +307,19 @@ class Eresus_Kernel
                 case 'fatal':
                     $message = 'FATAL ERROR';
                     break;
-
                 case 'parse':
                     $message = 'PARSE ERROR';
                     break;
-
                 default:
                     $message = 'ERROR:';
             }
 
-            //Eresus_Logger::log(__FUNCTION__, $priority, trim($output));
+            self::log(__FUNCTION__, LOG_CRIT, trim($output));
             if (!self::isCLI())
-                //@codeCoverageIgnoreStart
             {
                 header('Internal Server Error', true, 500);
                 header('Content-type: text/plain', true);
             }
-            //@codeCoverageIgnoreEnd
 
             return $message . "\nSee application log for more info.\n";
         }
@@ -374,7 +403,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static function isUnixLike()
+    public static function isUnixLike()
     {
         return DIRECTORY_SEPARATOR == '/';
     }
@@ -386,7 +415,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static function isWindows()
+    public static function isWindows()
     {
         return strncasecmp(PHP_OS, 'WIN', 3) == 0;
     }
@@ -398,7 +427,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static function isMac()
+    public static function isMac()
     {
         return strncasecmp(PHP_OS, 'MAC', 3) == 0;
     }
@@ -412,7 +441,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static function isCLI()
+    public static function isCLI()
     {
         //@codeCoverageIgnoreStart
         if (self::$override_isCLI !== null)
@@ -432,7 +461,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static function isCGI()
+    public static function isCGI()
     {
         return strncasecmp(PHP_SAPI, 'CGI', 3) == 0;
     }
@@ -445,7 +474,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static function isModule()
+    public static function isModule()
     {
         return !self::isCGI() && isset($_SERVER['GATEWAY_INTERFACE']);
     }
@@ -460,7 +489,7 @@ class Eresus_Kernel
      *
      * @since 3.00
      */
-    static public function classExists($name)
+    public static function classExists($name)
     {
         return class_exists($name, false) || interface_exists($name, false);
     }
@@ -479,9 +508,8 @@ class Eresus_Kernel
      *
      * @since 3.00
      * @see $app, app()
-     * @uses Eresus_Logger::log()
      */
-    static public function exec($class)
+    public static function exec($class)
     {
         if (!class_exists($class))
         {
@@ -498,9 +526,9 @@ class Eresus_Kernel
 
         try
         {
-            //Eresus_Logger::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
+            self::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
             $exitCode = self::$app->main();
-            //Eresus_Logger::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
+            self::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
         }
         catch (Eresus_SuccessException $e)
         {
@@ -532,6 +560,51 @@ class Eresus_Kernel
     public static function app()
     {
         return self::$app;
+    }
+
+    /**
+     * Инициализирует обработчики ошибок
+     *
+     * Этот метод:
+     * 1. резервирует в памяти буфер, освобождаемый для обработки ошибок нехватки памяти;
+     * 2. отключает HTML-оформление стандартных сообщений об ошибках;
+     * 3. регистрирует {@link errorHandler()};
+     * 4. регистрирует {@link fatalErrorHandler()}.
+     *
+     * @return void
+     *
+     * @since 3.00
+     * @uses Eresus_Logger::log()
+     */
+    private static function initExceptionHandling()
+    {
+        /* Резервируем буфер на случай переполнения памяти */
+        $GLOBALS['ERESUS_MEMORY_OVERFLOW_BUFFER'] =
+            str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
+
+        /* Меняем значения php.ini */
+        ini_set('html_errors', 0); // Немного косметики
+
+        set_error_handler(array('Eresus_Kernel', 'errorHandler'));
+        self::log(__METHOD__, LOG_DEBUG, 'Error handler installed');
+
+        /*
+         * В PHP нет стандартных методов для перехвата некоторых типов ошибок (например E_PARSE или
+         * E_ERROR), однако способ всё же есть — зарегистрировать функцию через ob_start.
+         * Но только не в режиме CLI.
+         */
+        if (!self::isCLI())
+        {
+            if (ob_start(array('Eresus_Kernel', 'fatalErrorHandler'), 4096))
+            {
+                self::log(__METHOD__, LOG_DEBUG, 'Fatal error handler installed');
+            }
+            else
+            {
+                self::log( __METHOD__, LOG_NOTICE,
+                    'Fatal error handler not installed! Fatal error will be not handled!');
+            }
+        }
     }
 }
 
