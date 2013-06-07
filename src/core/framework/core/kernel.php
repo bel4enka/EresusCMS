@@ -263,47 +263,6 @@ class EresusValueException extends EresusRuntimeException {
 	//-----------------------------------------------------------------------------
 }
 
-
-/**
- * Exception thrown if property not exists
- *
- * @package Core
- */
-class EresusPropertyNotExistsException extends EresusLogicException {
-
-	/**
-	 * Creates new exception object
-	 *
-	 * @param string    $property [optional]     Property name
-	 * @param string    $class [optional]        Class name
-	 * @param string    $description [optional]  Extended information
-	 * @param Exception $previous [optional]     Previous exception
-	 */
-	function __construct()
-	{
-		if (func_num_args() > 0) {
-
-			$property = func_get_arg(0);
-			$class = func_num_args() > 1 ? func_get_arg(1) : null;
-			$description = func_num_args() > 2 ? func_get_arg(2) : null;
-			$previous = func_num_args() > 3 ? func_get_arg(3) : null;
-
-			if (is_null($class))
-				$message = "Property \"$property\" does not exists";
-			else
-				$message = "Property \"$property\" does not exists in class \"$class\"";
-
-			if ($description)
-				$message .= ' ' . $description;
-
-			parent::__construct($message, 'Property not exists', $previous);
-
-		} else parent::__construct('Property not exists');
-	}
-	//-----------------------------------------------------------------------------
-}
-
-
 /**
  * Exception thrown if method not exists
  *
@@ -343,83 +302,6 @@ class EresusMethodNotExistsException extends EresusLogicException {
 	//-----------------------------------------------------------------------------
 }
 
-/**
- * Exception thrown in case of FS runtime error
- *
- * @package Core
- */
-class EresusFsRuntimeException extends EresusRuntimeException {}
-
-
-/**
- * Exception thrown if path not exists
- *
- * @package Core
- */
-class EresusFsPathNotExistsException extends EresusFsRuntimeException {
-
-	/**
-	 * Creates new exception object
-	 *
-	 * @param string    $path [optional]         Path
-	 * @param string    $description [optional]  Extended information
-	 * @param Exception $previous [optional]     Previous exception
-	 */
-	function __construct()
-	{
-		if (func_num_args() > 0) {
-
-			$path = func_get_arg(0);
-			$description = func_num_args() > 1 ? func_get_arg(1) : null;
-			$previous = func_num_args() > 2 ? func_get_arg(2) : null;
-
-			$message = "Path \"$path\" does not exists";
-
-			if ($description)
-				$message .= ' ' . $description;
-
-			parent::__construct($message, 'Path not exists', $previous);
-
-		} else parent::__construct('Path not exists');
-	}
-	//-----------------------------------------------------------------------------
-}
-
-
-
-/**
- * Exception thrown if file not exists
- *
- * @package Core
- */
-class EresusFsFileNotExistsException extends EresusFsPathNotExistsException {
-
-	/**
-	 * Creates new exception object
-	 *
-	 * @param string    $filename [optional]     Filename
-	 * @param string    $description [optional]  Extended information
-	 * @param Exception $previous [optional]     Previous exception
-	 */
-	function __construct()
-	{
-		if (func_num_args() > 0) {
-
-			$filename = func_get_arg(0);
-			$description = func_num_args() > 1 ? func_get_arg(1) : null;
-			$previous = func_num_args() > 2 ? func_get_arg(2) : null;
-
-			$message = "File \"$filename\" does not exists";
-
-			if ($description)
-				$message .= ' ' . $description;
-
-			EresusFsRuntimeException::__construct($message, 'File not exists', $previous);
-
-		} else EresusFsRuntimeException::__construct('File not exists');
-	}
-	//-----------------------------------------------------------------------------
-}
 
 /**
  * Class autoload table

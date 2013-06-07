@@ -8,6 +8,8 @@
 * Классы PHP и System, используйте одноимённые методы класса
   `Eresus_Kernel <../../api/classes/Eresus_Kernel.html>`_.
 * Класс FS, используйте методы класса `Eresus_FS_Tool <../../api/classes/Eresus_FS_Tool.html>`_.
+* Классы EresusFsFileNotExistsException, EresusFsPathNotExistsException, EresusFsRuntimeException,
+  EresusPropertyNotExistsException
 
 Изменено
 --------
