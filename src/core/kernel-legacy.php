@@ -1492,7 +1492,7 @@ class Eresus
 		{
 			$s = $this->froot;
 			$s = substr($s,
-				strlen(realpath($_SERVER['DOCUMENT_ROOT'])) - (System::isWindows() ? 2 : 0));
+				strlen(realpath($_SERVER['DOCUMENT_ROOT'])) - (Eresus_Kernel::isWindows() ? 2 : 0));
 			if (!strlen($s) || substr($s, -1) != '/')
 			{
 				$s .= '/';

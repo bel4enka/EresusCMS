@@ -5,7 +5,7 @@
 -------
 
 * Псевдоним ``Accounts`` класса `EresusAccounts <../../api/classes/EresusAccounts.html>`_.
-* Методы PHP::isCLI, PHP::isCGI, PHP::isModule, используйте одноимённые методы класса
+* Классы PHP и System, используйте одноимённые методы класса
   `Eresus_Kernel <../../api/classes/Eresus_Kernel.html>`_.
 
 Изменено
