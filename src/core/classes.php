@@ -697,7 +697,7 @@ class EresusExtensionConnector
 
 		if (is_dir($filename))
 		{
-			$filename = FS::normalize($filename . '/index.php');
+			$filename = Eresus_FS_Tool::normalize($filename . '/index.php');
 		}
 
 		if (!is_file($filename))

@@ -137,7 +137,7 @@ abstract class Eresus_Application
                 $path = dirname($_SERVER['SCRIPT_FILENAME']);
         }
 
-        $path = FS::normalize($path);
+        $path = Eresus_FS_Tool::normalize($path);
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '"%s"', $path);
 
         return $path;

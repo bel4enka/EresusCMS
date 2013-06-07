@@ -222,7 +222,7 @@ class Template
     {
         $templateDir = $this->detectTemplateDir();
         $fileExtension = $this->detectFileExtension();
-        $templateDir = FS::normalize($templateDir);
+        $templateDir = Eresus_FS_Tool::normalize($templateDir);
         $template = $templateDir . '/' . $filename . $fileExtension;
         $this->template = new TemplateFile($template, null, $filename, $filename);
     }

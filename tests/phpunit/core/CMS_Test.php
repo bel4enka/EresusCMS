@@ -31,9 +31,9 @@
 
 require_once dirname(__FILE__) . '/../stubs.php';
 require_once TESTS_SRC_DIR . '/core/Kernel.php';
+require_once TESTS_SRC_DIR . '/core/FS/Tool.php';
 require_once TESTS_SRC_DIR . '/core/Application.php';
 require_once TESTS_SRC_DIR . '/core/framework/core/kernel.php';
-FS::init();
 require_once TESTS_SRC_DIR . '/core/framework/core/WWW/HTTP/HttpRequest.php';
 require_once TESTS_SRC_DIR . '/core/CMS.php';
 require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
