@@ -11,6 +11,9 @@
 
 * Класс Plugin переименован в Eresus_Plugin. Для обратной совместимости имя Plugin оставлено как
   псевдоним к Eresus_Plugin.
+* Функция ``eresus_log`` объявлена устаревшей, вместо неё следует использовать
+  `Eresus_Kernel::log <../../api/classes/Eresus_Kernel.html#method_log>`_.
+
 
 Eresus_Plugin
 ^^^^^^^^^^^^^
@@ -38,6 +41,7 @@ WebPage
 ---------
 
 * :doc:`Новый механизм работы с шаблонами<../guide/templates>`
+* `Eresus_Kernel::log <../../api/classes/Eresus_Kernel.html#method_log>`_
 * `Eresus_CMS_Exception_NotFound <../../api/classes/Eresus_CMS_Exception_NotFound.html>`_
 * `Eresus_Plugin_Component <../../api/classes/Eresus_Plugin_Component.html>`_
 * `Eresus_Plugin_Controller_Abstract <../../api/classes/Eresus_Plugin_Controller_Abstract.html>`_

@@ -1,117 +1,12 @@
 <?php
-/**
- * Eresus Core
- *
- * @version 0.1.3
- *
- * Kernel module
- *
- * @copyright 2007, Eresus Project, http://eresus.ru/
- * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @package Core
- *
- * @author Mikhail Krasilnikov <mk@procreat.ru>
- *
- * $Id$
- */
 
 /**
- * Write message to log
- *
- * This function writes message to log. By default only messages with
- * LOG_ERR or higher priorities are logging. This can be changed by
- * defining constant with name ERESUS_LOG_LEVEL.
- *
- * Log file defined by PHP ini settings error_log and log_errors.
- *
- * @param string|array $sender              Sender name. Use __METHOD__,
- *                                           array(get_class($this), __METHOD__) or __FUNCTION__
- * @param int          $priority            Message priority. See LOG_XXX
- * @param string       $message             Message. Can contain substitutions (see sprintf)
- * @param mixed        $arg,... [optional]  Some variables
+ * @deprecated с 3.01 используйте {@link Eresus_Kernel::log()}
  */
-function eresus_log($sender, $priority, $message)
+function eresus_log()
 {
-	/*
-	 * Because of LOG_XXX constants values order, we use ">" to check if message
-	 * priority is lower than current log level
-	 */
-	$ERESUS_LOG_LEVEL = defined('ERESUS_LOG_LEVEL') ? ERESUS_LOG_LEVEL : LOG_ERR;
-
-	if ($priority > $ERESUS_LOG_LEVEL)
-		return;
-
-	if (is_array($sender))
-		$sender = implode('/', $sender);
-
-	/* Substitute vars if any */
-	if (@func_num_args() > 3) {
-		$args = array();
-		for($i = 3; $i < @func_num_args(); $i++) {
-			$var = func_get_arg($i);
-			if (is_object($var))
-				$var = get_class($var);
-			$args []= $var;
-		}
-		$message = vsprintf($message, $args);
-	}
-
-	/* Add sender */
-	if (empty($sender))
-		$sender = 'unknown';
-
-	$message = $sender . ': ' . $message;
-
-	/* Add priority info */
-	switch ($priority) {
-		case LOG_DEBUG:   $priorityName = 'debug';    break;
-		case LOG_INFO:    $priorityName = 'info';     break;
-		case LOG_NOTICE:  $priorityName = 'notice';   break;
-		case LOG_WARNING: $priorityName = 'warning';  break;
-		case LOG_ERR:     $priorityName = 'error';    break;
-		case LOG_CRIT:    $priorityName = 'critical'; break;
-		case LOG_ALERT:   $priorityName = 'ALERT';    break;
-		case LOG_EMERG:   $priorityName = 'PANIC';    break;
-		default: $priorityName = 'unknown';
-	}
-	$message = '[' . $priorityName . '] ' . $message;
-
-	/* Log message */
-	if (!error_log($message))
-    {
-		if (!syslog($priority, $message))
-        {
-			fputs(STDERR, "Can not log message!\n");
-		}
-	}
-
+    call_user_func_array(array('Eresus_Kernel', 'log'), func_get_args());
 }
-//-----------------------------------------------------------------------------
-
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- *   Exceptions
- *
- *   ...
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 
 /**
  * Eresus exception interface
@@ -1401,13 +1296,6 @@ class Core {
 	static private $registry = array();
 
 	/**
-	 * Application
-	 * @var EresusApplication
-	 * @see exec, app()
-	 */
-	static private $app = null;
-
-	/**
 	 * __autoload handlers pool
 	 *
 	 * @var array
@@ -1420,37 +1308,26 @@ class Core {
 	 */
 	static public function init()
 	{
-		/* Allow only one call of this method */
 		if (self::$initState)
 			return;
 
-		/* Indicate that init in progress */
 		self::$initState = 1;
 
 		System::init();
 		FS::init();
 
-		eresus_log(__METHOD__, LOG_DEBUG, '()');
-
-		/**
+		/*
 		 * eZ Components
 		 */
 		$currentDir = dirname(__FILE__);
-		set_include_path($currentDir . DIRECTORY_SEPARATOR . '3rdparty' .
-			DIRECTORY_SEPARATOR . 'ezcomponents' . PATH_SEPARATOR . get_include_path());
+		set_include_path($currentDir . '/3rdparty/ezcomponents' . PATH_SEPARATOR .
+            get_include_path());
 		include_once 'Base/src/base.php';
 
 		spl_autoload_register(array('Core', 'autoload'));
 
-		/*
-		 * If Eresus Core was NOT built with a "compile" option
-		 */
-		if ( ! ERESUS_CORE_COMPILED )
-			EresusClassAutoloader::add('core.autoload');
+        EresusClassAutoloader::add('core.autoload');
 
-		eresus_log(__METHOD__, LOG_DEBUG, 'done');
-
-		/* Indicate that init complete */
 		self::$initState = 2;
 	}
 
@@ -1680,60 +1557,6 @@ class Core {
 	{
 		unset(self::$registry[$key]);
 	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Make instance of application and execute it
-	 *
-	 * @param string $class  Application class name. Class must be derived from
-	 *                       {@link EresusApplication}
-	 * @return int  Exit code
-	 *
-	 * @see $app, app(), EresusApplication
-	 */
-	static public function exec($class)
-	{
-		if (!class_exists($class, false))
-			throw new EresusRuntimeException(
-				"Application class '$class' does not exists", 'Invalid application class'
-			);
-
-		if (!is_subclass_of($class, 'EresusApplication'))
-			throw new EresusRuntimeException(
-				"Application '$class' must be descendant of EresusApplication", 'Invalid application class'
-			);
-
-		self::$app = new $class();
-
-		try {
-
-			eresus_log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
-			$exitCode = self::$app->main();
-			eresus_log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
-
-		} catch (Exception $e) {
-
-			self::handleException($e);
-			$exitCode = $e->getCode() ? $e->getCode() : 0xFFFF;
-
-		}
-		self::$app = null;
-		return $exitCode;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Get application object or null if there is no application instance
-	 *
-	 * @return object(EresusApplication)
-	 *
-	 * @see $app, exec(), EresusApplication
-	 */
-	static public function app()
-	{
-		return self::$app;
-	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Register new autoload handler

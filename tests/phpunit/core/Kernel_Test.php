@@ -302,13 +302,13 @@ class Eresus_Kernel_Test extends PHPUnit_Framework_TestCase
 
 // @codeCoverageIgnoreStart
 /**
- * EresusApplication stub
+ * Eresus_Application stub
  */
 class Eresus_Kernel_Test_Application1
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see core/EresusApplication#main()
+	 * @see core/Eresus_Application#main()
 	 */
 	public function main()
 	{
@@ -322,14 +322,14 @@ class Eresus_Kernel_Test_Application1
 }
 
 /**
- * EresusApplication stub
+ * Eresus_Application stub
  *
  */
 class Eresus_Kernel_Test_Application2
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see core/EresusApplication#main()
+	 * @see core/Eresus_Application#main()
 	 */
 	public function main()
 	{
@@ -339,14 +339,14 @@ class Eresus_Kernel_Test_Application2
 }
 
 /**
- * EresusApplication stub
+ * Eresus_Application stub
  *
  */
 class Eresus_Kernel_Test_Application3
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see core/EresusApplication#main()
+	 * @see core/Eresus_Application#main()
 	 */
 	public function main()
 	{

@@ -30,7 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
-require_once TESTS_SRC_DIR . '/core/framework/core/EresusApplication.php';
+require_once TESTS_SRC_DIR . '/core/Application.php';
 require_once TESTS_SRC_DIR . '/core/framework/core/kernel.php';
 FS::init();
 require_once TESTS_SRC_DIR . '/core/framework/core/WWW/HTTP/HttpRequest.php';

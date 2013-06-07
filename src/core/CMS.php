@@ -33,7 +33,7 @@
  *
  * @package Eresus
  */
-class Eresus_CMS extends EresusApplication
+class Eresus_CMS extends Eresus_Application
 {
     /**
      * Название CMS
@@ -74,7 +74,7 @@ class Eresus_CMS extends EresusApplication
      *
      * @return int  Код завершения для консольных вызовов
      *
-     * @see framework/core/EresusApplication#main()
+     * @see EresusApplication#main()
      */
     public function main()
     {

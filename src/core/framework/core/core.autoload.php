@@ -32,35 +32,23 @@
  */
 
 return array(
+    /* DB */
+    'DB' => 'core/framework/core/DB/DB.php',
+    'DBSettings' => 'core/framework/core/DB/DB.php',
+    'DBRuntimeException' => 'core/framework/core/DB/DB.php',
+    'DBQueryException' => 'core/framework/core/DB/DBQueryException.php',
 
-	/* Console */
+    /* Template */
+    'Template' => 'core/framework/core/Template/Template.php',
+    'TemplateFile' => 'core/framework/core/Template/Template.php',
+    'TemplateSettings' => 'core/framework/core/Template/Template.php',
 
-	/* DB */
-	'DB' => 'DB/DB.php',
-	'DBSettings' => 'DB/DB.php',
-	'DBRuntimeException' => 'DB/DB.php',
-	'DBQueryException' => 'DB/DBQueryException.php',
-
-	/* File */
-	'WindowsFS' => 'File/FS/WindowsFS.php',
-
-	/* Misc */
-	'Registry' => 'Misc/Registry.php',
-
-	/* Template */
-	'Template' => 'Template/Template.php',
-	'TemplateFile' => 'Template/Template.php',
-    'TemplateSettings' => 'Template/Template.php',
-
-	/* WWW */
-	'HTTP' => 'WWW/HTTP/HTTP.php',
-	'HttpHeader' => 'WWW/HTTP/HttpHeaders.php',
-	'HttpHeaders' => 'WWW/HTTP/HttpHeaders.php',
-	'HttpMessage' => 'WWW/HTTP/HttpMessage.php',
-	'HttpRequest' => 'WWW/HTTP/HttpRequest.php',
-	'HttpResponse' => 'WWW/HTTP/HttpResponse.php',
-
-	/* Applications */
-	'EresusApplication' => 'EresusApplication.php',
-
+    /* WWW */
+    'HTTP' => 'core/framework/core/WWW/HTTP/HTTP.php',
+    'HttpHeader' => 'core/framework/core/WWW/HTTP/HttpHeaders.php',
+    'HttpHeaders' => 'core/framework/core/WWW/HTTP/HttpHeaders.php',
+    'HttpMessage' => 'core/framework/core/WWW/HTTP/HttpMessage.php',
+    'HttpRequest' => 'core/framework/core/WWW/HTTP/HttpRequest.php',
+    'HttpResponse' => 'core/framework/core/WWW/HTTP/HttpResponse.php',
 );
+
