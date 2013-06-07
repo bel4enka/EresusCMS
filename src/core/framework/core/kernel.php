@@ -597,20 +597,6 @@ class FS {
 
 		}
 
-		/* Autodetect */
-		if (is_null(self::$driver)) {
-
-			eresus_log(__METHOD__, LOG_DEBUG, 'Autodetecting file system...');
-
-			if (System::isWindows()) {
-
-				self::$driver = new WindowsFS();
-
-			}
-
-		}
-
-		/* Generic driver */
 		if (is_null(self::$driver))
 			self::$driver = new GenericFS();
 
@@ -1032,68 +1018,6 @@ class GenericFS
 	//-----------------------------------------------------------------------------
 
 }
-
-/**
- * Microsoft® Windows® file system driver class
- *
- * @package Core
- *
- */
-class WindowsFS extends GenericFS {
-
-	/**
-	 * Convert canonical (UNIX) filename to Windows native form
-	 *
-	 * @param string $filename
-	 * @return string
-	 *
-	 * @see WindowsFS::canonicalForm()
-	 */
-	public function nativeForm($filename)
-	{
-		/* Look for drive letter */
-		if (preg_match('~^/[a-z]:/~i', $filename)) {
-
-			$drive = substr($filename, 1, 1);
-			$filename = substr($filename, 4);
-
-		} else $drive = false;
-
-		/* Convert slashes */
-		$filename = str_replace('/', '\\', $filename);
-
-		/* Prepend drive letter if needed */
-		if ($drive) {
-			$filename = $drive . ':\\' . $filename;
-		}
-
-		return $filename;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Convert filename from Windows native form to canonical (UNIX)
-	 *
-	 * @param string $filename
-	 * @return string
-	 *
-	 * @see WindowsFS::nativeForm()
-	 */
-	public function canonicalForm($filename)
-	{
-		/* Convert slashes */
-		$filename = str_replace('\\', '/', $filename);
-
-		/* Prepend drive letter with slash if needed */
-		if (substr($filename, 1, 1) == ':')
-			$filename = '/' . $filename;
-
-		return $filename;
-	}
-	//-----------------------------------------------------------------------------
-
-}
-
 
 /**
  * Class autoload table

@@ -30,6 +30,7 @@
  */
 
 require_once dirname(__FILE__) . '/../stubs.php';
+require_once TESTS_SRC_DIR . '/core/Kernel.php';
 require_once TESTS_SRC_DIR . '/core/Application.php';
 require_once TESTS_SRC_DIR . '/core/framework/core/kernel.php';
 FS::init();
@@ -95,39 +96,6 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
         $fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
         $fsRoot->setAccessible(true);
         $fsRoot->setValue($obj, '/home/user/public_html/example.org');
-
-		$httpRequest = new HttpRequest();
-		$request = new ReflectionProperty('Eresus_CMS', 'request');
-		$request->setAccessible(true);
-		$request->setValue($obj, $httpRequest);
-
-		$detectWebRoot = new ReflectionMethod('Eresus_CMS', 'detectWebRoot');
-		$detectWebRoot->setAccessible(true);
-		$detectWebRoot->invoke($obj);
-
-        $localRoot = new ReflectionProperty('HttpRequest', 'localRoot');
-        $localRoot->setAccessible(true);
-        $this->assertEquals('/example.org', $localRoot->getValue($httpRequest));
-	}
-
-	/**
-	 * @covers Eresus_CMS::detectWebRoot
-	 */
-	public function test_detectWebRoot_windows()
-	{
-        FS::init(new WindowsFS());
-		/* Подменяем DOCUMENT_ROOT */
-		$webServer = WebServer::getInstance();
-		$documentRoot = new ReflectionProperty('WebServer', 'documentRoot');
-		$documentRoot->setAccessible(true);
-		$documentRoot->setValue($webServer, FS::canonicalForm('C:\Program Files\Apache Webserver\docs'));
-
-		$obj = new Eresus_CMS;
-		// Подменяем результат getFsRoot
-        $fsRoot = new ReflectionProperty('Eresus_CMS', 'fsRoot');
-        $fsRoot->setAccessible(true);
-        $fsRoot->setValue($obj,
-            FS::canonicalForm('C:\Program Files\Apache Webserver\docs\example.org'));
 
 		$httpRequest = new HttpRequest();
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
