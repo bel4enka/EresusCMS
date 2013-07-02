@@ -38,40 +38,41 @@ require_once TESTS_SRC_DIR . '/core/lib/sections.php';
  */
 class Eresus_Sections_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Sections::branch_ids
-	 */
-	public function test_branch_ids()
-	{
-		$branch_ids = new ReflectionMethod('Sections', 'branch_ids');
-		$branch_ids->setAccessible(true);
-		
-		$p_index = new ReflectionProperty('Sections', 'index');
-		$p_index->setAccessible(true);
+    /**
+     * @covers Sections::branchIds
+     */
+    public function test_branch_ids()
+    {
+        $branch_ids = new ReflectionMethod('Sections', 'branchIds');
+        $branch_ids->setAccessible(true);
 
-		$sections = new Sections();
-		$this->assertEquals(array(), $branch_ids->invoke($sections, 2));
-		
-		
-		$p_index->setValue($sections, array(
-				0=>array(1, 2, 3),
-				1=>array(4, 5),
-				2=>array(),
-				3=>array()
-			));
-		$test = $p_index->getValue($sections);
-		$this->assertEquals(array(
-				0=>array(1, 2, 3),
-				1=>array(4, 5),
-				2=>array(),
-				3=>array()
-			), $test);
-			
-	  $this->assertEquals(array(1, 2, 3, 4, 5), $branch_ids->invoke($sections, 0));
-		$this->assertEquals(array(4, 5), $branch_ids->invoke($sections, 1));
-		
-		
-		
-	}
-	/* */
+        $p_index = new ReflectionProperty('Sections', 'index');
+        $p_index->setAccessible(true);
+
+        $sections = new Sections();
+        $this->assertEquals(array(), $branch_ids->invoke($sections, 2));
+
+
+        $p_index->setValue($sections, array(
+            0=>array(1, 2, 3),
+            1=>array(4, 5),
+            2=>array(),
+            3=>array()
+        ));
+        $test = $p_index->getValue($sections);
+        $this->assertEquals(array(
+            0=>array(1, 2, 3),
+            1=>array(4, 5),
+            2=>array(),
+            3=>array()
+        ), $test);
+
+        $this->assertEquals(array(1, 2, 3, 4, 5), $branch_ids->invoke($sections, 0));
+        $this->assertEquals(array(4, 5), $branch_ids->invoke($sections, 1));
+
+
+
+    }
+    /* */
 }
+
