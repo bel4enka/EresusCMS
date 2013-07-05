@@ -77,10 +77,12 @@ class InstallCommand extends ContainerAwareCommand
             $this->output = $output;
             $this->subCommand('assets:install');
             $this->subCommand('doctrine:schema:create');
-            $this->subCommand('doctrine:query:sql', array(
-                "INSERT INTO accounts (username, salt, password, is_active, email) " .
-                "VALUES ('root', '', SHA1('pass'), '1', 'support@example.org');")
-            );
+            $this->subCommand('fos:user:create', array(
+                'root',
+                'support@example.org',
+                'pass',
+                '--super-admin'
+            ));
             $this->subCommand('doctrine:query:sql', array(
                 "INSERT INTO sections (id, parent_id, name, title, caption, description, " .
                 "keywords, position, enabled, visible, template, type, options, created) " .

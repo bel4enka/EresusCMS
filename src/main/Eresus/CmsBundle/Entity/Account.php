@@ -26,19 +26,11 @@
 
 namespace Eresus\CmsBundle\Entity;
 
-use Eresus\ORMBundle\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use FOS\UserBundle\Model\User;
 
 /**
  * Учётная запись пользователя
- *
- * @property       int       $id
- * @property       string    $username
- * @property       string    $salt
- * @property       string    $password
- * @property       bool      $isActive
- * @property       string    $email
  *
  * @since 4.00
  *
@@ -46,7 +38,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="accounts")
  * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */
-class Account extends AbstractEntity implements UserInterface
+class Account extends User
 {
     /**
      * Идентификатор
@@ -58,90 +50,5 @@ class Account extends AbstractEntity implements UserInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * Имя
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
-    protected $username;
-
-    /**
-     * Соль для хэширования пароля
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string", length=32)
-     */
-    protected $salt;
-
-    /**
-     * Хэш пароля
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string", length=40)
-     */
-    protected $password;
-
-    /**
-     * Активность
-     *
-     * @var bool
-     *
-     * @ORM\Column(name="is_active", type="boolean")
-     */
-    protected $isActive;
-
-    /**
-     * E-mail
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
-    protected $email;
-
-    /**
-     *
-     */
-    public function __construct()
-    {
-        $this->isActive = true;
-        $this->salt = md5(uniqid(null, true));
-    }
-
-    /**
-     * Возвращает имя пользователя
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSalt()
-    {
-        return $this->salt;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function getRoles()
-    {
-        return array('ROLE_USER', 'ROLE_ADMIN');
-    }
-
-    public function eraseCredentials()
-    {
-    }
 }
 

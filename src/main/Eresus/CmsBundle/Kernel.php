@@ -300,6 +300,7 @@ class Kernel extends SymfonyKernel
      */
     public function registerBundles()
     {
+        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
         $bundles = array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
@@ -312,6 +313,7 @@ class Kernel extends SymfonyKernel
             new \JMS\AopBundle\JMSAopBundle(),
             new \JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new \JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new \FOS\UserBundle\FOSUserBundle(),
             new \Eresus\ORMBundle\ORMBundle(),
             new \Eresus\CmsBundle\EresusCmsBundle()
         );
