@@ -28,7 +28,7 @@
         "kriswallsmith/assetic": "1.1.*@dev",
 
         "eresus/orm-bundle": "1.2.*",
-        "mekras/botobor": "0.3.*",
+        "mekras/botobor": "0.4.*",
         "components/jquery": "dev-master",
         "carhartl/jquery-cookie": "1.1",
         "components/modernizr": "dev-master",
@@ -40,20 +40,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/Eresus/ORMBundle"
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "mekras/botobor",
-                "version": "0.3.1",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/mekras/botobor",
-                    "reference": "v0.3.1"
-                }
-            }
         },
         {
             "type": "package",
