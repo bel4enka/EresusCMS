@@ -71,7 +71,9 @@ class TAbout
         $data['license'] = array();
         $data['license']['text'] = $license->getElementsByTagName($locale['lang'])->item(0)->textContent;
 
-        $tmpl = Eresus_Kernel::app()->getPage()->getUITheme()->getTemplate('misc/about.html');
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $tmpl = $page->getUITheme()->getTemplate('misc/about.html');
         $html = $tmpl->compile($data);
 
         return $html;
