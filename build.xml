@@ -208,7 +208,7 @@
 
         <!-- Modernizr -->
         <copy todir="${build.dir}/core/js/modernizr">
-            <filelist dir="vendor/components/modernizr" files="modernizr.js" />
+            <filelist dir="3rdparty/modernizr" files="modernizr.min.js" />
         </copy>
 
         <!-- Webshim -->

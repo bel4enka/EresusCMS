@@ -18,6 +18,7 @@
   псевдоним к Eresus_Plugin.
 * Функция ``eresus_log`` объявлена устаревшей, вместо неё следует использовать
   `Eresus_Kernel::log <../../api/classes/Eresus_Kernel.html#method_log>`_.
+* Библиотека Webshim в АИ теперь доступна всегда (т. е. её не надо больше подключать самостоятельно).
 
 
 Eresus_Plugin
@@ -40,6 +41,10 @@ WebPage
 Обновлены
 ^^^^^^^^^
 
+* `jQuery <http://jquery.com/>`_ до 1.10.2
+* `jquery-cookie <http://jquery.com/>`_ до 1.3.1
+* `jQuery UI <http://jqueryui.com/>`_ до 1.10.3
+* `Webshim <https://github.com/aFarkas/webshim/>`_ до 1.10.10
 * `Botobor <https://github.com/mekras/botobor>`_ до 0.4.0
 
 Добавлено
