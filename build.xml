@@ -20,11 +20,6 @@
         <include name="**" />
     </fileset>
 
-    <!-- 3rd party: Modernizr -->
-    <fileset dir="3rdparty/modernizr" id="files.3rd.modernizr">
-        <include name="**" />
-    </fileset>
-
     <!-- 3rd party: Tiny MCE -->
     <fileset dir="3rdparty/tiny_mce" id="files.3rd.tiny_mce">
         <include name="**" />
@@ -74,19 +69,7 @@
             </else>
         </if>
 
-        <if>
-            <equals arg1="${devel}" arg2="yes" />
-            <then>
-                <property name="composer.args.dev" value="--dev" />
-            </then>
-            <else>
-                <property name="composer.args.dev" value="" />
-            </else>
-        </if>
-
-        <composer command="${composer.command}">
-            <arg value="${composer.args.dev}" />
-        </composer>
+        <composer command="${composer.command}" />
 
     </target>
 
@@ -96,11 +79,6 @@
     =====================================================================
     -->
     <target name="tests" description="Run unit tests">
-
-        <available file="vendor/mekras/test-doubles" property="vendor.devel" />
-        <fail
-            message="You must execute «vendors» target with «devel=yes» before executing this one!"
-            unless="vendor.devel" />
 
         <phplint>
             <fileset refid="files.sources.php" />
@@ -222,15 +200,15 @@
 
         <!-- jQuery -->
         <copy todir="${build.dir}/core/jquery">
-            <fileset dir="3rdparty/jquery">
-                <include name="**" />
-            </fileset>
+            <filelist dir="vendor/components/jquery" files="jquery.min.js" />
             <filelist dir="vendor/carhartl/jquery-cookie" files="jquery.cookie.js" />
+            <filelist dir="vendor/components/jquery-ui/ui/minified" files="jquery-ui.min.js" />
+            <filelist dir="vendor/components/jquery-ui/ui/minified/i18n" files="jquery-ui-i18n.min.js" />
         </copy>
 
         <!-- Modernizr -->
         <copy todir="${build.dir}/core/js/modernizr">
-            <fileset refid="files.3rd.modernizr" />
+            <filelist dir="vendor/components/modernizr" files="modernizr.js" />
         </copy>
 
         <!-- Webshim -->
@@ -239,11 +217,11 @@
                 <include name="**" />
             </fileset>
         </copy>
-        <patch
+        <!-- patch
             patchfile="${project.basedir}/patches/webshim.shim.css.patch"
             dir="${build.dir}"
             strip="0"
-        />
+        / -->
 
         <!-- Tiny MCE -->
         <copy todir="${build.dir}/ext-3rd/tinymce">
