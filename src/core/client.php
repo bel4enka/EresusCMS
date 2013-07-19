@@ -63,7 +63,13 @@ class TClientUI extends Eresus_CMS_Page_Client
     private $template;
 
     public $type = 'default'; # Тип страницы
-    public $content = ''; # Контент страницы
+
+    /**
+     * Отрисованное содержимое области контента страницы
+     *
+     * @var string
+     */
+    public $content = '';
     public $options = array(); # Опции страницы
     public $Document; # DOM-интерфейс к странице
     public $plugin; # Плагин контента
