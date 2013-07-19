@@ -28,12 +28,15 @@
    <html>
    <head>
        <meta charset="UTF-8">
-       <title>$(sectionTitle) &ndash; {$site->title}</title>
+	   <title>{$page->title} — {$site->title}</title>
+	   <meta name="keywords" content="{$site->keywords}">
+	   <meta name="description" content="{$site->description}">
+	   <link rel="stylesheet" href="{$site->webStyle}/default.css" media="all">
    </head>
    <body>
        <header>…</header>
 	   <div>
-	       $(Content)
+           {$page->content}
 	   </div>
 	   <footer>…</footer>
    </body>
