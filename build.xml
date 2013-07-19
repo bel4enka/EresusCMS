@@ -207,7 +207,7 @@
         </copy>
 
         <!-- Modernizr -->
-        <copy todir="${build.dir}/core/js/modernizr" mode="0750">
+        <copy todir="${build.dir}/core/js/modernizr">
             <filelist dir="3rdparty/modernizr" files="modernizr.min.js" />
         </copy>
 
