@@ -92,7 +92,7 @@ class Eresus_Kernel
     /**
      * Записывает сообщение в журнал
      *
-     * @param string|array $sender    отправитель (используйте __METHOD__ и __FUNCTION__)
+     * @param string|array $sender    отправитель (используйте \__METHOD\__ и \__FUNCTION\__)
      * @param int          $priority  уровень важности (используйте константы LOG_xxx)
      * @param string       $message   текст сообщение
      * @param mixed        ...        аргументы для вставки в $message через {@link sprintf}

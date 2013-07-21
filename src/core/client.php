@@ -610,7 +610,7 @@ class TClientUI extends Eresus_CMS_Page_Client
      * <b>Обратите внимание!</b> Этот метод не влияет на результат, возвращаемый
      * {@link getTemplateName()}.
      *
-     * @param string|Template $template  имя файла шаблона или уже созданный объект шаблон
+     * @param string|Template $template  имя файла шаблона или уже созданный объект шаблона
      * @param string          $type      тип шаблона, только если $template — строка
      *
      * @throws InvalidArgumentException
