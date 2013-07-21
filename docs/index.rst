@@ -12,3 +12,4 @@
    manage/index
    markup/index
    dev/index
+   migration
