@@ -1,6 +1,9 @@
 Переменные, доступные в шаблонах страниц
 ========================================
 
+.. hint::
+   Помните, что здесь также можно использовать и :doc:`глобальные переменные <globals>`.
+
 $page
 -----
 
@@ -9,16 +12,16 @@ $page
 
 Пример использования:
 
-.. code-block:: html
+.. code-block:: smarty
 
    <head>
        ...
        <!-- Вывод заголовка раздела -->
-	   <title>{$page->title}</title>
-	   <!-- Вывод ключевых слов раздела -->
-	   <meta name="keywords" content="{$page->keywords}">
-	   <!-- Вывод описания сайта -->
-	   <meta name="description" content="{$page->description}">
+       <title>{$page->title}</title>
+       <!-- Вывод ключевых слов раздела -->
+       <meta name="keywords" content="{$page->keywords}">
+       <!-- Вывод описания сайта -->
+       <meta name="description" content="{$page->description}">
    </head>
    <body>
        ...

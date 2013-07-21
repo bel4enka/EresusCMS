@@ -6,7 +6,7 @@
 Шаблоны для КИ должны располагаться в папке ``templates/client``, при установке плагина они будут
 скопированы в папку CMS ``templates/имя_плагина``, что позволит изменять их через веб-интерфейс.
 
-Метод `Eresus_Plugin::templates() <../../api/classes/Eresus_Plugin.html#templates>`_ возвращает
+Метод `Eresus_Plugin::templates() <../../api/classes/Eresus_Plugin.html#method_templates>`_ возвращает
 экземпляр класса `Eresus_Plugin_Templates <../../api/classes/Eresus_Plugin_Templates.html>`_,
 который предоставляет методы для работы с обеими группами шаблонов.
 

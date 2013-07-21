@@ -16,11 +16,12 @@
 * шапку и подвал страницы;
 * боковые панели.
 
-Область контента (т. е. место, куда будет подставлен контент страницы) задаётся макросом ``$(Content)``.
+Область контента (т. е. место, куда будет подставлен контент страницы) задаётся свойством
+``${page->content}``.
 
 Пример простого шаблона:
 
-.. code-block:: html
+.. code-block:: smarty
 
    <!-- Название шаблона, которое будет отображаться в АИ -->
 
@@ -28,16 +29,16 @@
    <html>
    <head>
        <meta charset="UTF-8">
-	   <title>{$page->title} — {$site->title}</title>
-	   <meta name="keywords" content="{$site->keywords}">
-	   <meta name="description" content="{$site->description}">
-	   <link rel="stylesheet" href="{$site->webStyle}/default.css" media="all">
+       <title>{$page->title} — {$site->title}</title>
+       <meta name="keywords" content="{$site->keywords}">
+       <meta name="description" content="{$site->description}">
+       <link rel="stylesheet" href="{$site->webStyle}/default.css" media="all">
    </head>
    <body>
        <header>…</header>
-	   <div>
+       <div>
            {$page->content}
-	   </div>
-	   <footer>…</footer>
+       </div>
+       <footer>…</footer>
    </body>
    </html>
