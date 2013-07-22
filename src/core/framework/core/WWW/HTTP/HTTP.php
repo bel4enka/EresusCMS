@@ -259,7 +259,7 @@ class HTTP
      */
     public static function redirect($uri, $permanent = false)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, $uri);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, $uri);
 
         $header = 'Location: '.$uri;
 

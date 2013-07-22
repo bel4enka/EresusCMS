@@ -77,14 +77,14 @@ class TClientUI extends Eresus_CMS_Page_Client
     /**
      * Дополнительные скрипты
      * @var string
-     * @deprecated
+     * @deprecated с 3.01
      */
     public $scripts = '';
 
     /**
      * Дополнительные стили
      * @var string
-     * @deprecated
+     * @deprecated с 3.01
      */
     public $styles = '';
     public $subpage = 0; # Подстраница списка элементов

@@ -97,7 +97,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function connect($dsn, $name = false)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '("%s", %s)', $dsn, $name);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s", %s)', $dsn, $name);
 
         try
         {
@@ -129,7 +129,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function lazyConnection($dsn, $name = false)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '("%s", %s)', $dsn, $name);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s", %s)', $dsn, $name);
         self::$lazyConnectionDSNs[$name] = $dsn;
     }
     //-----------------------------------------------------------------------------
@@ -169,7 +169,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function configureObject($name)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '(%s)', $name);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '(%s)', $name);
 
         if (!isset(self::$lazyConnectionDSNs[$name]))
             throw new DBRuntimeException('DSN for lazy connection "'.$name.'" not found');
@@ -188,7 +188,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function setTestInstance($instance)
     {
-        eresus_log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         self::setHandler($instance);
     }
     //-----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function getInstance()
     {
-        eresus_log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         return self::getHandler();
     }
     //-----------------------------------------------------------------------------
@@ -213,7 +213,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function createSelectQuery()
     {
-        eresus_log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         $db = self::getInstance();
         return $db->createSelectQuery();
     }
@@ -226,7 +226,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function createUpdateQuery()
     {
-        eresus_log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         $db = self::getInstance();
         return $db->createUpdateQuery();
     }
@@ -239,7 +239,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function createInsertQuery()
     {
-        eresus_log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         $db = self::getInstance();
         return $db->createInsertQuery();
     }
@@ -252,7 +252,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function createDeleteQuery()
     {
-        eresus_log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         $db = self::getInstance();
         return $db->createDeleteQuery();
     }
@@ -276,7 +276,7 @@ class DB implements ezcBaseConfigurationInitializer
                 $insider = new DBQueryInsider;
                 $query->doBind($insider);
                 $s = $insider->subst($query);
-                eresus_log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
             }
             $result = $stmt->execute();
 
@@ -301,7 +301,7 @@ class DB implements ezcBaseConfigurationInitializer
             $insider = new DBQueryInsider;
             $query->doBind($insider);
             $s = $insider->subst($query);
-            eresus_log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
         }
         $stmt = $query->prepare();
 
@@ -332,7 +332,7 @@ class DB implements ezcBaseConfigurationInitializer
             $insider = new DBQueryInsider;
             $query->doBind($insider);
             $s = $insider->subst($query);
-            eresus_log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
         }
 
         $stmt = $query->prepare();

@@ -122,7 +122,7 @@ class ezcBase
      */
     public static function autoload( $className )
     {
-				eresus_log(__METHOD__, LOG_DEBUG, '(%s)', $className);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '(%s)', $className);
         ezcBase::setPackageDir();
 
         // Check whether the classname is already in the cached autoloadArray.

@@ -211,7 +211,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      */
     public function __construct()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         parent::__construct();
 
@@ -979,7 +979,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 
     private function renderContent()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         if (arg('mod'))
         {
@@ -1043,7 +1043,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             }
             else
             {
-                eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
+                Eresus_Kernel::log(__METHOD__, LOG_ERR, '$module property is not an object');
                 $msg = I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
                 $result = ErrorBox(sprintf($msg, isset($name) ? $name : $module));
             }
@@ -1253,7 +1253,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      */
     public function render()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
         /* Проверяем права доступа и, если надо, проводим авторизацию */
         if (!UserRights(EDITOR))
         {
@@ -1316,7 +1316,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      */
     private function renderUI()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
         $response = $this->renderContent();
 
         if (!($response instanceof Eresus_HTTP_Response))

@@ -78,7 +78,7 @@ class Eresus_CMS extends Eresus_Application
      */
     public function main()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         try
         {
@@ -89,7 +89,7 @@ class Eresus_CMS extends Eresus_Application
             $this->checkEnvironment();
             $this->createFileStructure();
 
-            eresus_log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
 
             /* Подключение старого ядра */
             include_once 'kernel-legacy.php';
@@ -287,7 +287,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function runWeb()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         $this->initWeb();
 
@@ -317,7 +317,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function initWeb()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         Core::setValue('core.template.templateDir', $this->getFsRoot());
         Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
@@ -336,7 +336,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function runWebClientUI()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
         include 'client.php';
 
@@ -353,7 +353,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function runWebAdminUI()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
 
         include 'admin.php';
 
@@ -376,7 +376,7 @@ class Eresus_CMS extends Eresus_Application
         $SUFFIX = $this->getFsRoot();
         $SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
         $this->request->setLocalRoot($SUFFIX);
-        eresus_log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
 
         // TODO Удалить где-нибудь в 3.03-04
         TemplateSettings::setGlobalValue('siteRoot',
@@ -394,7 +394,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function runCLI()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         $this->initCLI();
         return 0;
@@ -406,7 +406,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function initCLI()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
     }
     //-----------------------------------------------------------------------------
 
@@ -415,7 +415,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function initConf()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         /*
          * Переменную $Eresus приходится делать глобальной, чтобы файл конфигурации
@@ -444,7 +444,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function initDB()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
         /*
         global $Eresus;
 
@@ -464,7 +464,7 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function initSession()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         /*global $Eresus;
 

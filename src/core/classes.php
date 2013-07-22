@@ -109,7 +109,7 @@ class Plugins
                         {
                             $msg = 'Plugin "%s" requires plugin %s';
                             $requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
-                            eresus_log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
+                            Eresus_Kernel::log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
                             /*$msg = I18n::getInstance()->getText($msg, $this);
                             ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
                             unset($this->list[$plugin]);
@@ -142,7 +142,7 @@ class Plugins
      */
     public function install($name)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
         $filename = filesRoot.'ext/'.$name.'.php';
         if (file_exists($filename))
@@ -186,8 +186,8 @@ class Plugins
         }
         else
         {
-            eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
-                $name);
+            Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"',
+                $filename, $name);
             $msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
             $msg = sprintf($msg, $filename, $name);
             ErrorMessage($msg);
@@ -233,18 +233,18 @@ class Plugins
      */
     public function load($name)
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '("%s")', $name);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
         /* Если плагин уже был загружен возвращаем экземпляр из реестра */
         if (isset($this->items[$name]))
         {
-            eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
             return $this->items[$name];
         }
 
         /* Если такой плагин не зарегистрирован, возвращаем FASLE */
         if (!isset($this->list[$name]))
         {
-            eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
             return false;
         }
 
@@ -254,8 +254,8 @@ class Plugins
         /* Если такого файла нет, возвращаем FASLE */
         if (!file_exists($filename))
         {
-            eresus_log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"', $filename,
-                $name);
+            Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"',
+                $filename, $name);
             return false;
         }
 
@@ -270,14 +270,14 @@ class Plugins
 
         if (!class_exists($className, false))
         {
-            eresus_log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
+            Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
                 $className, $name, $filename);
             FatalError(sprintf(errClassNotFound, $name));
         }
 
         // Заносим экземпляр в реестр
         $this->items[$name] = new $className();
-        eresus_log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
 
         return $this->items[$name];
     }

@@ -331,15 +331,14 @@ class EresusClassAutoloadTable {
 	 */
 	public function __construct($filename)
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, $filename);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, $filename);
 		if (substr($filename , -4) != '.php') {
-			eresus_log(__METHOD__, LOG_DEBUG, 'Adding ".php" extension');
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Adding ".php" extension');
 			$filename .= '.php';
 		}
 		$this->filename = $filename;
-		eresus_log(__METHOD__, LOG_DEBUG, 'Table file: %s', $this->filename);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Table file: %s', $this->filename);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Get table filename
@@ -368,12 +367,12 @@ class EresusClassAutoloadTable {
 		if (!$this->table)
 			return false;
 
-		eresus_log(__METHOD__, LOG_DEBUG, 'Searching for %s in %s', $className, $this->filename);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Searching for %s in %s', $className, $this->filename);
 
 		if (isset($this->table[$className])) {
 
 			$filename = $this->table[$className];
-			eresus_log(__METHOD__, LOG_DEBUG, 'Found record: %s => %s', $className, $filename);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Found record: %s => %s', $className, $filename);
 			if (substr($filename, -4) != '.php')
 				$filename .= '.php';
 
@@ -385,7 +384,7 @@ class EresusClassAutoloadTable {
 
 		$loaded = Core::classExists($className);
 		$result = $loaded ? 'Success' : 'Failed';
-		eresus_log(
+        Eresus_Kernel::log(
 			__METHOD__, LOG_DEBUG, '%s loading %s using table %s', $result, $className, $this->filename
 		);
 
@@ -398,7 +397,7 @@ class EresusClassAutoloadTable {
 	 */
 	protected function loadTable()
 	{
-		eresus_log(__METHOD__, LOG_DEBUG, 'Loading autoload table from %s', $this->filename);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Loading autoload table from %s', $this->filename);
 
 		try
         {
@@ -407,7 +406,7 @@ class EresusClassAutoloadTable {
 		}
         catch (Exception $e)
         {
-			eresus_log(
+            Eresus_Kernel::log(
 				__METHOD__, LOG_ERR, 'Can\'t load table from "%s": %s', $this->filename,
                 $e->getMessage()
 			);
@@ -415,7 +414,7 @@ class EresusClassAutoloadTable {
 
 		}
 
-		eresus_log(__METHOD__, LOG_DEBUG, $this->table ? 'success' : 'failed');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, $this->table ? 'success' : 'failed');
 	}
 }
 
@@ -455,13 +454,13 @@ class EresusClassAutoloader {
 
 		$_depth++;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '[%d] ("%s")', $_depth, $className);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] ("%s")', $_depth, $className);
 
 		foreach (self::$tables as $table) {
-			eresus_log(__METHOD__, LOG_DEBUG, '[%d] Trying "%s"', $_depth, $table->getFileName());
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Trying "%s"', $_depth, $table->getFileName());
 			$loaded = $table->load($className);
 			$classExists = Core::classExists($className);
-			eresus_log(
+            Eresus_Kernel::log(
 				__METHOD__, LOG_DEBUG,
 				'[%d] Result for "%s": %b', $_depth, $table->getFileName(), $loaded
 			);
@@ -562,10 +561,10 @@ class Core {
 		static $_depth = 0;
 		$_depth++;
 
-		eresus_log(__METHOD__, LOG_DEBUG, '[%d] (%s)', $_depth, $className);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] (%s)', $_depth, $className);
 
 		if (self::classExists($className)) {
-			eresus_log(__METHOD__, LOG_DEBUG, '[%d] Class %s exists', $_depth, $className);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Class %s exists', $_depth, $className);
 			$_depth--;
 			return;
 		}
@@ -575,7 +574,7 @@ class Core {
 		 */
 		EresusClassAutoloader::load($className);
 
-		eresus_log(__METHOD__, LOG_DEBUG, '[%d] Calling ezcBase::autoload()', $_depth);
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Calling ezcBase::autoload()', $_depth);
 
 		try {
 
@@ -595,13 +594,13 @@ class Core {
 
 		if (self::classExists($className)) {
 
-			eresus_log(__METHOD__, LOG_DEBUG, '[%d] Class %s loaded', $_depth, $className);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Class %s loaded', $_depth, $className);
 			$_depth--;
 			return;
 
 		} else {
 
-			eresus_log(
+            Eresus_Kernel::log(
 				__METHOD__, LOG_DEBUG,
 				'[%d] ezcBase::autoload() can\'t load class "%s"', $_depth, $className
 			);
@@ -631,7 +630,7 @@ class Core {
 
 				}
 
-				eresus_log(__METHOD__, LOG_DEBUG, '[%d] Call "%s"', $_depth, $debug_handlerAsString);
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Call "%s"', $_depth, $debug_handlerAsString);
 
 			}
 
@@ -641,7 +640,7 @@ class Core {
 
 		}
 
-		eresus_log(
+        Eresus_Kernel::log(
 			__METHOD__, LOG_DEBUG, '[%d] %s', $_depth,
 			self::classExists($className) ? 'success' : 'failed'
 		);
@@ -678,7 +677,7 @@ class Core {
 			$description,
 			$trace = $e->getTraceAsString()
 		);
-		eresus_log('Core', LOG_ERR, $logMessage);
+        Eresus_Kernel::log('Core', LOG_ERR, $logMessage);
 
 		if ($previous)
 			self::logException($previous, 'Previous exception:');
@@ -747,7 +746,7 @@ class Core {
 				break;
 				default: $callback = $autoloader;
 			}
-			eresus_log(__METHOD__, LOG_DEBUG, 'registering handler "%s"', $callback);
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'registering handler "%s"', $callback);
 		}
 
 		array_unshift(self::$autoloaders, $autoloader);

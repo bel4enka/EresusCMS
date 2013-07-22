@@ -92,7 +92,7 @@ class TSettings
      */
     private function update()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         $settings = "<?php\n";
 
@@ -185,7 +185,7 @@ class TSettings
      */
     function adminRender()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
         if (!UserRights($this->access))
         {
             return '';

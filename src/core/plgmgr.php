@@ -104,7 +104,7 @@ class TPlgMgr
      */
     private function insert()
     {
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         $files = arg('files');
         if ($files && is_array($files))
@@ -182,7 +182,7 @@ class TPlgMgr
                 catch (RuntimeException $e)
                 {
                     $errors []= $e->getMessage();
-                    $info = new Plugin();
+                    $info = new Plugin(); // TODO: Придумать решение без Plugin
                     $info->title = $info->name = basename($file, '.php');
                     $info->version = '';
                 }
@@ -235,12 +235,12 @@ class TPlgMgr
     {
         if (!UserRights($this->access))
         {
-            eresus_log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
+            Eresus_Kernel::log(__METHOD__, LOG_WARNING, 'Access denied for user "%s"',
                 Eresus_CMS::getLegacyKernel()->user['name']);
             return '';
         }
 
-        eresus_log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
         $result = '';
         Eresus_Kernel::app()->getPage()->title = admPlugins;
