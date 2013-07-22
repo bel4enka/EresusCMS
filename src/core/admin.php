@@ -189,7 +189,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      *
      * @var array
      */
-    public $headers;
+    public $headers = array();
 
     /**
      * Для совместимости с TClientUI
@@ -977,12 +977,10 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     }
     //-----------------------------------------------------------------------------
 
-    function renderContent()
+    private function renderContent()
     {
         eresus_log(__METHOD__, LOG_DEBUG, '()');
 
-        $req = HTTP::request();
-        $result = '';
         if (arg('mod'))
         {
             $module = arg('mod', '/[^\w-]/');
@@ -1011,7 +1009,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 {
                     try
                     {
-                        $result .= $this->module->adminRender();
+                        $result = $this->module->adminRender();
                     }
                     catch (Exception $e)
                     {
@@ -1035,20 +1033,24 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                         {
                             $msg .= '<br />' . $e->getDescription();
                         }
-                        $result .= ErrorBox($msg);
+                        $result = ErrorBox($msg);
                     }
                 }
                 else
                 {
-                    $result .= ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
+                    $result = ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
                 }
             }
             else
             {
                 eresus_log(__METHOD__, LOG_ERR, '$module property is not an object');
                 $msg = I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
-                $result .= ErrorBox(sprintf($msg, isset($name) ? $name : $module));
+                $result = ErrorBox(sprintf($msg, isset($name) ? $name : $module));
             }
+        }
+        else
+        {
+            $result = '';
         }
         if (
             isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
@@ -1077,7 +1079,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовывает ветку меню
@@ -1316,30 +1317,25 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     private function renderUI()
     {
         eresus_log(__METHOD__, LOG_DEBUG, '()');
-        $data = array();
+        $response = $this->renderContent();
 
-        $data['page'] = $this;
-        $data['content'] = $this->renderContent();
-        $data['siteName'] = option('siteName');
-        $data['body'] = $this->renderBodySection();
-        $opened = -1;
-        $data['sectionMenu'] = $this->renderPagesMenu($opened);
-        $data['controlMenu'] = $this->renderControlMenu();
-        $data['user'] = Eresus_CMS::getLegacyKernel()->user;
-
-        $tmpl = new Template('admin/themes/default/page.default.html');
-        $html = $tmpl->compile($data);
-
-        if (count($this->headers))
+        if (!($response instanceof Eresus_HTTP_Response))
         {
-            foreach ($this->headers as $header)
-            {
-                header($header);
-            }
+            $data = array();
+            $data['page'] = $this;
+            $data['content'] = $response;
+            $data['siteName'] = option('siteName');
+            $data['body'] = $this->renderBodySection();
+            $opened = -1;
+            $data['sectionMenu'] = $this->renderPagesMenu($opened);
+            $data['controlMenu'] = $this->renderControlMenu();
+            $data['user'] = Eresus_CMS::getLegacyKernel()->user;
+
+            $tmpl = new Template('admin/themes/default/page.default.html');
+            $response = new Eresus_HTTP_Response($tmpl->compile($data), 200, $this->headers);
         }
 
-        echo $html;
+        $response->send();
     }
-    //-----------------------------------------------------------------------------
 }
 

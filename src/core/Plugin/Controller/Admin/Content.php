@@ -48,7 +48,7 @@ abstract class Eresus_Plugin_Controller_Admin_Content extends Eresus_Plugin_Cont
      * @return string
      * @since 3.01
      */
-    public function process()
+    public function getHtml()
     {
         $action = 'action' . $this->getAction();
         if (!method_exists($this, $action))

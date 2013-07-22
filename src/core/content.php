@@ -39,7 +39,7 @@ class TContent
     /**
      * Возвращает разметку интерфейса управления контентом текущего раздела
      *
-     * @return string  HTML
+     * @return string|Eresus_HTTP_Response  HTML
      */
     public function adminRender()
     {
@@ -47,13 +47,19 @@ class TContent
         {
             return '';
         }
+
+        $legacyKernel = Eresus_CMS::getLegacyKernel();
+        $plugins = $legacyKernel->plugins;
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+
         $result = '';
         useLib('sections');
         $sections = new Sections();
         $item = $sections->get(arg('section', 'int'));
 
-        Eresus_Kernel::app()->getPage()->id = $item['id'];
-        if (!array_key_exists($item['type'], Eresus_CMS::getLegacyKernel()->plugins->list))
+        $page->id = $item['id'];
+        if (!array_key_exists($item['type'], $plugins->list))
         {
             switch ($item['type'])
             {
@@ -73,7 +79,7 @@ class TContent
                     if (arg('update'))
                     {
                         $item['content'] = arg('content', 'dbsafe');
-                        Eresus_CMS::getLegacyKernel()->sections->update($item);
+                        $legacyKernel->sections->update($item);
                         HTTP::redirect(arg('submitURL'));
                     }
                     else
@@ -88,47 +94,30 @@ class TContent
                             ),
                             'buttons' => array('apply', 'cancel'),
                         );
-                        $result = Eresus_Kernel::app()->getPage()->renderForm($form);
+                        $result = $page->renderForm($form);
                     }
                     break;
-
                 case 'url':
-                    if (arg('update'))
-                    {
-                        $item['content'] = arg('url', 'dbsafe');
-                        Eresus_CMS::getLegacyKernel()->sections->update($item);
-                        HTTP::redirect(arg('submitURL'));
-                    }
-                    else
-                    {
-                        $form = array(
-                            'name' => 'editURL',
-                            'caption' => ADM_EDIT,
-                            'width' => '100%',
-                            'fields' => array (
-                                array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-                                array ('type' => 'edit', 'name' => 'url', 'label' => 'URL:', 'width' => '100%', 'value'=>isset($item['content'])?$item['content']:''),
-                            ),
-                            'buttons' => array('apply', 'cancel'),
-                        );
-                        $result = Eresus_Kernel::app()->getPage()->renderForm($form);
-                    }
+                    $controller = new Eresus_CMS_Controller_Admin_UrlContent();
                     break;
-
                 default:
-                    $result = Eresus_Kernel::app()->getPage()->
+                    $result = $page->
                         box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
                     break;
+            }
+            if (isset($controller)
+                && $controller instanceof Eresus_CMS_Controller_Admin_ContentInterface)
+            {
+                $result = $controller->getHtml();
             }
         }
         else
         {
-            Eresus_CMS::getLegacyKernel()->plugins->load($item['type']);
-            Eresus_Kernel::app()->getPage()->module = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']];
-            $result = Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->adminRenderContent();
+            $plugins->load($item['type']);
+            $page->module = $plugins->items[$item['type']];
+            $result = $plugins->items[$item['type']]->adminRenderContent();
         }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 }
 

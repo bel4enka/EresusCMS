@@ -44,7 +44,7 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
 {
     /**
      * Общий тест
-     * @covers Eresus_Plugin_Controller_Admin_Content::process
+     * @covers Eresus_Plugin_Controller_Admin_Content::getHtml
      * @covers Eresus_Plugin_Controller_Admin_Content::getAction
      */
     public function testOverall()
@@ -55,12 +55,12 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
         $GLOBALS['Eresus'] = new stdClass();
         $GLOBALS['Eresus']->request = array('arg' => array());
         /** @var Eresus_Plugin_Controller_Admin_Content $controller */
-        $controller->process();
+        $controller->getHtml();
     }
 
     /**
      * Тест реакции на несуществующее действие
-     * @covers Eresus_Plugin_Controller_Admin_Content::process
+     * @covers Eresus_Plugin_Controller_Admin_Content::getHtml
      * @expectedException Eresus_CMS_Exception_NotFound
      */
     public function testActionNotFound()
@@ -71,7 +71,7 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
         $GLOBALS['Eresus'] = new stdClass();
         $GLOBALS['Eresus']->request = array('arg' => array());
         /** @var Eresus_Plugin_Controller_Admin_Content $controller */
-        $controller->process();
+        $controller->getHtml();
     }
 }
 

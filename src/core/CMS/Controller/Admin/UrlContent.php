@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс контроллера АИ, управляющего контентом раздела
+ * Контроллер АИ типа раздела «URL»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,19 +27,67 @@
  */
 
 /**
- * Интерфейс контроллера АИ, управляющего контентом раздела
+ * Контроллер АИ типа раздела «URL»
  *
  * @package Eresus
- * @since 3.01
  */
-interface Eresus_CMS_Controller_Admin_ContentInterface
+class Eresus_CMS_Controller_Admin_UrlContent implements Eresus_CMS_Controller_Admin_ContentInterface
 {
     /**
      * Возвращает разметку области контента
      *
+     * @return string|Eresus_HTTP_Response
+     * @since 3.01
+     */
+    public function getHtml()
+    {
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $sections = $legacyKernel->sections;
+        $item = $sections->get(arg('section', 'int'));
+        $response = arg('update')
+            ? $this->updateAction($item)
+            : $this->formAction($item);
+        return $response;
+    }
+
+    /**
+     * Возвращает разметку диалога
+     *
+     * @param array $item
      * @return string
      * @since 3.01
      */
-    public function getHtml();
+    private function formAction(array $item)
+    {
+        $form = array(
+            'name' => 'editURL',
+            'caption' => ADM_EDIT,
+            'width' => '100%',
+            'fields' => array(
+                array('type' => 'hidden', 'name' => 'update', 'value' => $item['id']),
+                array('type' => 'edit', 'name' => 'url', 'label' => 'URL:', 'width' => '100%',
+                    'value' => isset($item['content']) ? $item['content'] : ''),
+            ),
+            'buttons' => array('apply', 'cancel'),
+        );
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $html = $page->renderForm($form);
+        return $html;
+    }
+
+    /**
+     * Сохраняет изменения
+     *
+     * @param array $item
+     *
+     * @return Eresus_HTTP_Redirect
+     */
+    private function updateAction(array $item)
+    {
+        $item['content'] = arg('url', 'dbsafe');
+        Eresus_Kernel::app()->getLegacyKernel()->sections->update($item);
+        return new Eresus_HTTP_Redirect(arg('submitURL'));
+    }
 }
 
