@@ -39,6 +39,11 @@
   `TClientUI::getTemplateName <api/classes/TClientUI.html#method_getTemplateName>`_
 * Класс `WebPage <api/classes/WebPage.html>`_ унаследован от
   `Eresus_CMS_Page <api/classes/Eresus_CMS_Page.html>`_ и сделан абстрактным.
+* Класс `HttpResponse <api/classes/HttpResponse.html>`_ и методы
+  `HTTP::redirect <api/classes/HTTP.html#method_redirect>`_ и
+  `HTTP::goback <api/classes/HTTP.html#method_goback>`_ объявлены устаревшими в пользу новых классов
+  `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
+  `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
 
 Обновлено
 ^^^^^^^^^
@@ -53,6 +58,8 @@
 ^^^^^^^^^
 
 * :doc:`Новый механизм работы с шаблонами </dev/guide/templates>`
+* `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_
+* `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_
 * `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_
 * `Eresus_CMS_Exception_NotFound <api/classes/Eresus_CMS_Exception_NotFound.html>`_
 * `Eresus_Plugin_Component <api/classes/Eresus_Plugin_Component.html>`_

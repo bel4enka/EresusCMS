@@ -6,6 +6,7 @@
 
    install
    uninstall
+   responses
    providing_content_type
    events
    templates
