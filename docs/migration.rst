@@ -25,6 +25,7 @@
 * Удалены классы EresusFsFileNotExistsException, EresusFsPathNotExistsException,
   EresusFsRuntimeException, EresusPropertyNotExistsException
 * Удалена функция form.
+* Удалена функция useLib.
 
 Изменено
 ^^^^^^^^

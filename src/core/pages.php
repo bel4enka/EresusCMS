@@ -588,7 +588,6 @@ class TPages
 		{
 			$this->cache['content_types'][$types[1][$i]] = $types[0][$i];
 		}
-		useLib('admin/lists');
 		$table = new AdminList;
 		$table->setHead(array('text'=>'Раздел', 'align'=>'left'), 'Имя', 'Тип', 'Доступ', '');
 		$table->addRow(array(admPagesRoot, '', '', '',

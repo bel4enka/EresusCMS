@@ -54,8 +54,7 @@ class TContent
         $page = Eresus_Kernel::app()->getPage();
 
         $result = '';
-        useLib('sections');
-        $sections = new Sections();
+        $sections = Eresus_Kernel::app()->getLegacyKernel()->sections;
         $item = $sections->get(arg('section', 'int'));
 
         $page->id = $item['id'];

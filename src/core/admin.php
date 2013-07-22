@@ -960,14 +960,13 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     }
     //-----------------------------------------------------------------------------
 
-    function renderForm($form, $values=array())
+    public function renderForm($form, $values=array())
     {
         $result = '';
         if (isset($form['tabs']))
         {
             $result .= $this->renderTabs($form['tabs']);
         }
-        useLib('forms');
         $wnd['caption'] = $form['caption'];
         $wnd['width'] = isset($form['width'])?$form['width']:'';
         $wnd['style'] = 'padding: 0px;';
@@ -977,7 +976,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         $result .= $this->window($wnd);
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     private function renderContent()
     {

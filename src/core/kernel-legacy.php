@@ -208,48 +208,6 @@ function UserRights($level)
 }
 
 /**
- * Подключает библиотеку
- *
- * Доступные библиотеки:
- *
- * - admin/lists — списки для АИ
- * - accounts — работа с учётными записями пользователей
- * - forms — работа с веб-формами
- * - glib — работа с изображениями
- * - mysql — работа с MySQL
- * - sections — работа с разделами сайта
- * - templates — работа с шаблонами (эта библиотека больше не требует подключения!)
- *
- * @param string $library  имя библиотеки
- *
- * @return bool  true, если библиотека успешно подключена
- *
- * @since 2.10
- *
- * @deprecated
- */
-function useLib($library)
-{
-	$result = false;
-	if (DIRECTORY_SEPARATOR != '/')
-	{
-		$library = str_replace('/', DIRECTORY_SEPARATOR, $library);
-	}
-	$filename = DIRECTORY_SEPARATOR . $library . '.php';
-	$dirs = explode(PATH_SEPARATOR, get_include_path());
-	foreach ($dirs as $path)
-	{
-		if (is_file($path.$filename))
-		{
-			include_once($path . $filename);
-			$result = true;
-			break;
-		}
-	}
-	return $result;
-}
-
-/**
  * Подключает описание класса
  *
  * @param  string  $className   Имя класса
@@ -1606,9 +1564,9 @@ class Eresus
 	 */
 	function init_datasource()
 	{
-		if (useLib($this->conf['db']['engine']))
+        $className = $this->conf['db']['engine'];
+		if (class_exists($className))
 		{
-			$className = $this->conf['db']['engine'];
 			$this->db = new $className;
 			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
 				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
@@ -1626,15 +1584,6 @@ class Eresus
 	{
 		$this->plugins = new Plugins;
 		$this->plugins->init();
-	}
-
-	/**
-	 * Инициализация учётной записи пользователя
-	 *
-	 */
-	function init_user()
-	{
-		useLib('accounts');
 	}
 
 	/**
@@ -1759,8 +1708,6 @@ class Eresus
 		$this->init_datasource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
-		# Инициализация учётной записи пользователя
-		$this->init_user();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута
@@ -1769,8 +1716,6 @@ class Eresus
 		$this->check_cookies();
 		# Обновление данных о пользователе
 		$this->reset_login();
-		# Подключение работы с разделами сайта
-		useLib('sections');
 		$this->sections = new Sections;
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
