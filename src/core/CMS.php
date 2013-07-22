@@ -341,10 +341,10 @@ class Eresus_CMS extends Eresus_Application
         include 'client.php';
 
         $GLOBALS['page'] = $this->page = new TClientUI();
+        TemplateSettings::setGlobalValue('page', $this->page);
         $this->page->init();
         /*return */$this->page->render();
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Запуск АИ
@@ -358,6 +358,7 @@ class Eresus_CMS extends Eresus_Application
         include 'admin.php';
 
         $GLOBALS['page'] = $this->page = new TAdminUI();
+        TemplateSettings::setGlobalValue('page', $this->page);
         /*return */$this->page->render();
     }
     //-----------------------------------------------------------------------------
