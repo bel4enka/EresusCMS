@@ -24,12 +24,14 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage HTTP
  */
 
 /**
  * Ответ по HTTP
  *
  * @package Eresus
+ * @subpackage HTTP
  * @since 3.01
  */
 class Eresus_HTTP_Response

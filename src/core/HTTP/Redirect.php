@@ -24,12 +24,14 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage HTTP
  */
 
 /**
  * Ответ-перенаправление
  *
  * @package Eresus
+ * @subpackage HTTP
  * @since 3.01
  */
 class Eresus_HTTP_Redirect extends Eresus_HTTP_Response

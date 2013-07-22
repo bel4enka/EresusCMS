@@ -33,6 +33,7 @@
  * @subpackage HTTP
  *
  * @since 0.1.3
+ * @deprecated с 3.01 используйте {@link Eresus_HTTP_Redirect}
  */
 class HttpResponse
 {
