@@ -240,7 +240,7 @@ class TPages
 			$item['position'] = count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner']));
 
 			/* Проверяем, нет ли в разделе назначения раздела с таким же именем */
-			$q = DB::createSelectQuery();
+			$q = DB::getHandler()->createSelectQuery();
 			$e = $q->expr;
 			$q->select($q->alias($e->count('id'), 'count'))
 				->from('pages')

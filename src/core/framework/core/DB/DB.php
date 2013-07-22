@@ -32,8 +32,9 @@
  * @package DB
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class DBRuntimeException extends EresusRuntimeException {}
-
+class DBRuntimeException extends EresusRuntimeException
+{
+}
 
 
 /**
@@ -47,13 +48,14 @@ class DBQueryException extends DBRuntimeException
     /**
      * Creates new exception object
      *
-     * @param ezcQuery  $query [optional]    Problem query
-     * @param string    $message [optional]  Error message
+     * @param ezcQuery $query [optional]    Problem query
+     * @param string $message [optional]  Error message
      * @param Exception $previous [optional] Previous exception
      */
     function __construct($query = null, $message = null, $previous = null)
     {
-        if ($query instanceof ezcQuery) {
+        if ($query instanceof ezcQuery)
+        {
 
             $insider = new DBQueryInsider;
             $query->doBind($insider);
@@ -61,17 +63,20 @@ class DBQueryException extends DBRuntimeException
         }
 
         if (is_null($message))
+        {
             $message = 'Database query failed';
+        }
 
         if (!is_null($previous))
+        {
             $query = $previous->getMessage() . ': ' . $query;
+        }
 
         parent::__construct($query, $message, $previous);
     }
     //-----------------------------------------------------------------------------
 
 }
-
 
 
 /**
@@ -90,10 +95,12 @@ class DB implements ezcBaseConfigurationInitializer
     /**
      * Connects to DB
      *
-     * @param string $dsn              Connection DSN string
-     * @param string $name [optional]  Optional connection name
-     * @return ezcDbHandler
+     * @param string $dsn        Connection DSN string
+     * @param string|bool $name  Optional connection name
+     *
      * @throws DBRuntimeException
+     *
+     * @return ezcDbHandler
      */
     public static function connect($dsn, $name = false)
     {
@@ -118,13 +125,14 @@ class DB implements ezcBaseConfigurationInitializer
         ezcDbInstance::set($db, $name);
         return $db;
     }
+
     //-----------------------------------------------------------------------------
 
     /**
      * Configures lazy connection to DB
      *
-     * @param string $dsn              Connection DSN string
-     * @param string $name [optional]  Optional connection name
+     * @param string      $dsn   Connection DSN string
+     * @param string|bool $name  Optional connection name
      * @return void
      */
     public static function lazyConnection($dsn, $name = false)
@@ -132,129 +140,53 @@ class DB implements ezcBaseConfigurationInitializer
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s", %s)', $dsn, $name);
         self::$lazyConnectionDSNs[$name] = $dsn;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Returns connection handler
      *
-     * @param string $name [optional]  Optional connection name
+     * @param string|bool $name  Optional connection name
      * @return ezcDbHandler
      */
     public static function getHandler($name = false)
     {
         return ezcDbInstance::get($name);
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Sets connection handler
      *
      * @param ezcDbHandler $handler
-     * @param string       $name [optional]  Optional connection name
+     * @param string|bool  $name     Optional connection name
      *
      */
     public static function setHandler(ezcDbHandler $handler, $name = false)
     {
         ezcDbInstance::set($handler, $name);
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * eZ Components lazy init
      *
      * @param bool|string $name  Connection name
+     *
+     * @throws DBRuntimeException
+     *
      * @return ezcDbHandler
-     * @internal
-     * @ignore
      */
     public static function configureObject($name)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '(%s)', $name);
 
         if (!isset(self::$lazyConnectionDSNs[$name]))
-            throw new DBRuntimeException('DSN for lazy connection "'.$name.'" not found');
+        {
+            throw new DBRuntimeException('DSN for lazy connection "' . $name . '" not found');
+        }
 
         $dsn = self::$lazyConnectionDSNs[$name];
         $db = self::connect($dsn, $name);
 
         return $db;
     }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Set test instance
-     * @param ezcDbHandler $instance
-     * @deprecated since 0.1.3 in favor of DB::setHandler
-     */
-    public static function setTestInstance($instance)
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
-        self::setHandler($instance);
-    }
-
-    /**
-     * Get connection
-     *
-     * @return ezcDbHandler
-     * @deprecated since 0.1.3 in favor of DB::getHandler
-     */
-    public static function getInstance()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
-        return self::getHandler();
-    }
-
-    /**
-     * SELECT
-     * @return ezcQuerySelect
-     * @deprecated since 0.1.3 in favor of DB::getHandler()->createSelectQuery
-     */
-    public static function createSelectQuery()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
-        $db = self::getInstance();
-        return $db->createSelectQuery();
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * UPDATE
-     * @return ezcQueryUpdate
-     * @deprecated since 0.1.3 in favor of DB::getHandler()->createUpdateQuery
-     */
-    public static function createUpdateQuery()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
-        $db = self::getInstance();
-        return $db->createUpdateQuery();
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * INSERT
-     * @return ezcQueryInsert
-     * @deprecated since 0.1.3 in favor of DB::getHandler()->createInsertQuery
-     */
-    public static function createInsertQuery()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
-        $db = self::getInstance();
-        return $db->createInsertQuery();
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Delete
-     * @return ezcQueryDelete
-     * @deprecated since 0.1.3 in favor of DB::getHandler()->createDeleteQuery
-     */
-    public static function createDeleteQuery()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
-        $db = self::getInstance();
-        return $db->createDeleteQuery();
-    }
-    //-----------------------------------------------------------------------------
 
     /**
      * Execute query
@@ -267,10 +199,11 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function execute($query)
     {
-        try {
-
+        try
+        {
             $stmt = $query->prepare();
-            if (LOG_DEBUG) {
+            if (LOG_DEBUG)
+            {
                 $insider = new DBQueryInsider;
                 $query->doBind($insider);
                 $s = $insider->subst($query);
@@ -278,7 +211,9 @@ class DB implements ezcBaseConfigurationInitializer
             }
             $result = $stmt->execute();
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
 
             throw new DBQueryException($query, null, $e);
 
@@ -286,16 +221,20 @@ class DB implements ezcBaseConfigurationInitializer
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Fetch row from DB response
+     *
      * @param ezcQuery $query
+     *
+     * @throws DBQueryException
+     *
      * @return array
      */
     public static function fetch($query)
     {
-        if (LOG_DEBUG) {
+        if (LOG_DEBUG) // TODO: Что это значит?!
+        {
             $insider = new DBQueryInsider;
             $query->doBind($insider);
             $s = $insider->subst($query);
@@ -303,21 +242,19 @@ class DB implements ezcBaseConfigurationInitializer
         }
         $stmt = $query->prepare();
 
-        try {
-
+        try
+        {
             $stmt->execute();
-
-        } catch (Exception $e) {
-
+        }
+        catch (Exception $e)
+        {
             throw new DBQueryException($query, null, $e);
-
         }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Get response rows
@@ -326,7 +263,8 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function fetchAll($query)
     {
-        if (LOG_DEBUG) {
+        if (LOG_DEBUG)
+        {
             $insider = new DBQueryInsider;
             $query->doBind($insider);
             $s = $insider->subst($query);
@@ -335,23 +273,19 @@ class DB implements ezcBaseConfigurationInitializer
 
         $stmt = $query->prepare();
 
-        try {
-
+        try
+        {
             $stmt->execute();
-
-        } catch (Exception $e) {
-
+        }
+        catch (Exception $e)
+        {
             throw new DBQueryException($query, null, $e);
-
         }
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
-    //-----------------------------------------------------------------------------
-
 }
-
 
 
 /**
@@ -366,7 +300,8 @@ class DB implements ezcBaseConfigurationInitializer
  * @ignore
  *
  */
-class DBQueryInsider extends PDOStatement {
+class DBQueryInsider extends PDOStatement
+{
 
     /**
      * Values
@@ -383,7 +318,8 @@ class DBQueryInsider extends PDOStatement {
      */
     public function bindValue($paramno, $param, $type = null)
     {
-        switch ($type) {
+        switch ($type)
+        {
 
             case PDO::PARAM_BOOL:
                 break;
@@ -401,6 +337,7 @@ class DBQueryInsider extends PDOStatement {
         $this->values[$paramno] = $param;
 
     }
+
     //-----------------------------------------------------------------------------
 
     /**
@@ -416,6 +353,7 @@ class DBQueryInsider extends PDOStatement {
     {
         $this->bindValue($paramno, $param, $type);
     }
+
     //-----------------------------------------------------------------------------
 
     /**
@@ -427,7 +365,9 @@ class DBQueryInsider extends PDOStatement {
     public function subst($query)
     {
         foreach ($this->values as $key => $value)
+        {
             $query = preg_replace("/$key(\s|,|$)/", "$value$1", $query);
+        }
 
         return $query;
     }

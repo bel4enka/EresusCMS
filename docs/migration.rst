@@ -20,6 +20,8 @@
 
 * Удалены константы filesRoot и dataFiles.
 * Удалено свойство Eresus::$host.
+* Удалены методы DB: setTestInstance, getInstance, createSelectQuery, createUpdateQuery,
+  createInsertQuery, createDeleteQuery.
 * Удалён псевдоним ``Accounts`` класса `EresusAccounts <api/classes/EresusAccounts.html>`_.
 * Удалены классы PHP и System, используйте одноимённые методы класса
   `Eresus_Kernel <api/classes/Eresus_Kernel.html>`_.
