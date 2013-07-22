@@ -1317,13 +1317,6 @@ class Eresus
 			}
 			$this->path = $s;
 		}
-
-		/**
-		 * Обратная совместимость
-		 * @var string
-		 * @deprecated since 2.14
-		 */
-		define('dataFiles', $this->fdata);
 	}
 
 	/**
