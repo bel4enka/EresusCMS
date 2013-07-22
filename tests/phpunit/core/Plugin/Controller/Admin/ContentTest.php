@@ -31,6 +31,7 @@ require_once dirname(__FILE__) . '/../../../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/Plugin/Component.php';
 require_once TESTS_SRC_DIR . '/core/Plugin/Controller/Abstract.php';
 require_once TESTS_SRC_DIR . '/core/Plugin/Controller/Admin.php';
+require_once TESTS_SRC_DIR . '/core/CMS/Controller/Admin/ContentInterface.php';
 require_once TESTS_SRC_DIR . '/core/Plugin/Controller/Admin/Content.php';
 require_once TESTS_SRC_DIR . '/core/CMS/Exception/NotFound.php';
 
@@ -43,7 +44,7 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
 {
     /**
      * Общий тест
-     * @covers Eresus_Plugin_Controller_Admin_Content::execute
+     * @covers Eresus_Plugin_Controller_Admin_Content::process
      * @covers Eresus_Plugin_Controller_Admin_Content::getAction
      */
     public function testOverall()
@@ -54,12 +55,12 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
         $GLOBALS['Eresus'] = new stdClass();
         $GLOBALS['Eresus']->request = array('arg' => array());
         /** @var Eresus_Plugin_Controller_Admin_Content $controller */
-        $controller->execute();
+        $controller->process();
     }
 
     /**
      * Тест реакции на несуществующее действие
-     * @covers Eresus_Plugin_Controller_Admin_Content::execute
+     * @covers Eresus_Plugin_Controller_Admin_Content::process
      * @expectedException Eresus_CMS_Exception_NotFound
      */
     public function testActionNotFound()
@@ -70,7 +71,7 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
         $GLOBALS['Eresus'] = new stdClass();
         $GLOBALS['Eresus']->request = array('arg' => array());
         /** @var Eresus_Plugin_Controller_Admin_Content $controller */
-        $controller->execute();
+        $controller->process();
     }
 }
 
