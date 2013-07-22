@@ -565,12 +565,11 @@ class ContentPlugin extends Plugin
         $item['content'] = $content;
         Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Обновляет контент страницы
      */
-    function adminUpdate()
+    protected function adminUpdate()
     {
         $this->updateContent(arg('content', 'dbsafe'));
         HTTP::redirect(arg('submitURL'));

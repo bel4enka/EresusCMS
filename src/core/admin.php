@@ -971,7 +971,9 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         $wnd['caption'] = $form['caption'];
         $wnd['width'] = isset($form['width'])?$form['width']:'';
         $wnd['style'] = 'padding: 0px;';
-        $wnd['body'] = form($form, $values);
+
+        $form = new Form($form, $values);
+        $wnd['body'] = $form->render();
         $result .= $this->window($wnd);
         return $result;
     }

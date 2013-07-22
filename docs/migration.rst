@@ -24,6 +24,7 @@
 * Удалён класс FS, используйте методы класса `Eresus_FS_Tool <api/classes/Eresus_FS_Tool.html>`_.
 * Удалены классы EresusFsFileNotExistsException, EresusFsPathNotExistsException,
   EresusFsRuntimeException, EresusPropertyNotExistsException
+* Удалена функция form.
 
 Изменено
 ^^^^^^^^
