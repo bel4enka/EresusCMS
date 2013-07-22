@@ -77,7 +77,8 @@ class Templates
     public function enum($type = '')
     {
         $result = array();
-        $dir = filesRoot.'templates/';
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $dir = $legacyKernel->froot . 'templates/';
         if ($type)
         {
             $dir .= "$type/";
@@ -196,7 +197,8 @@ class Templates
      */
     public function add($name, $type, $code, $desc = '')
     {
-        $filename = filesRoot . 'templates/';
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $filename = $legacyKernel->froot . 'templates/';
         if ($type)
         {
             $filename .= "$type/";
@@ -218,7 +220,8 @@ class Templates
      */
     public function update($name, $type, $code, $desc = null)
     {
-        $filename = filesRoot . 'templates/';
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $filename = $legacyKernel->froot . 'templates/';
         if ($type)
         {
             $filename .= "$type/";
@@ -245,7 +248,8 @@ class Templates
      */
     public function delete($name, $type = '')
     {
-        $filename = filesRoot.'templates/';
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $filename = $legacyKernel->froot . 'templates/';
         if ($type)
         {
             $filename .= "$type/";

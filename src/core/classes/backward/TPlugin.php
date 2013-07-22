@@ -90,7 +90,8 @@ class TPlugin
 			if ($this->version != Eresus_CMS::getLegacyKernel()->plugins->list[$this->name]['version'])
 				$this->resetPlugin();
 		}
-		$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+		$filename = $legacyKernel->froot . 'lang/' . $this->name . '/' . $locale['lang'] . '.php';
 		if (is_file($filename))
         {
 			include $filename;

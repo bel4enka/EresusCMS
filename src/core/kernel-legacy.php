@@ -861,11 +861,11 @@ function option($name)
  * function img($imagename, $alt='', $title='', $width=0, $height=0, $style='')
  * function img($imagename, $params=array())
  *
- * @param string $imagename
+ * @param string $imageName
  *
  * @return string
  */
-function img($imagename)
+function img($imageName)
 {
 	$argc = func_num_args();
 	$argv = func_get_args();
@@ -925,23 +925,24 @@ function img($imagename)
 		$p['autosize'] = true;
 	}
 
-	if (strpos($imagename, httpRoot) !== false)
+    $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+	if (strpos($imageName, $legacyKernel->root) !== false)
 	{
-		$imagename = str_replace(httpRoot, '', $imagename);
+		$imageName = str_replace($legacyKernel->root, '', $imageName);
 	}
-	if (strpos($imagename, filesRoot) !== false)
+	if (strpos($imageName, $legacyKernel->froot) !== false)
 	{
-		$imagename = str_replace(filesRoot, '', $imagename);
+		$imageName = str_replace($legacyKernel->froot, '', $imageName);
 	}
-	if (strpos($imagename, '://') === false)
+	if (strpos($imageName, '://') === false)
 	{
-		$imagename = httpRoot . $imagename;
+		$imageName = $legacyKernel->root . $imageName;
 	}
-	$local = (strpos($imagename, httpRoot) === 0);
+	$local = (strpos($imageName, $legacyKernel->root) === 0);
 
 	if ($p['autosize'] && $local && empty($p['width']) && empty($p['height']))
 	{
-		$filename = str_replace(httpRoot, filesRoot, $imagename);
+		$filename = str_replace($legacyKernel->root, $legacyKernel->froot, $imageName);
 		if (is_file($filename))
 		{
 			$info = getimagesize($filename);
@@ -953,7 +954,7 @@ function img($imagename)
 		$p['height'] = $info[1];
 	};
 
-	$result = '<img src="'.$imagename.'" alt="'.$p['alt'].'"'.
+	$result = '<img src="'.$imageName.'" alt="'.$p['alt'].'"'.
 		(empty($p['width'])?'':' width="'.$p['width'].'"').
 		(empty($p['height'])?'':' height="'.$p['height'].'"').
 		(empty($p['title'])?'':' title="'.$p['title'].'"').
@@ -1322,13 +1323,6 @@ class Eresus
 		 * @var string
 		 * @deprecated since 2.14
 		 */
-		define('filesRoot', $this->froot);
-
-		/**
-		 * Обратная совместимость
-		 * @var string
-		 * @deprecated since 2.14
-		 */
 		define('dataFiles', $this->fdata);
 	}
 
@@ -1432,12 +1426,33 @@ class Eresus
 		# Обратная совместимость
 		# <= 2.9
 		$this->request = &$request;
+        /**
+         * @deprecated с 3.01
+         */
 		define('httpPath', $this->path);
+        /**
+         * @deprecated с 3.01
+         */
 		define('httpHost', $this->host);
-		define('httpRoot', $this->root);
+        /**
+         * @deprecated с 3.01
+         */
+        define('httpRoot', $this->root);
+        /**
+         * @deprecated с 3.01
+         */
 		define('styleRoot', $this->style);
+        /**
+         * @deprecated с 3.01
+         */
 		define('dataRoot', $this->data);
+        /**
+         * @deprecated с 3.01
+         */
 		define('cookieHost', $this->host);
+        /**
+         * @deprecated с 3.01
+         */
 		define('cookiePath', $this->path);
 	}
 

@@ -18,6 +18,7 @@
 Удалено
 ^^^^^^^
 
+* Удалена константа filesRoot.
 * Удалён псевдоним ``Accounts`` класса `EresusAccounts <api/classes/EresusAccounts.html>`_.
 * Удалены классы PHP и System, используйте одноимённые методы класса
   `Eresus_Kernel <api/classes/Eresus_Kernel.html>`_.

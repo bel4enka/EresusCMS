@@ -113,7 +113,8 @@ class TSettings
         $settings .= $this->mkstr('contentTypeDefault', 'string');
         $settings .= $this->mkstr('pageTemplateDefault', 'string');
 
-        file_put_contents(filesRoot.'cfg/settings.php', $settings);
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        file_put_contents($legacyKernel->froot . 'cfg/settings.php', $settings);
         HTTP::goback();
     }
 

@@ -139,12 +139,14 @@ class Plugins
      * @return void
      *
      * @throws EresusSourceParseException
+     * @throws DomainException
      */
     public function install($name)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
-        $filename = filesRoot.'ext/'.$name.'.php';
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $filename = $legacyKernel->froot . 'ext/'.$name.'.php';
         if (file_exists($filename))
         {
             $info = Eresus_PluginInfo::loadFromFile($filename);
@@ -248,10 +250,11 @@ class Plugins
             return false;
         }
 
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
         // Путь к файлу плагина
-        $filename = filesRoot . 'ext/' . $name . '.php';
+        $filename = $legacyKernel->froot . 'ext/' . $name . '.php';
 
-        /* Если такого файла нет, возвращаем FASLE */
+        /* Если такого файла нет, возвращаем false */
         if (!file_exists($filename))
         {
             Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"',
