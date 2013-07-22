@@ -196,15 +196,14 @@ class Templates
      */
     public function add($name, $type, $code, $desc = '')
     {
-        $result = false;
-        $filename = filesRoot.'templates/';
+        $filename = filesRoot . 'templates/';
         if ($type)
         {
             $filename .= "$type/";
         }
         $filename .= "$name.html";
         $content = "<!-- $desc -->\n\n$code";
-        $result = filewrite($filename, $content);
+        $result = file_put_contents($filename, $content) > 0;
         return $result;
     }
 
@@ -219,8 +218,7 @@ class Templates
      */
     public function update($name, $type, $code, $desc = null)
     {
-        $result = false;
-        $filename = filesRoot.'templates/';
+        $filename = filesRoot . 'templates/';
         if ($type)
         {
             $filename .= "$type/";
@@ -233,7 +231,7 @@ class Templates
             $item['desc'] = $desc;
         }
         $content = "<!-- {$item['desc']} -->\n\n{$item['code']}";
-        $result = filewrite($filename, $content);
+        $result = file_put_contents($filename, $content) > 0;
         return $result;
     }
 

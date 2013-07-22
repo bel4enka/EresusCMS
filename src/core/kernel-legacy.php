@@ -676,53 +676,6 @@ function dbReorderItems($table, $condition='', $id='id')
 }
 
 /**
- * Чтение файла
- *
- * @param string $filename  имя файла
- *
- * @return mixed  содержимое файла или false
- *
- * @since 2.10
- * @deprecated
- */
-function fileread($filename)
-{
-	$result = false;
-	if (is_file($filename))
-	{
-		if (is_readable($filename))
-		{
-			$result = file_get_contents($filename);
-		}
-	}
-	return $result;
-}
-
-/**
- * Запись в файл
- *
- * @param string $filename Имя файла
- * @param string $content  Содержимое
- * @param int    $flags    Флаги
- *
- * @return bool Результат выполнения
- *
- * @since 2.10
- * @deprecated
- */
-function filewrite($filename, $content, $flags = 0)
-{
-	$result = false;
-	@$fp = fopen($filename, ($flags && FILE_APPEND)?'ab':'wb');
-	if ($fp)
-	{
-		$result = fwrite($fp, $content) == strlen($content);
-		fclose($fp);
-	}
-	return $result;
-}
-
-/**
  * Удаляет файл
  *
  * @param string $filename Имя файла

@@ -26,6 +26,7 @@
   EresusFsRuntimeException, EresusPropertyNotExistsException
 * Удалена функция form.
 * Удалена функция useLib.
+* Удалены функции fileread и filewrite.
 
 Изменено
 ^^^^^^^^
