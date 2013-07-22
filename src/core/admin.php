@@ -1244,7 +1244,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 
         return $menu;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отправляет созданную страницу пользователю
@@ -1257,21 +1256,21 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         /* Проверяем права доступа и, если надо, проводим авторизацию */
         if (!UserRights(EDITOR))
         {
-            $this->auth();
+            $response = $this->auth();
+            $response->send();
         }
         else
         {
             $this->renderUI();
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Отрисовка и вывод страницы аутентификации
+     * Отрисовка страницы аутентификации
      *
      * Авторизация проводится методом {@see Eresus::login()}.
      *
-     * @return void
+     * @return Eresus_HTTP_Response
      */
     private function auth()
     {
@@ -1284,31 +1283,32 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         $data['user'] = $user;
         $data['autologin'] = $autologin;
 
+        $legacyKernel = Eresus_CMS::getLegacyKernel();
         if ($req->getMethod() == 'POST')
         {
-            if (Eresus_CMS::getLegacyKernel()->login($req->arg('user'),
-                Eresus_CMS::getLegacyKernel()->password_hash($password), $autologin))
+            if ($legacyKernel
+                    ->login($req->arg('user'), $legacyKernel->password_hash($password), $autologin))
             {
-                HTTP::redirect(Eresus_CMS::getLegacyKernel()->root . 'admin.php');
+                return new Eresus_HTTP_Redirect($legacyKernel->root . 'admin.php');
             }
         }
 
-        if (isset(Eresus_CMS::getLegacyKernel()->session['msg']['errors']) &&
-            count(Eresus_CMS::getLegacyKernel()->session['msg']['errors']))
+        if (isset($legacyKernel->session['msg']['errors']) &&
+            count($legacyKernel->session['msg']['errors']))
         {
-            foreach (Eresus_CMS::getLegacyKernel()->session['msg']['errors'] as $message)
+            foreach ($legacyKernel->session['msg']['errors'] as $message)
             {
                 $data['errors'] []= iconv(CHARSET, 'utf-8', $message);
             }
 
-            Eresus_CMS::getLegacyKernel()->session['msg']['errors'] = array();
+            $legacyKernel->session['msg']['errors'] = array();
         }
 
         $tmpl = $this->getUITheme()->getTemplate('auth.html');
         $html = $tmpl->compile($data);
-        echo $html;
+        $response = new Eresus_HTTP_Response($html);
+        return $response;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовка интерфейса
