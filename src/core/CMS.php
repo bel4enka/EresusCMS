@@ -110,19 +110,9 @@ class Eresus_CMS extends Eresus_Application
 
             $i18n = I18n::getInstance();
             TemplateSettings::setGlobalValue('i18n', $i18n);
-            //$this->initDB();
-            //$this->initSession();
             Eresus_CMS::getLegacyKernel()->init();
             TemplateSettings::setGlobalValue('Eresus', Eresus_CMS::getLegacyKernel());
-
-            if (Eresus_Kernel::isCLI())
-            {
-                return $this->runCLI();
-            }
-            else
-            {
-                $this->runWeb();
-            }
+            $this->runWeb();
         }
         catch (Exception $e)
         {
@@ -166,7 +156,6 @@ class Eresus_CMS extends Eresus_Application
         include dirname(__FILE__) . '/fatal.html.php';
         die;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает экземпляр класса Eresus
@@ -255,7 +244,6 @@ class Eresus_CMS extends Eresus_Application
             }
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Создание файловой структуры
@@ -298,11 +286,9 @@ class Eresus_CMS extends Eresus_Application
             case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
                 $this->call3rdPartyExtension();
                 break;
-
             case substr($this->request->getLocal(), 0, 6) == '/admin':
                 $output = $this->runWebAdminUI();
                 break;
-
             default:
                 $output = $this->runWebClientUI();
                 break;
@@ -310,7 +296,6 @@ class Eresus_CMS extends Eresus_Application
 
         echo $output;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Инициализация Web
@@ -361,7 +346,6 @@ class Eresus_CMS extends Eresus_Application
         TemplateSettings::setGlobalValue('page', $this->page);
         /*return */$this->page->render();
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Определение корневого веб-адреса сайта
@@ -386,29 +370,6 @@ class Eresus_CMS extends Eresus_Application
         );
 
     }
-
-    /**
-     * Выполнение в режиме CLI
-     *
-     * @return int
-     */
-    protected function runCLI()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-
-        $this->initCLI();
-        return 0;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Инициализация CLI
-     */
-    protected function initCLI()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-    }
-    //-----------------------------------------------------------------------------
 
     /**
      * Инициализация конфигурации
@@ -437,50 +398,6 @@ class Eresus_CMS extends Eresus_Application
             $this->fatalError("Main config file '$filename' not found!");
         }
     }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Инициализация БД
-     */
-    protected function initDB()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-        /*
-        global $Eresus;
-
-        // FIXME Использование устаревших настроек
-        $dsn = ($Eresus->conf['db']['engine'] ? $Eresus->conf['db']['engine'] : 'mysql') .
-            '://' . $Eresus->conf['db']['user'] .
-            ':' . $Eresus->conf['db']['password'] .
-            '@' . ($Eresus->conf['db']['host'] ? $Eresus->conf['db']['host'] : 'localhost') .
-            '/' . $Eresus->conf['db']['name'];
-
-        DBSettings::setDSN($dsn);*/
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Инициализация сессии
-     */
-    protected function initSession()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-
-        /*global $Eresus;
-
-        session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
-        session_name('sid');
-        session_start();
-
-        # Обратная совместимость
-        $Eresus->session = &$_SESSION['session'];
-        #if (!isset($Eresus->session['msg']))
-            $Eresus->session['msg'] = array('error' => array(), 'information' => array());
-        #$Eresus->user = &$_SESSION['user'];
-        $GLOBALS['session'] = &$_SESSION['session'];
-        $GLOBALS['user'] = &$_SESSION['user'];*/
-    }
-    //-----------------------------------------------------------------------------
 
     /**
      * Обрабатывает запрос к стороннему расширению
