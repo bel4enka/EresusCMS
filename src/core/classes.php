@@ -665,6 +665,7 @@ class EresusExtensionConnector
      */
     protected function replaceMacros($text)
     {
+        $request = Eresus_CMS::getLegacyKernel()->request;
         $text = str_replace(
             array(
                 '$(httpHost)',
@@ -674,8 +675,8 @@ class EresusExtensionConnector
                 '$(dataRoot)',
             ),
             array(
-                Eresus_CMS::getLegacyKernel()->host,
-                Eresus_CMS::getLegacyKernel()->path,
+                $request['host'],
+                $request['path'],
                 Eresus_CMS::getLegacyKernel()->root,
                 Eresus_CMS::getLegacyKernel()->style,
                 Eresus_CMS::getLegacyKernel()->data
@@ -685,7 +686,6 @@ class EresusExtensionConnector
 
         return $text;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Метод вызывается при проксировании прямых запросов к расширению

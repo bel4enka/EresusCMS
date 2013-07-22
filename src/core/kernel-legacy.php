@@ -1167,15 +1167,6 @@ class Eresus
 	public $user;
 
 	/**
-	 * Хост сайта
-	 *
-	 * @var string
-	 * @since 2.10
-	 * @deprecated с 3.00, используйте Eresus::$request
-	 */
-	public $host;
-
-	/**
 	 * Относительный URL сайта относительно корня сервера
 	 *
 	 * Если сайт, расположен в корне (т. е. по адресу http://example.org/), то path будет равен «/».
@@ -1346,13 +1337,13 @@ class Eresus
 		$request = array(
 			'method' => $_SERVER['REQUEST_METHOD'],
 			'scheme' => isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
-			'host' => strtolower(is_null($this->host) ? $_SERVER['HTTP_HOST'] : $this->host),
+			'host' => strtolower($_SERVER['HTTP_HOST']),
 			'port' => '',
 			'user' => isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '',
 			'pass' => isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '',
 			'path' => '',
 			'query' => '',
-			'fragment' => '', # TODO: Можно ли узнать значение этого компонента?
+			'fragment' => '',
 			'referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
 		);
 
@@ -1398,7 +1389,6 @@ class Eresus
 		 */
 		$root = $request['scheme'] . '://' . $request['host'] .
 			($request['port'] ? ':'.$request['port'] : '');
-		$this->host = $request['host'];
 		$this->root = $root.$this->path;
 		$this->data = $this->root.'data/';
 		$this->style = $this->root.'style/';
@@ -1422,7 +1412,7 @@ class Eresus
         /**
          * @deprecated с 3.01
          */
-		define('httpHost', $this->host);
+		define('httpHost', $this->request['host']);
         /**
          * @deprecated с 3.01
          */
@@ -1438,7 +1428,7 @@ class Eresus
         /**
          * @deprecated с 3.01
          */
-		define('cookieHost', $this->host);
+		define('cookieHost', $this->request['host']);
         /**
          * @deprecated с 3.01
          */
