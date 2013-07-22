@@ -79,7 +79,8 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 	public function test_offsetExists_nonScalar()
 	{
 		$test = new EresusCollection();
-		isset($test[new stdClass()]);
+        /** @noinspection PhpIllegalArrayKeyTypeInspection */
+        return isset($test[new stdClass()]);
 	}
 	//-----------------------------------------------------------------------------
 

@@ -183,7 +183,7 @@ class DB implements ezcBaseConfigurationInitializer
 
     /**
      * Set test instance
-     * @param object $instance
+     * @param ezcDbHandler $instance
      * @deprecated since 0.1.3 in favor of DB::setHandler
      */
     public static function setTestInstance($instance)
@@ -191,12 +191,11 @@ class DB implements ezcBaseConfigurationInitializer
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         self::setHandler($instance);
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Get connection
      *
-     * @return object
+     * @return ezcDbHandler
      * @deprecated since 0.1.3 in favor of DB::getHandler
      */
     public static function getInstance()
@@ -204,7 +203,6 @@ class DB implements ezcBaseConfigurationInitializer
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, "Use of deprecated function");
         return self::getHandler();
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * SELECT

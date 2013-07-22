@@ -64,8 +64,8 @@ class TListContentPlugin extends TContentPlugin
 		Eresus_CMS::getLegacyKernel()->db->
 			query("DROP TABLE IF EXISTS `".Eresus_CMS::getLegacyKernel()->db->prefix.$table['name']."`;");
 	}
-	
-	function toggle($id)
+
+	public function toggle($id)
 	{
 		Eresus_CMS::getLegacyKernel()->db->
 			update($this->table['name'], "`active` = NOT `active`", "`".$this->table['key']."`='".$id.
