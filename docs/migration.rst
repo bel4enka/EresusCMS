@@ -70,6 +70,7 @@
 * `Eresus_Plugin_Controller_Client_Content <api/classes/Eresus_Plugin_Controller_Client_Content.html>`_
 * `Eresus_Template_Service <api/classes/Eresus_Template_Service.html>`_
   `Eresus_CMS_Controller_Client_ContentInterface <api/classes/Eresus_CMS_Controller_Client_ContentInterface.html>`_
+  `Eresus_CMS_Controller_Admin_ContentInterface <api/classes/Eresus_CMS_Controller_Admin_ContentInterface.html>`_
 * Метод `Eresus_Plugin::getCodeDir <api/classes/Eresus_Plugin.html#method_getCodeDir>`_
 * Метод `Eresus_Plugin::getDataDir <api/classes/Eresus_Plugin.html#method_getDataDir>`_
 * Метод `Eresus_Plugin::getStyleDir <api/classes/Eresus_Plugin.html#method_getStyleDir>`_
