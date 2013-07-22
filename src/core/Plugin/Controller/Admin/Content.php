@@ -33,6 +33,7 @@
  * @since 3.01
  */
 abstract class Eresus_Plugin_Controller_Admin_Content extends Eresus_Plugin_Controller_Admin
+    implements Eresus_CMS_Controller_Admin_ContentInterface
 {
     /**
      * Возвращает разметку области контента
@@ -47,7 +48,7 @@ abstract class Eresus_Plugin_Controller_Admin_Content extends Eresus_Plugin_Cont
      * @return string
      * @since 3.01
      */
-    public function execute()
+    public function process()
     {
         $action = 'action' . $this->getAction();
         if (!method_exists($this, $action))
