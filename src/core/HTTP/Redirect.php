@@ -86,9 +86,10 @@ class Eresus_HTTP_Redirect extends Eresus_HTTP_Response
      */
     public function sendHeaders()
     {
+        parent::sendHeaders();
         $url = strval($this->getContent());
         header("Location: $url");
-        return parent::sendHeaders();
+        return $this;
     }
 
     /**
