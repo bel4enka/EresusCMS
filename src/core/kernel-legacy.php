@@ -1321,10 +1321,8 @@ class Eresus
 
 	/**
 	 * Читает настройки
-	 *
-	 * @access  private
 	 */
-	function init_settings()
+	private function init_settings()
 	{
 		$filename = $this->froot.'cfg/settings.php';
 		if (is_file($filename))
@@ -1339,10 +1337,8 @@ class Eresus
 
 	/**
 	 * Первичный разбор запроса
-	 *
-	 * @access  private
 	 */
-	function init_request()
+	private function init_request()
 	{
 		global $request;
 
@@ -1451,10 +1447,8 @@ class Eresus
 
 	/**
 	 * Инициализация локали
-	 *
-	 * @access private
 	 */
-	function init_locale()
+	private function init_locale()
 	{
 		global $locale;
 
@@ -1475,10 +1469,8 @@ class Eresus
 
 	/**
 	 * Подключение базовых классов
-	 *
-	 * @access private
 	 */
-	function init_classes()
+	private function init_classes()
 	{
 		# Подключение строковых данных
 		$filename = $this->froot.'core/classes.php';
@@ -1520,10 +1512,8 @@ class Eresus
 
 	/**
 	 * Подключение к источнику данных
-	 *
-	 * @access private
 	 */
-	function init_datasource()
+	private function init_datasource()
 	{
         $className = $this->conf['db']['engine'];
 		if (class_exists($className))
@@ -1549,10 +1539,8 @@ class Eresus
 
 	/**
 	 * Проверка сессии
-	 *
-	 * @access private
 	 */
-	function check_session()
+	private function check_session()
 	{
 		if (isset($this->session['time']))
 		{
