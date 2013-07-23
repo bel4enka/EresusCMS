@@ -4,7 +4,7 @@
  *
  * @version 0.1.3
  *
- * Class autoloading table
+ * Class auto loading table
  *
  * @copyright 2007, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt GPL License 3

@@ -119,7 +119,7 @@
 									<input type="text" name="mailFromName" value="{$mailFromName|escape}" size="20" tabindex="3" />
 									<div class="ui-minor nowrap">Пример: <em>Администрация</em></div>
 								</td>
-								<td style="width: 80%">
+								<td style="width: 80%;">
 									<label>Организация</label><br />
 									<input type="text" name="mailFromOrg" value="{$mailFromOrg|escape}" size="20" tabindex="4" />
 									<div class="ui-minor nowrap">Пример: <em>Рога и копыта</em></div>
@@ -208,8 +208,8 @@
 	</div>
 	
 	<script type="text/javascript">//<![CDATA[
-		$(document).ready(function () {
-
+		$(document).ready(function ()
+        {
 			$("#settingsForm input[name=siteTitleReverse]").click(function (){
 				var root = $("#settings-siteTitleReverse-example");
 				$("span", root).hide();
@@ -224,7 +224,12 @@
 				if (event.keyCode == 9)
 				{
 					$("#settingsFormTabs").tabs("select", 1);
-				 setTimeout(function()\{$("#settingsForm input[name=mailFromAddr]").focus();}, 10);
+				    setTimeout(
+                        function()
+                        {
+                            $("#settingsForm input[name=mailFromAddr]").focus();
+                        },
+                        10);
 				}
 			});
 
@@ -232,7 +237,12 @@
 				if (event.keyCode == 9)
 				{
 					$("#settingsFormTabs").tabs("select", 2);
-				 setTimeout(function()\{$("#settingsForm input[name=filesModeSetOnUpload]").focus();}, 10);
+				    setTimeout(
+                        function()
+                        {
+                            $("#settingsForm input[name=filesModeSetOnUpload]").focus();
+                        },
+                        10);
 				}
 			});
 
@@ -240,9 +250,12 @@
 				if (event.keyCode == 9)
 				{
 					$("#settingsFormTabs").tabs("select", 3);
-					//noinspection UnterminatedStatementJS
-				 setTimeout(function()\{$("#settingsForm select[name=contentTypeDefault]").focus();}, //noinspection UnterminatedStatementJS
-				 10);
+					setTimeout(
+                        function()
+                        {
+                            $("#settingsForm select[name=contentTypeDefault]").focus();
+                        },
+				        10);
 				}
 			});
 

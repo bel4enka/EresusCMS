@@ -1046,7 +1046,7 @@ table.ui-grid.ui-hlines
 		#plugin-manager-add-dlg .plugin-list input[type=checkbox]
 		{
 			float: left;
-			margin-top: 1.2em
+			margin-top: 1.2em;
 		}
 
 		#plugin-manager-add-dlg .plugin-list .info

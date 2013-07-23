@@ -12,7 +12,7 @@ function eresus_log()
  * Eresus exception interface
  *
  * Eresus Core uses extended interface for exceptions, which provides:
- * - Detailed description for occured exception
+ * - Detailed description for occurred exception
  * - Method to get real exception class name (for wrapper exceptions)
  * - Own method to get trace as string (for wrapper exceptions)
  * - Implements PHP 5.3 "getPrevious"-like functional

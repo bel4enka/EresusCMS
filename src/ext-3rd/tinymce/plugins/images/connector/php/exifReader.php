@@ -13,7 +13,7 @@
  *
  * Features:
  *   - Read Exif Information
- *   - Extract and display emdedded thumbnails
+ *   - Extract and display embedded thumbnails
  *
  *  Tested With
 
@@ -621,6 +621,7 @@ class phpExifReader {
         }
         fclose($fp);
         $this->newFile = 0;
+        return null;
     }
 
     /**

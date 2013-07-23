@@ -57,9 +57,9 @@ class HttpResponse
      * Перенаправляет на новый адрес
      *
      * @param string $url      адрес для переадресации
-     * @param array  $params   Associative array of query parameters (not implemented yet!)
-     * @param bool   $session  Whether to append session information (not implemented yet!)
-     * @param int    $status   код HTTP
+     * @param array $params   Associative array of query parameters (not implemented yet!)
+     * @param bool $session  Whether to append session information (not implemented yet!)
+     * @param int $status   код HTTP
      *
      * @return bool  FALSE or exits on success with the specified redirection status code
      *
@@ -144,9 +144,11 @@ PAGE;
      */
     function __construct($body = null)
     {
-        if (!is_null($body)) $this->body = $body;
+        if (!is_null($body))
+        {
+            $this->body = $body;
+        }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Magic property getter
@@ -155,16 +157,18 @@ PAGE;
      */
     public function __get($property)
     {
-        switch ($property) {
-
+        switch ($property)
+        {
             case 'headers':
-                if (!$this->headers) $this->headers = new HttpHeaders();
+                if (!$this->headers)
+                {
+                    $this->headers = new HttpHeaders();
+                }
                 return $this->headers;
                 break;
-
         }
+        return null;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Set response body
@@ -174,17 +178,17 @@ PAGE;
     {
         $this->body = $body;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Send reponse
+     * Send response
      */
     public function send()
     {
-        if ($this->headers) $this->headers->send();
+        if ($this->headers)
+        {
+            $this->headers->send();
+        }
         echo $this->body;
     }
-    //-----------------------------------------------------------------------------
-
 }
 
