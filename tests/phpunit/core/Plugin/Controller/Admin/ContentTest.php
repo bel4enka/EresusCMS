@@ -33,6 +33,7 @@ require_once TESTS_SRC_DIR . '/core/Plugin/Controller/Abstract.php';
 require_once TESTS_SRC_DIR . '/core/Plugin/Controller/Admin.php';
 require_once TESTS_SRC_DIR . '/core/CMS/Controller/Admin/ContentInterface.php';
 require_once TESTS_SRC_DIR . '/core/Plugin/Controller/Admin/Content.php';
+require_once TESTS_SRC_DIR . '/core/CMS/Exception.php';
 require_once TESTS_SRC_DIR . '/core/CMS/Exception/NotFound.php';
 
 /**
