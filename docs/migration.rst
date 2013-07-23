@@ -5,12 +5,14 @@
 -----------------
 
 * В :doc:`шаблонах страниц </markup/page-templates>` теперь можно использовать Dwoo.
-* Библиотека `jQuery <http://jquery.com/>`_ обновлена до 1.10.2
-* Плагин `jquery-cookie <https://github.com/carhartl/jquery-cookie>`_ обновлён до 1.3.1
-* Библиотека `jQuery UI <http://jqueryui.com/>`_ обновлена до 1.10.3
-* Библиотека `Webshim <https://github.com/aFarkas/webshim/>`_ обновлена до 1.10.10
+* Библиотека `jQuery <http://jquery.com/>`_ обновлена до 1.10.2.
+* Плагин `jquery-cookie <https://github.com/carhartl/jquery-cookie>`_ обновлён до 1.3.1.
+* Библиотека `jQuery UI <http://jqueryui.com/>`_ обновлена до 1.10.3.
+* Библиотека `Webshim <https://github.com/aFarkas/webshim/>`_ обновлена до 1.10.10.
 * Библиотека Webshim в АИ теперь доступна всегда (т. е. её не надо больше подключать самостоятельно).
-* Библиотека `Botobor <https://github.com/mekras/botobor>`_ до обновлена 0.4.0
+* Библиотека `Botobor <https://github.com/mekras/botobor>`_ до обновлена 0.4.0.
+* Конструкция «$(const:XXX)» объявлена устаревшей.
+* Конструкция «$(var:XXX)» объявлена устаревшей.
 
 Для разработчиков расширений
 ----------------------------

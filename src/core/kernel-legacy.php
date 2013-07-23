@@ -40,17 +40,57 @@ define('CMSNAME', 'Eresus');
  * @deprecated с 3.01 используйте {@link Eresus_CMS::$version}
  */
 define('CMSVERSION', '${product.version}');
-define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
-define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '${build.date}'); # Дата обновления ядра
+/**
+ * Веб-сайт
+ *
+ * @deprecated с 3.01
+ */
+define('CMSLINK', 'http://eresus.ru/');
 
-# Уровни доступа
-define('ROOT',   1); # Главный администратор
-define('ADMIN',  2); # Администратор
-define('EDITOR', 3); # Редактор
-define('USER',   4); # Пользователь
-define('GUEST',  5); # Гость (не зарегистрирован)
+/**
+ * Имя ядра
+ *
+ * @deprecated с 3.01
+ */
+define('KERNELNAME', 'ERESUS');
+
+/**
+ * Дата обновления ядра
+ *
+ * @deprecated с 3.01
+ */
+define('KERNELDATE', '${build.date}');
+
+/**
+ * Уровень доступа «Главный администратор»
+ * @var int
+ */
+define('ROOT',   1);
+
+/**
+ * Уровень доступа «Администратор»
+ * @var int
+ */
+define('ADMIN',  2);
+
+/**
+ * Уровень доступа «Редактор»
+ * @var int
+ */
+define('EDITOR', 3);
+
+/**
+ * Уровень доступа «Пользователь»
+ * @var int
+ */
+define('USER',   4);
+
+/**
+ * Уровень доступа «Гость (не зарегистрирован)»
+ * @var int
+ */
+define('GUEST',  5);
 
 
 
@@ -62,10 +102,11 @@ define('GUEST',  5); # Гость (не зарегистрирован)
  * @return mixed
  *
  * @since 2.14
+ * @deprecated с 3.01
  */
 function __macroConst(array $matches)
 {
-	return constant($matches[1]);
+    return constant($matches[1]);
 }
 
 /**
@@ -76,15 +117,16 @@ function __macroConst(array $matches)
  * @return mixed
  *
  * @since 2.14
+ * @deprecated с 3.01
  */
 function __macroVar(array $matches)
 {
-	$result = $GLOBALS[$matches[2]];
-	if (!empty($matches[3]))
-	{
-		@eval('$result = $result'.$matches[3].';');
-	}
-	return $result;
+    $result = $GLOBALS[$matches[2]];
+    if (!empty($matches[3]))
+    {
+        @eval('$result = $result'.$matches[3].';');
+    }
+    return $result;
 }
 
 /**
