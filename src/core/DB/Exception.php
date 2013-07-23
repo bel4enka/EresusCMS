@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация «Запрошенный адрес не найден»
+ * Исключительная ситуация при работе с БД
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,12 +27,12 @@
  */
 
 /**
- * Исключительная ситуация «Запрошенный адрес не найден»
+ * Исключительная ситуация при работе с БД
  *
  * @package Eresus
  * @since 3.01
  */
-class Eresus_CMS_Exception_NotFound extends Eresus_CMS_Exception
+class Eresus_DB_Exception extends RuntimeException
 {
 }
 

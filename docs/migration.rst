@@ -70,7 +70,10 @@
 * `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_
 * `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_
 * `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_
+* `Eresus_Exception_CorruptedComponent <api/classes/Eresus_Exception_CorruptedComponent.html>`_
+* `Eresus_CMS_Exception <api/classes/Eresus_CMS_Exception.html>`_
 * `Eresus_CMS_Exception_NotFound <api/classes/Eresus_CMS_Exception_NotFound.html>`_
+* `Eresus_DB_Exception <api/classes/Eresus_DB_Exception.html>`_
 * `Eresus_Plugin_Component <api/classes/Eresus_Plugin_Component.html>`_
 * `Eresus_Plugin_Controller_Abstract <api/classes/Eresus_Plugin_Controller_Abstract.html>`_
 * `Eresus_Plugin_Controller_Admin <api/classes/Eresus_Plugin_Controller_Admin.html>`_

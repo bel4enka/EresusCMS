@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация «Запрошенный адрес не найден»
+ * Исключительная ситуация «Программный компонент повреждён»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,12 +27,14 @@
  */
 
 /**
- * Исключительная ситуация «Запрошенный адрес не найден»
+ * Исключительная ситуация «Программный компонент повреждён»
+ *
+ * Вбрасывается если файл CMS или расширения повреждён (имеет неправильный формат) или не найден.
  *
  * @package Eresus
  * @since 3.01
  */
-class Eresus_CMS_Exception_NotFound extends Eresus_CMS_Exception
+class Eresus_Exception_ComponentCorrupted extends RuntimeException
 {
 }
 

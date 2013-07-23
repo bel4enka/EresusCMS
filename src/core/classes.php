@@ -183,7 +183,7 @@ class Plugins
             }
             else
             {
-                FatalError(sprintf(errClassNotFound, $className));
+                ErrorMessage(sprintf(errClassNotFound, $className));
             }
         }
         else
@@ -275,7 +275,8 @@ class Plugins
         {
             Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
                 $className, $name, $filename);
-            FatalError(sprintf(errClassNotFound, $name));
+            ErrorMessage(sprintf(errClassNotFound, $name));
+            return false;
         }
 
         // Заносим экземпляр в реестр

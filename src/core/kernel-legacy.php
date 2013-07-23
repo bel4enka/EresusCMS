@@ -135,44 +135,45 @@ function __macroVar(array $matches)
  * @param string $msg  Текст сообщения
  *
  * @since 2.00
+ * @deprecated с 3.01 используйте исключения
  */
 function FatalError($msg)
 {
-	if (PHP_SAPI == 'cli')
-	{
-		$result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg))."\n";
-	}
-	else
-	{
-		$result =
-			"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
-			"<html>\n".
-			"<head>\n".
-			"  <title>".errError."</title>\n".
-			"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\">\n".
-			"</head>\n\n".
-			"<body>\n".
-			"  <div align=\"center\" style=\"font-family: Arial, Helvetica, sans-serif;\">\n".
-			"    <table cellspacing=\"0\" style=\"border-style: solid; " .
-				"border-color: #e88 #800 #800 #e88; min-width: 500px;\">\n".
-			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
-				"border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; " .
-				"font-weight: bold; text-align: center; font-size: 10pt;\">".errError."</td></tr>\n".
-			"      <tr><td style=\"border-style: solid; border-width: 2px; " .
-				"border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; " .
-				"font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
-			"        <p style=\"text-align: center\">".$msg."</p>\n".
-			"        <div align=\"center\"><br /><a href=\"javascript:history.back()\" " .
-				"style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; " .
-				"height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; " .
-				"border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
-			"      </td></tr>\n".
-			"    </table>\n".
-			"  </div>\n".
-			"</body>\n".
-			"</html>";
-	}
-	die($result);
+    if (PHP_SAPI == 'cli')
+    {
+        $result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg))."\n";
+    }
+    else
+    {
+        $result =
+            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
+            "<html>\n".
+            "<head>\n".
+            "  <title>".errError."</title>\n".
+            "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\">\n".
+            "</head>\n\n".
+            "<body>\n".
+            "  <div align=\"center\" style=\"font-family: Arial, Helvetica, sans-serif;\">\n".
+            "    <table cellspacing=\"0\" style=\"border-style: solid; " .
+            "border-color: #e88 #800 #800 #e88; min-width: 500px;\">\n".
+            "      <tr><td style=\"border-style: solid; border-width: 2px; " .
+            "border-color: #800 #e88 #e88 #800; background-color: black; color: yellow; " .
+            "font-weight: bold; text-align: center; font-size: 10pt;\">".errError."</td></tr>\n".
+            "      <tr><td style=\"border-style: solid; border-width: 2px; " .
+            "border-color: #800 #e88 #e88 #800; background-color: #c00; padding: 10; color: white; " .
+            "font-weight: bold; font-family: verdana, tahoma, Geneva, sans-serif; font-size: 8pt;\">\n".
+            "        <p style=\"text-align: center\">".$msg."</p>\n".
+            "        <div align=\"center\"><br /><a href=\"javascript:history.back()\" " .
+            "style=\"font-weight: bold; color: black; text-decoration: none; font-size: 10pt; " .
+            "height: 20px; background-color: #aaa; border-style: solid; border-width: 1px; " .
+            "border-color: #ccc #000 #000 #ccc; padding: 0 2em;\">".strReturn."</a></div>\n".
+            "      </td></tr>\n".
+            "    </table>\n".
+            "  </div>\n".
+            "</body>\n".
+            "</html>";
+    }
+    die($result);
 }
 
 /**
@@ -1354,17 +1355,21 @@ class Eresus
 
 	/**
 	 * Читает настройки
+     *
+     * @throws Eresus_Exception_ComponentCorrupted
 	 */
-	private function init_settings()
+	private function initSettings()
 	{
-		$filename = $this->froot.'cfg/settings.php';
+		$filename = $this->froot . 'cfg/settings.php';
 		if (is_file($filename))
 		{
-			include_once($filename);
+            /** @noinspection PhpIncludeInspection */
+            include_once $filename;
 		}
 		else
 		{
-			FatalError("Settings file '$filename' not found!");
+			throw new Eresus_Exception_ComponentCorrupted(
+                sprintf('Settings file "%s" not found!', $filename));
 		}
 	}
 
@@ -1479,8 +1484,10 @@ class Eresus
 
 	/**
 	 * Инициализация локали
+     *
+     * @throws Eresus_Exception_ComponentCorrupted
 	 */
-	private function init_locale()
+	private function initLocale()
 	{
 		global $locale;
 
@@ -1491,28 +1498,34 @@ class Eresus
 		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
 		if (is_file($filename))
 		{
-			include_once($filename);
+            /** @noinspection PhpIncludeInspection */
+            include_once $filename;
 		}
 		else
 		{
-			FatalError("Locale file '$filename' not found!");
+            throw new Eresus_Exception_ComponentCorrupted(
+                sprintf('Locale file "%s" not found!', $filename));
 		}
 	}
 
 	/**
 	 * Подключение базовых классов
+     *
+     * @throws Eresus_Exception_ComponentCorrupted
 	 */
-	private function init_classes()
+	private function initClasses()
 	{
 		# Подключение строковых данных
 		$filename = $this->froot.'core/classes.php';
 		if (is_file($filename))
 		{
-			include_once($filename);
+            /** @noinspection PhpIncludeInspection */
+            include_once $filename;
 		}
 		else
 		{
-			FatalError("Classes file '$filename' not found!");
+            throw new Eresus_Exception_ComponentCorrupted(
+                sprintf('Classes file "%s" not found!', $filename));
 		}
 		if ($this->conf['backward']['TListContentPlugin'])
 		{
@@ -1544,19 +1557,23 @@ class Eresus
 
 	/**
 	 * Подключение к источнику данных
+     *
+     * @throws Eresus_Exception_ComponentCorrupted
 	 */
-	private function init_datasource()
+	private function initDataSource()
 	{
         $className = $this->conf['db']['engine'];
 		if (class_exists($className))
 		{
 			$this->db = new $className;
 			$this->db->init($this->conf['db']['host'], $this->conf['db']['user'],
-				$this->conf['db']['password'], $this->conf['db']['name'], $this->conf['db']['prefix']);
+				$this->conf['db']['password'], $this->conf['db']['name'],
+                $this->conf['db']['prefix']);
 		}
 		else
 		{
-			FatalError(sprintf(errLibNotFound, $this->conf['db']['engine']));
+            throw new Eresus_Exception_ComponentCorrupted(
+                sprintf('Library "%s" not found!', $this->conf['db']['engine']));
 		}
 	}
 
@@ -1676,17 +1693,17 @@ class Eresus
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__) . '/lib' . PATH_SEPARATOR . get_include_path());
 		# Читаем настройки
-		$this->init_settings();
+		$this->initSettings();
 		# Первичный разбор запроса
 		$this->init_request();
 		# Настройка локали
-		$this->init_locale();
+		$this->initLocale();
 		# Подключение базовых классов
-		$this->init_classes();
+		$this->initClasses();
 		# Инициализация расширений
 		$this->init_extensions();
 		# Подключение к источнику данных
-		$this->init_datasource();
+		$this->initDataSource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
 		# Проверка сессии

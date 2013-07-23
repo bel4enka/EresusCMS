@@ -81,6 +81,8 @@ class MySQL
 	 * @param string $password  Пароль пользователя
 	 * @param string $source    Имя источника данных
 	 * @param string $prefix
+     *
+     * @throws Eresus_DB_Exception
 	 *
 	 * @return bool  Результат соединения
 	 * @deprecated
@@ -98,13 +100,10 @@ class MySQL
 		}
 		catch (DBRuntimeException $e)
 		{
-			Core::logException($e);
-			FatalError("Can not connect to MySQL server. See log for more info.");
+			throw new Eresus_DB_Exception('Can not connect to MySQL server');
 		}
-
 		return true;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает объект-одиночку схемы БД
