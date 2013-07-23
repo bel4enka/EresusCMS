@@ -616,7 +616,7 @@ class TClientUI extends Eresus_CMS_Page_Client
      * @param string|Template $template  имя файла шаблона или уже созданный объект шаблона
      * @param string          $type      тип шаблона, только если $template — строка
      *
-     * @throws InvalidArgumentException
+     * @throws Eresus_Exception_InvalidArgumentType
      *
      * @since 3.01
      */
@@ -625,10 +625,8 @@ class TClientUI extends Eresus_CMS_Page_Client
         if (!is_string($template)
             && (!is_object($template) || !($template instanceof Template)))
         {
-            throw new InvalidArgumentException(
-                sprintf('Argument 1 of %s expected to be a string or an instance of Template',
-                    __METHOD__)
-            );
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
+                'string or an instance of Template', $template);
         }
         if (is_string($template))
         {

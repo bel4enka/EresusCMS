@@ -128,14 +128,14 @@ class Eresus_Site
      *
      * @param string $title  новый заголовок
      *
-     * @throws InvalidArgumentException
+     * @throws Eresus_Exception_InvalidArgumentType
      * @since 3.01
      */
     public function setTitle($title)
     {
         if (!is_string($title))
         {
-            throw Eresus_Exception_InvalidArgument::factory(__METHOD__, 1, 'string', $title);
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string', $title);
         }
         $this->title = $title;
     }
@@ -145,15 +145,15 @@ class Eresus_Site
      *
      * @param string $description  новое описание
      *
-     * @throws InvalidArgumentException
+     * @throws Eresus_Exception_InvalidArgumentType
      *
-     * Since 3.01
+     * @since 3.01
      */
     public function setDescription($description)
     {
         if (!is_string($description))
         {
-            throw Eresus_Exception_InvalidArgument::factory(__METHOD__, 1, 'string', $description);
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string', $description);
         }
         $this->description = $description;
     }
@@ -164,15 +164,15 @@ class Eresus_Site
      *
      * @param string $keywords  новый список ключевых слов
      *
-     * @throws InvalidArgumentException
+     * @throws Eresus_Exception_InvalidArgumentType
      *
-     * Since 3.01
+     * @since 3.01
      */
     public function setKeywords($keywords)
     {
         if (!is_string($keywords))
         {
-            throw Eresus_Exception_InvalidArgument::factory(__METHOD__, 1, 'string', $keywords);
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string', $keywords);
         }
         $this->keywords = $keywords;
     }

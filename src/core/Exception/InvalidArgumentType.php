@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация «Неправильный аргумент»
+ * Исключительная ситуация «Неправильный тип аргумента»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,12 +27,12 @@
  */
 
 /**
- * Исключительная ситуация «Неправильный аргумент»
+ * Исключительная ситуация «Неправильный тиа аргумента»
  *
  * @package Eresus
  * @since 3.01
  */
-class Eresus_Exception_InvalidArgument extends InvalidArgumentException
+class Eresus_Exception_InvalidArgumentType extends InvalidArgumentException
 {
     /**
      * Фабрика исключений
@@ -42,7 +42,7 @@ class Eresus_Exception_InvalidArgument extends InvalidArgumentException
      * @param string $expectedType  ожидаемый тип аргумента
      * @param mixed  $actualArg     аргумент, вызвавший ошибку
      *
-     * @return Eresus_Exception_InvalidArgument
+     * @return Eresus_Exception_InvalidArgumentType
      */
     public static function factory($method, $argNum, $expectedType, $actualArg)
     {

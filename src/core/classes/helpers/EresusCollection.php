@@ -61,16 +61,14 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
      *
      * @return EresusCollection
      *
-     * @throws InvalidArgumentException если $data не массив
+     * @throws Eresus_Exception_InvalidArgumentType  если $data не массив
      * @since 2.15
      */
     public function __construct($data = array())
     {
         if (!is_array($data))
         {
-            throw new InvalidArgumentException(
-                'First argument of EresusCollection::__construct must be an array and not ' .
-                gettype($data));
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'array', $data);
         }
         $this->data = $data;
     }
@@ -181,15 +179,14 @@ class EresusCollection implements ArrayAccess, Countable, Serializable
      *
      * @return void
      *
-     * @throws InvalidArgumentException если у ключа не скалярное значение
+     * @throws Eresus_Exception_InvalidArgumentType  если у ключа не скалярное значение
      * @since 2.15
      */
     protected function checkOffsetType($offset)
     {
         if (!is_scalar($offset))
         {
-            throw new InvalidArgumentException('Index must be a scalar value and not ' .
-            gettype($offset));
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'scalar', $offset);
         }
     }
 }

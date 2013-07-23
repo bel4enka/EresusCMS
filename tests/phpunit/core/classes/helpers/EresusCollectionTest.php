@@ -25,11 +25,10 @@
  * @package EresusCMS
  * @subpackage Tests
  * @author Михаил Красильников <mk@eresus.ru>
- *
- * $Id$
  */
 
 require_once TESTS_SRC_DIR . '/core/classes/helpers/EresusCollection.php';
+require_once TESTS_SRC_DIR . '/core/Exception/InvalidArgumentType.php';
 
 /**
  * @package EresusCMS
@@ -48,7 +47,7 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers EresusCollection::__construct
-     * @expectedException InvalidArgumentException
+     * @expectedException Eresus_Exception_InvalidArgumentType
      */
     public function test_construct_not_array()
     {
@@ -74,7 +73,7 @@ class EresusCollectionTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers EresusCollection::checkOffsetType
-     * @expectedException InvalidArgumentException
+     * @expectedException Eresus_Exception_InvalidArgumentType
      */
     public function test_offsetExists_nonScalar()
     {
