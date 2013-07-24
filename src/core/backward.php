@@ -38,3 +38,14 @@ class Plugin extends Eresus_Plugin
 {
 }
 
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
+ * @deprecated с 3.01 используйте {@link Eresus_Template}
+ */
+class Template extends Eresus_Template
+{
+}
+

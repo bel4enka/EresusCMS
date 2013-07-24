@@ -39,6 +39,8 @@
 
 * Класс Plugin переименован в `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_. Для обратной
   совместимости имя Plugin оставлено как псевдоним к Eresus_Plugin.
+* Класс Template переименован в `Eresus_Template <api/classes/Eresus_Template.html>`_. Для обратной
+  совместимости имя Template оставлено как псевдоним к Eresus_Template.
 * Функция ``eresus_log`` объявлена устаревшей, вместо неё следует использовать
   `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_.
 * Библиотека Webshim в АИ теперь доступна всегда (т. е. её не надо больше подключать самостоятельно).

@@ -89,7 +89,7 @@ class Eresus_Plugin_TemplatesTest extends PHPUnit_Framework_TestCase
     {
         $templates = new Eresus_Plugin_Templates($this->plugin);
         $tmpl = $templates->admin('Foo.html');
-        $this->assertInstanceOf('Template', $tmpl);
+        $this->assertInstanceOf('Eresus_Template', $tmpl);
         $this->assertEquals('admin-foo', $tmpl->getSource());
     }
 
@@ -101,7 +101,7 @@ class Eresus_Plugin_TemplatesTest extends PHPUnit_Framework_TestCase
     {
         $templates = new Eresus_Plugin_Templates($this->plugin);
         $tmpl = $templates->client('Foo.html');
-        $this->assertInstanceOf('Template', $tmpl);
+        $this->assertInstanceOf('Eresus_Template', $tmpl);
         $this->assertEquals('client-foo', $tmpl->getSource());
     }
 
