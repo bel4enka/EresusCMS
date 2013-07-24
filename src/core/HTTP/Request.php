@@ -35,22 +35,22 @@
 class Eresus_HTTP_Request
 {
     /**
-     * Parsed HTTP request
+     * Разобранный запрос
      * @var array
      */
     protected $request = array();
 
     /**
-     * Local URI root
+     * Локальный корень адресов
      * @var string
-     * @see getLocal
+     * @see getLocal()
      */
     protected $localRoot = '';
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param string|Eresus_HTTP_Request $source  Source for request
+     * @param string|Eresus_HTTP_Request $source  запрос в виде объекта или строки
      *
      * @throws Eresus_Exception_InvalidArgumentType
      */
@@ -70,7 +70,7 @@ class Eresus_HTTP_Request
                     parse_str($this->getQuery(), $this->request['args']);
                     if (!get_magic_quotes_gpc())
                     {
-                        /* Emulating parse_str behavior... */
+                        /* Имитируем поведение parse_str */
                         foreach ($this->request['args'] as $key => $value)
                         {
                             $this->request['args'][$key] = addslashes($value);
@@ -78,7 +78,7 @@ class Eresus_HTTP_Request
                     }
                     if ($this->request['args'] && get_magic_quotes_gpc())
                     {
-                        $this->request['args'] = ecStripSlashes($this->request['args']);
+                        $this->request['args'] = array_map('stripslashes', $this->request['args']);
                     }
                 }
                 break;
@@ -101,7 +101,7 @@ class Eresus_HTTP_Request
 
                     if ($this->request['args'] && get_magic_quotes_gpc())
                     {
-                        $this->request['args'] = ecStripSlashes($this->request['args']);
+                        $this->request['args'] = array_map('stripslashes', $this->request['args']);
                     }
                 }
                 break;
@@ -112,7 +112,8 @@ class Eresus_HTTP_Request
     }
 
     /**
-     * Return current request as array
+     * Возвращает разобранные части запроса
+     *
      * @return array
      * @internal
      * @ignore
@@ -121,48 +122,45 @@ class Eresus_HTTP_Request
     {
         return $this->request;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get protocol scheme
-     * @return string
+     * Возвращает схему (протокол)
+     *
+     * @return string  «http» или «https»
      */
     public function getScheme()
     {
-        if (!isset($this->request['scheme'])) {
-
+        if (!isset($this->request['scheme']))
+        {
             $this->request['scheme'] = 'http';
-
         }
 
         $result = $this->request['scheme'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get request method
-     * @return string
+     * Возвращает метод запроса
+     *
+     * @return string  GET, POST…
      */
     public function getMethod()
     {
-        if (!isset($this->request['method'])) {
-
+        if (!isset($this->request['method']))
+        {
             $this->request['method'] = isset($_SERVER['REQUEST_METHOD']) ?
                 strtoupper($_SERVER['REQUEST_METHOD']) :
                 'GET';
-
         }
 
         $result = $this->request['method'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Set request method
+     * Задаёт метод запроса
      *
      * @param string $value
      */
@@ -170,107 +168,97 @@ class Eresus_HTTP_Request
     {
         $this->request['method'] = $value;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get host from request
+     * Возвращает хост
+     *
      * @return string
      */
     public function getHost()
     {
-        if (!isset($this->request['host'])) {
-
+        if (!isset($this->request['host']))
+        {
             $this->request['host'] = isset($_SERVER['HTTP_HOST']) ?
                 strtolower($_SERVER['HTTP_HOST']) :
                 'localhost';
-
         }
 
         $result = $this->request['host'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get path (directory and filename) from request
+     * Возвращает путь (папку и имя файла) из запроса
      * @return string
      */
     public function getPath()
     {
-        if (!isset($this->request['path'])) {
-
+        if (!isset($this->request['path']))
+        {
             $this->request['path'] = '/';
-
         }
 
         $result = $this->request['path'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get directory name from request
+     * Возвращает папку из запроса
+     *
+     * Возвращаемый путь не заканчивается слэшем.
+     *
      * @return string
      */
     public function getDirectory()
     {
-        if (!isset($this->request['directory'])) {
-
-            /*
-             * dirname can ommit last directory if path does not contain file name.
-             * To avoid this we can check trailing slash.
-             */
+        if (!isset($this->request['directory']))
+        {
             $path = $this->getPath();
-            $this->request['directory'] = substr($path, -1) == '/' ? $path : dirname($path) . '/';
-
+            $this->request['directory'] = dirname($path);
         }
 
         $result = $this->request['directory'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get file name (without directory) from request
+     * Возвращает имя файла (без пути) из запроса
+     *
      * @return string
      */
     public function getFile()
     {
-        if (!isset($this->request['file'])) {
-
+        if (!isset($this->request['file']))
+        {
             $this->request['file'] = basename($this->getPath());
-
         }
 
         $result = $this->request['file'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Get query (after the question mark "?")
+     * Возвращает аргументы GET (часть URL после знака "?")
      * @return string
      */
     public function getQuery()
     {
-        if (!isset($this->request['query'])) {
-
+        if (!isset($this->request['query']))
+        {
             $this->request['query'] = '';
-
         }
 
         $result = $this->request['query'];
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Return all values of GET or POST arguments
+     * Возвращает все значения аргументов GET и POST
      * @return array
      */
     public function getArgs()
@@ -295,7 +283,9 @@ class Eresus_HTTP_Request
     public function arg($arg, $filter = null)
     {
         if (!isset($this->request['args'][$arg]))
+        {
             return null;
+        }
 
         $result =  $this->request['args'][$arg];
 
@@ -303,13 +293,15 @@ class Eresus_HTTP_Request
         {
             case is_callable($filter, false, $callback):
                 if (is_array($filter) && is_object($filter[0]))
+                {
                     $result = $filter[0]->$filter[1]($result);
+                }
                 else
+                {
                     $result = $callback($result);
+                }
                 break;
-
             case is_string($filter):
-
                 switch ($filter)
                 {
                     case 'int':
@@ -325,7 +317,6 @@ class Eresus_HTTP_Request
                         $result = preg_replace($filter, '', $result);
                         break;
                 }
-
                 break;
         }
 
@@ -354,7 +345,6 @@ class Eresus_HTTP_Request
     {
         $this->request['args'][$arg] = $value;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Get local part of URI
@@ -365,12 +355,16 @@ class Eresus_HTTP_Request
         $result = $this->request['local'];
 
         if ($this->localRoot && strpos($result, $this->localRoot) === 0)
+        {
             $result = substr($result, strlen($this->localRoot));
+        }
 
-        if ($result === false) return '';
+        if ($result === false)
+        {
+            return '';
+        }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Return full URI
@@ -379,10 +373,12 @@ class Eresus_HTTP_Request
     public function __toString()
     {
         $request = $this->getScheme().'://'.$this->getHost().$this->getPath();
-        if ($this->getQuery()) $request .= '?' . $this->getQuery();
+        if ($this->getQuery())
+        {
+            $request .= '?' . $this->getQuery();
+        }
         return $request;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Set local root
@@ -406,7 +402,6 @@ class Eresus_HTTP_Request
     {
         $this->localRoot = $root;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Get local root
