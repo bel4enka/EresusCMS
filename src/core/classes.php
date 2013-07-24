@@ -477,7 +477,7 @@ class Plugins
  *
  * @package Eresus
  */
-class ContentPlugin extends Plugin
+class ContentPlugin extends Eresus_Plugin
 {
     /**
      * Конструктор
