@@ -415,13 +415,12 @@ implements Iterator, Countable
 	 */
 	public function render()
 	{
-		$tmpl = new Template($this->getTemplate());
+		$tmpl = new Eresus_Template($this->getTemplate());
 
 		$data = array('pagination' => $this);
 
 		return $tmpl->compile($data);
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Подготавливает свойство $urlTemplate для использования

@@ -257,7 +257,7 @@ class Eresus_Template_Service
      *
      * @throws RuntimeException
      *
-     * @return Template
+     * @return Eresus_Template
      *
      * @since 3.01
      */
@@ -270,7 +270,7 @@ class Eresus_Template_Service
             throw new RuntimeException('Template not exists: ' . $path);
         }
 
-        $tmpl = new Template('templates/' . $path);
+        $tmpl = new Eresus_Template('templates/' . $path);
 
         return $tmpl;
     }

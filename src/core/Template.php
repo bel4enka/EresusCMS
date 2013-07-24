@@ -55,7 +55,7 @@ class Eresus_Template
      *
      * @param string $filename  имя файла шаблона
      *
-     * @return Template
+     * @return Eresus_Template
      *
      * @since 3.01
      */

@@ -170,7 +170,7 @@ class Templates
      * @param string $name   имя шаблона
      * @param string $type   тип шаблона (соответствует поддиректории в /templates)
      *
-     * @return Template|null  шаблон или null, если шаблон не найден
+     * @return Eresus_Template|null  шаблон или null, если шаблон не найден
      *
      * @since 3.01
      */
@@ -181,7 +181,7 @@ class Templates
         {
             return null;
         }
-        $template = new Template();
+        $template = new Eresus_Template();
         $template->setSource($contents);
         return $template;
     }

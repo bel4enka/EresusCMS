@@ -353,7 +353,7 @@
  *  $profile->orgName = $form->getValue('orgName');
  * </code>
  *
- * @see Template
+ * @see Eresus_Template
  *
  * @package Eresus
  */
@@ -407,7 +407,7 @@ class EresusForm
 	/**
 	 * Имя шаблона формы
 	 *
-	 * @var Template
+	 * @var Eresus_Template
 	 */
 	protected $template;
 
@@ -1297,7 +1297,7 @@ class EresusForm
 	 */
 	protected function loadXML()
 	{
-		$tmpl = new Template($this->template);
+		$tmpl = new Eresus_Template($this->template);
 		$html = $tmpl->compile($this->values);
 
 		$imp = new DOMImplementation;
@@ -1313,7 +1313,6 @@ class EresusForm
 		$this->xml->encoding = 'utf-8';
 		$this->xml->normalize();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Получить дочерние узлы в виде списка

@@ -133,15 +133,14 @@ class AdminUITheme
      *
      * @param string $name
      *
-     * @return Template
+     * @return Eresus_Template
      */
     public function getTemplate($name)
     {
         $filename = $this->getResource($name);
-        $template = new Template($filename);
+        $template = new Eresus_Template($filename);
         return $template;
     }
-    //-----------------------------------------------------------------------------
 }
 
 
@@ -1327,7 +1326,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             $data['controlMenu'] = $this->renderControlMenu();
             $data['user'] = Eresus_CMS::getLegacyKernel()->user;
 
-            $tmpl = new Template('admin/themes/default/page.default.html');
+            $tmpl = new Eresus_Template('admin/themes/default/page.default.html');
             $response = new Eresus_HTTP_Response($tmpl->compile($data), 200, $this->headers);
         }
 

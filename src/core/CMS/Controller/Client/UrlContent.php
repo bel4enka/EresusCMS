@@ -63,7 +63,7 @@ class Eresus_CMS_Controller_Client_UrlContent
      */
     public function getHtml()
     {
-        $tmpl = new Template();
+        $tmpl = new Eresus_Template();
         $tmpl->setSource($this->page->content);
         $html = $tmpl->compile();
         $response = new Eresus_HTTP_Redirect($html);

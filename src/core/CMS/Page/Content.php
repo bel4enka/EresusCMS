@@ -97,7 +97,7 @@ class Eresus_CMS_Page_Content
     {
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
         $plugins = $legacyKernel->plugins;
-        $tmpl = new Template();
+        $tmpl = new Eresus_Template();
         $tmpl->setSource($this->content);
         $content = $tmpl->compile();
         $content = $plugins->clientOnContentRender($content);

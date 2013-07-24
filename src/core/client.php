@@ -57,7 +57,7 @@ class TClientUI extends Eresus_CMS_Page_Client
      * использует эту недокументированную возможность, вы можете вместо чтения свойства $template
      * использовать метод {@link getTemplateName()}.
      *
-     * @var Template
+     * @var Eresus_Template
      * @since 3.01
      */
     private $template;
@@ -613,8 +613,8 @@ class TClientUI extends Eresus_CMS_Page_Client
      * <b>Обратите внимание!</b> Этот метод не влияет на результат, возвращаемый
      * {@link getTemplateName()}.
      *
-     * @param string|Template $template  имя файла шаблона или уже созданный объект шаблона
-     * @param string          $type      тип шаблона, только если $template — строка
+     * @param string|Eresus_Template $template  имя файла шаблона или уже созданный объект шаблона
+     * @param string                 $type      тип шаблона, только если $template — строка
      *
      * @throws Eresus_Exception_InvalidArgumentType
      *
@@ -623,10 +623,10 @@ class TClientUI extends Eresus_CMS_Page_Client
     public function setTemplate($template, $type = '')
     {
         if (!is_string($template)
-            && (!is_object($template) || !($template instanceof Template)))
+            && (!is_object($template) || !($template instanceof Eresus_Template)))
         {
             throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
-                'string or an instance of Template', $template);
+                'string or an instance of Eresus_Template', $template);
         }
         if (is_string($template))
         {

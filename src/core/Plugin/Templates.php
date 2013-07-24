@@ -55,14 +55,14 @@ class Eresus_Plugin_Templates
      *
      * @param string $filename  имя файла шаблона относительно папки административных шаблонов
      *
-     * @return Template
+     * @return Eresus_Template
      *
      * @since 3.01
      */
     public function admin($filename)
     {
         $path = "ext/{$this->plugin->getName()}/templates/admin/$filename";
-        return Template::loadFromFile($path);
+        return Eresus_Template::loadFromFile($path);
     }
 
     /**
@@ -70,14 +70,14 @@ class Eresus_Plugin_Templates
      *
      * @param string $filename  имя файла шаблона относительно папки клиентских шаблонов
      *
-     * @return Template
+     * @return Eresus_Template
      *
      * @since 3.01
      */
     public function client($filename)
     {
         $path = $this->composeClientPath($filename);
-        return Template::loadFromFile($path);
+        return Eresus_Template::loadFromFile($path);
     }
 
     /**
