@@ -389,7 +389,7 @@ class TClientUI extends Eresus_CMS_Page_Client
         $this->visible = true;
         $this->type = 'default';
         $this->content = '';
-        $this->setTemplate($code, 'std');
+        $this->setTemplate(strval($code), 'std');
         if (null === $this->template)
         {
             $this->setTemplate('default');
