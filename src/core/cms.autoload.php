@@ -38,6 +38,8 @@ return array(
     'mysql' => 'core/lib/mysql.php',
     'PaginationHelper' => 'core/classes/helpers/PaginationHelper.php',
     'Sections' => 'core/lib/sections.php',
+    'TAdminUI' => 'core/admin.php',
+    'TClientUI' => 'core/client.php',
     'Templates' => 'core/lib/templates.php',
     'WebServer' => 'core/classes/WebServer.php',
     'WebPage' => 'core/classes/WebPage.php',
