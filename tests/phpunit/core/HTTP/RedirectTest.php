@@ -27,12 +27,10 @@
  * @subpackage Tests
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/HTTP/Response.php';
-require_once TESTS_SRC_DIR . '/core/HTTP/Redirect.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 /**
- * Тесты класса Eresus_Plugin_Controller_Admin_Content
+ * Тесты класса Eresus_HTTP_Redirect
  * @package Eresus
  * @subpackage Tests
  */
