@@ -386,16 +386,3 @@ class Eresus_CMS extends Eresus_Application
         TemplateSettings::setGlobalValue('site', $this->site);
     }
 }
-
-
-
-/**
- * Компонент АИ
- *
- * @package Eresus
- */
-class EresusAdminComponent
-{
-
-}
-
