@@ -281,7 +281,7 @@ class TClientUI extends Eresus_CMS_Page_Client
     /**
      * Проводит инициализацию страницы
      */
-    public function init()
+    private function init()
     {
         Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
 
@@ -405,6 +405,7 @@ class TClientUI extends Eresus_CMS_Page_Client
      */
     public function render()
     {
+        $this->init();
         if (arg('HTTP_ERROR'))
         {
             $this->httpError(arg('HTTP_ERROR', 'int'));
