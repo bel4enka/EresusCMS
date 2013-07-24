@@ -40,20 +40,13 @@ class Eresus_CMS extends Eresus_Application
      * @var string
      * 2since 3.01
      */
-    private /** @noinspection PhpUnusedPrivateFieldInspection */ $name = 'Eresus';
+    private $name = 'Eresus';
     /**
      * Версия CMS
      * @var string
      * @since 3.01
      */
-    private /** @noinspection PhpUnusedPrivateFieldInspection */ $version = '${product.version}';
-
-    /**
-     * HTTP-запрос
-     *
-     * @var HttpRequest
-     */
-    protected $request;
+    private $version = '${product.version}';
 
     /**
      * Описание сайта
@@ -89,25 +82,20 @@ class Eresus_CMS extends Eresus_Application
             $this->checkEnvironment();
             $this->createFileStructure();
 
-            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
-
             /* Подключение старого ядра */
+            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
             include_once 'kernel-legacy.php';
 
             /**
              * @global Eresus Eresus
+             * @todo Обратная совместимость — удалить
+             * @deprecated с 3.01 используйте Eresus_Kernel::app()->getLegacyKernel()
              */
             $GLOBALS['Eresus'] = new Eresus;
 
             TemplateSettings::setGlobalValue('cms', $this);
 
             $this->initConf();
-            if (Eresus_CMS::getLegacyKernel()->conf['debug']['enable'])
-            {
-                // Обратная совместимость TODO убрать
-                define('ERESUS_CMS_DEBUG', true);
-            }
-
             $i18n = I18n::getInstance();
             TemplateSettings::setGlobalValue('i18n', $i18n);
             Eresus_CMS::getLegacyKernel()->init();
@@ -277,93 +265,49 @@ class Eresus_CMS extends Eresus_Application
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
-        $this->initWeb();
+        $request = new Eresus_CMS_Request(Eresus_HTTP_Request::createFromGlobals());
+        $request->setSiteRoot($this->detectWebRoot());
 
-        $output = '';
+        // TODO Удалить где-нибудь в 3.03-04
+        TemplateSettings::setGlobalValue('siteRoot', $request->getSiteRoot());
 
-        switch (true)
+        $this->initSite();
+
+        if (substr($request->getPath(), 0, 8) == '/ext-3rd')
         {
-            case substr($this->request->getLocal(), 0, 8) == '/ext-3rd':
-                $this->call3rdPartyExtension();
-                break;
-            case substr($this->request->getLocal(), 0, 6) == '/admin':
-                $output = $this->runWebAdminUI();
-                break;
-            default:
-                $output = $this->runWebClientUI();
-                break;
+            $this->call3rdPartyExtension();
+        }
+        else
+        {
+            if ($request->getDirectory() == '/admin' || $request->getPath() == '/admin.php')
+            {
+                $this->page = new TAdminUI();
+            }
+            else
+            {
+                $this->page = new TClientUI();
+            }
+            $GLOBALS['page'] = $this->page;
+            TemplateSettings::setGlobalValue('page', $this->page);
+            /*$response = */$this->page->render($request);
         }
 
-        echo $output;
+        //$response->send();
     }
 
     /**
-     * Инициализация Web
-     */
-    protected function initWeb()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-
-        $this->request = HTTP::request();
-        $this->detectWebRoot();
-        $this->initSite();
-    }
-
-    /**
-     * Запуск КИ
-     * @return string
-     * @deprecated Это временная функция
-     */
-    protected function runWebClientUI()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
-
-        include 'client.php';
-
-        $GLOBALS['page'] = $this->page = new TClientUI();
-        TemplateSettings::setGlobalValue('page', $this->page);
-        $this->page->init();
-        /*return */$this->page->render();
-    }
-
-    /**
-     * Запуск АИ
-     * @return string
-     * @deprecated Это временная функция
-     */
-    protected function runWebAdminUI()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'This method is temporary.');
-
-        include 'admin.php';
-
-        $GLOBALS['page'] = $this->page = new TAdminUI();
-        TemplateSettings::setGlobalValue('page', $this->page);
-        /*return */$this->page->render();
-    }
-
-    /**
-     * Определение корневого веб-адреса сайта
+     * Определяет и возвращает корневой адрес сайта
      *
-     * Метод определяет корневой адрес сайта и устанавливает соответствующим
-     * образом localRoot объекта EresusCMS::request
+     * @return string
      */
     protected function detectWebRoot()
     {
         $webServer = WebServer::getInstance();
-        $DOCUMENT_ROOT = $webServer->getDocumentRoot();
-        $SUFFIX = $this->getFsRoot();
-        $SUFFIX = substr($SUFFIX, strlen($DOCUMENT_ROOT));
-        $this->request->setLocalRoot($SUFFIX);
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $SUFFIX);
-
-        // TODO Удалить где-нибудь в 3.03-04
-        TemplateSettings::setGlobalValue('siteRoot',
-            $this->request->getScheme() . '://' .
-                $this->request->getHost() .
-                $this->request->getLocalRoot()
-        );
-
+        $documentRoot = $webServer->getDocumentRoot();
+        $suffix = $this->getFsRoot();
+        $suffix = substr($suffix, strlen($documentRoot));
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'detected root: %s', $suffix);
+        return $suffix;
     }
 
     /**
