@@ -36,7 +36,6 @@ return array(
     'DB' => 'core/framework/core/DB/DB.php',
     'DBSettings' => 'core/framework/core/DB/DB.php',
     'DBRuntimeException' => 'core/framework/core/DB/DB.php',
-    'DBQueryException' => 'core/framework/core/DB/DBQueryException.php',
 
     /* Template */
     'Template' => 'core/framework/core/Template/Template.php',

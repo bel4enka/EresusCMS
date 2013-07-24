@@ -30,16 +30,6 @@
 
 
 /**
- * Плагин повреждён
- *
- * Обычно это означает синтаксическую ошибку в файле плагина.
- *
- * @package Eresus
- */
-class EresusSourceParseException extends EresusRuntimeException {};
-
-
-/**
  * Работа с плагинами
  *
  * @package Eresus
@@ -137,9 +127,6 @@ class Plugins
      * @param string $name  Имя плагина
      *
      * @return void
-     *
-     * @throws EresusSourceParseException
-     * @throws DomainException
      */
     public function install($name)
     {
@@ -162,9 +149,8 @@ class Plugins
             ini_set('track_errors', false);
             if (!$valid)
             {
-                throw new DomainException(
-                    sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg)
-                );
+                ErrorMessage(sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg));
+                return;
             }
 
             $className = $name;

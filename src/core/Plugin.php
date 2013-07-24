@@ -211,11 +211,12 @@ abstract class Eresus_Plugin
      * @param string $method  Имя вызванного метода
      * @param array  $args    Переданные аргументы
      *
-     * @throws EresusMethodNotExistsException
+     * @throws LogicException
      */
     public function __call($method, $args)
     {
-        throw new EresusMethodNotExistsException($method, get_class($this));
+        throw new LogicException("Method \"$method\" does not exists in class \"" . get_class($this)
+            . "\"");
     }
 
     /**

@@ -80,8 +80,8 @@ class HttpMessage
      *
      * @return HttpMessage|null  объект HttpMessage или null в случае ошибки
      *
-     * @throws EresusRuntimeException если класс $className не существует
-     * @throws EresusValueException если $className не является потомком HttpMessage
+     * @throws RuntimeException если класс $className не существует
+     * @throws Eresus_Exception_InvalidArgumentType если $className не является потомком HttpMessage
      */
     public static function fromEnv($messageType, $className = 'HttpMessage')
     {
@@ -95,15 +95,15 @@ class HttpMessage
          */
         if (!class_exists($className, true))
         {
-            throw new EresusRuntimeException("Class \n$className\" not exists");
+            throw new RuntimeException("Class \"$className\" not exists");
         }
 
         $message = new $className();
 
         if (! ($message instanceof HttpMessage))
         {
-            throw new EresusValueException('className', $className,
-                "\"$className\" must be a descendent of HttpMessage");
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 2,
+                'descendant of HttpMessage', $className);
         }
 
         // Message type

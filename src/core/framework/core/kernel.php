@@ -9,301 +9,6 @@ function eresus_log()
 }
 
 /**
- * Eresus exception interface
- *
- * Eresus Core uses extended interface for exceptions, which provides:
- * - Detailed description for occurred exception
- * - Method to get real exception class name (for wrapper exceptions)
- * - Own method to get trace as string (for wrapper exceptions)
- * - Implements PHP 5.3 "getPrevious"-like functional
- *
- * As soon as Eresus exceptions can be derived from a different
- * standard PHP exceptions they must all implement this interface.
- *
- * @package Core
- */
-interface EresusExceptionInterface
-{
-    /**
-     * Full exception description
-     *
-     * @return string
-     */
-    public function getDescription();
-
-    /**
-     * Get previous exception
-     *
-     * @return Exception
-     */
-    public function getPreviousException();
-}
-
-
-/**
- * Exception thrown if an error which can only be found on runtime occurs
- *
- * @package Core
- */
-class EresusRuntimeException extends RuntimeException implements EresusExceptionInterface {
-
-    /**
-     * Previous exception
-     *
-     * @var Exception
-     */
-    protected $previous;
-
-    /**
-     * Full description of an exception
-     *
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * Creates new exception object
-     *
-     * $message must be a short exception description wich can be safely
-     * showed to user. And $description can contain a full description
-     * wich will be logged.
-     *
-     * @param string    $description [optional]  Extended information
-     * @param string    $message	[optional]     Error message
-     * @param Exception $previous [optional]     Previous exception
-     */
-    function __construct($description = null, $message = null, $previous = null)
-    {
-        if (is_null($description) || empty($description))
-            $description = '(no description)';
-
-        if (is_null($message))
-            $message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
-
-        parent::__construct($message, 0, $previous);
-
-        $this->description = $description;
-    }
-
-    /**
-     * Returns value of the $description property
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Get previous exception
-     *
-     * @return Exception
-     */
-    public function getPreviousException()
-    {
-        return parent::getPrevious();
-    }
-    //-----------------------------------------------------------------------------
-}
-
-
-/**
- * Exception thrown if a logic expression is invalid
- *
- * @package Core
- */
-class EresusLogicException extends LogicException implements EresusExceptionInterface {
-
-    /**
-     * Previous exception
-     *
-     * @var Exception
-     */
-    protected $previous;
-
-    /**
-     * Full description of an exception
-     *
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * Creates new exception object
-     *
-     * $message must be a short exception description wich can be safely
-     * showed to user. And $description can contain a full description
-     * wich will be logged.
-     *
-     * @param string    $description [optional]  Extended information
-     * @param string    $message	[optional]     Error message
-     * @param Exception $previous [optional]     Previous exception
-     */
-    function __construct($description = null, $message = null, $previous = null)
-    {
-        if (is_null($description) || empty($description))
-            $description = '(no description)';
-
-        if (is_null($message))
-            $message = preg_replace('/([a-z])([A-Z])/', '$1 $2', get_class($this));
-
-        parent::__construct($message, 0, $previous);
-
-        $this->description = $description;
-    }
-
-    /**
-     * Returns value of the $description property
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Get previous exception
-     *
-     * @return Exception
-     */
-    public function getPreviousException()
-    {
-        return parent::getPrevious();
-    }
-    //-----------------------------------------------------------------------------
-}
-
-
-
-/**
- * Exception thrown if encountered value of unexpected type
- *
- * @see __construct for more info
- *
- * @package Core
- */
-class EresusTypeException extends EresusLogicException {
-
-    /**
-     * Creates new exception object
-     *
-     * @param mixed     $var [optional]           Variable with a type problem
-     * @param string    $expectedType [optional]  Expected type
-     * @param string    $description [optional]   Extended information
-     * @param Exception $previous [optional]      Previous exception
-     */
-    function __construct()
-    {
-        if (func_num_args() > 0) {
-
-            $var = func_get_arg(0);
-            $expectedType = func_num_args() > 1 ? func_get_arg(1) : null;
-            $description = func_num_args() > 2 ? func_get_arg(2) : null;
-            $previous = func_num_args() > 3 ? func_get_arg(3) : null;
-
-            $actualType = gettype($var);
-            if (is_object($var))
-                $actualType .= ' of class ' . get_class($var);
-
-            if (is_null($expectedType))
-                $message = 'Unexpected value type: ' . $actualType;
-            else
-                $message = 'Expecting ' .	$expectedType . ' but got "' . $actualType .'"';
-
-            if ($description)
-                $message .= ' ' . $description;
-
-            parent::__construct($message, 'Type error', $previous);
-
-        } else parent::__construct('Type error');
-    }
-    //-----------------------------------------------------------------------------
-}
-
-/**
- * Exception thrown if unexpected value encountered
- *
- * @package Core
- */
-class EresusValueException extends EresusRuntimeException {
-
-    /**
-     * Creates new exception object
-     *
-     * @param string    $valueName [optional]    Value name
-     * @param mixed     $value [optional]        Value
-     * @param string    $description [optional]  Extended information
-     * @param Exception $previous [optional]     Previous exception
-     */
-    function __construct()
-    {
-        if (func_num_args() > 0) {
-
-            $valueName = func_get_arg(0);
-            $value = func_num_args() > 1 ? func_get_arg(1) : null;
-            $description = func_num_args() > 2 ? func_get_arg(2) : null;
-            $previous = func_num_args() > 3 ? func_get_arg(3) : null;
-
-            if (is_null($value))
-                $message = "Invalid value of \"$valueName\"";
-            else
-                $message = "\"$valueName\" has invalid value: $value";
-
-            if ($description)
-                $message .= ' ' . $description;
-
-            parent::__construct($message, 'Invalid value', $previous);
-
-        } else parent::__construct('Invalid value');
-    }
-    //-----------------------------------------------------------------------------
-}
-
-/**
- * Exception thrown if method not exists
- *
- * @package Core
- */
-class EresusMethodNotExistsException extends EresusLogicException {
-
-    /**
-     * Creates new exception object
-     *
-     * @param string    $method [optional]       Method name
-     * @param string    $class [optional]        Class name
-     * @param string    $description [optional]  Extended information
-     * @param Exception $previous [optional]     Previous exception
-     */
-    function __construct()
-    {
-        if (func_num_args() > 0) {
-
-            $method = func_get_arg(0);
-            $class = func_num_args() > 1 ? func_get_arg(1) : null;
-            $description = func_num_args() > 2 ? func_get_arg(2) : null;
-            $previous = func_num_args() > 3 ? func_get_arg(3) : null;
-
-            if (is_null($class))
-                $message = "Method \"$method\" does not exists";
-            else
-                $message = "Method \"$method\" does not exists in class \"$class\"";
-
-            if ($description)
-                $message .= ' ' . $description;
-
-            parent::__construct($message, 'Method not exists', $previous);
-
-        } else parent::__construct('Method not exists');
-    }
-    //-----------------------------------------------------------------------------
-}
-
-
-/**
  * Class autoload table
  *
  * @package Core
@@ -553,6 +258,7 @@ class Core {
      *
      * @param string $className
      *
+     * @throws RuntimeException
      * @internal
      * @see autoloaders, registerAutoloader()
      */
@@ -576,35 +282,29 @@ class Core {
 
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Calling ezcBase::autoload()', $_depth);
 
-        try {
-
+        try
+        {
             $_depth--;
             ezcBase::autoload($className);
             $_depth++;
-
-        } catch (ezcBaseException $e) {
-
-            throw new EresusRuntimeException(
-                "eZ Components autoloader failed on '$className'",
-                'Class not found',
-                $e
-            );
-
+        }
+        catch (ezcBaseException $e)
+        {
+            throw new RuntimeException("eZ Components autoloader failed on '$className'", 0, $e);
         }
 
-        if (self::classExists($className)) {
-
+        if (self::classExists($className))
+        {
             Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '[%d] Class %s loaded', $_depth, $className);
             $_depth--;
             return;
-
-        } else {
-
+        }
+        else
+        {
             Eresus_Kernel::log(
                 __METHOD__, LOG_DEBUG,
                 '[%d] ezcBase::autoload() can\'t load class "%s"', $_depth, $className
             );
-
         }
 
         for ($i = 0; $i < count(self::$autoloaders); $i++) {
@@ -652,35 +352,26 @@ class Core {
      * Writes exception description to log
      *
      * @param Exception $e
-     * @param string    $msg [optional]  Message
      */
-    static public function logException($e, $msg = null)
+    static public function logException($e)
     {
-        if ($e instanceof EresusExceptionInterface) {
-
-            $description = $e->getDescription();
-            $previous = $e->getPreviousException();
-
-        } else {
-
-            $description = '(no description)';
-            $previous = null;
-
-        }
+        $previous = $e->getPrevious();
+        $trace = $e->getTraceAsString();
 
         $logMessage = sprintf(
-            "%s in %s at %s\nMessage: %s\nDescription: %s\nBacktrace:\n%s\n",
+            "%s in %s at %s\n%s\nBacktrace:\n%s\n",
             get_class($e),
             $e->getFile(),
             $e->getLine(),
             $e->getMessage(),
-            $description,
-            $trace = $e->getTraceAsString()
+            $trace
         );
         Eresus_Kernel::log('Core', LOG_ERR, $logMessage);
 
         if ($previous)
+        {
             self::logException($previous, 'Previous exception:');
+        }
     }
 
     /**

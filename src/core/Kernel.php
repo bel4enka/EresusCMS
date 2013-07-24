@@ -5,7 +5,7 @@
  * @version ${product.version}
  * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -25,24 +25,6 @@
  *
  * @package Eresus
  */
-
-
-/**
- * Исключительная ситуация, не связанная с ошибкой
- *
- * @package Eresus
- * @since 3.00
- */
-class Eresus_SuccessException extends Exception {}
-
-
-/**
- * Исключительная ситуация, не связанная с ошибкой, требующая завершения приложения
- *
- * @package Eresus
- * @since 3.00
- */
-class Eresus_ExitException extends Eresus_SuccessException {}
 
 
 /**

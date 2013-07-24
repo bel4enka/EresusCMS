@@ -50,27 +50,27 @@ class HttpRequest
     /**
      * Constructor
      *
-     * @param string|HTTPRequest $source [optional]  Source for request
+     * @param string|HTTPRequest $source  Source for request
      *
-     * @throws EresusTypeException
+     * @throws Eresus_Exception_InvalidArgumentType
      */
-    function __construct($source = null)
+    public function __construct($source = null)
     {
-        switch (true) {
-
+        switch (true)
+        {
             case is_object($source) && $source instanceof HttpRequest:
                 $this->request = $source->toArray();
                 break;
-
             case is_string($source):
                 $this->request = @parse_url($source);
                 $this->request['local'] = $this->getPath();
-                if ($this->getQuery()) {
+                if ($this->getQuery())
+                {
                     $this->request['local'] .= '?' . $this->getQuery();
                     parse_str($this->getQuery(), $this->request['args']);
                     if (!get_magic_quotes_gpc())
                     {
-                        /* Emulating parse_str behavor... */
+                        /* Emulating parse_str behavior... */
                         foreach ($this->request['args'] as $key => $value)
                         {
                             $this->request['args'][$key] = addslashes($value);
@@ -82,16 +82,22 @@ class HttpRequest
                     }
                 }
                 break;
-
             case is_null($source):
                 if (!Eresus_Kernel::isCLI())
                 {
-                    if (isset($_SERVER['REQUEST_URI'])) $this->request = @parse_url($_SERVER['REQUEST_URI']);
+                    if (isset($_SERVER['REQUEST_URI']))
+                    {
+                        $this->request = @parse_url($_SERVER['REQUEST_URI']);
+                    }
                     $this->request['local'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
                     $this->request['args'] = $_POST;
-                    foreach($_GET as $key => $value)
+                    foreach ($_GET as $key => $value)
+                    {
                         if (!isset($this->request['args'][$key]))
+                        {
                             $this->request['args'][$key] = $value;
+                        }
+                    }
 
                     if ($this->request['args'] && get_magic_quotes_gpc())
                     {
@@ -99,12 +105,11 @@ class HttpRequest
                     }
                 }
                 break;
-
             default:
-                throw new EresusTypeException($source, 'HttpRequest, string or NULL');
+                throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
+                    'HttpRequest, string or NULL', $source);
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Return current request as array

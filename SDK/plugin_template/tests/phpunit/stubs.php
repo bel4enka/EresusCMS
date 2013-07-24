@@ -83,7 +83,3 @@ class ezcQuerySelect extends ezcQuery
     const DESC = 'DESC';
 }
 
-class EresusRuntimeException extends Exception
-{
-}
-

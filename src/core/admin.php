@@ -1029,10 +1029,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                         Core::logException($e, $logMsg);
 
                         $msg .= '<br />' . $e->getMessage();
-                        if ($e instanceof EresusRuntimeException || $e instanceof EresusLogicException)
-                        {
-                            $msg .= '<br />' . $e->getDescription();
-                        }
                         $result = ErrorBox($msg);
                     }
                 }

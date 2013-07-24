@@ -388,7 +388,7 @@ class Sections
             {
                 $this->delete($children[$i]['id']);
             }
-            catch (DBQueryException $e)
+            catch (Eresus_DB_Exception_QueryFailed $e)
             {
                 $result = false;
                 break;

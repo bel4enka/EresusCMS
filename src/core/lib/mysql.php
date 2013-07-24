@@ -92,16 +92,9 @@ class MySQL
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$dsn = "mysql://$username:$password@$server/$source?charset=utf8";
 
-		try
-		{
-			$db = DB::connect($dsn);
-			$options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
-			$db->setOptions($options);
-		}
-		catch (DBRuntimeException $e)
-		{
-			throw new Eresus_DB_Exception('Can not connect to MySQL server');
-		}
+        $db = DB::connect($dsn);
+        $options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
+        $db->setOptions($options);
 		return true;
 	}
 

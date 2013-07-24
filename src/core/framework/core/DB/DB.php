@@ -27,59 +27,6 @@
  */
 
 /**
- * DB Runtime Exception
- *
- * @package DB
- * @author Mikhail Krasilnikov <mk@procreat.ru>
- */
-class DBRuntimeException extends EresusRuntimeException
-{
-}
-
-
-/**
- * DB Query Exception
- *
- * @package DB
- * @author Mikhail Krasilnikov <mk@procreat.ru>
- */
-class DBQueryException extends DBRuntimeException
-{
-    /**
-     * Creates new exception object
-     *
-     * @param ezcQuery $query [optional]    Problem query
-     * @param string $message [optional]  Error message
-     * @param Exception $previous [optional] Previous exception
-     */
-    function __construct($query = null, $message = null, $previous = null)
-    {
-        if ($query instanceof ezcQuery)
-        {
-
-            $insider = new DBQueryInsider;
-            $query->doBind($insider);
-            $query = $insider->subst($query);
-        }
-
-        if (is_null($message))
-        {
-            $message = 'Database query failed';
-        }
-
-        if (!is_null($previous))
-        {
-            $query = $previous->getMessage() . ': ' . $query;
-        }
-
-        parent::__construct($query, $message, $previous);
-    }
-    //-----------------------------------------------------------------------------
-
-}
-
-
-/**
  * Database interface
  *
  * @package DB
@@ -98,7 +45,7 @@ class DB implements ezcBaseConfigurationInitializer
      * @param string $dsn        Connection DSN string
      * @param string|bool $name  Optional connection name
      *
-     * @throws DBRuntimeException
+     * @throws Eresus_DB_Exception
      *
      * @return ezcDbHandler
      */
@@ -112,7 +59,7 @@ class DB implements ezcBaseConfigurationInitializer
         }
         catch (Exception $e)
         {
-            throw new DBRuntimeException("Can not connect to '$dsn'", "Database connection failed", $e);
+            throw new Eresus_DB_Exception("Can not connect to '$dsn'", 0, $e);
         }
 
         $db->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
@@ -169,7 +116,7 @@ class DB implements ezcBaseConfigurationInitializer
      *
      * @param bool|string $name  Connection name
      *
-     * @throws DBRuntimeException
+     * @throws Eresus_DB_Exception
      *
      * @return ezcDbHandler
      */
@@ -179,7 +126,7 @@ class DB implements ezcBaseConfigurationInitializer
 
         if (!isset(self::$lazyConnectionDSNs[$name]))
         {
-            throw new DBRuntimeException('DSN for lazy connection "' . $name . '" not found');
+            throw new Eresus_DB_Exception('DSN for lazy connection "' . $name . '" not found');
         }
 
         $dsn = self::$lazyConnectionDSNs[$name];
@@ -193,7 +140,7 @@ class DB implements ezcBaseConfigurationInitializer
      *
      * @param ezcQuery $query
      *
-     * @throws DBQueryException
+     * @throws Eresus_DB_Exception_QueryFailed
      *
      * @return mixed
      */
@@ -215,7 +162,7 @@ class DB implements ezcBaseConfigurationInitializer
         catch (Exception $e)
         {
 
-            throw new DBQueryException($query, null, $e);
+            throw new Eresus_DB_Exception_QueryFailed($query, null, $e);
 
         }
 
@@ -227,7 +174,7 @@ class DB implements ezcBaseConfigurationInitializer
      *
      * @param ezcQuery $query
      *
-     * @throws DBQueryException
+     * @throws Eresus_DB_Exception_QueryFailed
      *
      * @return array
      */
@@ -248,7 +195,7 @@ class DB implements ezcBaseConfigurationInitializer
         }
         catch (Exception $e)
         {
-            throw new DBQueryException($query, null, $e);
+            throw new Eresus_DB_Exception_QueryFailed($query, null, $e);
         }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -279,7 +226,7 @@ class DB implements ezcBaseConfigurationInitializer
         }
         catch (Exception $e)
         {
-            throw new DBQueryException($query, null, $e);
+            throw new Eresus_DB_Exception_QueryFailed($query, null, $e);
         }
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
