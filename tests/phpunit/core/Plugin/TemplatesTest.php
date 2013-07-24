@@ -71,10 +71,13 @@ class Eresus_Plugin_TemplatesTest extends PHPUnit_Framework_TestCase
                     'Foo.html' => 'client-foo'
                 )
             ),
-            'var' => array('cache' => array()),
+            'var' => array('cache' => array('templates' => array())),
         ));
-        Core::setValue('core.template.templateDir', vfsStream::url('site'));
-        Core::setValue('core.template.compileDir', vfsStream::url('site/var/cache'));
+
+        $cms = $this->getMock('stdClass', array('getFsRoot'));
+        $cms->expects($this->any())->method('getFsRoot')
+            ->will($this->returnValue(vfsStream::url('site')));
+        Eresus_Tests::setStatic('Eresus_Kernel', $cms, 'app');
 
         $this->plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('getName'))->getMock();

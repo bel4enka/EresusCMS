@@ -304,13 +304,8 @@ class Eresus_CMS extends Eresus_Application
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
-        Core::setValue('core.template.templateDir', $this->getFsRoot());
-        Core::setValue('core.template.compileDir', $this->getFsRoot() . '/var/cache/templates');
-
         $this->request = HTTP::request();
-        //$this->response = new HttpResponse();
         $this->detectWebRoot();
-        //$this->initRoutes();
         $this->initSite();
     }
 

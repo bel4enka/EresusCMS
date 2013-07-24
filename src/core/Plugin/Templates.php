@@ -134,7 +134,7 @@ class Eresus_Plugin_Templates
      */
     private function getFullPath($filename)
     {
-        return Core::getValue('core.template.templateDir', '') . '/' . $filename;
+        return Eresus_Kernel::app()->getFsRoot() . '/' . $filename;
     }
 }
 

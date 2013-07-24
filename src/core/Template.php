@@ -30,15 +30,6 @@
 /**
  * Шаблон
  *
- * <b>Настройка</b>
- *
- * Используйте {@link Core::setValue()} чтобы задать настройки:
- *
- * - <b>core.template.templateDir</b> — Directory where templates located.
- * - <b>core.template.compileDir</b> — Directory to store compiled templates.
- * - <b>core.template.charset</b> — Charset of template files.
- * - <b>core.template.fileExtension</b> — Default extensions of template files.
- *
  * @package Eresus
  * @subpackage Templates
  */
@@ -60,8 +51,7 @@ class Eresus_Template
     /**
      * Загружает шаблон из файла
      *
-     * Если $filename — относительный путь, то он будет расценен как путь относительно
-     * core.template.templateDir.
+     * Если $filename — относительный путь, то он будет расценен как путь относительно корня сайта.
      *
      * @param string $filename  имя файла шаблона
      *
@@ -71,12 +61,11 @@ class Eresus_Template
      */
     public static function loadFromFile($filename)
     {
-        $fileExtension = Core::getValue('core.template.fileExtension', '');
-        $path = $filename . $fileExtension;
+        $path = $filename;
         /* Если это относительный путь, добавляем папку шаблонов */
         if (!preg_match('#^(/|\w{1,10}://|[A-Z]:\\\)#', $filename))
         {
-            $templateDir = Core::getValue('core.template.templateDir', '');
+            $templateDir = Eresus_Kernel::app()->getFsRoot();
             $path = $templateDir . '/' . $path;
         }
         $template = new self();
@@ -94,12 +83,8 @@ class Eresus_Template
     {
         if (null == self::$dwoo)
         {
-            $compileDir = $this->detectCompileDir();
+            $compileDir = Eresus_Kernel::app()->getFsRoot() . '/var/cache/templates';
             self::$dwoo = new Dwoo($compileDir);
-            if (Core::getValue('core.template.charset'))
-            {
-                self::$dwoo->setCharset(Core::getValue('core.template.charset'));
-            }
         }
 
         if ($filename)
@@ -144,10 +129,8 @@ class Eresus_Template
      */
     public function loadFile($filename)
     {
-        $templateDir = $this->detectTemplateDir();
-        $fileExtension = $this->detectFileExtension();
-        $templateDir = Eresus_FS_Tool::normalize($templateDir);
-        $template = $templateDir . '/' . $filename . $fileExtension;
+        $templateDir = Eresus_Kernel::app()->getFsRoot();
+        $template = $templateDir . '/' . $filename;
         $this->template = new TemplateFile($template, null, $filename, $filename);
     }
 
@@ -170,42 +153,6 @@ class Eresus_Template
         }
 
         return self::$dwoo->get($this->template, $data);
-    }
-
-    /**
-     * Detect directory where templates located
-     *
-     * @return string
-     */
-    protected function detectTemplateDir()
-    {
-        $compileDir = Core::getValue('core.template.templateDir', '');
-
-        return $compileDir;
-    }
-
-    /**
-     * Detect template files extension
-     *
-     * @return string
-     */
-    protected function detectFileExtension()
-    {
-        $fileExtension = Core::getValue('core.template.fileExtension', '');
-
-        return $fileExtension;
-    }
-
-    /**
-     * Detect directory where compiled templates will be stored
-     *
-     * @return string
-     */
-    protected function detectCompileDir()
-    {
-        $compileDir = Core::getValue('core.template.compileDir', '');
-
-        return $compileDir;
     }
 }
 

@@ -153,7 +153,5 @@ abstract class Eresus_Application
     {
         return $this->fsRoot;
     }
-    //-----------------------------------------------------------------------------
-
 }
 
