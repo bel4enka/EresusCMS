@@ -45,10 +45,12 @@ spl_autoload_register(
      */
     function ($class)
     {
+        static $bcClasses = array('Plugin');
+
+        if (stripos($class, 'Eresus_') === 0)
         /*
          * Классы Eresus
          */
-        if (stripos($class, 'Eresus_') === 0)
         {
             $fileName = __DIR__ . '/' . str_replace('_', '/', substr($class, 7)) . '.php';
 
@@ -56,7 +58,6 @@ spl_autoload_register(
             {
                 /** @noinspection PhpIncludeInspection */
                 include $fileName;
-                return;
             }
             /*
              * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
@@ -68,11 +69,10 @@ spl_autoload_register(
                 throw new LogicException('Class "' . $class . '" not found');
             }
         }
-
+        elseif (stripos($class, 'Botobor') === 0)
         /*
          * Классы Botobor
          */
-        if (stripos($class, 'Botobor') === 0)
         {
             $fileName = __DIR__ . '/botobor/botobor.php';
 
@@ -80,8 +80,14 @@ spl_autoload_register(
             {
                 /** @noinspection PhpIncludeInspection */
                 include $fileName;
-                return;
             }
+        }
+        elseif (in_array($class, $bcClasses))
+        /*
+         * Классы для обратной совместимости
+         */
+        {
+            include_once __DIR__ . '/backward.php';
         }
     }
 );
