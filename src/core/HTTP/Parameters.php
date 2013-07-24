@@ -64,6 +64,18 @@ class Eresus_HTTP_Parameters
     }
 
     /**
+     * Заменяет текущий набор параметров новым
+     *
+     * @param array $parameters
+     *
+     * @since 3.01
+     */
+    public function replace(array $parameters)
+    {
+        $this->data = $parameters;
+    }
+
+    /**
      * Добавляет новый набор параметров
      *
      * @param array $parameters

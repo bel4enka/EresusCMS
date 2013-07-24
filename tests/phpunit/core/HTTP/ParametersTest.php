@@ -43,6 +43,7 @@ class Eresus_HTTP_ParametersTest extends PHPUnit_Framework_TestCase
      * @covers Eresus_HTTP_Parameters::get
      * @covers Eresus_HTTP_Parameters::set
      * @covers Eresus_HTTP_Parameters::has
+     * @covers Eresus_HTTP_Parameters::replace
      */
     public function testBrief()
     {
@@ -57,6 +58,9 @@ class Eresus_HTTP_ParametersTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(123, $params->get('baz', 123));
         $params->set('baz', 321);
         $this->assertEquals(321, $params->get('baz', 123));
+
+        $params->replace(array('foo' => 'bar'));
+        $this->assertEquals(array('foo' => 'bar'), $params->all());
     }
 }
 
