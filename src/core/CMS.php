@@ -281,18 +281,22 @@ class Eresus_CMS extends Eresus_Application
         {
             if ($request->getDirectory() == '/admin' || $request->getPath() == '/admin.php')
             {
-                $this->page = new TAdminUI();
+                $controller = new Eresus_Admin_FrontController($request);
             }
             else
             {
-                $this->page = new TClientUI();
+                $controller = new Eresus_Client_FrontController($request);
             }
+            $this->page = $controller->getPage();
+            /**
+             * @global
+             * @deprecated с 3.01 используйте Eresus_Kernel::app()->getPage()
+             */
             $GLOBALS['page'] = $this->page;
             TemplateSettings::setGlobalValue('page', $this->page);
-            /*$response = */$this->page->render($request);
+            $response = $controller->dispatch();
+            $response->send();
         }
-
-        //$response->send();
     }
 
     /**
