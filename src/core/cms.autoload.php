@@ -31,6 +31,7 @@
 
 return array(
     'AdminList' => 'core/lib/admin/lists.php',
+    'EresusAccounts' => 'core/lib/accounts.php',
     'EresusForm' => 'core/EresusForm.php',
     'Form' => 'core/lib/forms.php',
     'I18n' => 'core/i18n.php',
