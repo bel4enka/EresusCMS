@@ -231,20 +231,20 @@ class HTTP
             .((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
             ;
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * Returns an instance of a HttpRequest class
+     * Returns an instance of a Eresus_HTTP_Request class
      *
      * Object instancing only once
      *
-     * @return HttpRequest
+     * @return Eresus_HTTP_Request
+     * @deprecated с 3.01 вместо работы с глобальным экземпляром, его следует передавать как аргумент
      */
     static public function request()
     {
         if (!self::$request)
         {
-            self::$request = new HttpRequest();
+            self::$request = new Eresus_HTTP_Request();
         }
         return self::$request;
     }

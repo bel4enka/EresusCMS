@@ -34,7 +34,6 @@ require_once TESTS_SRC_DIR . '/core/Kernel.php';
 require_once TESTS_SRC_DIR . '/core/FS/Tool.php';
 require_once TESTS_SRC_DIR . '/core/Application.php';
 require_once TESTS_SRC_DIR . '/core/framework/core/kernel.php';
-require_once TESTS_SRC_DIR . '/core/framework/core/WWW/HTTP/HttpRequest.php';
 require_once TESTS_SRC_DIR . '/core/CMS.php';
 require_once TESTS_SRC_DIR . '/core/classes/WebServer.php';
 
@@ -61,7 +60,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
         $fsRoot->setAccessible(true);
 		$fsRoot->setValue($obj, '/home/user/public_html');
 
-        $httpRequest = new HttpRequest();
+        $httpRequest = new Eresus_HTTP_Request();
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
@@ -70,7 +69,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
-        $localRoot = new ReflectionProperty('HttpRequest', 'localRoot');
+        $localRoot = new ReflectionProperty('Eresus_HTTP_Request', 'localRoot');
         $localRoot->setAccessible(true);
 		$this->assertEquals('', $localRoot->getValue($httpRequest));
 	}
@@ -97,7 +96,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
         $fsRoot->setAccessible(true);
         $fsRoot->setValue($obj, '/home/user/public_html/example.org');
 
-		$httpRequest = new HttpRequest();
+		$httpRequest = new Eresus_HTTP_Request();
 		$request = new ReflectionProperty('Eresus_CMS', 'request');
 		$request->setAccessible(true);
 		$request->setValue($obj, $httpRequest);
@@ -106,7 +105,7 @@ class Eresus_CMS_Test extends PHPUnit_Framework_TestCase
 		$detectWebRoot->setAccessible(true);
 		$detectWebRoot->invoke($obj);
 
-        $localRoot = new ReflectionProperty('HttpRequest', 'localRoot');
+        $localRoot = new ReflectionProperty('Eresus_HTTP_Request', 'localRoot');
         $localRoot->setAccessible(true);
         $this->assertEquals('/example.org', $localRoot->getValue($httpRequest));
 	}

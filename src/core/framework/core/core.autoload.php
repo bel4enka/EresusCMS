@@ -47,7 +47,6 @@ return array(
     'HttpHeader' => 'core/framework/core/WWW/HTTP/HttpHeaders.php',
     'HttpHeaders' => 'core/framework/core/WWW/HTTP/HttpHeaders.php',
     'HttpMessage' => 'core/framework/core/WWW/HTTP/HttpMessage.php',
-    'HttpRequest' => 'core/framework/core/WWW/HTTP/HttpRequest.php',
     'HttpResponse' => 'core/framework/core/WWW/HTTP/HttpResponse.php',
 );
 

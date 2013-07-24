@@ -32,7 +32,7 @@
  * @package Eresus
  * @subpackage HTTP
  */
-class HttpRequest
+class Eresus_HTTP_Request
 {
     /**
      * Parsed HTTP request
@@ -50,7 +50,7 @@ class HttpRequest
     /**
      * Constructor
      *
-     * @param string|HTTPRequest $source  Source for request
+     * @param string|Eresus_HTTP_Request $source  Source for request
      *
      * @throws Eresus_Exception_InvalidArgumentType
      */
@@ -58,7 +58,7 @@ class HttpRequest
     {
         switch (true)
         {
-            case is_object($source) && $source instanceof HttpRequest:
+            case is_object($source) && $source instanceof Eresus_HTTP_Request:
                 $this->request = $source->toArray();
                 break;
             case is_string($source):
@@ -107,7 +107,7 @@ class HttpRequest
                 break;
             default:
                 throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
-                    'HttpRequest, string or NULL', $source);
+                    'Eresus_HTTP_Request, string or NULL', $source);
         }
     }
 
@@ -388,10 +388,10 @@ class HttpRequest
      * Set local root
      *
      * Local root is a part of URL after host name which will be cutted from result
-     * of HttpRequest::getLocal.
+     * of Eresus_HTTP_Request::getLocal.
      *
      * <code>
-     * $req = new HttpRequest('http://example.org/some/path/script?query');
+     * $req = new Eresus_HTTP_Request('http://example.org/some/path/script?query');
      * echo $req->getLocal(); // '/some/path/script?query'
      * $req->setLocalRoot('/some');
      * echo $req->getLocal(); // '/path/script?query'
