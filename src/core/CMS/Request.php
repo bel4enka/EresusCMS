@@ -45,6 +45,34 @@ class Eresus_CMS_Request extends Eresus_HTTP_Request
     private $siteRoot = null;
 
     /**
+     * Исходный запрос HTTP
+     *
+     * @var null|Eresus_HTTP_Request
+     * @since 3.01
+     */
+    private $httpRequest = null;
+
+    /**
+     * Конструктор
+     *
+     * @param string|Eresus_HTTP_Request $source  запрос в виде объекта или строки
+     *
+     * @throws Eresus_Exception_InvalidArgumentType
+     */
+    public function __construct($source = null)
+    {
+        if ($source instanceof Eresus_HTTP_Request)
+        {
+            $this->httpRequest = $source;
+        }
+        else
+        {
+            $this->httpRequest = new Eresus_HTTP_Request($source);
+        }
+        parent::__construct($source);
+    }
+
+    /**
      * Задаёт корневой адрес сайта
      *
      * Этот адрес будет вырезаться в таких методах как {@link getPath()}, {@link getDirectry()},
@@ -115,6 +143,41 @@ class Eresus_CMS_Request extends Eresus_HTTP_Request
         }
         $path = substr($path, strlen($this->siteRoot));
         return $path;
+    }
+
+    /**
+     * Возвращает исходный запрос HTTP
+     *
+     * @return Eresus_HTTP_Request
+     * @since 3.01
+     */
+    public function getHttpRequest()
+    {
+        return $this->httpRequest;
+    }
+
+    /**
+     * Возвращает запрос (URL) в виде строки
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $url = '';
+        if ($this->getScheme() != '')
+        {
+            $url .= $this->getScheme() . ':';
+        }
+        if ($this->getHost() != '')
+        {
+            $url .= '//' . $this->getHost();
+        }
+        $url .= $this->siteRoot . $this->getPath();
+        if ($this->getQueryString())
+        {
+            $url .= '?' . $this->getQueryString();
+        }
+        return $url;
     }
 }
 

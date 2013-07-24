@@ -110,6 +110,24 @@ class Eresus_CMS_RequestTest extends PHPUnit_Framework_TestCase
     {
         $request = new Eresus_CMS_Request();
         $this->assertEquals('http://localhost/', strval($request));
+
+        $request = new Eresus_CMS_Request('http://example.org/site/path/file.php');
+        $request->setSiteRoot('http://example.org/site/');
+        $this->assertEquals('http://example.org/site/path/file.php', strval($request));
+    }
+
+    /**
+     * @covers Eresus_CMS_Request::__construct
+     * @covers Eresus_CMS_Request::getHttpRequest
+     */
+    public function testGetHttpRequest()
+    {
+        $httpRequest = new Eresus_HTTP_Request();
+        $cmsRequest = new Eresus_CMS_Request($httpRequest);
+        $this->assertSame($httpRequest, $cmsRequest->getHttpRequest());
+
+        $cmsRequest = new Eresus_CMS_Request();
+        $this->assertInstanceOf('Eresus_HTTP_Request', $cmsRequest->getHttpRequest());
     }
 }
 
