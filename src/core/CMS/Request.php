@@ -92,6 +92,20 @@ class Eresus_CMS_Request extends Eresus_HTTP_Request
     }
 
     /**
+     * Возвращает URL корня сайта
+     *
+     * Адрес никогда не заканчивается слэшем.
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getSiteRoot()
+    {
+        return $this->getScheme() . '://' . $this->getHost() . $this->siteRoot;
+    }
+
+    /**
      * Возвращает схему (протокол)
      *
      * Если схема не указана, считается, что это «http».
@@ -163,16 +177,7 @@ class Eresus_CMS_Request extends Eresus_HTTP_Request
      */
     public function __toString()
     {
-        $url = '';
-        if ($this->getScheme() != '')
-        {
-            $url .= $this->getScheme() . ':';
-        }
-        if ($this->getHost() != '')
-        {
-            $url .= '//' . $this->getHost();
-        }
-        $url .= $this->siteRoot . $this->getPath();
+        $url = $this->getSiteRoot() . $this->getPath();
         if ($this->getQueryString())
         {
             $url .= '?' . $this->getQueryString();

@@ -67,6 +67,20 @@ class Eresus_CMS_RequestTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Eresus_CMS_Request::getSiteRoot
+     * @covers Eresus_CMS_Request::setSiteRoot
+     */
+    public function testSiteRoot()
+    {
+        $request = new Eresus_CMS_Request();
+        $this->assertEquals('http://localhost', $request->getSiteRoot());
+
+        $request = new Eresus_CMS_Request('http://example.org/site/path/file.php');
+        $request->setSiteRoot('http://example.org/site/');
+        $this->assertEquals('http://example.org/site', $request->getSiteRoot());
+    }
+
+    /**
      * @covers Eresus_CMS_Request::getPath
      * @covers Eresus_CMS_Request::setPath
      * @covers Eresus_CMS_Request::setSiteRoot
@@ -111,9 +125,9 @@ class Eresus_CMS_RequestTest extends PHPUnit_Framework_TestCase
         $request = new Eresus_CMS_Request();
         $this->assertEquals('http://localhost/', strval($request));
 
-        $request = new Eresus_CMS_Request('http://example.org/site/path/file.php');
+        $request = new Eresus_CMS_Request('http://example.org/site/path/file.php?foo=bar');
         $request->setSiteRoot('http://example.org/site/');
-        $this->assertEquals('http://example.org/site/path/file.php', strval($request));
+        $this->assertEquals('http://example.org/site/path/file.php?foo=bar', strval($request));
     }
 
     /**
