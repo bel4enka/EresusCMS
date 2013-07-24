@@ -283,7 +283,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      *
      * @return string
      */
-    function replaceMacros($text)
+    public function replaceMacros($text)
     {
         $result = str_replace(
             array(
