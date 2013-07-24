@@ -34,7 +34,6 @@
  * 1. запуск {@link Eresus_CMS основного класса приложения};
  * 2. перехват ошибок и исключений;
  * 3. {@link autoload() автозагрузка классов};
- * 4. журналирование;
  * 4. получение основных сведений о системе.
  *
  * @package Eresus
@@ -144,8 +143,7 @@ class Eresus_Kernel
      *
      * Этот метод:
      * 1. устанавливает временную зону;
-     * 2. регистрирует {@link autoload() автозагрузчик классов};
-     * 3. регистрирует {@link initExceptionHandling() перехватчики ошибок}.
+     * 2. регистрирует {@link initExceptionHandling() перехватчики ошибок}.
      *
      * @return void
      *
@@ -167,9 +165,6 @@ class Eresus_Kernel
         date_default_timezone_set($timezone);
 
         self::initExceptionHandling();
-
-        // Регистрация автозагрузчика классов
-        spl_autoload_register(array('Eresus_Kernel', 'autoload'), true, true);
 
         /*
          * Подключение устаревшего кода

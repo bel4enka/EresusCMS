@@ -34,10 +34,11 @@
 ini_set('display_errors', true);
 
 ini_set('track_errors', true);
+
 /**
- * Подключение ядра
+ * Подключение автозагрузчика классов
  */
-include_once 'core/Kernel.php';
+include_once 'core/autoload.php';
 
 if (isset($php_errormsg))
 {

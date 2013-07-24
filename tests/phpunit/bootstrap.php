@@ -35,6 +35,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/stubs.php';
 
 require_once TESTS_SRC_DIR . '/lang/ru.php';
+require_once TESTS_SRC_DIR . '/core/autoload.php';
 
 /**
  * Вспомогательный инструментарий для тестов

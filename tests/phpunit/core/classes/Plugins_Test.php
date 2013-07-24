@@ -40,41 +40,29 @@ require_once TESTS_SRC_DIR . '/core/Kernel.php';
  */
 class Plugins_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Plugins::autoload
-	 */
-	public function test_autoload()
-	{
-		$plugins = $this->getMock('Plugins', array('load'));
-		$plugins->expects($this->any())->method('load')->
-			will($this->returnCallback(function ($a) { return 'foo' == $a;}));
+    /**
+     * @covers Plugins::autoload
+     */
+    public function test_autoload()
+    {
+        $plugins = $this->getMock('Plugins', array('load'));
+        $plugins->expects($this->any())->method('load')->
+            will($this->returnCallback(function ($a) { return 'foo' == $a;}));
 
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->any())->method('getFsRoot')->
-			will($this->returnValue(TESTS_FIXT_DIR . '/core/Plugins/'));
-		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
+        $app = $this->getMock('stdClass', array('getFsRoot'));
+        $app->expects($this->any())->method('getFsRoot')->
+            will($this->returnValue(TESTS_FIXT_DIR . '/core/Plugins/'));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
-		// Нет такого файла
-		$this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
+        // Нет такого файла
+        $this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
 
-		// Файл есть, но плагин не активирован
-		$this->assertFalse($plugins->autoload('Bar_Foo_Baz'));
+        // Файл есть, но плагин не активирован
+        $this->assertFalse($plugins->autoload('Bar_Foo_Baz'));
 
-		// Файл есть и плагин активирован
-		$this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
-		$this->assertTrue(class_exists('Foo_Bar_Baz', false));
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * @covers Eresus_Kernel::autoload
-	 * @expectedException LogicException
-	 * /
-	public function test_autoload_failed()
-	{
-		$this->assertFalse(Eresus_Kernel::autoload('Eresus_Unexistent'));
-	}
-	//-----------------------------------------------------------------------------
-
-	/* */
+        // Файл есть и плагин активирован
+        $this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
+        $this->assertTrue(class_exists('Foo_Bar_Baz', false));
+    }
 }
+
