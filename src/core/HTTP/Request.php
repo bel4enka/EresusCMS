@@ -98,25 +98,11 @@ class Eresus_HTTP_Request
     private $path = null;
 
     /**
-     * Запрос
-     * @var string
-     * @since 3.01
-     */
-    private $queryString = null;
-
-    /**
      * Фрагмент
      * @var string
      * @since 3.01
      */
     private $fragment = null;
-
-    /**
-     * Локальный корень адресов
-     * @var string
-     * @see getLocal()
-     */
-    protected $localRoot = '';
 
     /**
      * Конструктор
@@ -127,34 +113,47 @@ class Eresus_HTTP_Request
      */
     public function __construct($source = null)
     {
-        $this->query = new Eresus_HTTP_Parameters();
-        $this->request = new Eresus_HTTP_Parameters();
-        switch (true)
+        if ($source instanceof self)
         {
-            case is_string($source):
-                break;
-            case is_object($source) && $source instanceof Eresus_HTTP_Request:
-                $source = strval($source);
-                break;
-            case is_null($source):
-                $source = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-                break;
-            default:
-                throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
-                    'Eresus_HTTP_Request, string or null', $source);
+            $this->query = clone $source->query;
+            $this->request = clone $source->request;
+            $this->scheme = $source->scheme;
+            $this->method = $source->method;
+            $this->host = $source->host;
+            $this->port = $source->port;
+            $this->user = $source->user;
+            $this->password = $source->password;
+            $this->path = $source->path;
+            $this->fragment = $source->fragment;
         }
-        $url = parse_url($source);
-        $this->scheme = @$url['scheme'];
-        $this->host = @$url['host'];
-        $this->port = @$url['port'];
-        $this->user = @$url['user'];
-        $this->password = @$url['password'];
-        $this->path = @$url['path'];
-        if (array_key_exists('query', $url))
+        else
         {
-            $this->setQueryString($url['query']);
+            $this->query = new Eresus_HTTP_Parameters();
+            $this->request = new Eresus_HTTP_Parameters();
+            switch (true)
+            {
+                case is_string($source):
+                    break;
+                case is_null($source):
+                    $source = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+                    break;
+                default:
+                    throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
+                        'Eresus_HTTP_Request, string or null', $source);
+            }
+            $url = parse_url($source);
+            $this->scheme = @$url['scheme'];
+            $this->host = @$url['host'];
+            $this->port = @$url['port'];
+            $this->user = @$url['user'];
+            $this->password = @$url['password'];
+            $this->path = @$url['path'];
+            if (array_key_exists('query', $url))
+            {
+                $this->setQueryString($url['query']);
+            }
+            $this->fragment = @$url['fragment'];
         }
-        $this->fragment = @$url['fragment'];
     }
 
     /**

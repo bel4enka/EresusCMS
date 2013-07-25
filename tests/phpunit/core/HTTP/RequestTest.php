@@ -136,8 +136,12 @@ class Eresus_HTTP_RequestTest extends PHPUnit_Framework_TestCase
     public function testConstructFromRequest()
     {
         $request1 = new Eresus_HTTP_Request('http://example.org/');
+        $request1->setMethod('POST');
+        $request1->request->add(array('foo' => 'bar'));
         $request2 = new Eresus_HTTP_Request($request1);
         $this->assertEquals('example.org', $request2->getHost());
+        $this->assertEquals('POST', $request2->getMethod());
+        $this->assertTrue($request2->request->has('foo'));
     }
 
     /**
