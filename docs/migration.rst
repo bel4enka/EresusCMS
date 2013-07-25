@@ -58,7 +58,10 @@
   `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
   `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
 * Функция ErrorMessage объявлена устаревшей, вместо нее следует использовать
-  `Eresus_CMS_Page::addErrorMessage <api/classes/Eresus_CMS_Page.html#method_addErrorMessage>`_
+  `Eresus_CMS_Page::addErrorMessage <api/classes/Eresus_CMS_Page.html#method_addErrorMessage>`_.
+* Функция InfoMessage объявлена устаревшей.
+* Функция ErrorBox объявлена устаревшей.
+* Функция InfoBox объявлена устаревшей.
 
 Обновлено
 ^^^^^^^^^

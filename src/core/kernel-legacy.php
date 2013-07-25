@@ -187,6 +187,7 @@ function FatalError($msg)
  * @see InfoBox()
  * @see ErrorMessage()
  * @since 2.00
+ * @deprecated с 3.01
  */
 function ErrorBox($text, $caption = errError)
 {
@@ -209,6 +210,7 @@ function ErrorBox($text, $caption = errError)
  * @see ErrorBox()
  * @see InfoMessage()
  * @since 2.00
+ * @deprecated с 3.01
  */
 function InfoBox($text, $caption=strInformation)
 {
@@ -236,6 +238,8 @@ function ErrorMessage($message)
  * Добавляет на страницу информационное сообщение
  *
  * @param string $message
+ *
+ * @deprecated с 3.01
  */
 function InfoMessage($message)
 {
