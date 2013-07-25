@@ -1219,6 +1219,7 @@ class Eresus
 	/**
 	 * Плагины
 	 * @var Eresus_Plugin_Registry
+     * @deprecated с 3.01 используйте {@link Eresus_Plugin_Registry::getInstance()}
 	 */
 	public $plugins;
 
@@ -1586,15 +1587,6 @@ class Eresus
 	}
 
 	/**
-	 * Инициализация механизма плагинов
-	 */
-	private function initPlugins()
-	{
-		$this->plugins = new Eresus_Plugin_Registry;
-		$this->plugins->init();
-	}
-
-	/**
 	 * Проверка сессии
 	 */
 	private function check_session()
@@ -1713,8 +1705,7 @@ class Eresus
 		$this->init_extensions();
 		# Подключение к источнику данных
 		$this->initDataSource();
-		# Инициализация механизма плагинов
-		$this->initPlugins();
+        $this->plugins = Eresus_Plugin_Registry::getInstance();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута

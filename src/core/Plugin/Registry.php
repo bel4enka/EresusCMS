@@ -62,13 +62,30 @@ class Eresus_Plugin_Registry
     public $events = array();
 
     /**
-     * Загружает активные плагины
-     *
-     * @return void
-     *
-     * @since 2.16
+     * Экземпляр-одиночка
+     * @var Eresus_Plugin_Registry
+     * @since 3.01
      */
-    public function init()
+    private static $instance = null;
+
+    /**
+     * Возвращает экземпляр-одиночку
+     *
+     * @return Eresus_Plugin_Registry
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance)
+        {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * @deprecated с 3.01 используйте {@link getInstance()}
+     */
+    public function __construct()
     {
         $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
         if ($items)
@@ -119,6 +136,18 @@ class Eresus_Plugin_Registry
         }
 
         spl_autoload_register(array($this, 'autoload'));
+    }
+
+    /**
+     * Загружает активные плагины
+     *
+     * @return void
+     *
+     * @since 2.16
+     * @deprecated с 3.01 все действия этого метода выполняются в конструкторе
+     */
+    public function init()
+    {
     }
 
     /**
@@ -286,12 +315,10 @@ class Eresus_Plugin_Registry
         $result = '';
         switch ($page->type)
         {
-
             case 'default':
                 $plugin = new ContentPlugin;
                 $result = $plugin->clientRenderContent();
                 break;
-
             case 'list':
                 /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
                 if (Eresus_CMS::getLegacyKernel()->request['file'] ||
@@ -378,7 +405,10 @@ class Eresus_Plugin_Registry
         return $result;
     }
 
-    function clientOnStart()
+    /**
+     *
+     */
+    public function clientOnStart()
     {
         if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
     }

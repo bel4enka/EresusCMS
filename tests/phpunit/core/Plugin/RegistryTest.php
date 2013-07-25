@@ -42,7 +42,8 @@ class Eresus_Plugin_RegistryTest extends PHPUnit_Framework_TestCase
      */
     public function testAutoload()
     {
-        $plugins = $this->getMock('Eresus_Plugin_Registry', array('load'));
+        $plugins = $this->getMockBuilder('Eresus_Plugin_Registry')->setMethods(array('load'))
+            ->disableOriginalConstructor()->getMock();
         $plugins->expects($this->any())->method('load')->
             will($this->returnCallback(
                 function ($a)
