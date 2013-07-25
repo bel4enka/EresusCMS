@@ -384,7 +384,7 @@ class TPages
     {
         $result[0] = array();
         $result[1] = array();
-        $templates = new Templates();
+        $templates = Templates::getInstance();
         $list = $templates->enum();
         $result[0]= array_values($list);
         $result[1]= array_keys($list);

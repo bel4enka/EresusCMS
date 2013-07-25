@@ -28,7 +28,6 @@
  * @package Eresus
  */
 
-useClass('backward/TPlugin');
 /**
  * Базовый класс для плагинов, предоставляющих тип контента
  *

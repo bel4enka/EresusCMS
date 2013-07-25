@@ -28,8 +28,6 @@
  * @package Eresus
  */
 
-useClass('backward/TContentPlugin');
-
 /**
  * Базовый класс для плагинов с контентом в виде списков
  *

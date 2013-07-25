@@ -41,7 +41,10 @@ return array(
     'Sections' => 'core/lib/sections.php',
     'TAdminUI' => 'core/admin.php',
     'TClientUI' => 'core/client.php',
+    'TContentPlugin' => 'core/backward/TContentPlugin.php',
     'Templates' => 'core/lib/templates.php',
+    'TListPlugin' => 'core/backward/TListPlugin.php',
+    'TPlugin' => 'core/backward/TPlugin.php',
     'WebServer' => 'core/classes/WebServer.php',
     'WebPage' => 'core/classes/WebPage.php',
 );

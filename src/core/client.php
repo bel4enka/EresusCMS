@@ -206,7 +206,7 @@ class TClientUI extends Eresus_CMS_Page_Client
         {
             $url = $this->url().'p%d/';
         }
-        $Templates = new Templates();
+        $Templates = Templates::getInstance();
         $defaults = explode('---', $Templates->get('PageSelector', 'std'));
         if (!is_array($templates))
         {

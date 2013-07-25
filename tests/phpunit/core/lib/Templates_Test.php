@@ -29,7 +29,7 @@
  * $Id: CMS_Test.php 2187 2012-05-24 17:07:44Z mk $
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
 require_once TESTS_SRC_DIR . '/core/lib/templates.php';
 
 /**
@@ -38,26 +38,26 @@ require_once TESTS_SRC_DIR . '/core/lib/templates.php';
  */
 class Eresus_Templates_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Templates::get
-	 */
-	public function test_get()
-	{
-		$app = $this->getMock('stdClass', array('getFsRoot'));
-		$app->expects($this->any())->method('getFsRoot')->
-			will($this->returnValue(TESTS_FIXT_DIR . '/core/lib'));
-		Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
+    /**
+     * @covers Templates::get
+     */
+    public function test_get()
+    {
+        $app = $this->getMock('stdClass', array('getFsRoot'));
+        $app->expects($this->any())->method('getFsRoot')->
+            will($this->returnValue(TESTS_FIXT_DIR . '/core/lib'));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
-		$templates = new Templates();
+        $templates = new Templates();
 
-		$tpl = $templates->get('foo', '', true);
-		$this->assertInternalType('array', $tpl);
-		$this->assertEquals('Foo', $tpl['desc']);
+        $tpl = $templates->get('foo', '', true);
+        $this->assertInternalType('array', $tpl);
+        $this->assertEquals('Foo', $tpl['desc']);
 
-		$tpl = $templates->get('bar', '', true);
-		$this->assertInternalType('array', $tpl);
-		$this->assertEquals('Default', $tpl['desc']);
+        $tpl = $templates->get('bar', '', true);
+        $this->assertInternalType('array', $tpl);
+        $this->assertEquals('Default', $tpl['desc']);
 
-		$this->assertFalse($templates->get('bar', 'sub'));
-	}
+        $this->assertFalse($templates->get('bar', 'sub'));
+    }
 }

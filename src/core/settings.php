@@ -166,7 +166,7 @@ class TSettings
         $form->setValue('contentTypeDefault', option('contentTypeDefault'));
 
         /* Загружаем список шаблонов */
-        $templates = new Templates();
+        $templates = Templates::getInstance();
         $list = $templates->enum();
         $templates = array();
         foreach ($list as $key => $value)
