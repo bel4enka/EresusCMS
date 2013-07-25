@@ -82,6 +82,17 @@ abstract class Eresus_CMS_FrontController
     }
 
     /**
+     * Возвращает текущий запрос
+     *
+     * @return Eresus_CMS_Request
+     * @since 3.01
+     */
+    protected function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
      * Создаёт объект Eresus_CMS_Page
      *
      * @return Eresus_CMS_Page

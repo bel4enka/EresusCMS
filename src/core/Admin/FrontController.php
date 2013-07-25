@@ -42,10 +42,16 @@ class Eresus_Admin_FrontController extends Eresus_CMS_FrontController
      */
     public function dispatch()
     {
-        ob_start();
-        $this->getPage()->render();
-        $content = ob_get_clean();
-        $response = new Eresus_HTTP_Response($content);
+        if (!UserRights(EDITOR))
+        {
+            $response = $this->authAction();
+        }
+        else
+        {
+            ob_start();
+            $this->getPage()->render();
+            $response = new Eresus_HTTP_Response(ob_get_clean());
+        }
         return $response;
     }
 
@@ -58,6 +64,45 @@ class Eresus_Admin_FrontController extends Eresus_CMS_FrontController
     protected function createPage()
     {
         return new TAdminUI();
+    }
+
+    /**
+     * Отрисовка страницы аутентификации
+     *
+     * @return Eresus_HTTP_Response
+     *
+     * @since 3.01
+     */
+    private function authAction()
+    {
+        $data = array('errors' => array(), 'user' => '', 'autologin' => '');
+
+        $legacyKernel = Eresus_CMS::getLegacyKernel();
+        $req = $this->getRequest();
+        if ($req->getMethod() == 'POST')
+        {
+            $user = $req->request->filter('user', null, FILTER_REGEXP, '/[^a-z0-9_\-\.\@]/');
+            $password = $req->request->get('password');
+            $autologin = $req->request->get('autologin');
+            if ($legacyKernel->login($user, $legacyKernel->password_hash($password), $autologin))
+            {
+                return new Eresus_HTTP_Redirect($legacyKernel->root . 'admin.php');
+            }
+            $data['user'] = $user;
+            $data['autologin'] = $autologin;
+        }
+
+        if (isset($legacyKernel->session['msg']['errors']) &&
+            count($legacyKernel->session['msg']['errors']))
+        {
+            $data['errors'] = $legacyKernel->session['msg']['errors'];
+            $legacyKernel->session['msg']['errors'] = array();
+        }
+
+        $tmpl = Eresus_Template::loadFromFile('core/templates/auth.html');
+        $html = $tmpl->compile($data);
+        $response = new Eresus_HTTP_Response($html);
+        return $response;
     }
 }
 

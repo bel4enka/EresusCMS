@@ -144,8 +144,9 @@ class AdminUITheme
 }
 
 
-
-
+/**
+ * @deprecated с 3.01
+ */
 define('ADMINUI', true);
 
 /**
@@ -1248,61 +1249,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     public function render()
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-        /* Проверяем права доступа и, если надо, проводим авторизацию */
-        if (!UserRights(EDITOR))
-        {
-            $response = $this->auth();
-            $response->send();
-        }
-        else
-        {
-            $this->renderUI();
-        }
-    }
-
-    /**
-     * Отрисовка страницы аутентификации
-     *
-     * Авторизация проводится методом {@see Eresus::login()}.
-     *
-     * @return Eresus_HTTP_Response
-     */
-    private function auth()
-    {
-        $req = HTTP::request();
-        $user = $req->arg('user', '/[^a-z0-9_\-\.\@]/');
-        $password = $req->arg('password');
-        $autologin = $req->arg('autologin');
-
-        $data = array('errors' => array());
-        $data['user'] = $user;
-        $data['autologin'] = $autologin;
-
-        $legacyKernel = Eresus_CMS::getLegacyKernel();
-        if ($req->getMethod() == 'POST')
-        {
-            if ($legacyKernel
-                    ->login($req->arg('user'), $legacyKernel->password_hash($password), $autologin))
-            {
-                return new Eresus_HTTP_Redirect($legacyKernel->root . 'admin.php');
-            }
-        }
-
-        if (isset($legacyKernel->session['msg']['errors']) &&
-            count($legacyKernel->session['msg']['errors']))
-        {
-            foreach ($legacyKernel->session['msg']['errors'] as $message)
-            {
-                $data['errors'] []= iconv(CHARSET, 'utf-8', $message);
-            }
-
-            $legacyKernel->session['msg']['errors'] = array();
-        }
-
-        $tmpl = $this->getUITheme()->getTemplate('auth.html');
-        $html = $tmpl->compile($data);
-        $response = new Eresus_HTTP_Response($html);
-        return $response;
+        $this->renderUI();
     }
 
     /**
