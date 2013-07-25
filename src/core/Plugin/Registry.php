@@ -316,62 +316,10 @@ class Eresus_Plugin_Registry
         switch ($page->type)
         {
             case 'default':
-                $plugin = new ContentPlugin;
-                $result = $plugin->clientRenderContent();
+                $controller = new Eresus_Client_Controller_Content_Default();
                 break;
             case 'list':
-                /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-                if (Eresus_CMS::getLegacyKernel()->request['file'] ||
-                    Eresus_CMS::getLegacyKernel()->request['query'] ||
-                    $page->subpage ||
-                    $page->topic)
-                {
-                    $page->httpError(404);
-                }
-
-                $subitems = Eresus_CMS::getLegacyKernel()->db->select('pages', "(`owner`='" .
-                    $page->id .
-                    "') AND (`active`='1') AND (`access` >= '" .
-                    (Eresus_CMS::getLegacyKernel()->user['auth'] ?
-                        Eresus_CMS::getLegacyKernel()->user['access'] : GUEST)."')", "`position`");
-                if (empty($page->content))
-                {
-                    $page->content = '$(items)';
-                }
-                $templates = Templates::getInstance();
-                $template = $templates->get('SectionListItem', 'std');
-                if (false === $template)
-                {
-                    $template = '<h1><a href="$(link)" title="$(hint)">$(caption)</a></h1>$(description)';
-                }
-                $items = '';
-                foreach ($subitems as $item)
-                {
-                    $items .= str_replace(
-                        array(
-                            '$(id)',
-                            '$(name)',
-                            '$(title)',
-                            '$(caption)',
-                            '$(description)',
-                            '$(hint)',
-                            '$(link)',
-                        ),
-                        array(
-                            $item['id'],
-                            $item['name'],
-                            $item['title'],
-                            $item['caption'],
-                            $item['description'],
-                            $item['hint'],
-                            Eresus_CMS::getLegacyKernel()->request['url'] .
-                            ($page->name == 'main' &&
-                            !$page->owner ? 'main/' : '').$item['name'].'/',
-                        ),
-                        $template
-                    );
-                }
-                $result = str_replace('$(items)', $items, $page->content);
+                $controller = new Eresus_Client_Controller_Content_List();
                 break;
             case 'url':
                 $controller = new Eresus_Client_Controller_Content_Url();
