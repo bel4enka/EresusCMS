@@ -78,17 +78,22 @@ class Eresus_CMS_Request extends Eresus_HTTP_Request
      * Этот адрес будет вырезаться в таких методах как {@link getPath()}, {@link getDirectry()},
      * {@link getFile()}.
      *
-     * @param string $url  корневой URL или только путь относительно корня домена
+     * @param mixed $url  корневой URL или только путь относительно корня домена
      *
      * @since 3.01
      */
     public function setSiteRoot($url)
     {
-        $this->siteRoot = rtrim(parse_url($url, PHP_URL_PATH), '/');
-        if (substr($this->siteRoot, 0, 1) != '/')
+        $url = strval($url);
+        if ('' !== $url)
         {
-            $this->siteRoot = '/' . $this->siteRoot;
+            $url = rtrim(parse_url($url, PHP_URL_PATH), '/');
+            if (substr($url, 0, 1) != '/')
+            {
+                $url = '/' . $url;
+            }
         }
+        $this->siteRoot = $url;
     }
 
     /**
@@ -155,7 +160,10 @@ class Eresus_CMS_Request extends Eresus_HTTP_Request
         {
             $path = '/';
         }
-        $path = substr($path, strlen($this->siteRoot));
+        if ($this->siteRoot)
+        {
+            $path = substr($path, strlen($this->siteRoot));
+        }
         return $path;
     }
 

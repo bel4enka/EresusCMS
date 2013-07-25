@@ -96,6 +96,8 @@ class Eresus_CMS_RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('/path/file.php', $request->getPath());
         $request->setSiteRoot('site');
         $this->assertEquals('/path/file.php', $request->getPath());
+        $request->setSiteRoot(false);
+        $this->assertEquals('/site/path/file.php', $request->getPath());
     }
 
     /**
@@ -105,7 +107,6 @@ class Eresus_CMS_RequestTest extends PHPUnit_Framework_TestCase
     public function testDirectoryFile()
     {
         $request = new Eresus_CMS_Request();
-
         $this->assertEquals('', $request->getDirectory());
         $this->assertEquals('', $request->getFile());
 
