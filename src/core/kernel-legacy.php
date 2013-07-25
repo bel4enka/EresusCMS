@@ -1536,7 +1536,6 @@ class Eresus
 	 */
 	private function initClasses()
 	{
-		# Подключение строковых данных
 		$filename = $this->froot.'core/classes.php';
 		if (is_file($filename))
 		{
@@ -1547,18 +1546,6 @@ class Eresus
 		{
             throw new Eresus_Exception_ComponentCorrupted(
                 sprintf('Classes file "%s" not found!', $filename));
-		}
-		if ($this->conf['backward']['TListContentPlugin'])
-		{
-			useClass('backward/TListContentPlugin');
-		}
-		elseif ($this->conf['backward']['TContentPlugin'])
-		{
-			useClass('backward/TContentPlugin');
-		}
-		elseif ($this->conf['backward']['TPlugin'])
-		{
-			useClass('backward/TPlugin');
 		}
 	}
 
