@@ -30,9 +30,7 @@
 use org\bovigo\vfs\vfsStreamWrapper;
 use org\bovigo\vfs\vfsStream;
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/Plugin.php';
-require_once TESTS_SRC_DIR . '/core/Plugin/Templates.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 /**
  * Тесты класса Eresus_Plugin_Templates

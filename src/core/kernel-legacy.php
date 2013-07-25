@@ -1218,7 +1218,7 @@ class Eresus
 
 	/**
 	 * Плагины
-	 * @var Plugins
+	 * @var Eresus_Plugin_Registry
 	 */
 	public $plugins;
 
@@ -1588,9 +1588,9 @@ class Eresus
 	/**
 	 * Инициализация механизма плагинов
 	 */
-	function init_plugins()
+	private function initPlugins()
 	{
-		$this->plugins = new Plugins;
+		$this->plugins = new Eresus_Plugin_Registry;
 		$this->plugins->init();
 	}
 
@@ -1714,7 +1714,7 @@ class Eresus
 		# Подключение к источнику данных
 		$this->initDataSource();
 		# Инициализация механизма плагинов
-		$this->init_plugins();
+		$this->initPlugins();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута

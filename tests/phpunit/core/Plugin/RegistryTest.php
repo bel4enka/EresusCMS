@@ -1,6 +1,6 @@
 <?php
 /**
- * Обеспечение совместимости со старыми версиями
+ * Тесты класса Eresus_Plugin_Registry
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,50 +24,48 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
- * @subpackage BC
+ * @subpackage Tests
  */
 
-/**
- * Класс для обратной совместимости
- *
- * @package Eresus
- * @subpackage BC
- * @deprecated с 3.01 используйте {@link Eresus_HTTP_Request}
- */
-class HttpRequest extends Eresus_HTTP_Request
-{
-}
+require_once __DIR__ . '/../../bootstrap.php';
 
 /**
- * Класс для обратной совместимости
+ * Тесты класса Eresus_Plugin_Registry
  *
  * @package Eresus
- * @subpackage BC
- * @deprecated с 3.01 используйте {@link Eresus_Plugin}
+ * @subpackage Tests
  */
-class Plugin extends Eresus_Plugin
+class Eresus_Plugin_RegistryTest extends PHPUnit_Framework_TestCase
 {
-}
+    /**
+     * @covers Eresus_Plugin_Registry::autoload
+     */
+    public function testAutoload()
+    {
+        $plugins = $this->getMock('Eresus_Plugin_Registry', array('load'));
+        $plugins->expects($this->any())->method('load')->
+            will($this->returnCallback(
+                function ($a)
+                {
+                    return 'foo' == $a;
+                }
+            ));
 
-/**
- * Класс для обратной совместимости
- *
- * @package Eresus
- * @subpackage BC
- * @deprecated с 3.01 используйте {@link Eresus_Plugin_Registry}
- */
-class Plugins extends Eresus_Plugin_Registry
-{
-}
+        $app = $this->getMock('stdClass', array('getFsRoot'));
+        $app->expects($this->any())->method('getFsRoot')->
+            will($this->returnValue(TESTS_FIXT_DIR . '/core/Plugins/'));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
 
-/**
- * Класс для обратной совместимости
- *
- * @package Eresus
- * @subpackage BC
- * @deprecated с 3.01 используйте {@link Eresus_Template}
- */
-class Template extends Eresus_Template
-{
+        /** @var Eresus_Plugin_Registry $plugins */
+        // Нет такого файла
+        $this->assertFalse($plugins->autoload('Baz_Foo_Bar'));
+
+        // Файл есть, но плагин не активирован
+        $this->assertFalse($plugins->autoload('Bar_Foo_Baz'));
+
+        // Файл есть и плагин активирован
+        $this->assertTrue($plugins->autoload('Foo_Bar_Baz'));
+        $this->assertTrue(class_exists('Foo_Bar_Baz', false));
+    }
 }
 

@@ -45,7 +45,7 @@ spl_autoload_register(
      */
     function ($class)
     {
-        static $bcClasses = array('HttpRequest', 'Plugin', 'Template');
+        static $bcClasses = array('HttpRequest', 'Plugin', 'Plugins', 'Template');
 
         if (stripos($class, 'Eresus_') === 0)
         /*
