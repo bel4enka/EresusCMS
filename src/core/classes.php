@@ -216,7 +216,7 @@ class Plugins
      *
      * @param string $name  Имя плагина
      *
-     * @return Plugin|TPlugin|bool  Экземпляр плагина или false если не удалось загрузить плагин
+     * @return Plugin|TContentPlugin|bool  Экземпляр плагина или false если не удалось загрузить плагин
      *
      * @since 2.10
      */

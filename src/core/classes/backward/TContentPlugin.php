@@ -1,13 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
+ * Устаревший базовый класс для плагинов, предоставляющих тип контента
  *
- * ${product.description}
- *
- * @copyright 2004, Михаил Красильников <mihalych@vsepofigu.ru>
- * @copyright 2007, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -29,20 +27,71 @@
  */
 
 /**
- * Базовый класс для плагинов, предоставляющих тип контента
+ * Устаревший базовый класс для плагинов, предоставляющих тип контента
  *
  * @package Eresus
+ * @deprecated с 3.01 используйте ContentPlugin
  */
-class TContentPlugin extends TPlugin
+class TContentPlugin
 {
     /**
-     * Конструктор
-     *
-     * Устанавливает плагин в качестве плагина контента и читает локальные настройки
+     * Имя плагина
+     * @var string
      */
-    function __construct()
+    public $name;
+
+    /**
+     * Версия плагина
+     * @var string
+     */
+    public $version;
+
+    /**
+     * Название плагина
+     * @var string
+     */
+    public $title;
+
+    /**
+     * Описание плагина
+     * @var string
+     */
+    public $description;
+
+    /**
+     * Настройки плагина
+     * @var array
+     */
+    public $settings = array();
+
+    /**
+     * Конструктор
+     */
+    public function __construct()
     {
-        parent::__construct();
+        global $locale;
+
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $plugins = $legacyKernel->plugins;
+
+        if (!empty($this->name) && isset($plugins->list[$this->name]))
+        {
+            $this->settings = decodeOptions($plugins->list[$this->name]['settings'],
+                $this->settings);
+            # Если установлена версия плагина отличная от установленной ранее
+            # то необходимо произвести обновление информации о плагине в БД
+            if ($this->version != $plugins->list[$this->name]['version'])
+            {
+                $this->resetPlugin();
+            }
+        }
+        $filename = $legacyKernel->froot . 'lang/' . $this->name . '/' . $locale['lang'] . '.php';
+        if (is_file($filename))
+        {
+            /** @noinspection PhpIncludeInspection */
+            include $filename;
+        }
+
         /** @var TClientUI|TAdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
         if ($page)
@@ -50,20 +99,127 @@ class TContentPlugin extends TPlugin
             $page->plugin = $this->name;
             if (count($page->options))
             {
-                foreach ($page->options as $key=>$value)
+                foreach ($page->options as $key => $value)
                 {
                     $this->settings[$key] = $value;
                 }
             }
         }
     }
-    //------------------------------------------------------------------------------
+
+    /**
+     * Возвращает информацию о плагине
+     *
+     * @param  array  $item  Предыдущая версия информации (по умолчанию null)
+     *
+     * @return  array  Массив информации, пригодный для записи в БД
+     */
+    public function __item($item = null)
+    {
+        $result['name'] = $this->name;
+        $result['content'] = false;
+        $result['active'] = is_null($item) ? true : $item['active'];
+        $result['settings'] = Eresus_CMS::getLegacyKernel()->db
+            ->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+        $result['title'] = $this->title;
+        $result['version'] = $this->version;
+        $result['description'] = $this->description;
+        return $result;
+    }
+
+    /**
+     * Чтение настроек плагина из БД
+     *
+     * @return  bool  Результат выполнения
+     */
+    protected function loadSettings()
+    {
+        $result = Eresus_CMS::getLegacyKernel()->db
+            ->selectItem('plugins', "`name`='".$this->name."'");
+        if ($result)
+        {
+            $this->settings = decodeOptions($result['settings'], $this->settings);
+        }
+        return (bool) $result;
+    }
+
+    /**
+     * Сохранение настроек плагина в БД
+     *
+     * @return  bool  Результат выполнения
+     */
+    protected function saveSettings()
+    {
+        $db = Eresus_CMS::getLegacyKernel()->db;
+        $item = $db->selectItem('plugins', "`name`='{$this->name}'");
+        $item = $this->__item($item);
+        $item['settings'] = $db->escape(encodeOptions($this->settings));
+        $result = $db->updateItem('plugins', $item, "`name`='".$this->name."'");
+        return $result;
+    }
+
+    /**
+     * Обновление данных о плагине в БД
+     */
+    protected function resetPlugin()
+    {
+        $this->loadSettings();
+        $this->saveSettings();
+    }
+
+    /**
+     * Дополнительные действия при изменении настроек
+     */
+    public function onSettingsUpdate()
+    {
+    }
+
+    /**
+     * Сохраняет в БД изменения настроек плагина
+     */
+    public function updateSettings()
+    {
+        foreach (array_keys($this->settings) as $key)
+        {
+            if (!is_null(arg($key)))
+            {
+                $this->settings[$key] = arg($key);
+            }
+        }
+        $this->onSettingsUpdate();
+        $this->saveSettings();
+    }
+
+    /**
+     * Замена макросов
+     *
+     * @param  string  $template  Строка в которой требуется провести замену макросов
+     * @param  array   $item      Ассоциативный массив со значениями для подстановки вместо макросов
+     *
+     * @return  string  Метод возвращает строку, в которой заменены все макросы, совпадающие с полями массива item
+     */
+    public function replaceMacros($template, $item)
+    {
+        preg_match_all('/\$\(([^(]+)\)/U', $template, $matches);
+        if (count($matches[1]))
+        {
+            foreach ($matches[1] as $macros)
+            {
+                if (isset($item[$macros]))
+                {
+                    $template = str_replace('$('.$macros.')', $item[$macros], $template);
+                }
+            }
+        }
+        return $template;
+    }
+
     /**
      * Обновляет контент страницы в БД
      *
      * @param  string  $content  Контент
      */
-    function updateContent($content)
+    protected function updateContent($content)
     {
         $item = Eresus_CMS::getLegacyKernel()->db->
             selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
@@ -71,32 +227,32 @@ class TContentPlugin extends TPlugin
         Eresus_CMS::getLegacyKernel()->db->
             updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
     }
-//------------------------------------------------------------------------------
+
     /**
      * Обновляет контент страницы
      */
-    function update()
+    public function update()
     {
         $this->updateContent(arg('content', 'dbsafe'));
         HTTP::redirect(arg('submitURL'));
     }
-//------------------------------------------------------------------------------
+
     /**
      * Отрисовка клиентской части
      *
      * @return  string  Контент
      */
-    function clientRenderContent()
+    public function clientRenderContent()
     {
         return Eresus_Kernel::app()->getPage()->content;
     }
-//------------------------------------------------------------------------------
+
     /**
      * Отрисовка административной части
      *
      * @return  string  Контент
      */
-    function adminRenderContent()
+    public function adminRenderContent()
     {
         $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".
             Eresus_Kernel::app()->getPage()->id."'");
@@ -114,6 +270,5 @@ class TContentPlugin extends TPlugin
         $result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
         return $result;
     }
-//------------------------------------------------------------------------------
 }
 

@@ -25,6 +25,8 @@
 Удалено
 ^^^^^^^
 
+* Удалён класс TPlugin, его свойства и методы перенесены в
+  `TContentPlugin <api/classes/TContentPlugin.html>`_.
 * Удалены константы filesRoot и dataFiles.
 * Удалено свойство Eresus::$host.
 * Удалены методы DB: setTestInstance, getInstance, createSelectQuery, createUpdateQuery,
@@ -62,6 +64,7 @@
   `HTTP::goback <api/classes/HTTP.html#method_goback>`_ объявлены устаревшими в пользу новых классов
   `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
   `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
+* Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ объявлен устаревшим.
 * Функция ErrorMessage объявлена устаревшей, вместо нее следует использовать
   `Eresus_CMS_Page::addErrorMessage <api/classes/Eresus_CMS_Page.html#method_addErrorMessage>`_.
 * Функция InfoMessage объявлена устаревшей.
