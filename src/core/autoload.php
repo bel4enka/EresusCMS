@@ -45,6 +45,43 @@ spl_autoload_register(
      */
     function ($class)
     {
+        static $map = array(
+            'AdminList' => 'lib/admin/lists.php',
+            'EresusAccounts' => 'lib/accounts.php',
+            'EresusForm' => 'EresusForm.php',
+            'EresusCollection' => 'classes/helpers/EresusCollection.php',
+            'Form' => 'lib/forms.php',
+            'I18n' => 'i18n.php',
+            'MySQL' => 'lib/mysql.php',
+            'mysql' => 'lib/mysql.php',
+            'PaginationHelper' => 'classes/helpers/PaginationHelper.php',
+            'Sections' => 'lib/sections.php',
+            'TAdminUI' => 'admin.php',
+            'TClientUI' => 'client.php',
+            'TContentPlugin' => 'classes/backward/TContentPlugin.php',
+            'Templates' => 'lib/templates.php',
+            'TListContentPlugin' => 'classes/backward/TListContentPlugin.php',
+            'TSettings' => 'settings.php',
+            'WebServer' => 'classes/WebServer.php',
+            'WebPage' => 'classes/WebPage.php',
+            /* DB */
+            'DB' => 'framework/core/DB/DB.php',
+            'DBSettings' => 'framework/core/DB/DB.php',
+            'DBRuntimeException' => 'framework/core/DB/DB.php',
+
+            /* Template */
+            'Template' => 'framework/core/Template/Template.php',
+            'TemplateFile' => 'framework/core/Template/Template.php',
+            'TemplateSettings' => 'framework/core/Template/Template.php',
+
+            /* WWW */
+            'HTTP' => 'framework/core/WWW/HTTP/HTTP.php',
+            'HttpHeader' => 'framework/core/WWW/HTTP/HttpHeaders.php',
+            'HttpHeaders' => 'framework/core/WWW/HTTP/HttpHeaders.php',
+            'HttpMessage' => 'framework/core/WWW/HTTP/HttpMessage.php',
+            'HttpResponse' => 'framework/core/WWW/HTTP/HttpResponse.php',
+        );
+
         static $bcClasses = array('HttpRequest', 'Plugin', 'Plugins', 'Template');
 
         if (stripos($class, 'Eresus_') === 0)
@@ -89,6 +126,18 @@ spl_autoload_register(
         {
             include_once __DIR__ . '/backward.php';
         }
+        elseif (array_key_exists($class, $map))
+            /*
+             * Старые классы
+             */
+        {
+            /** @noinspection PhpIncludeInspection */
+            include_once __DIR__ . '/' . $map[$class];
+        }
     }
 );
 
+/**
+ * Подключаем Dwoo
+ */
+include_once __DIR__ . '/framework/core/3rdparty/dwoo/dwooAutoload.php';

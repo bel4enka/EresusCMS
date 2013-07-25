@@ -75,9 +75,6 @@ class Eresus_CMS extends Eresus_Application
 
         try
         {
-            /* Подключение таблицы автозагрузки классов */
-            EresusClassAutoloader::add('core/cms.autoload.php');
-
             /* Общая инициализация */
             $this->checkEnvironment();
             $this->createFileStructure();

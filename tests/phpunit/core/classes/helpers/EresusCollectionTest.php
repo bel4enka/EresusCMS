@@ -27,8 +27,7 @@
  * @author Михаил Красильников <mk@eresus.ru>
  */
 
-require_once TESTS_SRC_DIR . '/core/classes/helpers/EresusCollection.php';
-require_once TESTS_SRC_DIR . '/core/Exception/InvalidArgumentType.php';
+require_once __DIR__ . '/../../../bootstrap.php';
 
 /**
  * @package EresusCMS

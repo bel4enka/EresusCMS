@@ -30,9 +30,7 @@
  * $Id$
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/CMS/Page.php';
-require_once TESTS_SRC_DIR . '/core/classes/WebPage.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 /**
  * @package EresusCMS

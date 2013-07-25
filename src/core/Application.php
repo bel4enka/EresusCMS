@@ -76,25 +76,18 @@ abstract class Eresus_Application
     /**
      * Constructor
      *
-     * 1. Inits FS related parts of application
-     * 2. If application has method called 'autoload' registers it through
-     *    {@link Core::registerAutoloader}
+     * 1. Init FS related parts of application
      *
      * There is no need to call constructor directly. It will be called
-     * automaticly from {@link Core::exec()}
+     * automatically from {@link Core::exec()}
      *
      * @return Eresus_Application
-     * @see initFS(), Core::exec(), Core::registerAutoloader()
+     * @see initFS(), Core::exec()
      */
-    function __construct()
+    public function __construct()
     {
-
         $this->initFS();
-        if (method_exists($this, 'autoload'))
-            Core::registerAutoloader(array($this, 'autoload'));
-
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Init FS related parts of application
@@ -109,7 +102,6 @@ abstract class Eresus_Application
     {
         $this->fsRoot = $this->detectFsRoot();
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Trying to determine application root directory

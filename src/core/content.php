@@ -97,7 +97,7 @@ class TContent
                     }
                     break;
                 case 'url':
-                    $controller = new Eresus_CMS_Controller_Admin_UrlContent();
+                    $controller = new Eresus_Admin_Controller_Content_Url();
                     break;
                 default:
                     $result = $page->
@@ -105,7 +105,7 @@ class TContent
                     break;
             }
             if (isset($controller)
-                && $controller instanceof Eresus_CMS_Controller_Admin_ContentInterface)
+                && $controller instanceof Eresus_Admin_Controller_Content_Interface)
             {
                 $result = $controller->getHtml();
             }

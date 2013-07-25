@@ -34,22 +34,21 @@
  */
 
 require_once __DIR__ . '/../../bootstrap.php';
-
 require_once TESTS_SRC_DIR . '/core/lib/glib.php';
 
 
 class glib_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 *
-	 */
-	public function test_imageCreateFromFile()
-	{
-		$folder = TESTS_FIXT_DIR . '/core/lib/glib';
+    /**
+     *
+     */
+    public function test_imageCreateFromFile()
+    {
+        $folder = TESTS_FIXT_DIR . '/core/lib/glib';
 
-		$this->assertInternalType('resource', imageCreateFromFile($folder . '/gif.gif'));
-		$this->assertInternalType('resource', imageCreateFromFile($folder . '/jpeg.jpg'));
-		$this->assertInternalType('resource', imageCreateFromFile($folder . '/png.png'));
-	}
-	//-----------------------------------------------------------------------------
+        $this->assertInternalType('resource', imageCreateFromFile($folder . '/gif.gif'));
+        $this->assertInternalType('resource', imageCreateFromFile($folder . '/jpeg.jpg'));
+        $this->assertInternalType('resource', imageCreateFromFile($folder . '/png.png'));
+    }
+    //-----------------------------------------------------------------------------
 }

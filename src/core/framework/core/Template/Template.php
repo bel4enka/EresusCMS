@@ -28,11 +28,6 @@
  */
 
 /**
- * Подключаем Dwoo
- */
-include_once __DIR__ . '/../3rdparty/dwoo/dwooAutoload.php';
-
-/**
  * Настройки шаблонов
  *
  * @package Eresus
