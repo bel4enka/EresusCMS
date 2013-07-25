@@ -27,6 +27,13 @@
  */
 
 /**
+ * Фильтрация по регулярному выражению
+ *
+ * @since 3.01
+ */
+define('FILTER_REGEXP', 2048);
+
+/**
  * Параметры GET или POST
  *
  * @package Eresus
@@ -100,6 +107,31 @@ class Eresus_HTTP_Parameters
     public function get($name, $default = null)
     {
         return $this->has($name) ? $this->data[$name] : $default;
+    }
+
+    /**
+     * Возвращает профильтрованное значение параметра $name
+     *
+     * @param string $name     имя параметра
+     * @param mixed  $default  значение по умолчанию, если параметр отсутствует
+     * @param int    $filter   фильтр (константа FILTER_*)
+     * @param mixed  $options  опции фильтра
+     *
+     * @return mixed
+     * @since 3.01
+     */
+    public function filter($name, $default = null, $filter = FILTER_DEFAULT, $options = null)
+    {
+        $value = $this->get($name, $default);
+        if (FILTER_REGEXP == $filter)
+        {
+            return preg_replace($options, '', $value);
+        }
+        if (FILTER_CALLBACK == $filter && is_callable($options))
+        {
+            $options = array('options' => $options);
+        }
+        return filter_var($value, $filter, $options);
     }
 
     /**

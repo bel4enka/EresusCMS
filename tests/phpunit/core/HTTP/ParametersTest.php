@@ -62,5 +62,24 @@ class Eresus_HTTP_ParametersTest extends PHPUnit_Framework_TestCase
         $params->replace(array('foo' => 'bar'));
         $this->assertEquals(array('foo' => 'bar'), $params->all());
     }
+
+    /**
+     * @covers Eresus_HTTP_Parameters::filter
+     */
+    public function testFilter()
+    {
+        $params = new Eresus_HTTP_Parameters(array(
+            'foo' => '1fwrf2fer3',
+            'bar' => 'b%@^a*(@#r'
+        ));
+        $this->assertEquals(123, $params->filter('foo', null, FILTER_SANITIZE_NUMBER_INT));
+        $this->assertEquals('bar', $params->filter('bar', null, FILTER_CALLBACK,
+            function ($value)
+            {
+                return preg_replace('/\W/', '', $value);
+            }
+        ));
+        $this->assertEquals('bar', $params->filter('bar', null, FILTER_REGEXP, '/\W/'));
+    }
 }
 
