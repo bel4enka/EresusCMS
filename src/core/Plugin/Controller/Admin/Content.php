@@ -33,7 +33,7 @@
  * @since 3.01
  */
 abstract class Eresus_Plugin_Controller_Admin_Content extends Eresus_Plugin_Controller_Admin
-    implements Eresus_CMS_Controller_Admin_ContentInterface
+    implements Eresus_Admin_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента

@@ -1,6 +1,6 @@
 <?php
 /**
- * Контроллер АИ типа раздела «URL»
+ * Интерфейс контроллера контента раздела КИ
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,20 +27,13 @@
  */
 
 /**
- * Контроллер АИ типа раздела «URL»
+ * Интерфейс контроллера контента раздела КИ
  *
  * @package Eresus
+ * @since 3.01
  */
-class Eresus_CMS_Controller_Client_UrlContent
-    implements Eresus_CMS_Controller_Client_ContentInterface
+interface Eresus_Client_Controller_Content_Interface
 {
-    /**
-     * Обрабатываемая страница
-     * @var TClientUI
-     * @since 3.01
-     */
-    private $page;
-
     /**
      * Задаёт обрабатываемую в данный момент страницу
      *
@@ -50,24 +43,14 @@ class Eresus_CMS_Controller_Client_UrlContent
      *
      * @since 3.01
      */
-    public function setPage(TClientUI $page)
-    {
-        $this->page = $page;
-    }
+    public function setPage(TClientUI $page);
 
     /**
      * Возвращает разметку области контента
      *
-     * @return Eresus_HTTP_Response
+     * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml()
-    {
-        $tmpl = new Eresus_Template();
-        $tmpl->setSource($this->page->content);
-        $html = $tmpl->compile();
-        $response = new Eresus_HTTP_Redirect($html);
-        return $response;
-    }
+    public function getHtml();
 }
 

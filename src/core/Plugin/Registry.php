@@ -374,7 +374,7 @@ class Eresus_Plugin_Registry
                 $result = str_replace('$(items)', $items, $page->content);
                 break;
             case 'url':
-                $controller = new Eresus_CMS_Controller_Client_UrlContent();
+                $controller = new Eresus_Client_Controller_Content_Url();
                 break;
             default:
                 if ($this->load($page->type))
@@ -397,7 +397,7 @@ class Eresus_Plugin_Registry
                 }
         }
         if (isset($controller)
-            && $controller instanceof Eresus_CMS_Controller_Client_ContentInterface)
+            && $controller instanceof Eresus_Client_Controller_Content_Interface)
         {
             $controller->setPage($page);
             $result = $controller->getHtml();

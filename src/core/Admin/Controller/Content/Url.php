@@ -31,7 +31,7 @@
  *
  * @package Eresus
  */
-class Eresus_CMS_Controller_Admin_UrlContent implements Eresus_CMS_Controller_Admin_ContentInterface
+class Eresus_Admin_Controller_Content_Url implements Eresus_Admin_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента

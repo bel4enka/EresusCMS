@@ -32,7 +32,7 @@
  * @package Eresus
  * @since 3.01
  */
-interface Eresus_CMS_Controller_Admin_ContentInterface
+interface Eresus_Admin_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента

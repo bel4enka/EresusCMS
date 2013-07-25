@@ -25,6 +25,7 @@
 Удалено
 ^^^^^^^
 
+* Удалён функционал автозагрузки классов на основе файлов *.autoload.php.
 * Удалён класс TPlugin, его свойства и методы перенесены в
   `TContentPlugin <api/classes/TContentPlugin.html>`_.
 * Удалены константы filesRoot и dataFiles.
@@ -102,8 +103,8 @@
 * `Eresus_Plugin_Controller_Client <api/classes/Eresus_Plugin_Controller_Client.html>`_
 * `Eresus_Plugin_Controller_Client_Content <api/classes/Eresus_Plugin_Controller_Client_Content.html>`_
 * `Eresus_Template_Service <api/classes/Eresus_Template_Service.html>`_
-  `Eresus_CMS_Controller_Client_ContentInterface <api/classes/Eresus_CMS_Controller_Client_ContentInterface.html>`_
-  `Eresus_CMS_Controller_Admin_ContentInterface <api/classes/Eresus_CMS_Controller_Admin_ContentInterface.html>`_
+  `Eresus_Client_Controller_Content_Interface <api/classes/Eresus_Client_Controller_Content_Interface.html>`_
+  `Eresus_Admin_Controller_Content_Interface <api/classes/Eresus_Admin_Controller_Content_Interface.html>`_
 * Метод `Eresus_Plugin::getCodeDir <api/classes/Eresus_Plugin.html#method_getCodeDir>`_
 * Метод `Eresus_Plugin::getDataDir <api/classes/Eresus_Plugin.html#method_getDataDir>`_
 * Метод `Eresus_Plugin::getStyleDir <api/classes/Eresus_Plugin.html#method_getStyleDir>`_
