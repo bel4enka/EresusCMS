@@ -30,90 +30,91 @@
 
 useClass('backward/TPlugin');
 /**
-* Базовый класс для плагинов, предоставляющих тип контента
-*
-* @package Eresus
-*/
+ * Базовый класс для плагинов, предоставляющих тип контента
+ *
+ * @package Eresus
+ */
 class TContentPlugin extends TPlugin
 {
-	/**
-	 * Конструктор
-	 *
-	 * Устанавливает плагин в качестве плагина контента и читает локальные настройки
-	 */
-	function __construct()
-	{
-	  parent::__construct();
-		/** @var TClientUI|TAdminUI $page */
-		$page = Eresus_Kernel::app()->getPage();
-		if ($page)
-		{
-			$page->plugin = $this->name;
-			if (count($page->options))
-			{
-				foreach ($page->options as $key=>$value)
-				{
-					$this->settings[$key] = $value;
-				}
-			}
-		}
-	}
-	//------------------------------------------------------------------------------
-/**
-* Обновляет контент страницы в БД
-*
-* @param  string  $content  Контент
-*/
-function updateContent($content)
-{
-  $item = Eresus_CMS::getLegacyKernel()->db->
-	  selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
-  $item['content'] = $content;
-	Eresus_CMS::getLegacyKernel()->db->
-		updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
-}
+    /**
+     * Конструктор
+     *
+     * Устанавливает плагин в качестве плагина контента и читает локальные настройки
+     */
+    function __construct()
+    {
+        parent::__construct();
+        /** @var TClientUI|TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        if ($page)
+        {
+            $page->plugin = $this->name;
+            if (count($page->options))
+            {
+                foreach ($page->options as $key=>$value)
+                {
+                    $this->settings[$key] = $value;
+                }
+            }
+        }
+    }
+    //------------------------------------------------------------------------------
+    /**
+     * Обновляет контент страницы в БД
+     *
+     * @param  string  $content  Контент
+     */
+    function updateContent($content)
+    {
+        $item = Eresus_CMS::getLegacyKernel()->db->
+            selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
+        $item['content'] = $content;
+        Eresus_CMS::getLegacyKernel()->db->
+            updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
+    }
 //------------------------------------------------------------------------------
-/**
-* Обновляет контент страницы
-*/
-function update()
-{
-	$this->updateContent(arg('content', 'dbsafe'));
-  HTTP::redirect(arg('submitURL'));
-}
+    /**
+     * Обновляет контент страницы
+     */
+    function update()
+    {
+        $this->updateContent(arg('content', 'dbsafe'));
+        HTTP::redirect(arg('submitURL'));
+    }
 //------------------------------------------------------------------------------
-/**
-* Отрисовка клиентской части
-*
-* @return  string  Контент
-*/
-function clientRenderContent()
-{
-  return Eresus_Kernel::app()->getPage()->content;
-}
+    /**
+     * Отрисовка клиентской части
+     *
+     * @return  string  Контент
+     */
+    function clientRenderContent()
+    {
+        return Eresus_Kernel::app()->getPage()->content;
+    }
 //------------------------------------------------------------------------------
-/**
-* Отрисовка административной части
-*
-* @return  string  Контент
-*/
-function adminRenderContent()
-{
-  $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".
-	  Eresus_Kernel::app()->getPage()->id."'");
-  $form = array(
-    'name' => 'content',
-    'caption' => Eresus_Kernel::app()->getPage()->title,
-    'width' => '100%',
-    'fields' => array (
-      array ('type'=>'hidden','name'=>'update'),
-      array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
-    ),
-    'buttons' => array('apply', 'reset'),
-  );
+    /**
+     * Отрисовка административной части
+     *
+     * @return  string  Контент
+     */
+    function adminRenderContent()
+    {
+        $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".
+            Eresus_Kernel::app()->getPage()->id."'");
+        $form = array(
+            'name' => 'content',
+            'caption' => Eresus_Kernel::app()->getPage()->title,
+            'width' => '100%',
+            'fields' => array (
+                array ('type'=>'hidden','name'=>'update'),
+                array ('type' => 'memo', 'name' => 'content', 'label' => strEdit, 'height' => '30'),
+            ),
+            'buttons' => array('apply', 'reset'),
+        );
 
-  $result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
-  return $result;
-}
+        $result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
+        return $result;
+    }
 //------------------------------------------------------------------------------
 }
+
