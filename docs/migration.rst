@@ -57,6 +57,8 @@
   `HTTP::goback <api/classes/HTTP.html#method_goback>`_ объявлены устаревшими в пользу новых классов
   `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
   `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
+* Функция ErrorMessage объявлена устаревшей, вместо нее следует использовать
+  `Eresus_CMS_Page::addErrorMessage <api/classes/Eresus_CMS_Page.html#method_addErrorMessage>`_
 
 Обновлено
 ^^^^^^^^^

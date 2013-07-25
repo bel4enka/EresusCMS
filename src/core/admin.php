@@ -997,7 +997,9 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             }
             else
             {
-                ErrorMessage(errFileNotFound.': "' . Eresus_CMS::getLegacyKernel()->froot . "core/$module.php'");
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    errFileNotFound . ': "' . Eresus_CMS::getLegacyKernel()->froot .
+                    "core/$module.php'");
             }
 
             /*

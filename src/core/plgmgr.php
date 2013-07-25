@@ -119,7 +119,7 @@ class TPlgMgr
                     }
                     catch (DomainException $e)
                     {
-                        ErrorMessage($e->getMessage());
+                        Eresus_Kernel::app()->getPage()->addErrorMessage($e->getMessage());
                     }
                 }
             }

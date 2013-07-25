@@ -176,11 +176,15 @@ class Form
      */
     function render_hidden($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $this->hidden .= '<input type="hidden" name="'.$item['name'].'" value="'.$item['value'].'" />'."\n";
         return '';
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <input type="text" />
      *
@@ -192,7 +196,11 @@ class Form
      */
     function render_edit($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><input type="text" name="'.$item['name'].'" value="'.EncodeHTML($item['value']).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$this->attrs($item).' />'.$item['comment']."</td></tr>\n";
         return $result;
     }
@@ -208,12 +216,16 @@ class Form
      */
     function render_password($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><input type="password" name="'.$item['name'].'" value="'.EncodeHTML($item['value']).'"'.(empty($item['maxlength'])?'':' maxlength="'.$item['maxlength'].'"').$this->attrs($item).' />'.$item['comment']."</td></tr>\n";
         if (isset($item['equal'])) $this->validator .= "if (form.".$item['name'].".value != form.".$item['equal'].".value) {\nalert('".errFormBadConfirm."');\nresult = false;\nform.".$item['name'].".value = '';\nform.".$item['equal'].".value = ''\nform.".$item['equal'].".select();\n} else ";
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <input type="checkbox" />
      *
@@ -225,11 +237,15 @@ class Form
      */
     function render_checkbox($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td><input type="hidden" name="'.$item['name'].'" value="" /></td><td><input type="checkbox" name="'.$item['name'].'" value="'.($item['value'] ? $item['value'] : true).'" '.($item['value'] ? 'checked' : '').$this->attrs($item).' style="background-color: transparent; border-style: none; margin:0px;" /><span style="vertical-align: baseline"> '.$item['label']."</span></td></tr>\n";
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <select>
      *
@@ -241,7 +257,11 @@ class Form
      */
     function render_select($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><select name="'.$item['name'].'"'.$this->attrs($item).'>'."\n";
         if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
         for($i = 0; $i< count($item['items']); $i++) {
@@ -251,7 +271,7 @@ class Form
         $result .= '</select>'.$item['comment']."</td></tr>\n";
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <select multiple>
      *
@@ -263,7 +283,11 @@ class Form
      */
     function render_listbox($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td class="formLabel">'.$item['label'].'</td><td><select multiple name="'.$item['name'].'[]"'.(isset($item['height'])?' size="'.$item['height'].'"':'').$this->attrs($item).">\n";
         if (!isset($item['items']) && isset($item['values'])) $item['items'] = $item['values'];
         for($i = 0; $i< count($item['items']); $i++) {
@@ -273,7 +297,7 @@ class Form
         $result .= '</select>'.$item['comment']."</td></tr>\n";
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <textarea></textarea>
      *
@@ -285,7 +309,11 @@ class Form
      */
     function render_memo($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         if (empty($item['width'])) $item['width'] = '100%';
         if (strpos($item['width'], '%') === false) {
             $cols = $item['width'];
@@ -314,7 +342,11 @@ class Form
      */
     function render_html($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
 
         $result = '';
         $extension = Eresus_CMS::getLegacyKernel()->extensions->load(
@@ -326,7 +358,7 @@ class Form
 
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <input type="file" />
      *
@@ -338,12 +370,16 @@ class Form
      */
     function render_file($item)
     {
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td class="formLabel">'.$item['label']."</td><td><input type=\"file\" name=\"".$item['name']."\"".(isset($item['width']) ? ' size="'.$item['width'].'"':'').$this->attrs($item)." />".$item['comment']."</td></tr>\n";
         $this->file = true;
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * <input type="image" />
      *
@@ -356,12 +392,16 @@ class Form
     function render_image($item)
     {
 
-        if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        if ($item['name'] === '')
+        {
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
+        }
         $result = "\t\t".'<tr><td class="formImage">'."</td><td><input type=\"image\" name=\"".$item['name']."\" src=\"".$item['src']."\" ".$this->attrs($item)." alt='".$item['label']."' />".$item['comment']."</td></tr>\n";
         $this->file = true;
         return $result;
     }
-    //------------------------------------------------------------------------------
+
     /**
      * Создание HTML-кода
      *
@@ -383,7 +423,11 @@ class Form
                 if (method_exists($this, $control)) {
                     $result .= $this->$control($item);
                 }
-                else ErrorMessage(sprintf(errFormUnknownType, $item['type'], $this->form['name']));
+                else
+                {
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errFormUnknownType, $item['type'], $this->form['name']));
+                }
             }
         }
         $this->onsubmit .= $this->validator;

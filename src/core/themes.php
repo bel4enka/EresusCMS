@@ -104,14 +104,14 @@ class TThemes
 
 		if ($filename != arg('name'))
 		{
-			ErrorMessage(sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
 		}
 
 		$templates = new Templates();
 		$templates->add($filename, '', arg('code'), arg('desc'));
 		HTTP::redirect(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * ???
@@ -505,7 +505,8 @@ class TThemes
 
 		if ($filename != arg('filename'))
 		{
-			ErrorMessage(sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(ADM_THEMES_FILENAME_FILTERED, $filename));
 		}
 
 		$contents = "/* ".arg('description')." */\r\n\r\n".arg('html');

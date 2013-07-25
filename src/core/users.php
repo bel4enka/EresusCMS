@@ -57,7 +57,7 @@ class TUsers
         $ip = gethostbyname($host);
         if ($ip == $host)
         {
-            ErrorMessage(sprintf(errNonexistedDomain, $host));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(sprintf(errNonexistedDomain, $host));
             return false;
         }
         return true;
@@ -168,29 +168,29 @@ class TUsers
         $error = false;
         if (empty($item['name']))
         {
-            ErrorMessage(admUsersNameInvalid);
+            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersNameInvalid);
             $error = true;
         }
         if (empty($item['login']))
         {
-            ErrorMessage(admUsersLoginInvalid);
+            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersLoginInvalid);
             $error = true;
         }
         if ($item['access'] <= ROOT)
         {
-            ErrorMessage('Invalid access level!');
+            Eresus_Kernel::app()->getPage()->addErrorMessage('Invalid access level!');
             $error = true;
         }
         if ($item['hash'] != Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd2')))
         {
-            ErrorMessage(admUsersConfirmInvalid);
+            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersConfirmInvalid);
             $error = true;
         }
         # Проверка данных на уникальность
         $check = $this->accounts->get("`login` = '{$item['login']}'");
         if ($check)
         {
-            ErrorMessage(admUsersLoginExists);
+            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersLoginExists);
             $error = true;
         }
         if ($error)
@@ -200,7 +200,7 @@ class TUsers
         }
         if (!$this->accounts->add($item))
         {
-            ErrorMessage('Error creating user account');
+            Eresus_Kernel::app()->getPage()->addErrorMessage('Error creating user account');
         }
         HTTP::redirect(arg('submitURL'));
     }

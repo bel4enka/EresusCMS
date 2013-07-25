@@ -148,7 +148,8 @@ class TListContentPlugin extends TContentPlugin
 				}
 				else
 				{
-					ErrorMessage(sprintf(errMethodNotFound, 'update', get_class($this)));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'update', get_class($this)));
 				}
 			break;
 			case !is_null(arg('toggle')) && isset($this->table['controls']['toggle']):
@@ -158,7 +159,8 @@ class TListContentPlugin extends TContentPlugin
 				}
 				else
 				{
-					ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'toggle', get_class($this)));
 				}
 			break;
 			case !is_null(arg('delete')) && isset($this->table['controls']['delete']):
@@ -168,7 +170,8 @@ class TListContentPlugin extends TContentPlugin
 				}
 				else
 				{
-					ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'delete', get_class($this)));
 				}
 			break;
 			case !is_null(arg('up')) && isset($this->table['controls']['position']):
@@ -180,7 +183,8 @@ class TListContentPlugin extends TContentPlugin
 				}
 				else
 				{
-					ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'up', get_class($this)));
 				}
 			break;
 			case !is_null(arg('down')) && isset($this->table['controls']['position']):
@@ -197,7 +201,8 @@ class TListContentPlugin extends TContentPlugin
 				}
 				else
 				{
-					ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'down', get_class($this)));
 				}
 			break;
 			case !is_null(arg('id')) && isset($this->table['controls']['edit']):
@@ -207,7 +212,8 @@ class TListContentPlugin extends TContentPlugin
 				}
 				else
 				{
-					ErrorMessage(sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));
 				}
 			break;
 			case !is_null(arg('action')):
@@ -222,7 +228,8 @@ class TListContentPlugin extends TContentPlugin
 							}
 							else
 							{
-								ErrorMessage(sprintf(errMethodNotFound, 'adminAddItem', get_class($this)));
+                                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                                    sprintf(errMethodNotFound, 'adminAddItem', get_class($this)));
 							}
 						}
 					break;
@@ -233,7 +240,8 @@ class TListContentPlugin extends TContentPlugin
 						}
 						else
 						{
-							ErrorMessage(sprintf(errMethodNotFound, 'insert', get_class($this)));
+                            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                                sprintf(errMethodNotFound, 'insert', get_class($this)));
 						}
 					break;
 				}

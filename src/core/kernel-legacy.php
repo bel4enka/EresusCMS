@@ -220,11 +220,23 @@ function InfoBox($text, $caption=strInformation)
 	return $result;
 }
 
+/**
+ * Добавляет на страницу сообщение об ошибке
+ *
+ * @param string $message
+ *
+ * @deprecated с 3.01 используйте Eresus_Kernel::app()->getPage()->addErrorMessage()
+ */
 function ErrorMessage($message)
 {
-	Eresus_CMS::getLegacyKernel()->session['msg']['errors'][] = $message;
+    Eresus_Kernel::app()->getPage()->addErrorMessage($message);
 }
 
+/**
+ * Добавляет на страницу информационное сообщение
+ *
+ * @param string $message
+ */
 function InfoMessage($message)
 {
 	Eresus_CMS::getLegacyKernel()->session['msg']['information'][] = $message;
@@ -818,23 +830,28 @@ function upload($name, $filename, $overwrite = true)
 				}
 				else
 				{
-					ErrorMessage(sprintf(errFileMove, $_FILES[$name]['name'], $filename));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errFileMove, $_FILES[$name]['name'], $filename));
 				}
 			}
 		break;
 		case UPLOAD_ERR_INI_SIZE:
-			ErrorMessage(sprintf(errUploadSizeINI, $_FILES[$name]['name']));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errUploadSizeINI, $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_FORM_SIZE:
-			ErrorMessage(sprintf(errUploadSizeFORM, $_FILES[$name]['name']));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errUploadSizeFORM, $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_PARTIAL:
-			ErrorMessage(sprintf(errUploadPartial, $_FILES[$name]['name']));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errUploadPartial, $_FILES[$name]['name']));
 		break;
 		case UPLOAD_ERR_NO_FILE:
 			if (strlen($_FILES[$name]['name']))
 			{
-				ErrorMessage(sprintf(errUploadNoFile, $_FILES[$name]['name']));
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    sprintf(errUploadNoFile, $_FILES[$name]['name']));
 			}
 		break;
 	}
@@ -1662,7 +1679,8 @@ class Eresus
 				}
 				else
 				{
-					ErrorMessage(sprintf(ERR_ACCOUNT_NOT_ACTIVE, $item['login']));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(ERR_ACCOUNT_NOT_ACTIVE, $item['login']));
 					$this->logout();
 				}
 			}
@@ -1765,7 +1783,7 @@ class Eresus
 	 * @param bool   $cookie       Авторизация при помощи cookie
 	 * @return bool Результат
 	 */
-	function login($unsafeLogin, $key, $auto = false, $cookie = false)
+	public function login($unsafeLogin, $key, $auto = false, $cookie = false)
 	{
 		$result = false;
 
@@ -1773,7 +1791,7 @@ class Eresus
 
 		if ($login != $unsafeLogin)
 		{
-			ErrorMessage(ERR_PASSWORD_INVALID);
+            Eresus_Kernel::app()->getPage()->addErrorMessage(ERR_PASSWORD_INVALID);
 			return false;
 		}
 
@@ -1819,7 +1837,7 @@ class Eresus
 						// Если пароль не верен...
 						if (!$cookie)
 						{
-							ErrorMessage(ERR_PASSWORD_INVALID);
+                            Eresus_Kernel::app()->getPage()->addErrorMessage(ERR_PASSWORD_INVALID);
 							$item['lastLoginTime'] = time();
 							$item['loginErrors']++;
 							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
@@ -1829,19 +1847,22 @@ class Eresus
 				else
 				{
 					// Если авторизация проведена слишком рано
-					ErrorMessage(sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $item['loginErrors']));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $item['loginErrors']));
 					$item['lastLoginTime'] = time();
 					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
 				}
 			}
 			else
 			{
-				ErrorMessage(sprintf(ERR_ACCOUNT_NOT_ACTIVE, $login));
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    sprintf(ERR_ACCOUNT_NOT_ACTIVE, $login));
 			}
 		}
 		else
 		{
-			ErrorMessage(ERR_PASSWORD_INVALID);
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                ERR_PASSWORD_INVALID);
 		}
 		return $result;
 	}

@@ -92,6 +92,8 @@ class Eresus_Admin_FrontController extends Eresus_CMS_FrontController
             $data['autologin'] = $autologin;
         }
 
+        $data['errors'] = $this->getPage()->getErrorMessages();
+        $this->getPage()->clearErrorMessages();
         if (isset($legacyKernel->session['msg']['errors']) &&
             count($legacyKernel->session['msg']['errors']))
         {

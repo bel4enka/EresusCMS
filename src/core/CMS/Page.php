@@ -42,6 +42,13 @@
 abstract class Eresus_CMS_Page
 {
     /**
+     * Сообщения об ошибках
+     * @var array
+     * @since 3.01
+     */
+    private $errorMessages = array();
+
+    /**
      * Магический метод для доступа к свойствам страницы
      *
      * @param string $property  имя свойства
@@ -56,6 +63,46 @@ abstract class Eresus_CMS_Page
             return $this->{$method}();
         }
         return null;
+    }
+
+    /**
+     * Добавляет на страницу сообщение об ошибке
+     *
+     * @param string $html  сообщение
+     *
+     * @see getErrorMessages
+     * @see clearErrorMessages
+     * @since 3.01
+     */
+    public function addErrorMessage($html)
+    {
+        $this->errorMessages []= $html;
+    }
+
+    /**
+     * Возвращает имеющиеся сообщения об ошибках
+     *
+     * @return string[]
+     *
+     * @since 3.01
+     * @see addErrorMessage
+     * @see clearErrorMessages
+     */
+    public function getErrorMessages()
+    {
+        return $this->errorMessages;
+    }
+
+    /**
+     * Очищает имеющиеся сообщения об ошибках
+     *
+     * @since 3.01
+     * @see addErrorMessage
+     * @see getErrorMessages
+     */
+    public function clearErrorMessages()
+    {
+        $this->errorMessages = array();
     }
 
     /**

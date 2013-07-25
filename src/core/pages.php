@@ -80,7 +80,8 @@ class TPages
         }
         else
         {
-            ErrorMessage(sprintf(errItemWithSameName, $item['name']));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errItemWithSameName, $item['name']));
             saveRequest();
             HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
         }
@@ -118,7 +119,8 @@ class TPages
         "') AND (`owner`='" . $item['owner'] . "' AND `id` <> " . $item['id'] . ")");
         if (count($temp) > 0)
         {
-            ErrorMessage(sprintf(errItemWithSameName, $item['name']));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(
+                sprintf(errItemWithSameName, $item['name']));
             saveRequest();
             HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
         }
@@ -251,7 +253,8 @@ class TPages
             $count = DB::fetch($q);
             if ($count['count'])
             {
-                ErrorMessage('В разделе назначения уже есть раздел с таким же именем!');
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    'В разделе назначения уже есть раздел с таким же именем!');
                 HTTP::goback();
             }
 

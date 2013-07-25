@@ -149,7 +149,8 @@ class Plugins
             ini_set('track_errors', false);
             if (!$valid)
             {
-                ErrorMessage(sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg));
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg));
                 return;
             }
 
@@ -169,7 +170,8 @@ class Plugins
             }
             else
             {
-                ErrorMessage(sprintf(errClassNotFound, $className));
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    sprintf(errClassNotFound, $className));
             }
         }
         else
@@ -178,10 +180,9 @@ class Plugins
                 $filename, $name);
             $msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
             $msg = sprintf($msg, $filename, $name);
-            ErrorMessage($msg);
+            Eresus_Kernel::app()->getPage()->addErrorMessage($msg);
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Деинсталлирует плагин
@@ -261,7 +262,7 @@ class Plugins
         {
             Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Main class %s for plugin "%s" not found in "%s"',
                 $className, $name, $filename);
-            ErrorMessage(sprintf(errClassNotFound, $name));
+            Eresus_Kernel::app()->getPage()->addErrorMessage(sprintf(errClassNotFound, $name));
             return false;
         }
 
@@ -357,13 +358,15 @@ class Plugins
                     }
                     else
                     {
-                        ErrorMessage(sprintf(errMethodNotFound, 'clientRenderContent',
+                        Eresus_Kernel::app()->getPage()->addErrorMessage(
+                            sprintf(errMethodNotFound, 'clientRenderContent',
                             get_class($this->items[$page->type])));
                     }
                 }
                 else
                 {
-                    ErrorMessage(sprintf(errContentPluginNotFound, $page->type));
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errContentPluginNotFound, $page->type));
                 }
         }
         if (isset($controller)
@@ -422,7 +425,11 @@ class Plugins
     {
         if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin)
             if (method_exists($this->items[$plugin], 'adminOnMenuRender')) $this->items[$plugin]->adminOnMenuRender();
-            else ErrorMessage(sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+            else
+            {
+                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                    sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+            }
     }
 
     /**
