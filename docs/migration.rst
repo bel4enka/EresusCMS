@@ -73,6 +73,7 @@
   `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
   `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
 * Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ объявлен устаревшим.
+* Метод ``WebPage::pageSelector()`` объявлен устаревшим.
 * Свойство Eresus::$plugins объявлено устаревшим. Вместо него следует использовать
   `Eresus_Plugin_Registry::getInstance <api/classes/Eresus_Plugin_Registry.html#method_getInstance>`_.
 * Функция ErrorMessage объявлена устаревшей, вместо нее следует использовать

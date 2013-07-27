@@ -380,6 +380,7 @@ abstract class WebPage extends Eresus_CMS_Page
      * @return string
      *
      * @since 2.10
+     * @deprecated с 3.01 используйте {@link PaginationHelper}
      */
     public function pageSelector($total, $current, $url = null, $templates = null)
     {
