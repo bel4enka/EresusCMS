@@ -373,64 +373,30 @@ class TClientUI extends Eresus_CMS_Page_Client
      */
     public function render(Eresus_CMS_Request $request)
     {
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'starting...');
+
         $this->init();
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
         $plugins = $legacyKernel->plugins;
 
-        $response = $plugins->clientRenderContent($request);
-        if (!($response instanceof Eresus_HTTP_Response))
+        try
         {
-            $content = new Eresus_CMS_Page_Content($this, $response);
-            $content = $content->render();
-            if (
-                isset($legacyKernel->session['msg']['information']) &&
-                count($legacyKernel->session['msg']['information'])
-            )
+            $response = $plugins->clientRenderContent($request);
+            if (!($response instanceof Eresus_HTTP_Response))
             {
-                $messages = '';
-                foreach ($legacyKernel->session['msg']['information'] as $message)
-                {
-                    $messages .= InfoBox($message);
-                }
-                $content = $messages . $content;
-                $legacyKernel->session['msg']['information'] = array();
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'got string content');
+                $content = new Eresus_CMS_Page_Content($this, $response);
+                $response = $this->createPageForContent($content);
             }
-            if (
-                isset($legacyKernel->session['msg']['errors']) &&
-                count($legacyKernel->session['msg']['errors'])
-            )
-            {
-                $messages = '';
-                foreach ($legacyKernel->session['msg']['errors'] as $message)
-                {
-                    $messages .= ErrorBox($message);
-                }
-                $content = $messages . $content;
-                $legacyKernel->session['msg']['errors'] = array();
-            }
-
-            $this->content = $content;
-            $html = $this->template->compile();
-
-            // TODO: Обратная совместимость (удалить)
-            if (!empty($this->styles))
-            {
-                $this->addStyles($this->styles);
-            }
-
-            $html = $plugins->clientOnPageRender($html);
-
-            // TODO: Обратная совместимость (удалить)
-            if (!empty($this->scripts))
-            {
-                $this->addScripts($this->scripts);
-            }
-
-            $html = preg_replace('|(.*)</head>|i', '$1' . $this->renderHeadSection() . "\n</head>",
-                $html);
-
-            $response = new Eresus_HTTP_Response($html, 200, $this->headers);
+        }
+        catch (Eresus_CMS_Exception $e)
+        {
+            Eresus_Kernel::log(__METHOD__, LOG_NOTICE, '%s: "%s"', get_class($e), $e->getMessage());
+            $httpStatusCode = $e->getHttpException()->getCode();
+            $content = new Eresus_CMS_Page_Content($this,
+                $e->getMessage() ?: Eresus_HTTP_Response::getStatusText($httpStatusCode));
+            $response = $this->createPageForContent($content, $httpStatusCode);
         }
 
         // TODO: Обратная совместимость (убрать)
@@ -590,6 +556,74 @@ class TClientUI extends Eresus_CMS_Page_Client
             $template = Templates::getInstance()->load($template, $type);
         }
         $this->template = $template;
+    }
+
+    /**
+     * Создаёт страницу для переданного контента
+     *
+     * @param Eresus_CMS_Page_Content $content
+     * @param int                     $statusCode
+     *
+     * @return Eresus_HTTP_Response
+     *
+     * @since 3.01
+     */
+    private function createPageForContent(Eresus_CMS_Page_Content $content, $statusCode = 200)
+    {
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '(%s, %d)', $content, $statusCode);
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $plugins = $legacyKernel->plugins;
+
+        $html = $content->render();
+        if (
+            isset($legacyKernel->session['msg']['information']) &&
+            count($legacyKernel->session['msg']['information'])
+        )
+        {
+            $messages = '';
+            foreach ($legacyKernel->session['msg']['information'] as $message)
+            {
+                $messages .= InfoBox($message);
+            }
+            $html = $messages . $html;
+            $legacyKernel->session['msg']['information'] = array();
+        }
+        if (
+            isset($legacyKernel->session['msg']['errors']) &&
+            count($legacyKernel->session['msg']['errors'])
+        )
+        {
+            $messages = '';
+            foreach ($legacyKernel->session['msg']['errors'] as $message)
+            {
+                $messages .= ErrorBox($message);
+            }
+            $html = $messages . $html;
+            $legacyKernel->session['msg']['errors'] = array();
+        }
+
+        $this->content = $html;
+        $html = $this->template->compile();
+
+        // TODO: Обратная совместимость (удалить)
+        if (!empty($this->styles))
+        {
+            $this->addStyles($this->styles);
+        }
+
+        $html = $plugins->clientOnPageRender($html);
+
+        // TODO: Обратная совместимость (удалить)
+        if (!empty($this->scripts))
+        {
+            $this->addScripts($this->scripts);
+        }
+
+        $html = preg_replace('|(.*)</head>|i', '$1' . $this->renderHeadSection() . "\n</head>",
+            $html);
+
+        $response = new Eresus_HTTP_Response($html, $statusCode, $this->headers);
+        return $response;
     }
 }
 
