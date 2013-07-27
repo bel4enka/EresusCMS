@@ -42,7 +42,8 @@ class Eresus_CMS_PageTest extends PHPUnit_Framework_TestCase
     public function testMagicGet()
     {
         $page = $this->getMockBuilder('Eresus_CMS_Page')
-            ->setMethods(array('getFoo', 'getTitle', 'getDescription', 'getKeywords'))->getMock();
+            ->setMethods(array('getFoo', 'getTitle', 'setTitle', 'getDescription', 'getKeywords'))
+            ->getMock();
         $page->expects($this->any())->method('getFoo')->will($this->returnValue('bar'));
         $this->assertEquals('bar', $page->foo);
         $this->assertNull($page->bar);
