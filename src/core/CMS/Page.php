@@ -66,6 +66,31 @@ abstract class Eresus_CMS_Page
     }
 
     /**
+     * Магический метод записи свойств страницы
+     *
+     * @param string $property  имя свойства
+     * @param mixed  $value
+     *
+     * @throws LogicException
+     *
+     * @since 3.01
+     */
+    public function __set($property, $value)
+    {
+        $method = 'set' . $property;
+        if (method_exists($this, $method))
+        {
+            $this->{$method}($value);
+        }
+        else
+        {
+            throw new LogicException(sprintf(
+                'Property "%s" not exists in class "%s"', $property, get_class($this)
+            ));
+        }
+    }
+
+    /**
      * Добавляет на страницу сообщение об ошибке
      *
      * @param string $html  сообщение
@@ -115,6 +140,15 @@ abstract class Eresus_CMS_Page
      * @since 3.01
      */
     abstract public function getTitle();
+
+    /**
+     * Задаёт заголовок страницы
+     *
+     * @param string $title
+     *
+     * @since 3.01
+     */
+    abstract public function setTitle($title);
 
     /**
      * Возвращает описание страницы

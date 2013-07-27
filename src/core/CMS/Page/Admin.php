@@ -36,6 +36,13 @@
 class Eresus_CMS_Page_Admin extends WebPage
 {
     /**
+     * Заголовок страницы
+     *
+     * @var string
+     */
+    private $title = '';
+
+    /**
      * Возвращает полный заголовок страницы
      *
      * Этот метод возвращает полный заголовок страницы, куда, в зависимости от настроек сайта, могут
@@ -46,7 +53,19 @@ class Eresus_CMS_Page_Admin extends WebPage
      */
     public function getTitle()
     {
-        return '';
+        return $this->title;
+    }
+
+    /**
+     * Задаёт заголовок страницы
+     *
+     * @param string $title
+     *
+     * @since 3.01
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 
     /**

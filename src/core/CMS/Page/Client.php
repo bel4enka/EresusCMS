@@ -71,6 +71,18 @@ class Eresus_CMS_Page_Client extends WebPage
     }
 
     /**
+     * Задаёт заголовок страницы
+     *
+     * @param string $title
+     *
+     * @since 3.01
+     */
+    public function setTitle($title)
+    {
+        $this->dbItem['title'] = $title;
+    }
+
+    /**
      * Возвращает описание страницы
      *
      * Этот метод возвращает полное описание страницы для мета-тега description. В зависимости от

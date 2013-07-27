@@ -235,16 +235,11 @@ abstract class WebPage extends Eresus_CMS_Page
     public $id = 0;
 
     /**
-     * Заголовок страницы
-     *
-     * @var string
-     */
-    public $title;
-
-    /**
      * HTTP-заголовки ответа
      *
      * @var array
+     * @deprecated с 3.01
+     * @todo сделать приватным
      */
     public $headers = array();
 
