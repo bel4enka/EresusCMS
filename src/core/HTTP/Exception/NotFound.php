@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация при работе по HTTP
+ * Исключительная ситуация «Страница не найдена»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -28,39 +28,24 @@
  */
 
 /**
- * Исключительная ситуация при работе по HTTP
+ * Исключительная ситуация «Страница не найдена»
  *
  * @package Eresus
  * @subpackage HTTP
  *
  * @since 3.01
  */
-class Eresus_HTTP_Exception extends RuntimeException
+class Eresus_HTTP_Exception_NotFound extends Eresus_HTTP_Exception
 {
     /**
-     * Создаёт исключение
+     * Возвращает код состояния HTTP, соответствующий исключению
      *
-     * @param string    $message   текст сообщения
-     * @param int       $code      не используется
-     * @param Exception $previous  предыдущее исключение
-     *
-     * @since 3.01
-     */
-    public function __construct($message = null, $code = 0, Exception $previous = null)
-    {
-        $code = $this->getStatusCode() ?: $code;
-        parent::__construct($message, $code, $previous);
-    }
-
-    /**
-     * Метод должен возвращать код состояния HTTP, соответствующий исключению
-     *
-     * @return int|null
+     * @return int
      * @since 3.01
      */
     protected function getStatusCode()
     {
-        return null;
+        return 404;
     }
 }
 
