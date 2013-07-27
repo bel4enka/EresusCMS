@@ -42,9 +42,12 @@ class Eresus_Client_FrontController extends Eresus_CMS_FrontController
      */
     public function dispatch()
     {
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'starting...');
         /** @var TClientUI $page */
         $page = $this->getPage();
         $response = $page->render($this->getRequest());
+
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'done');
         return $response;
     }
 
