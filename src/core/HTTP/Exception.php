@@ -46,7 +46,7 @@ class Eresus_HTTP_Exception extends RuntimeException
      *
      * @since 3.01
      */
-    public function __construct($message = null, $code = 0, Exception $previous = null)
+    public function __construct($message = null, $code = 500, Exception $previous = null)
     {
         $code = $this->getStatusCode() ?: $code;
         parent::__construct($message, $code, $previous);
