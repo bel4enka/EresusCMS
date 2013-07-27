@@ -64,7 +64,7 @@ class Eresus_CMS_Page_Client extends WebPage
      * @return string
      * @since 3.01
      */
-    protected function getTitle()
+    public function getTitle()
     {
         // TODO Вынести состав, порядок и разделитель в настройки
         return $this->dbItem['title'] . ' &ndash; ' . Eresus_Kernel::app()->getSite()->title;
@@ -79,7 +79,7 @@ class Eresus_CMS_Page_Client extends WebPage
      * @return string
      * @since 3.01
      */
-    protected function getDescription()
+    public function getDescription()
     {
         // TODO Вынести в настройки
         return $this->dbItem['description'] ?: Eresus_Kernel::app()->getSite()->description;
@@ -95,7 +95,7 @@ class Eresus_CMS_Page_Client extends WebPage
      * @return string
      * @since 3.01
      */
-    protected function getKeywords()
+    public function getKeywords()
     {
         // TODO Вынести в настройки
         return $this->dbItem['keywords'] ?: Eresus_Kernel::app()->getSite()->keywords;

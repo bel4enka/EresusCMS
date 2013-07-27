@@ -1,6 +1,6 @@
 <?php
 /**
- * Страница АИ
+ * Тесты класса Eresus_CMS_Page_Admin
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,58 +24,43 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage Tests
  */
+
+require_once __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Страница АИ
- *
+ * Тесты класса Eresus_CMS_Page_Admin
  * @package Eresus
- * @since 3.01
- * @todo Унаследовать напрямую от Eresus_CMS_page после удаления WebPage
+ * @subpackage Tests
  */
-class Eresus_CMS_Page_Admin extends WebPage
+class Eresus_CMS_Page_AdminTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Возвращает полный заголовок страницы
-     *
-     * Этот метод возвращает полный заголовок страницы, куда, в зависимости от настроек сайта, могут
-     * входить: имя сайта, заголовок сайта, заголовок раздела и т. д.
-     *
-     * @return string
-     * @since 3.01
+     * @covers Eresus_CMS_Page_Admin::getTitle
      */
-    public function getTitle()
+    public function testGetTitle()
     {
-        return '';
+        $page = new Eresus_CMS_Page_Admin;
+        $this->assertEquals('', $page->getTitle());
     }
 
     /**
-     * Возвращает описание страницы
-     *
-     * Этот метод возвращает полное описание страницы для мета-тега description. В зависимости от
-     * настроек сайта, в него могут входить: описание сайта и описание раздела.
-     *
-     * @return string
-     * @since 3.01
+     * @covers Eresus_CMS_Page_Admin::getDescription
      */
-    public function getDescription()
+    public function testGetDescription()
     {
-        return '';
+        $page = new Eresus_CMS_Page_Admin;
+        $this->assertEquals('', $page->getDescription());
     }
 
     /**
-     * Возвращает ключевые слова страницы
-     *
-     * Этот метод возвращает полный набор ключевых слов страницы для мета-тега keywords. В
-     * зависимости от настроек сайта, в него могут входить: ключевые слова сайта и ключевые слова
-     * раздела.
-     *
-     * @return string
-     * @since 3.01
+     * @covers Eresus_CMS_Page_Admin::getKeywords
      */
-    public function getKeywords()
+    public function testGetKeywords()
     {
-        return '';
+        $page = new Eresus_CMS_Page_Admin;
+        $this->assertEquals('', $page->getKeywords());
     }
 }
 

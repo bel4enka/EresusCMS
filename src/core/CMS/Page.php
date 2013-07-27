@@ -114,7 +114,7 @@ abstract class Eresus_CMS_Page
      * @return string
      * @since 3.01
      */
-    abstract protected function getTitle();
+    abstract public function getTitle();
 
     /**
      * Возвращает описание страницы
@@ -125,7 +125,7 @@ abstract class Eresus_CMS_Page
      * @return string
      * @since 3.01
      */
-    abstract protected function getDescription();
+    abstract public function getDescription();
 
     /**
      * Возвращает ключевые слова страницы
@@ -137,6 +137,6 @@ abstract class Eresus_CMS_Page
      * @return string
      * @since 3.01
      */
-    abstract protected function getKeywords();
+    abstract public function getKeywords();
 }
 
