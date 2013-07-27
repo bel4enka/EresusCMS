@@ -256,7 +256,9 @@ class TClientUI extends Eresus_CMS_Page_Client
                     {
                         $url .= $item['name'].'/';
                     }
-                    Eresus_CMS::getLegacyKernel()->plugins->clientOnURLSplit($item, $url);
+                    $event = new Eresus_Event_UrlSectionFound($item, $url);
+                    Eresus_Kernel::app()->getEventDispatcher()
+                        ->dispatch('cms.client.url_section_found', $event);
                     $this->section[] = $item['title'];
                     next(Eresus_CMS::getLegacyKernel()->request['params']);
                     array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
@@ -285,7 +287,7 @@ class TClientUI extends Eresus_CMS_Page_Client
      */
     private function init()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->clientOnStart();
+        Eresus_Kernel::app()->getEventDispatcher()->dispatch('cms.client.start');
 
         $item = $this->loadPage();
         if ($item)
@@ -406,7 +408,8 @@ class TClientUI extends Eresus_CMS_Page_Client
         // TODO: Обратная совместимость (убрать)
         $response->setContent($this->replaceMacros($response->getContent()));
 
-        $response->setContent($plugins->clientBeforeSend($response->getContent()));
+        $event = new Eresus_Event_Response($response);
+        Eresus_Kernel::app()->getEventDispatcher()->dispatch('cms.client.response', $event);
 
         return $response;
     }
@@ -615,7 +618,10 @@ class TClientUI extends Eresus_CMS_Page_Client
             $this->addStyles($this->styles);
         }
 
-        $html = $plugins->clientOnPageRender($html);
+        $event = new Eresus_Event_Render($html);
+        Eresus_Kernel::app()->getEventDispatcher()
+            ->dispatch('cms.client.render_page', $event);
+        $html = $event->getText();
 
         // TODO: Обратная совместимость (удалить)
         if (!empty($this->scripts))

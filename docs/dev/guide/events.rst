@@ -9,8 +9,8 @@
 Метод-обработчик
 ----------------
 
-Метод-обработчик — это открытый метод, имя которого совпадает с именем события
-(см. :doc:`../appendix/events`).
+Метод-обработчик — это открытый метод, получающий в качестве единственного аргумента экземпляр
+`Eresus_Event <../../api/classes/Eresus_Event.html>`_ или его потомка.
 
 Пример
 ^^^^^^
@@ -21,9 +21,9 @@
    class MyPlugin extends Eresus_Plugin
    {
      /**
-      * Обработчик события "clientOnStart"
+      * Обработчик события
       */
-     public function clientOnStart()
+     public function myEventHandler(Eresus_Event $event)
      {
        // Необходимые действия
      }
@@ -32,30 +32,11 @@
 -----------------------
 
 Регистрация выполняется при помощи метода
-`Eresus_Plugin::listenEvents() <../../api/classes/Eresus_Plugin.html#listenEvents>`_. Обычно метод
-вызывается в конструкторе, но он может также вызываться и в любом другом месте.
+`Eresus_Event_Dispatcher::addListener() <../../api/classes/Eresus_Event_Dispatcher.html#method_addListener>`_.
+Обычно метод вызывается в конструкторе, но он может также вызываться и в любом другом месте.
 
-Пример 1
-^^^^^^^^
-
-.. code-block:: php
-
-   <?php
-   class MyPlugin extends Eresus_Plugin
-   {
-     /**
-      * Конструктор
-      */
-     public function __construct()
-     {
-       parent::__construct();
-       $this->listenEvents('clientOnStart');
-     }
-
-Пример 2
-^^^^^^^^
-
-В ``listenEvents`` можно указывать несколько событий, которые должен слушать плагин:
+Пример
+^^^^^^
 
 .. code-block:: php
 
@@ -68,5 +49,6 @@
      public function __construct()
      {
        parent::__construct();
-       $this->listenEvents('clientOnStart', 'clientOnPageRender');
+       Eresus_Kernel::app()->getEventDispatcher()
+           ->addEventListener('event.name', array($this, 'MyEventHandler'));
      }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Контент страницы
+ * Событие «При разборе URL в нём найден раздел сайта»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,81 +27,65 @@
  */
 
 /**
- * Контент страницы
+ * Событие «При разборе URL в нём найден раздел сайта»
  *
- * @package Eresus
  * @since 3.01
+ * @package Eresus
  */
-class Eresus_CMS_Page_Content
+class Eresus_Event_UrlSectionFound extends Eresus_Event
 {
     /**
-     * Страница
-     * @var WebPage
+     * Описание найденного раздела
+     *
+     * @var array
+     *
      * @since 3.01
      */
-    private $page;
+    private $sectionInfo;
 
     /**
-     * Контент
+     * Адрес найденного раздела
+     *
      * @var string
+     *
      * @since 3.01
      */
-    private $content;
+    private $url;
 
     /**
-     * Создаёт новый контент страницы
-     *
-     * @param WebPage $page
-     * @param string $content
+     * @param array  $sectionInfo  описание найденного раздела
+     * @param string $url          адрес найденного раздела
      *
      * @since 3.01
      */
-    public function __construct(WebPage $page, $content = '')
+    public function __construct(array $sectionInfo, $url)
     {
-        $this->page = $page;
-        $this->setContent($content);
+        $this->sectionInfo = $sectionInfo;
+        $this->url = $url;
     }
 
     /**
-     * Возвращает контент
+     * Возвращает описание найденного раздела
+     *
+     * @return array
+     *
+     * @since 3.01
+     */
+    public function getSectionInfo()
+    {
+        return $this->sectionInfo;
+    }
+
+    /**
+     * Возвращает адрес найденного раздела
      *
      * @return string
+     *
      * @since 3.01
      */
-    public function getContent()
+    public function getUrl()
     {
-        return $this->content;
-    }
-
-    /**
-     * Задаёт контент
-     *
-     * @param string $content
-     * @since 3.01
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    /**
-     * Отрисовывает контент
-     *
-     * Контент обрабатывается как шаблон, в него подставляются глобальные переменные, и проводится
-     * обработка модулями расширений в соответствии с зарегистрированными обработчиками событий.
-     *
-     * @return string
-     * @since 3.01
-     */
-    public function render()
-    {
-        $tmpl = new Eresus_Template();
-        $tmpl->setSource($this->content);
-
-        $event = new Eresus_Event_Render($tmpl->compile());
-        Eresus_Kernel::app()->getEventDispatcher()
-            ->dispatch('cms.client.render_content', $event);
-        return $event->getText();
+        return $this->url;
     }
 }
 

@@ -42,6 +42,8 @@ class Eresus_Admin_FrontController extends Eresus_CMS_FrontController
      */
     public function dispatch()
     {
+        Eresus_Kernel::app()->getEventDispatcher()->dispatch('cms.admin.start');
+
         if (!UserRights(EDITOR))
         {
             $response = $this->authAction();

@@ -1181,8 +1181,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      */
     private function renderControlMenu()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->adminOnMenuRender();
-
         $menu = '';
         for ($section = 0; $section < count($this->extmenu); $section++)
         {

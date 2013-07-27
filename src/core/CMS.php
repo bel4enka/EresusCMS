@@ -49,6 +49,14 @@ class Eresus_CMS extends Eresus_Application
     private $version = '${product.version}';
 
     /**
+     * Диспетчер событий
+     * @var Eresus_Event_Dispatcher
+     *
+     * @since 3.01
+     */
+    private $eventDispatcher;
+
+    /**
      * Описание сайта
      * @var Eresus_Site
      * @since 3.01
@@ -63,6 +71,17 @@ class Eresus_CMS extends Eresus_Application
     protected $page;
 
     /**
+     * Инициализация
+     *
+     * @since 3.01
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->eventDispatcher = new Eresus_Event_Dispatcher();
+    }
+
+    /**
      * Основной метод приложения
      *
      * @return int  Код завершения для консольных вызовов
@@ -71,13 +90,15 @@ class Eresus_CMS extends Eresus_Application
      */
     public function main()
     {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'starting...');
 
         try
         {
             /* Общая инициализация */
             $this->checkEnvironment();
             $this->createFileStructure();
+
+
 
             /* Подключение старого ядра */
             Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
@@ -123,6 +144,18 @@ class Eresus_CMS extends Eresus_Application
         }
         throw new LogicException(sprintf('Trying to access unknown property %s of %s',
             $property, __CLASS__));
+    }
+
+    /**
+     * Возвращает диспетчер событий CMS
+     *
+     * @return Eresus_Event_Dispatcher
+     *
+     * @since 3.01
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Контент страницы
+ * Событие «Отправка ответа»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,81 +27,42 @@
  */
 
 /**
- * Контент страницы
+ * Событие «Отправка ответа»
  *
- * @package Eresus
  * @since 3.01
+ * @package Eresus
  */
-class Eresus_CMS_Page_Content
+class Eresus_Event_Response extends Eresus_Event
 {
     /**
-     * Страница
-     * @var WebPage
-     * @since 3.01
-     */
-    private $page;
-
-    /**
-     * Контент
-     * @var string
-     * @since 3.01
-     */
-    private $content;
-
-    /**
-     * Создаёт новый контент страницы
+     * Ответ
      *
-     * @param WebPage $page
-     * @param string $content
+     * @var Eresus_HTTP_Response
      *
      * @since 3.01
      */
-    public function __construct(WebPage $page, $content = '')
+    private $response;
+
+    /**
+     * @param Eresus_HTTP_Response $response
+     *
+     * @since 3.01
+     */
+    public function __construct(Eresus_HTTP_Response $response)
     {
-        $this->page = $page;
-        $this->setContent($content);
+        $this->response = $response;
     }
 
     /**
-     * Возвращает контент
+     * Возвращает ответ
      *
-     * @return string
+     * @return Eresus_HTTP_Response
+     *
      * @since 3.01
      */
-    public function getContent()
+    public function getResponse()
     {
-        return $this->content;
-    }
-
-    /**
-     * Задаёт контент
-     *
-     * @param string $content
-     * @since 3.01
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    /**
-     * Отрисовывает контент
-     *
-     * Контент обрабатывается как шаблон, в него подставляются глобальные переменные, и проводится
-     * обработка модулями расширений в соответствии с зарегистрированными обработчиками событий.
-     *
-     * @return string
-     * @since 3.01
-     */
-    public function render()
-    {
-        $tmpl = new Eresus_Template();
-        $tmpl->setSource($this->content);
-
-        $event = new Eresus_Event_Render($tmpl->compile());
-        Eresus_Kernel::app()->getEventDispatcher()
-            ->dispatch('cms.client.render_content', $event);
-        return $event->getText();
+        return $this->response;
     }
 }
 

@@ -87,6 +87,7 @@ class Eresus_Plugin_Registry
      */
     public function __construct()
     {
+        $this->registerBcEventListeners();
         $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
         if ($items)
         {
@@ -355,72 +356,105 @@ class Eresus_Plugin_Registry
     }
 
     /**
-     *
+     * @deprecated с 3.01
      */
     public function clientOnStart()
     {
-        if (isset($this->events['clientOnStart'])) foreach($this->events['clientOnStart'] as $plugin) $this->items[$plugin]->clientOnStart();
-    }
-
-    function clientOnURLSplit($item, $url)
-    {
-        if (isset($this->events['clientOnURLSplit'])) foreach($this->events['clientOnURLSplit'] as $plugin) $this->items[$plugin]->clientOnURLSplit($item, $url);
-    }
-
-    function clientOnTopicRender($text, $topic = null)
-    {
-        if (isset($this->events['clientOnTopicRender'])) foreach($this->events['clientOnTopicRender'] as $plugin) $text = $this->items[$plugin]->clientOnTopicRender($text, $topic);
-        return $text;
-    }
-
-    function clientOnContentRender($text)
-    {
-        if (isset($this->events['clientOnContentRender']))
-            foreach($this->events['clientOnContentRender'] as $plugin) $text = $this->items[$plugin]->clientOnContentRender($text);
-        return $text;
-    }
-
-    function clientOnPageRender($text)
-    {
-        if (isset($this->events['clientOnPageRender']))
-            foreach($this->events['clientOnPageRender'] as $plugin) $text = $this->items[$plugin]->clientOnPageRender($text);
-        return $text;
-    }
-
-    function clientBeforeSend($text)
-    {
-        if (isset($this->events['clientBeforeSend']))
-            foreach($this->events['clientBeforeSend'] as $plugin) $text = $this->items[$plugin]->clientBeforeSend($text);
-        return $text;
-    }
-
-    /* function clientOnFormControlRender($formName, $control, $text)
-    {
-        if (isset($this->events['clientOnFormControlRender'])) foreach($this->events['clientOnFormControlRender'] as $plugin) $text = $this->items[$plugin]->clientOnFormControlRender($formName, $control, $text);
-        return $text;
-    }*/
-
-    function adminOnMenuRender()
-    {
-        if (isset($this->events['adminOnMenuRender'])) foreach($this->events['adminOnMenuRender'] as $plugin)
-            if (method_exists($this->items[$plugin], 'adminOnMenuRender')) $this->items[$plugin]->adminOnMenuRender();
-            else
+        if (isset($this->events['clientOnStart']))
+        {
+            foreach ($this->events['clientOnStart'] as $plugin)
             {
-                Eresus_Kernel::app()->getPage()->addErrorMessage(
-                    sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+                $this->items[$plugin]->clientOnStart();
             }
+        }
     }
 
     /**
-     * Событие ajaxOnRequest
+     * @param Eresus_Event_UrlSectionFound $event
+     *
+     * @deprecated с 3.01
      */
-    function ajaxOnRequest()
+    public function clientOnURLSplit(Eresus_Event_UrlSectionFound $event)
     {
-        if (isset($this->events['ajaxOnRequest']))
-            foreach($this->events['ajaxOnRequest'] as $plugin)
-                $this->items[$plugin]->ajaxOnRequest();
+        if (isset($this->events['clientOnURLSplit']))
+        {
+            foreach ($this->events['clientOnURLSplit'] as $plugin)
+            {
+                $this->items[$plugin]->clientOnURLSplit($event->getSectionInfo(), $event->getUrl());
+            }
+        }
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * @param Eresus_Event_Render $event
+     * @deprecated с 3.01
+     */
+    public function clientOnContentRender(Eresus_Event_Render $event)
+    {
+        if (isset($this->events['clientOnContentRender']))
+        {
+            foreach ($this->events['clientOnContentRender'] as $plugin)
+            {
+                $event->setText($this->items[$plugin]->clientOnContentRender($event->getText()));
+            }
+        }
+    }
+
+    /**
+     * @param Eresus_Event_Render $event
+     *
+     * @deprecated с 3.01
+     */
+    public function clientOnPageRender(Eresus_Event_Render $event)
+    {
+        if (isset($this->events['clientOnPageRender']))
+        {
+            foreach ($this->events['clientOnPageRender'] as $plugin)
+            {
+                $event->setText($this->items[$plugin]->clientOnPageRender($event->getText()));
+            }
+        }
+    }
+
+    /**
+     * @param Eresus_Event_Response $event
+     * @deprecated с 3.01
+     */
+    public function clientBeforeSend(Eresus_Event_Response $event)
+    {
+        if (isset($this->events['clientBeforeSend']))
+        {
+            foreach ($this->events['clientBeforeSend'] as $plugin)
+            {
+                $event->getResponse()
+                    ->setContent($this->items[$plugin]
+                        ->clientBeforeSend($event->getResponse()->getContent()));
+            }
+        }
+    }
+
+    /**
+     * @param Eresus_Event $event
+     * @deprecated с 3.01
+     */
+    public function adminOnMenuRender(Eresus_Event $event)
+    {
+        if (isset($this->events['adminOnMenuRender']))
+        {
+            foreach ($this->events['adminOnMenuRender'] as $plugin)
+            {
+                if (method_exists($this->items[$plugin], 'adminOnMenuRender'))
+                {
+                    $this->items[$plugin]->adminOnMenuRender();
+                }
+                else
+                {
+                    Eresus_Kernel::app()->getPage()->addErrorMessage(
+                        sprintf(errMethodNotFound, 'adminOnMenuRender', $plugin));
+                }
+            }
+        }
+    }
 
     /**
      * Автозагрузка классов плагинов
@@ -448,6 +482,23 @@ class Eresus_Plugin_Registry
 
         return false;
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * Регистрирует старые методы обработки событий
+     *
+     * @since 3.01
+     */
+    private function registerBcEventListeners()
+    {
+        $ed = Eresus_Kernel::app()->getEventDispatcher();
+
+        $ed->addListener('cms.admin.start', array($this, 'adminOnMenuRender'));
+
+        $ed->addListener('cms.client.start', array($this, 'clientOnStart'));
+        $ed->addListener('cms.client.url_section_found', array($this, 'clientOnURLSplit'));
+        $ed->addListener('cms.client.render_content', array($this, 'clientOnContentRender'));
+        $ed->addListener('cms.client.render_page', array($this, 'clientOnPageRender'));
+        $ed->addListener('cms.client.response', array($this, 'clientBeforeSend'));
+    }
 }
 

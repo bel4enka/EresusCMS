@@ -85,7 +85,7 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_CMS::getPage
      */
-    public function test__getPage()
+    public function testGetPage()
     {
         $p_page = new ReflectionProperty("Eresus_CMS", "page");
         $p_page->setAccessible(true);
@@ -94,6 +94,15 @@ class Eresus_CMSTest extends PHPUnit_Framework_TestCase
         $p_page->setValue($eresus,'foo');
 
         $this->assertEquals('foo', $eresus->getPage());
+    }
+
+    /**
+     * @covers Eresus_CMS::getEventDispatcher
+     */
+    public function testGetEventDispatcher()
+    {
+        $cms = new Eresus_CMS();
+        $this->assertInstanceOf('Eresus_Event_Dispatcher', $cms->getEventDispatcher());
     }
 }
 
