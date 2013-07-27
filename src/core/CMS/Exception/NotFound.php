@@ -34,5 +34,16 @@
  */
 class Eresus_CMS_Exception_NotFound extends Eresus_CMS_Exception
 {
+    /**
+     * Создаёт исключение HTTP соответствующее этому исключению
+     *
+     * @return Eresus_HTTP_Exception
+     *
+     * @since 3.01
+     */
+    protected function createHttpException()
+    {
+        return new Eresus_HTTP_Exception_NotFound($this->getMessage());
+    }
 }
 

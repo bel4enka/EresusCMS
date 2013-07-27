@@ -38,5 +38,38 @@
  */
 class Eresus_CMS_Exception extends RuntimeException
 {
+    /**
+     * Исключение HTTP соответствующее этому исключению
+     *
+     * @var null|Eresus_HTTP_Exception
+     * @since 3.01
+     */
+    private $httpException = null;
+
+    /**
+     * Возвращает исключение HTTP соответствующее этому исключению
+     *
+     * @return Eresus_HTTP_Exception
+     */
+    public function getHttpException()
+    {
+        if (null === $this->httpException)
+        {
+            $this->httpException = $this->createHttpException();
+        }
+        return $this->httpException;
+    }
+
+    /**
+     * Создаёт исключение HTTP соответствующее этому исключению
+     *
+     * @return Eresus_HTTP_Exception
+     *
+     * @since 3.01
+     */
+    protected function createHttpException()
+    {
+        return new Eresus_HTTP_Exception($this->getMessage());
+    }
 }
 
