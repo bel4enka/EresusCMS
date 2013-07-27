@@ -121,7 +121,9 @@ class ContentPlugin extends Eresus_Plugin implements Eresus_Plugin_ContentProvid
      * @param Eresus_CMS_Request $request  обрабатываемый запрос
      * @param Eresus_CMS_Page    $page     создаваемая страница
      *
-     * @return string|Eresus_HTTP_Response
+     * @throws Eresus_CMS_Exception_NotFound
+     *
+     * @return string
      */
     public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
     {
@@ -129,7 +131,7 @@ class ContentPlugin extends Eresus_Plugin implements Eresus_Plugin_ContentProvid
         /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
         if ($request->getFile() || $request->getQueryString() || $page->subpage || $page->topic)
         {
-            $page->httpError(404);
+            throw new Eresus_CMS_Exception_NotFound;
         }
 
         return $page->content;

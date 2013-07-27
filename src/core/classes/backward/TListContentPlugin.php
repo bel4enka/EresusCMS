@@ -260,6 +260,8 @@ class TListContentPlugin extends TContentPlugin
      * @param Eresus_CMS_Request $request  обрабатываемый запрос
      * @param Eresus_CMS_Page    $page     создаваемая страница
      *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
      * @return string|Eresus_HTTP_Response
      */
     public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
@@ -292,8 +294,7 @@ class TListContentPlugin extends TContentPlugin
             }
             if ($this->itemsCount && ($page->subpage > $this->pagesCount))
             {
-                $item = $page->httpError(404);
-                $result = $item['content'];
+                throw new Eresus_CMS_Exception_NotFound;
             }
             else
             {

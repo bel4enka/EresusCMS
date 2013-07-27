@@ -280,6 +280,8 @@ class TClientUI extends Eresus_CMS_Page_Client
 
     /**
      * Проводит инициализацию страницы
+     *
+     * @throws Eresus_CMS_Exception_NotFound
      */
     private function init()
     {
@@ -322,18 +324,20 @@ class TClientUI extends Eresus_CMS_Page_Client
         }
         else
         {
-            $this->httpError(404);
+            throw new Eresus_CMS_Exception_NotFound;
         }
     }
 
     /**
      * Выводит сообщение об ошибке HTTP 404 и прекращает выполнение программы
      *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
      * @deprecated с 3.01 используйте исключение {@link Eresus_CMS_Exception_NotFound}.
      */
     public function Error404()
     {
-        $this->httpError(404);
+        throw new Eresus_CMS_Exception_NotFound;
     }
 
     /**
@@ -375,13 +379,13 @@ class TClientUI extends Eresus_CMS_Page_Client
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'starting...');
 
-        $this->init();
-
-        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $plugins = $legacyKernel->plugins;
-
         try
         {
+            $this->init();
+
+            $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+            $plugins = $legacyKernel->plugins;
+
             $response = $plugins->clientRenderContent($request);
             if (!($response instanceof Eresus_HTTP_Response))
             {

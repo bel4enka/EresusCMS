@@ -39,6 +39,8 @@ class Eresus_Client_Controller_Content_List extends Eresus_Client_Controller_Con
      * @param Eresus_CMS_Request $request
      * @param TClientUI          $page
      *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
@@ -51,7 +53,7 @@ class Eresus_Client_Controller_Content_List extends Eresus_Client_Controller_Con
             || $page->subpage
             || $page->topic)
         {
-            $page->httpError(404);
+            throw new Eresus_CMS_Exception_NotFound;
         }
 
         $subItems = $legacyKernel->db->select('pages', "(`owner`='" . $page->id .
