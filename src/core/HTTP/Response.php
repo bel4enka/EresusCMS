@@ -166,7 +166,10 @@ class Eresus_HTTP_Response
     {
         /* Отправляем основной заголовок */
         $statusText = $this->statusText ?: self::getStatusText($this->getStatusCode());
-        $header = 'HTTP/' . $this->getProtocolVersion() . ' ' . $statusText;
+        $header = 'HTTP/'
+            . $this->getProtocolVersion() . ' '
+            . $this->getStatusCode() . ' '
+            . $statusText;
         header($header, true, $this->getStatusCode());
 
         /* Отправляем дополнительные заголовки */
