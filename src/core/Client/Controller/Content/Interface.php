@@ -35,22 +35,14 @@
 interface Eresus_Client_Controller_Content_Interface
 {
     /**
-     * Задаёт обрабатываемую в данный момент страницу
-     *
-     * @param TClientUI $page
-     *
-     * @return void
-     *
-     * @since 3.01
-     */
-    public function setPage(TClientUI $page);
-
-    /**
      * Возвращает разметку области контента
+     *
+     * @param Eresus_CMS_Request $request
+     * @param TClientUI          $page
      *
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml();
+    public function getHtml(Eresus_CMS_Request $request, TClientUI $page);
 }
 

@@ -42,10 +42,9 @@ class Eresus_Client_FrontController extends Eresus_CMS_FrontController
      */
     public function dispatch()
     {
-        ob_start();
-        $this->getPage()->render();
-        $content = ob_get_clean();
-        $response = new Eresus_HTTP_Response($content);
+        /** @var TClientUI $page */
+        $page = $this->getPage();
+        $response = $page->render($this->getRequest());
         return $response;
     }
 

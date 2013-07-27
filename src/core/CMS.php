@@ -38,7 +38,7 @@ class Eresus_CMS extends Eresus_Application
     /**
      * Название CMS
      * @var string
-     * 2since 3.01
+     * @since 3.01
      */
     private $name = 'Eresus';
     /**

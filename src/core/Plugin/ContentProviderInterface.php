@@ -1,6 +1,6 @@
 <?php
 /**
- * Абстрактный контроллер контента КИ
+ * Интерфейс плагинов-поставщиков контента
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,22 +27,25 @@
  */
 
 /**
- * Абстрактный контроллер контента КИ
+ * Интерфейс плагинов-поставщиков контента
+ *
+ * Этот интерфейс введён временно, для унификации старых и новых плагинов.
  *
  * @package Eresus
+ * @since 3.01
  */
-abstract class Eresus_Client_Controller_Content_Abstract
-    implements Eresus_Client_Controller_Content_Interface
+interface Eresus_Plugin_ContentProviderInterface
 {
     /**
-     * Возвращает разметку области контента
+     * Метод должен возвращать контент страницы для КИ
      *
-     * @param Eresus_CMS_Request $request
-     * @param TClientUI          $page
+     * @param Eresus_CMS_Request $request  обрабатываемый запрос
+     * @param Eresus_CMS_Page    $page     создаваемая страница
      *
-     * @return Eresus_HTTP_Response|string
+     * @return string|Eresus_HTTP_Response
+     *
      * @since 3.01
      */
-    abstract public function getHtml(Eresus_CMS_Request $request, TClientUI $page);
+    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page);
 }
 

@@ -306,9 +306,11 @@ class Eresus_Plugin_Registry
     /**
      * Отрисовка контента раздела
      *
+     * @param Eresus_CMS_Request $request
+     *
      * @return string  Контент
      */
-    public function clientRenderContent()
+    public function clientRenderContent(Eresus_CMS_Request $request)
     {
         /* @var TClientUI $page */
         $page = Eresus_Kernel::app()->getPage();
@@ -325,30 +327,29 @@ class Eresus_Plugin_Registry
                 $controller = new Eresus_Client_Controller_Content_Url();
                 break;
             default:
-                if ($this->load($page->type))
+                $plugin = $this->load($page->type);
+                if (false === $plugin)
                 {
-                    if (method_exists($this->items[$page->type], 'clientRenderContent'))
-                    {
-                        $result = $this->items[$page->type]->clientRenderContent();
-                    }
-                    else
-                    {
-                        Eresus_Kernel::app()->getPage()->addErrorMessage(
-                            sprintf(errMethodNotFound, 'clientRenderContent',
-                                get_class($this->items[$page->type])));
-                    }
+                    $page->addErrorMessage(sprintf(errContentPluginNotFound, $page->type));
+                    return '';
+                }
+                if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
+                {
+                    /** @var ContentPlugin $plugin */
+                    $result = $plugin->clientRenderContent($page, $request);
                 }
                 else
                 {
-                    Eresus_Kernel::app()->getPage()->addErrorMessage(
-                        sprintf(errContentPluginNotFound, $page->type));
+                    Eresus_Kernel::log(__METHOD__, LOG_ERR,
+                        sprintf('Class "%s" must be descendant of ContentPlugin or TContentPlugin',
+                            get_class($plugin)));
+                    $page->addErrorMessage('Internal error');
                 }
         }
         if (isset($controller)
             && $controller instanceof Eresus_Client_Controller_Content_Interface)
         {
-            $controller->setPage($page);
-            $result = $controller->getHtml();
+            $result = $controller->getHtml($request, $page);
         }
         return $result;
     }

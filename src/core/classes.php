@@ -40,7 +40,7 @@
  *
  * @package Eresus
  */
-class ContentPlugin extends Eresus_Plugin
+class ContentPlugin extends Eresus_Plugin implements Eresus_Plugin_ContentProviderInterface
 {
     /**
      * Конструктор
@@ -58,14 +58,13 @@ class ContentPlugin extends Eresus_Plugin
             $page->plugin = $this->getName();
             if (isset($page->options) && count($page->options))
             {
-                foreach ($page->options as $key=>$value)
+                foreach ($page->options as $key => $value)
                 {
                     $this->settings[$key] = $value;
                 }
             }
         }
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Возвращает информацию о плагине
@@ -80,7 +79,6 @@ class ContentPlugin extends Eresus_Plugin
         $result['content'] = true;
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Действия при удалении раздела данного типа
@@ -90,9 +88,10 @@ class ContentPlugin extends Eresus_Plugin
     public function onSectionDelete($id, $table = '')
     {
         if (count($this->dbTable($table)))
+        {
             $this->dbDelete($table, $id, 'section');
+        }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Обновляет контент страницы в БД
@@ -101,9 +100,10 @@ class ContentPlugin extends Eresus_Plugin
      */
     public function updateContent($content)
     {
-        $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
+        $db = Eresus_CMS::getLegacyKernel()->db;
+        $item = $db->selectItem('pages', "`id`='".Eresus_Kernel::app()->getPage()->id."'");
         $item['content'] = $content;
-        Eresus_CMS::getLegacyKernel()->db->updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
+        $db->updateItem('pages', $item, "`id`='".Eresus_Kernel::app()->getPage()->id."'");
     }
 
     /**
@@ -118,16 +118,16 @@ class ContentPlugin extends Eresus_Plugin
     /**
      * Отрисовка клиентской части
      *
-     * @return  string  Контент
+     * @param Eresus_CMS_Request $request  обрабатываемый запрос
+     * @param Eresus_CMS_Page    $page     создаваемая страница
+     *
+     * @return string|Eresus_HTTP_Response
      */
-    public function clientRenderContent()
+    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
     {
         /** @var TClientUI $page */
-        $page = Eresus_Kernel::app()->getPage();
         /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-        if (Eresus_CMS::getLegacyKernel()->request['file'] ||
-            Eresus_CMS::getLegacyKernel()->request['query'] ||
-            Eresus_Kernel::app()->getPage()->subpage || Eresus_Kernel::app()->getPage()->topic)
+        if ($request->getFile() || $request->getQueryString() || $page->subpage || $page->topic)
         {
             $page->httpError(404);
         }

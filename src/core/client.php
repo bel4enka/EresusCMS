@@ -329,7 +329,7 @@ class TClientUI extends Eresus_CMS_Page_Client
     /**
      * Выводит сообщение об ошибке HTTP 404 и прекращает выполнение программы
      *
-     * @deprecated используйте {@link httpError()}
+     * @deprecated с 3.01 используйте исключение {@link Eresus_CMS_Exception_NotFound}.
      */
     public function Error404()
     {
@@ -340,81 +340,45 @@ class TClientUI extends Eresus_CMS_Page_Client
      * Выводит сообщение об ошибке и прекращает выполнение программы
      *
      * @param int $code  код ошибки HTTP
+     *
+     * @throws Eresus_HTTP_Exception
+     *
+     * @deprecated с 3.01 используйте исключения Eresus_HTTP_Exception_*
      */
     public function httpError($code)
     {
-        if (true === $this->processingError)
+        switch ($code)
         {
-            return;
+            case 400:
+                throw new Eresus_HTTP_Exception_BadRequest;
+            case 401:
+                throw new Eresus_HTTP_Exception_Unauthorized;
+            case 402:
+                throw new Eresus_HTTP_Exception_PaymentRequired;
+            case 403:
+                throw new Eresus_HTTP_Exception_Forbidden;
+            case 404:
+                throw new Eresus_HTTP_Exception_NotFound;
+            default:
+                throw new Eresus_HTTP_Exception('', $code);
         }
-        $httpErrors = array(
-            '400' => array('response' => 'Bad Request'),
-            '401' => array('response' => 'Unauthorized'),
-            '402' => array('response' => 'Payment Required'),
-            '403' => array('response' => 'Forbidden'),
-            '404' => array('response' => 'Not Found'),
-            '405' => array('response' => 'Method Not Allowed'),
-            '406' => array('response' => 'Not Acceptable'),
-            '407' => array('response' => 'Proxy Authentication Required'),
-            '408' => array('response' => 'Request Timeout'),
-            '409' => array('response' => 'Conflict'),
-            '410' => array('response' => 'Gone'),
-            '411' => array('response' => 'Length Required'),
-            '412' => array('response' => 'Precondition Failed'),
-            '413' => array('response' => 'Request Entity Too Large'),
-            '414' => array('response' => 'Request-URI Too Long'),
-            '415' => array('response' => 'Unsupported Media Type'),
-            '416' => array('response' => 'Requested Range Not Satisfiable'),
-            '417' => array('response' => 'Expectation Failed'),
-        );
-
-        header($_SERVER['SERVER_PROTOCOL'] . ' ' . $code . ' ' . $httpErrors[$code]['response']);
-
-        if (defined('HTTP_CODE_'.$code))
-        {
-            $message = constant('HTTP_CODE_'.$code);
-        }
-        else
-        {
-            $message = $httpErrors[$code]['response'];
-        }
-
-        $this->section = array(siteTitle, $message);
-        $this->title = $message;
-        $this->description = '';
-        $this->keywords = '';
-        $this->caption = $message;
-        $this->hint = '';
-        $this->access = GUEST;
-        $this->visible = true;
-        $this->type = 'default';
-        $this->content = '';
-        $this->setTemplate(strval($code), 'std');
-        if (null === $this->template)
-        {
-            $this->setTemplate('default');
-            $this->content = "<h1>HTTP {$code}: {$message}</h1>";
-        }
-        $this->processingError = true;
-        $this->render();
-        exit;
     }
 
     /**
      * Отправляет созданную страницу пользователю.
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return Eresus_HTTP_Response
      */
-    public function render()
+    public function render(Eresus_CMS_Request $request)
     {
         $this->init();
-        if (arg('HTTP_ERROR'))
-        {
-            $this->httpError(arg('HTTP_ERROR', 'int'));
-        }
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
         $plugins = $legacyKernel->plugins;
 
-        $response = $plugins->clientRenderContent();
+        $response = $plugins->clientRenderContent($request);
         if (!($response instanceof Eresus_HTTP_Response))
         {
             $content = new Eresus_CMS_Page_Content($this, $response);
@@ -472,17 +436,9 @@ class TClientUI extends Eresus_CMS_Page_Client
         // TODO: Обратная совместимость (убрать)
         $response->setContent($this->replaceMacros($response->getContent()));
 
-        $response->sendHeaders();
         $response->setContent($plugins->clientBeforeSend($response->getContent()));
-        if (!$legacyKernel->conf['debug']['enable'])
-        {
-            ob_start('ob_gzhandler');
-        }
-        $response->sendContent();
-        if (!$legacyKernel->conf['debug']['enable'])
-        {
-            ob_end_flush();
-        }
+
+        return $response;
     }
 
     /**

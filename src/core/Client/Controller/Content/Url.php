@@ -36,13 +36,16 @@ class Eresus_Client_Controller_Content_Url extends Eresus_Client_Controller_Cont
     /**
      * Возвращает разметку области контента
      *
+     * @param Eresus_CMS_Request $request
+     * @param TClientUI          $page
+     *
      * @return Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml()
+    public function getHtml(Eresus_CMS_Request $request, TClientUI $page)
     {
         $tmpl = new Eresus_Template();
-        $tmpl->setSource($this->getPage()->content);
+        $tmpl->setSource($page->content);
         $html = $tmpl->compile();
         $response = new Eresus_HTTP_Redirect($html);
         return $response;

@@ -36,13 +36,16 @@ class Eresus_Client_Controller_Content_Default extends Eresus_Client_Controller_
     /**
      * Возвращает разметку области контента
      *
+     * @param Eresus_CMS_Request $request
+     * @param TClientUI          $page
+     *
      * @return Eresus_HTTP_Response|string
      * @since 3.01
      */
-    public function getHtml()
+    public function getHtml(Eresus_CMS_Request $request, TClientUI $page)
     {
         $plugin = new ContentPlugin;
-        return $plugin->clientRenderContent();
+        return $plugin->clientRenderContent($request, $page);
     }
 }
 

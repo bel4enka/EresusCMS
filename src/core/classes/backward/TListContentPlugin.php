@@ -254,22 +254,31 @@ class TListContentPlugin extends TContentPlugin
         return $result;
     }
 
-    function clientRenderContent()
+    /**
+     * Отрисовка клиентской части
+     *
+     * @param Eresus_CMS_Request $request  обрабатываемый запрос
+     * @param Eresus_CMS_Page    $page     создаваемая страница
+     *
+     * @return string|Eresus_HTTP_Response
+     */
+    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
     {
+        /** @var TClientUI $page */
         $result = '';
         if (!isset($this->settings['itemsPerPage']))
         {
             $this->settings['itemsPerPage'] = 0;
         }
-        if (Eresus_Kernel::app()->getPage()->topic)
+        if ($page->topic)
         {
             $result = $this->clientRenderItem();
         }
         else
         {
-            $this->table['fields'] = Eresus_CMS::getLegacyKernel()->db->fields($this->table['name']);
-            $this->itemsCount = Eresus_CMS::getLegacyKernel()->db->
-                count($this->table['name'], "(`section`='" . Eresus_Kernel::app()->getPage()->id."')".
+            $db = Eresus_CMS::getLegacyKernel()->db;
+            $this->table['fields'] = $db->fields($this->table['name']);
+            $this->itemsCount = $db->count($this->table['name'], "(`section`='" . $page->id . "')".
                     (in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
             if ($this->itemsCount)
             {
@@ -277,13 +286,13 @@ class TListContentPlugin extends TContentPlugin
                     ((integer) ($this->itemsCount / $this->settings['itemsPerPage']) +
                         (($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
             }
-            if (!Eresus_Kernel::app()->getPage()->subpage)
+            if (!$page->subpage)
             {
-                Eresus_Kernel::app()->getPage()->subpage = $this->table['sortDesc']?$this->pagesCount:1;
+                $page->subpage = $this->table['sortDesc'] ? $this->pagesCount : 1;
             }
-            if ($this->itemsCount && (Eresus_Kernel::app()->getPage()->subpage > $this->pagesCount))
+            if ($this->itemsCount && ($page->subpage > $this->pagesCount))
             {
-                $item = Eresus_Kernel::app()->getPage()->httpError(404);
+                $item = $page->httpError(404);
                 $result = $item['content'];
             }
             else
@@ -332,17 +341,33 @@ class TListContentPlugin extends TContentPlugin
         return $result;
     }
 
-    function clientRenderListItem($item)
+    /**
+     * Возвращает разметку одного объекта в представлении «Список объектов»
+     *
+     * @param array $item
+     * @return string
+     */
+    protected function clientRenderListItem(array $item)
     {
         $result = $item['caption']."<br />\n";
         return $result;
     }
 
-    function clientRenderItem()
+    /**
+     * Возвращает разметку представления «Просмотр объекта»
+     *
+     * @return string
+     */
+    protected function clientRenderItem()
     {
+        return '';
     }
 
-    function clientRenderPages()
+    /**
+     * Возвращает разметку переключателя страниц
+     * @return string
+     */
+    protected function clientRenderPages()
     {
         $result = Eresus_Kernel::app()->getPage()->
             pages($this->pagesCount, $this->settings['itemsPerPage'], $this->table['sortDesc']);

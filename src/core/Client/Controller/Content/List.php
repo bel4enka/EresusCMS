@@ -36,28 +36,31 @@ class Eresus_Client_Controller_Content_List extends Eresus_Client_Controller_Con
     /**
      * Возвращает разметку области контента
      *
+     * @param Eresus_CMS_Request $request
+     * @param TClientUI          $page
+     *
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml()
+    public function getHtml(Eresus_CMS_Request $request, TClientUI $page)
     {
         $legacyKernel = Eresus_CMS::getLegacyKernel();
         /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
         if ($legacyKernel->request['file']
             || $legacyKernel->request['query']
-            || $this->getPage()->subpage
-            || $this->getPage()->topic)
+            || $page->subpage
+            || $page->topic)
         {
-            $this->getPage()->httpError(404);
+            $page->httpError(404);
         }
 
-        $subItems = $legacyKernel->db->select('pages', "(`owner`='" . $this->getPage()->id .
+        $subItems = $legacyKernel->db->select('pages', "(`owner`='" . $page->id .
             "') AND (`active`='1') AND (`access` >= '" .
             ($legacyKernel->user['auth'] ?
                 $legacyKernel->user['access'] : GUEST)."')", "`position`");
-        if (empty($this->getPage()->content))
+        if (empty($page->content))
         {
-            $this->getPage()->content = '$(items)';
+            $page->content = '$(items)';
         }
         $templates = Templates::getInstance();
         $template = $templates->get('SectionListItem', 'std');
@@ -86,13 +89,13 @@ class Eresus_Client_Controller_Content_List extends Eresus_Client_Controller_Con
                     $item['description'],
                     $item['hint'],
                     $legacyKernel->request['url'] .
-                    ($this->getPage()->name == 'main' &&
-                    !$this->getPage()->owner ? 'main/' : '').$item['name'].'/',
+                    ($page->name == 'main' &&
+                    !$page->owner ? 'main/' : '').$item['name'].'/',
                 ),
                 $template
             );
         }
-        $result = str_replace('$(items)', $items, $this->getPage()->content);
+        $result = str_replace('$(items)', $items, $page->content);
         return $result;
     }
 }
