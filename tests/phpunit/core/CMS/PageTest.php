@@ -37,6 +37,18 @@ require_once __DIR__ . '/../../bootstrap.php';
 class Eresus_CMS_PageTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers Eresus_CMS_Page::__get
+     */
+    public function testMagicGet()
+    {
+        $page = $this->getMockBuilder('Eresus_CMS_Page')
+            ->setMethods(array('getFoo', 'getTitle', 'getDescription', 'getKeywords'))->getMock();
+        $page->expects($this->any())->method('getFoo')->will($this->returnValue('bar'));
+        $this->assertEquals('bar', $page->foo);
+        $this->assertNull($page->bar);
+    }
+
+    /**
      * @covers Eresus_CMS_Page::addErrorMessage
      * @covers Eresus_CMS_Page::getErrorMessages
      * @covers Eresus_CMS_Page::clearErrorMessages
