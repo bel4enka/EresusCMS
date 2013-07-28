@@ -68,10 +68,9 @@ abstract class Eresus_Application
      * </code>
      *
      * @return int  Exit code
-     * @see Core::exec()
+     * @see Eresus_Kernel::exec()
      */
     abstract public function main();
-    //-----------------------------------------------------------------------------
 
     /**
      * Constructor
@@ -82,7 +81,7 @@ abstract class Eresus_Application
      * automatically from {@link Core::exec()}
      *
      * @return Eresus_Application
-     * @see initFS(), Core::exec()
+     * @see initFS(), Eresus_Kernel::exec()
      */
     public function __construct()
     {
