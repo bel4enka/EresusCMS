@@ -24,14 +24,16 @@
  * <http://www.gnu.org/licenses/>
  *
  * @package Eresus
+ * @subpackage DB
  */
 
 /**
- * Database interface
+ * Интерфейс к СУБД
  *
- * @package DB
+ * @package Eresus
+ * @subpackage DB
  */
-class DB implements ezcBaseConfigurationInitializer
+class Eresus_DB implements ezcBaseConfigurationInitializer
 {
     /**
      * Список DSN "ленивых" соединений
@@ -40,10 +42,10 @@ class DB implements ezcBaseConfigurationInitializer
     private static $lazyConnectionDSNs = array();
 
     /**
-     * Connects to DB
+     * Создаёт подключение к БД
      *
-     * @param string $dsn        Connection DSN string
-     * @param string|bool $name  Optional connection name
+     * @param string $dsn        DSN
+     * @param string|bool $name  опциональное имя соединения
      *
      * @throws Eresus_DB_Exception
      *
@@ -72,8 +74,6 @@ class DB implements ezcBaseConfigurationInitializer
         ezcDbInstance::set($db, $name);
         return $db;
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Configures lazy connection to DB
@@ -106,7 +106,7 @@ class DB implements ezcBaseConfigurationInitializer
      * @param string|bool  $name     Optional connection name
      *
      */
-    public static function setHandler(ezcDbHandler $handler, $name = false)
+    public static function setHandler($handler, $name = false)
     {
         ezcDbInstance::set($handler, $name);
     }
@@ -180,7 +180,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function fetch($query)
     {
-        if (LOG_DEBUG) // TODO: Что это значит?!
+        if (LOG_DEBUG == Eresus_Kernel::$logLevel)
         {
             $insider = new DBQueryInsider;
             $query->doBind($insider);
@@ -210,7 +210,7 @@ class DB implements ezcBaseConfigurationInitializer
      */
     public static function fetchAll($query)
     {
-        if (LOG_DEBUG)
+        if (LOG_DEBUG == Eresus_Kernel::$logLevel)
         {
             $insider = new DBQueryInsider;
             $query->doBind($insider);
@@ -267,13 +267,6 @@ class DBQueryInsider extends PDOStatement
     {
         switch ($type)
         {
-
-            case PDO::PARAM_BOOL:
-                break;
-
-            case PDO::PARAM_INT:
-                break;
-
             case PDO::PARAM_STR:
                 $param = is_null($param) ?
                     'NULL' :
@@ -284,8 +277,6 @@ class DBQueryInsider extends PDOStatement
         $this->values[$paramno] = $param;
 
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Bind param
@@ -300,8 +291,6 @@ class DBQueryInsider extends PDOStatement
     {
         $this->bindValue($paramno, $param, $type);
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Substitute values in query
@@ -318,8 +307,6 @@ class DBQueryInsider extends PDOStatement
 
         return $query;
     }
-    //-----------------------------------------------------------------------------
-
 }
 
-ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'DB');
+ezcBaseInit::setCallback('ezcInitDatabaseInstance', 'Eresus_DB');

@@ -127,7 +127,7 @@ class ezcDbInstance
      * @param string $identifier the identifier of the database handler
      * @return void
      */
-    public static function set( ezcDbHandler $db, $identifier = false )
+    public static function set($db, $identifier = false )
     {
         self::$Instances[$identifier] = $db;
     }

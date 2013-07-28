@@ -32,6 +32,17 @@
  *
  * @package Eresus
  * @subpackage BC
+ * @deprecated с 3.01 используйте {@link Eresus_DB}
+ */
+class DB extends Eresus_DB
+{
+}
+
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
  * @deprecated с 3.01 используйте {@link Eresus_HTTP_Request}
  */
 class HttpRequest extends Eresus_HTTP_Request

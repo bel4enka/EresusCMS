@@ -65,7 +65,6 @@ spl_autoload_register(
             'WebServer' => 'classes/WebServer.php',
             'WebPage' => 'classes/WebPage.php',
             /* DB */
-            'DB' => 'framework/core/DB/DB.php',
             'DBSettings' => 'framework/core/DB/DB.php',
             'DBRuntimeException' => 'framework/core/DB/DB.php',
 
@@ -82,7 +81,7 @@ spl_autoload_register(
             'HttpResponse' => 'framework/core/WWW/HTTP/HttpResponse.php',
         );
 
-        static $bcClasses = array('HttpRequest', 'Plugin', 'Plugins', 'Template');
+        static $bcClasses = array('DB', 'HttpRequest', 'Plugin', 'Plugins', 'Template');
 
         if (stripos($class, 'Eresus_') === 0)
         /*
