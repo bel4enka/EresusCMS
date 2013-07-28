@@ -195,15 +195,6 @@ class Eresus_Kernel
 
         self::initExceptionHandling();
 
-        /*
-         * Подключение устаревшего кода
-         */
-
-        /**
-         * Подключение Eresus Core
-         */
-        include __DIR__ . '/framework/core/kernel.php';
-
         self::$inited = true;
     }
 
