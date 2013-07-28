@@ -27,19 +27,6 @@ class Core
     static private $registry = array();
 
     /**
-     * Checks if class or interface exists
-     *
-     * This method not triggering autoload
-     *
-     * @param string $name  Class or interface name
-     * @return bool
-     */
-    static public function classExists($name)
-    {
-        return class_exists($name, false) || interface_exists($name, false);
-    }
-
-    /**
      * Writes exception description to log
      *
      * @param Exception $e
