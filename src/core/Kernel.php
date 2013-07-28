@@ -139,6 +139,35 @@ class Eresus_Kernel
     }
 
     /**
+     * Записывает сообщение об исключении в журнал
+     *
+     * @param Exception $e
+     *
+     * @since 3.01
+     */
+    public static function logException($e)
+    {
+        $previous = $e->getPrevious();
+        $trace = $e->getTraceAsString();
+
+        $logMessage = sprintf(
+            "%s in %s at %s\n%s\nBacktrace:\n%s\n",
+            get_class($e),
+            $e->getFile(),
+            $e->getLine(),
+            $e->getMessage(),
+            $trace
+        );
+
+        Eresus_Kernel::log(__METHOD__, LOG_ERR, $logMessage);
+
+        if ($previous)
+        {
+            self::logException($previous, 'Previous exception:');
+        }
+    }
+
+    /**
      * Инициализация ядра
      *
      * Этот метод:

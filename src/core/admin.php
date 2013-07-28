@@ -1017,18 +1017,16 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                     {
                         if (isset($name))
                         {
-                            $logMsg = 'Error in plugin "' . $name . '"';
                             $msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
                             $msg = sprintf($msg, $name);
                         }
                         else
                         {
-                            $logMsg = 'Error in module "' . $module . '"';
                             $msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
                             $msg = sprintf($msg, $module);
                         }
 
-                        Core::logException($e, $logMsg);
+                        Eresus_Kernel::logException($e);
 
                         $msg .= '<br />' . $e->getMessage();
                         $result = ErrorBox($msg);
