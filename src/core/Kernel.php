@@ -174,7 +174,6 @@ class Eresus_Kernel
          * Подключение Eresus Core
          */
         include __DIR__ . '/framework/core/kernel.php';
-        Core::init();
 
         self::$inited = true;
     }

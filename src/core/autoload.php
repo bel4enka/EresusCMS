@@ -141,3 +141,12 @@ spl_autoload_register(
  * Подключаем Dwoo
  */
 include_once __DIR__ . '/framework/core/3rdparty/dwoo/dwooAutoload.php';
+
+/*
+ * eZ Components
+ */
+set_include_path(__DIR__ . '/framework/core/3rdparty/ezcomponents' . PATH_SEPARATOR
+    . get_include_path());
+include_once 'Base/src/base.php';
+spl_autoload_register(array('ezcBase', 'autoload'));
+

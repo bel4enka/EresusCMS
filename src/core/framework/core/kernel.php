@@ -18,16 +18,6 @@ function eresus_log()
 class Core
 {
     /**
-     * Indicates initialization state:
-     *  0 - Not inited
-     *  1 - Init in progress
-     *  2 - Init complete
-     *
-     * @var int  Initialization state
-     */
-    static private $initState = 0;
-
-    /**
      * Internal registry
      *
      * @see getValue, setValue, unsetValue
@@ -35,28 +25,6 @@ class Core
      * @var array
      */
     static private $registry = array();
-
-    /**
-     * Init Eresus Core
-     */
-    static public function init()
-    {
-        if (self::$initState)
-            return;
-
-        self::$initState = 1;
-
-        /*
-         * eZ Components
-         */
-        $currentDir = dirname(__FILE__);
-        set_include_path($currentDir . '/3rdparty/ezcomponents' . PATH_SEPARATOR .
-        get_include_path());
-        include_once 'Base/src/base.php';
-        spl_autoload_register(array('ezcBase', 'autoload'));
-
-        self::$initState = 2;
-    }
 
     /**
      * Checks if class or interface exists
