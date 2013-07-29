@@ -149,12 +149,12 @@ class Eresus_DB implements ezcBaseConfigurationInitializer
         try
         {
             $stmt = $query->prepare();
-            if (LOG_DEBUG)
+            if (LOG_DEBUG == Eresus_Kernel::$logLevel)
             {
                 $insider = new DBQueryInsider;
                 $query->doBind($insider);
                 $s = $insider->subst($query);
-                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $s);
             }
             $result = $stmt->execute();
 
