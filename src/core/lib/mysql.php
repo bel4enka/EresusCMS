@@ -92,7 +92,7 @@ class MySQL
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
 		$dsn = "mysql://$username:$password@$server/$source?charset=utf8";
 
-        $db = DB::connect($dsn);
+        $db = Eresus_DB::connect($dsn);
         $options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
         $db->setOptions($options);
 		return true;
@@ -106,7 +106,7 @@ class MySQL
 	{
 		if (!$this->dbSchema)
 		{
-			$db = DB::getHandler();
+			$db = Eresus_DB::getHandler();
 			$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
 			ezcDbSchema::setOptions($options);
 
@@ -127,7 +127,7 @@ class MySQL
 	public function query($query)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = DB::getHandler();
+		$db = Eresus_DB::getHandler();
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, $query);
 		$db->exec($query);
 		return true;
@@ -144,7 +144,7 @@ class MySQL
 	public function query_array($query)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = DB::getHandler();
+		$db = Eresus_DB::getHandler();
 		$stmt = $db->prepare($query);
 		if (!$stmt->execute())
 		{
@@ -169,14 +169,14 @@ class MySQL
 	public function create($name, $structure, $options = '')
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = DB::getHandler();
+		$db = Eresus_DB::getHandler();
 		$name = $db->options->tableNamePrefix . $name;
 		$query = "CREATE TABLE `$name` ($structure) $options";
 		$result = $this->query($query);
 
 		if ($result)
 		{
-			$db = DB::getHandler();
+			$db = Eresus_DB::getHandler();
 			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}
 
@@ -195,14 +195,14 @@ class MySQL
 	public function drop($name)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = DB::getHandler();
+		$db = Eresus_DB::getHandler();
 		$name = $db->options->tableNamePrefix . $name;
 		$query = "DROP TABLE `$name`";
 		$result = $this->query($query);
 
 		if ($result)
 		{
-			$db = DB::getHandler();
+			$db = Eresus_DB::getHandler();
 			$this->dbSchema = ezcDbSchema::createFromDb($db);
 		}
 
@@ -229,7 +229,7 @@ class MySQL
 		$offset = 0, $group = '', $distinct = false)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = DB::getHandler();
+		$db = Eresus_DB::getHandler();
 		$q = $db->createSelectQuery();
 		$e = $q->expr;
 
@@ -291,7 +291,7 @@ class MySQL
 			$q->groupBy($group);
 		}
 
-		$result = DB::fetchAll($q);
+		$result = Eresus_DB::fetchAll($q);
 
 		return $result;
 	}
@@ -315,7 +315,7 @@ class MySQL
 			return false;
 		}
 
-		$q = DB::getHandler()->createInsertQuery();
+		$q = Eresus_DB::getHandler()->createInsertQuery();
 		$q->insertInto($table);
 
 		foreach ($fields as $field)
@@ -326,7 +326,7 @@ class MySQL
 			}
 		}
 
-		DB::execute($q);
+        Eresus_DB::execute($q);
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -343,7 +343,7 @@ class MySQL
 	public function update($table, $set, $condition)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = DB::getHandler()->createUpdateQuery();
+		$q = Eresus_DB::getHandler()->createUpdateQuery();
 		$q->update($table)
 			->where($condition);
 
@@ -356,7 +356,7 @@ class MySQL
 			$q->set($key, $q->bindValue($value));
 		}
 
-		DB::execute($q);
+        Eresus_DB::execute($q);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -371,10 +371,10 @@ class MySQL
 	public function delete($table, $condition)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = DB::getHandler()->createDeleteQuery();
+		$q = Eresus_DB::getHandler()->createDeleteQuery();
 		$q->deleteFrom($table)
 			->where($condition);
-		DB::execute($q);
+        Eresus_DB::execute($q);
 		return null;
 	}
 	//-----------------------------------------------------------------------------
@@ -415,7 +415,7 @@ class MySQL
 	public function selectItem($table, $condition, $fields = '')
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = DB::getHandler()->createSelectQuery();
+		$q = Eresus_DB::getHandler()->createSelectQuery();
 
 		if ($fields == '')
 		{
@@ -427,7 +427,7 @@ class MySQL
 			->where($condition)
 			->limit(1);
 
-		$item = DB::fetch($q);
+		$item = Eresus_DB::fetch($q);
 
 		return $item;
 	}
@@ -451,7 +451,7 @@ class MySQL
 			return false;
 		}
 
-		$q = DB::getHandler()->createUpdateQuery();
+		$q = Eresus_DB::getHandler()->createUpdateQuery();
 		$q->update($table)
 			->where($condition);
 
@@ -463,7 +463,7 @@ class MySQL
 			}
 		}
 
-		DB::execute($q);
+        Eresus_DB::execute($q);
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -481,7 +481,7 @@ class MySQL
 	public function count($table, $condition = false, $group = false, $rows = false)
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = DB::getHandler()->createSelectQuery();
+		$q = Eresus_DB::getHandler()->createSelectQuery();
 		$e = $q->expr;
 
 		$q->select($q->alias($e->count('*'), 'count'))
@@ -497,7 +497,7 @@ class MySQL
 			$q->groupBy($group);
 		}
 
-		$result = DB::fetchAll($q);
+		$result = Eresus_DB::fetchAll($q);
 		if ($rows)
 		{
 			return count($result);
@@ -518,7 +518,7 @@ class MySQL
 	public function getInsertedID()
 	{
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = DB::getHandler();
+		$db = Eresus_DB::getHandler();
 		return $db->lastInsertId();
 	}
 	//-----------------------------------------------------------------------------

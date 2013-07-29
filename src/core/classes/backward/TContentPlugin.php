@@ -72,7 +72,7 @@ class TContentPlugin implements Eresus_Plugin_ContentProviderInterface
         global $locale;
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $plugins = $legacyKernel->plugins;
+        $plugins = Eresus_Plugin_Registry::getInstance();
 
         if (!empty($this->name) && isset($plugins->list[$this->name]))
         {

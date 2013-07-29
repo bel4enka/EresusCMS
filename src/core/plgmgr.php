@@ -46,31 +46,33 @@ class TPlgMgr
      */
     private function toggle()
     {
-        $q = DB::getHandler()->createUpdateQuery();
+        $q = Eresus_DB::getHandler()->createUpdateQuery();
         $e = $q->expr;
         $q->update('plugins')
             ->set('active', $e->not('active'))
             ->where(
                 $e->eq('name', $q->bindValue(arg('toggle')))
             );
-        DB::execute($q);
+        Eresus_DB::execute($q);
 
         HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
     private function delete()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('delete'));
-        Eresus_CMS::getLegacyKernel()->plugins->uninstall(arg('delete'));
+        $plugins = Eresus_Plugin_Registry::getInstance();
+        $plugins->load(arg('delete'));
+        $plugins->uninstall(arg('delete'));
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
     private function edit()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('id'));
-        if (method_exists(Eresus_CMS::getLegacyKernel()->plugins->items[arg('id')], 'settings'))
+        $plugins = Eresus_Plugin_Registry::getInstance();
+        $plugins->load(arg('id'));
+        if (method_exists($plugins->items[arg('id')], 'settings'))
         {
-            $result = Eresus_CMS::getLegacyKernel()->plugins->items[arg('id', 'word')]->settings();
+            $result = $plugins->items[arg('id', 'word')]->settings();
         }
         else
         {
