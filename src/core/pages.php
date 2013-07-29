@@ -242,7 +242,7 @@ class TPages
             $item['position'] = count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner']));
 
             /* Проверяем, нет ли в разделе назначения раздела с таким же именем */
-            $q = DB::getHandler()->createSelectQuery();
+            $q = Eresus_DB::getHandler()->createSelectQuery();
             $e = $q->expr;
             $q->select($q->alias($e->count('id'), 'count'))
                 ->from('pages')
@@ -250,7 +250,7 @@ class TPages
                     $e->eq('owner', $q->bindValue($item['owner'], null, PDO::PARAM_INT)),
                     $e->eq('name', $q->bindValue($item['name']))
                 ));
-            $count = DB::fetch($q);
+            $count = Eresus_DB::fetch($q);
             if ($count['count'])
             {
                 Eresus_Kernel::app()->getPage()->addErrorMessage(

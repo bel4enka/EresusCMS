@@ -49,7 +49,7 @@ class TContent
         }
 
         $legacyKernel = Eresus_CMS::getLegacyKernel();
-        $plugins = $legacyKernel->plugins;
+        $plugins = Eresus_Plugin_Registry::getInstance();
         /** @var TAdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
 
