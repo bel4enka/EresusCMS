@@ -56,13 +56,9 @@ class Eresus_ORM_EntityTest extends PHPUnit_Framework_TestCase
         /** @var Eresus_ORM_Entity $entity */
         $entity->__construct($plugin, $attrs);
 
-        $p_plugin = new ReflectionProperty('Eresus_ORM_Entity', 'plugin');
-        $p_plugin->setAccessible(true);
-        $this->assertSame($plugin, $p_plugin->getValue($entity));
-
-        $p_attrs = new ReflectionProperty('Eresus_ORM_Entity', 'attrs');
-        $p_attrs->setAccessible(true);
-        $this->assertEquals($attrs, $p_attrs->getValue($entity));
+        $attrsProp = new ReflectionProperty('Eresus_ORM_Entity', 'attrs');
+        $attrsProp->setAccessible(true);
+        $this->assertEquals($attrs, $attrsProp->getValue($entity));
 
         $this->assertEquals('bar', $entity->getProperty('foo'));
         $this->assertNull($entity->getProperty('bar'));
@@ -80,9 +76,10 @@ class Eresus_ORM_EntityTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTable()
     {
-        $plugin = $this->getMockBuilder('Eresus_Plugin')
-            ->setMockClassName('Eresus_ORM_EntityTest_GetTable')
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->setMethods(array('getOrmClassPrefix'))
             ->disableOriginalConstructor()->getMock();
+        $plugin->expects($this->any())->method('getOrmClassPrefix')
+            ->will($this->returnValue('Eresus_ORM_EntityTest_GetTable'));
         $entity = $this->getMockForAbstractClass('Eresus_ORM_Entity', array($plugin),
             'Eresus_ORM_EntityTest_GetTable_Entity_Foo');
 
@@ -180,7 +177,9 @@ class Eresus_ORM_EntityTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
-            ->setMockClassName('Foo')->getMock();
+            ->setMethods(array('getOrmClassPrefix'))->getMock();
+        $plugin->expects($this->any())->method('getOrmClassPrefix')
+            ->will($this->returnValue('Foo'));
 
         $plugins = $this->getMock('stdClass', array('load'));
         $plugins->expects($this->any())->method('load')->will($this->returnValue($plugin));

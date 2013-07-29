@@ -32,7 +32,8 @@
  * @package Eresus
  * @deprecated с 3.01 используйте ContentPlugin
  */
-class TContentPlugin implements Eresus_Plugin_ContentProviderInterface
+class TContentPlugin implements Eresus_Plugin_ContentProviderInterface,
+    Eresus_ORM_EntityOwnerInterface
 {
     /**
      * Имя плагина
@@ -273,6 +274,18 @@ class TContentPlugin implements Eresus_Plugin_ContentProviderInterface
 
         $result = Eresus_Kernel::app()->getPage()->renderForm($form, $item);
         return $result;
+    }
+
+    /**
+     * Возвращает префикс для имён классов сущностей и таблиц
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getOrmClassPrefix()
+    {
+        return substr(get_class($this), 1);
     }
 }
 

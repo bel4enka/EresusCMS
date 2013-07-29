@@ -37,12 +37,12 @@
 abstract class Eresus_ORM_Table
 {
     /**
-     * Модуль
+     * Владелец
      *
-     * @var Eresus_Plugin|TContentPlugin
+     * @var Eresus_ORM_EntityOwnerInterface
      * @since 3.01
      */
-    protected $plugin;
+    protected $owner;
 
     /**
      * Драйвер СУБД
@@ -113,16 +113,17 @@ abstract class Eresus_ORM_Table
     /**
      * Конструктор
      *
-     * @param Eresus_Plugin|TContentPlugin      $plugin
-     * @param Eresus_ORM_Driver_Abstract $driver
+     * @param Eresus_ORM_EntityOwnerInterface $owner
+     * @param Eresus_ORM_Driver_Abstract      $driver
      *
      * @return Eresus_ORM_Table
      *
      * @since 3.01
      */
-    public function __construct($plugin, Eresus_ORM_Driver_Abstract $driver = null)
+    public function __construct(Eresus_ORM_EntityOwnerInterface $owner,
+        Eresus_ORM_Driver_Abstract $driver = null)
     {
-        $this->plugin = $plugin;
+        $this->owner = $owner;
         if (null === $driver)
         {
             $driver = new Eresus_ORM_Driver_MySQL();
@@ -724,7 +725,7 @@ abstract class Eresus_ORM_Table
                     break;
             }
         }
-        $entity = new $entityClass($this->plugin, $values);
+        $entity = new $entityClass($this->owner, $values);
         $this->registry[$id] = $entity;
         return $entity;
     }

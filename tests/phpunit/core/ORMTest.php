@@ -37,15 +37,6 @@ class Eresus_ORMTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers Eresus_ORM::getTable
-     * @expectedException InvalidArgumentException
-     */
-    public function testGetTableInvalidPlugin()
-    {
-        Eresus_ORM::getTable(null, 'Foo');
-    }
-
-    /**
-     * @covers Eresus_ORM::getTable
      */
     public function testGetTableNewPlugin()
     {
@@ -53,9 +44,11 @@ class Eresus_ORMTest extends PHPUnit_Framework_TestCase
         $this->getMockBuilder('Eresus_ORM_Table')
             ->setMockClassName("Plugin_{$uid}_Entity_Table_{$uid}")
             ->setMethods(array('setTableDefinition'))->disableOriginalConstructor()->getMock();
-        /** @var Eresus_Plugin $plugin */
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
-            ->setMockClassName("Plugin_{$uid}")->getMock();
+            ->setMethods(array('getOrmClassPrefix'))->getMock();
+        $plugin->expects($this->any())->method('getOrmClassPrefix')
+            ->will($this->returnValue("Plugin_{$uid}"));
+        /** @var Eresus_Plugin $plugin */
         $this->assertInstanceOf("Plugin_{$uid}_Entity_Table_{$uid}",
             Eresus_ORM::getTable($plugin, $uid));
     }
@@ -69,9 +62,11 @@ class Eresus_ORMTest extends PHPUnit_Framework_TestCase
         $this->getMockBuilder('Eresus_ORM_Table')
             ->setMockClassName("Plugin_{$uid}_Entity_Table_{$uid}")
             ->setMethods(array('setTableDefinition'))->disableOriginalConstructor()->getMock();
-        /** @var TContentPlugin $plugin */
         $plugin = $this->getMockBuilder('TContentPlugin')->disableOriginalConstructor()
-            ->setMockClassName("Plugin_{$uid}")->getMock();
+            ->setMethods(array('getOrmClassPrefix'))->getMock();
+        $plugin->expects($this->any())->method('getOrmClassPrefix')
+            ->will($this->returnValue("Plugin_{$uid}"));
+        /** @var TContentPlugin $plugin */
         $this->assertInstanceOf("Plugin_{$uid}_Entity_Table_{$uid}",
             Eresus_ORM::getTable($plugin, $uid));
     }

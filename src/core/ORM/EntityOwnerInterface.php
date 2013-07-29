@@ -1,6 +1,6 @@
 <?php
 /**
- * ORM
+ * Интерфейс владельца сущностей
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,63 +27,21 @@
  * @subpackage ORM
  */
 
+
 /**
- * ORM
+ * Интерфейс владельца сущностей
  *
  * @package Eresus
  * @subpackage ORM
  * @since 3.01
  */
-class Eresus_ORM
+interface Eresus_ORM_EntityOwnerInterface
 {
     /**
-     * Кэш таблиц
+     * Должен возвращать префикс для имён классов сущностей и таблиц
      *
-     * @var array
-     * @since 3.01
+     * @return string
      */
-    private static $tables = array();
-
-    /**
-     * Типы полей
-     *
-     * @var array
-     * @since 3.01
-     */
-    private static $filedTypes = array('boolean', 'date', 'float', 'integer', 'string', 'time',
-        'timestamp', 'entity');
-
-    /**
-     * Возвращает объект таблицы для указанной сущности указанного плагина
-     *
-     * @param Eresus_ORM_EntityOwnerInterface $owner       объект, которому принадлежит сущность
-     * @param string                          $entityName  имя сущности (без префикса и слова
-     *                                                     «Entity»)
-     *
-     * @return Eresus_ORM_Table
-     *
-     * @since 3.01
-     */
-    public static function getTable(Eresus_ORM_EntityOwnerInterface $owner, $entityName)
-    {
-        $className = $owner->getOrmClassPrefix() . '_Entity_Table_' . $entityName;
-        if (!isset(self::$tables[$className]))
-        {
-            self::$tables[$className] = new $className($owner);
-        }
-        return self::$tables[$className];
-    }
-
-    /**
-     * Возвращает возможные типы полей
-     *
-     * @return array
-     *
-     * @since 3.01
-     */
-    public static function fieldTypes()
-    {
-        return self::$filedTypes;
-    }
+    public function getOrmClassPrefix();
 }
 

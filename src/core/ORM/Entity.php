@@ -38,11 +38,11 @@
 abstract class Eresus_ORM_Entity
 {
     /**
-     * Модуль
+     * Владелец
      *
-     * @var Eresus_Plugin|TContentPlugin
+     * @var Eresus_ORM_EntityOwnerInterface
      */
-    protected $plugin;
+    protected $owner;
 
     /**
      * Атрибуты
@@ -61,16 +61,16 @@ abstract class Eresus_ORM_Entity
     /**
      * Конструктор
      *
-     * @param Eresus_Plugin|TContentPlugin $plugin  модуль
-     * @param array          $attrs   исходные значения полей
+     * @param Eresus_ORM_EntityOwnerInterface $owner  владелец
+     * @param array          $attrs                   исходные значения полей
      *
      * @return Eresus_ORM_Entity
      *
      * @since 3.01
      */
-    public function __construct($plugin, array $attrs = array())
+    public function __construct(Eresus_ORM_EntityOwnerInterface $owner, array $attrs = array())
     {
-        $this->plugin = $plugin;
+        $this->owner = $owner;
         $this->attrs = $attrs;
     }
 
@@ -140,7 +140,7 @@ abstract class Eresus_ORM_Entity
     {
         $entityName = get_class($this);
         $entityName = substr($entityName, strrpos($entityName, '_') + 1);
-        return Eresus_ORM::getTable($this->plugin, $entityName);
+        return Eresus_ORM::getTable($this->owner, $entityName);
     }
 
     /**
@@ -285,7 +285,7 @@ abstract class Eresus_ORM_Entity
      *
      * @throws InvalidArgumentException
      *
-     * @return ORM_Table
+     * @return Eresus_ORM_Table
      *
      * @since 3.01
      */

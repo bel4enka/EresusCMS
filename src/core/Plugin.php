@@ -31,7 +31,7 @@
  *
  * @package Eresus
  */
-abstract class Eresus_Plugin
+abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
 {
     /**
      * Имя плагина
@@ -394,18 +394,19 @@ abstract class Eresus_Plugin
     /**
      * Вставка в таблицу БД
      *
-     * @param string $table          Имя таблицы
-     * @param array  $item           Вставляемый элемент
-     * @param string $key[optional]  Имя ключевого поля. По умолчанию "id"
+     * @param string $table  Имя таблицы
+     * @param array  $item   Вставляемый элемент
+     * @param string $key    Имя ключевого поля. По умолчанию "id"
+     *
+     * @return array
      */
     public function dbInsert($table, $item, $key = 'id')
     {
         Eresus_CMS::getLegacyKernel()->db->insert($this->__table($table), $item);
-        $result = $this->dbItem($table, Eresus_CMS::getLegacyKernel()->db->getInsertedId(), $key);
+        $result = $this->dbItem($table, Eresus_DB::getHandler()->lastInsertId(), $key);
 
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Изменение данных в БД
@@ -500,6 +501,18 @@ abstract class Eresus_Plugin
             $this->templates = new Eresus_Plugin_Templates($this);
         }
         return $this->templates;
+    }
+
+    /**
+     * Возвращает префикс для имён классов сущностей и таблиц
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getOrmClassPrefix()
+    {
+        return get_class($this);
     }
 
     /**
