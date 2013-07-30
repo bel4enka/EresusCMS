@@ -250,7 +250,7 @@ class TPages
                     $e->eq('owner', $q->bindValue($item['owner'], null, PDO::PARAM_INT)),
                     $e->eq('name', $q->bindValue($item['name']))
                 ));
-            $count = Eresus_DB::fetch($q);
+            $count = $q->fetch();
             if ($count['count'])
             {
                 Eresus_Kernel::app()->getPage()->addErrorMessage(
