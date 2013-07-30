@@ -291,11 +291,10 @@ class MySQL
 			$q->groupBy($group);
 		}
 
-		$result = Eresus_DB::fetchAll($q);
+		$result = $q->fetchAll();
 
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Вставка элемента в БД
@@ -493,7 +492,7 @@ class MySQL
 			$q->groupBy($group);
 		}
 
-		$result = Eresus_DB::fetchAll($q);
+		$result = $q->fetchAll();
 		if ($rows)
 		{
 			return count($result);
