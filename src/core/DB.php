@@ -143,94 +143,39 @@ class Eresus_DB implements ezcBaseConfigurationInitializer
      * @throws Eresus_DB_Exception_QueryFailed
      *
      * @return mixed
+     *
+     * @deprecated с 3.01 используйте ezcQuery::execute
      */
     public static function execute($query)
     {
-        try
-        {
-            $stmt = $query->prepare();
-            if (LOG_DEBUG)
-            {
-                $insider = new DBQueryInsider;
-                $query->doBind($insider);
-                $s = $insider->subst($query);
-                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
-            }
-            $result = $stmt->execute();
-
-        }
-        catch (Exception $e)
-        {
-
-            throw new Eresus_DB_Exception_QueryFailed($query, null, $e);
-
-        }
-
-        return $result;
+        return $query->execute();
     }
 
     /**
      * Fetch row from DB response
      *
-     * @param ezcQuery $query
+     * @param ezcQuerySelect $query
      *
      * @throws Eresus_DB_Exception_QueryFailed
      *
      * @return array
+     *
+     * @deprecated с 3.01 используйте ezcQuerySelect::fetch
      */
-    public static function fetch($query)
+    public static function fetch(ezcQuerySelect $query)
     {
-        if (LOG_DEBUG == Eresus_Kernel::$logLevel)
-        {
-            $insider = new DBQueryInsider;
-            $query->doBind($insider);
-            $s = $insider->subst($query);
-            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
-        }
-        $stmt = $query->prepare();
-
-        try
-        {
-            $stmt->execute();
-        }
-        catch (Exception $e)
-        {
-            throw new Eresus_DB_Exception_QueryFailed($query, null, $e);
-        }
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result;
+        return $query->fetch();
     }
 
     /**
      * Get response rows
-     * @param ezcQuery $query
+     * @param ezcQuerySelect $query
      * @return array
+     * @deprecated с 3.01 используйте ezcQuerySelect::fetchAll
      */
-    public static function fetchAll($query)
+    public static function fetchAll(ezcQuerySelect $query)
     {
-        if (LOG_DEBUG == Eresus_Kernel::$logLevel)
-        {
-            $insider = new DBQueryInsider;
-            $query->doBind($insider);
-            $s = $insider->subst($query);
-            Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Query "%s"', $s);
-        }
-
-        $stmt = $query->prepare();
-
-        try
-        {
-            $stmt->execute();
-        }
-        catch (Exception $e)
-        {
-            throw new Eresus_DB_Exception_QueryFailed($query, null, $e);
-        }
-
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+        return $query->fetchAll();
     }
 }
 
@@ -259,37 +204,33 @@ class DBQueryInsider extends PDOStatement
     /**
      * Bind value
      *
-     * @param paramno
-     * @param param
-     * @param type[optional]
+     * @param int      $paramNo
+     * @param mixed    $param
+     * @param int|null $type
+     *
+     * @return bool
      */
-    public function bindValue($paramno, $param, $type = null)
+    public function bindValue($paramNo, $param, $type = null)
     {
-        switch ($type)
-        {
-            case PDO::PARAM_STR:
-                $param = is_null($param) ?
-                    'NULL' :
-                    "'" . addslashes($param) . "'";
-                break;
-        }
-
-        $this->values[$paramno] = $param;
-
+        $this->values[$paramNo] = var_export($param, true);
+        return true;
     }
 
     /**
      * Bind param
      *
-     * @param paramno
-     * @param param
-     * @param type[optional]
-     * @param maxlen[optional]
-     * @param driverdata[optional]
+     * @param mixed $paramno
+     * @param mixed $param
+     * @param $type
+     * @param $maxlen
+     * @param $driverdata
+     *
+     * @return bool
      */
     public function bindParam($paramno, &$param, $type = null, $maxlen = null, $driverdata = null)
     {
         $this->bindValue($paramno, $param, $type);
+        return $true;
     }
 
     /**
