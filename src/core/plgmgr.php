@@ -53,7 +53,7 @@ class TPlgMgr
             ->where(
                 $e->eq('name', $q->bindValue(arg('toggle')))
             );
-        Eresus_DB::execute($q);
+        $q->execute();
 
         HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
     }

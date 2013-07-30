@@ -326,7 +326,7 @@ class MySQL
 			}
 		}
 
-        Eresus_DB::execute($q);
+        $q->execute();
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -356,9 +356,8 @@ class MySQL
 			$q->set($key, $q->bindValue($value));
 		}
 
-        Eresus_DB::execute($q);
+        $q->execute();
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выполняет запрос DELETE к базе данных
@@ -374,10 +373,9 @@ class MySQL
 		$q = Eresus_DB::getHandler()->createDeleteQuery();
 		$q->deleteFrom($table)
 			->where($condition);
-        Eresus_DB::execute($q);
+        $q->execute();
 		return null;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Получение списка полей таблицы
@@ -463,10 +461,9 @@ class MySQL
 			}
 		}
 
-        Eresus_DB::execute($q);
+        $q->execute();
 		return true;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Возвращает количество записей в таблице
