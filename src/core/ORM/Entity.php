@@ -283,18 +283,12 @@ abstract class Eresus_ORM_Entity
      *
      * @param string $entityClass
      *
-     * @throws InvalidArgumentException
-     *
      * @return Eresus_ORM_Table
      *
      * @since 3.01
      */
     protected function getTableByEntityClass($entityClass)
     {
-        if ('' === strval($entityClass))
-        {
-            throw new InvalidArgumentException('$entityClass can not be blank');
-        }
         $entityPluginName = substr($entityClass, 0, strpos($entityClass, '_'));
         $entityPluginName = strtolower($entityPluginName);
         $plugin = Eresus_Plugin_Registry::getInstance()->load($entityPluginName);

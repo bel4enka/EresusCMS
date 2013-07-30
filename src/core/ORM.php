@@ -37,6 +37,13 @@
 class Eresus_ORM
 {
     /**
+     * Драйвер СУБД
+     * @var Eresus_ORM_Driver_Abstract
+     * @since 3.01
+     */
+    private static $driver = null;
+
+    /**
      * Кэш таблиц
      *
      * @var array
@@ -54,11 +61,39 @@ class Eresus_ORM
         'timestamp', 'entity');
 
     /**
-     * Возвращает объект таблицы для указанной сущности указанного плагина
+     * Задаёт используемый драйвер СУБД
+     *
+     * @param Eresus_ORM_Driver_Abstract $driver
+     *
+     * @since 3.01
+     */
+    public static function setDriver(Eresus_ORM_Driver_Abstract $driver)
+    {
+        self::$driver = $driver;
+    }
+
+    /**
+     * Возвращает используемый драйвер СУБД
+     *
+     * @return Eresus_ORM_Driver_Abstract
+     *
+     * @since 3.01
+     */
+    public static function getDriver()
+    {
+        if (null === self::$driver)
+        {
+            self::$driver = new Eresus_ORM_Driver_MySQL();
+        }
+        return self::$driver;
+    }
+
+    /**
+     * Возвращает объект таблицы для указанной сущности
      *
      * @param Eresus_ORM_EntityOwnerInterface $owner       объект, которому принадлежит сущность
-     * @param string                          $entityName  имя сущности (без префикса и слова
-     *                                                     «Entity»)
+     * @param string                          $entityName  имя сущности (имя класса без префикса и
+     *                                                     слова «Entity»)
      *
      * @return Eresus_ORM_Table
      *
@@ -69,7 +104,7 @@ class Eresus_ORM
         $className = $owner->getOrmClassPrefix() . '_Entity_Table_' . $entityName;
         if (!isset(self::$tables[$className]))
         {
-            self::$tables[$className] = new $className($owner);
+            self::$tables[$className] = new $className(self::$driver, $owner);
         }
         return self::$tables[$className];
     }

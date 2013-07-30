@@ -47,61 +47,7 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
         /** @var Eresus_Plugin $plugin */
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()->getMock();
         /** @var Eresus_ORM_Table $table */
-        $table->__construct($plugin);
-    }
-
-    /**
-     * @covers Eresus_ORM_Table::create
-     */
-    public function testCreate()
-    {
-        $driver = $this->getMock('stdClass', array('createTable'));
-        $driver->expects($this->once())->method('createTable')->with(
-            'table',
-            array(
-            'f1' => array(
-                'type' => 'integer',
-            ),
-            'f2' => array(
-                'type' => 'integer',
-                'unsigned' => true,
-            )),
-            'pkey',
-            'indexes'
-        );
-
-        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
-            setMethods(array('getColumns', 'getDriver', 'setTableDefinition', 'getTableName',
-                'getPrimaryKey', 'getIndexes'))->getMock();
-        $table->expects($this->any())->method('getColumns')->will($this->returnValue(array(
-            'f1' => array(
-                'type' => 'integer',
-            ),
-            'f2' => array(
-                'type' => 'entity',
-            )
-        )));
-        $table->expects($this->any())->method('getDriver')->will($this->returnValue($driver));
-        $table->expects($this->any())->method('getTableName')->will($this->returnValue('table'));
-        $table->expects($this->any())->method('getPrimaryKey')->will($this->returnValue('pkey'));
-        $table->expects($this->any())->method('getIndexes')->will($this->returnValue('indexes'));
-        /** @var Eresus_ORM_Table $table */
-        $table->create();
-    }
-
-    /**
-     * @covers Eresus_ORM_Table::drop
-     */
-    public function testDrop()
-    {
-        $driver = $this->getMock('stdClass', array('dropTable'));
-        $driver->expects($this->once())->method('dropTable');
-
-        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
-            setMethods(array('getDriver', 'setTableDefinition'))->getMock();
-        $table->expects($this->any())->method('getDriver')->will($this->returnValue($driver));
-        /** @var Eresus_ORM_Table $table */
-        $table->drop();
+        $table->__construct(new Eresus_ORM_Driver_MySQL(), $plugin);
     }
 
     /**
@@ -109,25 +55,27 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
      */
     public function testPersist()
     {
-        $stmt = $this->getMock('stdClass', array('execute'));
-
-        $query = $this->getMockBuilder('ezcQuery')
-            ->setMethods(array('getQuery', 'insertInto', 'prepare'))
+        $query = $this->getMockBuilder('ezcQueryInsert')
+            ->setMethods(array('insertInto', 'execute'))
             ->disableOriginalConstructor()->getMock();
-        $query->expects($this->any())->method('prepare')->will($this->returnValue($stmt));
 
-        $handler = $this->getMock('stdClass', array('createInsertQuery'));
+        $handler = $this->getMock('stdClass', array('createInsertQuery', 'lastInsertId'));
         $handler->expects($this->any())->method('createInsertQuery')
             ->will($this->returnValue($query));
+        $handler->expects($this->once())->method('lastInsertId')->will($this->returnValue(123));
         Eresus_DB::setHandler($handler);
 
         $entity = $this->getMockBuilder('Eresus_ORM_Entity')->disableOriginalConstructor()
-            ->setMethods(array('getTable'))->getMock();
+            ->setMethods(array('getTable', 'setProperty'))->getMock();
 
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
-            setMethods(array('setTableDefinition', 'getTableName', 'bindValuesToQuery'))->getMock();
+            setMethods(array('setTableDefinition', 'getTableName', 'bindValuesToQuery',
+                'getColumns'))
+            ->getMock();
         $table->expects($this->any())->method('getTableName')->will($this->returnValue('table'));
         $table->expects($this->any())->method('bindValuesToQuery')->with($entity, $query);
+        $table->expects($this->any())->method('getColumns')
+            ->will($this->returnValue(array('id' => array('autoincrement' => true))));
         /** @var Eresus_ORM_Table $table */
         /** @var Eresus_ORM_Entity $entity */
         $table->persist($entity);
@@ -138,13 +86,10 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
      */
     public function testUpdate()
     {
-        $stmt = $this->getMock('stdClass', array('execute'));
-
-        $query = $this->getMockBuilder('ezcQuery')
-            ->setMethods(array('getQuery', 'update', 'where', 'prepare'))
+        $query = $this->getMockBuilder('ezcQueryUpdate')
+            ->setMethods(array('update', 'where', 'execute'))
             ->disableOriginalConstructor()->getMock();
         $query->expects($this->any())->method('update')->will($this->returnSelf());
-        $query->expects($this->any())->method('prepare')->will($this->returnValue($stmt));
 
         $query->expr = $this->getMock('stdClass', array('eq'));
         $query->expr->expects($this->once())->method('eq');
@@ -176,13 +121,10 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
      */
     public function testDelete()
     {
-        $stmt = $this->getMock('stdClass', array('execute'));
-
-        $query = $this->getMockBuilder('ezcQuery')
-            ->setMethods(array('getQuery', 'deleteFrom', 'where', 'prepare'))
+        $query = $this->getMockBuilder('ezcQueryDelete')
+            ->setMethods(array('deleteFrom', 'where', 'execute'))
             ->disableOriginalConstructor()->getMock();
         $query->expects($this->any())->method('deleteFrom')->will($this->returnSelf());
-        $query->expects($this->any())->method('prepare')->will($this->returnValue($stmt));
 
         $query->expr = $this->getMock('stdClass', array('eq'));
         $query->expr->expects($this->once())->method('eq');
@@ -274,7 +216,7 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(123, $entity1->id);
         $entity2 = $table->find(123);
         $this->assertSame($entity2, $entity1);
-    }
+    }*/
 
     /**
      * @covers Eresus_ORM_Table::createSelectQuery
@@ -383,7 +325,7 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Eresus_ORM_Table::setTableName
-     * @covers Eresus_ORM_Table::getTableName
+     * @covers Eresus_ORM_Table::getName
      * /
     public function testSetGetTableName()
     {
@@ -400,29 +342,52 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_ORM_Table::hasColumns
      * @covers Eresus_ORM_Table::getPrimaryKey
-     * /
+     */
     public function testHasColumns()
     {
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
             setMethods(array('setTableDefinition'))->getMock();
-        $m_hasColumns = new ReflectionMethod('Eresus_ORM_Table', 'hasColumns');
-        $m_hasColumns->setAccessible(true);
-        $m_hasColumns->invoke($table, array(
+        $hasColumns = new ReflectionMethod('Eresus_ORM_Table', 'hasColumns');
+        $hasColumns->setAccessible(true);
+        $hasColumns->invoke($table, array(
             'id' => array(
                 'type' => 'integer',
                 'autoincrement' => true,
-            ),
-            'foo' => array(
-                'type' => 'string'
             )
         ));
 
-        $p_columns = new ReflectionProperty('Eresus_ORM_Table', 'columns');
-        $p_columns->setAccessible(true);
-        $this->assertEquals(2, count($p_columns->getValue($table)));
-
-        /** @var Eresus_ORM_Table $table * /
+        /** @var Eresus_ORM_Table $table */
         $this->assertEquals('id', $table->getPrimaryKey());
+    }
+
+    /**
+     * @covers Eresus_ORM_Table::hasColumns
+     * @expectedException InvalidArgumentException
+     */
+    public function testHasColumnsBadColumnName()
+    {
+        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
+            setMethods(array('setTableDefinition'))->getMock();
+        $hasColumns = new ReflectionMethod('Eresus_ORM_Table', 'hasColumns');
+        $hasColumns->setAccessible(true);
+        $hasColumns->invoke($table, array(
+            null => array()
+        ));
+    }
+
+    /**
+     * @covers Eresus_ORM_Table::hasColumns
+     * @expectedException InvalidArgumentException
+     */
+    public function testHasColumnsNoType()
+    {
+        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
+            setMethods(array('setTableDefinition'))->getMock();
+        $hasColumns = new ReflectionMethod('Eresus_ORM_Table', 'hasColumns');
+        $hasColumns->setAccessible(true);
+        $hasColumns->invoke($table, array(
+            'id' => array()
+        ));
     }
 
     /**
@@ -469,21 +434,21 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_ORM_Table::pdoFieldType
      * @expectedException InvalidArgumentException
-     * /
+     */
     public function testPdoFieldTypeNotString()
     {
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
             setMethods(array('setTableDefinition'))->getMock();
-        $m_pdoFieldType = new ReflectionMethod('Eresus_ORM_Table', 'pdoFieldType');
-        $m_pdoFieldType->setAccessible(true);
+        $pdoFieldType = new ReflectionMethod('Eresus_ORM_Table', 'pdoFieldType');
+        $pdoFieldType->setAccessible(true);
 
-        $m_pdoFieldType->invoke($table, null);
+        $pdoFieldType->invoke($table, null);
     }
 
     /**
      * @covers Eresus_ORM_Table::pdoFieldType
      * @expectedException InvalidArgumentException
-     * /
+     */
     public function testPdoFieldTypeInvalid()
     {
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
@@ -496,24 +461,24 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Eresus_ORM_Table::pdoFieldType
-     * /
+     */
     public function testPdoFieldType()
     {
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
             setMethods(array('setTableDefinition'))->getMock();
-        $m_pdoFieldType = new ReflectionMethod('Eresus_ORM_Table', 'pdoFieldType');
-        $m_pdoFieldType->setAccessible(true);
+        $pdoFieldType = new ReflectionMethod('Eresus_ORM_Table', 'pdoFieldType');
+        $pdoFieldType->setAccessible(true);
 
-        $this->assertEquals(PDO::PARAM_BOOL, $m_pdoFieldType->invoke($table, 'boolean'));
-        $this->assertEquals(PDO::PARAM_INT, $m_pdoFieldType->invoke($table, 'integer'));
-        $this->assertNull($m_pdoFieldType->invoke($table, 'float'));
-        $this->assertEquals(PDO::PARAM_STR, $m_pdoFieldType->invoke($table, 'string'));
-        $this->assertEquals(PDO::PARAM_STR, $m_pdoFieldType->invoke($table, 'timestamp'));
-        $this->assertEquals(PDO::PARAM_STR, $m_pdoFieldType->invoke($table, 'time'));
-        $this->assertEquals(PDO::PARAM_STR, $m_pdoFieldType->invoke($table, 'date'));
+        $this->assertEquals(PDO::PARAM_BOOL, $pdoFieldType->invoke($table, 'boolean'));
+        $this->assertEquals(PDO::PARAM_INT, $pdoFieldType->invoke($table, 'integer'));
+        $this->assertNull($pdoFieldType->invoke($table, 'float'));
+        $this->assertEquals(PDO::PARAM_STR, $pdoFieldType->invoke($table, 'string'));
+        $this->assertEquals(PDO::PARAM_STR, $pdoFieldType->invoke($table, 'timestamp'));
+        $this->assertEquals(PDO::PARAM_STR, $pdoFieldType->invoke($table, 'time'));
+        $this->assertEquals(PDO::PARAM_STR, $pdoFieldType->invoke($table, 'date'));
     }
 
-    /**
+    /* *
      * @covers Eresus_ORM_Table::pdoFieldValue
      * @expectedException InvalidArgumentException
      * /
@@ -529,24 +494,23 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Eresus_ORM_Table::entityFactory
-     * /
+     */
     public function testEntityFactory()
     {
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()
             ->setMethods(array('setTableDefinition', 'getEntityClass', 'getColumns'))->getMock();
 
         $table->expects($this->once())->method('getEntityClass')->
-            will($this->returnValue('Eresus_ORM_Table_Test_Plugin_Entity_Foo'));
-        $table->expects($this->once())->method('getColumns')->
-            will($this->returnValue(array(
+            will($this->returnValue('Eresus_ORM_TableTest_Plugin_Entity_Foo'));
+        $table->expects($this->once())->method('getColumns')->will($this->returnValue(array(
             'id' => array('type' => 'integer'),
             'time' => array('type' => 'time'),
             'timestamp' => array('type' => 'timestamp'),
         )));
-        $plugin = new ReflectionProperty('Eresus_ORM_Table', 'plugin');
-        $plugin->setAccessible(true);
-        $EresusPlugin = 'Eresus_Plugin';
-        $plugin->setValue($table, new $EresusPlugin);
+        $ownerProp = new ReflectionProperty('Eresus_ORM_Table', 'owner');
+        $ownerProp->setAccessible(true);
+        $ownerProp->setValue($table, $this->getMockBuilder('Eresus_Plugin')
+            ->disableOriginalConstructor()->getMock());
 
         $entityFactory = new ReflectionMethod('Eresus_ORM_Table', 'entityFactory');
         $entityFactory->setAccessible(true);
@@ -565,24 +529,43 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Eresus_ORM_Table::entityFactory
      * @see https://github.com/Eresus/ORM/issues/5
-     * /
+     */
     public function testEntityFactorySingletons()
     {
         $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
             setMethods(array('setTableDefinition', 'getEntityClass', 'getColumns'))->getMock();
         $table->expects($this->any())->method('getEntityClass')->
-            will($this->returnValue('Eresus_ORM_Table_Test_Plugin_Entity_Foo'));
+            will($this->returnValue('Eresus_ORM_TableTest_Plugin_Entity_Foo'));
         $table->expects($this->any())->method('getColumns')->
             will($this->returnValue(array('id' => array('type' => 'integer'))));
         $entityFactory = new ReflectionMethod('Eresus_ORM_Table', 'entityFactory');
         $entityFactory->setAccessible(true);
 
+        $ownerProp = new ReflectionProperty('Eresus_ORM_Table', 'owner');
+        $ownerProp->setAccessible(true);
+        $ownerProp->setValue($table, $this->getMockBuilder('Eresus_Plugin')
+            ->disableOriginalConstructor()->getMock());
+
         $entity = $entityFactory->invoke($table, array('id' => 123));
         $this->assertSame($entity, $entityFactory->invoke($table, array('id' => 123)));
-    }*/
+    }
+
+    /**
+     * @covers Eresus_ORM_Table::entityFactory
+     * @expectedException InvalidArgumentException
+     * @see https://github.com/Eresus/ORM/issues/5
+     */
+    public function testEntityFactoryNoPKey()
+    {
+        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
+            setMethods(array('setTableDefinition'))->getMock();
+        $entityFactory = new ReflectionMethod('Eresus_ORM_Table', 'entityFactory');
+        $entityFactory->setAccessible(true);
+        $entityFactory->invoke($table, array());
+    }
 }
 
-class Eresus_ORM_Table_Test_Plugin_Entity_Foo extends Eresus_ORM_Entity
+class Eresus_ORM_TableTest_Plugin_Entity_Foo extends Eresus_ORM_Entity
 {
     public function getTable()
     {

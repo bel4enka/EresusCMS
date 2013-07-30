@@ -39,27 +39,24 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
     /**
      * Создаёт таблицу
      *
-     * @param string $tableName   имя таблицы
-     * @param array  $columns     описание столбцов
-     * @param string $primaryKey  первичный ключ
-     * @param array  $indexes     описание индексов
+     * @param Eresus_ORM_Table $table
      *
      * @return void
      *
      * @since 3.01
      */
-    public function createTable($tableName, array $columns, $primaryKey, array $indexes)
+    public function createTable(Eresus_ORM_Table $table)
     {
         $db = Eresus_DB::getHandler();
-        $tableName = $db->options->tableNamePrefix . $tableName;
+        $tableName = $db->options->tableNamePrefix . $table->getName();
 
         $sql = array();
-        foreach ($columns as $name => $attrs)
+        foreach ($table->getColumns() as $name => $attrs)
         {
             $sql []= $name . ' ' . $this->getFieldDefinition($attrs);
         }
-        $sql []= 'PRIMARY KEY (' . $primaryKey . ')';
-        foreach ($indexes as $name => $params)
+        $sql []= 'PRIMARY KEY (' . $table->getPrimaryKey() . ')';
+        foreach ($table->getIndexes() as $name => $params)
         {
             $sql []= 'KEY ' . $name . ' (' . implode(', ', $params['fields']) . ')';
         }
@@ -71,16 +68,16 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
     /**
      * Удаляет таблицу
      *
-     * @param string $tableName  имя таблицы
+     * @param Eresus_ORM_Table $table
      *
      * @return void
      *
      * @since 3.01
      */
-    public function dropTable($tableName)
+    public function dropTable(Eresus_ORM_Table $table)
     {
         $db = Eresus_DB::getHandler();
-        $tableName = $db->options->tableNamePrefix . $tableName;
+        $tableName = $db->options->tableNamePrefix . $table->getName();
         $sql = "DROP TABLE $tableName";
         $db->exec($sql);
     }
@@ -117,6 +114,14 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
                 }
                 /* @var DateTime $ormValue */
                 $ormValue = $ormValue->format('Y-m-d');
+                break;
+            case 'entity':
+                if (!($ormValue instanceof Eresus_ORM_Entity))
+                {
+                    throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1,
+                        'Eresus_ORM_Entity', $ormValue);
+                }
+                $ormValue = $ormValue->getPrimaryKey();
                 break;
             case 'time':
                 if (!($ormValue instanceof DateTime))
@@ -214,6 +219,21 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
         $sql = 'DATE';
         $sql .= $this->getDefinitionForDefault($attrs);
         return $sql;
+    }
+
+    /** @noinspection PhpUnusedPrivateMethodInspection */
+    /**
+     * Возвращает SQL-объявление поля типа entity
+     *
+     * @return string  SQL
+     *
+     * @since 3.01
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    private function getDefinitionForEntity()
+    {
+        return $this->getDefinitionForInteger(array('type' => 'integer', 'unsigned' => true));
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */

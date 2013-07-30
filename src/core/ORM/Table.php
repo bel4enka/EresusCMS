@@ -45,6 +45,23 @@ abstract class Eresus_ORM_Table
     protected $owner;
 
     /**
+     * Карта соответствия типов ORM типам PDO
+     *
+     * @var array
+     * @since 3.01
+     */
+    protected $orm2pdoTypeMap = array(
+        'boolean' => PDO::PARAM_BOOL,
+        'integer' => PDO::PARAM_INT,
+        'entity' => PDO::PARAM_INT,
+        'float' => null,
+        'string' => PDO::PARAM_STR,
+        'timestamp' => PDO::PARAM_STR,
+        'time' => PDO::PARAM_STR,
+        'date' => PDO::PARAM_STR,
+    );
+
+    /**
      * Драйвер СУБД
      * @var Eresus_ORM_Driver_Abstract
      * @since 3.01
@@ -113,35 +130,19 @@ abstract class Eresus_ORM_Table
     /**
      * Конструктор
      *
-     * @param Eresus_ORM_EntityOwnerInterface $owner
      * @param Eresus_ORM_Driver_Abstract      $driver
+     * @param Eresus_ORM_EntityOwnerInterface $owner
      *
      * @return Eresus_ORM_Table
      *
      * @since 3.01
      */
-    public function __construct(Eresus_ORM_EntityOwnerInterface $owner,
-        Eresus_ORM_Driver_Abstract $driver = null)
+    public function __construct(Eresus_ORM_Driver_Abstract $driver,
+        Eresus_ORM_EntityOwnerInterface $owner)
     {
-        $this->owner = $owner;
-        if (null === $driver)
-        {
-            $driver = new Eresus_ORM_Driver_MySQL();
-        }
         $this->driver = $driver;
+        $this->owner = $owner;
         $this->setTableDefinition();
-    }
-
-    /**
-     * Возвращает драйвер СУБД
-     *
-     * @return Eresus_ORM_Driver_Abstract
-     *
-     * @since 3.01
-     */
-    public function getDriver()
-    {
-        return $this->driver;
     }
 
     /**
@@ -151,7 +152,7 @@ abstract class Eresus_ORM_Table
      *
      * @since 3.01
      */
-    public function getTableName()
+    public function getName()
     {
         return $this->tableName;
     }
@@ -222,42 +223,6 @@ abstract class Eresus_ORM_Table
     }
 
     /**
-     * Создаёт таблицу в БД
-     *
-     * @return void
-     *
-     * @since 3.01
-     */
-    public function create()
-    {
-        $columns = $this->getColumns();
-        foreach ($columns as &$attrs)
-        {
-            switch (@$attrs['type'])
-            {
-                case 'entity':
-                    $attrs['type'] = 'integer';
-                    $attrs['unsigned'] = true;
-                    break;
-            }
-        }
-        $this->getDriver()->createTable($this->getTableName(), $columns, $this->getPrimaryKey(),
-            $this->getIndexes());
-    }
-
-    /**
-     * Удаляет таблицу из БД
-     *
-     * @return void
-     *
-     * @since 3.01
-     */
-    public function drop()
-    {
-        $this->getDriver()->dropTable($this->getTableName());
-    }
-
-    /**
      * Помещает сущность в таблицу
      *
      * @param Eresus_ORM_Entity $entity
@@ -269,10 +234,10 @@ abstract class Eresus_ORM_Table
     public function persist(Eresus_ORM_Entity $entity)
     {
         $q = Eresus_DB::getHandler()->createInsertQuery();
-        $q->insertInto($this->getTableName());
+        $q->insertInto($this->getName());
         $this->bindValuesToQuery($entity, $q);
         $entity->beforeSave($q);
-        Eresus_DB::execute($q);
+        $q->execute();
         $columns = $this->getColumns();
         if (@$columns[$this->getPrimaryKey()]['autoincrement'])
         {
@@ -295,13 +260,13 @@ abstract class Eresus_ORM_Table
         $pKey = $this->getPrimaryKey();
         $columns = $this->getColumns();
         $q = Eresus_DB::getHandler()->createUpdateQuery();
-        $q->update($this->getTableName())->
+        $q->update($this->getName())->
             where($q->expr->eq($pKey,
-                $q->bindValue($entity->$pKey, null, $this->pdoFieldType(@$columns[$pKey]['type']))
+                $q->bindValue($entity->$pKey, null, $this->pdoFieldType($columns[$pKey]['type']))
             ));
         $this->bindValuesToQuery($entity, $q);
         $entity->beforeSave($q);
-        Eresus_DB::execute($q);
+        $q->execute();
         $entity->afterSave();
     }
 
@@ -319,12 +284,12 @@ abstract class Eresus_ORM_Table
         $pKey = $this->getPrimaryKey();
         $columns = $this->getColumns();
         $q = Eresus_DB::getHandler()->createDeleteQuery();
-        $q->deleteFrom($this->getTableName())->
+        $q->deleteFrom($this->getName())->
             where($q->expr->eq($pKey,
-                $q->bindValue($entity->$pKey, null, $this->pdoFieldType(@$columns[$pKey]['type']))
+                $q->bindValue($entity->$pKey, null, $this->pdoFieldType($columns[$pKey]['type']))
             ));
         $entity->beforeDelete($q);
-        Eresus_DB::execute($q);
+        $q->execute();
         $entity->afterDelete();
     }
 
@@ -339,8 +304,8 @@ abstract class Eresus_ORM_Table
      */
     public function count(ezcQuerySelect $query = null)
     {
-        $q = $query ? $query : $this->createCountQuery();
-        $raw = Eresus_DB::fetch($q);
+        $query = $query ?: $this->createCountQuery();
+        $raw = $query->fetch();
         if ($raw)
         {
             return $raw['record_count'];
@@ -385,7 +350,7 @@ abstract class Eresus_ORM_Table
         $columns = $this->getColumns();
         $q = $this->createSelectQuery();
         $q->where($q->expr->eq($pKey,
-            $q->bindValue($id, null, $this->pdoFieldType(@$columns[$pKey]['type']))));
+            $q->bindValue($id, null, $this->pdoFieldType($columns[$pKey]['type']))));
         $entity = $this->loadOneFromQuery($q);
 
         if (null !== $entity)
@@ -407,16 +372,16 @@ abstract class Eresus_ORM_Table
     public function createSelectQuery($fill = true)
     {
         $q = Eresus_DB::getHandler()->createSelectQuery();
-        $q->from($this->getTableName());
+        $q->from($this->getName());
         if ($fill)
         {
-            $columns = $this->getColumns();
             $q->select('*');
-            if (count($this->ordering))
+            $columns = $this->getColumns();
+            if (count($this->ordering) > 0)
             {
                 foreach ($this->ordering as $orderBy)
                 {
-                    call_user_func_array(array($q, 'orderBy'), $orderBy);
+                    $q->orderBy($orderBy[0], $orderBy[1]);
                 }
             }
             elseif (isset($columns['position']))
@@ -438,7 +403,7 @@ abstract class Eresus_ORM_Table
     {
         $q = Eresus_DB::getHandler()->createSelectQuery();
         $q->select($q->alias($q->expr->count('*'), 'record_count'));
-        $q->from($this->getTableName());
+        $q->from($this->getName());
         $q->limit(1);
         return $q;
     }
@@ -460,7 +425,7 @@ abstract class Eresus_ORM_Table
         {
             $query->limit($limit, $offset);
         }
-        $raw = Eresus_DB::fetchAll($query);
+        $raw = $query->fetchAll();
         $items = array();
         if ($raw)
         {
@@ -484,7 +449,7 @@ abstract class Eresus_ORM_Table
     public function loadOneFromQuery(ezcQuerySelect $query)
     {
         $query->limit(1);
-        $attrs = Eresus_DB::fetch($query);
+        $attrs = $query->fetch();
         if ($attrs)
         {
             return $this->entityFactory($attrs);
@@ -550,12 +515,28 @@ abstract class Eresus_ORM_Table
      *
      * @param array $columns
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
      *
      * @since 3.01
      */
     protected function hasColumns(array $columns)
     {
+        foreach ($columns as $name => $column)
+        {
+            if (!is_string($name) || !preg_match('/^[a-z_]+$/', $name))
+            {
+                throw new InvalidArgumentException(sprintf(
+                    'Column name must be a non empty string consisted of "a-z" or "_", got "%s"',
+                    $name));
+            }
+            if (!array_key_exists('type', $column))
+            {
+                throw new InvalidArgumentException(
+                    sprintf('No "type" element in "%s" definition', $name));
+            }
+        }
         $this->columns = $columns;
         reset($columns);
         $this->primaryKey = key($columns);
@@ -632,28 +613,11 @@ abstract class Eresus_ORM_Table
                 $ormFieldType);
         }
 
-        switch ($ormFieldType)
+        if (!array_key_exists($ormFieldType, $this->orm2pdoTypeMap))
         {
-            case 'boolean':
-                $type = PDO::PARAM_BOOL;
-                break;
-            case 'integer':
-            case 'entity':
-                $type = PDO::PARAM_INT;
-                break;
-            case 'float':
-                $type = null;
-                break;
-            case 'string':
-            case 'timestamp':
-            case 'time':
-            case 'date':
-                $type = PDO::PARAM_STR;
-                break;
-            default:
-                throw new InvalidArgumentException('Unknown field type: ' . $ormFieldType);
+            throw new InvalidArgumentException('Unknown field type: ' . $ormFieldType);
         }
-        return $type;
+        return $this->orm2pdoTypeMap[$ormFieldType];
     }
 
     /**
@@ -672,18 +636,8 @@ abstract class Eresus_ORM_Table
     {
         if (!is_string($ormFieldType))
         {
-            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string',
+            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 2, 'string',
                 $ormFieldType);
-        }
-
-        switch ($ormFieldType)
-        {
-            case 'entity':
-                $ormFieldType = 'integer';
-                if (is_object($ormValue))
-                {
-                    $ormValue = $ormValue->{$this->getPrimaryKey()};
-                }
         }
 
         return $this->getDriver()->pdoFieldValue($ormValue, $ormFieldType);
@@ -716,7 +670,7 @@ abstract class Eresus_ORM_Table
         $entityClass = $this->getEntityClass();
         foreach ($this->getColumns() as $name => $attrs)
         {
-            switch (@$attrs['type'])
+            switch ($attrs['type'])
             {
                 case 'date':
                 case 'time':
@@ -743,8 +697,8 @@ abstract class Eresus_ORM_Table
         /** @var ezcQueryInsert|ezcQueryUpdate $query */
         foreach ($this->getColumns() as $name => $attrs)
         {
-            $type = $this->pdoFieldType(@$attrs['type']);
-            $value = $this->pdoFieldValue($entity->getProperty($name), @$attrs['type']);
+            $type = $this->pdoFieldType($attrs['type']);
+            $value = $this->pdoFieldValue($entity->getProperty($name), $attrs['type']);
             $query->set($name, $query->bindValue($value, ":$name", $type));
         }
     }

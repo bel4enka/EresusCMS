@@ -39,27 +39,24 @@ abstract class Eresus_ORM_Driver_Abstract
     /**
      * Создаёт таблицу
      *
-     * @param string $tableName   имя таблицы
-     * @param array  $columns     описание столбцов
-     * @param string $primaryKey  первичный ключ
-     * @param array  $indexes     описание индексов
+     * @param Eresus_ORM_Table $table
      *
      * @return void
      *
      * @since 3.01
      */
-    abstract public function createTable($tableName, array $columns, $primaryKey, array $indexes);
+    abstract public function createTable(Eresus_ORM_Table $table);
 
     /**
      * Удаляет таблицу
      *
-     * @param string $tableName  имя таблицы
+     * @param Eresus_ORM_Table $table
      *
      * @return void
      *
      * @since 3.01
      */
-    abstract public function dropTable($tableName);
+    abstract public function dropTable(Eresus_ORM_Table $table);
 
     /**
      * Преобразует значение поля ORM в значение PDO

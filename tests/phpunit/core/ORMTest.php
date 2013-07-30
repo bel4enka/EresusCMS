@@ -48,6 +48,7 @@ class Eresus_ORMTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('getOrmClassPrefix'))->getMock();
         $plugin->expects($this->any())->method('getOrmClassPrefix')
             ->will($this->returnValue("Plugin_{$uid}"));
+        Eresus_ORM::setDriver(new Eresus_ORM_Driver_MySQL());
         /** @var Eresus_Plugin $plugin */
         $this->assertInstanceOf("Plugin_{$uid}_Entity_Table_{$uid}",
             Eresus_ORM::getTable($plugin, $uid));

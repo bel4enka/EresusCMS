@@ -55,9 +55,18 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $handler->options->tableNamePrefix = 'prefix_';
         Eresus_DB::setHandler($handler);
 
+        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()
+            ->setMethods(array('setTableDefinition', 'getName', 'getColumns', 'getIndexes'))
+            ->getMock();
+        $table->expects($this->any())->method('getName')->will($this->returnValue('foo'));
+        $table->expects($this->any())->method('getColumns')
+            ->will($this->returnValue(array('f1' => array('type' => 'integer'))));
+        $table->expects($this->any())->method('getIndexes')
+            ->will($this->returnValue(array('idx1' => array('fields' => array('f1')))));
+
         /** @var Eresus_ORM_Driver_MySQL $driver */
-        $driver->createTable('foo', array('f1' => array('type' => 'integer')), 'id',
-            array('idx1' => array('fields' => array('f1'))));
+        /** @var Eresus_ORM_Table $table */
+        $driver->createTable($table);
     }
 
     /**
@@ -74,7 +83,12 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $handler->options->tableNamePrefix = 'prefix_';
         Eresus_DB::setHandler($handler);
 
-        $driver->dropTable('foo');
+        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()
+            ->setMethods(array('setTableDefinition', 'getName'))->getMock();
+        $table->expects($this->any())->method('getName')->will($this->returnValue('foo'));
+        /** @var Eresus_ORM_Driver_MySQL $driver */
+        /** @var Eresus_ORM_Table $table */
+        $driver->dropTable($table);
     }
 
     /**
@@ -93,7 +107,7 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
      */
     public function pdoFieldValueInvalidDataProvider()
     {
-        return array(array('timestamp'), array('date'), array('time'));
+        return array(array('timestamp'), array('date'), array('time'), array('entity'));
     }
 
     /**
@@ -112,6 +126,10 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('12:34:56', $driver->pdoFieldValue($datetime, 'time'));
         $this->assertSame(0, $driver->pdoFieldValue(false, 'boolean'));
         $this->assertNull($driver->pdoFieldValue(null, 'time'));
+        $entity = $this->getMockBuilder('Eresus_ORM_Entity')->disableOriginalConstructor()
+            ->setMethods(array('getPrimaryKey'))->getMock();
+        $entity->expects($this->any())->method('getPrimaryKey')->will($this->returnValue(123));
+        $this->assertEquals(123, $driver->pdoFieldValue($entity, 'entity'));
     }
 
     /**
@@ -201,6 +219,18 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $driver = new Eresus_ORM_Driver_MySQL();
 
         $this->assertEquals('DATE', $method->invoke($driver, array()));
+    }
+
+    /**
+     * @covers Eresus_ORM_Driver_MySQL::getDefinitionForEntity
+     */
+    public function testGetDefinitionForEntity()
+    {
+        $method = new ReflectionMethod('Eresus_ORM_Driver_MySQL', 'getDefinitionForEntity');
+        $method->setAccessible(true);
+        $driver = new Eresus_ORM_Driver_MySQL();
+
+        $this->assertEquals('INT(10) UNSIGNED', $method->invoke($driver, array()));
     }
 
     /**
