@@ -425,11 +425,10 @@ class MySQL
 			->where($condition)
 			->limit(1);
 
-		$item = Eresus_DB::fetch($q);
+		$item = $q->fetch();
 
 		return $item;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Обновляет одну запись
