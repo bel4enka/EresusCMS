@@ -532,5 +532,35 @@ abstract class ezcQuery
      * @return string
      */
     abstract public function getQuery();
+
+    /**
+     * Execute query
+     *
+     * @throws Eresus_DB_Exception_QueryFailed
+     *
+     * @return PDOStatement
+     */
+    public function execute()
+    {
+        try
+        {
+            $stmt = $this->prepare();
+            if (LOG_DEBUG == Eresus_Kernel::$logLevel)
+            {
+                $insider = new DBQueryInsider;
+                $this->doBind($insider);
+                $s = $insider->subst($this);
+                Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $s);
+            }
+            $stmt->execute();
+
+        }
+        catch (Exception $e)
+        {
+            throw new Eresus_DB_Exception_QueryFailed($this, null, $e);
+        }
+
+        return $stmt;
+    }
 }
-?>
+

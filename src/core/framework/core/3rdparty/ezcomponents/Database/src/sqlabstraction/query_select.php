@@ -896,6 +896,30 @@ class ezcQuerySelect extends ezcQuery
         return $query;
     }
 
+    /**
+     * Fetch row from DB response
+     *
+     * @throws Eresus_DB_Exception_QueryFailed
+     *
+     * @return array
+     */
+    public function fetch()
+    {
+        $stmt = $this->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get response rows
+     *
+     * @throws Eresus_DB_Exception_QueryFailed
+     *
+     * @return array
+     */
+    public function fetchAll()
+    {
+        $stmt = $this->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
-?>
