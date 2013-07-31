@@ -33,7 +33,7 @@
  *
  * @package Eresus
  */
-class Eresus_CMS extends Eresus_Application
+class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInterface
 {
     /**
      * Название CMS
@@ -213,6 +213,18 @@ class Eresus_CMS extends Eresus_Application
     public function getPage()
     {
         return $this->page;
+    }
+
+    /**
+     * Возвращает префикс для классов ORM
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getOrmClassPrefix()
+    {
+        return 'Eresus';
     }
 
     /**

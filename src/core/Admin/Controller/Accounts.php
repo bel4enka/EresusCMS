@@ -51,7 +51,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
      *
      * @param Eresus_CMS_Request $request
      *
-     * @return string
+     * @return string|Eresus_HTTP_Response
      */
     public function getHtml(Eresus_CMS_Request $request)
     {
@@ -93,7 +93,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
             }
             elseif ($args->get('toggle'))
             {
-                $this->toggle();
+                $result = $this->toggleAction($request);
             }
             elseif ($args->get('delete'))
             {
@@ -163,14 +163,26 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
     }
 
     /**
+     * Переключает активность учётной записи
      *
+     * @param Eresus_CMS_Request $request
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
+     * @return string|Eresus_HTTP_Response
      */
-    public function toggle()
+    private function toggleAction(Eresus_CMS_Request $request)
     {
-        $item = $this->accounts->get(arg('toggle', 'int'));
-        $item['active'] = !$item['active'];
-        $this->accounts->update($item);
-        HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+        $table = Eresus_ORM::getTable(Eresus_Kernel::app(), 'Account');
+        /** @var Eresus_Entity_Account $account */
+        $account = $table->find($request->query->getInt('toggle'));
+        if (null === $account)
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+        $account->active = !$account->active;
+        $table->update($account);
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
     /**
