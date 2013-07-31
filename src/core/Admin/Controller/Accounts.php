@@ -38,16 +38,93 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
 
     public $access = ADMIN;
 
-    private $itemsPerPage = 30;
-
-    private $pagesDesc = false;
-
     /**
      * Конструктор
      */
     public function __construct()
     {
         $this->accounts = new EresusAccounts();
+    }
+
+    /**
+     * Возвращает разметку
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return string
+     */
+    public function getHtml(Eresus_CMS_Request $request)
+    {
+        $result = '';
+        $granted = false;
+
+        $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
+
+        if (UserRights($this->access))
+        {
+            $granted = true;
+        }
+        else
+        {
+            if ($args->get('id') == Eresus_CMS::getLegacyKernel()->user['id'])
+            {
+                if (is_null($args->get('password'))
+                    || ($args->get('password') == Eresus_CMS::getLegacyKernel()->user['id']))
+                {
+                    $granted = true;
+                }
+                if (is_null($args->get('update'))
+                    || ($args->get('update') == Eresus_CMS::getLegacyKernel()->user['id']))
+                {
+                    $granted = true;
+                }
+            }
+        }
+        if ($granted)
+        {
+            if (null !== $args->get('update'))
+            {
+                $this->update(null);
+            }
+            elseif ($args->get('password')
+                && (!$args->get('action') || $args->get('action') != 'login'))
+            {
+                $this->password();
+            }
+            elseif ($args->get('toggle'))
+            {
+                $this->toggle();
+            }
+            elseif ($args->get('delete'))
+            {
+                $this->delete(null);
+            }
+            elseif ($args->get('id'))
+            {
+                $result = $this->edit();
+            }
+            elseif ($args->get('action'))
+            {
+                switch ($args->get('action'))
+                {
+                    case 'create':
+                        $result = $this->create();
+                        break;
+                    case 'insert':
+                        $this->insert();
+                        break;
+                }
+            }
+            else
+            {
+                $result = $this->indexAction();
+            }
+            return $result;
+        }
+        else
+        {
+            return '';
+        }
     }
 
     /**
@@ -64,54 +141,6 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
             return false;
         }
         return true;
-    }
-
-    /**
-     * @param $new
-     * @param null $old
-     * @return string
-     */
-    public function notifyMessage($new, $old=null)
-    {
-        $result = '';
-        if (is_null($old))
-        {
-            $result .= admUsersName.": ".$new['name']."\n";
-            $result .= admUsersLogin.": ".$new['login']."\n";
-            $result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$new['access'])."\n";
-            $result .= admUsersMail.": ".$new['mail']."\n";
-        }
-        else
-        {
-            $result = "ID ".$new['id']." - <strong>".$old['name']."</strong>\n".admChanges.":\n";
-            if ($new['name'] != $old['name'])
-            {
-                $result .= admUsersName.": ".$old['name']." &rarr; ".$new['name']."\n";
-            }
-            if ($new['login'] != $old['login'])
-            {
-                $result .= admUsersLogin.": ".$old['login']." &rarr; ".$new['login']."\n";
-            }
-            if ($new['active'] != $old['active'])
-            {
-                $result .= admUsersAccountState.": ".($old['active']?strYes:strNo)." &rarr; ".
-                    ($new['active']?strYes:strNo)."\n";
-            }
-            if ($new['loginErrors'] != $old['loginErrors'])
-            {
-                $result .= admUsersLoginErrors.": ".$old['loginErrors']." &rarr; ".$new['loginErrors']."\n";
-            }
-            if ($new['access'] != $old['access'])
-            {
-                $result .= admAccessLevel.": ".constant('ACCESSLEVEL'.$old['access'])." &rarr; ".
-                    constant('ACCESSLEVEL'.$new['access'])."\n";
-            }
-            if ($new['mail'] != $old['mail'])
-            {
-                $result .= admUsersMail.": ".$old['mail']." &rarr; ".$new['mail']."\n";
-            }
-        }
-        return $result;
     }
 
     /**
@@ -337,125 +366,56 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
         return $result;
     }
 
-
     /**
-     * Возвращает разметку
-     *
-     * @param Eresus_CMS_Request $request
+     * Список пользователей
      *
      * @return string
      */
-    public function getHtml(Eresus_CMS_Request $request)
+    private function indexAction()
     {
-        $result = '';
-        $granted = false;
-
-        $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
-
-        if (UserRights($this->access))
-        {
-            $granted = true;
-        }
-        else
-        {
-            if ($args->get('id') == Eresus_CMS::getLegacyKernel()->user['id'])
-            {
-                if (is_null($args->get('password'))
-                    || ($args->get('password') == Eresus_CMS::getLegacyKernel()->user['id']))
-                {
-                    $granted = true;
-                }
-                if (is_null($args->get('update'))
-                    || ($args->get('update') == Eresus_CMS::getLegacyKernel()->user['id']))
-                {
-                    $granted = true;
-                }
-            }
-        }
-        if ($granted)
-        {
-            if (null !== $args->get('update'))
-            {
-                $this->update(null);
-            }
-            elseif ($args->get('password')
-                && (!$args->get('action') || $args->get('action') != 'login'))
-            {
-                $this->password();
-            }
-            elseif ($args->get('toggle'))
-            {
-                $this->toggle();
-            }
-            elseif ($args->get('delete'))
-            {
-                $this->delete(null);
-            }
-            elseif ($args->get('id'))
-            {
-                $result = $this->edit();
-            }
-            elseif ($args->get('action'))
-            {
-                switch ($args->get('action'))
-                {
-                    case 'create':
-                        $result = $this->create();
-                        break;
-                    case 'insert':
-                        $this->insert();
-                        break;
-                }
-            }
-            else
-            {
-                $table = array (
-                    'name' => 'users',
-                    'key'=>'id',
-                    'itemsPerPage' => 20,
-                    'columns' => array(
-                        array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
-                        array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
-                        array('name' => 'access', 'caption' => admUsersAccessLevelShort,
-                            'align' => 'center',
-                            'width' => '70px', 'replace' => array (
-                            '1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
-                            '2' => '<span style="font-weight: bold; color: red;">admin</span>',
-                            '3' => '<span style="font-weight: bold; color: blue;">editor</span>',
-                            '4' => 'user'
-                        )),
-                        array('name' => 'login', 'caption' => admUsersLogin, 'align' => 'left'),
-                        array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center',
-                            'macros'=>true,
-                            'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
-                        array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort,
-                            'align' => 'center',
-                            'width' => '140px'),
-                        array('name' => 'loginErrors', 'caption' => admUsersLoginErrorsShort,
-                            'align' => 'center', 'replace' => array (
-                            '0' => '',
-                        )),
-                    ),
-                    'controls' => array (
-                        'delete' => 'check_for_root',
-                        'edit' => 'check_for_edit',
-                        'toggle' => 'check_for_root',
-                    ),
-                    'tabs' => array(
-                        'width'=>'180px',
-                        'items'=>array(
-                            array('caption'=>admUsersCreate, 'name'=>'action', 'value'=>'create')
-                        )
-                    )
-                );
-                $result = Eresus_Kernel::app()->getPage()->renderTable($table);
-            }
-            return $result;
-        }
-        else
-        {
-            return '';
-        }
+        $table = array(
+            'name' => 'users',
+            'key' => 'id',
+            'itemsPerPage' => 20,
+            'columns' => array(
+                array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
+                array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
+                array('name' => 'access', 'caption' => admUsersAccessLevelShort,
+                    'align' => 'center',
+                    'width' => '70px', 'replace' => array(
+                    '1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
+                    '2' => '<span style="font-weight: bold; color: red;">admin</span>',
+                    '3' => '<span style="font-weight: bold; color: blue;">editor</span>',
+                    '4' => 'user'
+                )),
+                array('name' => 'login', 'caption' => admUsersLogin, 'align' => 'left'),
+                array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center',
+                    'macros' => true,
+                    'value' => '<a href="mailto:$(mail)">$(mail)</a>'),
+                array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort,
+                    'align' => 'center',
+                    'width' => '140px'),
+                array('name' => 'loginErrors', 'caption' => admUsersLoginErrorsShort,
+                    'align' => 'center', 'replace' => array(
+                    '0' => '',
+                )),
+            ),
+            'controls' => array(
+                'delete' => 'check_for_root',
+                'edit' => 'check_for_edit',
+                'toggle' => 'check_for_root',
+            ),
+            'tabs' => array(
+                'width' => '180px',
+                'items' => array(
+                    array('caption' => admUsersCreate, 'name' => 'action', 'value' => 'create')
+                )
+            )
+        );
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $html = $page->renderTable($table);
+        return $html;
     }
 }
 
