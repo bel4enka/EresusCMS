@@ -32,14 +32,7 @@
  * @package Eresus
  * @since 3.01
  */
-interface Eresus_Admin_Controller_Content_Interface
+interface Eresus_Admin_Controller_Content_Interface extends Eresus_Admin_Controller_Interface
 {
-    /**
-     * Возвращает разметку области контента
-     *
-     * @return string
-     * @since 3.01
-     */
-    public function getHtml();
 }
 

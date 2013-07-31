@@ -30,8 +30,9 @@
  * Управление пользователями
  *
  * @package Eresus
+ * @internal
  */
-class TUsers
+class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interface
 {
     private $accounts;
 
@@ -43,15 +44,17 @@ class TUsers
 
     /**
      * Конструктор
-     *
-     * @return TUsers
      */
-    function __construct()
+    public function __construct()
     {
         $this->accounts = new EresusAccounts();
     }
 
-    function checkMail($mail)
+    /**
+     * @param $mail
+     * @return bool
+     */
+    public function checkMail($mail)
     {
         $host = substr($mail, strpos($mail, '@')+1);
         $ip = gethostbyname($host);
@@ -63,7 +66,12 @@ class TUsers
         return true;
     }
 
-    function notifyMessage($new, $old=null)
+    /**
+     * @param $new
+     * @param null $old
+     * @return string
+     */
+    public function notifyMessage($new, $old=null)
     {
         $result = '';
         if (is_null($old))
@@ -106,25 +114,35 @@ class TUsers
         return $result;
     }
 
-    function check_for_root($item)
+    /**
+     * @param $item
+     * @return bool
+     */
+    public function check_for_root($item)
     {
         return ($item['access'] != ROOT);
     }
 
-    function check_for_edit($item)
+    /**
+     * @param $item
+     * @return bool
+     */
+    public function check_for_edit($item)
     {
         return (($item['access'] != ROOT)||
             (Eresus_CMS::getLegacyKernel()->user['id'] == $item['id'])) && UserRights(ADMIN);
     }
 
-    function toggle()
+    /**
+     *
+     */
+    public function toggle()
     {
         $item = $this->accounts->get(arg('toggle', 'int'));
         $item['active'] = !$item['active'];
         $this->accounts->update($item);
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
     }
-
 
     /**
      * @param mixed $dummy  Используется для совместимости с родительским методом
@@ -154,7 +172,7 @@ class TUsers
     /**
      * Создание учётной записи
      */
-    function insert()
+    public function insert()
     {
         # Получение данных
         $item = array(
@@ -220,7 +238,10 @@ class TUsers
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
-    function password()
+    /**
+     *
+     */
+    public function password()
     {
         $item = $this->accounts->get(arg('password', 'int'));
         if (arg('pswd1') == arg('pswd2'))
@@ -231,7 +252,10 @@ class TUsers
         HTTP::redirect(arg('submitURL'));
     }
 
-    function edit()
+    /**
+     * @return string
+     */
+    public function edit()
     {
         $item = Eresus_CMS::getLegacyKernel()->db->selectItem('users', "`id`='".arg('id')."'");
         $form = array(
@@ -278,7 +302,10 @@ class TUsers
         return $result;
     }
 
-    function create()
+    /**
+     * @return mixed
+     */
+    public function create()
     {
         restoreRequest();
         $form = array(
@@ -312,27 +339,34 @@ class TUsers
 
 
     /**
+     * Возвращает разметку
+     *
+     * @param Eresus_CMS_Request $request
      *
      * @return string
      */
-    public function adminRender()
+    public function getHtml(Eresus_CMS_Request $request)
     {
         $result = '';
-        $request = Eresus_CMS::getLegacyKernel()->request;
         $granted = false;
+
+        $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
+
         if (UserRights($this->access))
         {
             $granted = true;
         }
         else
         {
-            if (arg('id') == Eresus_CMS::getLegacyKernel()->user['id'])
+            if ($args->get('id') == Eresus_CMS::getLegacyKernel()->user['id'])
             {
-                if (!arg('password') || (arg('password') == Eresus_CMS::getLegacyKernel()->user['id']))
+                if (is_null($args->get('password'))
+                    || ($args->get('password') == Eresus_CMS::getLegacyKernel()->user['id']))
                 {
                     $granted = true;
                 }
-                if (!arg('update') || (arg('update') == Eresus_CMS::getLegacyKernel()->user['id']))
+                if (is_null($args->get('update'))
+                    || ($args->get('update') == Eresus_CMS::getLegacyKernel()->user['id']))
                 {
                     $granted = true;
                 }
@@ -340,30 +374,30 @@ class TUsers
         }
         if ($granted)
         {
-            if (arg('update'))
+            if (null !== $args->get('update'))
             {
                 $this->update(null);
             }
-            elseif (isset($request['arg']['password']) && (!isset($request['arg']['action']) ||
-                ($request['arg']['action'] != 'login')))
+            elseif ($args->get('password')
+                && (!$args->get('action') || $args->get('action') != 'login'))
             {
                 $this->password();
             }
-            elseif (isset($request['arg']['toggle']))
+            elseif ($args->get('toggle'))
             {
                 $this->toggle();
             }
-            elseif (isset($request['arg']['delete']))
+            elseif ($args->get('delete'))
             {
                 $this->delete(null);
             }
-            elseif (isset($request['arg']['id']))
+            elseif ($args->get('id'))
             {
                 $result = $this->edit();
             }
-            elseif (isset($request['arg']['action']))
+            elseif ($args->get('action'))
             {
-                switch (arg('action'))
+                switch ($args->get('action'))
                 {
                     case 'create':
                         $result = $this->create();
@@ -382,7 +416,8 @@ class TUsers
                     'columns' => array(
                         array('name' => 'id', 'caption' => 'ID', 'align' => 'right', 'width' => '40px'),
                         array('name' => 'name', 'caption' => admUsersName, 'align' => 'left'),
-                        array('name' => 'access', 'caption' => admUsersAccessLevelShort, 'align' => 'center',
+                        array('name' => 'access', 'caption' => admUsersAccessLevelShort,
+                            'align' => 'center',
                             'width' => '70px', 'replace' => array (
                             '1' => '<span style="font-weight: bold; color: red;">ROOT</span>',
                             '2' => '<span style="font-weight: bold; color: red;">admin</span>',
@@ -390,9 +425,11 @@ class TUsers
                             '4' => 'user'
                         )),
                         array('name' => 'login', 'caption' => admUsersLogin, 'align' => 'left'),
-                        array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center', 'macros'=>true,
+                        array('name' => 'mail', 'caption' => admUsersMail, 'align' => 'center',
+                            'macros'=>true,
                             'value'=>'<a href="mailto:$(mail)">$(mail)</a>'),
-                        array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort, 'align' => 'center',
+                        array('name' => 'lastVisit', 'caption' => admUsersLastVisitShort,
+                            'align' => 'center',
                             'width' => '140px'),
                         array('name' => 'loginErrors', 'caption' => admUsersLoginErrorsShort,
                             'align' => 'center', 'replace' => array (
@@ -420,6 +457,5 @@ class TUsers
             return '';
         }
     }
-    //-----------------------------------------------------------------------------
 }
 

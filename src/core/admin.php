@@ -814,7 +814,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 if (
                     isset($table['controls']['delete']) &&
                     (
-                        empty($table['controls']['delete']) ||
+                        empty($table['controls']['delete']) || null === $this->module ||
                         $this->module->$table['controls']['delete']($item)
                     )
                 )
@@ -829,7 +829,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 if (
                     isset($table['controls']['edit']) &&
                     (
-                        empty($table['controls']['edit']) ||
+                        empty($table['controls']['edit']) || null === $this->module ||
                         $this->module->$table['controls']['edit']($item)
                     )
                 )
@@ -843,7 +843,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 if (
                     isset($table['controls']['position']) &&
                     (
-                        empty($table['controls']['position']) ||
+                        empty($table['controls']['position']) || null === $this->module ||
                         $this->module->$table['controls']['position']($item)
                     ) &&
                     $sortMode == 'position'
@@ -861,7 +861,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 if (
                     isset($table['controls']['toggle']) &&
                     (
-                        empty($table['controls']['toggle']) ||
+                        empty($table['controls']['toggle']) || null === $this->module ||
                         $this->module->$table['controls']['toggle']($item)
                     )
                 )
@@ -977,14 +977,29 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         return $result;
     }
 
-    private function renderContent()
+    /**
+     * @param Eresus_CMS_Request $request
+     *
+     * @return string
+     */
+    private function renderContent(Eresus_CMS_Request $request)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
+
+        // TODO: Это временное решение до заврешения выноса кода в контроллеры
+        $routes = array(
+            'users' => 'Eresus_Admin_Controller_Accounts'
+        );
 
         if (arg('mod'))
         {
             $module = arg('mod', '/[^\w-]/');
-            if (file_exists(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php"))
+            if (array_key_exists($module, $routes))
+            {
+                $controller = new $routes[$module];
+                $this->module = $controller;
+            }
+            elseif (file_exists(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php"))
             {
                 include Eresus_CMS::getLegacyKernel()->froot . "core/$module.php";
                 $class = "T$module";
@@ -1007,7 +1022,11 @@ class TAdminUI extends Eresus_CMS_Page_Admin
              */
             if (is_object($this->module))
             {
-                if (method_exists($this->module, 'adminRender'))
+                if (isset($controller) &&  $controller instanceof Eresus_Admin_Controller_Interface)
+                {
+                    $result = $controller->getHtml($request);
+                }
+                elseif (method_exists($this->module, 'adminRender'))
                 {
                     try
                     {
@@ -1242,22 +1261,26 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     /**
      * Отправляет созданную страницу пользователю
      *
+     * @param Eresus_CMS_Request $request
      * @return void
      */
-    public function render()
+    public function render(Eresus_CMS_Request $request)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-        $this->renderUI();
+        $this->renderUI($request);
     }
 
     /**
      * Отрисовка интерфейса
+     *
+     * @param Eresus_CMS_Request $request
+     *
      * @return void
      */
-    private function renderUI()
+    private function renderUI(Eresus_CMS_Request $request)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-        $response = $this->renderContent();
+        $response = $this->renderContent($request);
 
         if (!($response instanceof Eresus_HTTP_Response))
         {
