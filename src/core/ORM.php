@@ -104,7 +104,7 @@ class Eresus_ORM
         $className = $owner->getOrmClassPrefix() . '_Entity_Table_' . $entityName;
         if (!isset(self::$tables[$className]))
         {
-            self::$tables[$className] = new $className(self::$driver, $owner);
+            self::$tables[$className] = new $className(self::getDriver(), $owner);
         }
         return self::$tables[$className];
     }

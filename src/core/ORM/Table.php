@@ -525,7 +525,7 @@ abstract class Eresus_ORM_Table
     {
         foreach ($columns as $name => $column)
         {
-            if (!is_string($name) || !preg_match('/^[a-z_]+$/', $name))
+            if (!is_string($name) || !preg_match('/^[a-z_]+$/i', $name))
             {
                 throw new InvalidArgumentException(sprintf(
                     'Column name must be a non empty string consisted of "a-z" or "_", got "%s"',
@@ -640,7 +640,7 @@ abstract class Eresus_ORM_Table
                 $ormFieldType);
         }
 
-        return $this->getDriver()->pdoFieldValue($ormValue, $ormFieldType);
+        return $this->driver->pdoFieldValue($ormValue, $ormFieldType);
     }
 
     /**
