@@ -135,6 +135,19 @@ class Eresus_HTTP_Parameters
     }
 
     /**
+     * @param string $name
+     * @param int     $default
+     *
+     * @return int|null
+     * @since 3.01
+     */
+    public function getInt($name, $default = null)
+    {
+        $value = $this->get($name, $default);
+        return null === $value ? null : intval($value);
+    }
+
+    /**
      * Задаёт значение параметра
      *
      * @param string $name   имя параметра
