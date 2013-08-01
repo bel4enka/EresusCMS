@@ -110,9 +110,6 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
                     case 'add':
                         $result = $this->addAction($request);
                         break;
-                    case 'insert':
-                        $this->insert();
-                        break;
                 }
             }
             else
@@ -209,61 +206,6 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
         };
         HTTP::redirect(arg('submitURL'));
     }
-
-    /**
-     * Создание учётной записи
-     */
-    public function insert()
-    {
-        # Получение данных
-        $item = array(
-            'name' => arg('name', 'dbsafe'),
-            'login' => arg('login', '/[^a-z0-9_]/'),
-            'access' => arg('access', 'int'),
-            'hash' => Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd1')),
-            'mail' => arg('mail', 'dbsafe'),
-        );
-        # Проверка входных данных
-        $error = false;
-        if (empty($item['name']))
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersNameInvalid);
-            $error = true;
-        }
-        if (empty($item['login']))
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersLoginInvalid);
-            $error = true;
-        }
-        if ($item['access'] <= ROOT)
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage('Invalid access level!');
-            $error = true;
-        }
-        if ($item['hash'] != Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd2')))
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersConfirmInvalid);
-            $error = true;
-        }
-        # Проверка данных на уникальность
-        $check = $this->accounts->get("`login` = '{$item['login']}'");
-        if ($check)
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage(admUsersLoginExists);
-            $error = true;
-        }
-        if ($error)
-        {
-            saveRequest();
-            HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
-        }
-        if (!$this->accounts->add($item))
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage('Error creating user account');
-        }
-        HTTP::redirect(arg('submitURL'));
-    }
-
 
     /**
      * @param mixed $dummy  Используется для совместимости с родительским методом
