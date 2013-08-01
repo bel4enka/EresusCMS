@@ -46,10 +46,9 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
         $controller = $this->getMockBuilder('Eresus_Plugin_Controller_Admin_Content')
             ->disableOriginalConstructor()->setMethods(array('actionIndex'))->getMock();
         $controller->expects($this->once())->method('actionIndex');
-        $GLOBALS['Eresus'] = new stdClass();
-        $GLOBALS['Eresus']->request = array('arg' => array());
+        $request = new Eresus_CMS_Request();
         /** @var Eresus_Plugin_Controller_Admin_Content $controller */
-        $controller->getHtml();
+        $controller->getHtml($request);
     }
 
     /**
@@ -62,10 +61,9 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()->getMock();
         $controller = $this->getMockForAbstractClass('Eresus_Plugin_Controller_Admin_Content',
             array($plugin));
-        $GLOBALS['Eresus'] = new stdClass();
-        $GLOBALS['Eresus']->request = array('arg' => array());
+        $request = new Eresus_CMS_Request();
         /** @var Eresus_Plugin_Controller_Admin_Content $controller */
-        $controller->getHtml();
+        $controller->getHtml($request);
     }
 }
 
