@@ -107,8 +107,8 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
             {
                 switch ($args->get('action'))
                 {
-                    case 'create':
-                        $result = $this->create();
+                    case 'add':
+                        $result = $this->addAction($request);
                         break;
                     case 'insert':
                         $this->insert();
@@ -344,37 +344,66 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
     }
 
     /**
-     * @return mixed
+     * Добавление учётной записи
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return string|Eresus_HTTP_Response
      */
-    public function create()
+    private function addAction(Eresus_CMS_Request $request)
     {
-        restoreRequest();
+        if ($request->getMethod() == 'POST')
+        {
+            try
+            {
+                $account = new Eresus_Entity_Account(Eresus_Kernel::app());
+                $account->name = $request->request->get('name');
+                $account->login = $request->request->get('login');
+                $account->access = $request->request->getInt('access');
+                $account->active = $request->request->getInt('active');
+                $account->password = $request->request->get('pswd1');
+                $account->mail = $request->request->get('mail');
+                $account->getTable()->persist($account);
+                return new Eresus_HTTP_Redirect(arg('submitURL'));
+            }
+            catch (Exception $e)
+            {
+                Eresus_Kernel::app()->getPage()->addErrorMessage($e->getMessage());
+            }
+        }
         $form = array(
-            'name'=>'UserForm',
-            'caption' => admUsersCreate,
+            'name' => 'AddAccountForm',
+            'caption' => _('Создать пользователя'),
             'width' => '400px',
-            'fields' => array (
-                array('type'=>'hidden','name'=>'action','value'=>'insert'),
-                array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%',
-                    'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
-                array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%',
-                    'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admUsersLoginInvalid),
-                array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'width'=>'100%',
-                    'values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4),
-                    'default' => USER),
-                array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState, 'default' => true),
-                array('type'=>'divider'),
-                array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,
-                    'width'=>'100%'),
-                array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,
-                    'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
-                array('type'=>'divider'),
-                array('type'=>'edit','name'=>'mail','label'=>admUsersMail,'maxlength'=>32,'width'=>'100%'),
+            'fields' => array(
+                array('type' => 'hidden', 'name' => 'action', 'value' => 'add'),
+                array('type' => 'edit', 'name' => 'name', 'label' => _('Имя'), 'maxlength' => 32,
+                    'width'=>'100%', 'pattern'=>'/.+/',
+                    'errormsg' => _('Псевдоним пользователя не может быть пустым.')),
+                array('type' => 'edit', 'name' => 'login', 'label' => _('Логин'), 'maxlength' => 16,
+                    'width' => '100%', 'pattern' => '/^[a-z0-9_]+$/i',
+                'errormsg' =>
+                    _('Логин не может быть пустым и должен состоять только из букв a-z, цифр и символа подчеркивания.')),
+                array('type' => 'select', 'name' => 'access', 'label' => _('Уровень доступа'),
+                    'width' => '100%', 'values' => array('2','3','4'),
+                    'items' => array(ACCESSLEVEL2, ACCESSLEVEL3, ACCESSLEVEL4), 'default' => USER),
+                array('type' => 'checkbox', 'name' => 'active',
+                    'label' => _('Учетная запись активна'), 'default' => true),
+                array('type' => 'divider'),
+                array('type' => 'password', 'name' => 'pswd1', 'label' => _('Пароль'),
+                    'maxlength' => 32, 'width'=>'100%'),
+                array('type' => 'password', 'name' => 'pswd2', 'label' => _('Подтверждение'),
+                    'maxlength' => 32, 'width' => '100%', 'equal' => 'pswd1',
+                    'errormsg' => _('Пароль и подтверждение не совпадают.')),
+                array('type' => 'divider'),
+                array('type' => 'edit', 'name' => 'mail', 'label' => _('e-mail'),
+                    'maxlength' => 32, 'width' => '100%'),
             ),
-            'buttons'=>array('ok', 'cancel')
+            'buttons' => array('ok', 'cancel')
         );
-        $result = Eresus_Kernel::app()->getPage()->
-            renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $result = $page->renderForm($form, $request->request->all());
         return $result;
     }
 
@@ -420,7 +449,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
             'tabs' => array(
                 'width' => '180px',
                 'items' => array(
-                    array('caption' => admUsersCreate, 'name' => 'action', 'value' => 'create')
+                    array('caption' => admUsersCreate, 'name' => 'action', 'value' => 'add')
                 )
             )
         );

@@ -1731,15 +1731,12 @@ class Eresus
 	 *
 	 * @param string $password  Пароль
 	 * @return string  Хеш
+     *
+     * @deprecated с 3.01 используйте {@link Eresus_Entity_Account::hashPassword()}
 	 */
 	function password_hash($password)
 	{
-		$result = md5($password);
-		if (!$this->conf['backward']['weak_password'])
-		{
-			$result = md5($result);
-		}
-		return $result;
+        return Eresus_Entity_Account::hashPassword($password);
 	}
 
 	/**

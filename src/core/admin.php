@@ -1299,6 +1299,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         {
             $data = array();
             $data['page'] = $this;
+            $data['errors'] = $this->getErrorMessages();
             $data['content'] = $response;
             $data['siteName'] = option('siteName');
             $data['body'] = $this->renderBodySection();
@@ -1307,7 +1308,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             $data['controlMenu'] = $this->renderControlMenu();
             $data['user'] = Eresus_CMS::getLegacyKernel()->user;
 
-            $tmpl = new Eresus_Template('admin/themes/default/page.default.html');
+            $tmpl = Eresus_Template::loadFromFile('core/templates/page.default.html');
             $response = new Eresus_HTTP_Response($tmpl->compile($data), 200, $this->headers);
         }
 

@@ -29,11 +29,52 @@
 /**
  * Учётная запись
  *
- * @property bool $active
+ * @property       string $name
+ * @property       string $login
+ * @property       int    $access
+ * @property       bool   $active
+ * @property-write string $password
+ * @property       string $mail
  *
  * @package Eresus
  */
 class Eresus_Entity_Account extends Eresus_ORM_Entity
 {
+    /**
+     * Хеширует пароль
+     *
+     * @param string $password  Пароль
+     *
+     * @return string  Хеш
+     */
+    public static function hashPassword($password)
+    {
+        return md5(md5($password));
+    }
+
+    /**
+     * Задаёт имя пользователя
+     *
+     * @param string $name
+     * @throws Exception
+     */
+    protected function setName($name)
+    {
+        $name = trim(strval($name));
+        if (mb_strlen($name) == 0)
+        {
+            throw new Exception(_('Имя пользователя не может быть пустым.'));
+        }
+        $this->setProperty('name', $name);
+    }
+
+    /**
+     * Задаёт пароль
+     * @param string $password
+     */
+    protected function setPassword($password)
+    {
+        $this->setProperty('hash', self::hashPassword($password));
+    }
 }
 

@@ -77,6 +77,11 @@
 				Отключить режим отладки можно в файле <code>cfg/main.php</code>.
 			</div>
 			{/if}
+            {if $errors}
+            {foreach $errors message}
+            <div class="ui-state-error box">{$message}</div>
+            {/foreach}
+            {/if}
 			{$content}
 		</div>
 	</div>
