@@ -35,9 +35,6 @@
 class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interface
 {
     private $accounts;
-
-    public $access = ADMIN;
-
     /**
      * Конструктор
      */
@@ -60,7 +57,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
 
         $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
 
-        if (UserRights($this->access))
+        if (UserRights(ADMIN))
         {
             $granted = true;
         }
@@ -97,7 +94,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
             }
             elseif ($args->get('delete'))
             {
-                $this->delete(null);
+                $this->deleteAction($request);
             }
             elseif ($args->get('id'))
             {
@@ -170,15 +167,14 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
      */
     private function toggleAction(Eresus_CMS_Request $request)
     {
-        $table = Eresus_ORM::getTable(Eresus_Kernel::app(), 'Account');
         /** @var Eresus_Entity_Account $account */
-        $account = $table->find($request->query->getInt('toggle'));
+        $account = $this->getAccountsTable()->find($request->query->getInt('toggle'));
         if (null === $account)
         {
             throw new Eresus_CMS_Exception_NotFound;
         }
         $account->active = !$account->active;
-        $table->update($account);
+        $account->getTable()->update($account);
         return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
@@ -208,17 +204,21 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
     }
 
     /**
-     * @param mixed $dummy  Используется для совместимости с родительским методом
+     * @param Eresus_CMS_Request $request
      *
-     * @return mixed void
+     * @throws Eresus_CMS_Exception_NotFound
      *
-     * @see EresusAccounts::delete()
+     * @return Eresus_HTTP_Response
      */
-    public function delete($dummy)
+    private function deleteAction(Eresus_CMS_Request $request)
     {
-        $this->accounts->get(arg('delete', 'int'));
-        $this->accounts->delete(arg('delete', 'int'));
-        HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+        $account = $this->getAccountsTable()->find($request->query->getInt('id'));
+        if (null === $account)
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+        $account->getTable()->delete($account);
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
     /**
@@ -399,6 +399,16 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
         $page = Eresus_Kernel::app()->getPage();
         $html = $page->renderTable($table);
         return $html;
+    }
+
+    /**
+     * Возвращает таблицу учётных записей
+     *
+     * @return Eresus_Entity_Table_Account
+     */
+    private function getAccountsTable()
+    {
+        return Eresus_ORM::getTable(Eresus_Kernel::app(), 'Account');
     }
 }
 
