@@ -851,7 +851,7 @@ class phpExifReader {
                 case TAG_SHUTTERSPEED:
                     // More complicated way of expressing exposure time, so only use
                     // this value if we don't already have it from somewhere else.
-                    if ($this->ImageInfo['TAG_EXPOSURETIME'] == 0){
+                    if (isset($this->ImageInfo['TAG_EXPOSURETIME']) && $this->ImageInfo['TAG_EXPOSURETIME'] == 0){
                         $sp = $this->ConvertAnyFormat($ValuePtr, $Format);
                         $this->ImageInfo[TAG_SHUTTERSPEED] = (1/exp($sp[0]*log(2)));
                     }
@@ -1199,7 +1199,7 @@ class phpExifReader {
                         break;
                 case TAG_CUSTOM_RENDERED:
                         $tmp = $this->ConvertAnyFormat($ValuePtr, $Format);
-                        $this->ImageInfo['h']["customRendered"] = ($mp == 0) ? 'Normal Process' : ($mp == 1 ? 'Custom Process' : 'Reserved');
+                        $this->ImageInfo['h']["customRendered"] = ($tmp == 0) ? 'Normal Process' : ($tmp == 1 ? 'Custom Process' : 'Reserved');
                         break;
                 case TAG_EXPOSURE_MODE:
                         $tmp = $this->ConvertAnyFormat($ValuePtr, $Format);
