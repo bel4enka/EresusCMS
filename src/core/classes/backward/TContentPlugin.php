@@ -127,6 +127,20 @@ class TContentPlugin implements Eresus_ORM_EntityOwnerInterface
     }
 
     /**
+     * Действия при установке
+     */
+    public function install()
+    {
+    }
+
+    /**
+     * Действия при удалении
+     */
+    public function uninstall()
+    {
+    }
+
+    /**
      * Чтение настроек плагина из БД
      *
      * @return  bool  Результат выполнения
