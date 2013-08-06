@@ -280,19 +280,19 @@ class TListContentPlugin extends TContentPlugin
         {
             $db = Eresus_CMS::getLegacyKernel()->db;
             $this->table['fields'] = $db->fields($this->table['name']);
-            $this->itemsCount = $db->count($this->table['name'], "(`section`='" . $page->id . "')".
+            $itemsCount = $db->count($this->table['name'], "(`section`='" . $page->id . "')".
                     (in_array('active', $this->table['fields'])?"AND(`active`='1')":''));
-            if ($this->itemsCount)
+            if ($itemsCount)
             {
                 $this->pagesCount = $this->settings['itemsPerPage'] ?
-                    ((integer) ($this->itemsCount / $this->settings['itemsPerPage']) +
-                        (($this->itemsCount % $this->settings['itemsPerPage']) > 0)):1;
+                    ((integer) ($itemsCount / $this->settings['itemsPerPage']) +
+                        (($itemsCount % $this->settings['itemsPerPage']) > 0)):1;
             }
             if (!$page->subpage)
             {
                 $page->subpage = $this->table['sortDesc'] ? $this->pagesCount : 1;
             }
-            if ($this->itemsCount && ($page->subpage > $this->pagesCount))
+            if ($itemsCount && ($page->subpage > $this->pagesCount))
             {
                 throw new Eresus_CMS_Exception_NotFound;
             }
