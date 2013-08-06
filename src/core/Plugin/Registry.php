@@ -78,6 +78,7 @@ class Eresus_Plugin_Registry
         if (null === self::$instance)
         {
             self::$instance = new self();
+            self::$instance->init();
         }
         return self::$instance;
     }
@@ -128,12 +129,6 @@ class Eresus_Plugin_Registry
                 }
             }
             while (!$success);
-
-            /* Загружаем плагины */
-            foreach ($this->list as $item)
-            {
-                $this->load($item['name']);
-            }
         }
 
         spl_autoload_register(array($this, 'autoload'));
@@ -145,10 +140,15 @@ class Eresus_Plugin_Registry
      * @return void
      *
      * @since 2.16
-     * @deprecated с 3.01 все действия этого метода выполняются в конструкторе
+     * @deprecated с 3.01
      */
     public function init()
     {
+        /* Загружаем плагины */
+        foreach ($this->list as $item)
+        {
+            $this->load($item['name']);
+        }
     }
 
     /**
@@ -253,15 +253,16 @@ class Eresus_Plugin_Registry
     public function load($name)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
+
         /* Если плагин уже был загружен возвращаем экземпляр из реестра */
-        if (isset($this->items[$name]))
+        if (array_key_exists($name, $this->items))
         {
             Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" already loaded', $name);
             return $this->items[$name];
         }
 
-        /* Если такой плагин не зарегистрирован, возвращаем FASLE */
-        if (!isset($this->list[$name]))
+        /* Если такой плагин не зарегистрирован, возвращаем false */
+        if (!array_key_exists($name, $this->list))
         {
             Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" not registered', $name);
             return false;
@@ -302,7 +303,6 @@ class Eresus_Plugin_Registry
 
         return $this->items[$name];
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовка контента раздела
@@ -481,6 +481,22 @@ class Eresus_Plugin_Registry
         }
 
         return false;
+    }
+
+    /**
+     * Возвращает настройки плагина
+     *
+     * @param string $pluginName
+     *
+     * @return array
+     *
+     * @since 3.01
+     */
+    public function getSettingsFor($pluginName)
+    {
+        return array_key_exists($pluginName, $this->list)
+            ? decodeOptions($this->list[$pluginName]['settings'])
+            : array();
     }
 
     /**

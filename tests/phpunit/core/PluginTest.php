@@ -58,15 +58,16 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDataURL()
     {
-        $GLOBALS['Eresus'] = new stdClass();
-        $GLOBALS['Eresus']->froot = '/home/example.org/';
-        $GLOBALS['Eresus']->fdata = '/home/example.org/data/';
-        $GLOBALS['Eresus']->fstyle = '/home/example.org/style/';
-        $GLOBALS['Eresus']->root = 'http://example.org/';
-        $GLOBALS['Eresus']->data = 'http://example.org/data/';
-        $GLOBALS['Eresus']->style = 'http://example.org/style/';
-        $GLOBALS['Eresus']->plugins = new stdClass();
-        $GLOBALS['Eresus']->plugins->list = array();
+        $registry = $this->getMockBuilder('Eresus_Plugin_Registry')->disableOriginalConstructor()
+            ->setMethods(array('getSettingsFor'))->getMock();
+        $registry->expects($this->any())->method('getSettingsFor')
+            ->will($this->returnValue(array()));
+        Eresus_Tests::setStatic('Eresus_Plugin_Registry', $registry);
+
+        $app = $this->getMock('stdClass', array('getLegacyKernel'));
+        $app->expects($this->any())->method('getLegacyKernel')
+            ->will($this->returnValue($this->getLegacyKernel()));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('getName'))->getMock();
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
@@ -80,15 +81,16 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCodeURL()
     {
-        $GLOBALS['Eresus'] = new stdClass();
-        $GLOBALS['Eresus']->froot = '/home/example.org/';
-        $GLOBALS['Eresus']->fdata = '/home/example.org/data/';
-        $GLOBALS['Eresus']->fstyle = '/home/example.org/style/';
-        $GLOBALS['Eresus']->root = 'http://example.org/';
-        $GLOBALS['Eresus']->data = 'http://example.org/data/';
-        $GLOBALS['Eresus']->style = 'http://example.org/style/';
-        $GLOBALS['Eresus']->plugins = new stdClass();
-        $GLOBALS['Eresus']->plugins->list = array();
+        $registry = $this->getMockBuilder('Eresus_Plugin_Registry')->disableOriginalConstructor()
+            ->setMethods(array('getSettingsFor'))->getMock();
+        $registry->expects($this->any())->method('getSettingsFor')
+            ->will($this->returnValue(array()));
+        Eresus_Tests::setStatic('Eresus_Plugin_Registry', $registry);
+
+        $app = $this->getMock('stdClass', array('getLegacyKernel'));
+        $app->expects($this->any())->method('getLegacyKernel')
+            ->will($this->returnValue($this->getLegacyKernel()));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('getName'))->getMock();
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
@@ -102,15 +104,16 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
      */
     public function testGetStyleURL()
     {
-        $GLOBALS['Eresus'] = new stdClass();
-        $GLOBALS['Eresus']->froot = '/home/example.org/';
-        $GLOBALS['Eresus']->fdata = '/home/example.org/data/';
-        $GLOBALS['Eresus']->fstyle = '/home/example.org/style/';
-        $GLOBALS['Eresus']->root = 'http://example.org/';
-        $GLOBALS['Eresus']->data = 'http://example.org/data/';
-        $GLOBALS['Eresus']->style = 'http://example.org/style/';
-        $GLOBALS['Eresus']->plugins = new stdClass();
-        $GLOBALS['Eresus']->plugins->list = array();
+        $registry = $this->getMockBuilder('Eresus_Plugin_Registry')->disableOriginalConstructor()
+            ->setMethods(array('getSettingsFor'))->getMock();
+        $registry->expects($this->any())->method('getSettingsFor')
+            ->will($this->returnValue(array()));
+        Eresus_Tests::setStatic('Eresus_Plugin_Registry', $registry);
+
+        $app = $this->getMock('stdClass', array('getLegacyKernel'));
+        $app->expects($this->any())->method('getLegacyKernel')
+            ->will($this->returnValue($this->getLegacyKernel()));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('getName'))->getMock();
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
@@ -126,11 +129,17 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
      */
     public function testTemplates()
     {
-        $legacyKernel = $this->getMock('Eresus');
-        /** @var Eresus $legacyKernel */
-        $legacyKernel->plugins = new stdClass();
-        $legacyKernel->plugins->list = array();
-        $GLOBALS['Eresus'] = $legacyKernel;
+        $registry = $this->getMockBuilder('Eresus_Plugin_Registry')->disableOriginalConstructor()
+            ->setMethods(array('getSettingsFor'))->getMock();
+        $registry->expects($this->any())->method('getSettingsFor')
+            ->will($this->returnValue(array()));
+        Eresus_Tests::setStatic('Eresus_Plugin_Registry', $registry);
+
+        $app = $this->getMock('stdClass', array('getLegacyKernel'));
+        $app->expects($this->any())->method('getLegacyKernel')
+            ->will($this->returnValue($this->getLegacyKernel()));
+        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
+
         $plugin = $this->getMock('Eresus_Plugin', array('_'));
         /** @var Eresus_Plugin $plugin */
         $templates = $plugin->templates();
@@ -165,6 +174,21 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $plugin->expects($this->once())->method('cleanupDB');
         /** @var Eresus_Plugin $plugin */
         $plugin->uninstall();
+    }
+
+    /**
+     * @return stdClass
+     */
+    private function getLegacyKernel()
+    {
+        $Eresus = new stdClass();
+        $Eresus->froot = '/home/example.org/';
+        $Eresus->fdata = '/home/example.org/data/';
+        $Eresus->fstyle = '/home/example.org/style/';
+        $Eresus->root = 'http://example.org/';
+        $Eresus->data = 'http://example.org/data/';
+        $Eresus->style = 'http://example.org/style/';
+        return $Eresus;
     }
 }
 

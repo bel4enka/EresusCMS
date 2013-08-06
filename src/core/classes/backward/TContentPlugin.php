@@ -241,12 +241,12 @@ class TContentPlugin implements Eresus_Plugin_ContentProviderInterface,
     /**
      * Отрисовка клиентской части
      *
-     * @param Eresus_CMS_Request $request  обрабатываемый запрос
-     * @param Eresus_CMS_Page    $page     создаваемая страница
+     * @param Eresus_CMS_Request     $request  обрабатываемый запрос
+     * @param Eresus_CMS_Page_Client $page     создаваемая страница
      *
      * @return string|Eresus_HTTP_Response
      */
-    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
+    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page_Client $page)
     {
         /** @var TClientUI $page */
         return $page->content;

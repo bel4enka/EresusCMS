@@ -118,14 +118,14 @@ class ContentPlugin extends Eresus_Plugin implements Eresus_Plugin_ContentProvid
     /**
      * Отрисовка клиентской части
      *
-     * @param Eresus_CMS_Request $request  обрабатываемый запрос
-     * @param Eresus_CMS_Page    $page     создаваемая страница
+     * @param Eresus_CMS_Request      $request  обрабатываемый запрос
+     * @param Eresus_CMS_Page_Client  $page     создаваемая страница
      *
      * @throws Eresus_CMS_Exception_NotFound
      *
      * @return string
      */
-    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
+    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page_Client $page)
     {
         /** @var TClientUI $page */
         /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */

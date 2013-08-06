@@ -39,13 +39,13 @@ interface Eresus_Plugin_ContentProviderInterface
     /**
      * Метод должен возвращать контент страницы для КИ
      *
-     * @param Eresus_CMS_Request $request  обрабатываемый запрос
-     * @param Eresus_CMS_Page    $page     создаваемая страница
+     * @param Eresus_CMS_Request     $request  обрабатываемый запрос
+     * @param Eresus_CMS_Page_Client $page     создаваемая страница
      *
      * @return string|Eresus_HTTP_Response
      *
      * @since 3.01
      */
-    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page);
+    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page_Client $page);
 }
 

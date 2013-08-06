@@ -145,31 +145,25 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     /**
      * Конструктор
      *
-     * Производит чтение настроек плагина и подключение языковых файлов
-     *
-     * @uses $locale
-     * @uses FS::isFile
-     * @uses Core::safeInclude
-     * @uses Plugin::resetPlugin
+     * Производит подключение языковых файлов
      */
     public function __construct()
     {
         global $locale;
 
-        $legacyKernel = Eresus_CMS::getLegacyKernel();
-        if (array_key_exists($this->getName(), $legacyKernel->plugins->list))
+        Eresus_Kernel::log(array(get_class($this), __METHOD__), LOG_DEBUG, 'starting…');
+
+        $plugins = Eresus_Plugin_Registry::getInstance();
+        $settings = $plugins->getSettingsFor($this->getName());
+        foreach ($settings as $key => $value)
         {
-            $info = $legacyKernel->plugins->list[$this->getName()];
-            $this->settings = decodeOptions($info['settings'], $this->settings);
-            /*
-             * Если установлена версия плагина отличная от установленной ранее, то необходимо
-             * произвести обновление информации о плагине в БД
-             */
-            if ($this->version != $info['version'])
+            if (array_key_exists($key, $this->settings))
             {
-                $this->resetPlugin();
+                $this->settings[$key] = $value;
             }
         }
+
+        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
         $this->dirData = $legacyKernel->fdata . $this->getName() . '/';
         $this->urlData = $legacyKernel->data . $this->getName() . '/';
         $this->dirCode = $legacyKernel->froot . 'ext/' . $this->getName() . '/';
@@ -197,8 +191,7 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
         $result['name'] = $this->getName();
         $result['content'] = false;
         $result['active'] = is_null($item)? true : $item['active'];
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db->
-            escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+        $result['settings'] = is_null($item) ? encodeOptions($this->settings) : $item['settings'];
         $result['title'] = $this->title;
         $result['version'] = $this->version;
         $result['description'] = $this->description;
@@ -215,8 +208,8 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
      */
     public function __call($method, $args)
     {
-        throw new LogicException("Method \"$method\" does not exists in class \"" . get_class($this)
-            . "\"");
+        throw new LogicException(sprintf('Method "%s" does not exists in class "%s"',
+            $method, get_class($this)));
     }
 
     /**
@@ -348,7 +341,6 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
         $this->onSettingsUpdate();
         $this->saveSettings();
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Производит выборку из таблицы БД
@@ -519,6 +511,8 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
      * Чтение настроек плагина из БД
      *
      * @return bool  Результат выполнения
+     *
+     * @deprecated с 3.01
      */
     protected function loadSettings()
     {
