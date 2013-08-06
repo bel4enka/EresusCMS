@@ -317,7 +317,7 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
 
         if (substr($request->getPath(), 0, 8) == '/ext-3rd')
         {
-            $this->call3rdPartyExtension();
+            $this->call3rdPartyExtension($request);
         }
         else
         {
@@ -389,19 +389,25 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
      *
      * Вызов производится через коннектор этого расширения
      *
+     * @param Eresus_CMS_Request $request
+     *
      * @return void
      */
-    protected function call3rdPartyExtension()
+    protected function call3rdPartyExtension(Eresus_CMS_Request $request)
     {
-        $extension = substr($this->request->getLocal(), 9);
-        $extension = substr($extension, 0, strpos($extension, '/'));
+        $extension = substr($request->getDirectory(), 9);
+        if (($p = strpos($extension, '/')) !== false)
+        {
+            $extension = substr($extension, 0, $p);
+        }
 
-        $filename = $this->getFsRoot().'/ext-3rd/'.$extension.'/eresus-connector.php';
+        $filename = $this->getFsRoot() . '/ext-3rd/' . $extension . '/eresus-connector.php';
         if ($extension && is_file($filename))
         {
             /** @noinspection PhpIncludeInspection */
             include_once $filename;
-            $className = $extension.'Connector';
+            $className = $extension . 'Connector';
+            /** @var EresusExtensionConnector $connector */
             $connector = new $className;
             $connector->proxy();
         }
