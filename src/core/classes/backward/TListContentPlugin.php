@@ -257,16 +257,14 @@ class TListContentPlugin extends TContentPlugin
     /**
      * Отрисовка клиентской части
      *
-     * @param Eresus_CMS_Request     $request  обрабатываемый запрос
-     * @param Eresus_CMS_Page_Client $page     создаваемая страница
-     *
      * @throws Eresus_CMS_Exception_NotFound
      *
      * @return string|Eresus_HTTP_Response
      */
-    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page_Client $page)
+    public function clientRenderContent()
     {
         /** @var TClientUI $page */
+        $page = Eresus_Kernel::app()->getPage();
         $result = '';
         if (!isset($this->settings['itemsPerPage']))
         {
@@ -304,7 +302,11 @@ class TListContentPlugin extends TContentPlugin
         return $result;
     }
 
-    function clientRenderList($options = null)
+    /**
+     * @param array $options
+     * @return string
+     */
+    public function clientRenderList($options = null)
     {
         if (is_null($options))
         {
