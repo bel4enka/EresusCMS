@@ -317,8 +317,6 @@ class TClientUI extends Eresus_CMS_Page_Client
             $this->visible = $item['visible'];
             $this->type = $item['type'];
             $this->setTemplate($item['template']);
-            $this->created = $item['created'];
-            $this->updated = $item['updated'];
             $this->content = $item['content'];
             $this->scripts = '';
             $this->styles = '';
