@@ -141,6 +141,7 @@ class Eresus_Plugin_Registry
      *
      * @since 2.16
      * @deprecated с 3.01
+     * @todo сделать приватным
      */
     public function init()
     {
@@ -280,6 +281,7 @@ class Eresus_Plugin_Registry
             return false;
         }
 
+        /** @noinspection PhpIncludeInspection */
         include_once $filename;
         $className = $name;
 

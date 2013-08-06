@@ -219,7 +219,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         $this->setUITheme($theme);
         TemplateSettings::setGlobalValue('theme', $theme);
 
-        $this->title = admControls;
+        $this->setTitle(admControls);
         /* Определяем уровень вложенности */
         do
         {
@@ -253,7 +253,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             ),
         );
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает объект текущей темы оформления
@@ -263,7 +262,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     {
         return $this->uiTheme;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Устанавливает новую тему оформления
@@ -274,7 +272,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     {
         $this->uiTheme = $theme;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Подставляет значения макросов
@@ -317,8 +314,12 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         $result = preg_replace('/\$\(\w+(:.*?)*?\)/', '', $result);
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
+    /**
+     * @param array $args
+     * @param bool  $clear
+     * @return string
+     */
     public function url($args = null, $clear = false)
     {
         $basics = array('mod','section','id','sort','desc','pg');
@@ -360,7 +361,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         $result = Eresus_CMS::getLegacyKernel()->root . 'admin.php' . $result;
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Добавляет пункт в меню "Расширения"
@@ -408,7 +408,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     {
         $item['link'] = 'ext-'.$item['link'];
         $ptr = null;
-        for ($i=0; $i<count($this->extmenu); $i++)
+        for ($i = 0; $i < count($this->extmenu); $i++)
         {
             if ($this->extmenu[$i]['caption'] == $section)
             {
@@ -432,18 +432,27 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             $ptr['access'] = $item['access'];
         }
     }
-    //-----------------------------------------------------------------------------
 
-
-    function box($text, $class, $caption='')
+    /**
+     * @param string $text
+     * @param string $class
+     * @param string $caption
+     * @return string
+     * @deprecated с 3.01
+     */
+    public function box($text, $class, $caption='')
     {
         $result = "<div".(empty($class)?'':' class="'.$class.'"').">\n".(empty($caption)?'':
                 '<span class="'.$class.'Caption">'.$caption.'</span><br />').$text."</div>\n";
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
-    function window($wnd)
+    /**
+     * @param array $wnd
+     * @return string
+     * @deprecated с 3.01
+     */
+    public function window($wnd)
     {
         $result =
             "<table border=\"0\" class=\"admWindow\"".(empty($wnd['width'])?'':' style="width: '.
@@ -453,16 +462,17 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             "</td></tr>\n</table>\n";
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовывает элемент управления
      *
      * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
      * @param string $href    Ссылка
-     * @param string $custom  Индивидуальные настройки
+     * @param array  $custom  Индивидуальные настройки
      *
      * @return  string  HTML
+     *
+     * @deprecated с 3.01
      */
     public function control($type, $href, $custom = array())
     {
@@ -549,7 +559,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         }
         return $result;
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Отрисовывает кнопки-"вкладки"
@@ -593,8 +602,10 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      * @param array $tabs  ассоциативный массив, описывающий вкладки
      *
      * @return string  HTML
+     *
+     * @deprecated с 3.01
      */
-    function renderTabs($tabs)
+    public function renderTabs($tabs)
     {
         $result = '';
         if (count($tabs))
@@ -639,8 +650,17 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
+    /**
+     * @param $itemsCount
+     * @param $itemsPerPage
+     * @param $pageCount
+     * @param bool $Descending
+     * @param string $sub_prefix
+     * @return string
+     *
+     * @deprecated с 3.01
+     */
     function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
     {
         $prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
@@ -679,7 +699,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             return '';
         }
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовывает таблицу-список на основе описания $table
@@ -708,8 +727,10 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      * @param array  $values
      * @param string $sub_prefix
      * @return string
+     *
+     * @deprecated с 3.01
      */
-    function renderTable($table, $values=null, $sub_prefix='')
+    public function renderTable($table, $values=null, $sub_prefix='')
     {
         $result = '';
         $prefix = empty($sub_prefix) ? str_repeat('sub_', $this->sub) : $sub_prefix;
@@ -958,8 +979,13 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
+    /**
+     * @param $form
+     * @param array $values
+     * @return string
+     * @deprecated с 3.01
+     */
     public function renderForm($form, $values=array())
     {
         $result = '';
@@ -1202,7 +1228,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовывает меню плагинов и управления
