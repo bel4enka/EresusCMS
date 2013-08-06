@@ -263,7 +263,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
                     'value'=>$item['mail'], 'pattern'=>'/^[\w]+[\w\d_\.\-]+@[\w\d\-]{2,}\.[a-z]{2,5}$/i',
                     'errormsg'=>admUsersMailInvalid, 'access'=>ADMIN),
             ),
-            'buttons' => array(UserRights($this->access)?'ok':'', 'apply', 'cancel'),
+            'buttons' => array(UserRights(ADMIN) ? 'ok' : '', 'apply', 'cancel'),
         );
 
         $pswd = array(
@@ -277,7 +277,7 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
                 array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,
                     'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
             ),
-            'buttons' => array(UserRights($this->access)?'ok':'apply', 'cancel'),
+            'buttons' => array(UserRights(ADMIN)?'ok':'apply', 'cancel'),
         );
 
         $result = Eresus_Kernel::app()->getPage()->renderForm($form)."<br />\n".
