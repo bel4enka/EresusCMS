@@ -548,15 +548,20 @@ abstract class Eresus_Plugin
     /**
      * Регистрация обработчиков событий
      *
-     * @param string $event1  Имя события1
-     * ...
-     * @param string $eventN  Имя событияN
+     * @param string ...  имена событий
+     * @deprecated с 3.01 используйте {@link Eresus_Event_Dispatcher::addEventListener()}
      */
     protected function listenEvents()
     {
+        $registry = Eresus_Plugin_Registry::getInstance();
         for ($i=0; $i < func_num_args(); $i++)
         {
-            Eresus_CMS::getLegacyKernel()->plugins->events[func_get_arg($i)][] = $this->getName();
+            $event = func_get_arg($i);
+            if (!array_key_exists($event, $registry->events))
+            {
+                $registry->events[$event] = array();
+            }
+            $registry->events[$event] []= $this->getName();
         }
     }
 
