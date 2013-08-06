@@ -96,7 +96,6 @@ class TContentPlugin implements Eresus_ORM_EntityOwnerInterface
         $page = Eresus_Kernel::app()->getPage();
         if ($page)
         {
-            $page->plugin = $this->name;
             if (count($page->options))
             {
                 foreach ($page->options as $key => $value)
