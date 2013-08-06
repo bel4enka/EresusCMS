@@ -337,7 +337,7 @@ class Eresus_Plugin_Registry
                 if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
                 {
                     /** @var ContentPlugin $plugin */
-                    $result = $plugin->clientRenderContent($page, $request);
+                    $result = $plugin->clientRenderContent();
                 }
                 else
                 {
