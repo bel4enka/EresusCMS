@@ -61,5 +61,19 @@
 Собственные события
 -------------------
 
-Разработчики расширений могут генерировать свои собственные события. Имя событий могут быть любыми,
-при условии, что они не начинаются с «cms.» или «eresus.».
+Разработчики расширений могут генерировать свои собственные события. Имена событий могут быть
+любыми, при условии, что они не начинаются с «cms.» или «eresus.».
+
+Пример
+^^^^^^
+
+.. code-block:: php
+
+   <?php
+   class MyPlugin extends Eresus_Plugin
+   {
+     private function someMethod()
+     {
+       $event = new MyPlugin_Event_MyEvent(); // Класс должен быть потомком Eresus_Event
+       Eresus_Kernel::app()->getEventDispatcher()->dispatch('myplugin.my_event', $event);
+     }
