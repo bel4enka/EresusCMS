@@ -630,6 +630,10 @@ class TinyImageManager
             {
                 $allowed = $this->ALLOWED_FILES;
             }
+            else
+            {
+                $allowed = array();
+            }
             //Если не подходит разрешение файла
             if (!in_array(strtolower($extension), $allowed))
             {
@@ -729,6 +733,10 @@ class TinyImageManager
                 elseif ($pathtype == 'files')
                 {
                     $allowed = $this->ALLOWED_FILES;
+                }
+                else
+                {
+                    $allowed = array();
                 }
                 //Если не подходит расширение файла
                 if (!in_array(strtolower($extension), $allowed))
@@ -838,6 +846,10 @@ class TinyImageManager
             if ($dblength > 0)
             {
                 $dbdata = fread($dbfilehandle, $dblength);
+            }
+            else
+            {
+                $dbdata = '';
             }
             fclose($dbfilehandle);
         }

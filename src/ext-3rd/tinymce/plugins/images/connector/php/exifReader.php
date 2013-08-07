@@ -360,6 +360,8 @@ class phpExifReader
     var $caching = false; /* Should cacheing of image thumnails be allowed? */
     var $cacheDir = ""; /* Checkout constructor for default path. */
 
+    public $errorno;
+    public $errorstr;
     /**
      * Constructor
      * @param string $file  File name to be parsed.
@@ -442,9 +444,9 @@ class phpExifReader
      * Processes the whole file.
      *
      */
-    function processFile()
+    public function processFile()
     {
-        /** dont reparse the whole file. */
+        /** don't reparse the whole file. */
         if (!$this->newFile)
         {
             return true;
@@ -481,7 +483,7 @@ class phpExifReader
         /** Examines each byte one-by-one */
         while (!feof($fp))
         {
-            $data = array();
+            $marker = -1;
             for ($a = 0; $a < 7; $a++)
             {
                 $marker = fgetc($fp);
@@ -500,7 +502,7 @@ class phpExifReader
 
             if (ord($marker) == 0xff)
             {
-                // 0xff is legal padding, but if we get that many, something's wrong.
+                // 0xff is legal padding, but if we get that many, something wrong.
                 $this->errno = 10;
                 $this->errstr = "too many padding bytes!";
                 $this->debug($this->errstr, 1);
@@ -513,20 +515,20 @@ class phpExifReader
             $lh = ord(fgetc($fp));
             $ll = ord(fgetc($fp));
 
-            $itemlen = ($lh << 8) | $ll;
+            $itemLength = ($lh << 8) | $ll;
 
-            if ($itemlen < 2)
+            if ($itemLength < 2)
             {
                 $this->errno = 11;
                 $this->errstr = "invalid marker";
                 $this->debug($this->errstr, 1);
             }
-            $this->sections[$this->currSection]["size"] = $itemlen;
+            $this->sections[$this->currSection]["size"] = $itemLength;
 
             $tmpDataArr = array();
             /** Temporary Array */
 
-            $tmpStr = fread($fp, $itemlen - 2);
+            $tmpStr = fread($fp, $itemLength - 2);
             /*
             $tmpDataArr[] = chr($lh);
             $tmpDataArr[] = chr($ll);
@@ -545,7 +547,7 @@ class phpExifReader
             $this->debug("<hr>");
 
             //if(count($data) != $itemlen) {
-            if (strlen($data) != $itemlen)
+            if (strlen($data) != $itemLength)
             {
                 $this->errno = 12;
                 $this->errstr = "Premature end of file?";
@@ -582,7 +584,7 @@ class phpExifReader
                     break;
                 case M_COM: // Comment section
                     $this->debug("<br>Found '" . M_COM . "'(Comment) Section, Processing<br>");
-                    $this->process_COM($data, $itemlen);
+                    $this->process_COM($data, $itemLength);
                     $this->debug("<br>'" . M_COM . "'(Comment) Section, PROCESSED<br>");
 
                     $tmpTestLevel++;
@@ -609,7 +611,7 @@ class phpExifReader
                     $this->exifSection = $this->currSection - 1;
                     if (($this->ImageReadMode & $this->ReadMode["READ_EXIF"]) && ($data[2] . $data[3] . $data[4] . $data[5]) == "Exif")
                     {
-                        $this->process_EXIF($data, $itemlen);
+                        $this->process_EXIF($data, $itemLength);
                     }
                     else
                     {
@@ -638,7 +640,7 @@ class phpExifReader
                     break;
                 case M_EXIF_EXT: // 226 - Exif Extended Data
                     $this->debug("<br><b>Found 'Exif Extended Data' Section, Processing</b><br>-------------------------------<br>");
-                    $this->process_EXT_EXIF($data, $itemlen);
+                    $this->process_EXT_EXIF($data, $itemLength);
                     $this->debug("<br>--------------------------PROCESSED<br>");
                     break;
 
@@ -653,7 +655,7 @@ class phpExifReader
                     break;
 
                 default:
-                    $this->debug("DEFAULT: Jpeg section marker 0x$marker x size $itemlen\n");
+                    $this->debug("DEFAULT: Jpeg section marker 0x$marker x size $itemLength\n");
             }
             $i++;
             if ($exitAll == 1)
@@ -844,6 +846,7 @@ class phpExifReader
                         }
                     }
 
+                    $tmp = '';
                     // Copy the comment
                     if (($ValuePtr[0] . $ValuePtr[1] . $ValuePtr[2] . $ValuePtr[3] . $ValuePtr[4]) == "ASCII")
                     {
