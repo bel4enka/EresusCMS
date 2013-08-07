@@ -50,7 +50,6 @@ class TContent
             return '';
         }
 
-        $legacyKernel = Eresus_CMS::getLegacyKernel();
         $plugins = Eresus_Plugin_Registry::getInstance();
         /** @var TAdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
@@ -67,28 +66,8 @@ class TContent
                 case 'default':
                     $controller = new Eresus_Admin_Controller_Content_Default();
                     break;
-
                 case 'list':
-                    if (arg('update'))
-                    {
-                        $item['content'] = arg('content', 'dbsafe');
-                        $legacyKernel->sections->update($item);
-                        HTTP::redirect(arg('submitURL'));
-                    }
-                    else
-                    {
-                        $form = array(
-                            'name' => 'editURL',
-                            'caption' => ADM_EDIT,
-                            'width' => '100%',
-                            'fields' => array (
-                                array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-                                array ('type' => 'html', 'name' => 'content', 'label' => admTemplListLabel, 'height' => '300px', 'value'=>isset($item['content'])?$item['content']:'$(items)'),
-                            ),
-                            'buttons' => array('apply', 'cancel'),
-                        );
-                        $result = $page->renderForm($form);
-                    }
+                    $controller = new Eresus_Admin_Controller_Content_List();
                     break;
                 case 'url':
                     $controller = new Eresus_Admin_Controller_Content_Url();
