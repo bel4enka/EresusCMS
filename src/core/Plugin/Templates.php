@@ -112,6 +112,40 @@ class Eresus_Plugin_Templates
     }
 
     /**
+     * Устанавливает шаблоны КИ в общую папку шаблонов
+     */
+    public function install()
+    {
+        $path = $this->plugin->getCodeDir() . '/templates/client';
+        if (file_exists($path))
+        {
+            $ts = Eresus_Template_Service::getInstance();
+            $it = new DirectoryIterator($path);
+            foreach ($it as $fileInfo)
+            {
+                /** @var DirectoryIterator $fileInfo */
+                if (!$fileInfo->isDot())
+                {
+                    $ts->install($fileInfo->getPathname(), $this->plugin->getName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Удаляет шаблоны КИ из общей папки шаблонов
+     */
+    public function uninstall()
+    {
+        $path = $this->plugin->getCodeDir() . '/templates/client';
+        if (file_exists($path))
+        {
+            $ts = Eresus_Template_Service::getInstance();
+            $ts->remove($this->plugin->getName());
+        }
+    }
+
+    /**
      * Возвращает путь к клиентскому шаблону
      *
      * @param string $filename

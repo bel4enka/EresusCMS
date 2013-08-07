@@ -307,7 +307,7 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
      */
     public function install()
     {
-        $this->installTemplates();
+        $this->templates()->install();
     }
 
     /**
@@ -316,7 +316,7 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     public function uninstall()
     {
         $this->cleanupDB();
-        $this->uninstallTemplates();
+        $this->templates()->uninstall();
     }
 
     /**
@@ -569,40 +569,6 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
                 $registry->events[$event] = array();
             }
             $registry->events[$event] []= $this->getName();
-        }
-    }
-
-    /**
-     * Устанавливает шаблоны КИ в общую папку шаблонов
-     */
-    protected function installTemplates()
-    {
-        $path = $this->getCodeDir() . '/templates/client';
-        if (file_exists($path))
-        {
-            $ts = Eresus_Template_Service::getInstance();
-            $it = new DirectoryIterator($path);
-            foreach ($it as $fileInfo)
-            {
-                /** @var DirectoryIterator $fileInfo */
-                if (!$fileInfo->isDot())
-                {
-                    $ts->install($fileInfo->getPathname(), $this->getName());
-                }
-            }
-        }
-    }
-
-    /**
-     * Удаляет шаблоны КИ из общей папки шаблонов
-     */
-    protected function uninstallTemplates()
-    {
-        $path = $this->getCodeDir() . '/templates/client';
-        if (file_exists($path))
-        {
-            $ts = Eresus_Template_Service::getInstance();
-            $ts->remove($this->getName());
         }
     }
 
