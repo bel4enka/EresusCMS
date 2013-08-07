@@ -39,9 +39,11 @@ class TContent
     /**
      * Возвращает разметку интерфейса управления контентом текущего раздела
      *
+     * @param Eresus_CMS_Request $request
+     *
      * @return string|Eresus_HTTP_Response  HTML
      */
-    public function adminRender()
+    public function adminRender(Eresus_CMS_Request $request)
     {
         if (!UserRights(EDITOR))
         {
@@ -63,15 +65,7 @@ class TContent
             switch ($item['type'])
             {
                 case 'default':
-                    $editor = new ContentPlugin();
-                    if (arg('update'))
-                    {
-                        $editor->update();
-                    }
-                    else
-                    {
-                        $result = $editor->adminRenderContent();
-                    }
+                    $controller = new Eresus_Admin_Controller_Content_Default();
                     break;
 
                 case 'list':
@@ -107,14 +101,13 @@ class TContent
             if (isset($controller)
                 && $controller instanceof Eresus_Admin_Controller_Content_Interface)
             {
-                $result = $controller->getHtml();
+                $result = $controller->getHtml($request);
             }
         }
         else
         {
-            $plugins->load($item['type']);
-            $page->module = $plugins->items[$item['type']];
-            $result = $plugins->items[$item['type']]->adminRenderContent();
+            $page->module = $plugins->load($item['type']);
+            $result = $page->module->adminRenderContent();
         }
         return $result;
     }

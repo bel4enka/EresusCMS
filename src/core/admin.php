@@ -1056,7 +1056,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 {
                     try
                     {
-                        $result = $this->module->adminRender();
+                        $result = $this->module->adminRender($request);
                     }
                     catch (Exception $e)
                     {

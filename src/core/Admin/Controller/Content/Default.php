@@ -1,6 +1,6 @@
 <?php
 /**
- * Контроллер АИ типа раздела «URL»
+ * Контроллер АИ типа раздела «По умолчанию»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,49 +27,32 @@
  */
 
 /**
- * Контроллер АИ типа раздела «URL»
+ * Контроллер АИ типа раздела «По умолчанию»
  *
  * @package Eresus
  */
-class Eresus_Admin_Controller_Content_Url implements Eresus_Admin_Controller_Content_Interface
+class Eresus_Admin_Controller_Content_Default implements Eresus_Admin_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента
      *
      * @param Eresus_CMS_Request $request
-     *
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
     public function getHtml(Eresus_CMS_Request $request)
     {
-        $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
-        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $sections = $legacyKernel->sections;
-        $item = $sections->get($request->query->getInt('section'));
-
+        $editor = new ContentPlugin();
         if ($request->getMethod() == 'POST')
         {
-            $item['content'] = $args->get('url');
-            Eresus_Kernel::app()->getLegacyKernel()->sections->update($item);
-            return new Eresus_HTTP_Redirect(arg('submitURL'));
+            $editor->updateContent($request->request->get('content'));
+            $response = new Eresus_HTTP_Redirect(arg('submitURL'));
         }
-
-        $form = array(
-            'name' => 'editURL',
-            'caption' => ADM_EDIT,
-            'width' => '100%',
-            'fields' => array(
-                array('type' => 'hidden', 'name' => 'update', 'value' => $item['id']),
-                array('type' => 'edit', 'name' => 'url', 'label' => 'URL:', 'width' => '100%',
-                    'value' => isset($item['content']) ? $item['content'] : ''),
-            ),
-            'buttons' => array('apply', 'cancel'),
-        );
-        /** @var TAdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $html = $page->renderForm($form);
-        return $html;
+        else
+        {
+            $response = $editor->adminRenderContent();
+        }
+        return $response;
     }
 }
 
