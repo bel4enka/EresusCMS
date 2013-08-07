@@ -33,7 +33,7 @@
  */
 define('LOCALE_CHARSET', 'UTF-8');
 setlocale(LC_ALL, 'ru_RU.'.LOCALE_CHARSET);
-define('CHARSET','UTF-8');
+define('CHARSET', 'UTF-8');
 
 /* Таблица транслитерации */
 $GLOBALS['translit_table'] = array(

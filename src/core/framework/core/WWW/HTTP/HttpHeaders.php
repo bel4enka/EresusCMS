@@ -36,53 +36,61 @@
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class HttpHeaders {
+class HttpHeaders
+{
 
-	/**
-	 * Headers
-	 * @var array
-	 */
-	protected $headers = array();
+    /**
+     * Headers
+     * @var array
+     */
+    protected $headers = array();
 
-	/**
-	 * Constructor
-	 */
-	function __construct()
-	{
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * Constructor
+     */
+    function __construct()
+    {
+    }
 
-	/**
-	 * Add header
-	 * @param HttpHeader $header
-	 */
-	function add($header)
-	{
-		$this->headers []= $header;
-	}
-	//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 
-	/**
-	 * Get all headers
-	 * @return array
-	 */
-	function getAll()
-	{
-		return $this->headers;
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * Add header
+     * @param HttpHeader $header
+     */
+    function add($header)
+    {
+        $this->headers [] = $header;
+    }
 
-	/**
-	 * Send headers to UA
-	 */
-	public function send()
-	{
-		$headers = $this->getAll();
+    //-----------------------------------------------------------------------------
 
-		foreach($headers as $header) $header->send();
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * Get all headers
+     * @return array
+     */
+    function getAll()
+    {
+        return $this->headers;
+    }
+
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Send headers to UA
+     */
+    public function send()
+    {
+        $headers = $this->getAll();
+
+        foreach ($headers as $header)
+        {
+            $header->send();
+        }
+    }
+    //-----------------------------------------------------------------------------
 }
+
 //-----------------------------------------------------------------------------
 
 /**
@@ -92,51 +100,54 @@ class HttpHeaders {
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
-class HttpHeader {
+class HttpHeader
+{
 
-	/**
-	 * Header name
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Header name
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Header value
-	 * @var string
-	 */
-	protected $value;
+    /**
+     * Header value
+     * @var string
+     */
+    protected $value;
 
-	/**
-	 * Constructor
-	 * @param string $name
-	 * @param string $value
-	 */
-	public function __construct($name, $value)
-	{
-		$this->name = $name;
-		$this->value = $value;
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * Constructor
+     * @param string $name
+     * @param string $value
+     */
+    public function __construct($name, $value)
+    {
+        $this->name = $name;
+        $this->value = $value;
+    }
 
-	/**
-	 * Return header as string
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->name . ': ' . $this->value;
-	}
-	//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 
-	/**
-	 * Send header to UA
-	 */
-	public function send()
-	{
-		if (!Eresus_Kernel::isCLI())
+    /**
+     * Return header as string
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name . ': ' . $this->value;
+    }
+
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Send header to UA
+     */
+    public function send()
+    {
+        if (!Eresus_Kernel::isCLI())
         {
             header($this);
         }
-	}
+    }
 }
 

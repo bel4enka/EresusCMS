@@ -36,30 +36,30 @@
  */
 class EditAreaConnector extends EresusExtensionConnector
 {
-	/**
-	 * Обработка поля "syntax" для старых форм
-	 *
-	 * @param Form  $form
-	 * @param array $field
-	 * @return array
-	 */
-	public function forms_memo_syntax($form, $field)
-	{
-		// Проверяем, не были ли уже выполнены эти действия ранее
-		if (!isset($form->options['editarea']))
-		{
-	    // Подключаем EditArea
-			Eresus_Kernel::app()->getPage()->linkScripts($this->root . 'edit_area_full.js');
+    /**
+     * Обработка поля "syntax" для старых форм
+     *
+     * @param Form $form
+     * @param array $field
+     * @return array
+     */
+    public function forms_memo_syntax($form, $field)
+    {
+        // Проверяем, не были ли уже выполнены эти действия ранее
+        if (!isset($form->options['editarea']))
+        {
+            // Подключаем EditArea
+            Eresus_Kernel::app()->getPage()->linkScripts($this->root . 'edit_area_full.js');
 
-	    $form->options['editarea'] = true;
-		}
+            $form->options['editarea'] = true;
+        }
 
-		if (!$field['id'])
-		{
-			$field['id'] = $form->form['name'] . '_' . $field['name'];
-		}
+        if (!$field['id'])
+        {
+            $field['id'] = $form->form['name'] . '_' . $field['name'];
+        }
 
-		Eresus_Kernel::app()->getPage()->addScripts("
+        Eresus_Kernel::app()->getPage()->addScripts("
 			editAreaLoader.init({
 				id : '{$field['id']}',
 				syntax: '{$field['syntax']}',
@@ -69,7 +69,7 @@ class EditAreaConnector extends EresusExtensionConnector
 			});
 		");
 
-		return $field;
-	}
-	//-----------------------------------------------------------------------------
+        return $field;
+    }
+    //-----------------------------------------------------------------------------
 }

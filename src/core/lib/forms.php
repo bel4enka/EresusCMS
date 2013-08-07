@@ -35,14 +35,14 @@
  */
 class Form
 {
-    var $form;
-    var $values;
-    var $hidden = '';
-    var $onsubmit = '';
-    var $validator = '';
-    var $file = false;    # Признок наличия полей типа file
-    var $html = false;    # Признак наличия WYSIWYG редакторов
-    var $options = array();
+    public $form;
+    public $values;
+    public $hidden = '';
+    public $onsubmit = '';
+    public $validator = '';
+    public $file = false;    # Признак наличия полей типа file
+    public $html = false;    # Признак наличия WYSIWYG редакторов
+    public $options = array();
     /**
      * Конструктор
      *

@@ -1,13 +1,11 @@
 <?php
 /**
- * ${product.title} ${product.version}
- *
  * Конфигурация расширений
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Этот файл содержит список установленных расширений, а так же их настройки.
  * Расширения размещаются в директории ext-3rd, каждое в отдельной поддиректории.
@@ -25,15 +23,16 @@
  */
 
 $GLOBALS['Eresus']->conf['extensions'] = array(
-	// Расширение возможностей форм ввода
-	'forms' => array(
-		// Расширение полей типа memo
-		'memo_syntax' => array(
-			'editarea' => null,
-		),
-		// Расширение полей типа html
-		'html' => array(
-			'tinymce' => null,
-		),
-	),
+    // Расширение возможностей форм ввода
+    'forms' => array(
+        // Расширение полей типа memo
+        'memo_syntax' => array(
+            'editarea' => null,
+        ),
+        // Расширение полей типа html
+        'html' => array(
+            'tinymce' => null,
+        ),
+    ),
 );
+

@@ -31,8 +31,8 @@
  *
  * @package Eresus
  */
-abstract class Eresus_Client_Controller_Content_Abstract
-    implements Eresus_Client_Controller_Content_Interface
+abstract class Eresus_Client_Controller_Content_Abstract implements
+    Eresus_Client_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента

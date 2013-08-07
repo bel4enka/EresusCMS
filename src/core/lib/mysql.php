@@ -35,525 +35,534 @@
  */
 class MySQL
 {
-	/**
-	 * Дескриптор соединения
-	 * @var resource
-	 */
-	protected $Connection;
+    /**
+     * Дескриптор соединения
+     * @var resource
+     */
+    protected $Connection;
 
-	/**
-	 * Имя БД
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Имя БД
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Префикс таблиц
-	 * @var string
-	 * @deprecated
-	 */
-	public $prefix;
+    /**
+     * Префикс таблиц
+     * @var string
+     * @deprecated
+     */
+    public $prefix;
 
-	/**
-	 * Вести лог запросов
-	 * @var bool
-	 */
-	public $logQueries = false;
+    /**
+     * Вести лог запросов
+     * @var bool
+     */
+    public $logQueries = false;
 
-	/**
-	 * Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
-	 *
-	 * @var bool
-	 */
-	public $error_reporting = true;
+    /**
+     * Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
+     *
+     * @var bool
+     */
+    public $error_reporting = true;
 
-	/**
-	 * ???
-	 * @var ezcDbSchema
-	 */
-	private $dbSchema = null;
+    /**
+     * ???
+     * @var ezcDbSchema
+     */
+    private $dbSchema = null;
 
-	/**
-	 * Открывает соединение сервером данных и выбирает источник
-	 *
-	 * @param string $server    Сервер данных
-	 * @param string $username  Имя пользователя для доступа к серверу
-	 * @param string $password  Пароль пользователя
-	 * @param string $source    Имя источника данных
-	 * @param string $prefix
+    /**
+     * Открывает соединение сервером данных и выбирает источник
+     *
+     * @param string $server    Сервер данных
+     * @param string $username  Имя пользователя для доступа к серверу
+     * @param string $password  Пароль пользователя
+     * @param string $source    Имя источника данных
+     * @param string $prefix
      *
      * @throws Eresus_DB_Exception
-	 *
-	 * @return bool  Результат соединения
-	 * @deprecated
-	 */
-	public function init($server, $username, $password, $source, $prefix = '')
-	{
+     *
+     * @return bool  Результат соединения
+     * @deprecated
+     */
+    public function init($server, $username, $password, $source, $prefix = '')
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$dsn = "mysql://$username:$password@$server/$source?charset=utf8";
+        $dsn = "mysql://$username:$password@$server/$source?charset=utf8";
 
         $db = Eresus_DB::connect($dsn);
         $options = new ezcDbOptions(array('tableNamePrefix' => $prefix));
         $db->setOptions($options);
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Возвращает объект-одиночку схемы БД
-	 * @return ezcDbSchema
-	 */
-	public function getSchema()
-	{
-		if (!$this->dbSchema)
-		{
-			$db = Eresus_DB::getHandler();
-			$options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
-			ezcDbSchema::setOptions($options);
+    /**
+     * Возвращает объект-одиночку схемы БД
+     * @return ezcDbSchema
+     */
+    public function getSchema()
+    {
+        if (!$this->dbSchema)
+        {
+            $db = Eresus_DB::getHandler();
+            $options = new ezcDbSchemaOptions(array('tableNamePrefix' => $db->options->tableNamePrefix));
+            ezcDbSchema::setOptions($options);
 
-			$this->dbSchema = ezcDbSchema::createFromDb($db);
-		}
+            $this->dbSchema = ezcDbSchema::createFromDb($db);
+        }
 
-		return $this->dbSchema;
-	}
-	//-----------------------------------------------------------------------------
+        return $this->dbSchema;
+    }
 
-	/**
-	 * Выполняет запрос к источнику
-	 *
-	 * @param string $query  Запрос в формате источника
-	 * @return mixed  Результат запроса. Тип зависит от источника, запроса и результата
-	 * @deprecated
-	 */
-	public function query($query)
-	{
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Выполняет запрос к источнику
+     *
+     * @param string $query  Запрос в формате источника
+     * @return mixed  Результат запроса. Тип зависит от источника, запроса и результата
+     * @deprecated
+     */
+    public function query($query)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = Eresus_DB::getHandler();
+        $db = Eresus_DB::getHandler();
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, $query);
-		$db->exec($query);
-		return true;
-	}
-	//-----------------------------------------------------------------------------
+        $db->exec($query);
+        return true;
+    }
 
-	/**
-	 * Выполняет запрос к источнику и возвращает ассоциативный массив значений
-	 *
-	 * @param  string  $query    Запрос в формате источника
-	 * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
-	 * @deprecated
-	 */
-	public function query_array($query)
-	{
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Выполняет запрос к источнику и возвращает ассоциативный массив значений
+     *
+     * @param  string $query    Запрос в формате источника
+     * @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
+     * @deprecated
+     */
+    public function query_array($query)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = Eresus_DB::getHandler();
-		$stmt = $db->prepare($query);
-		if (!$stmt->execute())
-		{
-			return false;
-		}
+        $db = Eresus_DB::getHandler();
+        $stmt = $db->prepare($query);
+        if (!$stmt->execute())
+        {
+            return false;
+        }
 
-		$values = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return $values;
-	}
-	//------------------------------------------------------------------------------
+        $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $values;
+    }
 
-	/**
-	 * Создание новой таблицы
-	 *
-	 * @param string $name       Имя таблицы
-	 * @param string $structure  Описание структуры
-	 * @param string $options    Опции
-	 *
-	 * @return bool Результат
-	 * @deprecated
-	 */
-	public function create($name, $structure, $options = '')
-	{
+    //------------------------------------------------------------------------------
+
+    /**
+     * Создание новой таблицы
+     *
+     * @param string $name       Имя таблицы
+     * @param string $structure  Описание структуры
+     * @param string $options    Опции
+     *
+     * @return bool Результат
+     * @deprecated
+     */
+    public function create($name, $structure, $options = '')
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = Eresus_DB::getHandler();
-		$name = $db->options->tableNamePrefix . $name;
-		$query = "CREATE TABLE `$name` ($structure) $options";
-		$result = $this->query($query);
+        $db = Eresus_DB::getHandler();
+        $name = $db->options->tableNamePrefix . $name;
+        $query = "CREATE TABLE `$name` ($structure) $options";
+        $result = $this->query($query);
 
-		if ($result)
-		{
-			$db = Eresus_DB::getHandler();
-			$this->dbSchema = ezcDbSchema::createFromDb($db);
-		}
+        if ($result)
+        {
+            $db = Eresus_DB::getHandler();
+            $this->dbSchema = ezcDbSchema::createFromDb($db);
+        }
 
-		return $result;
-	}
-	//------------------------------------------------------------------------------
+        return $result;
+    }
 
-	/**
-	 * Удаление таблицы
-	 *
-	 * @param string $name       Имя таблицы
-	 *
-	 * @return bool Результат
-	 * @deprecated
-	 */
-	public function drop($name)
-	{
+    //------------------------------------------------------------------------------
+
+    /**
+     * Удаление таблицы
+     *
+     * @param string $name       Имя таблицы
+     *
+     * @return bool Результат
+     * @deprecated
+     */
+    public function drop($name)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = Eresus_DB::getHandler();
-		$name = $db->options->tableNamePrefix . $name;
-		$query = "DROP TABLE `$name`";
-		$result = $this->query($query);
+        $db = Eresus_DB::getHandler();
+        $name = $db->options->tableNamePrefix . $name;
+        $query = "DROP TABLE `$name`";
+        $result = $this->query($query);
 
-		if ($result)
-		{
-			$db = Eresus_DB::getHandler();
-			$this->dbSchema = ezcDbSchema::createFromDb($db);
-		}
+        if ($result)
+        {
+            $db = Eresus_DB::getHandler();
+            $this->dbSchema = ezcDbSchema::createFromDb($db);
+        }
 
-		return $result;
-	}
-	//------------------------------------------------------------------------------
+        return $result;
+    }
 
-	/**
-	 * Производит выборку данных из источника
-	 *
-	 * @param  string   $tables     Список таблиц из которых проводится выборка
-	 * @param  string   $condition  Условие для выборки (WHERE)
-	 * @param  string   $order      Поля для сортировки (ORDER BY)
-	 * @param  string   $fields     Список полей для получения
-	 * @param  int      $limit      Максимльное количество получаемых записей
-	 * @param  int      $offset     Начальное смещение для выборки
-	 * @param  string   $group      Поле для группировки
-	 * @param  bool     $distinct   Вернуть только уникальные записи
-	 *
-	 * @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
-	 * @deprecated
-	 */
-	public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0,
-		$offset = 0, $group = '', $distinct = false)
-	{
+    //------------------------------------------------------------------------------
+
+    /**
+     * Производит выборку данных из источника
+     *
+     * @param  string $tables     Список таблиц из которых проводится выборка
+     * @param  string $condition  Условие для выборки (WHERE)
+     * @param  string $order      Поля для сортировки (ORDER BY)
+     * @param  string $fields     Список полей для получения
+     * @param  int $limit      Максимльное количество получаемых записей
+     * @param  int $offset     Начальное смещение для выборки
+     * @param  string $group      Поле для группировки
+     * @param  bool $distinct   Вернуть только уникальные записи
+     *
+     * @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
+     * @deprecated
+     */
+    public function select($tables, $condition = '', $order = '', $fields = '', $limit = 0,
+                           $offset = 0, $group = '', $distinct = false)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = Eresus_DB::getHandler();
-		$q = $db->createSelectQuery();
-		$e = $q->expr;
+        $db = Eresus_DB::getHandler();
+        $q = $db->createSelectQuery();
+        $e = $q->expr;
 
-		if (empty($fields))
-		{
-			$fields = '*';
-		}
+        if (empty($fields))
+        {
+            $fields = '*';
+        }
 
-		if ($distinct)
-		{
-			$q->selectDistinct($fields);
-		}
-		else
-		{
-			$q->select($fields);
-		}
+        if ($distinct)
+        {
+            $q->selectDistinct($fields);
+        }
+        else
+        {
+            $q->select($fields);
+        }
 
-		$tables = explode(',', $tables);
-		$q->from($tables);
+        $tables = explode(',', $tables);
+        $q->from($tables);
 
-		if ($condition)
-		{
-			$q->where($condition);
-		}
+        if ($condition)
+        {
+            $q->where($condition);
+        }
 
-		if (strlen($order))
-		{
-			$order = explode(',', $order);
-			for ($i = 0; $i < count($order); $i++)
-			{
-				switch ($order[$i]{0})
-				{
-					case '+':
-						$q->orderBy(substr($order[$i], 1));
-					break;
+        if (strlen($order))
+        {
+            $order = explode(',', $order);
+            for ($i = 0; $i < count($order); $i++)
+            {
+                switch ($order[$i]{0})
+                {
+                    case '+':
+                        $q->orderBy(substr($order[$i], 1));
+                        break;
 
-					case '-':
-						$q->orderBy(substr($order[$i], 1), ezcQuerySelect::DESC);
-					break;
+                    case '-':
+                        $q->orderBy(substr($order[$i], 1), ezcQuerySelect::DESC);
+                        break;
 
-					default:
-						$q->orderBy($order[$i]);
-					break;
-				}
-			}
-		}
+                    default:
+                        $q->orderBy($order[$i]);
+                        break;
+                }
+            }
+        }
 
-		if ($limit && $offset)
-		{
-			$q->limit($limit, $offset);
-		}
-		elseif ($limit)
-		{
-			$q->limit($limit);
-		}
+        if ($limit && $offset)
+        {
+            $q->limit($limit, $offset);
+        }
+        elseif ($limit)
+        {
+            $q->limit($limit);
+        }
 
-		if ($group)
-		{
-			$q->groupBy($group);
-		}
+        if ($group)
+        {
+            $q->groupBy($group);
+        }
 
-		$result = $q->fetchAll();
+        $result = $q->fetchAll();
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Вставка элемента в БД
-	 *
-	 * @param string $table  Таблица, в которую надо вставтиь элемент
-	 * @param array  $item   Ассоциативный массив значений
-	 *
-	 * @return mixed  Результат выполнения операции
-	 * @deprecated
-	 */
-	public function insert($table, $item)
-	{
+    /**
+     * Вставка элемента в БД
+     *
+     * @param string $table  Таблица, в которую надо вставтиь элемент
+     * @param array $item   Ассоциативный массив значений
+     *
+     * @return mixed  Результат выполнения операции
+     * @deprecated
+     */
+    public function insert($table, $item)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$fields = $this->fields($table);
-		if (!$table)
-		{
-			return false;
-		}
+        $fields = $this->fields($table);
+        if (!$table)
+        {
+            return false;
+        }
 
-		$q = Eresus_DB::getHandler()->createInsertQuery();
-		$q->insertInto($table);
+        $q = Eresus_DB::getHandler()->createInsertQuery();
+        $q->insertInto($table);
 
-		foreach ($fields as $field)
-		{
-			if (isset($item[$field]))
-			{
-				$q->set($field, $q->bindValue($item[$field]));
-			}
-		}
+        foreach ($fields as $field)
+        {
+            if (isset($item[$field]))
+            {
+                $q->set($field, $q->bindValue($item[$field]));
+            }
+        }
 
         $q->execute();
-		return true;
-	}
-	//-----------------------------------------------------------------------------
+        return true;
+    }
 
-	/**
-	 * Выполняет обновление информации в источнике
-	 *
-	 * @param string $table      Таблица
-	 * @param mixed  $set        Изменения
-	 * @param string $condition  Условие
-	 * @return void
-	 * @deprecated
-	 */
-	public function update($table, $set, $condition)
-	{
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Выполняет обновление информации в источнике
+     *
+     * @param string $table      Таблица
+     * @param mixed $set        Изменения
+     * @param string $condition  Условие
+     * @return void
+     * @deprecated
+     */
+    public function update($table, $set, $condition)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = Eresus_DB::getHandler()->createUpdateQuery();
-		$q->update($table)
-			->where($condition);
+        $q = Eresus_DB::getHandler()->createUpdateQuery();
+        $q->update($table)
+            ->where($condition);
 
-		$set = explode(',', $set);
-		foreach ($set as $each)
-		{
-			list($key, $value) = explode('=', $each);
-			$key = str_replace('`', '', trim($key));
-			$value = preg_replace('/(^\'|\'$)/', '', trim($value));
-			$q->set($key, $q->bindValue($value));
-		}
+        $set = explode(',', $set);
+        foreach ($set as $each)
+        {
+            list($key, $value) = explode('=', $each);
+            $key = str_replace('`', '', trim($key));
+            $value = preg_replace('/(^\'|\'$)/', '', trim($value));
+            $q->set($key, $q->bindValue($value));
+        }
 
         $q->execute();
-	}
+    }
 
-	/**
-	 * Выполняет запрос DELETE к базе данных
-	 *
-	 * @param string $table      таблица, из которой требуется удалить записи
-	 * @param string $condition  признаки удаляемых записей
-	 * @return mixed
-	 * @deprecated
-	 */
-	public function delete($table, $condition)
-	{
+    /**
+     * Выполняет запрос DELETE к базе данных
+     *
+     * @param string $table      таблица, из которой требуется удалить записи
+     * @param string $condition  признаки удаляемых записей
+     * @return mixed
+     * @deprecated
+     */
+    public function delete($table, $condition)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = Eresus_DB::getHandler()->createDeleteQuery();
-		$q->deleteFrom($table)
-			->where($condition);
+        $q = Eresus_DB::getHandler()->createDeleteQuery();
+        $q->deleteFrom($table)
+            ->where($condition);
         $q->execute();
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Получение списка полей таблицы
-	 *
-	 * @param string $table            Имя таблицы
-	 * @param bool   $info [optional]
-	 * @return array|bool  Список полей, с описанием, если $info = true
-	 *
-	 * @deprecated с 2.14
-	 */
-	public function fields($table, $info = false)
-	{
+    /**
+     * Получение списка полей таблицы
+     *
+     * @param string $table            Имя таблицы
+     * @param bool $info [optional]
+     * @return array|bool  Список полей, с описанием, если $info = true
+     *
+     * @deprecated с 2.14
+     */
+    public function fields($table, $info = false)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$schm = $this->getSchema()->getSchema();
-		if ($schm[$table]->fields)
-		{
-			return array_keys($schm[$table]->fields);
-		}
-		else
-		{
-			return false;
-		}
-	}
+        $schm = $this->getSchema()->getSchema();
+        if ($schm[$table]->fields)
+        {
+            return array_keys($schm[$table]->fields);
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-	/**
-	 * Выбрать одну запись из БД
-	 *
-	 * @param string $table      Имя таблицы
-	 * @param string $condition  SQL-условие
-	 * @param string $fields     Выбираемые поля
-	 * @return array|bool
-	 * @deprecated
-	 */
-	public function selectItem($table, $condition, $fields = '')
-	{
+    /**
+     * Выбрать одну запись из БД
+     *
+     * @param string $table      Имя таблицы
+     * @param string $condition  SQL-условие
+     * @param string $fields     Выбираемые поля
+     * @return array|bool
+     * @deprecated
+     */
+    public function selectItem($table, $condition, $fields = '')
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = Eresus_DB::getHandler()->createSelectQuery();
+        $q = Eresus_DB::getHandler()->createSelectQuery();
 
-		if ($fields == '')
-		{
-			$fields = '*';
-		}
+        if ($fields == '')
+        {
+            $fields = '*';
+        }
 
-		$q->select($fields)
-			->from($table)
-			->where($condition)
-			->limit(1);
+        $q->select($fields)
+            ->from($table)
+            ->where($condition)
+            ->limit(1);
 
-		$item = $q->fetch();
+        $item = $q->fetch();
 
-		return $item;
-	}
+        return $item;
+    }
 
-	/**
-	 * Обновляет одну запись
-	 *
-	 * @param string $table
-	 * @param array  $item
-	 * @param string $condition
-	 * @return bool
-	 * @deprecated
-	 */
-	public function updateItem($table, $item, $condition)
-	{
+    /**
+     * Обновляет одну запись
+     *
+     * @param string $table
+     * @param array $item
+     * @param string $condition
+     * @return bool
+     * @deprecated
+     */
+    public function updateItem($table, $item, $condition)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$fields = $this->fields($table);
-		if (!$table)
-		{
-			return false;
-		}
+        $fields = $this->fields($table);
+        if (!$table)
+        {
+            return false;
+        }
 
-		$q = Eresus_DB::getHandler()->createUpdateQuery();
-		$q->update($table)
-			->where($condition);
+        $q = Eresus_DB::getHandler()->createUpdateQuery();
+        $q->update($table)
+            ->where($condition);
 
-		foreach ($fields as $field)
-		{
-			if (isset($item[$field]))
-			{
-				$q->set($field, $q->bindValue($item[$field]));
-			}
-		}
+        foreach ($fields as $field)
+        {
+            if (isset($item[$field]))
+            {
+                $q->set($field, $q->bindValue($item[$field]));
+            }
+        }
 
         $q->execute();
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Возвращает количество записей в таблице
-	 *
-	 * @param string $table      таблица, для которой требуется посчитать кол-во записей
-	 * @param string $condition
-	 * @param string $group
-	 * @param bool   $rows
-	 * @return int
-	 * @deprecated
-	 */
-	public function count($table, $condition = false, $group = false, $rows = false)
-	{
+    /**
+     * Возвращает количество записей в таблице
+     *
+     * @param string $table      таблица, для которой требуется посчитать кол-во записей
+     * @param string $condition
+     * @param string $group
+     * @param bool $rows
+     * @return int
+     * @deprecated
+     */
+    public function count($table, $condition = false, $group = false, $rows = false)
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$q = Eresus_DB::getHandler()->createSelectQuery();
-		$e = $q->expr;
+        $q = Eresus_DB::getHandler()->createSelectQuery();
+        $e = $q->expr;
 
-		$q->select($q->alias($e->count('*'), 'count'))
-			->from($table);
+        $q->select($q->alias($e->count('*'), 'count'))
+            ->from($table);
 
-		if ($condition)
-		{
-			$q->where($condition);
-		}
+        if ($condition)
+        {
+            $q->where($condition);
+        }
 
-		if ($group)
-		{
-			$q->groupBy($group);
-		}
+        if ($group)
+        {
+            $q->groupBy($group);
+        }
 
-		$result = $q->fetchAll();
-		if ($rows)
-		{
-			return count($result);
-		}
-		else
-		{
-			return intval($result[0]['count']);
-		}
-	}
-	//-----------------------------------------------------------------------------
+        $result = $q->fetchAll();
+        if ($rows)
+        {
+            return count($result);
+        }
+        else
+        {
+            return intval($result[0]['count']);
+        }
+    }
 
-	/**
-	 * Возвращает идентификатор последней вставленной записи
-	 *
-	 * @return mixed
-	 * @deprecated
-	 */
-	public function getInsertedID()
-	{
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Возвращает идентификатор последней вставленной записи
+     *
+     * @return mixed
+     * @deprecated
+     */
+    public function getInsertedID()
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$db = Eresus_DB::getHandler();
-		return $db->lastInsertId();
-	}
-	//-----------------------------------------------------------------------------
+        $db = Eresus_DB::getHandler();
+        return $db->lastInsertId();
+    }
 
-	/**
-	 *
-	 * @param string $table
-	 * @param string $param
-	 *
-	 * @return array|string
-	 * @deprecated
-	 */
-	public function tableStatus($table, $param='')
-	{
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
-		if ($result)
-		{
-			$result = $result[0];
-			if (!empty($param))
-			{
-				$result = $result[$param];
-			}
-		}
-		return $result;
-	}
-	//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 
-	/**
-	 * Экранирует потенциально опасные символы
-	 *
-	 * Начиная с 2.13 метод ничего не делает.
-	 *
-	 * @param mixed $src  Входные данные
-	 * @return mixed
-	 * @deprecated
-	 */
-	public function escape($src)
-	{
+    /**
+     *
+     * @param string $table
+     * @param string $param
+     *
+     * @return array|string
+     * @deprecated
+     */
+    public function tableStatus($table, $param = '')
+    {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-		return $src;
-	}
-	//-----------------------------------------------------------------------------
+        $result = $this->query_array("SHOW TABLE STATUS LIKE '" . $this->prefix . $table . "'");
+        if ($result)
+        {
+            $result = $result[0];
+            if (!empty($param))
+            {
+                $result = $result[$param];
+            }
+        }
+        return $result;
+    }
+
+    //-----------------------------------------------------------------------------
+
+    /**
+     * Экранирует потенциально опасные символы
+     *
+     * Начиная с 2.13 метод ничего не делает.
+     *
+     * @param mixed $src  Входные данные
+     * @return mixed
+     * @deprecated
+     */
+    public function escape($src)
+    {
+        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
+        return $src;
+    }
+    //-----------------------------------------------------------------------------
 }

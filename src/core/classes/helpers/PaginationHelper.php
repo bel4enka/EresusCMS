@@ -36,8 +36,7 @@
  *
  * @since 2.14
  */
-class PaginationHelper
-    implements Iterator, Countable
+class PaginationHelper implements Iterator, Countable
 {
     /**
      * Общее количество страниц
