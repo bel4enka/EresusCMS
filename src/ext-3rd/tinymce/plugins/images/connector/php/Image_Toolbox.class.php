@@ -118,6 +118,8 @@ class Image_Toolbox
         )
     );
 
+    public $_gd_version_number;
+
     /**
      * Which PHP image resize function to be used
      * imagecopyresampled only supported with GD >= 2.0
@@ -616,9 +618,9 @@ class Image_Toolbox
                             $output_quality = IMAGE_TOOLBOX_DEFAULT_8BIT_COLORS;
                         }
                         imagetruecolortopalette($dummy, $dither, $output_quality);
+                        imagegif($dummy);
+                        imagedestroy($dummy);
                     }
-                    imagegif($dummy);
-                    imagedestroy($dummy);
                 }
                 else
                 {
@@ -672,9 +674,9 @@ class Image_Toolbox
                             $output_quality = IMAGE_TOOLBOX_DEFAULT_8BIT_COLORS;
                         }
                         imagetruecolortopalette($dummy, $dither, $output_quality);
+                        imagepng($dummy);
+                        imagedestroy($dummy);
                     }
-                    imagepng($dummy);
-                    imagedestroy($dummy);
                 }
                 else
                 {
@@ -736,9 +738,9 @@ class Image_Toolbox
                             $output_quality = IMAGE_TOOLBOX_DEFAULT_8BIT_COLORS;
                         }
                         imagetruecolortopalette($dummy, $dither, $output_quality);
+                        imagegif($dummy, $filename);
+                        imagedestroy($dummy);
                     }
-                    imagegif($dummy, $filename);
-                    imagedestroy($dummy);
                 }
                 else
                 {
@@ -791,9 +793,9 @@ class Image_Toolbox
                             $output_quality = IMAGE_TOOLBOX_DEFAULT_8BIT_COLORS;
                         }
                         imagetruecolortopalette($dummy, $dither, $output_quality);
+                        imagepng($dummy, $filename);
+                        imagedestroy($dummy);
                     }
-                    imagepng($dummy, $filename);
-                    imagedestroy($dummy);
                 }
                 else
                 {

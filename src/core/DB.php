@@ -219,18 +219,18 @@ class DBQueryInsider extends PDOStatement
     /**
      * Bind param
      *
-     * @param mixed $paramno
+     * @param int   $paramNo
      * @param mixed $param
-     * @param $type
-     * @param $maxlen
-     * @param $driverdata
+     * @param int   $type
+     * @param int   $maxLength
+     * @param mixed $driverData
      *
      * @return bool
      */
-    public function bindParam($paramno, &$param, $type = null, $maxlen = null, $driverdata = null)
+    public function bindParam($paramNo, &$param, $type = null, $maxLength = null, $driverData = null)
     {
-        $this->bindValue($paramno, $param, $type);
-        return $true;
+        $this->bindValue($paramNo, $param, $type);
+        return true;
     }
 
     /**
