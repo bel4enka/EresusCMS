@@ -228,7 +228,7 @@ class TinyImageManager
      * Проверка на разрешение записи в папку (не системное)
      *
      * @param string $requestDirectory  Запрашиваемая папка (относительно DIR_IMAGES)
-     * @return path|false
+     * @return string|bool
      */
     private function AccessDir($requestDirectory)
     {
@@ -241,8 +241,6 @@ class TinyImageManager
 
         return false;
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Дерево каталогов
@@ -573,7 +571,7 @@ class TinyImageManager
      * Выполняет загрузку файла на сервер
      *
      * @param string $dir
-     * @param syring $type
+     * @param string $type
      *
      * @return string
      *
