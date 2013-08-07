@@ -244,12 +244,15 @@ class Eresus_Feed_Writer
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Genarates an UUID
-	 * @author     Anis uddin Ahmad <admin@ajaxray.com>
-	 * @param      string  an optional prefix
-	 * @return     string  the formated uuid
+	 * Generates an UUID
+	 *
+     * @author     Anis uddin Ahmad <admin@ajaxray.com>
+	 * @param string $key
+     * @param string $prefix  an optional prefix
+     *
+	 * @return string  the formated uuid
 	 */
-	public function uuid($key = null, $prefix = '')
+	public static function uuid($key = null, $prefix = '')
 	{
 		$key = ($key == null)? uniqid(rand()) : $key;
 		$chars = md5($key);
@@ -261,7 +264,6 @@ class Eresus_Feed_Writer
 
 		return $prefix . $uuid;
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Prints the xml and rss namespace
