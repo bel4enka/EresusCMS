@@ -97,7 +97,7 @@ class Templates
                 }
                 else
                 {
-                    $title = admNoTitle;
+                    $title = 'n/a';
                 }
                 $result[basename($filename, '.html')] = $title;
             }

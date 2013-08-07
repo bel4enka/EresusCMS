@@ -477,6 +477,7 @@ class Eresus_Plugin_Registry
                 str_replace('_', '/', substr($className, strlen($pluginName) + 1)) . '.php';
             if (file_exists($filename))
             {
+                /** @noinspection PhpIncludeInspection */
                 include $filename;
                 return Eresus_Kernel::classExists($className);
             }

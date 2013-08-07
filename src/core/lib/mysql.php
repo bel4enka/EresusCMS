@@ -336,7 +336,7 @@ class MySQL
 	 * @param string $table      Таблица
 	 * @param mixed  $set        Изменения
 	 * @param string $condition  Условие
-	 * @return unknown
+	 * @return void
 	 * @deprecated
 	 */
 	public function update($table, $set, $condition)
@@ -381,7 +381,7 @@ class MySQL
 	 *
 	 * @param string $table            Имя таблицы
 	 * @param bool   $info [optional]
-	 * @return array|false  Список полей, с описанием, если $info = true
+	 * @return array|bool  Список полей, с описанием, если $info = true
 	 *
 	 * @deprecated с 2.14
 	 */
@@ -398,7 +398,6 @@ class MySQL
 			return false;
 		}
 	}
-	//-----------------------------------------------------------------------------
 
 	/**
 	 * Выбрать одну запись из БД
@@ -406,7 +405,7 @@ class MySQL
 	 * @param string $table      Имя таблицы
 	 * @param string $condition  SQL-условие
 	 * @param string $fields     Выбираемые поля
-	 * @return array|false
+	 * @return array|bool
 	 * @deprecated
 	 */
 	public function selectItem($table, $condition, $fields = '')

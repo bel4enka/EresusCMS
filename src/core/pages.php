@@ -146,9 +146,9 @@ class TPages
      * @param $skip
      * @param $owner
      * @param $level
-     * @return unknown_type
+     * @return string
      */
-    function selectList($skip=0, $owner = 0, $level = 0)
+    private function selectList($skip=0, $owner = 0, $level = 0)
     {
         $items = Eresus_CMS::getLegacyKernel()->sections->
             children($owner, Eresus_CMS::getLegacyKernel()->user['access']);
@@ -171,13 +171,12 @@ class TPages
         }
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Функция перемещает страницу вверх в списке
      * @return void
      */
-    function moveUp()
+    private function moveUp()
     {
         $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
         dbReorderItems('pages', "`owner`='".$item['owner']."'");
@@ -198,13 +197,12 @@ class TPages
         }
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Функция перемещает страницу вниз в списке
      * @return void
      */
-    function moveDown()
+    private function moveDown()
     {
         $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
         dbReorderItems('pages', "`owner`='".$item['owner']."'");
@@ -226,14 +224,13 @@ class TPages
         }
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Перемещает страницу из одной ветки в другую
      *
      * @return string
      */
-    function move()
+    private function move()
     {
         $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
         if (!is_null(arg('to')))
@@ -283,14 +280,13 @@ class TPages
         }
         return '';
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * ???
-     * @param unknown_type $id
-     * @return unknown_type
+     * @param int $id
+     * @return void
      */
-    function deleteBranch($id)
+    private function deleteBranch($id)
     {
         $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$id."'");
         if (Eresus_CMS::getLegacyKernel()->plugins->load($item['type']))
@@ -317,20 +313,18 @@ class TPages
         }
         Eresus_CMS::getLegacyKernel()->db->delete('pages', "`id`='".$id."'");
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Удаляет страницу
      * @return void
      */
-    function delete()
+    private function delete()
     {
         $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
         Eresus_CMS::getLegacyKernel()->sections->delete(arg('id', 'int'));
         dbReorderItems('pages', "`owner`='".$item['owner']."'");
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает список типов контента в виде, пригодном для построения выпадающего списка
@@ -374,11 +368,10 @@ class TPages
 
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * ???
-     * @return unknown_type
+     * @return array
      */
     function loadTemplates()
     {
@@ -390,11 +383,10 @@ class TPages
         $result[1]= array_keys($list);
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Функция выводит форму для добавления новой страницы
-     * @return unknown_type
+     * @return string
      */
     function create()
     {
@@ -440,7 +432,6 @@ class TPages
             renderForm($form, Eresus_CMS::getLegacyKernel()->request['arg']);
         return $result;
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает диалог изменения свойств раздела
@@ -569,7 +560,7 @@ class TPages
 
     /**
      * ???
-     * @return unknown_type
+     * @return string
      */
     function sectionIndex()
     {
@@ -604,7 +595,7 @@ class TPages
 
     /**
      * ???
-     * @return unknown_type
+     * @return string
      */
     function adminRender()
     {
