@@ -106,7 +106,7 @@ class Eresus_HTTP_Parameters
      */
     public function get($name, $default = null)
     {
-        return $this->has($name) ? $this->data[$name] : $default;
+        return $this->has($name) ? (@$this->data[$name] ?: $this->data["wyswyg_$name"]) : $default;
     }
 
     /**
@@ -171,7 +171,8 @@ class Eresus_HTTP_Parameters
      */
     public function has($name)
     {
-        return array_key_exists($name, $this->data);
+        return array_key_exists($name, $this->data)
+            || array_key_exists("wyswyg_$name", $this->data);
     }
 }
 
