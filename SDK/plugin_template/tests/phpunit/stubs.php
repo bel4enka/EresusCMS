@@ -22,12 +22,12 @@ class Eresus_Plugin extends UniversalStub
 }
 
 /**
- * Заглушка для класса Plugin
+ * Заглушка для класса ContentPlugin
  *
  * @package Eresus
  * @subpackage Tests
  */
-class Plugin extends Eresus_Plugin
+class ContentPlugin extends Eresus_Plugin
 {
 }
 
@@ -52,12 +52,22 @@ class Eresus_CMS extends MockFacade
 }
 
 /**
- * Заглушка для класса DB
+ * Заглушка для класса Eresus_CMS_Exception
  *
  * @package Eresus
  * @subpackage Tests
  */
-class DB extends MockFacade
+class Eresus_CMS_Exception extends Exception
+{
+}
+
+/**
+ * Заглушка для класса Eresus_DB
+ *
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_DB extends MockFacade
 {
 }
 

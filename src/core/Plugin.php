@@ -307,7 +307,8 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
      */
     public function install()
     {
-        $this->templates()->install();
+        $this->installTemplates();
+        $this->createEntityTables();
     }
 
     /**
@@ -315,8 +316,9 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
      */
     public function uninstall()
     {
+        $this->dropEntityTables();
         $this->cleanupDB();
-        $this->templates()->uninstall();
+        $this->uninstallTemplates();
     }
 
     /**
@@ -573,24 +575,6 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     }
 
     /**
-     * Удаляет таблицы БД при удалении плагина
-     *
-     * @since 3.01
-     */
-    protected function cleanupDB()
-    {
-        $eresus = Eresus_CMS::getLegacyKernel();
-        $tables = $eresus->db
-            ->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}_%'");
-        $tables = array_merge($tables, $eresus->db->
-            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}'"));
-        for ($i = 0; $i < count($tables); $i++)
-        {
-            $this->dbDropTable(substr(current($tables[$i]), strlen($this->getName()) + 1));
-        }
-    }
-
-    /**
      * Замена макросов
      *
      * @param  string  $template  Строка в которой требуется провести замену макросов
@@ -697,6 +681,94 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     {
         $result = Eresus_CMS::getLegacyKernel()->db->drop($this->__table($name));
         return $result;
+    }
+
+    /**
+     * Удаляет таблицы БД при удалении плагина
+     *
+     * @since 3.01
+     */
+    protected function cleanupDB()
+    {
+        $eresus = Eresus_CMS::getLegacyKernel();
+        $tables = $eresus->db
+            ->query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}_%'");
+        $tables = array_merge($tables, $eresus->db->
+            query_array("SHOW TABLES LIKE '{$eresus->db->prefix}{$this->getName()}'"));
+        for ($i = 0; $i < count($tables); $i++)
+        {
+            $this->dbDropTable(substr(current($tables[$i]), strlen($this->getName()) + 1));
+        }
+    }
+
+    /**
+     * Создаёт таблицы БД
+     *
+     * Потомки могут перекрывать этот метод, чтобы изменить процедуру.
+     *
+     * @since 3.01
+     */
+    protected function createEntityTables()
+    {
+        $driver = Eresus_ORM::getDriver();
+        $it = new DirectoryIterator($this->getCodeDir() . '/classes/Entity/Table');
+        foreach ($it as $fileInfo)
+        {
+            /** @var DirectoryIterator $fileInfo */
+            if (!$fileInfo->isDot())
+            {
+                $table = Eresus_ORM::getTable($this, $fileInfo->getBasename('.php'));
+                $driver->createTable($table);
+            }
+        }
+
+    }
+
+    /**
+     * Удаляет таблицы БД
+     *
+     * Потомки могут перекрывать этот метод, чтобы изменить процедуру.
+     *
+     * @since 3.01
+     */
+    protected function dropEntityTables()
+    {
+        $driver = Eresus_ORM::getDriver();
+        $it = new DirectoryIterator($this->getCodeDir() . '/classes/Entity/Table');
+        foreach ($it as $fileInfo)
+        {
+            /** @var DirectoryIterator $fileInfo */
+            if (!$fileInfo->isDot())
+            {
+                $table = Eresus_ORM::getTable($this, $fileInfo->getBasename('.php'));
+                $driver->dropTable($table);
+            }
+        }
+
+    }
+
+    /**
+     * Устанавливает шаблоны КИ модуля
+     *
+     * Потомки могут перекрывать этот метод, чтобы изменить процедуру установки шаблонов.
+     *
+     * @since 3.01
+     */
+    protected function installTemplates()
+    {
+        $this->templates()->install();
+    }
+
+    /**
+     * Удаляет шаблоны КИ модуля
+     *
+     * Потомки могут перекрывать этот метод, чтобы изменить процедуру удаления шаблонов.
+     *
+     * @since 3.01
+     */
+    protected function uninstallTemplates()
+    {
+        $this->templates()->uninstall();
     }
 }
 

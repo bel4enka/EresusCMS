@@ -155,11 +155,9 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
     public function testInstall()
     {
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
-            ->setMethods(array('templates'))->getMock();
-        $templates = $this->getMockBuilder('Eresus_Plugin_Templates')->disableOriginalConstructor()
-            ->setMethods(array('install'))->getMock();
-        $templates->expects($this->once())->method('install');
-        $plugin->expects($this->once())->method('templates')->will($this->returnValue($templates));
+            ->setMethods(array('installTemplates', 'createEntityTables'))->getMock();
+        $plugin->expects($this->once())->method('installTemplates');
+        $plugin->expects($this->once())->method('createEntityTables');
         /** @var Eresus_Plugin $plugin */
         $plugin->install();
     }
@@ -172,11 +170,9 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
     public function testUninstall()
     {
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
-            ->setMethods(array('templates', 'cleanupDB'))->getMock();
-        $templates = $this->getMockBuilder('Eresus_Plugin_Templates')->disableOriginalConstructor()
-            ->setMethods(array('uninstall'))->getMock();
-        $templates->expects($this->once())->method('uninstall');
-        $plugin->expects($this->once())->method('templates')->will($this->returnValue($templates));
+            ->setMethods(array('uninstallTemplates', 'dropEntityTables', 'cleanupDB'))->getMock();
+        $plugin->expects($this->once())->method('uninstallTemplates');
+        $plugin->expects($this->once())->method('dropEntityTables');
         $plugin->expects($this->once())->method('cleanupDB');
         /** @var Eresus_Plugin $plugin */
         $plugin->uninstall();

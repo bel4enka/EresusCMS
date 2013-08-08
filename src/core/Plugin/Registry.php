@@ -164,6 +164,7 @@ class Eresus_Plugin_Registry
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
+        $page = Eresus_Kernel::app()->getPage();
         $filename = $legacyKernel->froot . 'ext/'.$name.'.php';
         if (file_exists($filename))
         {
@@ -180,28 +181,31 @@ class Eresus_Plugin_Registry
             ini_set('track_errors', false);
             if (!$valid)
             {
-                Eresus_Kernel::app()->getPage()->addErrorMessage(
-                    sprintf('Plugin "%s" is broken: %s', $name, $php_errormsg));
+                $page->addErrorMessage(sprintf('Plugin "%s" is broken: %s', $name,
+                    $GLOBALS['php_errormsg']));
                 return;
             }
 
             $className = $name;
             if (!class_exists($className, false) && class_exists('T' . $className, false))
             {
-                $className = 'T' . $className; // FIXME: Обратная совместимость с версиями до 2.10b2
+                // TODO: Удалить. Обратная совместимость с версиями до 2.10b2
+                $className = 'T' . $className;
             }
 
             if (class_exists($className, false))
             {
-                $this->items[$name] = new $className();
-                $this->items[$name]->install();
-                $item = $this->items[$name]->__item();
+                /** @var Eresus_Plugin|TContentPlugin $plugin */
+                $plugin = new $className;
+                $this->items[$name] = $plugin;
+                $plugin->install();
+                $item = $plugin->__item();
                 $item['info'] = serialize($info);
                 Eresus_CMS::getLegacyKernel()->db->insert('plugins', $item);
             }
             else
             {
-                Eresus_Kernel::app()->getPage()->addErrorMessage(
+                $page->addErrorMessage(
                     sprintf(errClassNotFound, $className));
             }
         }
@@ -211,7 +215,7 @@ class Eresus_Plugin_Registry
                 $filename, $name);
             $msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
             $msg = sprintf($msg, $filename, $name);
-            Eresus_Kernel::app()->getPage()->addErrorMessage($msg);
+            $page->addErrorMessage($msg);
         }
     }
 
