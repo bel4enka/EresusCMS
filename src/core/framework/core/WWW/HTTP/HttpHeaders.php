@@ -32,7 +32,7 @@
 /**
  * HTTP Headers
  *
- * @package HTTP
+ * @package Eresus
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */
@@ -96,7 +96,7 @@ class HttpHeaders
 /**
  * HTTP Header
  *
- * @package HTTP
+ * @package Eresus
  *
  * @author Mikhail Krasilnikov <mk@procreat.ru>
  */

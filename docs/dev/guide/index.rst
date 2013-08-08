@@ -7,6 +7,8 @@
    install
    uninstall
    responses
+   db
+   orm
    providing_content_type
    events
    templates

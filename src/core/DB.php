@@ -89,9 +89,10 @@ class Eresus_DB implements ezcBaseConfigurationInitializer
     }
 
     /**
-     * Returns connection handler
+     * Возвращает соединение с БД
      *
-     * @param string|bool $name  Optional connection name
+     * @param string|bool $name  опциональное имя соединения (или false для соединения по умолчанию)
+     *
      * @return ezcDbHandler
      */
     public static function getHandler($name = false)
