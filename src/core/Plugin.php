@@ -717,11 +717,12 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
             /** @var DirectoryIterator $fileInfo */
             if (!$fileInfo->isDot())
             {
-                $table = Eresus_ORM::getTable($this, $fileInfo->getBasename('.php'));
-                $className = get_class($this) . '_Entity_Table_' . $table;
+                $tableName = $fileInfo->getBasename('.php');
+                $className = get_class($this) . '_Entity_Table_' . $tableName;
                 $class = new ReflectionClass($className);
                 if (!$class->isAbstract())
                 {
+                    $table = Eresus_ORM::getTable($this, $tableName);
                     $driver->createTable($table);
                 }
             }
