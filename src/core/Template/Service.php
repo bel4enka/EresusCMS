@@ -75,14 +75,16 @@ class Eresus_Template_Service
     /**
      * Устанавливает шаблоны в общую папку шаблонов
      *
-     * @param string $filename  абсолютный путь к устанавливаемому шаблону
-     * @param string $target    путь относительно общей директории шаблонов
+     * @param string $filename   абсолютный путь к устанавливаемому шаблону
+     * @param string $target     путь относительно общей директории шаблонов
+     * @param bool   $overwrite  если целевой файл уже существует и этот аргумент равен true, файл
+     *                           будет перезаписан, если false — будет вброшено исключение
      *
      * @throws RuntimeException
      *
      * @since 3.01
      */
-    public function install($filename, $target)
+    public function install($filename, $target, $overwrite = true)
     {
         if (!file_exists($filename))
         {
@@ -109,7 +111,17 @@ class Eresus_Template_Service
 
         if (file_exists($target))
         {
-            throw new RuntimeException(sprintf('Template "%s" is already installed', $target));
+            if ($overwrite)
+            {
+                if (!unlink($target))
+                {
+                    throw new RuntimeException(sprintf('Can not overwrite template "%s"', $target));
+                }
+            }
+            else
+            {
+                throw new RuntimeException(sprintf('Template "%s" is already installed', $target));
+            }
         }
 
         if (!copy($filename, $target))
