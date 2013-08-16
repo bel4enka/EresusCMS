@@ -528,8 +528,8 @@ abstract class Eresus_ORM_Table
     /**
      * Объявляет таблицу псевдонимом другой таблицы
      *
-     * Если вы используете этот метод в {@link setTableDefinition()}, то такие методы как
-     * {@link setTableName()}, {@link hasColumns()}, {@link index()} и т. д. использовать нельзя.
+     * Если вы используете этот метод в {@link setTableDefinition()}, то методы
+     * {@link setTableName()} и {@link index()} использовать нельзя.
      *
      * @param string $tableName  имя основной таблицы (это имя именно таблицы БД, а не её класса)
      *

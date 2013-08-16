@@ -108,7 +108,7 @@ ORM
    class Articles_Entity_Article extends Eresus_ORM_Entity
    {
        /*
-        * Изменяем тип свойства «posted» с int на string
+        * Изменяем тип свойства «posted» с DateTime на string
         */
        protected function getPosted()
        {
