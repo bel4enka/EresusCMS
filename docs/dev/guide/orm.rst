@@ -67,16 +67,25 @@ ORM
        }
    }
 
-
-Описание структуры таблиц в модуле ORM сходно с
-`описанием моделей в Doctrine 1.x <http://docs.doctrine-project.org/projects/doctrine1/en/latest/en/manual/defining-models.html>`_.
-Реализованы следующие методы:
-
-* `Eresus_ORM_Table::setTableName <../../api/classes/Eresus_ORM_Table.html#method_setTableName>`_ (Doctrine_Record_Abstract::setTableName)
-* `Eresus_ORM_Table::hasColumns <../../api/classes/Eresus_ORM_Table.html#method_hasColumns>`_ (Doctrine_Record_Abstract::hasColumns)
-* `Eresus_ORM_Table::index <../../api/classes/Eresus_ORM_Table.html#method_index>`_ (Doctrine_Record_Abstract::index)
-
 Это минимальная необходимая конфигурация.
+
+В потомке `Eresus_ORM_Table <../../api/classes/Eresus_ORM_Table.html>`_ надо перекрыть метод
+``setTableDefinition`` и описать в нём таблицу: имя, поля и индексы.
+
+.. hint::
+
+   Описание структуры таблиц в модуле ORM сходно с
+   `описанием моделей в Doctrine 1.x <http://docs.doctrine-project.org/projects/doctrine1/en/latest/en/manual/defining-models.html>`_.
+
+Имя таблицы задаётся при помощи метода
+`Eresus_ORM_Table::setTableName <../../api/classes/Eresus_ORM_Table.html#method_setTableName>`_.
+
+При помощи метода
+`Eresus_ORM_Table::hasColumns <../../api/classes/Eresus_ORM_Table.html#method_hasColumns>`_
+задаётся список полей.
+
+При помощи метода `Eresus_ORM_Table::index <../../api/classes/Eresus_ORM_Table.html#method_index>`_
+задаются индексы.
 
 Геттеры и сеттеры
 -----------------

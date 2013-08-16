@@ -47,6 +47,10 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
      */
     public function createTable(Eresus_ORM_Table $table)
     {
+        if ($table->isAlias())
+        {
+            return;
+        }
         $db = Eresus_DB::getHandler();
         $tableName = $db->options->tableNamePrefix . $table->getName();
 

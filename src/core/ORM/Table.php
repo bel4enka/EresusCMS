@@ -74,7 +74,17 @@ abstract class Eresus_ORM_Table
      * @var string
      * @since 3.01
      */
-    private $tableName;
+    private $tableName = null;
+
+    /**
+     * Признак того, что таблица является псевдонимом другой
+     *
+     * В этом случае в {@link tableName} хранится имя основной таблицы
+     *
+     * @var bool
+     * @since 3.01
+     */
+    private $isAlias = false;
 
     /**
      * Описание столбцов
@@ -220,6 +230,18 @@ abstract class Eresus_ORM_Table
     public function getIndexes()
     {
         return $this->indexes;
+    }
+
+    /**
+     * Возвращает true если этот класс является псевдонимом другой таблицы
+     *
+     * @return bool
+     *
+     * @since 3.01
+     */
+    public function isAlias()
+    {
+        return $this->isAlias;
     }
 
     /**
@@ -479,13 +501,60 @@ abstract class Eresus_ORM_Table
      *
      * @param string $name
      *
+     * @throws LogicException  если перед setTableName() был вызван {@link isAlias()} или
+     *                         setTableName() вызван повторно
      * @return void
      *
      * @since 3.01
      */
     protected function setTableName($name)
     {
+        if (null !== $this->tableName)
+        {
+            if ($this->isAlias)
+            {
+                throw new LogicException(
+                    'Method setTableName() can not be executed after isAlias()');
+            }
+            else
+            {
+                throw new LogicException(
+                    'Method setTableName() can not be executed more then once');
+            }
+        }
         $this->tableName = $name;
+    }
+
+    /**
+     * Объявляет таблицу псевдонимом другой таблицы
+     *
+     * Если вы используете этот метод в {@link setTableDefinition()}, то такие методы как
+     * {@link setTableName()}, {@link hasColumns()}, {@link index()} и т. д. использовать нельзя.
+     *
+     * @param string $tableName  имя основной таблицы (это имя именно таблицы БД, а не её класса)
+     *
+     * @throws LogicException  если перед isAlias() был вызван {@link setTableName()} или isAlias()
+     *                         вызван повторно
+     *
+     * @since 3.01
+     */
+    protected function isAliasFor($tableName)
+    {
+        if (null !== $this->tableName)
+        {
+            if ($this->isAlias)
+            {
+                throw new LogicException(
+                    'Method isAlias() can not be executed more then once');
+            }
+            else
+            {
+                throw new LogicException(
+                    'Method isAlias() can not be executed after setTableName()');
+            }
+        }
+        $this->tableName = $tableName;
+        $this->isAlias = true;
     }
 
     /**
