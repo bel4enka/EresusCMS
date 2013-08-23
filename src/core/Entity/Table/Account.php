@@ -80,5 +80,33 @@ class Eresus_Entity_Table_Account extends Eresus_ORM_Table
             ),
         ));
     }
+
+    /**
+     * Возвращает учётную запись по имени пользователя (login)
+     *
+     * @param string $name
+     *
+     * @return Eresus_ORM_Entity|null
+     */
+    public function findByName($name)
+    {
+        $q = $this->createSelectQuery();
+        $q->where($q->expr->eq('login', $q->bindValue($name, ':login')));
+        return $this->loadOneFromQuery($q);
+    }
+
+    /**
+     * Возвращает учётную запись по адресу e-mail
+     *
+     * @param string $email
+     *
+     * @return Eresus_ORM_Entity|null
+     */
+    public function findByMail($email)
+    {
+        $q = $this->createSelectQuery();
+        $q->where($q->expr->eq('mail', $q->bindValue($email, ':mail')));
+        return $this->loadOneFromQuery($q);
+    }
 }
 
