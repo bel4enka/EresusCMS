@@ -118,7 +118,8 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $driver = new Eresus_ORM_Driver_MySQL;
 
         $datetime = new DateTime('01-02-03 12:34:56');
-        $this->assertEquals(981203696, $driver->pdoFieldValue($datetime, 'timestamp'));
+        $this->assertEquals($datetime->getTimestamp(),
+            $driver->pdoFieldValue($datetime, 'timestamp'));
         $timestamp = time();
         $this->assertEquals($timestamp, $driver->pdoFieldValue($timestamp, 'timestamp'));
         $this->assertEquals('2001-02-03', $driver->pdoFieldValue($datetime, 'date'));
