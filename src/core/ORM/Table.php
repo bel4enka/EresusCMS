@@ -575,12 +575,13 @@ abstract class Eresus_ORM_Table
      * Возможные типы полей:
      *
      * - boolean
-     * - integer
-     * - float
-     * - string
-     * - timestamp
-     * - time
      * - date
+     * - datetime
+     * - float
+     * - integer
+     * - string
+     * - time
+     * - timestamp — хранится как целое число
      *
      * @param array $columns
      *
@@ -713,6 +714,34 @@ abstract class Eresus_ORM_Table
     }
 
     /**
+     * Превращает значение PDO в значение ORM
+     *
+     * @param mixed  $value  значение поля
+     * @param array  $attrs  атрибуты поля, см. {@link hasColumns()}
+     *
+     * @throws Eresus_Exception_InvalidArgumentType
+     *
+     * @return mixed
+     *
+     * @since 3.01
+     */
+    protected function convertPdoValue($value, array $attrs)
+    {
+        switch ($attrs['type'])
+        {
+            case 'date':
+            case 'time':
+            case 'datetime':
+                $value = new DateTime(strval($value));
+                break;
+            case 'timestamp':
+                $value = new DateTime('@' . strval($value));
+                break;
+        }
+        return $value;
+    }
+
+    /**
      * Фабрика сущностей
      *
      * @param array $values
@@ -739,14 +768,7 @@ abstract class Eresus_ORM_Table
         $entityClass = $this->getEntityClass();
         foreach ($this->getColumns() as $name => $attrs)
         {
-            switch ($attrs['type'])
-            {
-                case 'date':
-                case 'time':
-                case 'timestamp':
-                    $values[$name] = new DateTime($values[$name]);
-                    break;
-            }
+            $values[$name] = $this->convertPdoValue($values[$name], $attrs);
         }
         $entity = new $entityClass($this->owner, $values);
         $this->registry[$id] = $entity;

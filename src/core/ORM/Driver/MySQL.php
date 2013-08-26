@@ -119,6 +119,15 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
                 /* @var DateTime $ormValue */
                 $ormValue = $ormValue->format('Y-m-d');
                 break;
+            case 'datetime':
+                if (!($ormValue instanceof DateTime))
+                {
+                    throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'DateTime',
+                        $ormValue);
+                }
+                /* @var DateTime $ormValue */
+                $ormValue = $ormValue->format('Y-m-d H:i:s');
+                break;
             case 'entity':
                 if (!($ormValue instanceof Eresus_ORM_Entity))
                 {
@@ -137,20 +146,14 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
                 $ormValue = $ormValue->format('H:i:s');
                 break;
             case 'timestamp':
-                $format = 'Y-m-d H:i:s';
-                if (is_integer($ormValue))
-                {
-                    $ormValue = date($format, $ormValue);
-                }
-                elseif ($ormValue instanceof DateTime)
+                if ($ormValue instanceof DateTime)
                 {
                     /* @var DateTime $ormValue */
-                    $ormValue = $ormValue->format($format);
+                    $ormValue = $ormValue->getTimestamp();
                 }
                 else
                 {
-                    throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'DateTime',
-                        $ormValue);
+                    $ormValue = intval($ormValue);
                 }
                 break;
         }
@@ -221,6 +224,25 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
     private function getDefinitionForDate(array $attrs)
     {
         $sql = 'DATE';
+        $sql .= $this->getDefinitionForDefault($attrs);
+        return $sql;
+    }
+
+    /** @noinspection PhpUnusedPrivateMethodInspection */
+    /**
+     * Возвращает SQL-объявление поля типа datetime
+     *
+     * @param array $attrs  атрибуты поля
+     *
+     * @return string  SQL
+     *
+     * @since 3.01
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    private function getDefinitionForDatetime(array $attrs)
+    {
+        $sql = 'DATETIME';
         $sql .= $this->getDefinitionForDefault($attrs);
         return $sql;
     }
@@ -358,7 +380,7 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
      */
     private function getDefinitionForTimestamp(array $attrs)
     {
-        $sql = 'TIMESTAMP';
+        $sql = 'UNSIGNED INT(10)';
         $sql .= $this->getDefinitionForDefault($attrs);
         return $sql;
     }

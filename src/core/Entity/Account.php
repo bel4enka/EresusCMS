@@ -34,6 +34,7 @@
  * @property       int    $access
  * @property       bool   $active
  * @property-write string $password
+ * @property       string $hash      хэш текущего пароля
  * @property       string $mail
  *
  * @package Eresus

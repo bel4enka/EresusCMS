@@ -490,7 +490,25 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
         $pdoFieldValue->setAccessible(true);
 
         $pdoFieldValue->invoke($table, null, null);
+    }*/
+
+    /**
+     * @covers Eresus_ORM_Table::convertPdoValue
+     */
+    public function testConvertPdoValue()
+    {
+        $table = $this->getMockBuilder('Eresus_ORM_Table')->disableOriginalConstructor()->
+            setMethods(array('setTableDefinition'))->getMock();
+        $convertPdoValue = new ReflectionMethod('Eresus_ORM_Table', 'convertPdoValue');
+        $convertPdoValue->setAccessible(true);
+
+        $this->assertEquals(123, $convertPdoValue->invoke($table, 123, array('type' => 'integer')));
+        $this->assertInstanceOf('DateTime',
+            $convertPdoValue->invoke($table, '1970-01-01 00:00:00', array('type' => 'datetime')));
+        $this->assertInstanceOf('DateTime',
+            $convertPdoValue->invoke($table, 0, array('type' => 'timestamp')));
     }
+
 
     /**
      * @covers Eresus_ORM_Table::entityFactory
@@ -505,7 +523,7 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
         $table->expects($this->once())->method('getColumns')->will($this->returnValue(array(
             'id' => array('type' => 'integer'),
             'time' => array('type' => 'time'),
-            'timestamp' => array('type' => 'timestamp'),
+            'datetime' => array('type' => 'datetime'),
         )));
         $ownerProp = new ReflectionProperty('Eresus_ORM_Table', 'owner');
         $ownerProp->setAccessible(true);
@@ -518,12 +536,12 @@ class Eresus_ORM_TableTest extends PHPUnit_Framework_TestCase
         $entity = $entityFactory->invoke($table, array(
             'id' => 123,
             'time' => '12:34',
-            'timestamp' => '2012-02-03 13:45'
+            'datetime' => '2012-02-03 13:45'
         ));
         $this->assertInstanceOf('Eresus_ORM_Entity', $entity);
         $this->assertInstanceOf('DateTime', $entity->time);
-        $this->assertInstanceOf('DateTime', $entity->timestamp);
-        $this->assertEquals('03.02.12 13:45', $entity->timestamp->format('d.m.y H:i'));
+        $this->assertInstanceOf('DateTime', $entity->datetime);
+        $this->assertEquals('03.02.12 13:45', $entity->datetime->format('d.m.y H:i'));
     }
 
     /**

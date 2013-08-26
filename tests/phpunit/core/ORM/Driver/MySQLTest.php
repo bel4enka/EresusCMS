@@ -107,7 +107,7 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
      */
     public function pdoFieldValueInvalidDataProvider()
     {
-        return array(array('timestamp'), array('date'), array('time'), array('entity'));
+        return array(array('date'), array('datetime'), array('time'), array('entity'));
     }
 
     /**
@@ -118,10 +118,9 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $driver = new Eresus_ORM_Driver_MySQL;
 
         $datetime = new DateTime('01-02-03 12:34:56');
-        $this->assertEquals('2001-02-03 12:34:56', $driver->pdoFieldValue($datetime, 'timestamp'));
+        $this->assertEquals(981203696, $driver->pdoFieldValue($datetime, 'timestamp'));
         $timestamp = time();
-        $s = date('Y-m-d H:i:s', $timestamp);
-        $this->assertEquals($s, $driver->pdoFieldValue($timestamp, 'timestamp'));
+        $this->assertEquals($timestamp, $driver->pdoFieldValue($timestamp, 'timestamp'));
         $this->assertEquals('2001-02-03', $driver->pdoFieldValue($datetime, 'date'));
         $this->assertEquals('12:34:56', $driver->pdoFieldValue($datetime, 'time'));
         $this->assertSame(0, $driver->pdoFieldValue(false, 'boolean'));
@@ -222,6 +221,18 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Eresus_ORM_Driver_MySQL::getDefinitionForDatetime
+     */
+    public function testGetDefinitionForDatetime()
+    {
+        $method = new ReflectionMethod('Eresus_ORM_Driver_MySQL', 'getDefinitionForDatetime');
+        $method->setAccessible(true);
+        $driver = new Eresus_ORM_Driver_MySQL();
+
+        $this->assertEquals('DATETIME', $method->invoke($driver, array()));
+    }
+
+    /**
      * @covers Eresus_ORM_Driver_MySQL::getDefinitionForEntity
      */
     public function testGetDefinitionForEntity()
@@ -301,7 +312,7 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         $driver = new Eresus_ORM_Driver_MySQL();
 
-        $this->assertEquals('TIMESTAMP', $method->invoke($driver, array()));
+        $this->assertEquals('UNSIGNED INT(10)', $method->invoke($driver, array()));
     }
 }
 

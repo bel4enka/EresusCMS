@@ -57,8 +57,8 @@ class Eresus_ORM
      * @var array
      * @since 3.01
      */
-    private static $filedTypes = array('boolean', 'date', 'float', 'integer', 'string', 'time',
-        'timestamp', 'entity');
+    private static $filedTypes = array('boolean', 'date', 'datetime', 'float', 'integer', 'string',
+        'time', 'timestamp', 'entity');
 
     /**
      * Задаёт используемый драйвер СУБД
