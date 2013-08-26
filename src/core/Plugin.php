@@ -711,7 +711,12 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     protected function createEntityTables()
     {
         $driver = Eresus_ORM::getDriver();
-        $it = new DirectoryIterator($this->getCodeDir() . '/classes/Entity/Table');
+        $folder = $this->getCodeDir() . '/classes/Entity/Table';
+        if (!file_exists($folder))
+        {
+            return;
+        }
+        $it = new DirectoryIterator($folder);
         foreach ($it as $fileInfo)
         {
             /** @var DirectoryIterator $fileInfo */
