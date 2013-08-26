@@ -54,7 +54,7 @@ class Eresus_Entity_Table_Account extends Eresus_ORM_Table
                 'type' => 'boolean',
             ),
             'lastVisit' => array(
-                'type' => 'timestamp',
+                'type' => 'datetime',
             ),
             'lastLoginTime' => array(
                 'type' => 'timestamp'
