@@ -32,16 +32,6 @@ class ContentPlugin extends Eresus_Plugin
 }
 
 /**
- * Заглушка для класса Eresus_Kernel
- *
- * @package Eresus
- * @subpackage Tests
- */
-class Eresus_Kernel extends MockFacade
-{
-}
-
-/**
  * Заглушка для класса Eresus_CMS
  *
  * @package Eresus
@@ -68,6 +58,46 @@ class Eresus_CMS_Exception extends Exception
  * @subpackage Tests
  */
 class Eresus_DB extends MockFacade
+{
+}
+
+/**
+ * Заглушка для класса Eresus_Kernel
+ *
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_Kernel extends MockFacade
+{
+}
+
+/**
+ * Заглушка для класса Eresus_ORM
+ *
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_ORM extends MockFacade
+{
+}
+
+/**
+ * Заглушка для класса Eresus_ORM_Entity
+ *
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_ORM_Entity extends UniversalStub
+{
+}
+
+/**
+ * Заглушка для класса Eresus_ORM_Table
+ *
+ * @package Eresus
+ * @subpackage Tests
+ */
+class Eresus_ORM_Table extends UniversalStub
 {
 }
 
