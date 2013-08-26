@@ -380,7 +380,8 @@ class Eresus_ORM_Driver_MySQL extends Eresus_ORM_Driver_Abstract
      */
     private function getDefinitionForTimestamp(array $attrs)
     {
-        $sql = 'UNSIGNED INT(10)';
+        $sql = 'INT(10) UNSIGNED';
+        $attrs['unsigned'] = true;
         $sql .= $this->getDefinitionForDefault($attrs);
         return $sql;
     }

@@ -313,7 +313,7 @@ class Eresus_ORM_Driver_MySQLTest extends PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         $driver = new Eresus_ORM_Driver_MySQL();
 
-        $this->assertEquals('UNSIGNED INT(10)', $method->invoke($driver, array()));
+        $this->assertEquals('INT(10) UNSIGNED', $method->invoke($driver, array()));
     }
 }
 
