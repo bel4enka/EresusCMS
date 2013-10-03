@@ -102,7 +102,7 @@ namespace Eresus\ORMBundle
 
 namespace Doctrine\Common\Collections
 {
-    class ArrayCollection extends \UniversalStub {}
+    class ArrayCollection extends \Mekras\TestDoubles\UniversalStub {}
 }
 
 namespace Doctrine\ORM

@@ -31,34 +31,13 @@
     -->
     <target name="vendor" description="Fetch 3rd party components">
 
-        <property environment="env" />
+        <phingcall target="composer">
+            <property name="folder" value="src/main" />
+        </phingcall>
 
-        <if>
-            <available file="composer" property="." filepath="${env.PATH}" />
-            <then>
-                <exec command="composer update" dir="src/main" passthru="true" />
-            </then>
-
-            <else>
-
-                <if>
-                    <available file="src/main/composer.phar" property="." />
-
-                    <then>
-                        <exec command="php composer.phar update" dir="src/main" passthru="true" />
-                    </then>
-
-                    <else>
-                        <echo message="download" />
-                        <httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
-                                 filename="src/main/composer.php"/>
-                        <exec command="php composer.php" dir="src/main" passthru="true" />
-                        <delete file="src/main/composer.php" />
-                        <exec command="php composer.phar install" dir="src/main" passthru="true" />
-                    </else>
-                </if>
-            </else>
-        </if>
+        <phingcall target="composer">
+            <property name="folder" value="tests/phpunit" />
+        </phingcall>
 
         <exec command="tools/jquery-ui.downloader.php" passthru="true" />
 
@@ -309,4 +288,45 @@
 
     </target>
 
+    <!--
+    =====================================================================
+    Обновление пакетов Composer
+
+    @param ${folder}  папка с composer.json
+    =====================================================================
+    -->
+    <target name="composer" description="(internal) Update composer packages">
+
+        <property environment="env" />
+
+        <if>
+            <available file="composer" property="." filepath="${env.PATH}" />
+            <then>
+                <property name="command" value="composer" />
+            </then>
+            <else>
+                <if>
+                    <not>
+                        <available file="${folder}/composer.phar" property="." />
+                    </not>
+                    <then>
+                        <httpget url="http://getcomposer.org/composer.phar" dir="${folder}" />
+                        <chmod file="${folder}/composer.phar" mode="0777" />
+                    </then>
+                </if>
+                <property name="command" value="php ${folder}/composer.phar" />
+            </else>
+        </if>
+
+        <if>
+            <available file="${folder}/composer.lock" property="." />
+            <then>
+                <exec command="${command} update" dir="${folder}" passthru="true" />
+            </then>
+            <else>
+                <exec command="${command} install" dir="${folder}" passthru="true" />
+            </else>
+        </if>
+
+    </target>
 </project>

@@ -27,7 +27,6 @@
  */
 
 require_once __DIR__ . '/../../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/Eresus/FS/NameFilter.php';
 
 /**
  */

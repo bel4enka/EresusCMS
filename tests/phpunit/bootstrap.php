@@ -26,70 +26,21 @@
 
 namespace
 {
-
-    require_once __DIR__ . '/../../vendor/autoload.php';
+    /** @var \Composer\Autoload\ClassLoader $loader */
+    $loader = require_once __DIR__ . '/vendor/autoload.php';
 
     define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
     define('TESTS_TEST_DIR', __DIR__ );
     define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
 
-    /**
-     * Универсальная заглушка
-     */
-    class UniversalStub implements ArrayAccess
-    {
-        public function __get($a)
-        {
-            return $this;
-        }
-
-        public function __call($a, $b)
-        {
-            return $this;
-        }
-
-        public function offsetExists($offset)
-        {
-            return true;
-        }
-
-        public function offsetGet($offset)
-        {
-            return $this;
-        }
-
-        public function offsetSet($offset, $value)
-        {
-            ;
-        }
-
-        public function offsetUnset($offset)
-        {
-            ;
-        }
-
-        public function __toString()
-        {
-            return '';
-        }
-    }
-
     require_once __DIR__ . '/stubs.php';
 
-    define('TESTS_VENDORS', TESTS_SRC_DIR . '/../vendor');
+    define('TESTS_VENDORS', TESTS_SRC_DIR . '/vendor');
 
-    require TESTS_VENDORS .
-        '/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+    $loader->add('Symfony', TESTS_SRC_DIR . '/main/vendor/symfony/symfony/src');
 
-    $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
-    $loader->registerNamespaces(array(
-        'Symfony' => TESTS_VENDORS . '/symfony/symfony/src',
-        'Eresus' => TESTS_SRC_DIR,
-    ));
-    $loader->registerPrefixes(array(
-        'Eresus_' => TESTS_SRC_DIR,
-    ));
-    $loader->register();
+    $loader->add('Eresus', TESTS_SRC_DIR . '/main');
+    $loader->add('Eresus_', TESTS_SRC_DIR);
 }
 
 namespace Tests
