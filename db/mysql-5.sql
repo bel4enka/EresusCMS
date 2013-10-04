@@ -1,6 +1,5 @@
--- Eresus MySQL 5.x dump
 --
--- $Id$
+-- Eresus MySQL 5.x dump
 -- --------------------------------------------------------
 
 SET NAMES "UTF8";
@@ -40,32 +39,26 @@ INSERT INTO `pages` VALUES(1, 'main', 0, 'Главная', 'Главная', '',
 -- --------------------------------------------------------
 
 CREATE TABLE `plugins` (
-  `name` varchar(32) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `active` bool  NOT NULL default 1,
-  `content` bool  NOT NULL default 0,
   `settings` text,
-  `title` varchar(64) default '',
-  `version` varchar(16) default '',
-  `description` varchar(255) default '',
-  `info` text,
   PRIMARY KEY  (`name`),
-  KEY `active` (`active`),
-  KEY `content` (`content`)
+  KEY `active` (`active`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `login` varchar(16) NOT NULL default '',
+  `login` varchar(255) NOT NULL default '',
   `hash` varchar(32) NOT NULL default '',
   `active` tinyint(1) unsigned NOT NULL default 1,
   `lastVisit` datetime default NULL,
   `lastLoginTime` int(10) unsigned default NULL,
   `loginErrors` int(10) unsigned default NULL,
   `access` tinyint(3) unsigned default NULL,
-  `name` varchar(64) default NULL,
-  `mail` varchar(64) default NULL,
+  `name` varchar(255) default NULL,
+  `mail` varchar(255) default NULL,
   `profile` text,
   PRIMARY KEY  (`id`),
   KEY `login` (`login`),
