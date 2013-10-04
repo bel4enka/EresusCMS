@@ -353,6 +353,35 @@ abstract class Eresus_ORM_Table
     }
 
     /**
+     * Возвращает все записи, удовлетворяющие фильтру
+     *
+     * @param array $filter  набор пар «поле => значение»
+     *
+     * @throws LogicException
+     *
+     * @return Eresus_ORM_Entity[]
+     *
+     * @since 3.01
+     */
+    public function findAllBy(array $filter)
+    {
+        $q = $this->createSelectQuery();
+        $where = array();
+        $columns = $this->getColumns();
+        foreach ($filter as $field => $value)
+        {
+            if (!array_key_exists($field, $columns))
+            {
+                throw new LogicException(sprintf('Unknown column "%s" in filter', $field));
+            }
+            $where []= $q->expr->eq($field, $q->bindValue($value, ":$field",
+                $this->pdoFieldType($columns[$field]['type'])));
+        }
+        $q->where($q->expr->lAnd($where));
+        return $this->loadFromQuery($q);
+    }
+
+    /**
      * Возвращает сущность по основному ключу
      *
      * @param mixed $id

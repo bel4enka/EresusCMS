@@ -92,6 +92,8 @@ class Eresus_ORM
      * Возвращает объект таблицы для указанной сущности
      *
      * @param Eresus_ORM_EntityOwnerInterface $owner       объект, которому принадлежит сущность
+     *                                                     (обычно это либо потомок Eresus_Plugin,
+     *                                                     либо экземпляр Eresus_CMS)
      * @param string                          $entityName  имя сущности (имя класса без префикса и
      *                                                     слова «Entity»)
      *
