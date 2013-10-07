@@ -506,11 +506,14 @@ abstract class Eresus_CMS_Page
                 $this->linkScripts($root . 'core/js/modernizr/modernizr.min.js', 'lib');
                 break;
             case 'webshim':
-            case 'webshims':
+            case 'webshims': // TODO @deprecated удалить
                 $this->linkJsLib('jquery');
                 $this->linkJsLib('modernizr');
                 $this->linkScripts($root . 'core/js/webshim/polyfiller.js', 'lib');
-                $this->addScripts('jQuery.webshims.polyfill();');
+                $this->addScripts(
+                    "jQuery.webshims.polyfill();\n" .
+                    "jQuery.webshims.setOptions('forms-ext'," .
+                    " {datepicker: {dateFormat: \"yy-mm-dd\"}});");
                 break;
         }
     }
