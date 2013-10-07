@@ -347,8 +347,8 @@ class Eresus_Feed_Writer
 		else
 		{
 			$nodeText .= (in_array($tagName, $this->CDATAEncoding)) ?
-				$tagContent :
-				htmlentities($tagContent, ENT_QUOTES, 'UTF-8');
+				$this->sanitizeCDATA($tagContent) : 
+				htmlspecialchars($tagContent);
 		}
 
 		$nodeText .= (in_array($tagName, $this->CDATAEncoding))? "]]></$tagName>" : "</$tagName>";
@@ -385,7 +385,7 @@ class Eresus_Feed_Writer
 			if ($this->version == self::ATOM && $key == 'link')
 			{
 				// ATOM prints link element as href attribute
-				$out .= $this->makeNode($key,'',array('href'=>$value));
+				$out .= $this->makeNode($key,'',array('href'=>$value, 'rel'=>'self', 'type'=>'application/atom+xml'));
 				//Add the id for ATOM
 				$out .= $this->makeNode('id',$this->uuid($value,'urn:uuid:'));
 			}
@@ -489,4 +489,22 @@ class Eresus_Feed_Writer
 		return $out;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * Sanitizes data which will be later on returned as CDATA in the feed.
+	 *
+	 * A "]]>" respectively "<![CDATA" in the data would break the CDATA in the
+	 * XML, so the brackets are converted to a HTML entity.
+	 *
+	 * @access   private
+	 * @param    string  Data to be sanitized
+	 * @return   string  Sanitized data
+	 */
+	private function sanitizeCDATA($text)
+	{
+		$text = str_replace("]]>", "]]&gt;", $text);
+		$text = str_replace("<![CDATA[", "&lt;![CDATA[", $text);
+
+		return $text;
+	}
 }
