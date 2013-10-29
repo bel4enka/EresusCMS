@@ -11,7 +11,6 @@
 
 * В :doc:`шаблонах страниц </markup/page-templates>` теперь можно использовать Dwoo.
 * Библиотека `jQuery <http://jquery.com/>`_ обновлена до 1.10.2.
-* Плагин `jquery-cookie <https://github.com/carhartl/jquery-cookie>`_ обновлён до 1.3.1.
 * Библиотека `jQuery UI <http://jqueryui.com/>`_ обновлена до 1.10.3.
 * Библиотека `Webshim <https://github.com/aFarkas/webshim/>`_ обновлена до 1.10.10.
 * Библиотека Webshim в АИ теперь доступна всегда (т. е. её не надо больше подключать самостоятельно).
@@ -90,7 +89,7 @@
 ^^^^^^^^^
 
 * `jQuery <http://jquery.com/>`_ до 1.10.2
-* `jquery-cookie <http://jquery.com/>`_ до 1.3.1
+* `jquery-cookie <https://github.com/carhartl/jquery-cookie>`_ до 1.4.0
 * `jQuery UI <http://jqueryui.com/>`_ до 1.10.3
 * `Webshim <https://github.com/aFarkas/webshim/>`_ до 1.10.10
 * `Botobor <https://github.com/mekras/botobor>`_ до 0.4.0
