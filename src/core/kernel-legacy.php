@@ -26,6 +26,7 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Название системы
@@ -1333,6 +1334,20 @@ class Eresus
 	 */
 	public $sections;
 
+    /**
+     * @var ContainerInterface
+     * @since 3.01
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
 	/**
 	 * Инициирует сессии
 	 */
@@ -1713,7 +1728,7 @@ class Eresus
 		$this->init_extensions();
 		# Подключение к источнику данных
 		$this->initDataSource();
-        $this->plugins = Eresus_Plugin_Registry::getInstance();
+        $this->plugins = $this->container->get('plugins');
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута

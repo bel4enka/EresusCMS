@@ -26,18 +26,13 @@
  * @package Eresus
  */
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-
 /**
  * Ядро CMS
  *
  * Основные функции ядра
  * 1. запуск {@link Eresus_CMS основного класса приложения};
  * 2. перехват ошибок и исключений;
- * 3. создание контейнера зависимостей;
- * 4. получение основных сведений о системе.
+ * 3. получение основных сведений о системе.
  *
  * @package Eresus
  * @since 3.00
@@ -64,11 +59,6 @@ class Eresus_Kernel
      * @var bool
      */
     static private $inited = false;
-
-    /**
-     * @var null|ContainerInterface
-     */
-    static private $container = null;
 
     /**
      * Выполняемое приложение
@@ -202,8 +192,6 @@ class Eresus_Kernel
         date_default_timezone_set($timezone);
 
         self::initExceptionHandling();
-
-        self::initContainer();
 
         self::$inited = true;
     }
@@ -450,10 +438,6 @@ class Eresus_Kernel
 
         try
         {
-            if (self::$app instanceof ContainerAwareInterface)
-            {
-                self::$app->setContainer(self::$container);
-            }
             self::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
             $exitCode = self::$app->main();
             self::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
@@ -533,16 +517,6 @@ class Eresus_Kernel
                     'Fatal error handler not installed! Fatal error will be not handled!');
             }
         }
-    }
-
-    /**
-     * Готовит контейнер зависимостей
-     *
-     * @since 3.01
-     */
-    private static function initContainer()
-    {
-        self::$container = new ContainerBuilder();
     }
 }
 

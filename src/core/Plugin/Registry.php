@@ -26,6 +26,9 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Реестр модулей расширения
  *
@@ -62,32 +65,20 @@ class Eresus_Plugin_Registry
     public $events = array();
 
     /**
-     * Экземпляр-одиночка
-     * @var Eresus_Plugin_Registry
+     * Контейнер служб
+     *
+     * @var ContainerInterface
+     *
      * @since 3.01
      */
-    private static $instance = null;
+    private $container;
 
     /**
-     * Возвращает экземпляр-одиночку
-     *
-     * @return Eresus_Plugin_Registry
+     * @param ContainerInterface $container
      */
-    public static function getInstance()
+    public function __construct(ContainerInterface $container)
     {
-        if (null === self::$instance)
-        {
-            self::$instance = new self();
-            self::$instance->init();
-        }
-        return self::$instance;
-    }
-
-    /**
-     * @deprecated с 3.01 используйте {@link getInstance()}
-     */
-    public function __construct()
-    {
+        $this->container = $container;
         $this->registerBcEventListeners();
         $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
         if ($items)
@@ -304,10 +295,15 @@ class Eresus_Plugin_Registry
         }
 
         // Заносим экземпляр в реестр
-        $this->items[$name] = new $className();
+        $plugin = new $className();
+        if ($plugin instanceof ContainerAwareInterface)
+        {
+            $plugin->setContainer($this->container);
+        }
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Plugin "%s" loaded', $name);
+        $this->items[$name] = $plugin;
 
-        return $this->items[$name];
+        return $plugin;
     }
 
     /**

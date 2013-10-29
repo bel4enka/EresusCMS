@@ -291,6 +291,7 @@ abstract class Eresus_ORM_Entity
     {
         $entityPluginName = substr($entityClass, 0, strpos($entityClass, '_'));
         $entityPluginName = strtolower($entityPluginName);
+        // TODO FIXME Метод getInstance удалён
         $plugin = Eresus_Plugin_Registry::getInstance()->load($entityPluginName);
         $entityName = substr($entityClass, strrpos($entityClass, '_') + 1);
         $table = Eresus_ORM::getTable($plugin, $entityName);

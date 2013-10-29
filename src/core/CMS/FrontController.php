@@ -26,6 +26,8 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Абстрактный фронт-контроллер CMS
  *
@@ -34,6 +36,14 @@
  */
 abstract class Eresus_CMS_FrontController
 {
+    /**
+     * Контейнер служб
+     *
+     * @var ContainerInterface
+     * @since 3.01
+     */
+    private $container;
+
     /**
      * Обрабатываемый запрос
      *
@@ -52,12 +62,14 @@ abstract class Eresus_CMS_FrontController
     /**
      * Конструктор контроллера
      *
+     * @param ContainerInterface $container
      * @param Eresus_CMS_Request $request
      *
      * @since 3.01
      */
-    public function __construct(Eresus_CMS_Request $request)
+    public function __construct(ContainerInterface $container, Eresus_CMS_Request $request)
     {
+        $this->container = $container;
         $this->request = $request;
         $this->page = $this->createPage();
     }
@@ -79,6 +91,20 @@ abstract class Eresus_CMS_FrontController
     public function getPage()
     {
         return $this->page;
+    }
+
+    /**
+     * Возвращает службу из контейнера
+     *
+     * @param string $id
+     *
+     * @return object
+     *
+     * @since 3.01
+     */
+    protected function get($id)
+    {
+        return $this->container->get($id);
     }
 
     /**

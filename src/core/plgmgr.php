@@ -26,18 +26,36 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Управление плагинами
  *
  * @package Eresus
  */
-class TPlgMgr
+class TPlgMgr implements ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface
+     * @since 3.01
+     */
+    private $container;
+
     /**
      * Уровень доступа к модулю
      * @var int
      */
     private $access = ADMIN;
+
+    /**
+     * @param ContainerInterface $container
+     * @since 3.01
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
     /**
      * Включает или отключает плагин
@@ -60,7 +78,8 @@ class TPlgMgr
 
     private function delete()
     {
-        $plugins = Eresus_Plugin_Registry::getInstance();
+        /** @var Eresus_Plugin_Registry $plugins */
+        $plugins = $this->container->get('plugins');
         $plugins->load(arg('delete'));
         $plugins->uninstall(arg('delete'));
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
@@ -68,7 +87,8 @@ class TPlgMgr
 
     private function edit()
     {
-        $plugins = Eresus_Plugin_Registry::getInstance();
+        /** @var Eresus_Plugin_Registry $plugins */
+        $plugins = $this->container->get('plugins');
         $plugins->load(arg('id'));
         if (method_exists($plugins->items[arg('id')], 'settings'))
         {

@@ -4,6 +4,7 @@
 .. toctree::
    :maxdepth: 1
 
+   container
    install
    uninstall
    responses

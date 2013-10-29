@@ -74,7 +74,7 @@
 * Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ объявлен устаревшим.
 * Метод ``WebPage::pageSelector()`` объявлен устаревшим.
 * Свойство Eresus::$plugins объявлено устаревшим. Вместо него следует использовать
-  `Eresus_Plugin_Registry::getInstance <api/classes/Eresus_Plugin_Registry.html#method_getInstance>`_.
+  :doc:`контейнер служб <dev/guide/container>`.
 * Функция ErrorMessage объявлена устаревшей, вместо нее следует использовать
   `Eresus_CMS_Page::addErrorMessage <api/classes/Eresus_CMS_Page.html#method_addErrorMessage>`_.
 * Функция InfoMessage объявлена устаревшей.
@@ -98,6 +98,7 @@
 ^^^^^^^^^
 
 * :doc:`Новый механизм работы с шаблонами </dev/guide/templates>`
+* :doc:`Контейнер служб <dev/guide/container>`
 * `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_
 * `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_
 * `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_

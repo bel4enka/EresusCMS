@@ -26,13 +26,16 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Устаревший базовый класс для плагинов, предоставляющих тип контента
  *
  * @package Eresus
  * @deprecated с 3.01 используйте ContentPlugin
  */
-class TContentPlugin implements Eresus_ORM_EntityOwnerInterface
+class TContentPlugin implements Eresus_ORM_EntityOwnerInterface, ContainerAwareInterface
 {
     /**
      * Имя плагина
@@ -65,6 +68,12 @@ class TContentPlugin implements Eresus_ORM_EntityOwnerInterface
     public $settings = array();
 
     /**
+     * @var ContainerInterface
+     * @since 3.01
+     */
+    private $container;
+
+    /**
      * Конструктор
      */
     public function __construct()
@@ -72,7 +81,8 @@ class TContentPlugin implements Eresus_ORM_EntityOwnerInterface
         global $locale;
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $plugins = Eresus_Plugin_Registry::getInstance();
+        /** @var Eresus_Plugin_Registry $plugins */
+        $plugins = $this->container->get('plugins');
 
         if (!empty($this->name) && isset($plugins->list[$this->name]))
         {
@@ -124,6 +134,15 @@ class TContentPlugin implements Eresus_ORM_EntityOwnerInterface
         $result['version'] = $this->version;
         $result['description'] = $this->description;
         return $result;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @since 3.01
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 
     /**

@@ -26,12 +26,15 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Родительский класс для всех плагинов
  *
  * @package Eresus
  */
-abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
+abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface, ContainerAwareInterface
 {
     /**
      * Имя плагина
@@ -136,6 +139,15 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     protected $urlStyle;
 
     /**
+     * Контейнер служб
+     *
+     * @var ContainerInterface
+     *
+     * @since 3.01
+     */
+    private $container;
+
+    /**
      * Шаблоны плагина
      * @var Eresus_Plugin_Templates
      * @since 3.01
@@ -153,7 +165,8 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
 
         Eresus_Kernel::log(array(get_class($this), __METHOD__), LOG_DEBUG, 'starting…');
 
-        $plugins = Eresus_Plugin_Registry::getInstance();
+        /** @var Eresus_Plugin_Registry $plugins */
+        $plugins = $this->get('plugins');
         $settings = $plugins->getSettingsFor($this->getName());
         foreach ($settings as $key => $value)
         {
@@ -177,6 +190,16 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
             /** @noinspection PhpIncludeInspection */
             include_once $filename;
         }
+    }
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @since 3.01
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 
     /**
@@ -510,6 +533,20 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
     }
 
     /**
+     * Возвращает службу из контейнера
+     *
+     * @param string $id
+     *
+     * @return object
+     *
+     * @since 3.01
+     */
+    protected function get($id)
+    {
+        return $this->container->get($id);
+    }
+
+    /**
      * Чтение настроек плагина из БД
      *
      * @return bool  Результат выполнения
@@ -562,7 +599,8 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface
      */
     protected function listenEvents()
     {
-        $registry = Eresus_Plugin_Registry::getInstance();
+        /** @var Eresus_Plugin_Registry $plugins */
+        $registry = $this->get('plugins');
         for ($i=0; $i < func_num_args(); $i++)
         {
             $event = func_get_arg($i);
