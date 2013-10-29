@@ -98,8 +98,6 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
             $this->checkEnvironment();
             $this->createFileStructure();
 
-
-
             /* Подключение старого ядра */
             Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'Init legacy kernel');
             include_once 'kernel-legacy.php';

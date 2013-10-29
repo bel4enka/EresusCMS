@@ -191,10 +191,15 @@
             file="${build.dir}/admin/themes/default/css.src/widgets.css" />
         <delete dir="${build.dir}/admin/themes/default/css.src" />
 
-        <!-- Ботобор -->
-        <copy todir="${build.dir}/core/botobor">
-            <fileset dir="vendor/mekras/botobor/src">
+        <!-- Сторонние компоненты из папки vendor -->
+        <copy todir="${build.dir}/core/vendor">
+            <fileset dir="vendor/">
                 <include name="**" />
+                <exclude name="carhartl/**" />
+                <exclude name="components/**" />
+                <exclude name="mekras/test-doubles/**" />
+                <exclude name="mikey179/**" />
+                <exclude name="robloach/**" />
             </fileset>
         </copy>
 

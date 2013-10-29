@@ -95,28 +95,6 @@ spl_autoload_register(
                 /** @noinspection PhpIncludeInspection */
                 include $fileName;
             }
-            /*
-             * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
-             * Отсутствие такого класса не является ошибкой. Отсутствие любого другого класса расцениваем
-             * как логическую ошибку.
-             */
-            elseif (substr($class, -5) !== 'Table')
-            {
-                throw new LogicException('Class "' . $class . '" not found');
-            }
-        }
-        elseif (stripos($class, 'Botobor') === 0)
-        /*
-         * Классы Botobor
-         */
-        {
-            $fileName = __DIR__ . '/botobor/botobor.php';
-
-            if (file_exists($fileName))
-            {
-                /** @noinspection PhpIncludeInspection */
-                include $fileName;
-            }
         }
         elseif (in_array($class, $bcClasses))
         /*
@@ -135,6 +113,11 @@ spl_autoload_register(
         }
     }
 );
+
+/**
+ * Автозагрузчик Composer
+ */
+include_once __DIR__ . '/vendor/autoload.php';
 
 /**
  * Подключаем Dwoo

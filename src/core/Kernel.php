@@ -26,6 +26,9 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Ядро CMS
@@ -33,7 +36,7 @@
  * Основные функции ядра
  * 1. запуск {@link Eresus_CMS основного класса приложения};
  * 2. перехват ошибок и исключений;
- * 3. {@link autoload() автозагрузка классов};
+ * 3. создание контейнера зависимостей;
  * 4. получение основных сведений о системе.
  *
  * @package Eresus
@@ -61,6 +64,11 @@ class Eresus_Kernel
      * @var bool
      */
     static private $inited = false;
+
+    /**
+     * @var null|ContainerInterface
+     */
+    static private $container = null;
 
     /**
      * Выполняемое приложение
@@ -195,6 +203,8 @@ class Eresus_Kernel
 
         self::initExceptionHandling();
 
+        self::initContainer();
+
         self::$inited = true;
     }
 
@@ -314,72 +324,6 @@ class Eresus_Kernel
             str_repeat('x', self::MEMORY_OVERFLOW_BUFFER_SIZE * 1024);
 
         // возвращаем false для вывода буфера
-        return false;
-    }
-
-    /**
-     * Автозагрузчик классов
-     *
-     * Работает только для классов «Eresus_*». Из имени класса удаляется префикс «Eresus_», все
-     * символы в имени класса «_» заменяются на разделитель директорий, добавляется суффикс «.php».
-     *
-     * Таким образом класс «Eresus_HTTP_Request» будет искаться в файле «core/HTTP/Request.php».
-     *
-     * Устанавливается через {@link spl_autoload_register() spl_autoload_register()} в методе
-     * {@link init()}.
-     *
-     * @param string $className
-     *
-     * @throws LogicException если класс не найден
-     *
-     * @return bool
-     *
-     * @since 3.00
-     * @uses classExists()
-     */
-    public static function autoload($className)
-    {
-        /*
-         * Классы Eresus
-         */
-        if (stripos($className, 'Eresus_') === 0)
-        {
-            $fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                str_replace('_', DIRECTORY_SEPARATOR, substr($className, 7)) . '.php';
-
-            if (file_exists($fileName))
-            {
-                /** @noinspection PhpIncludeInspection */
-                include $fileName;
-                return self::classExists($className);
-            }
-            /*
-             * Doctrine при загрузке сущностей ищет необязательный класс с суффиксом «Table».
-             * Отсутствие такого класса не является ошибкой. Отсутствие любого другого класса расцениваем
-             * как логическую ошибку.
-             */
-            elseif (substr($className, -5) !== 'Table')
-            {
-                throw new LogicException('Class "' . $className . '" not found');
-            }
-        }
-
-        /*
-         * Классы Botobor
-         */
-        if (stripos($className, 'Botobor') === 0)
-        {
-            $fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'botobor' . DIRECTORY_SEPARATOR .
-                'botobor.php';
-
-            if (file_exists($fileName))
-            {
-                /** @noinspection PhpIncludeInspection */
-                include $fileName;
-                return self::classExists($className);
-            }
-        }
-
         return false;
     }
 
@@ -506,6 +450,10 @@ class Eresus_Kernel
 
         try
         {
+            if (self::$app instanceof ContainerAwareInterface)
+            {
+                self::$app->setContainer(self::$container);
+            }
             self::log(__METHOD__, LOG_DEBUG, 'executing %s', $class);
             $exitCode = self::$app->main();
             self::log(__METHOD__, LOG_DEBUG, '%s done with code: %d', $class, $exitCode);
@@ -585,6 +533,16 @@ class Eresus_Kernel
                     'Fatal error handler not installed! Fatal error will be not handled!');
             }
         }
+    }
+
+    /**
+     * Готовит контейнер зависимостей
+     *
+     * @since 3.01
+     */
+    private static function initContainer()
+    {
+        self::$container = new ContainerBuilder();
     }
 }
 
