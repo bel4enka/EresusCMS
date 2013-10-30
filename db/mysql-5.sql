@@ -48,13 +48,13 @@ CREATE TABLE `plugins` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `users` (
+CREATE TABLE `accounts` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `login` varchar(255) NOT NULL default '',
   `hash` varchar(32) NOT NULL default '',
   `active` tinyint(1) unsigned NOT NULL default 1,
   `lastVisit` datetime default NULL,
-  `lastLoginTime` int(10) unsigned default NULL,
+  `lastLoginTime` datetime default NULL,
   `loginErrors` int(10) unsigned default NULL,
   `access` tinyint(3) unsigned default NULL,
   `name` varchar(255) default NULL,
@@ -65,4 +65,4 @@ CREATE TABLE `users` (
   KEY `active` (`active`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `users` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', 0, 0, 1, 'Служба поддержки', 'support@example.org', NULL);
+INSERT INTO `accounts` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 1, 'Служба поддержки', 'support@example.org', NULL);

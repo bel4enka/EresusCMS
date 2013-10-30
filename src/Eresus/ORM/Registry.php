@@ -26,6 +26,11 @@
 
 namespace Eresus\ORM;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Eresus\ORM\Extensions\TablePrefix;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\ApcCache;
@@ -82,12 +87,14 @@ class Registry
             $config->setQueryCacheImpl($cache);
 
             /** @var \Eresus_CMS $app */
-            $app = $this->container->get('cms');
+            $app = $this->container->getParameter('app');
 
             $entityDir = $app->getFsRoot() . '/core/Entity';
+            $driver = $config->newDefaultAnnotationDriver($entityDir, false);
+
             /** @var \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $chain */
             $chain = $this->container->get('doctrine.driver_chain');
-            $chain->addDriver($config->newDefaultAnnotationDriver($entityDir), 'Eresus\Entity');
+            $chain->addDriver($driver, 'Eresus\Entity');
             $config->setMetadataDriverImpl($chain);
 
             $config->setProxyDir($app->getCacheDir() . '/doctrine/proxies');
@@ -102,7 +109,18 @@ class Registry
                 'dbname' => $this->container->getParameter('db.dbname'),
             );
 
-            $this->manager = EntityManager::create($params, $config);
+            $prefix = $this->container->getParameter('db.prefix');
+            if ($prefix)
+            {
+                $evm = new EventManager();
+                $tablePrefix = new TablePrefix($prefix);
+                $evm->addEventListener(Events::loadClassMetadata, $tablePrefix);
+            }
+            else
+            {
+                $evm = null;
+            }
+            $this->manager = EntityManager::create($params, $config, $evm);
         }
         return $this->manager;
     }

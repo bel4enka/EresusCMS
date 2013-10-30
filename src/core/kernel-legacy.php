@@ -1665,28 +1665,32 @@ class Eresus
 
 	/**
 	 * Обновление данных о пользователе
+     *
+     * @deprecated с 3.01
 	 */
-	function reset_login()
+	public function reset_login()
 	{
 		$this->user['auth'] = isset($this->user['auth']) ? $this->user['auth'] : false;
 		if ($this->user['auth'])
 		{
-			$item = $this->db->selectItem('users', "`id`='".$this->user['id']."'");
-			if (!is_null($item))
+            /** @var \Eresus\ORM\Registry $doctrine */
+            $doctrine = $this->container->get('doctrine');
+            $om = $doctrine->getManager();
+            $account = $om->find('Eresus\Entity\Account', $this->user['id']);
+			if (!is_null($account))
 			{
-				# Если такой пользователь есть...
-				if ($item['active'])
+				if ($account->isActive())
 				{
 					# Если учетная запись активна...
-					$this->user['name'] = $item['name'];
-					$this->user['mail'] = $item['mail'];
-					$this->user['access'] = $item['access'];
-					$this->user['profile'] = decodeOptions($item['profile']);
+					$this->user['name'] = $account->getName();
+					$this->user['mail'] = $account->getMail();
+					$this->user['access'] = $account->getAccess();
+					$this->user['profile'] = $account->getProfile();
 				}
 				else
 				{
                     Eresus_Kernel::app()->getPage()->addErrorMessage(
-                        sprintf(ERR_ACCOUNT_NOT_ACTIVE, $item['login']));
+                        sprintf(ERR_ACCOUNT_NOT_ACTIVE, $account->getLogin()));
 					$this->logout();
 				}
 			}

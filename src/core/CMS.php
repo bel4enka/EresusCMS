@@ -92,19 +92,18 @@ class Eresus_CMS extends Eresus_Application
         parent::__construct();
 
         $this->container = new ContainerBuilder();
-        $this->container
-            ->register('container', $this->container);
-        $this->container
-            ->register('cms', $this);
+        $this->container->setParameter('container', $this->container);
+        $this->container->setParameter('app', $this);
+
         $this->container
             ->register('doctrine', 'Eresus\ORM\Registry')
-            ->addArgument(new Reference('container'));
+            ->addArgument('%container%');
         $this->container
             ->register('doctrine.driver_chain',
                 'Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
         $this->container
             ->register('plugins', 'Eresus_Plugin_Registry')
-            ->addArgument(new Reference('container'));
+            ->addArgument('%container%');
 
         $this->eventDispatcher = new Eresus_Event_Dispatcher();
     }
@@ -184,6 +183,7 @@ class Eresus_CMS extends Eresus_Application
      * @return void
      *
      * @since 2.16
+     * @deprecated с 3.01, вбрасывайте исключения
      */
     public function fatalError(/** @noinspection PhpUnusedParameterInspection */
         $error = null, $exit = true)
@@ -374,6 +374,8 @@ class Eresus_CMS extends Eresus_Application
 
     /**
      * Инициализация конфигурации
+     *
+     * @throws RuntimeException
      */
     protected function initConf()
     {
@@ -388,24 +390,23 @@ class Eresus_CMS extends Eresus_Application
         global $Eresus;
 
         $filename = $this->getFsRoot() . '/cfg/main.php';
-        if (file_exists($filename))
+        if (!file_exists($filename))
         {
-            /** @noinspection PhpIncludeInspection */
-            include $filename;
-            // TODO: Сделать проверку успешного подключения файла
-            $this->container->setParameter('debug', $Eresus->conf['debug']['enable']);
+            throw new RuntimeException(_("Не найден файл настроек «{$filename}»!"));
+        }
 
-            $this->container->setParameter('db.driver', 'pdo_' . $Eresus->conf['db']['engine']);
-            $this->container->setParameter('db.host', $Eresus->conf['db']['host']);
-            $this->container->setParameter('db.username', $Eresus->conf['db']['user']);
-            $this->container->setParameter('db.password', $Eresus->conf['db']['password']);
-            $this->container->setParameter('db.dbname', $Eresus->conf['db']['name']);
-            $this->container->setParameter('db.prefix', $Eresus->conf['db']['prefix']);
-        }
-        else
-        {
-            $this->fatalError("Main config file '$filename' not found!");
-        }
+        /** @noinspection PhpIncludeInspection */
+        include $filename;
+        // TODO: Сделать проверку успешного подключения файла
+
+        $this->container->setParameter('debug', $Eresus->conf['debug']['enable']);
+
+        $this->container->setParameter('db.driver', 'pdo_' . $Eresus->conf['db']['engine']);
+        $this->container->setParameter('db.host', $Eresus->conf['db']['host']);
+        $this->container->setParameter('db.username', $Eresus->conf['db']['user']);
+        $this->container->setParameter('db.password', $Eresus->conf['db']['password']);
+        $this->container->setParameter('db.dbname', $Eresus->conf['db']['name']);
+        $this->container->setParameter('db.prefix', $Eresus->conf['db']['prefix']);
     }
 
     /**

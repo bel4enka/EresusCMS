@@ -32,6 +32,7 @@
  * Работа с СУБД MySQL
  *
  * @package Eresus
+ * @deprecated с 3.01
  */
 class MySQL
 {
