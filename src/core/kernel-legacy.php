@@ -1747,11 +1747,11 @@ class Eresus
 	 * @param string $password  Пароль
 	 * @return string  Хеш
      *
-     * @deprecated с 3.01 используйте {@link Eresus_Entity_Account::hashPassword()}
+     * @deprecated с 3.01 используйте {@link Eresus\Entity\Account::hashPassword()}
 	 */
 	function password_hash($password)
 	{
-        return Eresus_Entity_Account::hashPassword($password);
+        return Eresus\Entity\Account::hashPassword($password);
 	}
 
 	/**
@@ -1797,18 +1797,20 @@ class Eresus
 			return false;
 		}
 
-		$item = $this->db->selectItem('users', "`login`='$login'");
-		// Если такой пользователь есть...
-		if (!is_null($item))
+        /** @var \Eresus\ORM\Registry $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        $om = $doctrine->getManager();
+        $account = $om->getRepository('Eresus\Entity\Account')->findOneBy(array('login' => $login));
+		if (!is_null($account))
 		{
-			// Если учетная запись активна...
-			if ($item['active'])
+			if ($account->isActive())
 			{
-				$noBruteForcing = time() - $item['lastLoginTime'] > $item['loginErrors'];
+				$noBruteForcing = time() - $account->getLastLoginTime()->getTimestamp()
+                    > $account->getLoginErrors();
 				if ($noBruteForcing || $this->conf['debug']['enable'])
 				{
 					// Если пароль верен...
-					if ($key == $item['hash'])
+					if ($account->getPasswordHash() == $key)
 					{
 						if ($auto)
 						{
@@ -1819,18 +1821,19 @@ class Eresus
 							$this->clear_login_cookies();
 						}
 						$setVisitTime = (! isset($this->user['id'])) || (! (bool) $this->user['id']);
-						$this->user = $item;
-						$this->user['profile'] = decodeOptions($this->user['profile']);
-						$this->user['auth'] = true; # Устанавливаем флаг авторизации
-						// Хэш пароля используется для подтверждения аутентификации
-						$this->user['hash'] = $item['hash'];
+						$this->user = array(
+                            'id' => $account->getId(),
+                            'profile' => $account->getProfile(),
+                            'auth' => true, # Устанавливаем флаг авторизации
+                            'hash' => $account->getPasswordHash(),
+                        );
 						if ($setVisitTime)
 						{
-							$item['lastVisit'] = gettime(); # Записываем время последнего входа
+                            $account->setLastVisit(new DateTime());
 						}
-						$item['lastLoginTime'] = time();
-						$item['loginErrors'] = 0;
-						$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+						$account->setLastLoginTime(new DateTime());
+                        $account->setLoginErrors(0);
+						$om->flush(); // TODO Убрать отсюда!
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
@@ -1840,9 +1843,9 @@ class Eresus
 						if (!$cookie)
 						{
                             Eresus_Kernel::app()->getPage()->addErrorMessage(ERR_PASSWORD_INVALID);
-							$item['lastLoginTime'] = time();
-							$item['loginErrors']++;
-							$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+                            $account->setLastLoginTime(new DateTime());
+                            $account->setLoginErrors($account->getLoginErrors() + 1);
+                            $om->flush(); // TODO Убрать отсюда!
 						}
 					}
 				}
@@ -1850,9 +1853,9 @@ class Eresus
 				{
 					// Если авторизация проведена слишком рано
                     Eresus_Kernel::app()->getPage()->addErrorMessage(
-                        sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $item['loginErrors']));
-					$item['lastLoginTime'] = time();
-					$this->db->updateItem('users', $item,"`id`='".$item['id']."'");
+                        sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $account->getLoginErrors()));
+                    $account->setLastLoginTime(new DateTime());
+                    $om->flush(); // TODO Убрать отсюда!
 				}
 			}
 			else

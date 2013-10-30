@@ -34,7 +34,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Eresus
  */
-abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface, ContainerAwareInterface
+abstract class Eresus_Plugin implements ContainerAwareInterface
 {
     /**
      * Имя плагина
@@ -518,18 +518,6 @@ abstract class Eresus_Plugin implements Eresus_ORM_EntityOwnerInterface, Contain
             $this->templates = new Eresus_Plugin_Templates($this);
         }
         return $this->templates;
-    }
-
-    /**
-     * Возвращает префикс для имён классов сущностей и таблиц
-     *
-     * @return string
-     *
-     * @since 3.01
-     */
-    public function getOrmClassPrefix()
-    {
-        return get_class($this);
     }
 
     /**

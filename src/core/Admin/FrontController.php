@@ -85,13 +85,13 @@ class Eresus_Admin_FrontController extends Eresus_CMS_FrontController
         {
             $user = $req->request->filter('user', null, FILTER_REGEXP, '/[^a-z0-9_\-\.\@]/');
             $password = $req->request->get('password');
-            $autologin = $req->request->get('autologin');
-            if ($legacyKernel->login($user, $legacyKernel->password_hash($password), $autologin))
+            $auto = $req->request->get('autologin');
+            if ($legacyKernel->login($user, Eresus\Entity\Account::hashPassword($password), $auto))
             {
                 return new Eresus_HTTP_Redirect($legacyKernel->root . 'admin.php');
             }
             $data['user'] = $user;
-            $data['autologin'] = $autologin;
+            $data['autologin'] = $auto;
         }
 
         $data['errors'] = $this->getPage()->getErrorMessages();

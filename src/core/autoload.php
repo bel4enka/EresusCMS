@@ -34,6 +34,15 @@
  * @package Eresus
  */
 
+/**
+ * Автозагрузчик Composer
+ *
+ * @var Composer\Autoload\ClassLoader $loader
+ */
+$loader = require __DIR__ . '/vendor/autoload.php';
+
+$loader->add('Eresus\\', __DIR__ . '/..');
+
 spl_autoload_register(
     /**
      *
@@ -113,11 +122,6 @@ spl_autoload_register(
         }
     }
 );
-
-/**
- * Автозагрузчик Composer
- */
-include_once __DIR__ . '/vendor/autoload.php';
 
 /**
  * Подключаем Dwoo

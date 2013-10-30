@@ -304,6 +304,7 @@
         <mkdir dir="${docs.dir}/api" />
         <phpdoc2 title="Eresus ${product.version} API" destdir="${docs.dir}/api">
             <fileset dir=".">
+                <include name="src/Eresus/**/*.php" />
                 <include name="src/core/**/*.php" />
                 <exclude name="src/core/**/*.html.php" />
                 <exclude name="src/core/framework/core/3rdparty/**" />

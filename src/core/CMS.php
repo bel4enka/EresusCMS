@@ -37,7 +37,7 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @package Eresus
  */
-class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInterface
+class Eresus_CMS extends Eresus_Application
 {
     /**
      * Название CMS
@@ -45,6 +45,7 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
      * @since 3.01
      */
     private $name = 'Eresus';
+
     /**
      * Версия CMS
      * @var string
@@ -94,6 +95,14 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
         $this->container
             ->register('container', $this->container);
         $this->container
+            ->register('cms', $this);
+        $this->container
+            ->register('doctrine', 'Eresus\ORM\Registry')
+            ->addArgument(new Reference('container'));
+        $this->container
+            ->register('doctrine.driver_chain',
+                'Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
+        $this->container
             ->register('plugins', 'Eresus_Plugin_Registry')
             ->addArgument(new Reference('container'));
 
@@ -105,7 +114,7 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
      *
      * @return int  Код завершения для консольных вызовов
      *
-     * @see EresusApplication#main()
+     * @see EresusApplication::main()
      */
     public function main()
     {
@@ -233,15 +242,14 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
     }
 
     /**
-     * Возвращает префикс для классов ORM
+     * Возвращает путь к папке кэша
      *
      * @return string
-     *
      * @since 3.01
      */
-    public function getOrmClassPrefix()
+    public function getCacheDir()
     {
-        return 'Eresus';
+        return $this->getFsRoot() . '/var/cache';
     }
 
     /**
@@ -394,6 +402,14 @@ class Eresus_CMS extends Eresus_Application implements Eresus_ORM_EntityOwnerInt
             /** @noinspection PhpIncludeInspection */
             include $filename;
             // TODO: Сделать проверку успешного подключения файла
+            $this->container->setParameter('debug', $Eresus->conf['debug']['enable']);
+
+            $this->container->setParameter('db.driver', 'pdo_' . $Eresus->conf['db']['engine']);
+            $this->container->setParameter('db.host', $Eresus->conf['db']['host']);
+            $this->container->setParameter('db.username', $Eresus->conf['db']['user']);
+            $this->container->setParameter('db.password', $Eresus->conf['db']['password']);
+            $this->container->setParameter('db.dbname', $Eresus->conf['db']['name']);
+            $this->container->setParameter('db.prefix', $Eresus->conf['db']['prefix']);
         }
         else
         {
