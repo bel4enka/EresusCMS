@@ -256,9 +256,10 @@ class TClientUI extends Eresus_CMS_Page_Client
                     {
                         $url .= $item['name'].'/';
                     }
-                    $event = new Eresus_Event_UrlSectionFound($item, $url);
-                    Eresus_Kernel::app()->getEventDispatcher()
-                        ->dispatch('cms.client.url_section_found', $event);
+                    $event = new \Eresus\Events\UrlSectionFoundEvent($item, $url);
+                    /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+                    $dispatcher = $this->container->get('events');
+                    $dispatcher->dispatch('cms.client.url_section_found', $event);
                     $this->section[] = $item['title'];
                     next(Eresus_CMS::getLegacyKernel()->request['params']);
                     array_shift(Eresus_CMS::getLegacyKernel()->request['params']);
@@ -287,7 +288,9 @@ class TClientUI extends Eresus_CMS_Page_Client
      */
     private function init()
     {
-        Eresus_Kernel::app()->getEventDispatcher()->dispatch('cms.client.start');
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get('events');
+        $dispatcher->dispatch('cms.client.start');
 
         $item = $this->loadPage();
         if ($item)
@@ -406,8 +409,10 @@ class TClientUI extends Eresus_CMS_Page_Client
         // TODO: Обратная совместимость (убрать)
         $response->setContent($this->replaceMacros($response->getContent()));
 
-        $event = new Eresus_Event_Response($response);
-        Eresus_Kernel::app()->getEventDispatcher()->dispatch('cms.client.response', $event);
+        $event = new \Eresus\Events\ResponseEvent($response);
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get('events');
+        $dispatcher->dispatch('cms.client.response', $event);
 
         return $response;
     }
@@ -616,9 +621,10 @@ class TClientUI extends Eresus_CMS_Page_Client
             $this->addStyles($this->styles);
         }
 
-        $event = new Eresus_Event_Render($html);
-        Eresus_Kernel::app()->getEventDispatcher()
-            ->dispatch('cms.client.render_page', $event);
+        $event = new \Eresus\Events\RenderEvent($html);
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get('events');
+        $dispatcher->dispatch('cms.client.render_page', $event);
         $html = $event->getText();
 
         // TODO: Обратная совместимость (удалить)

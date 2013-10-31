@@ -54,14 +54,6 @@ class Eresus_CMS extends Eresus_Application
     private $version = '${product.version}';
 
     /**
-     * Диспетчер событий
-     * @var Eresus_Event_Dispatcher
-     *
-     * @since 3.01
-     */
-    private $eventDispatcher;
-
-    /**
      * Описание сайта
      * @var Eresus_Site
      * @since 3.01
@@ -92,8 +84,6 @@ class Eresus_CMS extends Eresus_Application
         parent::__construct();
 
         $this->createContainer();
-
-        $this->eventDispatcher = new Eresus_Event_Dispatcher();
     }
 
     /**
@@ -148,18 +138,6 @@ class Eresus_CMS extends Eresus_Application
         }
         throw new LogicException(sprintf('Trying to access unknown property %s of %s',
             $property, __CLASS__));
-    }
-
-    /**
-     * Возвращает диспетчер событий CMS
-     *
-     * @return Eresus_Event_Dispatcher
-     *
-     * @since 3.01
-     */
-    public function getEventDispatcher()
-    {
-        return $this->eventDispatcher;
     }
 
     /**
@@ -442,6 +420,8 @@ class Eresus_CMS extends Eresus_Application
         $this->container->setParameter('container', $this->container);
         $this->container->setParameter('app', $this);
 
+        $this->container
+            ->register('events', 'Symfony\Component\EventDispatcher\EventDispatcher');
         $this->container
             ->register('doctrine', 'Eresus\ORM\Registry')
             ->addArgument('%container%');

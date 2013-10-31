@@ -26,13 +26,18 @@
  * @package Eresus
  */
 
+namespace Eresus\Events;
+
+use Symfony\Component\EventDispatcher\Event;
+use Eresus_HTTP_Response;
+
 /**
  * Событие «Отправка ответа»
  *
  * @since 3.01
  * @package Eresus
  */
-class Eresus_Event_Response extends Eresus_Event
+class ResponseEvent extends Event
 {
     /**
      * Ответ

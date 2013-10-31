@@ -158,7 +158,7 @@ class DwooRenderer extends AgaviRenderer implements AgaviIReusableRenderer
 	}
 
 	/**
-	 * Render the presentation and return the result.
+	 * RenderEvent the presentation and return the result.
 	 *
 	 * @param      AgaviTemplateLayer The template layer to render.
 	 * @param      array              The template variables.
