@@ -36,6 +36,7 @@
  *
  * @package Eresus
  * @since 2.16
+ * @deprecated с 3.01
  */
 class Eresus_PluginInfo
 {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Таблица модулей расширения
+ * Зависимость от версии CMS
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,36 +22,24 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Domain
  */
 
+namespace Eresus\Plugins\Requirements;
+
 /**
- * Таблица модулей расширения
+ * Зависимость от версии CMS
  *
- * @package Eresus
- * @subpackage Domain
+ * @since 3.01
  */
-class Eresus_Entity_Table_Plugin extends Eresus_ORM_Table
+class CmsRequirement extends Requirement
 {
-    protected function setTableDefinition()
+    /**
+     * @param string $minVer
+     * @param string $maxVer
+     */
+    public function __construct($minVer, $maxVer)
     {
-        $this->setTableName('plugins');
-        $this->hasColumns(array(
-            'name' => array(
-                'type' => 'string',
-                'length' => 255,
-            ),
-            'active' => array(
-                'type' => 'boolean',
-            ),
-            'settings' => array(
-                'type' => 'string',
-                'length' => 65535,
-            ),
-        ));
-        $this->index('active_idx', array('fields' => array('active')));
+        // TODO
     }
 }
 

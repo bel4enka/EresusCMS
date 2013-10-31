@@ -1,0 +1,32 @@
+<div class="legacy-tabs ui-helper-clearfix">
+    <a href="{$baseUrl}&action=add">Добавить расширение</a>
+</div>
+
+<table class="admList">
+    <tr>
+        <th></th>
+        <th>Название</th>
+        <th>Версия</th>
+        <th>Описание</th>
+    </tr>
+    {foreach $plugins plugin}
+    <tr>
+        <td class="ctrl">
+            <a onclick="return askdel(this)" title="Удалить"
+                href="{$baseUrl}&id={$plugin->getName()}&action=delete"><img height="16" width="16"
+                alt="X" src="admin/themes/default/img/medium/item-config.png"></a>
+            <a title="Изменить" href="{$baseUrl}&id={$plugin->getName()}&action=settings"><img
+                height="16" width="16" alt="Изменить"
+                src="admin/themes/default/img/medium/item-edit.png"></a>
+            <a title="{if $plugin->isEnabled()}Отключить{else}Включить{/if}"
+                href="{$baseUrl}&id={$plugin->getName()}&action=toggle"><img height="16" width="16"
+                alt="{if $plugin->isEnabled()}Отключить{else}Включить{/if}"
+                src="admin/themes/default/img/medium/item-{if not $plugin->isEnabled()}in{/if}active.png"></a>
+        </td>
+        </td>
+        <td>{$plugin->getInfo()->getTitle()}</td>
+        <td>{$plugin->getInfo()->getVersion()}</td>
+        <td>{$plugin->getInfo()->getDescription()}</td>
+    </tr>
+    {/foreach}
+</table>

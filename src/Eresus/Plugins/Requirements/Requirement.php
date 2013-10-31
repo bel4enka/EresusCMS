@@ -1,13 +1,11 @@
 <?php
 /**
- * ${product.title}
- *
- * Запускающий скрипт для режима Web
+ * Абстрактная зависимость для модуля расширения
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,26 +24,14 @@
  * <http://www.gnu.org/licenses/>
  */
 
-/*
- * Вывод ошибок нужен для правильной работы перехватчика фатальных ошибок
- */
-ini_set('display_errors', true);
+namespace Eresus\Plugins\Requirements;
 
-ini_set('track_errors', true);
 /**
- * Подключение автозагрузчика классов
+ * Абстрактная зависимость для модуля расширения
+ *
+ * @since 3.01
  */
-include_once 'core/autoload.php';
-
-if (isset($php_errormsg))
+abstract class Requirement
 {
-    die($php_errormsg);
 }
-ini_set('track_errors', false);
-
-ini_set('error_log', __DIR__ . '/var/log/eresus.log');
-
-$app = new Eresus_Kernel();
-$app->setDebug(true);
-$app->dispatch();
 

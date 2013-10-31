@@ -387,12 +387,12 @@ class MySQL
      * Получение списка полей таблицы
      *
      * @param string $table            Имя таблицы
-     * @param bool $info [optional]
+     *
      * @return array|bool  Список полей, с описанием, если $info = true
      *
      * @deprecated с 2.14
      */
-    public function fields($table, $info = false)
+    public function fields($table)
     {
         Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
         $schm = $this->getSchema()->getSchema();
@@ -509,8 +509,6 @@ class MySQL
         }
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Возвращает идентификатор последней вставленной записи
      *
@@ -524,46 +522,16 @@ class MySQL
         return $db->lastInsertId();
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
-     *
-     * @param string $table
-     * @param string $param
-     *
-     * @return array|string
-     * @deprecated
+     * @return \Doctrine\DBAL\Connection
      */
-    public function tableStatus($table, $param = '')
+    private function getConnection()
     {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-        $result = $this->query_array("SHOW TABLE STATUS LIKE '" . $this->prefix . $table . "'");
-        if ($result)
-        {
-            $result = $result[0];
-            if (!empty($param))
-            {
-                $result = $result[$param];
-            }
-        }
-        return $result;
+        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+        $container = $GLOBALS['_container'];
+        /** @var \Eresus\ORM\Registry $doctrine */
+        $doctrine = $container->get('doctrine');
+        return $doctrine->getManager()->getConnection();
     }
-
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Экранирует потенциально опасные символы
-     *
-     * Начиная с 2.13 метод ничего не делает.
-     *
-     * @param mixed $src  Входные данные
-     * @return mixed
-     * @deprecated
-     */
-    public function escape($src)
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'This method is deprecated');
-        return $src;
-    }
-    //-----------------------------------------------------------------------------
 }
+

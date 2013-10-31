@@ -28,6 +28,7 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Тема оформления административного интерфейса
@@ -1054,6 +1055,10 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 }
                 elseif (method_exists($this->module, 'adminRender'))
                 {
+                    if ($this->module instanceof ContainerAwareInterface)
+                    {
+                        $this->module->setContainer($this->container);
+                    }
                     try
                     {
                         $result = $this->module->adminRender($request);

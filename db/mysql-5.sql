@@ -4,10 +4,10 @@
 
 SET NAMES "UTF8";
 
-CREATE TABLE `pages` (
+CREATE TABLE `sections` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(32) NOT NULL default '',
-  `owner` int(10) unsigned NOT NULL default 0,
+  `parent_id` int(10) unsigned default NULL,
+  `name` varchar(255) NOT NULL default '',
   `title` text NOT NULL,
   `caption` varchar(64) NOT NULL default '',
   `description` text NOT NULL,
@@ -17,24 +17,18 @@ CREATE TABLE `pages` (
   `active` tinyint(1) NOT NULL default '0',
   `access` tinyint(1) unsigned NOT NULL default 5,
   `visible` tinyint(1) unsigned NOT NULL default 1,
-  `template` varchar(64) NOT NULL default '',
-  `type` varchar(32) NOT NULL default 'default',
+  `template` varchar(255) NOT NULL default '',
+  `type` varchar(64) NOT NULL default 'default',
   `content` longtext NOT NULL,
   `options` text NOT NULL,
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`),
-  KEY `name` (`name`),
-  KEY `owner` (`owner`),
-  KEY `position` (`position`),
-  KEY `active` (`active`),
-  KEY `access` (`access`),
-  KEY `visible` (`visible`),
-  KEY `created` (`created`),
-  KEY `updated` (`updated`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `name_idx` (`name`),
+  KEY `client_idx` (`parent_id`, `active`, `visible`, `position`)
+) DEFAULT CHARSET=utf8;
 
-INSERT INTO `pages` VALUES(1, 'main', 0, 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '<h1>Добро пожаловать!</h1>', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `sections` VALUES(1,  0, 'main', 'Главная', 'Главная', '', 'Главная страница', '', 0, 1, 5, 1, '', 'default', '<h1>Добро пожаловать!</h1>', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -44,7 +38,7 @@ CREATE TABLE `plugins` (
   `settings` text,
   PRIMARY KEY  (`name`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -63,6 +57,6 @@ CREATE TABLE `accounts` (
   PRIMARY KEY  (`id`),
   KEY `login` (`login`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 INSERT INTO `accounts` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 1, 'Служба поддержки', 'support@example.org', NULL);

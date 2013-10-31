@@ -26,6 +26,9 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Страница, создаваемая CMS
  *
@@ -39,7 +42,7 @@
  * @package Eresus
  * @since 3.01
  */
-abstract class Eresus_CMS_Page
+abstract class Eresus_CMS_Page implements ContainerAwareInterface
 {
     /**
      * HTTP-заголовки ответа
@@ -49,6 +52,12 @@ abstract class Eresus_CMS_Page
      * @todo сделать приватным
      */
     public $headers = array();
+
+    /**
+     * @var ContainerInterface
+     * @since 3.01
+     */
+    protected $container;
 
     /**
      * Описание секции HEAD
@@ -88,6 +97,16 @@ abstract class Eresus_CMS_Page
      * @since 3.01
      */
     private $errorMessages = array();
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @since 3.01
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
     /**
      * Магический метод для доступа к свойствам страницы

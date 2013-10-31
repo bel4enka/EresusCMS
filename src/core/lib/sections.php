@@ -27,6 +27,9 @@
  * @subpackage DomainModel
  */
 
+use Eresus\Entity\Section;
+use Doctrine\ORM\EntityManager;
+
 /**
  * Активные разделы
  * @var int
@@ -53,16 +56,10 @@ define('SECTIONS_VISIBLE', 0x0002);
  * @subpackage DomainModel
  *
  * @since 2.10
+ * @deprecated с 3.01
  */
 class Sections
 {
-    /**
-     * Имя таблицы разделов
-     *
-     * @var string
-     */
-    private $table = 'pages';
-
     /**
      * Индекс разделов
      *
@@ -88,13 +85,13 @@ class Sections
         if ($force || !$this->index)
         {
             $items = Eresus_CMS::getLegacyKernel()->db->
-                select($this->table, '', '`position`', '`id`,`owner`');
+                select('sections', '', '`position`', '`id`,`parent_id`');
             if ($items)
             {
                 $this->index = array();
                 foreach ($items as $item)
                 {
-                    $this->index[$item['owner']] []= $item['id'];
+                    $this->index[intval($item['parent_id'])] []= $item['id'];
                 }
             }
         }
@@ -157,7 +154,7 @@ class Sections
                 $fieldset = '';//implode(',', array_diff($this->fields(), array('content')));
                 /* Читаем из БД */
                 $set = implode(',', $set);
-                $items = Eresus_CMS::getLegacyKernel()->db->select($this->table,
+                $items = Eresus_CMS::getLegacyKernel()->db->select('sections',
                     "FIND_IN_SET(`id`, '$set') AND `access` >= $access", 'position', $fieldset);
                 for ($i=0; $i<count($items); $i++)
                 {
@@ -205,7 +202,7 @@ class Sections
         $result = array();
         for ($i=0; $i<count($items); $i++)
         {
-            if ($items[$i]['owner'] == $owner)
+            if ($items[$i]['parent_id'] == $owner)
             {
                 $result[] = $items[$i];
             }
@@ -256,7 +253,7 @@ class Sections
         }
         else
         {
-            $result = Eresus_CMS::getLegacyKernel()->db->fields($this->table);
+            $result = Eresus_CMS::getLegacyKernel()->db->fields('sections');
             $this->cache['fields'] = $result;
         }
         return $result;
@@ -290,7 +287,7 @@ class Sections
         {
             $where = $what;
         }
-        $result = Eresus_CMS::getLegacyKernel()->db->select($this->table, $where);
+        $result = Eresus_CMS::getLegacyKernel()->db->select('sections', $where);
         if ($result)
         {
             for ($i=0; $i<count($result); $i++)
@@ -319,33 +316,38 @@ class Sections
             $this->index();
         }
 
-        $result = false;
-        /* При добавлении свойство id должно устанавливаться БД */
-        if (isset($item['id']))
+        $om = $this->getObjectManager();
+        $section = new Section();
+        if ($item['parent_id'])
         {
-            unset($item['id']);
+            $parent = $om->find('Eresus\Entity\Section', $item['parent_id']);
+            $section->setParent($parent);
         }
-        /* Если не указан родитель - добавляем в корень */
-        if (!isset($item['owner']))
-        {
-            $item['owner'] = 0;
-        }
-        $item['created'] = gettime('Y-m-d H:i:s');
-        $item['updated'] = $item['created'];
-        $item['options'] = isset($item['options']) ? trim($item['options']) : '';
-        $item['options'] = empty($item['options']) ?
-            '' : encodeOptions(text2array($item['options'], true));
+        $section->setName($item['name']);
+        $section->setTitle($item['title']);
+        $section->setCaption($item['caption']);
+        $section->setDescription($item['description']);
+        $section->setHint($item['hint']);
+        $section->setKeywords($item['keywords']);
+        $section->setActive($item['active']);
+        $section->setAccess($item['access']);
+        $section->setVisible($item['visible']);
+        $section->setTemplate($item['template']);
+        $section->setType($item['type']);
+        $section->setContent($item['content']);
+        $section->setoptions($item['options']);
+        $section->setCreated(new DateTime());
+        $section->setUpdated(new DateTime());
 
         if (!isset($item['position']) || !$item['position'])
         {
-            $item['position'] = isset($this->index[$item['owner']]) ?
-                count($this->index[$item['owner']]) : 0;
+            $section->setPosition(isset($this->index[$item['parent_id']]) ?
+                    count($this->index[$item['parent_id']]) : 0);
         }
-        if (Eresus_CMS::getLegacyKernel()->db->insert($this->table, $item))
-        {
-            $result = $this->get(Eresus_CMS::getLegacyKernel()->db->getInsertedId());
-        }
-        return $result;
+
+        $om->persist($section);
+        $om->flush(); // TODO Убрать отсюда!
+        return $item;
     }
 
     /**
@@ -357,17 +359,31 @@ class Sections
      */
     public function update($item)
     {
-        $item['updated'] = gettime('Y-m-d H:i:s');
-        $item['options'] = encodeOptions($item['options']);
-        $item['title'] = Eresus_CMS::getLegacyKernel()->db->escape($item['title']);
-        $item['caption'] = Eresus_CMS::getLegacyKernel()->db->escape($item['caption']);
-        $item['description'] = Eresus_CMS::getLegacyKernel()->db->escape($item['description']);
-        $item['hint'] = Eresus_CMS::getLegacyKernel()->db->escape($item['hint']);
-        $item['keywords'] = Eresus_CMS::getLegacyKernel()->db->escape($item['keywords']);
-        $item['content'] = Eresus_CMS::getLegacyKernel()->db->escape($item['content']);
-        $item['options'] = Eresus_CMS::getLegacyKernel()->db->escape($item['options']);
-        $result = Eresus_CMS::getLegacyKernel()->db->updateItem($this->table, $item, "`id`={$item['id']}");
-        return $result;
+        $om = $this->getObjectManager();
+        $section = $om->find('Eresus\Entity\Section', $item['id']);
+        if ($section->getParent()->getId() != $item['parent_id'])
+        {
+            $parent = $om->find('Eresus\Entity\Section', $item['parent_id']);
+            $section->setParent($parent);
+        }
+        $section->setName($item['name']);
+        $section->setTitle($item['title']);
+        $section->setCaption($item['caption']);
+        $section->setDescription($item['description']);
+        $section->setHint($item['hint']);
+        $section->setKeywords($item['keywords']);
+        $section->setActive($item['active']);
+        $section->setAccess($item['access']);
+        $section->setVisible($item['visible']);
+        $section->setTemplate($item['template']);
+        $section->setType($item['type']);
+        $section->setContent($item['content']);
+        $section->setoptions($item['options']);
+        $section->setUpdated(new DateTime());
+
+        $om->flush(); // TODO Убрать отсюда
+
+        return $item;
     }
 
     /**
@@ -406,9 +422,25 @@ class Sections
                     $plugin->onSectionDelete($id);
                 }
             }
-            Eresus_CMS::getLegacyKernel()->db->delete($this->table, "`id`=$id");
+            Eresus_CMS::getLegacyKernel()->db->delete('sections', "`id`=$id");
         }
         return $result;
+    }
+
+    /**
+     * Возвращает контейнер
+     *
+     * @return EntityManager
+     *
+     * @since 3.01
+     */
+    private function getObjectManager()
+    {
+        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+        $container = $GLOBALS['_container'];
+        /** @var \Eresus\ORM\Registry $doctrine */
+        $doctrine = $container->get('doctrine');
+        return $doctrine->getManager();
     }
 }
 

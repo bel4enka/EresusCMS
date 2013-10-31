@@ -40,13 +40,6 @@
 class Eresus_Kernel
 {
     /**
-     * Резервный буфер для отлова ошибок переполнения памяти (в Кб)
-     *
-     * @var int
-     */
-    const MEMORY_OVERFLOW_BUFFER_SIZE = 64;
-
-    /**
      * Порог важности сообщений для записи в журнал
      * @var int
      * @since 3.01
@@ -58,6 +51,7 @@ class Eresus_Kernel
      *
      * @var Eresus_CMS
      * @see exec(), app()
+     * @deprecated с 3.01
      */
     static private $app = null;
 
@@ -89,6 +83,7 @@ class Eresus_Kernel
      */
     public static function log($sender, $priority, $message)
     {
+        //TODO Рассмотреть вынос этого метода из этого класса
         if ($priority > self::$logLevel)
         {
             return;
@@ -153,6 +148,7 @@ class Eresus_Kernel
      */
     public static function logException($e)
     {
+        //TODO Рассмотреть вынос этого метода из этого класса
         $previous = $e->getPrevious();
         $trace = $e->getTraceAsString();
 
@@ -285,6 +281,8 @@ class Eresus_Kernel
 
     /**
      * Инициализирует ядро
+     *
+     * @since 3.01
      */
     public function __construct()
     {

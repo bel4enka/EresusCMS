@@ -81,7 +81,7 @@ class TContentPlugin implements ContainerAwareInterface
         global $locale;
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        /** @var Eresus_Plugin_Registry $plugins */
+        /** @var \Eresus\Plugins\Registry $plugins */
         $plugins = $this->container->get('plugins');
 
         if (!empty($this->name) && isset($plugins->list[$this->name]))
@@ -128,8 +128,7 @@ class TContentPlugin implements ContainerAwareInterface
         $result['name'] = $this->name;
         $result['content'] = false;
         $result['active'] = is_null($item) ? true : $item['active'];
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db
-            ->escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
+        $result['settings'] = is_null($item) ? encodeOptions($this->settings) : $item['settings'];
         $result['title'] = $this->title;
         $result['version'] = $this->version;
         $result['description'] = $this->description;
@@ -185,7 +184,7 @@ class TContentPlugin implements ContainerAwareInterface
         $db = Eresus_CMS::getLegacyKernel()->db;
         $item = $db->selectItem('plugins', "`name`='{$this->name}'");
         $item = $this->__item($item);
-        $item['settings'] = $db->escape(encodeOptions($this->settings));
+        $item['settings'] = encodeOptions($this->settings);
         $result = $db->updateItem('plugins', $item, "`name`='".$this->name."'");
         return $result;
     }

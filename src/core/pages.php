@@ -28,12 +28,15 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Eresus\Entity\Section;
+
 /**
  * Управление разделами сайта
  *
  * @package Eresus
  */
-class TPages
+class TPages extends ContainerAware
 {
     /**
      * Уровень доступа к этому модулю
@@ -49,44 +52,60 @@ class TPages
 
     /**
      * Запись новой страницы в БД
+     *
+     * @throws RuntimeException
+     *
      * @return void
      */
-    function insert()
+    private function insert()
     {
-        $item = array();
-        $item['owner'] = arg('owner', 'int');
-        $item['name'] = arg('name', '/[^a-z0-9_]/i');
-        $item['title'] = arg('title', 'dbsafe');
-        $item['caption'] = arg('caption', 'dbsafe');
-        $item['description'] = arg('description', 'dbsafe');
-        $item['hint'] = arg('hint', 'dbsafe');
-        $item['keywords'] = arg('keywords', 'dbsafe');
-        $item['template'] = arg('template', 'dbsafe');
-        $item['type'] = arg('type', 'dbsafe');
-        $item['active'] = arg('active', 'int');
-        $item['visible'] = arg('visible', 'int');
-        $item['access'] = arg('access', 'int');
-        $item['position'] = arg('position', 'int');
-        $item['options'] = arg('options');
-        $item['created'] = $item['updated'] = gettime('Y-m-d H:i:s');
+        /** @var \Doctrine\ORM\EntityManager $om */
+        $om = $this->container->get('doctrine')->getManager();
 
-        $temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
-        "') AND (`owner`='" . $item['owner'] . "')");
-        if (count($temp) == 0)
+        $section = new Section();
+        $section->setName(arg('name'));
+        $section->setTitle(arg('title'));
+        $section->setCaption(arg('caption'));
+        $section->setDescription(arg('description'));
+        $section->setHint(arg('hint'));
+        $section->setKeywords(arg('keywords'));
+        $section->setTemplate(arg('template'));
+        $section->setType(arg('type'));
+        $section->setActive(arg('active'));
+        $section->setVisible(arg('visible'));
+        $section->setAccess(arg('access'));
+        $section->setPosition(arg('position'));
+        $section->setOptions(text2array(arg('options')));
+
+        $parentId = arg('owner', 'int');
+        if ($parentId)
         {
-            Eresus_CMS::getLegacyKernel()->sections->add($item);
-            dbReorderItems('pages', "`owner`='".arg('owner', 'int')."'");
-            HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+            $parent = $om->find('Eresus\Entity\Section', $parentId);
+            $siblings = $parent->getChildren();
+            $section->setParent($parent);
         }
         else
         {
-            Eresus_Kernel::app()->getPage()->addErrorMessage(
-                sprintf(errItemWithSameName, $item['name']));
-            saveRequest();
-            HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
+            /** @var Section[] $siblings */
+            $siblings = $om->getRepository('Eresus\Entity\Section')
+                ->findBy(array('parent' => null));
         }
+
+        foreach ($siblings as $sibling)
+        {
+            if ($sibling->getName() == $section->getName())
+            {
+                // TODO Добавить в сообщение имя и родительский раздел
+                // TODO Сделать возврат к диалогу
+                throw new RuntimeException(_('Раздел с таким именем уже существует!'));
+            }
+        }
+
+        $om->persist($section);
+        $om->flush();
+
+        HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * ???
@@ -282,8 +301,10 @@ class TPages
     }
 
     /**
-     * ???
+     * Удаляет ветку разделов
+     *
      * @param int $id
+     *
      * @return void
      */
     private function deleteBranch($id)

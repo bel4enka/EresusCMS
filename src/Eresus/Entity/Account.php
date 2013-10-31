@@ -62,7 +62,7 @@ class Account
      *
      * @since 3.01
      *
-     * @ORM\Column(type="string", length=16, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $login;
 
@@ -139,7 +139,7 @@ class Account
      *
      * @since 3.01
      *
-     * @ORM\Column(type="string", length=64, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;
 
@@ -150,7 +150,7 @@ class Account
      *
      * @since 3.01
      *
-     * @ORM\Column(type="string", length=64, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $mail;
 
@@ -364,7 +364,7 @@ class Account
      *
      * @since 3.01
      */
-    protected function setName($name)
+    public function setName($name)
     {
         $name = trim(strval($name));
         if (mb_strlen($name) == 0)

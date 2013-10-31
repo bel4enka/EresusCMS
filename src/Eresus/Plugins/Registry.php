@@ -22,27 +22,45 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
+namespace Eresus\Plugins;
+
+use Doctrine\ORM\EntityManager;
+use Eresus\Plugins\Plugin;
+use Eresus\Plugins\Requirements\Checker;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Eresus_Kernel;
+use Eresus_PluginInfo;
+use Eresus_CMS;
+use Eresus_CMS_Request;
+use Eresus_Client_Controller_Content_Default;
+use Eresus_Client_Controller_Content_List;
+use Eresus_Client_Controller_Content_Url;
+use Eresus_Client_Controller_Content_Interface;
+use TClientUI;
+use ContentPlugin;
+use Eresus_Event;
+use Eresus_Event_Render;
+use Eresus_Event_Response;
+use i18n;
+use TContentPlugin;
+use Eresus_Event_UrlSectionFound;
 
 /**
  * Реестр модулей расширения
  *
- * @package Eresus
+ * @api
  * @since 3.01
  */
-class Eresus_Plugin_Registry
+class Registry
 {
     /**
      * Список всех активированных плагинов
      *
-     * @var array
+     * @var Plugin[]
      * @deprecated с 3.01
-     * @todo сделать private
      */
     public $list = array();
 
@@ -74,52 +92,50 @@ class Eresus_Plugin_Registry
     private $container;
 
     /**
+     * Реестр установленных модулей расширения
+     *
+     * @var Plugin[]
+     *
+     * @since 3.01
+     */
+    private $registry = array();
+
+    /**
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->registerBcEventListeners();
-        $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
-        if ($items)
-        {
-            foreach ($items as &$item)
-            {
-                $item['info'] = unserialize($item['info']);
-                $this->list[$item['name']] = $item;
-            }
 
-            /* Проверяем зависимости */
-            do
+        /** @var EntityManager $om */
+        $om = $this->container->get('doctrine')->getManager();
+        $entities = $om->getRepository('Eresus\Entity\Plugin')->findAll();
+
+        foreach ($entities as $entity)
+        {
+            $plugin = new Plugin($entity, $this->container);
+            $this->registry[$plugin->getName()] = $plugin;
+            if ($plugin->isEnabled())
             {
-                $success = true;
-                foreach ($this->list as $plugin => $item)
-                {
-                    if (!($item['info'] instanceof Eresus_PluginInfo))
-                    {
-                        continue;
-                    }
-                    foreach ($item['info']->getRequiredPlugins() as $required)
-                    {
-                        list ($name, $minVer, $maxVer) = $required;
-                        if (
-                            !isset($this->list[$name]) ||
-                            ($minVer && version_compare($this->list[$name]['info']->version, $minVer, '<')) ||
-                            ($maxVer && version_compare($this->list[$name]['info']->version, $maxVer, '>'))
-                        )
-                        {
-                            $msg = 'Plugin "%s" requires plugin %s';
-                            $requiredPlugin = $name . ' ' . $minVer . '-' . $maxVer;
-                            Eresus_Kernel::log(__CLASS__, LOG_ERR, $msg, $plugin, $requiredPlugin);
-                            /*$msg = I18n::getInstance()->getText($msg, $this);
-                            ErrorMessage(sprintf($msg, $plugin, $requiredPlugin));*/
-                            unset($this->list[$plugin]);
-                            $success = false;
-                        }
-                    }
-                }
+                $this->list[$plugin->getName()] = $plugin;
             }
-            while (!$success);
+        }
+
+        /*
+         * Проверяем зависимости
+         */
+        $checker = new Checker($this);
+        foreach ($this->list as $plugin)
+        {
+            $list = $checker->getUnsatisfied($plugin);
+            if (count($list) > 0)
+            {
+                unset($this->list[$plugin->getName()]);
+                // TODO Сделать более подробное сообщение
+                \Eresus_Kernel::log(__CLASS__, LOG_ERR, 'Plugin %s has unsatisfied requirements',
+                    $plugin->getName());
+            }
         }
 
         spl_autoload_register(array($this, 'autoload'));
@@ -137,9 +153,9 @@ class Eresus_Plugin_Registry
     public function init()
     {
         /* Загружаем плагины */
-        foreach ($this->list as $item)
+        foreach ($this->list as $plugin)
         {
-            $this->load($item['name']);
+            $this->load($plugin->getName());
         }
     }
 
@@ -154,60 +170,17 @@ class Eresus_Plugin_Registry
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '("%s")', $name);
 
-        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $page = Eresus_Kernel::app()->getPage();
-        $filename = $legacyKernel->froot . 'ext/'.$name.'.php';
-        if (file_exists($filename))
+        $plugin = Plugin::createFromPath($name, $this->container);
+        if (!$plugin->getInfo()->isValid())
         {
-            $info = Eresus_PluginInfo::loadFromFile($filename);
-            /*
-             * Подключаем плагин через eval чтобы убедиться в отсутствии фатальных синтаксических
-             * ошибок. Хотя и не факт, что это сработает.
-             */
-            $code = file_get_contents($filename);
-            $code = preg_replace('/^\s*<\?php|\?>\s*$/m', '', $code);
-            $code = str_replace('__FILE__', "'$filename'", $code);
-            ini_set('track_errors', true);
-            $valid = eval($code) !== false;
-            ini_set('track_errors', false);
-            if (!$valid)
-            {
-                $page->addErrorMessage(sprintf('Plugin "%s" is broken: %s', $name,
-                    $GLOBALS['php_errormsg']));
-                return;
-            }
-
-            $className = $name;
-            if (!class_exists($className, false) && class_exists('T' . $className, false))
-            {
-                // TODO: Удалить. Обратная совместимость с версиями до 2.10b2
-                $className = 'T' . $className;
-            }
-
-            if (class_exists($className, false))
-            {
-                /** @var Eresus_Plugin|TContentPlugin $plugin */
-                $plugin = new $className;
-                $this->items[$name] = $plugin;
-                $plugin->install();
-                $item = $plugin->__item();
-                $item['info'] = serialize($info);
-                Eresus_CMS::getLegacyKernel()->db->insert('plugins', $item);
-            }
-            else
-            {
-                $page->addErrorMessage(
-                    sprintf(errClassNotFound, $className));
-            }
+            // TODO
         }
-        else
-        {
-            Eresus_Kernel::log(__METHOD__, LOG_ERR, 'Can not find main file "%s" for plugin "%s"',
-                $filename, $name);
-            $msg = I18n::getInstance()->getText('Can not find main file "%s" for plugin "%s"', __CLASS__);
-            $msg = sprintf($msg, $filename, $name);
-            $page->addErrorMessage($msg);
-        }
+        $entity = $plugin->getEntity();
+        $entity->setActive(true);
+        /** @var EntityManager $om */
+        $om = $this->container->get('doctrine')->getManager();
+        $om->persist($entity);
+        $om->flush();
     }
 
     /**
@@ -338,7 +311,7 @@ class Eresus_Plugin_Registry
                 }
                 if ($plugin instanceof ContentPlugin || $plugin instanceof TContentPlugin)
                 {
-                    /** @var ContentPlugin $plugin */
+                    /** @var \ContentPlugin $plugin */
                     $result = $plugin->clientRenderContent();
                 }
                 else
@@ -500,6 +473,64 @@ class Eresus_Plugin_Registry
         return array_key_exists($pluginName, $this->list)
             ? decodeOptions($this->list[$pluginName]['settings'])
             : array();
+    }
+
+    /**
+     * Возвращает все установленные модули
+     *
+     * @return Plugin[]
+     *
+     * @since 3.01
+     */
+    public function getAll()
+    {
+        return $this->registry;
+    }
+
+    /**
+     * Возвращает модуль по его имени или null, если модуль не установлен или отключен
+     *
+     * @param string $name
+     *
+     * @return Plugin|null
+     *
+     * @since 3.01
+     */
+    public function get($name)
+    {
+        if (array_key_exists($name, $this->registry))
+        {
+            $plugin = $this->registry[$name];
+            if ($plugin->isEnabled())
+            {
+                return $plugin;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Включает модуль
+     *
+     * @param Plugin $plugin
+     *
+     * @since 3.01
+     */
+    public function enable(Plugin $plugin)
+    {
+        // TODO
+    }
+
+    /**
+     * Отключает модуль
+     *
+     * @param Plugin $plugin
+     *
+     * @since 3.01
+     */
+    public function disable(Plugin $plugin)
+    {
+        // TODO
     }
 
     /**

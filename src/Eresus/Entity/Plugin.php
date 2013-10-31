@@ -1,6 +1,6 @@
 <?php
 /**
- * Абстрактный фронт-контроллер CMS
+ * Модуль расширения
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,108 +22,129 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Eresus\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Абстрактный фронт-контроллер CMS
+ * Модуль расширения
  *
- * @package Eresus
+ * @api
  * @since 3.01
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="plugins", indexes={
+ *     @ORM\Index(name="default_idx", columns={"name", "active"})
+ * })
  */
-abstract class Eresus_CMS_FrontController
+class Plugin
 {
     /**
-     * Контейнер служб
+     * Имя
      *
-     * @var ContainerInterface
+     * @var string
+     *
      * @since 3.01
+     *
+     * @ORM\Id
+     * @ORM\Column(type="string", length=255)
      */
-    protected $container;
+    private $name;
 
     /**
-     * Обрабатываемый запрос
+     * Активность
      *
-     * @var Eresus_CMS_Request
+     * @var bool
+     *
      * @since 3.01
+     *
+     * @ORM\Column(type="boolean")
      */
-    private $request;
+    private $active = true;
 
     /**
-     * Создаваемая страница
-     * @var Eresus_CMS_Page
+     * Настройки
+     *
+     * @var array
+     *
      * @since 3.01
+     *
+     * @ORM\Column(type="array")
      */
-    private $page;
+    private $settings = array();
 
     /**
-     * Конструктор контроллера
+     * Возвращает имя
      *
-     * @param ContainerInterface $container
-     * @param Eresus_CMS_Request $request
+     * @return string
      *
      * @since 3.01
      */
-    public function __construct(ContainerInterface $container, Eresus_CMS_Request $request)
+    public function getName()
     {
-        $this->container = $container;
-        $this->request = $request;
-        $this->page = $this->createPage();
+        return $this->name;
     }
 
     /**
-     * Выполняет действия контроллера и возвращает ответ
+     * Задаёт имя
      *
-     * @return Eresus_HTTP_Response
+     * @param string $name
+     *
      * @since 3.01
      */
-    abstract public function dispatch();
-
-    /**
-     * Возвращает объект Eresus_CMS_Page
-     *
-     * @return Eresus_CMS_Page
-     * @since 3.01
-     */
-    public function getPage()
+    public function setName($name)
     {
-        return $this->page;
+        $this->name = $name;
     }
 
     /**
-     * Возвращает службу из контейнера
+     * Возвращает активность
      *
-     * @param string $id
-     *
-     * @return object
+     * @return bool
      *
      * @since 3.01
      */
-    protected function get($id)
+    public function isActive()
     {
-        return $this->container->get($id);
+        return $this->active;
     }
 
     /**
-     * Возвращает текущий запрос
+     * Задаёт активность
      *
-     * @return Eresus_CMS_Request
+     * @param bool $active
+     *
      * @since 3.01
      */
-    protected function getRequest()
+    public function setActive($active)
     {
-        return $this->request;
+        $this->active = $active;
     }
 
     /**
-     * Создаёт объект Eresus_CMS_Page
+     * Возвращает настройки
      *
-     * @return Eresus_CMS_Page
+     * @return array
+     *
      * @since 3.01
      */
-    abstract protected function createPage();
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * Задаёт настройки
+     *
+     * @param array $settings
+     *
+     * @since 3.01
+     */
+    public function setSettings(array $settings)
+    {
+        $this->settings = $settings;
+    }
 }
 

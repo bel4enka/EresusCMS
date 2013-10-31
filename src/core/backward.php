@@ -67,7 +67,7 @@ class Plugin extends Eresus_Plugin
  * @subpackage BC
  * @deprecated с 3.01 используйте {@link Eresus_Plugin_Registry}
  */
-class Plugins extends Eresus_Plugin_Registry
+class Plugins extends Eresus\Plugins\Registry
 {
 }
 

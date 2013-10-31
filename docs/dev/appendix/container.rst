@@ -7,7 +7,7 @@
 ------
 
 * doctrine — `Eresus\ORM\Registry <../../api/classes/Eresus.ORM.Registry.html>`_.
-* plugins — `Eresus_Plugin_Registry <../../api/classes/Eresus_Plugin_Registry.html>`_.
+* plugins — `Eresus\Plugins\Registry <../../api/classes/Eresus.Plugins.Registry.html>`_.
 
 Параметры
 ---------

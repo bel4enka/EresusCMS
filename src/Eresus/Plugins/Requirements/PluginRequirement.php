@@ -1,6 +1,6 @@
 <?php
 /**
- * Сведения о модуле расширения
+ * Зависимость от другого модуля
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,41 +22,26 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Domain
  */
+
+namespace Eresus\Plugins\Requirements;
 
 /**
- * Сведения о модуле расширения
+ * Зависимость от другого модуля
  *
- * @property       string $name
- * @property       bool   $active
- * @property       array  $settings
- *
- * @package Eresus
- * @subpackage Domain
+ * @since 3.01
  */
-class Eresus_Entity_Plugin extends Eresus_ORM_Entity
+class PluginRequirement extends Requirement
 {
     /**
-     * Геттер свойства «settings»
-     *
-     * @return array
+     * @param string $uid
+     * @param string $name
+     * @param string $minVer
+     * @param string $maxVer
      */
-    protected function getSettings()
+    public function __construct($uid, $name, $minVer, $maxVer)
     {
-        return unserialize($this->getProperty('settings'));
-    }
-
-    /**
-     * Сеттер свойства «settings»
-     *
-     * @param array $settings
-     */
-    protected function setSettings(array $settings)
-    {
-        $this->setProperty('settings', serialize($settings));
+        // TODO
     }
 }
 

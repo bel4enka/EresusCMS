@@ -26,227 +26,22 @@
  * @package Eresus
  */
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Eresus\Plugins\Plugin;
 
 /**
  * Управление плагинами
  *
  * @package Eresus
  */
-class TPlgMgr implements ContainerAwareInterface
+class TPlgMgr extends  ContainerAware
 {
-    /**
-     * @var ContainerInterface
-     * @since 3.01
-     */
-    private $container;
-
     /**
      * Уровень доступа к модулю
      * @var int
      */
     private $access = ADMIN;
-
-    /**
-     * @param ContainerInterface $container
-     * @since 3.01
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * Включает или отключает плагин
-     *
-     * @return void
-     */
-    private function toggle()
-    {
-        $q = Eresus_DB::getHandler()->createUpdateQuery();
-        $e = $q->expr;
-        $q->update('plugins')
-            ->set('active', $e->not('active'))
-            ->where(
-                $e->eq('name', $q->bindValue(arg('toggle')))
-            );
-        $q->execute();
-
-        HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
-    }
-
-    private function delete()
-    {
-        /** @var Eresus_Plugin_Registry $plugins */
-        $plugins = $this->container->get('plugins');
-        $plugins->load(arg('delete'));
-        $plugins->uninstall(arg('delete'));
-        HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
-    }
-
-    private function edit()
-    {
-        /** @var Eresus_Plugin_Registry $plugins */
-        $plugins = $this->container->get('plugins');
-        $plugins->load(arg('id'));
-        if (method_exists($plugins->items[arg('id')], 'settings'))
-        {
-            $result = $plugins->items[arg('id', 'word')]->settings();
-        }
-        else
-        {
-            $form = array(
-                'name' => 'InfoWindow',
-                'caption' => Eresus_Kernel::app()->getPage()->title,
-                'width' => '300px',
-                'fields' => array (
-                    array('type'=>'text','value'=>
-                    '<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
-                ),
-                'buttons' => array('cancel'),
-            );
-            $result = Eresus_Kernel::app()->getPage()->renderForm($form);
-        }
-        return $result;
-    }
-
-    private function update()
-    {
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('update'));
-        Eresus_CMS::getLegacyKernel()->plugins->items[arg('update')]->updateSettings();
-        HTTP::redirect(arg('submitURL'));
-    }
-
-    /**
-     * Подключает плагины
-     *
-     * @return void
-     * @see add()
-     */
-    private function insert()
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-
-        $files = arg('files');
-        if ($files && is_array($files))
-        {
-            foreach ($files as $plugin => $install)
-            {
-                if ($install)
-                {
-                    try
-                    {
-                        Eresus_CMS::getLegacyKernel()->plugins->install($plugin);
-                    }
-                    catch (DomainException $e)
-                    {
-                        Eresus_Kernel::app()->getPage()->addErrorMessage($e->getMessage());
-                    }
-                }
-            }
-
-        }
-        HttpResponse::redirect('admin.php?mod=plgmgr');
-    }
-
-    /**
-     * Возвращает диалог добавления плагина
-     *
-     * @return string  HTML
-     */
-    private function add()
-    {
-        $data = array();
-
-        /* Составляем список доступных плагинов */
-        $files = glob(Eresus_CMS::getLegacyKernel()->froot . 'ext/*.php');
-        if (false === $files)
-        {
-            $files = array();
-        }
-
-        /* Составляем список установленных плагинов */
-        $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', '', 'name, version');
-        $installed = array();
-        foreach ($items as $item)
-        {
-            $installed []= Eresus_CMS::getLegacyKernel()->froot . 'ext/' . $item['name'] . '.php';
-        }
-        // Оставляем только неустановленные
-        $files = array_diff($files, $installed);
-
-        /*
-         * Собираем информацию о неустановленных плагинах
-         */
-        $data['plugins'] = array();
-        if (count($files))
-        {
-            // Удаляем из версии CMS все буквы, чтобы сравнивать только цифры
-            $kernelVersion = preg_replace('/[^\d\.]/', '', Eresus_Kernel::app()->version);
-
-            foreach ($files as $file)
-            {
-                $errors = array();
-                try
-                {
-                    $info = Eresus_PluginInfo::loadFromFile($file);
-                    $required = $info->getRequiredKernel();
-                    if (
-                        version_compare($kernelVersion, $required[0], '<')/* ||
-						version_compare($kernelVersion, $required[1], '>')*/
-                    )
-                    {
-                        $msg =  I18n::getInstance()->getText('admPluginsInvalidVersion', $this);
-                        $errors []= sprintf($msg, /*implode(' - ', */$required[0]/*)*/);
-                    }
-                }
-                catch (RuntimeException $e)
-                {
-                    $errors []= $e->getMessage();
-                    $info = new Plugin(); // TODO: Придумать решение без Plugin
-                    $info->title = $info->name = basename($file, '.php');
-                    $info->version = '';
-                }
-                $available[$info->name] = $info->version;
-                $data['plugins'][$info->title] = array('info' => $info, 'errors' => $errors);
-            }
-        }
-
-        $plugins = Eresus_CMS::getLegacyKernel()->plugins;
-
-        foreach ($data['plugins'] as &$item)
-        {
-            if ($item['info'] instanceof Eresus_PluginInfo)
-            {
-                $required = $item['info']->getRequiredPlugins();
-                foreach ($required as $plugin)
-                {
-                    list ($name, $minVer, $maxVer) = $plugin;
-                    if (
-                        !isset($plugins->items[$name]) ||
-                        ($minVer && version_compare($plugins->items[$name]->version, $minVer, '<')) ||
-                        ($maxVer && version_compare($plugins->items[$name]->version, $maxVer, '>'))
-                    )
-                    {
-                        {
-                            $msg = I18n::getInstance()->getText('Requires plugin: %s', $this);
-                            $item['errors'] []= sprintf($msg, $name . ' ' . $minVer . '-' . $maxVer);
-                        }
-                    }
-                }
-            }
-        }
-
-        ksort($data['plugins']);
-
-        /* @var TAdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $tmpl = $page->getUITheme()->getTemplate('PluginManager/add-dialog.html');
-        $html = $tmpl->compile($data);
-
-        return $html;
-    }
 
     /**
      * Отрисовка контента модуля
@@ -267,52 +62,212 @@ class TPlgMgr implements ContainerAwareInterface
         $result = '';
         Eresus_Kernel::app()->getPage()->title = admPlugins;
 
-        switch (true)
+        switch (arg('action'))
         {
-            case arg('update') !== null:
+            case 'update':
                 $this->update();
                 break;
-            case arg('toggle') !== null:
-                $this->toggle();
+            case 'toggle':
+                $this->toggleAction();
                 break;
-            case arg('delete') !== null:
-                $this->delete();
+            case 'delete':
+                $this->deleteAction();
                 break;
-            case arg('id') !== null:
-                $result = $this->edit();
+            case 'settings':
+                $result = $this->settingsAction();
                 break;
-            case arg('action') == 'add':
-                $result = $this->add();
+            case 'add':
+                $result = $this->addAction();
                 break;
-            case arg('action') == 'insert':
-                $this->insert();
+            case 'insert':
+                $this->insertAction();
                 break;
             default:
-                $table = array (
-                    'name' => 'plugins',
-                    'key' => 'name',
-                    'sortMode' => 'title',
-                    'columns' => array(
-                        array('name' => 'title', 'caption' => admPlugin, 'width' => '90px', 'wrap'=>false),
-                        array('name' => 'description', 'caption' => admDescription),
-                        array('name' => 'version', 'caption' => admVersion, 'width'=>'70px','align'=>'center'),
-                    ),
-                    'controls' => array (
-                        'delete' => '',
-                        'edit' => '',
-                        'toggle' => '',
-                    ),
-                    'tabs' => array(
-                        'width'=>'180px',
-                        'items'=>array(
-                            array('caption'=>admPluginsAdd, 'name'=>'action', 'value'=>'add')
-                        )
-                    )
-                );
-                $result = Eresus_Kernel::app()->getPage()->renderTable($table);
+                $result = $this->indexAction();
                 break;
         }
         return $result;
+    }
+
+    /**
+     * Включает или отключает плагин
+     *
+     * @return void
+     */
+    private function toggleAction()
+    {
+        $registry = $this->getPluginRegistry();
+        $plugin = $registry->get(arg('id'));
+        if (is_null($plugin))
+        {
+            // TODO
+        }
+        if ($plugin->isEnabled())
+        {
+            $registry->disable($plugin);
+        }
+        else
+        {
+            $registry->enable($plugin);
+        }
+        HttpResponse::redirect(Eresus_Kernel::app()->getPage()->url());
+    }
+
+    /**
+     *
+     */
+    private function deleteAction()
+    {
+        /** @var \Eresus\Plugins\Registry $plugins */
+        $plugins = $this->container->get('plugins');
+        $plugins->load(arg('delete'));
+        $plugins->uninstall(arg('delete'));
+        HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
+    }
+
+    /**
+     * @return mixed
+     */
+    private function settingsAction()
+    {
+        $registry = $this->getPluginRegistry();
+        $plugin = $registry->get(arg('id'));
+        if (is_null($plugin))
+        {
+            // TODO
+        }
+        $mainObject = $plugin->getMainObject();
+        if (method_exists($mainObject, 'settings'))
+        {
+            $html = $mainObject->settings();
+        }
+        else
+        {
+            $form = array(
+                'name' => 'InfoWindow',
+                'caption' => Eresus_Kernel::app()->getPage()->title,
+                'width' => '300px',
+                'fields' => array (
+                    array('type'=>'text','value'=>
+                    '<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
+                ),
+                'buttons' => array('cancel'),
+            );
+            $html = Eresus_Kernel::app()->getPage()->renderForm($form);
+        }
+        return $html;
+    }
+
+    /**
+     *
+     */
+    private function update()
+    {
+        // TODO
+        HTTP::redirect(arg('submitURL'));
+    }
+
+    /**
+     * Подключает плагины
+     *
+     * @return void
+     */
+    private function insertAction()
+    {
+        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
+
+        $install = arg('install');
+        if ($install && is_array($install))
+        {
+            $registry = $this->getPluginRegistry();
+            foreach ($install as $name)
+            {
+                try
+                {
+                    $registry->install($name);
+                }
+                catch (DomainException $e)
+                {
+                    Eresus_Kernel::app()->getPage()->addErrorMessage($e->getMessage());
+                }
+            }
+
+        }
+        HttpResponse::redirect('admin.php?mod=plgmgr');
+    }
+
+    /**
+     * Возвращает диалог добавления плагина
+     *
+     * @return string  HTML
+     */
+    private function addAction()
+    {
+        /*
+         * Составляем список доступных плагинов
+         */
+        /** @var Eresus_CMS $app */
+        $app = $this->container->getParameter('app');
+        $it = new DirectoryIterator($app->getFsRoot() . '/ext');
+        $found = array();
+        foreach ($it as $path)
+        {
+            /** @var DirectoryIterator $path */
+            if ($path->isDir() && !$path->isDot()
+                && file_exists($path->getPathname() . '/plugin.xml'))
+            {
+                $found []= $path->getFilename();
+            }
+        }
+
+        $registry = $this->getPluginRegistry();
+        // Оставляем только неустановленные
+        $notInstalled = array_diff($found, array_keys($registry->getAll()));
+
+        $vars = array('plugins' => array());
+        foreach ($notInstalled as $path)
+        {
+            $plugin = Plugin::createFromPath($path, $this->container);
+            $vars['plugins'] []= $plugin;
+        }
+
+        $tmpl = Eresus_Template::loadFromFile('Eresus/Resources/views/PluginManager/Install.html');
+        $html = $tmpl->compile($vars);
+
+        return $html;
+    }
+
+    /**
+     * Выводит список плагинов
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    private function indexAction()
+    {
+        $registry = $this->getPluginRegistry();
+
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+
+        $vars = array(
+            'baseUrl' => $page->url(),
+            'plugins' => $registry->getAll()
+        );
+        $tmpl = Eresus_Template::loadFromFile('Eresus/Resources/views/PluginManager/Index.html');
+        $html = $tmpl->compile($vars);
+        return $html;
+    }
+
+    /**
+     * @return \Eresus\Plugins\Registry
+     */
+    private function getPluginRegistry()
+    {
+        /** @var \Eresus\Plugins\Registry $registry */
+        $registry = $this->container->get('plugins');
+        return $registry;
     }
 }
 

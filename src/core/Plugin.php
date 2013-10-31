@@ -165,7 +165,7 @@ abstract class Eresus_Plugin implements ContainerAwareInterface
 
         Eresus_Kernel::log(array(get_class($this), __METHOD__), LOG_DEBUG, 'starting…');
 
-        /** @var Eresus_Plugin_Registry $plugins */
+        /** @var \Eresus\Plugins\Registry $plugins */
         $plugins = $this->get('plugins');
         $settings = $plugins->getSettingsFor($this->getName());
         foreach ($settings as $key => $value)
@@ -497,11 +497,24 @@ abstract class Eresus_Plugin implements ContainerAwareInterface
      * @param string $param  Вернуть только указанный параметр
      *
      * @return mixed
+     * @deprecated с 3.01 используйте ORM
      */
     public function dbTable($table, $param = '')
     {
-        $result = Eresus_CMS::getLegacyKernel()->db->tableStatus($this->__table($table), $param);
-
+        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+        $container = $GLOBALS['_container'];
+        /** @var \Eresus\ORM\Registry $doctrine */
+        $doctrine = $container->get('doctrine');
+        $conn = $doctrine->getManager()->getConnection();
+        $stmt = $conn->query("SHOW TABLE STATUS LIKE '" . $container->getParameter('db.prefix')
+            . $table . "'");
+        if ($result = $stmt->fetch())
+        {
+            if (!empty($param))
+            {
+                $result = $result[$param];
+            }
+        }
         return $result;
     }
 
@@ -562,8 +575,7 @@ abstract class Eresus_Plugin implements ContainerAwareInterface
         $result = Eresus_CMS::getLegacyKernel()->db
             ->selectItem('plugins', "`name`='{$this->getName()}'");
         $result = $this->__item($result);
-        $result['settings'] = Eresus_CMS::getLegacyKernel()->db
-            ->escape(encodeOptions($this->settings));
+        $result['settings'] = encodeOptions($this->settings);
         $result = Eresus_CMS::getLegacyKernel()->db->
             updateItem('plugins', $result, "`name`='".$this->getName()."'");
 
@@ -587,7 +599,7 @@ abstract class Eresus_Plugin implements ContainerAwareInterface
      */
     protected function listenEvents()
     {
-        /** @var Eresus_Plugin_Registry $plugins */
+        /** @var \Eresus\Plugins\Registry $plugins */
         $registry = $this->get('plugins');
         for ($i=0; $i < func_num_args(); $i++)
         {

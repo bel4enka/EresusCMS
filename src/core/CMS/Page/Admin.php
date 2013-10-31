@@ -31,7 +31,7 @@
  *
  * @package Eresus
  * @since 3.01
- * @todo Унаследовать напрямую от Eresus_CMS_page после удаления WebPage
+ * @todo Унаследовать напрямую от Eresus_CMS_Page после удаления WebPage
  */
 class Eresus_CMS_Page_Admin extends WebPage
 {

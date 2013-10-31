@@ -671,25 +671,20 @@ function arg($arg, $filter = null)
 		switch ($filter)
 		{
 			case 'dbsafe':
-				$arg = Eresus_CMS::getLegacyKernel()->db->escape($arg);
-			break;
-
+			    break;
 			case 'int':
 			case 'integer':
-					$arg = intval($arg);
-			break;
-
+                $arg = intval($arg);
+			    break;
 			case 'float':
-					$arg = floatval($arg);
-			break;
-
+                $arg = floatval($arg);
+			    break;
 			case 'word':
-					$arg = preg_replace('/\W/', '', $arg);
-			break;
-
+                $arg = preg_replace('/\W/', '', $arg);
+			    break;
 			default:
 				$arg = preg_replace($filter, '', $arg);
-			break;
+			    break;
 		}
 	}
 	return $arg;
@@ -1227,8 +1222,8 @@ class Eresus
 
 	/**
 	 * Плагины
-	 * @var Eresus_Plugin_Registry
-     * @deprecated с 3.01 используйте {@link Eresus_Plugin_Registry::getInstance()}
+	 * @var \Eresus\Plugins\Registry
+     * @deprecated с 3.01 используйте контейнер служб
 	 */
 	public $plugins;
 
@@ -1710,36 +1705,20 @@ class Eresus
 	 */
 	public function init()
 	{
-		if ($this->conf['timezone'])
-		{
-			date_default_timezone_set($this->conf['timezone']);
-		}
-		# Определение путей
 		$this->init_resolve();
-		# Инициализация сессии
 		$this->init_session();
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__) . '/lib' . PATH_SEPARATOR . get_include_path());
-		# Читаем настройки
 		$this->initSettings();
-		# Первичный разбор запроса
 		$this->init_request();
-		# Настройка локали
 		$this->initLocale();
-		# Подключение базовых классов
 		$this->initClasses();
-		# Инициализация расширений
 		$this->init_extensions();
-		# Подключение к источнику данных
 		$this->initDataSource();
         $this->plugins = $this->container->get('plugins');
-		# Проверка сессии
 		$this->check_session();
-		# Проверка логина/логаута
 		$this->check_loginout();
-		# Попытка cookie-логина
 		$this->check_cookies();
-		# Обновление данных о пользователе
 		$this->reset_login();
 		$this->sections = new Sections;
 		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
@@ -1753,7 +1732,7 @@ class Eresus
      *
      * @deprecated с 3.01 используйте {@link Eresus\Entity\Account::hashPassword()}
 	 */
-	function password_hash($password)
+	public function password_hash($password)
 	{
         return Eresus\Entity\Account::hashPassword($password);
 	}

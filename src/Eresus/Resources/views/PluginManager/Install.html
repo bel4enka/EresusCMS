@@ -16,15 +16,15 @@
 			</div>
 
 			<div class="plugin-list">
-				{foreach $plugins item}
+				{foreach $plugins plugin}
 				<div class="plugin-list__plugin block box">
-					{if !$item.errors}<input type="checkbox" name="files[{$item.info->name}]" value="1" checked="checked" />{/if}
+					{if $plugin->getInfo()->isValid()}<input type="checkbox" name="install[]" value="{$plugin->getName()}" checked="checked" />{/if}
 					<div class="block info">
-						<strong>{$item.info->title} {$item.info->version}</strong><br />
-						{$item.info->description}
-						{if $item.errors}
+						<strong>{$plugin->getInfo()->getTitle()} {$plugin->getInfo()->getVersion()}</strong><br />
+						{$plugin->getInfo()->getDescription()}
+						{if not $plugin->getInfo()->isValid()}
 						<ul class="error-text">
-						{foreach $item.errors error}<li>{$error}</li>{/foreach}
+						{foreach $plugin->getInfo()->getErrors() error}<li>{$error}</li>{/foreach}
 						</ul>
 						{/if}
 					</div>
@@ -45,13 +45,13 @@
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 	function pluginManagerCheckAll()
 	{
-		jQuery("#plugin-manager-add-dlg input").attr("checked", "checked");
+		jQuery("#plugin-manager-addAction-dlg input").attr("checked", "checked");
 		return false;
 	}
 
 	function pluginManagerUncheckAll()
 	{
-		jQuery("#plugin-manager-add-dlg input").removeAttr("checked");
+		jQuery("#plugin-manager-addAction-dlg input").removeAttr("checked");
 		return false;
 	}
 //--><!]]></script>

@@ -51,8 +51,8 @@
   :doc:`Предоставление типа раздела (типа контента) <dev/guide/providing_content_type>`.
 * Класс Plugin переименован в `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_. Для обратной
   совместимости имя Plugin оставлено как псевдоним к Eresus_Plugin.
-* Класс Plugins переименован в `Eresus_Plugin_Registry <api/classes/Eresus_Plugin_Registry.html>`_.
-  Для обратной совместимости имя Plugins оставлено как псевдоним к Eresus_Plugin_Registry.
+* Класс Plugins переименован в `Eresus\Plugins\Registry <api/classes/Eresus.Plugins.Registry.html>`_.
+  Для обратной совместимости имя Plugins оставлено как псевдоним к Eresus\Plugins\Registry.
 * Класс Template переименован в `Eresus_Template <api/classes/Eresus_Template.html>`_. Для обратной
   совместимости имя Template оставлено как псевдоним к Eresus_Template.
 * Класс HttpRequest переименован в `Eresus_HTTP_Request <api/classes/Eresus_HTTP_Request.html>`_. Для

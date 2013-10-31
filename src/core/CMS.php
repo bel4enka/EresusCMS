@@ -91,19 +91,7 @@ class Eresus_CMS extends Eresus_Application
     {
         parent::__construct();
 
-        $this->container = new ContainerBuilder();
-        $this->container->setParameter('container', $this->container);
-        $this->container->setParameter('app', $this);
-
-        $this->container
-            ->register('doctrine', 'Eresus\ORM\Registry')
-            ->addArgument('%container%');
-        $this->container
-            ->register('doctrine.driver_chain',
-                'Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
-        $this->container
-            ->register('plugins', 'Eresus_Plugin_Registry')
-            ->addArgument('%container%');
+        $this->createContainer();
 
         $this->eventDispatcher = new Eresus_Event_Dispatcher();
     }
@@ -444,6 +432,31 @@ class Eresus_CMS extends Eresus_Application
     }
 
     /**
+     * Создаёт контейнер служб
+     *
+     * @since 3.01
+     */
+    private function createContainer()
+    {
+        $this->container = new ContainerBuilder();
+        $this->container->setParameter('container', $this->container);
+        $this->container->setParameter('app', $this);
+
+        $this->container
+            ->register('doctrine', 'Eresus\ORM\Registry')
+            ->addArgument('%container%');
+        $this->container
+            ->register('doctrine.driver_chain',
+                'Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
+        $this->container
+            ->register('plugins', 'Eresus\Plugins\Registry')
+            ->addArgument('%container%');
+
+        //TODO Удалить после удаления устаревших компонентов
+        $GLOBALS['_container'] = $this->container;
+    }
+
+    /**
      * Инициализирует сайт
      *
      * @return void
@@ -459,3 +472,4 @@ class Eresus_CMS extends Eresus_Application
         TemplateSettings::setGlobalValue('site', $this->site);
     }
 }
+
