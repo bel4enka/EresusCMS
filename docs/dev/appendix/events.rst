@@ -41,3 +41,7 @@ cms.client.url_section_found
 сайта. Обработчику передаётся экземпляр
 `Eresus\Events\UrlSectionFoundEvent <../../api/classes/Eresus.Events.UrlSectionFoundEvent.html>`_.
 
+cms.shutdown
+------------
+
+Генерируется после отправки ответа браузеру.

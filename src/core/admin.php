@@ -1051,6 +1051,10 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             {
                 if (isset($controller) &&  $controller instanceof Eresus_Admin_Controller_Interface)
                 {
+                    if ($controller instanceof ContainerAwareInterface)
+                    {
+                        $controller->setContainer($this->container);
+                    }
                     $result = $controller->getHtml($request);
                 }
                 elseif (method_exists($this->module, 'adminRender'))

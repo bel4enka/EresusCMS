@@ -8,7 +8,7 @@
 
 * doctrine — `Eresus\ORM\Registry <../../api/classes/Eresus.ORM.Registry.html>`_.
 * events — Symfony\Component\EventDispatcher\EventDispatcher.
-* plugins — `Eresus\Plugins\Registry <../../api/classes/Eresus.Plugins.Registry.html>`_.
+* plugins — `Eresus\Plugins\PluginManager <../../api/classes/Eresus.Plugins.PluginManager.html>`_.
 
 Параметры
 ---------

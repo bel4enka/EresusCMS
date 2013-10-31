@@ -165,7 +165,7 @@ abstract class Eresus_Plugin implements ContainerAwareInterface
 
         Eresus_Kernel::log(array(get_class($this), __METHOD__), LOG_DEBUG, 'starting…');
 
-        /** @var \Eresus\Plugins\Registry $plugins */
+        /** @var \Eresus\Plugins\PluginManager $plugins */
         $plugins = $this->get('plugins');
         $settings = $plugins->getSettingsFor($this->getName());
         foreach ($settings as $key => $value)
@@ -599,7 +599,7 @@ abstract class Eresus_Plugin implements ContainerAwareInterface
      */
     protected function listenEvents()
     {
-        /** @var \Eresus\Plugins\Registry $plugins */
+        /** @var \Eresus\Plugins\PluginManager $plugins */
         $registry = $this->get('plugins');
         for ($i=0; $i < func_num_args(); $i++)
         {

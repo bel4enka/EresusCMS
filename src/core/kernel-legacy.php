@@ -1222,7 +1222,7 @@ class Eresus
 
 	/**
 	 * Плагины
-	 * @var \Eresus\Plugins\Registry
+	 * @var \Eresus\Plugins\PluginManager
      * @deprecated с 3.01 используйте контейнер служб
 	 */
 	public $plugins;
@@ -1816,7 +1816,6 @@ class Eresus
 						}
 						$account->setLastLoginTime(new DateTime());
                         $account->setLoginErrors(0);
-						$om->flush(); // TODO Убрать отсюда!
 						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
 						$result = true;
 					}
@@ -1828,7 +1827,6 @@ class Eresus
                             Eresus_Kernel::app()->getPage()->addErrorMessage(ERR_PASSWORD_INVALID);
                             $account->setLastLoginTime(new DateTime());
                             $account->setLoginErrors($account->getLoginErrors() + 1);
-                            $om->flush(); // TODO Убрать отсюда!
 						}
 					}
 				}
@@ -1838,7 +1836,6 @@ class Eresus
                     Eresus_Kernel::app()->getPage()->addErrorMessage(
                         sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $account->getLoginErrors()));
                     $account->setLastLoginTime(new DateTime());
-                    $om->flush(); // TODO Убрать отсюда!
 				}
 			}
 			else

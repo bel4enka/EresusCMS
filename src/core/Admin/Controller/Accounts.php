@@ -26,23 +26,18 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Eresus\Entity\Account;
+
 /**
  * Управление пользователями
  *
  * @package Eresus
  * @internal
  */
-class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interface
+class Eresus_Admin_Controller_Accounts extends ContainerAware
+    implements Eresus_Admin_Controller_Interface
 {
-    private $accounts;
-    /**
-     * Конструктор
-     */
-    public function __construct()
-    {
-        $this->accounts = new EresusAccounts();
-    }
-
     /**
      * Возвращает разметку
      *
@@ -157,88 +152,38 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
     }
 
     /**
-     * Переключает активность учётной записи
-     *
-     * @param Eresus_CMS_Request $request
-     *
-     * @throws Eresus_CMS_Exception_NotFound
-     *
-     * @return string|Eresus_HTTP_Response
+     * @return Eresus_HTTP_Redirect
      */
-    private function toggleAction(Eresus_CMS_Request $request)
+    private function update()
     {
-        /** @var Eresus_Entity_Account $account */
-        $account = $this->getAccountsTable()->find($request->query->getInt('toggle'));
-        if (null === $account)
-        {
-            throw new Eresus_CMS_Exception_NotFound;
-        }
-        $account->active = !$account->active;
-        $account->getTable()->update($account);
-        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
+        $account = $this->getAccountManager()->get(arg('update', 'int'));
+        $account->setLogin(arg('login'));
+        $account->setActive(arg('active'));
+        $account->setName(arg('name'));
+        $account->setAccess(arg('access'));
+        $account->setLoginErrors(arg('loginErrors'));
+        $account->setMail(arg('mail'));
+        // TODO Проверка почты, переключения активности (отключение самого себя)
+        return new Eresus_HTTP_Redirect(arg('submitURL'));
     }
 
     /**
-     * @param mixed $dummy  Используется для совместимости с родительским методом
-     *
-     * @return mixed  void
-     *
-     * @see EresusAccounts::update()
+     * @return Eresus_HTTP_Redirect
      */
-    public function update($dummy)
+    private function password()
     {
-        $item = $this->accounts->get(arg('update', 'int'));
-        foreach ($item as $key => $value)
-        {
-            if (isset(Eresus_CMS::getLegacyKernel()->request['arg'][$key]))
-            {
-                $item[$key] = arg($key, 'dbsafe');
-            }
-        }
-        $item['active'] = arg('active') || (Eresus_CMS::getLegacyKernel()->user['id'] == $item['id']);
-        if ($this->checkMail($item['mail']))
-        {
-            $this->accounts->update($item);
-        };
-        HTTP::redirect(arg('submitURL'));
-    }
-
-    /**
-     * @param Eresus_CMS_Request $request
-     *
-     * @throws Eresus_CMS_Exception_NotFound
-     *
-     * @return Eresus_HTTP_Response
-     */
-    private function deleteAction(Eresus_CMS_Request $request)
-    {
-        $account = $this->getAccountsTable()->find($request->query->getInt('id'));
-        if (null === $account)
-        {
-            throw new Eresus_CMS_Exception_NotFound;
-        }
-        $account->getTable()->delete($account);
-        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
-    }
-
-    /**
-     *
-     */
-    public function password()
-    {
-        $item = $this->accounts->get(arg('password', 'int'));
         if (arg('pswd1') == arg('pswd2'))
         {
-            $item['hash'] = Eresus_CMS::getLegacyKernel()->password_hash(arg('pswd1'));
-            $this->accounts->update($item);
+            $account = $this->getAccountManager()->get(arg('update', 'int'));
+            $account->setPassword(arg('pswd1'));
         }
-        HTTP::redirect(arg('submitURL'));
+        return new Eresus_HTTP_Redirect(arg('submitURL'));
     }
 
     /**
      * @return string
      */
-    public function edit()
+    private function edit()
     {
         $item = Eresus_CMS::getLegacyKernel()->db->selectItem('users', "`id`='".arg('id')."'");
         $form = array(
@@ -298,14 +243,14 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
         {
             try
             {
-                $account = new Eresus_Entity_Account(Eresus_Kernel::app());
-                $account->name = $request->request->get('name');
-                $account->login = $request->request->get('login');
-                $account->access = $request->request->getInt('access');
-                $account->active = $request->request->getInt('active');
-                $account->password = $request->request->get('pswd1');
-                $account->mail = $request->request->get('mail');
-                $account->getTable()->persist($account);
+                $account = new Account();
+                $account->setName($request->request->get('name'));
+                $account->setLogin($request->request->get('login'));
+                $account->setAccess($request->request->getInt('access'));
+                $account->setActive($request->request->getInt('active'));
+                $account->setPassword($request->request->get('pswd1'));
+                $account->setMail($request->request->get('mail'));
+                $this->getAccountManager()->add($account);
                 return new Eresus_HTTP_Redirect(arg('submitURL'));
             }
             catch (Exception $e)
@@ -402,13 +347,53 @@ class Eresus_Admin_Controller_Accounts implements Eresus_Admin_Controller_Interf
     }
 
     /**
-     * Возвращает таблицу учётных записей
+     * Переключает активность учётной записи
      *
-     * @return Eresus_Entity_Table_Account
+     * @param Eresus_CMS_Request $request
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
+     * @return string|Eresus_HTTP_Response
      */
-    private function getAccountsTable()
+    private function toggleAction(Eresus_CMS_Request $request)
     {
-        return Eresus_ORM::getTable(Eresus_Kernel::app(), 'Account');
+        $account = $this->getAccountManager()->get($request->query->getInt('toggle'));
+        if (null === $account)
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+        $account->setAccess(!$account->isActive());
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
+    }
+
+    /**
+     * @param Eresus_CMS_Request $request
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
+     * @return Eresus_HTTP_Response
+     */
+    private function deleteAction(Eresus_CMS_Request $request)
+    {
+        $account = $this->getAccountManager()->get($request->query->getInt('id'));
+        if (null === $account)
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+        $this->getAccountManager()->remove($account);
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
+    }
+
+    /**
+     * Возвращает менеджер учётных записей
+     *
+     * @return \Eresus\Security\AccountManager
+     *
+     * @since 3.01
+     */
+    private function getAccountManager()
+    {
+        return $this->container->get('accounts');
     }
 }
 

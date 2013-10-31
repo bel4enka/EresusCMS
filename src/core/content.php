@@ -67,7 +67,7 @@ class TContent implements ContainerAwareInterface
             return '';
         }
 
-        /** @var \Eresus\Plugins\Registry $plugins */
+        /** @var \Eresus\Plugins\PluginManager $plugins */
         $plugins = $this->container->get('plugins');
         /** @var TAdminUI $page */
         $page = Eresus_Kernel::app()->getPage();

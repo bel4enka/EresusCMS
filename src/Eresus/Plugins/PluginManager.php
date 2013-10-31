@@ -1,6 +1,6 @@
 <?php
 /**
- * Реестр модулей расширения
+ * Менеджер модулей расширения
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -33,7 +33,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Eresus_Kernel;
 use Eresus_PluginInfo;
-use Eresus_CMS;
 use Eresus_CMS_Request;
 use Eresus_Client_Controller_Content_Default;
 use Eresus_Client_Controller_Content_List;
@@ -41,20 +40,20 @@ use Eresus_Client_Controller_Content_Url;
 use Eresus_Client_Controller_Content_Interface;
 use TClientUI;
 use ContentPlugin;
-use Eresus_Event;
-use Eresus_Event_Render;
-use Eresus_Event_Response;
+use Symfony\Component\EventDispatcher\Event;
+use Eresus\Events\RenderEvent;
+use Eresus\Events\ResponseEvent;
 use i18n;
 use TContentPlugin;
-use Eresus_Event_UrlSectionFound;
+use Eresus\Events\UrlSectionFoundEvent;
 
 /**
- * Реестр модулей расширения
+ * Менеджер модулей расширения
  *
  * @api
  * @since 3.01
  */
-class Registry
+class PluginManager
 {
     /**
      * Список всех активированных плагинов
@@ -180,31 +179,25 @@ class Registry
         /** @var EntityManager $om */
         $om = $this->container->get('doctrine')->getManager();
         $om->persist($entity);
-        $om->flush();
     }
 
     /**
      * Деинсталлирует плагин
      *
-     * @param string $name  Имя плагина
+     * @param Plugin $plugin
      */
-    public function uninstall($name)
+    public function uninstall(Plugin $plugin)
     {
-        if (!isset($this->items[$name]))
+        if (!array_key_exists($this->registry, $plugin->getName()))
         {
-            $this->load($name);
+            // TODO
         }
-        if (isset($this->items[$name]))
-        {
-            $this->items[$name]->uninstall();
-        }
-        $item = Eresus_CMS::getLegacyKernel()->db->selectItem('plugins', "`name`='".$name."'");
-        if (!is_null($item))
-        {
-            Eresus_CMS::getLegacyKernel()->db->delete('plugins', "`name`='".$name."'");
-        }
-        //$filename = filesRoot.'ext/'.$name.'.php';
-        //if (file_exists($filename)) unlink($filename);
+
+        $plugin->getMainObject()->uninstall();
+
+        /** @var EntityManager $om */
+        $om = $this->container->get('doctrine')->getManager();
+        $om->remove($plugin->getEntity());
     }
 
     /**
@@ -325,6 +318,10 @@ class Registry
         if (isset($controller)
             && $controller instanceof Eresus_Client_Controller_Content_Interface)
         {
+            if ($controller instanceof ContainerAwareInterface)
+            {
+                $controller->setContainer($this->container);
+            }
             $result = $controller->getHtml($request, $page);
         }
         return $result;
@@ -345,11 +342,11 @@ class Registry
     }
 
     /**
-     * @param Eresus_Event_UrlSectionFound $event
+     * @param UrlSectionFoundEvent $event
      *
      * @deprecated с 3.01
      */
-    public function clientOnURLSplit(Eresus_Event_UrlSectionFound $event)
+    public function clientOnURLSplit(UrlSectionFoundEvent $event)
     {
         if (isset($this->events['clientOnURLSplit']))
         {
@@ -361,10 +358,10 @@ class Registry
     }
 
     /**
-     * @param Eresus_Event_Render $event
+     * @param RenderEvent $event
      * @deprecated с 3.01
      */
-    public function clientOnContentRender(Eresus_Event_Render $event)
+    public function clientOnContentRender(RenderEvent $event)
     {
         if (isset($this->events['clientOnContentRender']))
         {
@@ -376,11 +373,11 @@ class Registry
     }
 
     /**
-     * @param Eresus_Event_Render $event
+     * @param RenderEvent $event
      *
      * @deprecated с 3.01
      */
-    public function clientOnPageRender(Eresus_Event_Render $event)
+    public function clientOnPageRender(RenderEvent $event)
     {
         if (isset($this->events['clientOnPageRender']))
         {
@@ -392,10 +389,10 @@ class Registry
     }
 
     /**
-     * @param Eresus_Event_Response $event
+     * @param ResponseEvent $event
      * @deprecated с 3.01
      */
-    public function clientBeforeSend(Eresus_Event_Response $event)
+    public function clientBeforeSend(ResponseEvent $event)
     {
         if (isset($this->events['clientBeforeSend']))
         {
@@ -409,10 +406,11 @@ class Registry
     }
 
     /**
-     * @param Eresus_Event $event
+     * @param Event $event
+     *
      * @deprecated с 3.01
      */
-    public function adminOnMenuRender(Eresus_Event $event)
+    public function adminOnMenuRender(Event $event)
     {
         if (isset($this->events['adminOnMenuRender']))
         {
@@ -540,7 +538,8 @@ class Registry
      */
     private function registerBcEventListeners()
     {
-        $ed = Eresus_Kernel::app()->getEventDispatcher();
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $ed */
+        $ed = $this->container->get('events');
 
         $ed->addListener('cms.admin.start', array($this, 'adminOnMenuRender'));
 

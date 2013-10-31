@@ -81,7 +81,7 @@ class TContentPlugin implements ContainerAwareInterface
         global $locale;
 
         $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        /** @var \Eresus\Plugins\Registry $plugins */
+        /** @var \Eresus\Plugins\PluginManager $plugins */
         $plugins = $this->container->get('plugins');
 
         if (!empty($this->name) && isset($plugins->list[$this->name]))

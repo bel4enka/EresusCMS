@@ -31,7 +31,7 @@
 * Удалено свойство Eresus::$host.
 * Удалены методы DB: setTestInstance, getInstance, createSelectQuery, createUpdateQuery,
   createInsertQuery, createDeleteQuery.
-* Удалён псевдоним ``Accounts`` класса `EresusAccounts <api/classes/EresusAccounts.html>`_.
+* Удалён класс ``EresusAccounts`` и его псевдоним ``Accounts``.
 * Удалены классы PHP и System, используйте одноимённые методы класса
   `Eresus_Kernel <api/classes/Eresus_Kernel.html>`_.
 * Удалён класс FS, используйте методы класса `Eresus_FS_Tool <api/classes/Eresus_FS_Tool.html>`_.
@@ -51,8 +51,8 @@
   :doc:`Предоставление типа раздела (типа контента) <dev/guide/providing_content_type>`.
 * Класс Plugin переименован в `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_. Для обратной
   совместимости имя Plugin оставлено как псевдоним к Eresus_Plugin.
-* Класс Plugins переименован в `Eresus\Plugins\Registry <api/classes/Eresus.Plugins.Registry.html>`_.
-  Для обратной совместимости имя Plugins оставлено как псевдоним к Eresus\Plugins\Registry.
+* Класс Plugins переименован в `Eresus\Plugins\PluginManager <api/classes/Eresus.Plugins.PluginManager.html>`_.
+  Для обратной совместимости имя Plugins оставлено как псевдоним к Eresus\Plugins\PluginManager.
 * Класс Template переименован в `Eresus_Template <api/classes/Eresus_Template.html>`_. Для обратной
   совместимости имя Template оставлено как псевдоним к Eresus_Template.
 * Класс HttpRequest переименован в `Eresus_HTTP_Request <api/classes/Eresus_HTTP_Request.html>`_. Для

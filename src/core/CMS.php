@@ -28,7 +28,7 @@
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Класс приложения Eresus CMS
@@ -84,6 +84,10 @@ class Eresus_CMS extends Eresus_Application
         parent::__construct();
 
         $this->createContainer();
+
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get('events');
+        $dispatcher->addListener('cms.shutdown', array($this, 'onShutdown'));
     }
 
     /**
@@ -210,6 +214,20 @@ class Eresus_CMS extends Eresus_Application
     }
 
     /**
+     * Завершение обработки запроса
+     *
+     * @param Event $event
+     *
+     * @since 3.01
+     */
+    public function onShutdown(Event $event)
+    {
+        /** @var \Doctrine\ORM\EntityManager $om */
+        $om = $this->container->get('doctrine')->getManager();
+        $om->flush();
+    }
+
+    /**
      * Проверка окружения
      *
      * @return void
@@ -287,8 +305,6 @@ class Eresus_CMS extends Eresus_Application
      */
     protected function runWeb()
     {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-
         $request = new Eresus_CMS_Request(Eresus_HTTP_Request::createFromGlobals());
         $request->setSiteRoot($this->detectWebRoot());
 
@@ -320,6 +336,10 @@ class Eresus_CMS extends Eresus_Application
             TemplateSettings::setGlobalValue('page', $this->page);
             $response = $controller->dispatch();
             $response->send();
+
+            /** @var \Symfony\Component\EventDispatcher\EventDispatcher $evd */
+            $evd = $this->container->get('events');
+            $evd->dispatch('cms.shutdown');
         }
     }
 
@@ -429,7 +449,10 @@ class Eresus_CMS extends Eresus_Application
             ->register('doctrine.driver_chain',
                 'Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
         $this->container
-            ->register('plugins', 'Eresus\Plugins\Registry')
+            ->register('plugins', 'Eresus\Plugins\PluginManager')
+            ->addArgument('%container%');
+        $this->container
+            ->register('accounts', 'Eresus\Security\AccountManager')
             ->addArgument('%container%');
 
         //TODO Удалить после удаления устаревших компонентов

@@ -346,7 +346,6 @@ class Sections
         }
 
         $om->persist($section);
-        $om->flush(); // TODO Убрать отсюда!
         return $item;
     }
 
@@ -380,8 +379,6 @@ class Sections
         $section->setContent($item['content']);
         $section->setoptions($item['options']);
         $section->setUpdated(new DateTime());
-
-        $om->flush(); // TODO Убрать отсюда
 
         return $item;
     }

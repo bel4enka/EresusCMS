@@ -22,8 +22,6 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
 namespace Eresus\Events;
@@ -34,8 +32,8 @@ use Eresus_HTTP_Response;
 /**
  * Событие «Отправка ответа»
  *
+ * @api
  * @since 3.01
- * @package Eresus
  */
 class ResponseEvent extends Event
 {

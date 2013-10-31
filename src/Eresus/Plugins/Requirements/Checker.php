@@ -27,7 +27,7 @@
 namespace Eresus\Plugins\Requirements;
 
 use Eresus\Plugins\Plugin;
-use Eresus\Plugins\Registry;
+use Eresus\Plugins\PluginManager;
 
 /**
  * Проверка зависимостей плагина
@@ -37,18 +37,18 @@ use Eresus\Plugins\Registry;
 class Checker
 {
     /**
-     * @var Registry
+     * @var PluginManager
      *
      * @since 3.01
      */
     private $registry;
 
     /**
-     * @param Registry $pluginRegistry
+     * @param PluginManager $manager
      */
-    public function __construct(Registry $pluginRegistry)
+    public function __construct(PluginManager $manager)
     {
-        $this->registry = $pluginRegistry;
+        $this->registry = $manager;
     }
 
     /**

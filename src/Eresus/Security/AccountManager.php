@@ -1,6 +1,6 @@
 <?php
 /**
- * Событие «При разборе URL в нём найден раздел сайта»
+ * Менеджер учётных записей пользователей
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,70 +24,97 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\Events;
+namespace Eresus\Security;
 
-use Symfony\Component\EventDispatcher\Event;
+use Doctrine\ORM\EntityManager;
+use Eresus\Entity\Account;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Событие «При разборе URL в нём найден раздел сайта»
+ * Менеджер учётных записей пользователей
  *
  * @api
  * @since 3.01
  */
-class UrlSectionFoundEvent extends Event
+class AccountManager
 {
     /**
-     * Описание найденного раздела
-     *
-     * @var array
+     * @var ContainerInterface
      *
      * @since 3.01
      */
-    private $sectionInfo;
+    private $container;
 
     /**
-     * Адрес найденного раздела
-     *
-     * @var string
+     * @param ContainerInterface $container
      *
      * @since 3.01
      */
-    private $url;
-
-    /**
-     * @param array  $sectionInfo  описание найденного раздела
-     * @param string $url          адрес найденного раздела
-     *
-     * @since 3.01
-     */
-    public function __construct(array $sectionInfo, $url)
+    public function __construct(ContainerInterface $container)
     {
-        $this->sectionInfo = $sectionInfo;
-        $this->url = $url;
+        $this->container = $container;
     }
 
     /**
-     * Возвращает описание найденного раздела
+     * Возвращает учётную запись по идентификатору
      *
-     * @return array
+     * @param int $id
+     *
+     * @return Account|null
      *
      * @since 3.01
      */
-    public function getSectionInfo()
+    public function get($id)
     {
-        return $this->sectionInfo;
+        return $this->getRepository()->find($id);
     }
 
     /**
-     * Возвращает адрес найденного раздела
+     * Добавляет учётную запись
      *
-     * @return string
+     * @param Account $account
      *
      * @since 3.01
      */
-    public function getUrl()
+    public function add(Account $account)
     {
-        return $this->url;
+        $this->getObjectManager()->persist($account);
+    }
+
+    /**
+     * Удаляет учётную запись
+     *
+     * @param Account $account
+     *
+     * @since 3.01
+     */
+    public function remove(Account $account)
+    {
+        $this->getObjectManager()->remove($account);
+    }
+
+    /**
+     * Возвращает менеджер объектов
+     *
+     * @return \Doctrine\ORM\EntityManager
+     *
+     * @since 3.01
+     */
+    private function getObjectManager()
+    {
+        return $this->container->get('doctrine')->getManager();
+    }
+
+    /**
+     * Возвращает хранилище записей
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     *
+     * @since 3.01
+     */
+    private function getRepository()
+    {
+        return $this->getObjectManager()->getRepository('Eresus\Entity\Account');
     }
 }
 

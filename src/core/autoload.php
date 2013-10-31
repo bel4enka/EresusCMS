@@ -56,7 +56,6 @@ spl_autoload_register(
     {
         static $map = array(
             'AdminList' => 'lib/admin/lists.php',
-            'EresusAccounts' => 'lib/accounts.php',
             'EresusForm' => 'EresusForm.php',
             'EresusCollection' => 'classes/helpers/EresusCollection.php',
             'Form' => 'lib/forms.php',
