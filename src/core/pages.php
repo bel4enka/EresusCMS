@@ -30,6 +30,7 @@
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Eresus\Entity\Section;
+use Eresus\Exceptions\NotFoundException;
 
 /**
  * Управление разделами сайта
@@ -53,14 +54,11 @@ class TPages extends ContainerAware
     /**
      * Запись новой страницы в БД
      *
-     * @throws RuntimeException
-     *
-     * @return void
+     * @return Eresus_HTTP_Redirect
      */
     private function insert()
     {
-        /** @var \Doctrine\ORM\EntityManager $om */
-        $om = $this->container->get('doctrine')->getManager();
+        $manager = $this->getSectionManager();
 
         $section = new Section();
         $section->setName(arg('name'));
@@ -80,85 +78,53 @@ class TPages extends ContainerAware
         $parentId = arg('owner', 'int');
         if ($parentId)
         {
-            $parent = $om->find('Eresus\Entity\Section', $parentId);
-            $siblings = $parent->getChildren();
+            $parent = $manager->get($parentId);
             $section->setParent($parent);
         }
-        else
-        {
-            /** @var Section[] $siblings */
-            $siblings = $om->getRepository('Eresus\Entity\Section')
-                ->findBy(array('parent' => null));
-        }
 
-        foreach ($siblings as $sibling)
-        {
-            if ($sibling->getName() == $section->getName())
-            {
-                // TODO Добавить в сообщение имя и родительский раздел
-                // TODO Сделать возврат к диалогу
-                throw new RuntimeException(_('Раздел с таким именем уже существует!'));
-            }
-        }
+        $manager->add($section);
 
-        $om->persist($section);
-        $om->flush();
-
-        HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
 
     /**
-     * ???
-     * @return void
+     * @return Eresus_HTTP_Redirect
      */
-    function update()
+    private function update()
     {
-        $old = Eresus_CMS::getLegacyKernel()->sections->get(arg('update', 'int'));
-        $item = $old;
+        $manager = $this->getSectionManager();
+        $section = $manager->get(arg('update', 'int'));
 
         $newName = arg('name', '/[^a-z0-9_]/i');
         if ($newName)
         {
-            $item['name'] = $newName;
+            $section->setName($newName);
         }
-        $item['title'] = arg('title', 'dbsafe');
-        $item['caption'] = arg('caption', 'dbsafe');
-        $item['description'] = arg('description', 'dbsafe');
-        $item['hint'] = arg('hint', 'dbsafe');
-        $item['keywords'] = arg('keywords', 'dbsafe');
-        $item['template'] = arg('template', 'dbsafe');
-        $item['type'] = arg('type', 'dbsafe');
-        $item['active'] = arg('active', 'int');
-        $item['visible'] = arg('visible', 'int');
-        $item['access'] = arg('access', 'int');
-        $item['position'] = arg('position', 'int');
-        $item['options'] = text2array(arg('options'), true);
-
-        $temp = Eresus_CMS::getLegacyKernel()->sections->get("(`name`='" . $item['name'] .
-        "') AND (`owner`='" . $item['owner'] . "' AND `id` <> " . $item['id'] . ")");
-        if (count($temp) > 0)
-        {
-            Eresus_Kernel::app()->getPage()->addErrorMessage(
-                sprintf(errItemWithSameName, $item['name']));
-            saveRequest();
-            HTTP::redirect(Eresus_CMS::getLegacyKernel()->request['referer']);
-        }
+        $section->setTitle(arg('title'));
+        $section->setCaption(arg('caption'));
+        $section->setDescription(arg('description'));
+        $section->setHint(arg('hint', 'dbsafe'));
+        $section->setKeywords(arg('keywords'));
+        $section->setTemplate(arg('template'));
+        $section->setType(arg('type'));
+        $section->setActive(arg('active'));
+        $section->setVisible(arg('visible'));
+        $section->setAccess(arg('access'));
+        $section->setPosition(arg('position'));
+        $section->setOptions(text2array(arg('options'), true));
 
         if (arg('created'))
         {
-            $item['created'] = arg('created', 'dbsafe');
+            $section->setCreated(new DateTime(arg('created')));
         }
-        $item['updated'] = arg('updated', 'dbsafe');
+        $section->setUpdated(new DateTime(arg('updated')));
         if (arg('updatedAuto'))
         {
-            $item['updated'] = gettime('Y-m-d H:i:s');
+            $section->setUpdated(new DateTime());
         }
 
-        Eresus_CMS::getLegacyKernel()->sections->update($item);
-
-        HTTP::redirect(arg('submitURL'));
+        return new Eresus_HTTP_Redirect(arg('submitURL'));
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * ???
@@ -193,89 +159,65 @@ class TPages extends ContainerAware
 
     /**
      * Функция перемещает страницу вверх в списке
-     * @return void
+     *
+     * @throws NotFoundException
+     *
+     * @return Eresus_HTTP_Redirect
      */
     private function moveUp()
     {
-        $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-        dbReorderItems('pages', "`owner`='".$item['owner']."'");
-        $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-        if ($item['position'] > 0)
+        $manager = $this->getSectionManager();
+        $section = $manager->get(arg('id', 'int'));
+        if (is_null($section))
         {
-            $temp = Eresus_CMS::getLegacyKernel()->sections->get("(`owner`='".$item['owner'].
-            "') AND (`position`='".
-            ($item['position']-1)."')");
-            if (count($temp))
-            {
-                $temp = $temp[0];
-                $item['position']--;
-                $temp['position']++;
-                Eresus_CMS::getLegacyKernel()->sections->update($item);
-                Eresus_CMS::getLegacyKernel()->sections->update($temp);
-            }
+            throw new NotFoundException;
         }
-        HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+        $manager->moveCloser($section);
+
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
 
     /**
      * Функция перемещает страницу вниз в списке
-     * @return void
+     *
+     * @throws NotFoundException
+     *
+     * @return Eresus_HTTP_Redirect
      */
     private function moveDown()
     {
-        $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-        dbReorderItems('pages', "`owner`='".$item['owner']."'");
-        $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-        if ($item['position'] <
-            count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner'])))
+        $manager = $this->getSectionManager();
+        $section = $manager->get(arg('id', 'int'));
+        if (is_null($section))
         {
-            $temp = Eresus_CMS::getLegacyKernel()->sections->
-                get("(`owner`='".$item['owner']."') AND (`position`='".
-                ($item['position']+1)."')");
-            if ($temp)
-            {
-                $temp = $temp[0];
-                $item['position']++;
-                $temp['position']--;
-                Eresus_CMS::getLegacyKernel()->sections->update($item);
-                Eresus_CMS::getLegacyKernel()->sections->update($temp);
-            }
+            throw new NotFoundException;
         }
+        $manager->moveFarther($section);
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
 
     /**
      * Перемещает страницу из одной ветки в другую
      *
-     * @return string
+     * @throws NotFoundException
+     *
+     * @return string|Eresus_HTTP_Redirect
      */
     private function move()
     {
-        $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
+        $manager = $this->getSectionManager();
+        $section = $manager->get(arg('id', 'int'));
+        $item = $section->toLegacyArray();
         if (!is_null(arg('to')))
         {
-            $item['owner'] = arg('to', 'int');
-            $item['position'] = count(Eresus_CMS::getLegacyKernel()->sections->children($item['owner']));
-
-            /* Проверяем, нет ли в разделе назначения раздела с таким же именем */
-            $q = Eresus_DB::getHandler()->createSelectQuery();
-            $e = $q->expr;
-            $q->select($q->alias($e->count('id'), 'count'))
-                ->from('pages')
-                ->where($e->lAnd(
-                    $e->eq('owner', $q->bindValue($item['owner'], null, PDO::PARAM_INT)),
-                    $e->eq('name', $q->bindValue($item['name']))
-                ));
-            $count = $q->fetch();
-            if ($count['count'])
+            $target = $manager->get(arg('to', 'int'));
+            if (is_null($section) || is_null($target))
             {
-                Eresus_Kernel::app()->getPage()->addErrorMessage(
-                    'В разделе назначения уже есть раздел с таким же именем!');
-                HTTP::goback();
+                throw new NotFoundException;
             }
+            $manager->move($section, $target);
 
-            Eresus_CMS::getLegacyKernel()->sections->update($item);
-            HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+            return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
         }
         else
         {
@@ -301,50 +243,22 @@ class TPages extends ContainerAware
     }
 
     /**
-     * Удаляет ветку разделов
+     * Удаляет раздел
      *
-     * @param int $id
+     * @throws NotFoundException
      *
-     * @return void
-     */
-    private function deleteBranch($id)
-    {
-        $item = Eresus_CMS::getLegacyKernel()->db->selectItem('pages', "`id`='".$id."'");
-        if (Eresus_CMS::getLegacyKernel()->plugins->load($item['type']))
-        {
-            if (isset(Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->table))
-            {
-                $fields = Eresus_CMS::getLegacyKernel()->db->
-                    fields(Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->table['name']);
-                if (in_array('section', $fields))
-                {
-                    Eresus_CMS::getLegacyKernel()->db->
-                        delete(Eresus_CMS::getLegacyKernel()->plugins->items[$item['type']]->table['name'],
-                            "`section`='".$item['id']."'");
-                }
-            }
-        }
-        $items = Eresus_CMS::getLegacyKernel()->db->select('`pages`', "`owner`='".$id."'", '', '`id`');
-        if (count($items))
-        {
-            foreach ($items as $item)
-            {
-                $this->deleteBranch($item['id']);
-            }
-        }
-        Eresus_CMS::getLegacyKernel()->db->delete('pages', "`id`='".$id."'");
-    }
-
-    /**
-     * Удаляет страницу
-     * @return void
+     * @return Eresus_HTTP_Redirect
      */
     private function delete()
     {
-        $item = Eresus_CMS::getLegacyKernel()->sections->get(arg('id', 'int'));
-        Eresus_CMS::getLegacyKernel()->sections->delete(arg('id', 'int'));
-        dbReorderItems('pages', "`owner`='".$item['owner']."'");
-        HTTP::redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
+        $manager = $this->getSectionManager();
+        $section = $manager->get(arg('id', 'int'));
+        if (is_null($section))
+        {
+            throw new NotFoundException;
+        }
+        $manager->remove($section);
+        return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url(array('id'=>'')));
     }
 
     /**
@@ -462,7 +376,9 @@ class TPages extends ContainerAware
      */
     private function edit($id)
     {
-        $item = Eresus_CMS::getLegacyKernel()->sections->get($id);
+        $manager = $this->getSectionManager();
+        $section = $manager->get($id);
+        $item = $section->toLegacyArray();
         $content = $this->loadContentTypes();
         $templates = $this->loadTemplates();
         $item['options'] = array2text($item['options'], true);
@@ -666,6 +582,13 @@ class TPages extends ContainerAware
             return '';
         }
     }
-    //-----------------------------------------------------------------------------
+
+    /**
+     * @return \Eresus\Sections\SectionManager
+     */
+    private function getSectionManager()
+    {
+        return $this->container->get('plugins');
+    }
 }
 

@@ -54,7 +54,7 @@ class Eresus_Plugin_Controller_Admin_ContentTest extends PHPUnit_Framework_TestC
     /**
      * Тест реакции на несуществующее действие
      * @covers Eresus_Plugin_Controller_Admin_Content::getHtml
-     * @expectedException Eresus_CMS_Exception_NotFound
+     * @expectedException \Eresus\Exceptions\NotFoundException
      */
     public function testActionNotFound()
     {

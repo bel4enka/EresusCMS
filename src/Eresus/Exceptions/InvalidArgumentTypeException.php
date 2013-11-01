@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс контроллера контента АИ
+ * Исключительная ситуация «Неправильный тип аргумента»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,26 +22,39 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
+namespace Eresus\Exceptions;
+
+use InvalidArgumentException;
+
 /**
- * Интерфейс контроллера контента АИ
+ * Исключительная ситуация «Неправильный тиа аргумента»
  *
- * @package Eresus
+ * @api
  * @since 3.01
  */
-interface Eresus_Admin_Controller_Interface
+class InvalidArgumentTypeException extends InvalidArgumentException
 {
     /**
-     * Возвращает разметку области контента
+     * Фабрика исключений
      *
-     * @param Eresus_CMS_Request $request
+     * @param string $method        метод, где произошла ошибка
+     * @param int    $argNum        порядковый номер аргумента
+     * @param string $expectedType  ожидаемый тип аргумента
+     * @param mixed  $actualArg     аргумент, вызвавший ошибку
      *
-     * @return string
-     * @since 3.01
+     * @return InvalidArgumentTypeException
      */
-    public function getHtml(Eresus_CMS_Request $request);
+    public static function factory($method, $argNum, $expectedType, $actualArg)
+    {
+        return new self(sprintf(
+            'Argument %d of %s expected to be a %s, %s given',
+            $argNum,
+            $method,
+            $expectedType,
+            is_object($actualArg) ? 'instance of ' . get_class($actualArg) : gettype($actualArg)
+        ));
+    }
 }
 

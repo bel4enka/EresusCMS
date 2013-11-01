@@ -26,32 +26,35 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Контроллер АИ типа раздела «URL»
  *
  * @package Eresus
  */
-class Eresus_Admin_Controller_Content_Url implements Eresus_Admin_Controller_Content_Interface
+class Eresus_Admin_Controller_Content_Url extends ContainerAware
+    implements Eresus_Admin_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml(Eresus_CMS_Request $request)
+    public function getHtml(Request $request)
     {
-        $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
-        $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $sections = $legacyKernel->sections;
-        $item = $sections->get($request->query->getInt('section'));
+        /** @var \Eresus\Sections\SectionManager $manager */
+        $manager = $this->container->get('sections');
+        $section = $manager->get($request->query->getInt('section'));
+        $item = $section->toLegacyArray();
 
         if ($request->getMethod() == 'POST')
         {
-            $item['content'] = $args->get('url');
-            Eresus_Kernel::app()->getLegacyKernel()->sections->update($item);
+            $section->setContent($request->request->get('url'));
             return new Eresus_HTTP_Redirect(arg('submitURL'));
         }
 

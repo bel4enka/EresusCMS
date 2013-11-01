@@ -29,6 +29,10 @@
  */
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Eresus\Controller\ControllerInterface;
+use Eresus\UI\Menu\SectionMenu;
 
 /**
  * Тема оформления административного интерфейса
@@ -1005,11 +1009,11 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     }
 
     /**
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return string
      */
-    private function renderContent(Eresus_CMS_Request $request)
+    private function renderContent(Request $request)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
@@ -1049,7 +1053,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
              */
             if (is_object($this->module))
             {
-                if (isset($controller) &&  $controller instanceof Eresus_Admin_Controller_Interface)
+                if (isset($controller) &&  $controller instanceof ControllerInterface)
                 {
                     if ($controller instanceof ContainerAwareInterface)
                     {
@@ -1308,10 +1312,10 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     /**
      * Отправляет созданную страницу пользователю
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      * @return Eresus_HTTP_Response
      */
-    public function render(Eresus_CMS_Request $request)
+    public function render(Request $request)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
         return $this->renderUI($request);
@@ -1320,16 +1324,15 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     /**
      * Отрисовка интерфейса
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
-     * @return Eresus_HTTP_Response
+     * @return Response
      */
-    private function renderUI(Eresus_CMS_Request $request)
+    private function renderUI(Request $request)
     {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
         $response = $this->renderContent($request);
 
-        if (!($response instanceof Eresus_HTTP_Response))
+        if (!($response instanceof Response))
         {
             $data = array();
             $data['page'] = $this;
@@ -1337,13 +1340,16 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             $data['content'] = $response;
             $data['siteName'] = option('siteName');
             $data['body'] = $this->renderBodySection();
-            $opened = -1;
-            $data['sectionMenu'] = $this->renderPagesMenu($opened);
+
+            $menu = new SectionMenu();
+            $data['sectionMenu'] = $menu;
             $data['controlMenu'] = $this->renderControlMenu();
             $data['user'] = Eresus_CMS::getLegacyKernel()->user;
 
-            $tmpl = Eresus_Template::loadFromFile('core/templates/page.default.html');
-            $response = new Eresus_HTTP_Response($tmpl->compile($data), 200, $this->headers);
+            /** @var \Eresus\Templating\TemplateManager $templates */
+            $templates = $this->container->get('templates');
+            $tmpl = $templates->getAdminTemplate('Pages/Default.html');
+            $response = new Response($tmpl->compile($data), 200, $this->headers);
         }
 
         return $response;

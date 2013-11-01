@@ -345,28 +345,18 @@ abstract class WebPage extends Eresus_CMS_Page
      */
     public function clientURL($id)
     {
-        $parents = Eresus_CMS::getLegacyKernel()->sections->parents($id);
+        /** @var \Eresus\Sections\SectionManager $manager */
+        $manager = $this->container->get('sections');
+        $section = $manager->get($id);
 
-        if (is_null($parents))
+        $path = array();
+        while ($section)
         {
-            return null;
+            array_unshift($path, $section->getName());
         }
 
-        array_push($parents, $id);
-        $items = Eresus_CMS::getLegacyKernel()->sections->get( $parents);
-
-        $list = array();
-        for ($i = 0; $i < count($items); $i++)
-        {
-            $list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
-        }
-        $result = Eresus_CMS::getLegacyKernel()->root;
-        for ($i = 0; $i < count($list); $i++)
-        {
-            $result .= $list[$i].'/';
-        }
-
-        return $result;
+        $url = Eresus_CMS::getLegacyKernel()->root . implode('/', $path) . '/';
+        return $url;
     }
 
     /**

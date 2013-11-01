@@ -22,55 +22,43 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
+
+namespace Eresus;
+use Eresus\Exceptions\InvalidArgumentTypeException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Описание сайта
  *
- * <b>Внимание!</b> Не создавайте экземпляров этого класса самостоятельно, используйте метод
- * {@link Eresus_CMS::getSite()}.
+ * <b>Внимание!</b> Не создавайте экземпляров этого класса самостоятельно, используйте контейнер
+ * служб.
  *
- * @property-read string $webRoot      адрес корня сайта (без слэша на конце)
- * @property-read string $webStyle     адрес папки оформления (без слэша на конце)
- * @property-read string $host         хост сайта
- * @property-read string $title        заголовок сайта
- * @property-read string $description  описание сайта
- * @property-read string $keywords     ключевые слова сайта
- *
- * @package Eresus
+ * @api
  * @since 3.01
  */
-class Eresus_Site
+class Site
 {
-    /**
-     * Старое ядро
-     * @var Eresus
-     * @since 3.01
-     */
-    private $legacyKernel = null;
-
     /**
      * URL корня сайта
      * @var string
      * @since 3.01
      */
-    private $webRoot = '';
+    private $rootUrl = '';
 
     /**
      * URL папки стиля
      * @var string
      * @since 3.01
      */
-    private $webStyle = '/styles';
+    private $stylesUrl = '/styles';
 
     /**
      * Хост сайта
      * @var string
      * @since 3.01
      */
-    private $host = 'localhost';
+    private $domain = 'localhost';
 
     /**
      * Заголовок сайта
@@ -96,31 +84,61 @@ class Eresus_Site
     /**
      * Создаёт описание сайта
      *
-     * @param Eresus $legacyKernel
+     * @param Request $request
      */
-    public function __construct(Eresus $legacyKernel)
+    public function __construct(Request $request)
     {
-        $this->legacyKernel = $legacyKernel;
-        $this->webRoot = rtrim($this->legacyKernel->root, '/');
-        $this->webStyle = $this->webRoot . '/style';
-        $this->host = $this->legacyKernel->request['host'];
+        $this->rootUrl = $request->getSchemeAndHttpHost() . $request->getBasePath();
+        $this->stylesUrl = $this->rootUrl . '/style';
+        $this->domain = $request->getHttpHost();
     }
 
     /**
-     * Магический метод для обеспечения доступа к свойствам только на чтение
+     * Возвращает URL корня сайта
      *
-     * @param string $property
-     * @return mixed
-     * @throws LogicException  если свойства $property нет
+     * @return string
+     *
+     * @since 3.01
      */
-    public function __get($property)
+    public function getRootUrl()
     {
-        if (property_exists($this, $property))
-        {
-            return $this->{$property};
-        }
-        throw new LogicException(sprintf('Trying to access unknown property %s of %s',
-            $property, __CLASS__));
+        return $this->rootUrl;
+    }
+
+    /**
+     * Возвращает URL папки стилей
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getStylesUrl()
+    {
+        return $this->stylesUrl;
+    }
+
+    /**
+     * Возвращает доменное имя
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getDomain()
+    {
+        return $this->domain;
+    }
+
+    /**
+     * Возвращает название
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
@@ -128,16 +146,28 @@ class Eresus_Site
      *
      * @param string $title  новый заголовок
      *
-     * @throws Eresus_Exception_InvalidArgumentType
+     * @throws InvalidArgumentTypeException
      * @since 3.01
      */
     public function setTitle($title)
     {
         if (!is_string($title))
         {
-            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string', $title);
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'string', $title);
         }
         $this->title = $title;
+    }
+
+    /**
+     * Возвращает описание
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -145,7 +175,7 @@ class Eresus_Site
      *
      * @param string $description  новое описание
      *
-     * @throws Eresus_Exception_InvalidArgumentType
+     * @throws InvalidArgumentTypeException
      *
      * @since 3.01
      */
@@ -153,18 +183,29 @@ class Eresus_Site
     {
         if (!is_string($description))
         {
-            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string', $description);
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'string', $description);
         }
         $this->description = $description;
     }
 
+    /**
+     * Возвращает ключевые слова
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
 
     /**
      * Задаёт список ключевых слов
      *
      * @param string $keywords  новый список ключевых слов
      *
-     * @throws Eresus_Exception_InvalidArgumentType
+     * @throws InvalidArgumentTypeException
      *
      * @since 3.01
      */
@@ -172,7 +213,7 @@ class Eresus_Site
     {
         if (!is_string($keywords))
         {
-            throw Eresus_Exception_InvalidArgumentType::factory(__METHOD__, 1, 'string', $keywords);
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'string', $keywords);
         }
         $this->keywords = $keywords;
     }

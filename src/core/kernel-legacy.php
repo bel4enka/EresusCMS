@@ -1321,14 +1321,6 @@ class Eresus
 	 */
 	public $request;
 
-	/**
-	 * Интерфейс работы с разделами сайта
-	 *
-	 * @var Sections
-	 * @since 2.10
-	 */
-	public $sections;
-
     /**
      * @var ContainerInterface
      * @since 3.01
@@ -1370,9 +1362,11 @@ class Eresus
 	 */
 	protected function init_resolve()
 	{
+        $e = new Exception();
+        $e->getTrace();
 		if (is_null($this->froot))
 		{
-			$this->froot = Eresus_Kernel::app()->getFsRoot() . '/';
+			$this->froot = $GLOBALS['kernel']->getAppDir() . '/';
 		}
 
 		$this->fdata = $this->froot . 'data' . DIRECTORY_SEPARATOR;
@@ -1720,8 +1714,6 @@ class Eresus
 		$this->check_loginout();
 		$this->check_cookies();
 		$this->reset_login();
-		$this->sections = new Sections;
-		$GLOBALS['KERNEL']['loaded'] = true; # Флаг загрузки ядра
 	}
 
 	/**

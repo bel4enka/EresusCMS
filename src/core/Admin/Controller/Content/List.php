@@ -26,30 +26,37 @@
  * @package Eresus
  */
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Контроллер АИ типа раздела «Список подразделов»
  *
  * @package Eresus
  */
-class Eresus_Admin_Controller_Content_List implements Eresus_Admin_Controller_Content_Interface
+class Eresus_Admin_Controller_Content_List extends ContainerAware
+    implements Eresus_Admin_Controller_Content_Interface
 {
     /**
      * Возвращает разметку области контента
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml(Eresus_CMS_Request $request)
+    public function getHtml(Request $request)
     {
-            $legacyKernel = Eresus_Kernel::app()->getLegacyKernel();
-        $sections = $legacyKernel->sections;
-        $item = $sections->get($request->query->getInt('section'));
+        /** @var \Eresus\Sections\SectionManager $manager */
+        $manager = $this->container->get('sections');
+        $section = $manager->get($request->query->getInt('section'));
+        $item = $section->toLegacyArray();
 
         if ($request->getMethod() == 'POST')
         {
-            $item['content'] = $request->request->get('content');
-            Eresus_Kernel::app()->getLegacyKernel()->sections->update($item);
+            /** @var \Eresus\Sections\SectionManager $manager */
+            $manager = $this->container->get('sections');
+            $section = $manager->get($item['id']);
+            $section->setContent($request->request->get('content'));
             return new Eresus_HTTP_Redirect(arg('submitURL'));
         }
         else

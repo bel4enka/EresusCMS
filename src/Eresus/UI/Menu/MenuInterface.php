@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация «Неправильный запрос»
+ * Интерфейс меню
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,30 +22,24 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage HTTP
  */
 
+namespace Eresus\UI\Menu;
+
 /**
- * Исключительная ситуация «Неправильный запрос»
- *
- * @package Eresus
- * @subpackage HTTP
+ * Интерфейс меню
  *
  * @since 3.01
  */
-class Eresus_HTTP_Exception_BadRequest extends Eresus_HTTP_Exception
+interface MenuInterface
 {
     /**
-     * Возвращает код состояния HTTP, соответствующий исключению
+     * Возвращает разметку меню
      *
-     * @return int
+     * @return string  HTML
+     *
      * @since 3.01
      */
-    protected function getStatusCode()
-    {
-        return 400;
-    }
+    public function __toString();
 }
 

@@ -32,6 +32,7 @@
  *
  * @package Eresus
  * @subpackage Templates
+ * @deprecated с 3.01
  */
 class TemplateSettings
 {

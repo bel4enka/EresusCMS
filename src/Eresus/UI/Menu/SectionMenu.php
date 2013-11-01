@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация «Страница не найдена»
+ * Меню разделов сайта
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,30 +22,27 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage HTTP
  */
 
+namespace Eresus\UI\Menu;
+
 /**
- * Исключительная ситуация «Страница не найдена»
- *
- * @package Eresus
- * @subpackage HTTP
+ * Меню разделов сайта
  *
  * @since 3.01
  */
-class Eresus_HTTP_Exception_NotFound extends Eresus_HTTP_Exception
+class SectionMenu implements MenuInterface
 {
     /**
-     * Возвращает код состояния HTTP, соответствующий исключению
+     * Возвращает разметку меню
      *
-     * @return int
+     * @return string  HTML
+     *
      * @since 3.01
      */
-    protected function getStatusCode()
+    public function __toString()
     {
-        return 404;
+        return 'MENU';
     }
 }
 

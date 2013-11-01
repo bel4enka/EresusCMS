@@ -22,89 +22,54 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Templates
  */
+
+namespace Eresus\Templating;
+
+use Dwoo;
+use Dwoo_ITemplate;
+use Dwoo_Template_String;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Шаблон
  *
- * @package Eresus
- * @subpackage Templates
+ * @api
  */
-class Eresus_Template
+class Template
 {
     /**
-     * Объект Dwoo
-     * @var null|Dwoo
+     * @var ContainerInterface
      */
-    protected static $dwoo = null;
+    private $container;
 
     /**
      * Внутреннее представление шаблона
-     * @var null|Dwoo_Template_String
+     * @var Dwoo_ITemplate
      * @since 3.01
      */
     protected $template = null;
 
     /**
-     * Загружает шаблон из файла
+     * Конструктор
      *
-     * Если $filename — относительный путь, то он будет расценен как путь относительно корня сайта.
-     *
-     * @param string $filename  имя файла шаблона
-     *
-     * @return Eresus_Template
-     *
-     * @since 3.01
+     * @param Dwoo_ITemplate     $template
+     * @param ContainerInterface $container
      */
-    public static function loadFromFile($filename)
+    public function __construct(Dwoo_ITemplate $template, ContainerInterface $container)
     {
-        $path = $filename;
-        /* Если это относительный путь, добавляем папку шаблонов */
-        if (!preg_match('#^(/|\w{1,10}://|[A-Z]:\\\)#', $filename))
-        {
-            $templateDir = Eresus_Kernel::app()->getFsRoot();
-            $path = $templateDir . '/' . $path;
-        }
-        $template = new self();
-        $template->template = new TemplateFile($path, null, $filename, $filename);
-        return $template;
+        $this->container = $container;
+        $this->template = $template;
     }
 
     /**
-     * Constructor
-     * @var string $filename  Template file name
-     * @todo заменить имя файла на исходник шаблона и сделать обязательным, а файл загружать через
-     *       статический метод loadFromFile
-     */
-    public function __construct($filename = null)
-    {
-        if (null == self::$dwoo)
-        {
-            $compileDir = Eresus_Kernel::app()->getFsRoot() . '/var/cache/templates';
-            self::$dwoo = new Dwoo($compileDir);
-        }
-
-        if ($filename)
-        {
-            $this->loadFile($filename);
-        }
-    }
-
-    /**
-     * Возвращает исходный код шаблона или null, если шаблон не загружен
+     * Возвращает исходный код шаблона
      *
-     * @return null|string
+     * @return string
      * @since 3.01
      */
     public function getSource()
     {
-        if (null === $this->template)
-        {
-            return null;
-        }
         return $this->template->getSource();
     }
 
@@ -123,18 +88,6 @@ class Eresus_Template
     }
 
     /**
-     * Загружает шаблон из файла
-     *
-     * @param string $filename  имя файла шаблона
-     */
-    public function loadFile($filename)
-    {
-        $templateDir = Eresus_Kernel::app()->getFsRoot();
-        $template = $templateDir . '/' . $filename;
-        $this->template = new TemplateFile($template, null, $filename, $filename);
-    }
-
-    /**
      * Компилирует шаблон
      *
      * @param array $data  данные для подстановки в шаблон
@@ -143,16 +96,20 @@ class Eresus_Template
      */
     public function compile($data = null)
     {
+        /** @var TemplateManager $manager */
+        $manager = $this->container->get('templates');
+        /** @var Dwoo $dwoo */
+        $dwoo = $this->container->get('templates.dwoo');
         if ($data)
         {
-            $data = array_merge($data, TemplateSettings::getGlobalValues());
+            $data = array_merge($data, $manager->getGlobals());
         }
         else
         {
-            $data = TemplateSettings::getGlobalValues();
+            $data = $manager->getGlobals();
         }
 
-        return self::$dwoo->get($this->template, $data);
+        return $dwoo->get($this->template, $data);
     }
 }
 

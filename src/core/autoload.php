@@ -63,7 +63,6 @@ spl_autoload_register(
             'MySQL' => 'lib/mysql.php',
             'mysql' => 'lib/mysql.php',
             'PaginationHelper' => 'classes/helpers/PaginationHelper.php',
-            'Sections' => 'lib/sections.php',
             'TAdminUI' => 'admin.php',
             'TClientUI' => 'client.php',
             'TContentPlugin' => 'classes/backward/TContentPlugin.php',

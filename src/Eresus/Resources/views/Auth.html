@@ -4,8 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Вход - ${product.title}</title>
-	<link rel="stylesheet" href="{$site->webRoot}/admin/themes/default/theme.css">
-	<link rel="stylesheet" href="{$site->webRoot}/admin/themes/default/auth.css">
+	<link rel="stylesheet" href="{$site->getRootUrl()}/admin/themes/default/theme.css">
+	<link rel="stylesheet" href="{$site->getRootUrl()}/admin/themes/default/auth.css">
 </head>
 <body>
 
@@ -14,7 +14,7 @@
 			<td>
 
 				<div id="auth-dialog">
-					<form id="auth-form" action="{$site->webRoot}/admin.php" method="post">
+					<form id="auth-form" action="{$site->getRootUrl()}/admin.php" method="post">
 
 						<div class="title">Вход в панель управления</div>
 						<div class="content">

@@ -30,6 +30,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Eresus\Kernel;
 use Eresus\ORM\Extensions\TablePrefix;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Cache\ArrayCache;
@@ -86,10 +87,10 @@ class Registry
             $config->setMetadataCacheImpl($cache);
             $config->setQueryCacheImpl($cache);
 
-            /** @var \Eresus_CMS $app */
-            $app = $this->container->getParameter('app');
+            /** @var Kernel $kernel */
+            $kernel = $this->container->get('kernel');
 
-            $entityDir = $app->getFsRoot() . '/core/Entity';
+            $entityDir = $kernel->getAppDir() . '/core/Entity';
             $driver = $config->newDefaultAnnotationDriver($entityDir, false);
 
             /** @var \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $chain */
@@ -97,7 +98,7 @@ class Registry
             $chain->addDriver($driver, 'Eresus\Entity');
             $config->setMetadataDriverImpl($chain);
 
-            $config->setProxyDir($app->getCacheDir() . '/doctrine/proxies');
+            $config->setProxyDir($kernel->getCacheDir() . '/doctrine/proxies');
             $config->setProxyNamespace('Eresus\Proxies');
             $config->setAutoGenerateProxyClasses($isDebugMode);
 

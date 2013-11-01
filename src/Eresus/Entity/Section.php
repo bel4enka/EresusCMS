@@ -702,5 +702,25 @@ class Section
     {
         $this->updated = $time;
     }
+
+    /**
+     * Возвращает данные раздела в виде массива
+     *
+     * @return array
+     *
+     * @since 3.01
+     * @deprecated используется только для обеспечения обратной совместимости
+     */
+    public function toLegacyArray()
+    {
+        return array(
+            'id' => $this->getId(),
+            'owner' => $this->getParent()->getId(),
+            'name' => $this->getName(),
+            'caption' => $this->getCaption(),
+            'title' => $this->getTitle(),
+            // TODO Остальные свойства
+        );
+    }
 }
 

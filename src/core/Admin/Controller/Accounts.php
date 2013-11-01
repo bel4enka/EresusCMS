@@ -28,6 +28,9 @@
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Eresus\Entity\Account;
+use Eresus\Exceptions\NotFoundException;
+use Symfony\Component\HttpFoundation\Request;
+use Eresus\Controller\ControllerInterface;
 
 /**
  * Управление пользователями
@@ -35,17 +38,16 @@ use Eresus\Entity\Account;
  * @package Eresus
  * @internal
  */
-class Eresus_Admin_Controller_Accounts extends ContainerAware
-    implements Eresus_Admin_Controller_Interface
+class Eresus_Admin_Controller_Accounts extends ContainerAware implements ControllerInterface
 {
     /**
      * Возвращает разметку
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return string|Eresus_HTTP_Response
      */
-    public function getHtml(Eresus_CMS_Request $request)
+    public function getHtml(Request $request)
     {
         $result = '';
         $granted = false;
@@ -233,11 +235,11 @@ class Eresus_Admin_Controller_Accounts extends ContainerAware
     /**
      * Добавление учётной записи
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return string|Eresus_HTTP_Response
      */
-    private function addAction(Eresus_CMS_Request $request)
+    private function addAction(Request $request)
     {
         if ($request->getMethod() == 'POST')
         {
@@ -349,36 +351,36 @@ class Eresus_Admin_Controller_Accounts extends ContainerAware
     /**
      * Переключает активность учётной записи
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
-     * @throws Eresus_CMS_Exception_NotFound
+     * @throws NotFoundException
      *
      * @return string|Eresus_HTTP_Response
      */
-    private function toggleAction(Eresus_CMS_Request $request)
+    private function toggleAction(Request $request)
     {
         $account = $this->getAccountManager()->get($request->query->getInt('toggle'));
         if (null === $account)
         {
-            throw new Eresus_CMS_Exception_NotFound;
+            throw new NotFoundException;
         }
         $account->setAccess(!$account->isActive());
         return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
     /**
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
-     * @throws Eresus_CMS_Exception_NotFound
+     * @throws NotFoundException
      *
      * @return Eresus_HTTP_Response
      */
-    private function deleteAction(Eresus_CMS_Request $request)
+    private function deleteAction(Request $request)
     {
         $account = $this->getAccountManager()->get($request->query->getInt('id'));
         if (null === $account)
         {
-            throw new Eresus_CMS_Exception_NotFound;
+            throw new NotFoundException;
         }
         $this->getAccountManager()->remove($account);
         return new Eresus_HTTP_Redirect(Eresus_Kernel::app()->getPage()->url());

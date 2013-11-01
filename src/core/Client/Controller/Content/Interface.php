@@ -26,6 +26,8 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Интерфейс контроллера контента раздела КИ
  *
@@ -37,12 +39,12 @@ interface Eresus_Client_Controller_Content_Interface
     /**
      * Возвращает разметку области контента
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      * @param TClientUI          $page
      *
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml(Eresus_CMS_Request $request, TClientUI $page);
+    public function getHtml(Request $request, TClientUI $page);
 }
 

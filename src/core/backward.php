@@ -43,9 +43,9 @@ class DB extends Eresus_DB
  *
  * @package Eresus
  * @subpackage BC
- * @deprecated с 3.01 используйте {@link Eresus_HTTP_Request}
+ * @deprecated с 3.01 используйте Symfony\Component\HttpFoundation\Request
  */
-class HttpRequest extends Eresus_HTTP_Request
+class HttpRequest extends \Symfony\Component\HttpFoundation\Request
 {
 }
 

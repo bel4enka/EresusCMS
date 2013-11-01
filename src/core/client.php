@@ -26,6 +26,10 @@
  * @package Eresus
  */
 
+use Eresus\Exceptions\UserLevelException;
+use Eresus\Exceptions\NotFoundException;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Признак клиентского интерфейса
  *
@@ -276,7 +280,10 @@ class TClientUI extends Eresus_CMS_Page_Client
         Eresus_CMS::getLegacyKernel()->request['path'] = Eresus_CMS::getLegacyKernel()->root . $url;
         if ($result)
         {
-            $result = Eresus_CMS::getLegacyKernel()->sections->get($result['id']);
+            /** @var \Eresus\Sections\SectionManager $sections */
+            $sections = $this->container->get('sections');
+            $section = $sections->get($result['id']);
+            $result = $section->toLegacyArray();
         }
         return $result;
     }
@@ -284,7 +291,7 @@ class TClientUI extends Eresus_CMS_Page_Client
     /**
      * Проводит инициализацию страницы
      *
-     * @throws Eresus_CMS_Exception_NotFound
+     * @throws NotFoundException
      */
     private function init()
     {
@@ -327,20 +334,20 @@ class TClientUI extends Eresus_CMS_Page_Client
         }
         else
         {
-            throw new Eresus_CMS_Exception_NotFound;
+            throw new NotFoundException;
         }
     }
 
     /**
      * Выводит сообщение об ошибке HTTP 404 и прекращает выполнение программы
      *
-     * @throws Eresus_CMS_Exception_NotFound
+     * @throws NotFoundException
      *
      * @deprecated с 3.01 используйте исключение {@link Eresus_CMS_Exception_NotFound}.
      */
     public function Error404()
     {
-        throw new Eresus_CMS_Exception_NotFound;
+        throw new NotFoundException;
     }
 
     /**
@@ -374,11 +381,11 @@ class TClientUI extends Eresus_CMS_Page_Client
     /**
      * Отправляет созданную страницу пользователю.
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return Eresus_HTTP_Response
      */
-    public function render(Eresus_CMS_Request $request)
+    public function render(Request $request)
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, 'starting...');
 
@@ -397,7 +404,7 @@ class TClientUI extends Eresus_CMS_Page_Client
                 $response = $this->createPageForContent($content);
             }
         }
-        catch (Eresus_CMS_Exception $e)
+        catch (UserLevelException $e)
         {
             Eresus_Kernel::log(__METHOD__, LOG_NOTICE, '%s: "%s"', get_class($e), $e->getMessage());
             $httpStatusCode = $e->getHttpException()->getCode();

@@ -26,13 +26,15 @@
  * @package Eresus
  */
 
+use Eresus\Controller\ControllerInterface;
+
 /**
  * Интерфейс контроллера АИ, управляющего контентом раздела
  *
  * @package Eresus
  * @since 3.01
  */
-interface Eresus_Admin_Controller_Content_Interface extends Eresus_Admin_Controller_Interface
+interface Eresus_Admin_Controller_Content_Interface extends ControllerInterface
 {
 }
 

@@ -28,6 +28,7 @@
  * @package Eresus
  */
 
+use Eresus\Exceptions\NotFoundException;
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
 *
@@ -118,7 +119,7 @@ class ContentPlugin extends Eresus_Plugin
     /**
      * Отрисовка клиентской части
      *
-     * @throws Eresus_CMS_Exception_NotFound
+     * @throws NotFoundException
      *
      * @return string
      */
@@ -134,7 +135,7 @@ class ContentPlugin extends Eresus_Plugin
             || $page->subpage
             || $page->topic)
         {
-            throw new Eresus_CMS_Exception_NotFound;
+            throw new NotFoundException;
         }
 
         return $page->content;

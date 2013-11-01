@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Eresus_Kernel;
 use Eresus_PluginInfo;
-use Eresus_CMS_Request;
+use Symfony\Component\HttpFoundation\Request;
 use Eresus_Client_Controller_Content_Default;
 use Eresus_Client_Controller_Content_List;
 use Eresus_Client_Controller_Content_Url;
@@ -275,11 +275,11 @@ class PluginManager
     /**
      * Отрисовка контента раздела
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return string  Контент
      */
-    public function clientRenderContent(Eresus_CMS_Request $request)
+    public function clientRenderContent(Request $request)
     {
         /* @var TClientUI $page */
         $page = Eresus_Kernel::app()->getPage();

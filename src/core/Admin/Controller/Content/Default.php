@@ -26,6 +26,8 @@
  * @package Eresus
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Контроллер АИ типа раздела «По умолчанию»
  *
@@ -36,11 +38,11 @@ class Eresus_Admin_Controller_Content_Default implements Eresus_Admin_Controller
     /**
      * Возвращает разметку области контента
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      * @return string|Eresus_HTTP_Response
      * @since 3.01
      */
-    public function getHtml(Eresus_CMS_Request $request)
+    public function getHtml(Request $request)
     {
         $editor = new ContentPlugin();
         if ($request->getMethod() == 'POST')

@@ -29,13 +29,9 @@
 /**
  * Ядро CMS
  *
- * Основные функции ядра
- * 1. запуск {@link Eresus_CMS основного класса приложения};
- * 2. перехват ошибок и исключений;
- * 3. получение основных сведений о системе.
- *
  * @package Eresus
  * @since 3.00
+ * @deprecated с 3.01
  */
 class Eresus_Kernel
 {
@@ -53,22 +49,7 @@ class Eresus_Kernel
      * @see exec(), app()
      * @deprecated с 3.01
      */
-    static private $app = null;
-
-    /**
-     * Режим отладки
-     *
-     * @var bool
-     *
-     * @since 3.01
-     */
-    private $debug = false;
-
-    /**
-     * @var Bedoved
-     * @since 3.01
-     */
-    private $bedoved;
+    static public $app = null;
 
     /**
      * Записывает сообщение в журнал
@@ -263,71 +244,13 @@ class Eresus_Kernel
     /**
      * Возвращает выполняемое приложение или null, если приложение не запущено
      *
-     * Пример: получение корневой директории приложения.
-     *
-     * <code>
-     * $appRootDir = Eresus_Kernel::app()->getRootDir();
-     * </code>
-     *
      * @return Eresus_CMS  выполняемое приложение
      *
-     * @see $app, exec()
      * @since 3.00
      */
     public static function app()
     {
         return self::$app;
-    }
-
-    /**
-     * Инициализирует ядро
-     *
-     * @since 3.01
-     */
-    public function __construct()
-    {
-        mb_internal_encoding('utf-8');
-        /* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
-        @$timezone = date_default_timezone_get();
-        date_default_timezone_set($timezone);
-    }
-
-    /**
-     * Включает или отключает режим отладки
-     *
-     * @param bool $state
-     *
-     * @since 3.01
-     */
-    public function setDebug($state)
-    {
-        $this->debug = $state;
-    }
-
-    /**
-     * Выполняет все основные действия
-     *
-     * @since 3.01
-     */
-    public function dispatch()
-    {
-        $this->initErrorHandling();
-        self::$app = new Eresus_CMS();
-        self::$app->main();
-    }
-
-    /**
-     * Инициализация обработки ошибок
-     *
-     * @since 3.01
-     */
-    private function initErrorHandling()
-    {
-        $this->bedoved = new Bedoved($this->debug);
-        $this->bedoved
-            ->enableErrorConversion()
-            ->enableExceptionHandling()
-            ->enableFatalErrorHandling();
     }
 }
 

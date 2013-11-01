@@ -35,11 +35,13 @@ clientRenderContent
 .. code-block:: php
 
    <?php
+   use Symfony\Component\HttpFoundation\Request;
+
    class MyPlugin extends ContentPlugin
    {
       public $title = 'Мой модуль';
       ...
-      public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
+      public function clientRenderContent(Request $request, Eresus_CMS_Page $page)
       {
           return '<h1>Привет!</h1>';
       }

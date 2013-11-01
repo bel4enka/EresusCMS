@@ -67,7 +67,7 @@ class I18n
 	{
 		if (!self::$instance)
 		{
-			self::$instance = new I18n(Eresus_Kernel::app()->getFsRoot() . '/lang');
+			self::$instance = new I18n($GLOBALS['kernel']->getAppDir() . '/lang');
 		}
 
 		return self::$instance;

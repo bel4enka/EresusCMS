@@ -32,6 +32,7 @@
 * Удалены методы DB: setTestInstance, getInstance, createSelectQuery, createUpdateQuery,
   createInsertQuery, createDeleteQuery.
 * Удалён класс ``EresusAccounts`` и его псевдоним ``Accounts``.
+* Удалён класс ``Sections``.
 * Удалены классы PHP и System, используйте одноимённые методы класса
   `Eresus_Kernel <api/classes/Eresus_Kernel.html>`_.
 * Удалён класс FS, используйте методы класса `Eresus_FS_Tool <api/classes/Eresus_FS_Tool.html>`_.
@@ -52,9 +53,8 @@
 * Класс Plugin переименован в `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_. Для обратной
   совместимости имя Plugin оставлено как псевдоним к Eresus_Plugin.
 * Класс Plugins переименован в `Eresus\Plugins\PluginManager <api/classes/Eresus.Plugins.PluginManager.html>`_.
-  Для обратной совместимости имя Plugins оставлено как псевдоним к Eresus\Plugins\PluginManager.
-* Класс Template переименован в `Eresus_Template <api/classes/Eresus_Template.html>`_. Для обратной
-  совместимости имя Template оставлено как псевдоним к Eresus_Template.
+* Класс Template переименован в `Eresus\Templating\Template <api/classes/Eresus.Templating.Template.html>`_. Для обратной
+  совместимости имя Template оставлено как псевдоним.
 * Класс HttpRequest переименован в `Eresus_HTTP_Request <api/classes/Eresus_HTTP_Request.html>`_. Для
   обратной совместимости имя HttpRequest оставлено как псевдоним к Eresus_HTTP_Request.
 * Функция ``eresus_log`` объявлена устаревшей, вместо неё следует использовать
@@ -97,14 +97,14 @@
 Добавлено
 ^^^^^^^^^
 
-* :doc:`Новый механизм работы с шаблонами </dev/guide/templates>`
 * :doc:`Контейнер служб <dev/guide/container>`
+* :doc:`Новый механизм работы с шаблонами </dev/guide/templates>`
 * `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_
 * `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_
 * `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_
 * `Eresus_Exception_CorruptedComponent <api/classes/Eresus_Exception_CorruptedComponent.html>`_
-* `Eresus_CMS_Exception <api/classes/Eresus_CMS_Exception.html>`_
-* `Eresus_CMS_Exception_NotFound <api/classes/Eresus_CMS_Exception_NotFound.html>`_
+* `Eresus\Exceptions\UserLevelException <api/classes/Eresus.Exceptions.UserLevelException.html>`_
+* `Eresus\Exception\NotFoundException <api/classes/Eresus.Exceptions.NotFoundException.html>`_
 * `Eresus_DB_Exception <api/classes/Eresus_DB_Exception.html>`_
 * `Eresus_Plugin_Component <api/classes/Eresus_Plugin_Component.html>`_
 * `Eresus_Plugin_Controller_Abstract <api/classes/Eresus_Plugin_Controller_Abstract.html>`_
@@ -112,7 +112,6 @@
 * `Eresus_Plugin_Controller_Admin_Content <api/classes/Eresus_Plugin_Controller_Admin_Content.html>`_
 * `Eresus_Plugin_Controller_Client <api/classes/Eresus_Plugin_Controller_Client.html>`_
 * `Eresus_Plugin_Controller_Client_Content <api/classes/Eresus_Plugin_Controller_Client_Content.html>`_
-* `Eresus_Template_Service <api/classes/Eresus_Template_Service.html>`_
   `Eresus_Client_Controller_Content_Interface <api/classes/Eresus_Client_Controller_Content_Interface.html>`_
   `Eresus_Admin_Controller_Content_Interface <api/classes/Eresus_Admin_Controller_Content_Interface.html>`_
 * Метод `Eresus_Plugin::getCodeDir <api/classes/Eresus_Plugin.html#method_getCodeDir>`_

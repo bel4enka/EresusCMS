@@ -1,6 +1,6 @@
 <?php
 /**
- * Служба шаблонов
+ * Менеджер шаблонов
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,54 +22,114 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
+
+namespace Eresus\Templating;
+
+use Eresus\Kernel;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Exception;
+use RuntimeException;
+use Dwoo;
+use Dwoo_Template_File;
 
 /**
- * Служба шаблонов
+ * Менеджер шаблонов
  *
- * @package Eresus
+ * @api
  * @since 3.01
  */
-class Eresus_Template_Service
+class TemplateManager
 {
     /**
-     * Одиночка
-     * @var Eresus_Template_Service
+     * Контейнер
+     * @var ContainerInterface
      * @since 3.01
      */
-    private static $instance = null;
+    private $container;
 
     /**
-     * Путь к корневой директории шаблонов
-     * @var string
+     * @var Dwoo
+     *
      * @since 3.01
      */
-    private $rootDir;
+    private $dwoo;
+
+    /**
+     * Глобальные переменные
+     *
+     * @var array
+     *
+     * @since 3.01
+     */
+    private $globals = array();
 
     /**
      * Конструктор
+     *
+     * @param ContainerInterface $container
+     * @param Dwoo               $dwoo
+     *
      * @since 3.01
      */
-    public function __construct()
+    public function __construct(ContainerInterface $container, Dwoo $dwoo)
     {
-        $this->rootDir = Eresus_Kernel::app()->getFsRoot() . '/templates';
+        $this->container = $container;
+        $this->dwoo = $dwoo;
     }
 
     /**
-     * Возвращает экземпляр класса
+     * Задаёт значение глобальной переменной для всех шаблонов
      *
-     * @return Eresus_Template_Service
+     * @param string $name
+     * @param mixed  $value
+     *
      * @since 3.01
      */
-    public static function getInstance()
+    public function setGlobal($name, $value)
     {
-        if (null === self::$instance)
+        $this->globals[$name] = $value;
+    }
+
+    /**
+     * Возвращает значение глобальной переменной
+     *
+     * @param string $name
+     *
+     * @return null|mixed  значение переменной или null, если такой переменной нет
+     *
+     * @since 3.01
+     */
+    public function getGlobal($name)
+    {
+        return array_key_exists($name, $this->globals) ? $this->globals[$name] : null;
+    }
+
+    /**
+     * Удаляет глобальную переменную
+     *
+     * @param string $name
+     *
+     * @since 3.01
+     */
+    public function unsetGlobal($name)
+    {
+        if (array_key_exists($name, $this->globals))
         {
-            self::$instance = new self();
+            unset($this->globals[$name]);
         }
-        return self::$instance;
+    }
+
+    /**
+     * Возвращает все глобальные переменные в виде ассоциативного массива
+     *
+     * @return array
+     *
+     * @since 3.01
+     */
+    public function getGlobals()
+    {
+        return $this->globals;
     }
 
     /**
@@ -91,7 +151,7 @@ class Eresus_Template_Service
             throw new RuntimeException('Template file not found: ' . $filename);
         }
 
-        $target = $this->rootDir . '/' . $target;
+        $target = $this->getClientTmplDir() . '/' . $target;
         if (!file_exists($target))
         {
             try
@@ -141,7 +201,7 @@ class Eresus_Template_Service
      */
     public function remove($path)
     {
-        $path = $this->rootDir . '/' . $path;
+        $path = $this->getClientTmplDir() . '/' . $path;
         if (!file_exists($path))
         {
             throw new RuntimeException(sprintf('Template file "%s" not found', $path));
@@ -153,14 +213,14 @@ class Eresus_Template_Service
         }
         else
         {
-            $branch = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path),
-                RecursiveIteratorIterator::SELF_FIRST);
+            $branch = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path),
+                \RecursiveIteratorIterator::SELF_FIRST);
 
             $files = array();
             $dirs = array();
             foreach ($branch as $file)
             {
-                /** @var SplFileInfo $file */
+                /** @var \SplFileInfo $file */
                 if (preg_match('/^\.{1,2}$/', $file->getFilename()))
                 {
                     continue;
@@ -203,7 +263,7 @@ class Eresus_Template_Service
      */
     public function getContents($name, $prefix = '')
     {
-        $path = $this->rootDir . '/' . $this->getFilename($name, $prefix);
+        $path = $this->getClientTmplDir() . '/' . $this->getFilename($name, $prefix);
 
         if (!is_file($path))
         {
@@ -230,7 +290,7 @@ class Eresus_Template_Service
      */
     public function setContents($contents, $name, $prefix = '')
     {
-        $path = $this->rootDir . '/' . $this->getFilename($name, $prefix);
+        $path = $this->getClientTmplDir() . '/' . $this->getFilename($name, $prefix);
 
         if (!is_file($path))
         {
@@ -269,7 +329,7 @@ class Eresus_Template_Service
      *
      * @throws RuntimeException
      *
-     * @return Eresus_Template
+     * @return Template
      *
      * @since 3.01
      */
@@ -277,14 +337,57 @@ class Eresus_Template_Service
     {
         $path = $this->getFilename($name, $prefix);
 
-        if (!is_file($this->rootDir . '/' . $path))
+        if (!file_exists($this->getClientTmplDir() . '/' . $path))
         {
             throw new RuntimeException('Template not exists: ' . $path);
         }
 
-        $tmpl = new Eresus_Template('templates/' . $path);
+        $tmpl = new Template('templates/' . $path);
 
         return $tmpl;
+    }
+
+    /**
+     * Возвращает объект шаблона АИ
+     *
+     * @param string $name    имя файла шаблона
+     *
+     * @throws RuntimeException
+     *
+     * @return Template
+     *
+     * @since 3.01
+     */
+    public function getAdminTemplate($name)
+    {
+        /** @var Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+        $path = $kernel->getAppDir() . '/Eresus/Resources/views/' . $name;
+
+        if (!file_exists($path))
+        {
+            throw new RuntimeException('Template not exists: ' . $path);
+        }
+
+        $file = new Dwoo_Template_File($path);
+        $tmpl = new Template($file, $this->container);
+
+        return $tmpl;
+    }
+
+    /**
+     * Возвращает папку шаблонов КИ
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    private function getClientTmplDir()
+    {
+        /** @var Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+        return $kernel->getAppDir() . '/templates';
+
     }
 }
 

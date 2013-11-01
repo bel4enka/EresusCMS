@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация «Требуется оплата»
+ * Исключительная ситуация пользовательского уровня
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,30 +22,57 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage HTTP
  */
 
+namespace Eresus\Exceptions;
+
+use RuntimeException;
+use Eresus_HTTP_Exception;
+
 /**
- * Исключительная ситуация «Требуется оплата»
+ * Исключительная ситуация пользовательского уровня
  *
- * @package Eresus
- * @subpackage HTTP
+ * Все исключения этого класса и его потомков не приводят к прекращению выполнения программы,
+ * а перехватываются на уровне клиентского интерфейса и выводятся пользователю в виде сообщений
+ * об ошибках.
  *
+ * @api
  * @since 3.01
  */
-class Eresus_HTTP_Exception_PaymentRequired extends Eresus_HTTP_Exception
+class UserLevelException extends RuntimeException
 {
     /**
-     * Возвращает код состояния HTTP, соответствующий исключению
+     * Исключение HTTP соответствующее этому исключению
      *
-     * @return int
+     * @var null|Eresus_HTTP_Exception
      * @since 3.01
      */
-    protected function getStatusCode()
+    private $httpException = null;
+
+    /**
+     * Возвращает исключение HTTP соответствующее этому исключению
+     *
+     * @return Eresus_HTTP_Exception
+     */
+    public function getHttpException()
     {
-        return 402;
+        if (null === $this->httpException)
+        {
+            $this->httpException = $this->createHttpException();
+        }
+        return $this->httpException;
+    }
+
+    /**
+     * Создаёт исключение HTTP соответствующее этому исключению
+     *
+     * @return Eresus_HTTP_Exception
+     *
+     * @since 3.01
+     */
+    protected function createHttpException()
+    {
+        return new Eresus_HTTP_Exception($this->getMessage());
     }
 }
 

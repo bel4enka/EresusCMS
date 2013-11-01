@@ -26,12 +26,20 @@
  * <http://www.gnu.org/licenses/>
  */
 
+use Eresus\Kernel;
+
 /*
  * Вывод ошибок нужен для правильной работы перехватчика фатальных ошибок
  */
 ini_set('display_errors', true);
 
 ini_set('track_errors', true);
+
+mb_internal_encoding('utf-8');
+/* Предотвращает появление ошибок, связанных с неустановленной временной зоной */
+@$timezone = date_default_timezone_get();
+date_default_timezone_set($timezone);
+
 /**
  * Подключение автозагрузчика классов
  */
@@ -45,7 +53,7 @@ ini_set('track_errors', false);
 
 ini_set('error_log', __DIR__ . '/var/log/eresus.log');
 
-$app = new Eresus_Kernel();
-$app->setDebug(true);
-$app->dispatch();
+$kernel = new Kernel(__DIR__);
+$kernel->setDebug(true);
+$kernel->start();
 

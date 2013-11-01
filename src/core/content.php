@@ -30,6 +30,7 @@
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Управление контентом
@@ -56,11 +57,11 @@ class TContent implements ContainerAwareInterface
     /**
      * Возвращает разметку интерфейса управления контентом текущего раздела
      *
-     * @param Eresus_CMS_Request $request
+     * @param Request $request
      *
      * @return string|Eresus_HTTP_Response  HTML
      */
-    public function adminRender(Eresus_CMS_Request $request)
+    public function adminRender(Request $request)
     {
         if (!UserRights(EDITOR))
         {
@@ -73,13 +74,14 @@ class TContent implements ContainerAwareInterface
         $page = Eresus_Kernel::app()->getPage();
 
         $result = '';
-        $sections = Eresus_Kernel::app()->getLegacyKernel()->sections;
-        $item = $sections->get(arg('section', 'int'));
+        /** @var \Eresus\Sections\SectionManager $sections */
+        $sections = $this->container->get('sections');
+        $section = $sections->get(arg('section', 'int'));
 
-        $page->id = $item['id'];
-        if (!array_key_exists($item['type'], $plugins->list))
+        $page->id = $section->getId();
+        if (!array_key_exists($section->getType(), $plugins->list))
         {
-            switch ($item['type'])
+            switch ($section->getType())
             {
                 case 'default':
                     $controller = new Eresus_Admin_Controller_Content_Default();
@@ -92,7 +94,8 @@ class TContent implements ContainerAwareInterface
                     break;
                 default:
                     $result = $page->
-                        box(sprintf(errContentPluginNotFound, $item['type']), 'errorBox', errError);
+                        box(sprintf(errContentPluginNotFound, $section->getType()), 'errorBox',
+                            errError);
                     break;
             }
             if (isset($controller)
@@ -103,7 +106,7 @@ class TContent implements ContainerAwareInterface
         }
         else
         {
-            $page->module = $plugins->load($item['type']);
+            $page->module = $plugins->load($section->getType());
             $result = $page->module->adminRenderContent();
         }
         return $result;

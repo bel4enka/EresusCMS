@@ -28,6 +28,8 @@
  * @package Eresus
  */
 
+use Eresus\Exceptions\NotFoundException;
+
 /**
  * Базовый класс для плагинов с контентом в виде списков
  *
@@ -257,7 +259,7 @@ class TListContentPlugin extends TContentPlugin
     /**
      * Отрисовка клиентской части
      *
-     * @throws Eresus_CMS_Exception_NotFound
+     * @throws NotFoundException
      *
      * @return string|Eresus_HTTP_Response
      */
@@ -292,7 +294,7 @@ class TListContentPlugin extends TContentPlugin
             }
             if ($itemsCount && ($page->subpage > $this->pagesCount))
             {
-                throw new Eresus_CMS_Exception_NotFound;
+                throw new NotFoundException;
             }
             else
             {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Исключительная ситуация при работе по HTTP
+ * Исключительная ситуация «Запрошенный адрес не найден»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,45 +22,31 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage HTTP
  */
+
+namespace Eresus\Exceptions;
+
+use Eresus_HTTP_Exception;
+use Eresus_HTTP_Exception_NotFound;
 
 /**
- * Исключительная ситуация при работе по HTTP
+ * Исключительная ситуация «Запрошенный адрес не найден»
  *
- * @package Eresus
- * @subpackage HTTP
- *
+ * @api
  * @since 3.01
  */
-class Eresus_HTTP_Exception extends RuntimeException
+class NotFoundException extends UserLevelException
 {
     /**
-     * Создаёт исключение
+     * Создаёт исключение HTTP соответствующее этому исключению
      *
-     * @param string    $message   текст сообщения
-     * @param int       $code      не используется
-     * @param Exception $previous  предыдущее исключение
+     * @return Eresus_HTTP_Exception
      *
      * @since 3.01
      */
-    public function __construct($message = null, $code = 500, Exception $previous = null)
+    protected function createHttpException()
     {
-        $code = $this->getStatusCode() ?: $code;
-        parent::__construct($message, $code, $previous);
-    }
-
-    /**
-     * Метод должен возвращать код состояния HTTP, соответствующий исключению
-     *
-     * @return int|null
-     * @since 3.01
-     */
-    protected function getStatusCode()
-    {
-        return null;
+        return new Eresus_HTTP_Exception_NotFound($this->getMessage());
     }
 }
 
