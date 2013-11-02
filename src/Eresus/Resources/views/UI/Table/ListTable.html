@@ -1,0 +1,22 @@
+<table class="table table_type_list">
+    {if $table->hasHead()}
+    <thead class="table__header">
+        <tr>
+            {foreach $table->getColumns() col}
+            <th class="table__column">{$col->getCaption()}</th>
+            {/foreach}
+        </tr>
+    </thead>
+    {/if}
+    <tbody class="table__body">
+    {foreach $table->getDataRows() row}
+        <tr>
+            {foreach $table->getColumns() col}
+            <td class="table__cell">
+                {$col->getData($row)}
+            </td>
+            {/foreach}
+        </tr>
+    {/foreach}
+    </tbody>
+</table>
