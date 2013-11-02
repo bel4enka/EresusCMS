@@ -1,0 +1,8 @@
+.table__column
+{
+    background: #007acc;
+    background: linear-gradient(#007acc, #0064a8);
+    color: white;
+    padding: 0 .5em;
+    white-space: nowrap;
+}

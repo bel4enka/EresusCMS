@@ -70,8 +70,19 @@ class ListTable
         $this->provider = $dataProvider;
     }
 
-    public function addColumn($caption)
+    /**
+     * Добавляет столбец к таблице
+     *
+     * @param Column $column
+     *
+     * @return Column  добавленный столбец
+     *
+     * @since 3.01
+     */
+    public function addColumn(Column $column)
     {
+        $this->columns []= $column;
+        return $column;
     }
 
     /**

@@ -36,6 +36,10 @@ use Eresus\Exceptions\InvalidArgumentTypeException;
  */
 class Column
 {
+    const ALIGN_LEFT = 'left';
+    const ALIGN_RIGHT = 'right';
+    const ALIGN_CENTER = 'center';
+
     /**
      * @var string
      * @since 3.01
@@ -55,6 +59,28 @@ class Column
      * @since 3.01
      */
     private $key = null;
+
+    /**
+     * Карта замены значений
+     *
+     * @var null|array
+     *
+     * @since 3.01
+     */
+    private $valueMap = null;
+
+    /**
+     * Обработчик значений
+     * @var null|Callable
+     */
+    private $callback = null;
+
+    /**
+     * Выравнивание
+     * @var null|string
+     * @since 3.01
+     */
+    private $align = null;
 
     /**
      * Конструктор столбца
@@ -85,11 +111,14 @@ class Column
      *
      * @param string $methodName
      *
+     * @return $this
+     *
      * @since 3.01
      */
     public function setGetter($methodName)
     {
         $this->getter = $methodName;
+        return $this;
     }
 
     /**
@@ -97,11 +126,76 @@ class Column
      *
      * @param string $key
      *
+     * @return $this
+     *
      * @since 3.01
      */
     public function setKey($key)
     {
         $this->key = $key;
+        return $this;
+    }
+
+    /**
+     * Задаёт карту замены значений
+     *
+     * Если значение ячейки совпадёт с одним из ключей массива $map, то {@link getData()} для
+     * этой ячейки вернёт значение, соответствующее этому ключу.
+     *
+     * @param array $map  карта замены значений
+     *
+     * @return $this
+     */
+    public function setValueMap(array $map)
+    {
+        $this->valueMap = $map;
+        return $this;
+    }
+
+    /**
+     * Задаёт функцию-обработчик значений
+     *
+     * Обработчику будет передано значение ячейки после всех остальных трансформаций. Обработчик
+     * должен возвращать значение, которое будет выведено в ячейке.
+     *
+     * @param callable $callback
+     *
+     * @return $this
+     *
+     * @since
+     */
+    public function setCallback($callback)
+    {
+        assert('is_callable($callback)');
+        $this->callback = $callback;
+        return $this;
+    }
+
+    /**
+     * Задаёт выравнивание содержимого в ячейках столбца
+     *
+     * @param string $align
+     *
+     * @return $this
+     *
+     * @since 3.01
+     */
+    public function setAlign($align)
+    {
+        $this->align = $align;
+        return $this;
+    }
+
+    /**
+     * Возвращает выравнивание для ячейки
+     *
+     * @return null|string
+     *
+     * @since 3.01
+     */
+    public function getAlign()
+    {
+        return $this->align;
     }
 
     /**
@@ -139,6 +233,17 @@ class Column
             }
             $data = $row[$this->key];
         }
+
+        if (!is_null($this->valueMap) && array_key_exists($data, $this->valueMap))
+        {
+            $data = $this->valueMap[$data];
+        }
+
+        if (!is_null($this->callback))
+        {
+            $data = call_user_func($this->callback, $data);
+        }
+
         return $data;
     }
 }

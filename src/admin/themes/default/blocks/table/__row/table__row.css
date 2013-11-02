@@ -1,0 +1,9 @@
+.table__row
+{
+    background-color: #fff;
+}
+
+.table__row:hover
+{
+    background-color: #cfc;
+}

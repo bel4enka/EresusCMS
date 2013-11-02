@@ -10,9 +10,9 @@
     {/if}
     <tbody class="table__body">
     {foreach $table->getDataRows() row}
-        <tr>
+        <tr class="table__row">
             {foreach $table->getColumns() col}
-            <td class="table__cell">
+            <td class="table__cell{if $col->getAlign()} table__cell_align_{$col->getAlign()}{/if}">
                 {$col->getData($row)}
             </td>
             {/foreach}

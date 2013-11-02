@@ -1,0 +1,6 @@
+.table__cell
+{
+    cursor: default;
+    font-size: 90%;
+    padding: 0 .5em;
+}
