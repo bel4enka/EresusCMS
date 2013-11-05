@@ -26,11 +26,12 @@
 
 namespace Eresus\UI\Table;
 
-use Doctrine\Common\Collections\Collection;
-use Eresus\Kernel;
-use Eresus\Templating\Template;
-use Eresus\Templating\TemplateManager;
+use Eresus\UI\Widget;
+use Eresus\UI\Control\UrlBuilder\UrlBuilderAwareInterface;
 use Eresus\UI\Table\DataProvider\DataProviderInterface;
+use Eresus\UI\Control\UrlBuilder\UrlBuilderInterface;
+use Eresus\Templating\TemplateManager;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Таблица-список
@@ -38,7 +39,7 @@ use Eresus\UI\Table\DataProvider\DataProviderInterface;
  * @api
  * @since 3.01
  */
-class ListTable
+class ListTable extends Widget implements UrlBuilderAwareInterface
 {
     /**
      * Поставщик данных
@@ -48,11 +49,18 @@ class ListTable
     protected $provider;
 
     /**
-     * Столбцы таблицы
-     * @var null|Column[]
+     * Построитель адресов для ЭУ
+     * @var UrlBuilderInterface
      * @since 3.01
      */
-    private $columns = null;
+    protected $urlBuilder = null;
+
+    /**
+     * Столбцы таблицы
+     * @var null|AbstractColumn[]
+     * @since 3.01
+     */
+    private $columns = array();
 
     /**
      * Строки данных
@@ -62,27 +70,45 @@ class ListTable
     private $data = null;
 
     /**
+     * @param TemplateManager       $templateManager
      * @param DataProviderInterface $dataProvider
+     *
      * @since 3.01
      */
-    public function __construct(DataProviderInterface $dataProvider)
+    public function __construct(TemplateManager $templateManager,
+        DataProviderInterface $dataProvider)
     {
+        parent::__construct($templateManager);
         $this->provider = $dataProvider;
+    }
+
+    /**
+     * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
+     *
+     * @param UrlBuilderInterface $urlBuilder
+     *
+     * @since 3.01
+     */
+    public function setControlUrlBuilder(UrlBuilderInterface $urlBuilder)
+    {
+        $this->urlBuilder = $urlBuilder;
+        foreach ($this->columns as $column)
+        {
+            $this->propagateUrlBuilder($column);
+        }
     }
 
     /**
      * Добавляет столбец к таблице
      *
-     * @param Column $column
-     *
-     * @return Column  добавленный столбец
+     * @param AbstractColumn $column
      *
      * @since 3.01
      */
-    public function addColumn(Column $column)
+    public function addColumn(AbstractColumn $column)
     {
+        $this->propagateUrlBuilder($column);
         $this->columns []= $column;
-        return $column;
     }
 
     /**
@@ -100,7 +126,7 @@ class ListTable
     /**
      * Возвращает описания столбцов таблицы
      *
-     * @return array
+     * @return AbstractColumn[]
      *
      * @since 3.01
      */
@@ -131,51 +157,14 @@ class ListTable
     }
 
     /**
-     * Возвращает разметку
-     *
-     * @return string  HTML
-     *
-     * @since 3.01
+     * @param AbstractColumn $column
      */
-    public function getHtml()
+    private function propagateUrlBuilder(AbstractColumn $column)
     {
-        $tmpl = $this->getTemplate();
-        return $tmpl->compile(array('table' => $this));
-    }
-
-    /**
-     * Возвращает разметку
-     *
-     * @return string  HTML
-     *
-     * @since 3.01
-     */
-    public function __toString()
-    {
-        try
+        if ($column instanceof UrlBuilderAwareInterface && !is_null($this->urlBuilder))
         {
-            return $this->getHtml();
+            $column->setControlUrlBuilder($this->urlBuilder);
         }
-        catch (\Exception $e)
-        {
-            return $e->getMessage();
-        }
-    }
-
-    /**
-     * Возвращает шаблон
-     *
-     * @return Template
-     *
-     * @since 3.01
-     */
-    protected function getTemplate()
-    {
-        /** @var Kernel $kernel */
-        $kernel = $GLOBALS['kernel']; // TODO Переделать!
-        /** @var TemplateManager $templates */
-        $templates = $kernel->getContainer()->get('templates');
-        return $templates->getAdminTemplate('UI/Table/ListTable.html');
     }
 }
 

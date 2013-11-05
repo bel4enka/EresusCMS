@@ -1,6 +1,6 @@
 <?php
 /**
- * Стартовый файл тестов
+ * Абстрактный виджет
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,50 +22,88 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-define('TESTS_TEST_DIR', __DIR__ );
-define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
+namespace Eresus\UI;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/stubs.php';
-
-require_once TESTS_SRC_DIR . '/lang/ru.php';
-//require_once TESTS_SRC_DIR . '/core/autoload.php';
-
-$loader = require __DIR__ . '/../../vendor/autoload.php';
-$loader->add('Eresus\\', __DIR__ . '/../../src');
-
+use Eresus\Templating\Template;
+use Eresus\Templating\TemplateManager;
 
 /**
- * Вспомогательный инструментарий для тестов
+ * Абстрактный виджет
  *
- * @package Eresus
- * @subpackage Tests
- * @since 3.00
+ * @api
+ * @since 3.01
  */
-class Eresus_Tests
+abstract class Widget
 {
     /**
-     * Устанавливает статическое приватное свойство класса
-     *
-     * @param string $className
-     * @param mixed  $value
-     * @param string $propertyName
-     *
-     * @return void
-     *
-     * @since 3.00
+     * @var TemplateManager
+     * @since 3.01
      */
-    public static function setStatic($className, $value, $propertyName = 'instance')
+    protected $templateManager;
+
+    /**
+     * Кэш шаблона
+     *
+     * @var null|Template
+     *
+     * @since 3.01
+     */
+    protected $template = null;
+
+    /**
+     * Конструктор виджета
+     *
+     * @param TemplateManager $templateManager
+     *
+     * @since 3.01
+     */
+    public function __construct(TemplateManager $templateManager)
     {
-        $property = new ReflectionProperty($className, $propertyName);
-        $property->setAccessible(true);
-        $property->setValue($className, $value);
+        $this->templateManager = $templateManager;
+    }
+
+    /**
+     * Возвращает разметку
+     *
+     * @return string  HTML
+     *
+     * @since 3.01
+     */
+    public function getHtml()
+    {
+        $tmpl = $this->getTemplate();
+        return $tmpl->compile(array('widget' => $this));
+    }
+
+    /**
+     * Возвращает шаблон
+     *
+     * @return Template
+     *
+     * @since 3.01
+     */
+    protected function getTemplate()
+    {
+        if (is_null($this->template))
+        {
+            $this->template = $this->templateManager->getAdminTemplate($this->getTemplateName());
+        }
+        return $this->template;
+    }
+
+    /**
+     * Возвращает имя файла шаблона
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    protected function getTemplateName()
+    {
+        $class = get_class($this);
+        return str_replace('\\', '/', substr($class, strlen('Eresus\\'))) . '.html';
     }
 }
 

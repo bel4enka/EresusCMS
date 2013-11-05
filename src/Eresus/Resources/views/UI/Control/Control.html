@@ -1,0 +1,4 @@
+<a href="{$widget->getActionUrl()}"{if $widget->getHint()} title="{$widget->getHint()}"{/if}
+    class="control{if $widget->getType()} control_type_{$widget->getType()}{/if}"
+    >{if $widget->getIconUrl()}<img src="{$theme->getIcon($widget->getIconUrl())}"
+    alt="{$widget->getAltText()}">{else}{$widget->getAltText()}{/if}</a>

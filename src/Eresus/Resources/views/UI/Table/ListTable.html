@@ -1,18 +1,18 @@
 <table class="table table_type_list">
-    {if $table->hasHead()}
+    {if $widget->hasHead()}
     <thead class="table__header">
         <tr>
-            {foreach $table->getColumns() col}
+            {foreach $widget->getColumns() col}
             <th class="table__column">{$col->getCaption()}</th>
             {/foreach}
         </tr>
     </thead>
     {/if}
     <tbody class="table__body">
-    {foreach $table->getDataRows() row}
+    {foreach $widget->getDataRows() row}
         <tr class="table__row">
-            {foreach $table->getColumns() col}
-            <td class="table__cell{if $col->getAlign()} table__cell_align_{$col->getAlign()}{/if}">
+            {foreach $widget->getColumns() col}
+            <td class="table__cell{if $col->getType()} table__cell_type_{$col->getType()}{/if}{if $col->getAlign()} table__cell_align_{$col->getAlign()}{/if}">
                 {$col->getData($row)}
             </td>
             {/foreach}

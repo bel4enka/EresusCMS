@@ -1,6 +1,6 @@
 <?php
 /**
- * Стартовый файл тестов
+ * Интерфейс построителя адресов для ЭУ
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,50 +22,28 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-define('TESTS_TEST_DIR', __DIR__ );
-define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
-
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/stubs.php';
-
-require_once TESTS_SRC_DIR . '/lang/ru.php';
-//require_once TESTS_SRC_DIR . '/core/autoload.php';
-
-$loader = require __DIR__ . '/../../vendor/autoload.php';
-$loader->add('Eresus\\', __DIR__ . '/../../src');
-
+namespace Eresus\UI\Control\UrlBuilder;
 
 /**
- * Вспомогательный инструментарий для тестов
+ * Интерфейс построителя адресов для ЭУ
  *
- * @package Eresus
- * @subpackage Tests
- * @since 3.00
+ * @api
+ * @since 3.01
  */
-class Eresus_Tests
+interface UrlBuilderInterface
 {
     /**
-     * Устанавливает статическое приватное свойство класса
+     * Возвращает адрес действия для переданного ЭУ
      *
-     * @param string $className
-     * @param mixed  $value
-     * @param string $propertyName
+     * @param string $action  действие
+     * @param string $id      идентификатор объекта (опционально)
      *
-     * @return void
+     * @return string  URL
      *
-     * @since 3.00
+     * @since 3.01
      */
-    public static function setStatic($className, $value, $propertyName = 'instance')
-    {
-        $property = new ReflectionProperty($className, $propertyName);
-        $property->setAccessible(true);
-        $property->setValue($className, $value);
-    }
+    public function getUrlFor($action, $id = null);
 }
 

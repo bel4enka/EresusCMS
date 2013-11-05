@@ -1,6 +1,6 @@
 <?php
 /**
- * Столбец таблицы
+ * Столбец таблицы с элементами управления
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -27,60 +27,46 @@
 namespace Eresus\UI\Table;
 
 use Eresus\Exceptions\InvalidArgumentTypeException;
+use Eresus\UI\Control\AbstractControl;
+use Eresus\UI\Control\UrlBuilder\UrlBuilderAwareInterface;
+use Eresus\UI\Control\UrlBuilder\UrlBuilderInterface;
 
 /**
- * Столбец таблицы
+ * Столбец таблицы с элементами управления
  *
  * @api
  * @since 3.01
  */
-class Column extends AbstractColumn
+class ControlsColumn extends AbstractColumn implements UrlBuilderAwareInterface
 {
-    const ALIGN_LEFT = 'left';
-    const ALIGN_RIGHT = 'right';
-    const ALIGN_CENTER = 'center';
-
     /**
-     * @var string
+     * Элементы управления
+     *
+     * @var AbstractControl[]
      * @since 3.01
      */
-    private $caption;
+    protected $controls = array();
 
     /**
-     * Имя метода получения данных для столбца
+     * Построитель адресов для ЭУ
+     * @var UrlBuilderInterface
+     * @since 3.01
+     */
+    protected $urlBuilder = null;
+
+    /**
+     * Имя метода получения идентификатора
      * @var null|string
      * @since 3.01
      */
     private $getter = null;
 
     /**
-     * Имя ключа данных для столбца
+     * Имя ключа идентификатора
      * @var null|string
      * @since 3.01
      */
     private $key = null;
-
-    /**
-     * Карта замены значений
-     *
-     * @var null|array
-     *
-     * @since 3.01
-     */
-    private $valueMap = null;
-
-    /**
-     * Обработчик значений
-     * @var null|Callable
-     */
-    private $callback = null;
-
-    /**
-     * Выравнивание
-     * @var null|string
-     * @since 3.01
-     */
-    private $align = null;
 
     /**
      * Создаёт и возвращает новый столбец
@@ -89,30 +75,83 @@ class Column extends AbstractColumn
      * интерфейс:
      *
      * <code>
-     * $list->addColumn(Column::create('Foo')->…);
+     * $list->addColumn(ControlsColumn::create(…)->…);
      * </code>
      *
-     * @param string $caption
+     * @param ... элементы управления (см. {@link add()})
      *
-     * @return Column
+     * @return ControlsColumn
      *
      * @since 3.01
      */
-    public static function create($caption = '')
+    public static function create()
     {
-        return new self($caption);
+        $column = new self();
+        $controls = func_get_args();
+        foreach ($controls as $control)
+        {
+            $column->add($control);
+        }
+        return $column;
     }
 
     /**
-     * Конструктор столбца
+     * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
      *
-     * @param string $caption  подпись столбца
+     * @param UrlBuilderInterface $urlBuilder
      *
      * @since 3.01
      */
-    public function __construct($caption = '')
+    public function setControlUrlBuilder(UrlBuilderInterface $urlBuilder)
     {
-        $this->caption = $caption;
+        $this->urlBuilder = $urlBuilder;
+        foreach ($this->controls as $control)
+        {
+            $this->propagateUrlBuilder($control);
+        }
+    }
+
+    /**
+     * Добавляет элемент управления
+     *
+     * @param AbstractControl $control
+     *
+     * @since 3.01
+     */
+    public function add(AbstractControl $control)
+    {
+        $this->propagateUrlBuilder($control);
+        $this->controls []= $control;
+    }
+
+    /**
+     * Задаёт имя метода получения идентификатора объекта
+     *
+     * @param string $methodName
+     *
+     * @return ControlsColumn
+     *
+     * @since 3.01
+     */
+    public function setGetter($methodName)
+    {
+        $this->getter = $methodName;
+        return $this;
+    }
+
+    /**
+     * Задаёт имя ключа идентификатора объекта
+     *
+     * @param string $key
+     *
+     * @return ControlsColumn
+     *
+     * @since 3.01
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
+        return $this;
     }
 
     /**
@@ -124,99 +163,22 @@ class Column extends AbstractColumn
      */
     public function getCaption()
     {
-        return $this->caption;
+        return '';
     }
 
     /**
-     * Задаёт имя метода получения значения для этого столбца
+     * Возвращает тип ячейки
      *
-     * @param string $methodName
-     *
-     * @return Column
-     *
-     * @since 3.01
-     */
-    public function setGetter($methodName)
-    {
-        $this->getter = $methodName;
-        return $this;
-    }
-
-    /**
-     * Задаёт имя ключа значения для этого столбца
-     *
-     * @param string $key
-     *
-     * @return Column
-     *
-     * @since 3.01
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
-    }
-
-    /**
-     * Задаёт карту замены значений
-     *
-     * Если значение ячейки совпадёт с одним из ключей массива $map, то {@link getData()} для
-     * этой ячейки вернёт значение, соответствующее этому ключу.
-     *
-     * @param array $map  карта замены значений
-     *
-     * @return Column
-     */
-    public function setValueMap(array $map)
-    {
-        $this->valueMap = $map;
-        return $this;
-    }
-
-    /**
-     * Задаёт функцию-обработчик значений
-     *
-     * Обработчику будет передано значение ячейки после всех остальных трансформаций. Обработчик
-     * должен возвращать значение, которое будет выведено в ячейке.
-     *
-     * @param callable $callback
-     *
-     * @return Column
-     *
-     * @since
-     */
-    public function setCallback($callback)
-    {
-        assert('is_callable($callback)');
-        $this->callback = $callback;
-        return $this;
-    }
-
-    /**
-     * Задаёт выравнивание содержимого в ячейках столбца
-     *
-     * @param string $align
-     *
-     * @return Column
-     *
-     * @since 3.01
-     */
-    public function setAlign($align)
-    {
-        $this->align = $align;
-        return $this;
-    }
-
-    /**
-     * Возвращает выравнивание для ячейки
+     * Тип ячейки — это произвольная комбинация символов, которая будет добавлена как суффикс
+     * класса CSS "table__cell_type_…" к тегу td.
      *
      * @return null|string
      *
      * @since 3.01
      */
-    public function getAlign()
+    public function getType()
     {
-        return $this->align;
+        return 'controls';
     }
 
     /**
@@ -228,6 +190,8 @@ class Column extends AbstractColumn
      * @throws \LogicException
      *
      * @return string
+     *
+     * @since 3.01
      */
     public function getData($row)
     {
@@ -240,32 +204,36 @@ class Column extends AbstractColumn
         {
             if (is_null($this->getter))
             {
-                throw new \LogicException(sprintf('Getter for column "%s" not defined',
-                    $this->caption));
+                throw new \LogicException('Getter for control column not defined');
             }
-            $data = $row->{$this->getter}();
+            $id = $row->{$this->getter}();
         }
         else
         {
             if (is_null($this->key))
             {
-                throw new \LogicException(sprintf('Key for column "%s" not defined',
-                    $this->caption));
+                throw new \LogicException('Key for controls column not defined');
             }
-            $data = $row[$this->key];
+            $id = $row[$this->key];
         }
 
-        if (!is_null($this->valueMap) && array_key_exists($data, $this->valueMap))
+        $html = '';
+        foreach ($this->controls as $control)
         {
-            $data = $this->valueMap[$data];
+            $html .= $control->getHtml($id);
         }
+        return $html;
+    }
 
-        if (!is_null($this->callback))
+    /**
+     * @param AbstractControl $control
+     */
+    private function propagateUrlBuilder(AbstractControl $control)
+    {
+        if (!is_null($this->urlBuilder))
         {
-            $data = call_user_func($this->callback, $data);
+            $control->setControlUrlBuilder($this->urlBuilder);
         }
-
-        return $data;
     }
 }
 

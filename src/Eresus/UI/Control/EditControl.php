@@ -1,6 +1,6 @@
 <?php
 /**
- * Стартовый файл тестов
+ * ЭУ «Изменить»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,50 +22,40 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-define('TESTS_TEST_DIR', __DIR__ );
-define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
-
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/stubs.php';
-
-require_once TESTS_SRC_DIR . '/lang/ru.php';
-//require_once TESTS_SRC_DIR . '/core/autoload.php';
-
-$loader = require __DIR__ . '/../../vendor/autoload.php';
-$loader->add('Eresus\\', __DIR__ . '/../../src');
-
+namespace Eresus\UI\Control;
 
 /**
- * Вспомогательный инструментарий для тестов
+ * ЭУ «Изменить»
  *
- * @package Eresus
- * @subpackage Tests
- * @since 3.00
+ * @api
+ * @since 3.01
  */
-class Eresus_Tests
+class EditControl extends AbstractControl
 {
     /**
-     * Устанавливает статическое приватное свойство класса
+     * Возвращает URL значка
      *
-     * @param string $className
-     * @param mixed  $value
-     * @param string $propertyName
+     * @return string
      *
-     * @return void
-     *
-     * @since 3.00
+     * @since 3.01
      */
-    public static function setStatic($className, $value, $propertyName = 'instance')
+    public function getIconUrl()
     {
-        $property = new ReflectionProperty($className, $propertyName);
-        $property->setAccessible(true);
-        $property->setValue($className, $value);
+        return 'item-edit.png';
+    }
+
+    /**
+     * Возвращает текст подсказки
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getHint()
+    {
+        return _('Изменить');
     }
 }
 

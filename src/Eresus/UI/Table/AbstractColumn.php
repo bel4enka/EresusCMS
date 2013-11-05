@@ -1,6 +1,6 @@
 <?php
 /**
- * Стартовый файл тестов
+ * Абстрактный столбец таблицы
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,50 +22,61 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
- * @subpackage Tests
  */
 
-define('TESTS_SRC_DIR', realpath(__DIR__ . '/../../src'));
-define('TESTS_TEST_DIR', __DIR__ );
-define('TESTS_FIXT_DIR', __DIR__ . '/fixtures');
-
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/stubs.php';
-
-require_once TESTS_SRC_DIR . '/lang/ru.php';
-//require_once TESTS_SRC_DIR . '/core/autoload.php';
-
-$loader = require __DIR__ . '/../../vendor/autoload.php';
-$loader->add('Eresus\\', __DIR__ . '/../../src');
-
+namespace Eresus\UI\Table;
 
 /**
- * Вспомогательный инструментарий для тестов
+ * Абстрактный столбец таблицы
  *
- * @package Eresus
- * @subpackage Tests
- * @since 3.00
+ * @api
+ * @since 3.01
  */
-class Eresus_Tests
+abstract class AbstractColumn
 {
     /**
-     * Устанавливает статическое приватное свойство класса
+     * Возвращает данные этого столбца из переданной строки
      *
-     * @param string $className
-     * @param mixed  $value
-     * @param string $propertyName
+     * @param object|array $row
      *
-     * @return void
-     *
-     * @since 3.00
+     * @return string
      */
-    public static function setStatic($className, $value, $propertyName = 'instance')
+    abstract public function getData($row);
+
+    /**
+     * Возвращает тип ячейки
+     *
+     * Тип ячейки — это произвольная комбинация символов, которая будет добавлена как суффикс
+     * класса CSS "table__cell_type_…" к тегу td.
+     *
+     * @return null|string
+     *
+     * @since 3.01
+     */
+    public function getType()
     {
-        $property = new ReflectionProperty($className, $propertyName);
-        $property->setAccessible(true);
-        $property->setValue($className, $value);
+        return null;
+    }
+
+    /**
+     * Возвращает подпись столбца
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    abstract public function getCaption();
+
+    /**
+     * Возвращает выравнивание для ячейки
+     *
+     * @return null
+     *
+     * @since 3.01
+     */
+    public function getAlign()
+    {
+        return null;
     }
 }
 
