@@ -35,7 +35,7 @@ namespace Eresus\Content;
  * @api
  * @since 3.01
  */
-interface Element
+interface ElementInterface
 {
     /**
      * Возвращает идентификатор элемента

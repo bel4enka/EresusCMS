@@ -130,6 +130,27 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
     }
 
     /**
+     * Задаёт номер текущей страницы
+     *
+     * Номер страницы можно задать только ПОСЛЕ вызова {@link setPageSize()}. Нумерация страниц
+     * начинается с нуля.
+     *
+     * @param int $number
+     *
+     * @return ListTable
+     *
+     * @since 3.01
+     */
+    public function setCurrentPage($number)
+    {
+        if (!is_null($this->pagination))
+        {
+            $this->getPagination()->setCurrent($number);
+        }
+        return $this;
+    }
+
+    /**
      * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
      *
      * @param UrlBuilderInterface $urlBuilder
@@ -200,7 +221,13 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
     {
         if (is_null($this->data))
         {
-            $this->data = $this->provider->getItems($this->pageSize);
+            // Вычисляем номер страницы, убеждаемся, что он всегда будет больше нуля
+            $page = $this->getPagination()
+                ? ($this->getPagination()->getCurrent() > 0
+                    ? $this->getPagination()->getCurrent()
+                    : 1)
+                : 1;
+            $this->data = $this->provider->getItems($this->pageSize, ($page - 1) * $this->pageSize);
         }
         return $this->data;
     }
@@ -217,7 +244,7 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
         if (is_null($this->pagination) && !is_null($this->pageSize))
         {
             $this->pagination = new Pagination($this->getTemplateManager(),
-                $this->provider->getCount(), 1/*TODO*/, $this->urlBuilder);
+                ceil($this->provider->getCount() / $this->pageSize), 1, $this->urlBuilder);
         }
         return $this->pagination;
     }

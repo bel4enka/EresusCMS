@@ -47,13 +47,14 @@ interface DataProviderInterface
     /**
      * Возвращает данные для строк таблицы
      *
-     * @param int|null $limit  вернуть не более указанного числа строк
+     * @param int|null $limit   вернуть не более указанного числа строк
+     * @param int      $offset  сколько строк пропустить от начала
      *
      * @return object[]
      *
      * @since 3.01
      */
-    public function getItems($limit = null);
+    public function getItems($limit = null, $offset = 0);
 
     /**
      * Возвращает общее количество доступных объектов

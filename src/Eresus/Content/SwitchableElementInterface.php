@@ -34,7 +34,7 @@ namespace Eresus\Content;
  * @api
  * @since 3.01
  */
-interface SwitchableElement extends Element
+interface SwitchableElementInterface extends ElementInterface
 {
     /**
      * Возвращает true, если элемент включен

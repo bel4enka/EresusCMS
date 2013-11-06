@@ -83,15 +83,16 @@ class EntityProvider implements DataProviderInterface
     }
 
     /**
-     * Возвращает объекты для строк таблицы
+     * Возвращает данные для строк таблицы
      *
-     * @param int|null $limit  вернуть не более указанного числа строк
+     * @param int|null $limit   вернуть не более указанного числа строк
+     * @param int      $offset  сколько строк пропустить от начала
      *
      * @return object[]
      *
      * @since 3.01
      */
-    public function getItems($limit = null)
+    public function getItems($limit = null, $offset = 0)
     {
         if (is_null($limit))
         {
@@ -100,7 +101,8 @@ class EntityProvider implements DataProviderInterface
         else
         {
             $qb = $this->repository->createQueryBuilder('o')
-                ->setMaxResults($limit);
+                ->setMaxResults($limit)
+                ->setFirstResult($offset);
             $entities = $qb->getQuery()->getResult();
         }
         $factory = $this->getItemFactory();
