@@ -26,6 +26,9 @@
 
 namespace Eresus\UI\Control;
 
+use Eresus\Content\ElementInterface;
+use Eresus\Templating\TemplateManager;
+
 /**
  * ЭУ «Изменить»
  *
@@ -34,6 +37,20 @@ namespace Eresus\UI\Control;
  */
 class EditControl extends ElementControl
 {
+    /**
+     * Конструктор виджета
+     *
+     * @param TemplateManager $templateManager
+     * @param ElementInterface         $element
+     *
+     * @since 3.01
+     */
+    public function __construct(TemplateManager $templateManager, ElementInterface $element = null)
+    {
+        parent::__construct($templateManager, $element);
+        $this->setStyle(self::STYLE_ICON);
+    }
+
     /**
      * Возвращает URL значка
      *
@@ -47,13 +64,13 @@ class EditControl extends ElementControl
     }
 
     /**
-     * Возвращает альтернативный текст
+     * Возвращает подпись
      *
      * @return string
      *
      * @since 3.01
      */
-    public function getAltText()
+    public function getLabel()
     {
         return '&#9997;';
     }

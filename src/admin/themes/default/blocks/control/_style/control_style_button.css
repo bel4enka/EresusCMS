@@ -1,0 +1,10 @@
+.control_style_button
+{
+    background: #007acc;
+    background: linear-gradient(#007acc, #0064a8);
+    border: solid 1px;
+    border-color: #08d #05a #05a #06C;
+    color: white;
+    padding: .1em .5em;
+    white-space: nowrap;
+}

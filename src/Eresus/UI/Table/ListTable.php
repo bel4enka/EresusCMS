@@ -118,14 +118,6 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
     public function setPageSize($size)
     {
         $this->pageSize = $size;
-        if (is_null($size))
-        {
-            $this->pagination = null;
-        }
-        else
-        {
-            $this->getPagination()->setSize($size);
-        }
         return $this;
     }
 
@@ -143,10 +135,7 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
      */
     public function setCurrentPage($number)
     {
-        if (!is_null($this->pagination))
-        {
-            $this->getPagination()->setCurrent($number);
-        }
+        $this->getPagination()->setCurrent($number);
         return $this;
     }
 

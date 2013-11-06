@@ -35,7 +35,7 @@ use Eresus\Templating\TemplateManager;
  * @api
  * @since 3.01
  */
-abstract class ElementControl extends AbstractControl
+abstract class ElementControl extends Control
 {
     /**
      * Элемент наполнения, которым управляет этот ЭУ
@@ -67,6 +67,24 @@ abstract class ElementControl extends AbstractControl
     {
         parent::__construct($templateManager);
         $this->element = $element;
+    }
+
+    /**
+     * Возвращает URL действия
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getActionUrl()
+    {
+        $e = $this->getElement();
+        if (is_null($this->urlBuilder))
+        {
+            return $e->getId() . '/' . $this->getActionName();
+        }
+
+        return $this->urlBuilder->getActionUrl($this->getActionName(), $e->getId());
     }
 
     /**

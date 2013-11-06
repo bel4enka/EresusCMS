@@ -26,7 +26,7 @@
 
 namespace Eresus\UI\Control\UrlBuilder;
 
-use Eresus\UI\Control\AbstractControl;
+use Eresus\UI\Control\Control;
 
 /**
  * Построитель адресов с аргументами в запросе

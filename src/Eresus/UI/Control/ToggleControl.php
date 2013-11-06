@@ -25,7 +25,10 @@
  */
 
 namespace Eresus\UI\Control;
+
+use Eresus\Content\ElementInterface;
 use Eresus\Content\SwitchableElementInterface;
+use Eresus\Templating\TemplateManager;
 
 /**
  * ЭУ «Вкл/выкл»
@@ -35,6 +38,20 @@ use Eresus\Content\SwitchableElementInterface;
  */
 class ToggleControl extends ElementControl
 {
+    /**
+     * Конструктор виджета
+     *
+     * @param TemplateManager $templateManager
+     * @param ElementInterface         $element
+     *
+     * @since 3.01
+     */
+    public function __construct(TemplateManager $templateManager, ElementInterface $element = null)
+    {
+        parent::__construct($templateManager, $element);
+        $this->setStyle(self::STYLE_ICON);
+    }
+
     /**
      * Возвращает URL значка
      *
@@ -48,13 +65,13 @@ class ToggleControl extends ElementControl
     }
 
     /**
-     * Возвращает альтернативный текст
+     * Возвращает подпись
      *
      * @return string
      *
      * @since 3.01
      */
-    public function getAltText()
+    public function getLabel()
     {
         return $this->isEnabled() ? '&#9745;' : '&#9744;';
     }

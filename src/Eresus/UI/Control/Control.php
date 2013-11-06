@@ -39,14 +39,26 @@ use Eresus\UI\Widget;
  * @api
  * @since 3.01
  */
-abstract class AbstractControl extends Widget
+class Control extends Widget
 {
+    const STYLE_ICON = 'icon';
+    const STYLE_BUTTON = 'button';
+
     /**
      * Построитель адресов для ЭУ
      * @var UrlBuilderInterface
      * @since 3.01
      */
     protected $urlBuilder = null;
+
+    /**
+     * URL действия
+     *
+     * @var null|string
+     *
+     * @since 3.01
+     */
+    private $actionUrl = null;
 
     /**
      * Кэш для {@link getActionName()}
@@ -56,11 +68,20 @@ abstract class AbstractControl extends Widget
     private $actionName = null;
 
     /**
+     * Стиль ЭУ
+     *
+     * @var string
+     *
+     * @since 3.01
+     */
+    private $style = self::STYLE_BUTTON;
+
+    /**
      * Кэш для {@link getAltText()}
      * @var null|string
      * @since 3.01
      */
-    private $altText = null;
+    private $label = null;
 
     /**
      * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
@@ -105,6 +126,33 @@ abstract class AbstractControl extends Widget
     }
 
     /**
+     * Задаёт стиль ЭУ
+     *
+     * @param string $style
+     *
+     * @return Control
+     *
+     * @since 3.01
+     */
+    public function setStyle($style)
+    {
+        $this->style = $style;
+        return $this;
+    }
+
+    /**
+     * Возвращает стиль ЭУ
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    /**
      * Возвращает тип ЭУ
      *
      * @return null|string
@@ -125,12 +173,31 @@ abstract class AbstractControl extends Widget
      */
     public function getActionUrl()
     {
+        if (!is_null($this->actionUrl))
+        {
+            return $this->actionUrl;
+        }
         if (is_null($this->urlBuilder))
         {
             return $this->getActionName();
         }
 
         return $this->urlBuilder->getActionUrl($this->getActionName());
+    }
+
+    /**
+     * Задаёт URL действия
+     *
+     * @param string $url
+     *
+     * @return Control
+     *
+     * @since 3.01
+     */
+    public function setActionUrl($url)
+    {
+        $this->actionUrl = $url;
+        return $this;
     }
 
     /**
@@ -146,15 +213,15 @@ abstract class AbstractControl extends Widget
     }
 
     /**
-     * Возвращает альтернативный текст
+     * Возвращает подпись
      *
      * @return string
      *
      * @since 3.01
      */
-    public function getAltText()
+    public function getLabel()
     {
-        if (is_null($this->altText))
+        if (is_null($this->label))
         {
             $class = get_class($this);
             $pos = strrpos($class, '\\');
@@ -168,9 +235,24 @@ abstract class AbstractControl extends Widget
             {
                 $class = substr($class, 0, $pos);
             }
-            $this->altText = $class;
+            $this->label = $class;
         }
-        return $this->altText;
+        return $this->label;
+    }
+
+    /**
+     * Задаёт подпись ЭУ
+     *
+     * @param string $label
+     *
+     * @return Control
+     *
+     * @since 3.01
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+        return $this;
     }
 
     /**
@@ -183,6 +265,18 @@ abstract class AbstractControl extends Widget
     public function getHint()
     {
         return '';
+    }
+
+    /**
+     * Возвращает клиентский обработчик активации ЭУ
+     *
+     * @return string|null
+     *
+     * @since 3.01
+     */
+    public function getClientHandler()
+    {
+        return null;
     }
 
     /**

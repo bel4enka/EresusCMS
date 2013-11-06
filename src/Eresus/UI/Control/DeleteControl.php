@@ -26,6 +26,9 @@
 
 namespace Eresus\UI\Control;
 
+use Eresus\Content\ElementInterface;
+use Eresus\Templating\TemplateManager;
+
 /**
  * ЭУ «Удалить»
  *
@@ -34,6 +37,20 @@ namespace Eresus\UI\Control;
  */
 class DeleteControl extends ElementControl
 {
+    /**
+     * Конструктор виджета
+     *
+     * @param TemplateManager $templateManager
+     * @param ElementInterface         $element
+     *
+     * @since 3.01
+     */
+    public function __construct(TemplateManager $templateManager, ElementInterface $element = null)
+    {
+        parent::__construct($templateManager, $element);
+        $this->setStyle(self::STYLE_ICON);
+    }
+
     /**
      * Возвращает URL значка
      *
@@ -47,13 +64,13 @@ class DeleteControl extends ElementControl
     }
 
     /**
-     * Возвращает альтернативный текст
+     * Возвращает подпись
      *
      * @return string
      *
      * @since 3.01
      */
-    public function getAltText()
+    public function getLabel()
     {
         return '&#10060;';
     }
@@ -68,6 +85,18 @@ class DeleteControl extends ElementControl
     public function getHint()
     {
         return _('Удалить');
+    }
+
+    /**
+     * Возвращает клиентский обработчик активации ЭУ
+     *
+     * @return string|null
+     *
+     * @since 3.01
+     */
+    public function getClientHandler()
+    {
+        return 'return askdel(this)';
     }
 }
 
