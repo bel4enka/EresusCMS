@@ -10,6 +10,8 @@ prepare: clean
 
 theme.css:
 	@echo -n > imports.css
+	@echo '@import url(auth.css);' >> imports.css
+	@echo '@import url(main.css);' >> imports.css
 	@echo '@import url(css.src/typography.css);' >> imports.css
 	@echo '@import url(css.src/layout.css);' >> imports.css
 	@echo '@import url(css.src/widgets.css);' >> imports.css
