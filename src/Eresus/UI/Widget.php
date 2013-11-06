@@ -32,6 +32,9 @@ use Eresus\Templating\TemplateManager;
 /**
  * Абстрактный виджет
  *
+ * Виджет — это элемент пользовательского интерфейса, который может быть создан программно серверной
+ * частью приложения.
+ *
  * @api
  * @since 3.01
  */
@@ -41,7 +44,7 @@ abstract class Widget
      * @var TemplateManager
      * @since 3.01
      */
-    protected $templateManager;
+    private $templateManager = null;
 
     /**
      * Кэш шаблона
@@ -50,7 +53,7 @@ abstract class Widget
      *
      * @since 3.01
      */
-    protected $template = null;
+    private $template = null;
 
     /**
      * Конструктор виджета
@@ -78,6 +81,25 @@ abstract class Widget
     }
 
     /**
+     * Возвращает менеджер шаблонов
+     *
+     * @throws \LogicException
+     *
+     * @return TemplateManager
+     *
+     * @since 3.01
+     */
+    protected function getTemplateManager()
+    {
+        if (is_null($this->templateManager))
+        {
+            throw new \LogicException(
+                sprintf('Template manager not set for %s', get_class($this)));
+        }
+        return $this->templateManager;
+    }
+
+    /**
      * Возвращает шаблон
      *
      * @return Template
@@ -88,7 +110,8 @@ abstract class Widget
     {
         if (is_null($this->template))
         {
-            $this->template = $this->templateManager->getAdminTemplate($this->getTemplateName());
+            $this->template = $this->getTemplateManager()
+                ->getAdminTemplate($this->getTemplateName());
         }
         return $this->template;
     }

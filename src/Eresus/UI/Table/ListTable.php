@@ -26,15 +26,17 @@
 
 namespace Eresus\UI\Table;
 
+use Eresus\UI\Pagination;
 use Eresus\UI\Widget;
 use Eresus\UI\Control\UrlBuilder\UrlBuilderAwareInterface;
 use Eresus\UI\Table\DataProvider\DataProviderInterface;
 use Eresus\UI\Control\UrlBuilder\UrlBuilderInterface;
 use Eresus\Templating\TemplateManager;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * Таблица-список
+ *
+ * Список объектов в виде таблицы
  *
  * @api
  * @since 3.01
@@ -49,6 +51,15 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
     protected $provider;
 
     /**
+     * Размер страницы (кол-во элементов)
+     *
+     * @var null|int
+     *
+     * @since 3.01
+     */
+    protected $pageSize = null;
+
+    /**
      * Построитель адресов для ЭУ
      * @var UrlBuilderInterface
      * @since 3.01
@@ -57,17 +68,30 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
 
     /**
      * Столбцы таблицы
+     *
      * @var null|AbstractColumn[]
+     *
      * @since 3.01
      */
     private $columns = array();
 
     /**
      * Строки данных
-     * @var null|Collection
+     *
+     * @var null|object[]
+     *
      * @since 3.01
      */
     private $data = null;
+
+    /**
+     * Переключатель страниц
+     *
+     * @var null|Pagination
+     *
+     * @since 3.01
+     */
+    private $pagination = null;
 
     /**
      * @param TemplateManager       $templateManager
@@ -83,9 +107,34 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
     }
 
     /**
+     * Задаёт размер страницы (сколько элементов выводить)
+     *
+     * @param int|null $size
+     *
+     * @return ListTable
+     *
+     * @since 3.01
+     */
+    public function setPageSize($size)
+    {
+        $this->pageSize = $size;
+        if (is_null($size))
+        {
+            $this->pagination = null;
+        }
+        else
+        {
+            $this->getPagination()->setSize($size);
+        }
+        return $this;
+    }
+
+    /**
      * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
      *
      * @param UrlBuilderInterface $urlBuilder
+     *
+     * @return ListTable
      *
      * @since 3.01
      */
@@ -96,6 +145,7 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
         {
             $this->propagateUrlBuilder($column);
         }
+        return $this;
     }
 
     /**
@@ -150,10 +200,26 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
     {
         if (is_null($this->data))
         {
-            $items = $this->provider->getItems();
-            $this->data = $items;
+            $this->data = $this->provider->getItems($this->pageSize);
         }
         return $this->data;
+    }
+
+    /**
+     * Возвращает переключатель страниц
+     *
+     * @return Pagination|null
+     *
+     * @since 3.01
+     */
+    public function getPagination()
+    {
+        if (is_null($this->pagination) && !is_null($this->pageSize))
+        {
+            $this->pagination = new Pagination($this->getTemplateManager(),
+                $this->provider->getCount(), 1/*TODO*/, $this->urlBuilder);
+        }
+        return $this->pagination;
     }
 
     /**
@@ -164,6 +230,10 @@ class ListTable extends Widget implements UrlBuilderAwareInterface
         if ($column instanceof UrlBuilderAwareInterface && !is_null($this->urlBuilder))
         {
             $column->setControlUrlBuilder($this->urlBuilder);
+        }
+        if ($this->getPagination())
+        {
+            $this->getPagination()->setControlUrlBuilder($this->urlBuilder);
         }
     }
 }

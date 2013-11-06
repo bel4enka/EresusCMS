@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс построителя адресов для ЭУ
+ * Фабрика по умолчанию, производящая элементы для таблиц
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,37 +24,41 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\UI\Control\UrlBuilder;
+namespace Eresus\UI\Table\DataProvider;
+
+use Eresus\Content\ElementInterface;
+use Eresus\Exceptions\InvalidArgumentTypeException;
 
 /**
- * Интерфейс построителя адресов для ЭУ
+ * Фабрика по умолчанию, производящая элементы для таблиц
  *
- * @api
+ * Это псевдо-фабрика, возвращающая полученные на входе объекты без изменений. Единственное, что
+ * она делает — проверяет класс объекта и вбрасывает исключение, если он не поддерживает
+ * интерфейс {@link Eresus\Content\ElementInterface}.
+ *
  * @since 3.01
  */
-interface UrlBuilderInterface
+class DefaultItemFactory implements ItemFactoryInterface
 {
     /**
-     * Возвращает адрес действия для переданного ЭУ
+     * Возвращает элемент для строки таблицы
      *
-     * @param array $params  ассоциативный массив, содержащий именованные параметры для URL
+     * @param mixed $source  исходные данные для строки таблицы
      *
-     * @return string  URL
+     * @throws InvalidArgumentTypeException
      *
-     * @since 3.01
-     */
-    public function getUrl(array $params = null);
-
-    /**
-     * Возвращает адрес действия для переданного ЭУ
-     *
-     * @param string $action  действие
-     * @param string $id      идентификатор объекта (опционально)
-     *
-     * @return string  URL
+     * @return ElementInterface
      *
      * @since 3.01
      */
-    public function getActionUrl($action, $id = null);
+    public function create($source)
+    {
+        if (!($source instanceof ElementInterface))
+        {
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1,
+                'Eresus\Content\ElementInterface', $source);
+        }
+        return $source;
+    }
 }
 

@@ -26,7 +26,6 @@
 
 namespace Eresus\UI\Table\DataProvider;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Eresus\UI\Table\Column;
 
@@ -43,6 +42,13 @@ class EntityProvider implements DataProviderInterface
      * @since 3.01
      */
     protected $repository;
+
+    /**
+     * Фабрика элементов
+     *
+     * @var null|ItemFactoryInterface
+     */
+    private $itemFactory = null;
 
     /**
      * @param EntityRepository $repository
@@ -79,13 +85,62 @@ class EntityProvider implements DataProviderInterface
     /**
      * Возвращает объекты для строк таблицы
      *
-     * @return Collection
+     * @param int|null $limit  вернуть не более указанного числа строк
+     *
+     * @return object[]
      *
      * @since 3.01
      */
-    public function getItems()
+    public function getItems($limit = null)
     {
-        return $this->repository->findAll();
+        if (is_null($limit))
+        {
+            $entities = $this->repository->findAll();
+        }
+        else
+        {
+            $qb = $this->repository->createQueryBuilder('o')
+                ->setMaxResults($limit);
+            $entities = $qb->getQuery()->getResult();
+        }
+        $factory = $this->getItemFactory();
+        $items = array();
+        foreach ($entities as $entity)
+        {
+            $items []= $factory->create($entity);
+        }
+        return $items;
+    }
+
+    /**
+     * Возвращает общее количество доступных объектов
+     *
+     * @return int
+     *
+     * @since 3.01
+     */
+    public function getCount()
+    {
+        return $this->repository->createQueryBuilder('o')
+            ->select('count(o)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Возвращает фабрику элементов
+     *
+     * @return ItemFactoryInterface
+     *
+     * @since 3.01
+     */
+    protected function getItemFactory()
+    {
+        if (is_null($this->itemFactory))
+        {
+            $this->itemFactory = new DefaultItemFactory();
+        }
+        return $this->itemFactory;
     }
 }
 

@@ -1,0 +1,6 @@
+.pagination__item
+{
+    display: inline-block;
+    font-weight: bold;
+    padding: 0 .3em;
+}

@@ -93,6 +93,34 @@ class QueryUrlBuilder implements  UrlBuilderInterface
     /**
      * Возвращает адрес действия для переданного ЭУ
      *
+     * @param array $params  ассоциативный массив, содержащий именованные параметры для URL
+     *
+     * @return string  URL
+     *
+     * @since 3.01
+     */
+    public function getUrl(array $params = null)
+    {
+        if (count($params) == 0)
+        {
+            return $this->baseURL;
+        }
+
+        $url = array();
+        foreach ($params as $key => $value)
+        {
+            if ($value)
+            {
+                $url []= strval($key) . '=' . strval($value);
+            }
+        }
+        $url = implode('&', $url);
+        return $this->baseURL . $url;
+    }
+
+    /**
+     * Возвращает адрес действия для переданного ЭУ
+     *
      * @param string $action  действие
      * @param string $id      идентификатор объекта (опционально)
      *
@@ -100,9 +128,9 @@ class QueryUrlBuilder implements  UrlBuilderInterface
      *
      * @since 3.01
      */
-    public function getUrlFor($action, $id = null)
+    public function getActionUrl($action, $id = null)
     {
-        return $this->baseURL . ($id ? 'id=' . $id . '&' : '') . 'action=' . $action;
+        return $this->getUrl(array('action' => $action, 'id' => $id));
     }
 }
 

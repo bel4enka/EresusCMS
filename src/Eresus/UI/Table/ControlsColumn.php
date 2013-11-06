@@ -26,8 +26,9 @@
 
 namespace Eresus\UI\Table;
 
+use Eresus\Content\ElementInterface;
 use Eresus\Exceptions\InvalidArgumentTypeException;
-use Eresus\UI\Control\AbstractControl;
+use Eresus\UI\Control\ElementControl;
 use Eresus\UI\Control\UrlBuilder\UrlBuilderAwareInterface;
 use Eresus\UI\Control\UrlBuilder\UrlBuilderInterface;
 
@@ -42,7 +43,7 @@ class ControlsColumn extends AbstractColumn implements UrlBuilderAwareInterface
     /**
      * Элементы управления
      *
-     * @var AbstractControl[]
+     * @var ElementControl[]
      * @since 3.01
      */
     protected $controls = array();
@@ -53,20 +54,6 @@ class ControlsColumn extends AbstractColumn implements UrlBuilderAwareInterface
      * @since 3.01
      */
     protected $urlBuilder = null;
-
-    /**
-     * Имя метода получения идентификатора
-     * @var null|string
-     * @since 3.01
-     */
-    private $getter = null;
-
-    /**
-     * Имя ключа идентификатора
-     * @var null|string
-     * @since 3.01
-     */
-    private $key = null;
 
     /**
      * Создаёт и возвращает новый столбец
@@ -114,44 +101,14 @@ class ControlsColumn extends AbstractColumn implements UrlBuilderAwareInterface
     /**
      * Добавляет элемент управления
      *
-     * @param AbstractControl $control
+     * @param ElementControl $control
      *
      * @since 3.01
      */
-    public function add(AbstractControl $control)
+    public function add(ElementControl $control)
     {
         $this->propagateUrlBuilder($control);
         $this->controls []= $control;
-    }
-
-    /**
-     * Задаёт имя метода получения идентификатора объекта
-     *
-     * @param string $methodName
-     *
-     * @return ControlsColumn
-     *
-     * @since 3.01
-     */
-    public function setGetter($methodName)
-    {
-        $this->getter = $methodName;
-        return $this;
-    }
-
-    /**
-     * Задаёт имя ключа идентификатора объекта
-     *
-     * @param string $key
-     *
-     * @return ControlsColumn
-     *
-     * @since 3.01
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
     }
 
     /**
@@ -184,51 +141,35 @@ class ControlsColumn extends AbstractColumn implements UrlBuilderAwareInterface
     /**
      * Возвращает данные этого столбца из переданной строки
      *
-     * @param object|array $row
+     * @param ElementInterface $element
      *
      * @throws InvalidArgumentTypeException
-     * @throws \LogicException
      *
      * @return string
      *
      * @since 3.01
      */
-    public function getData($row)
+    public function getData($element)
     {
-        if (!(is_object($row) || is_array($row)))
+        if (!($element instanceof ElementInterface))
         {
-            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'object or array', $row);
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1,
+                'Eresus\Content\ElementInterface', $element);
         }
-
-        if (is_object($row))
-        {
-            if (is_null($this->getter))
-            {
-                throw new \LogicException('Getter for control column not defined');
-            }
-            $id = $row->{$this->getter}();
-        }
-        else
-        {
-            if (is_null($this->key))
-            {
-                throw new \LogicException('Key for controls column not defined');
-            }
-            $id = $row[$this->key];
-        }
-
-        $html = '';
+        $html = array();
         foreach ($this->controls as $control)
         {
-            $html .= $control->getHtml($id);
+            $control->setElement($element);
+            $html []= $control->getHtml();
         }
+        $html = implode(' ', $html);
         return $html;
     }
 
     /**
-     * @param AbstractControl $control
+     * @param ElementControl $control
      */
-    private function propagateUrlBuilder(AbstractControl $control)
+    private function propagateUrlBuilder(ElementControl $control)
     {
         if (!is_null($this->urlBuilder))
         {

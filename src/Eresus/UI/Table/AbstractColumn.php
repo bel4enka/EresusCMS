@@ -37,7 +37,7 @@ abstract class AbstractColumn
     /**
      * Возвращает данные этого столбца из переданной строки
      *
-     * @param object|array $row
+     * @param object $row
      *
      * @return string
      */

@@ -8,6 +8,13 @@
         </tr>
     </thead>
     {/if}
+    {if $widget->getPagination()}
+    <tfoot>
+        <tr>
+            <td colspan="{$widget->getColumns|count}">{$widget->getPagination()->getHtml()}</td>
+        </tr>
+    </tfoot>
+    {/if}
     <tbody class="table__body">
     {foreach $widget->getDataRows() row}
         <tr class="table__row">

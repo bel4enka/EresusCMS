@@ -32,6 +32,10 @@ use Eresus\UI\Widget;
 /**
  * Абстрактный элемент управления
  *
+ * Элемент управления — это виджет, при активации которого пользователем, должно быть выполнено
+ * определённое действие. Активация, как правило, производится щелчком мыши по элементу, либо
+ * иным аналогичным способом.
+ *
  * @api
  * @since 3.01
  */
@@ -57,15 +61,6 @@ abstract class AbstractControl extends Widget
      * @since 3.01
      */
     private $altText = null;
-
-    /**
-     * Свойство для временного хранения идентификатора методом getHtml
-     *
-     * @var null|int|string
-     *
-     * @since 3.01
-     */
-    private $tmpId = null;
 
     /**
      * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
@@ -124,21 +119,18 @@ abstract class AbstractControl extends Widget
     /**
      * Возвращает URL действия
      *
-     * @param int|null $id  идентификатор объекта воздействия
-     *
      * @return string
      *
      * @since 3.01
      */
-    public function getActionUrl($id = null)
+    public function getActionUrl()
     {
-        $id = $id ?: $this->tmpId;
         if (is_null($this->urlBuilder))
         {
-            return '#?action=' . $this->getActionName() . ($id ? '&id=' . $id : '');
+            return $this->getActionName();
         }
 
-        return $this->urlBuilder->getUrlFor($this->getActionName(), $id);
+        return $this->urlBuilder->getActionUrl($this->getActionName());
     }
 
     /**
@@ -191,23 +183,6 @@ abstract class AbstractControl extends Widget
     public function getHint()
     {
         return '';
-    }
-
-    /**
-     * Возвращает разметку
-     *
-     * @param null|int|string $id  идентификатор объекта воздействия
-     *
-     * @return string  HTML
-     *
-     * @since 3.01
-     */
-    public function getHtml($id = null)
-    {
-        $this->tmpId = $id;
-        $html = parent::getHtml();
-        $this->tmpId = null;
-        return $html;
     }
 
     /**

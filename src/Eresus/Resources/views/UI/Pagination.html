@@ -1,0 +1,8 @@
+<ol class="pagination">
+    {foreach $widget item}
+    <li class="pagination__item{if $item.current} pagination__item_is_current{/if}">
+        {if not $item.current}<a href="{$item.url}" class="pagination__link">{/if}<span
+        class="pagination__label">{$item.label}</span>{if not $item.current}</a>{/if}
+    </li>
+    {/foreach}
+</ol>

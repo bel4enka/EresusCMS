@@ -32,7 +32,7 @@ namespace Eresus\UI\Control;
  * @api
  * @since 3.01
  */
-class EditControl extends AbstractControl
+class EditControl extends ElementControl
 {
     /**
      * Возвращает URL значка
@@ -44,6 +44,18 @@ class EditControl extends AbstractControl
     public function getIconUrl()
     {
         return 'item-edit.png';
+    }
+
+    /**
+     * Возвращает альтернативный текст
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getAltText()
+    {
+        return '&#9997;';
     }
 
     /**

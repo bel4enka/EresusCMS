@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс построителя адресов для ЭУ
+ * Интерфейс фабрики элементов для таблицы
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,37 +24,24 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\UI\Control\UrlBuilder;
+namespace Eresus\UI\Table\DataProvider;
 
 /**
- * Интерфейс построителя адресов для ЭУ
+ * Интерфейс фабрики элементов для таблицы
  *
- * @api
  * @since 3.01
  */
-interface UrlBuilderInterface
+interface ItemFactoryInterface
 {
     /**
-     * Возвращает адрес действия для переданного ЭУ
+     * Возвращает элемент для строки таблицы
      *
-     * @param array $params  ассоциативный массив, содержащий именованные параметры для URL
+     * @param mixed $source  исходные данные для строки таблицы
      *
-     * @return string  URL
-     *
-     * @since 3.01
-     */
-    public function getUrl(array $params = null);
-
-    /**
-     * Возвращает адрес действия для переданного ЭУ
-     *
-     * @param string $action  действие
-     * @param string $id      идентификатор объекта (опционально)
-     *
-     * @return string  URL
+     * @return object
      *
      * @since 3.01
      */
-    public function getActionUrl($action, $id = null);
+    public function create($source);
 }
 

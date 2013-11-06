@@ -54,13 +54,6 @@ class Column extends AbstractColumn
     private $getter = null;
 
     /**
-     * Имя ключа данных для столбца
-     * @var null|string
-     * @since 3.01
-     */
-    private $key = null;
-
-    /**
      * Карта замены значений
      *
      * @var null|array
@@ -143,21 +136,6 @@ class Column extends AbstractColumn
     }
 
     /**
-     * Задаёт имя ключа значения для этого столбца
-     *
-     * @param string $key
-     *
-     * @return Column
-     *
-     * @since 3.01
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
-    }
-
-    /**
      * Задаёт карту замены значений
      *
      * Если значение ячейки совпадёт с одним из ключей массива $map, то {@link getData()} для
@@ -222,38 +200,25 @@ class Column extends AbstractColumn
     /**
      * Возвращает данные этого столбца из переданной строки
      *
-     * @param object|array $row
+     * @param object $item
      *
      * @throws InvalidArgumentTypeException
      * @throws \LogicException
      *
      * @return string
      */
-    public function getData($row)
+    public function getData($item)
     {
-        if (!(is_object($row) || is_array($row)))
+        if (!is_object($item))
         {
-            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'object or array', $row);
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'object', $item);
         }
-
-        if (is_object($row))
+        if (is_null($this->getter))
         {
-            if (is_null($this->getter))
-            {
-                throw new \LogicException(sprintf('Getter for column "%s" not defined',
-                    $this->caption));
-            }
-            $data = $row->{$this->getter}();
+            throw new \LogicException(sprintf('Getter for column "%s" not defined',
+                $this->caption));
         }
-        else
-        {
-            if (is_null($this->key))
-            {
-                throw new \LogicException(sprintf('Key for column "%s" not defined',
-                    $this->caption));
-            }
-            $data = $row[$this->key];
-        }
+        $data = $item->{$this->getter}();
 
         if (!is_null($this->valueMap) && array_key_exists($data, $this->valueMap))
         {

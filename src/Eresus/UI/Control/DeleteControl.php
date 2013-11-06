@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс построителя адресов для ЭУ
+ * ЭУ «Удалить»
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,37 +24,50 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\UI\Control\UrlBuilder;
+namespace Eresus\UI\Control;
 
 /**
- * Интерфейс построителя адресов для ЭУ
+ * ЭУ «Удалить»
  *
  * @api
  * @since 3.01
  */
-interface UrlBuilderInterface
+class DeleteControl extends ElementControl
 {
     /**
-     * Возвращает адрес действия для переданного ЭУ
+     * Возвращает URL значка
      *
-     * @param array $params  ассоциативный массив, содержащий именованные параметры для URL
-     *
-     * @return string  URL
+     * @return string
      *
      * @since 3.01
      */
-    public function getUrl(array $params = null);
+    public function getIconUrl()
+    {
+        return 'item-delete.png';
+    }
 
     /**
-     * Возвращает адрес действия для переданного ЭУ
+     * Возвращает альтернативный текст
      *
-     * @param string $action  действие
-     * @param string $id      идентификатор объекта (опционально)
-     *
-     * @return string  URL
+     * @return string
      *
      * @since 3.01
      */
-    public function getActionUrl($action, $id = null);
+    public function getAltText()
+    {
+        return '&#10060;';
+    }
+
+    /**
+     * Возвращает текст подсказки
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getHint()
+    {
+        return _('Удалить');
+    }
 }
 

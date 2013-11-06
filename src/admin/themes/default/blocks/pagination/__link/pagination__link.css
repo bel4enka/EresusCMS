@@ -1,0 +1,5 @@
+.pagination__link,
+.pagination__link:link
+{
+    text-decoration: none;
+}

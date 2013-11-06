@@ -1,0 +1,5 @@
+.pagination__item.pagination__item_is_current
+{
+    background: #007acc;
+    color: gold;
+}

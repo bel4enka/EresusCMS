@@ -47,10 +47,21 @@ interface DataProviderInterface
     /**
      * Возвращает данные для строк таблицы
      *
-     * @return array
+     * @param int|null $limit  вернуть не более указанного числа строк
+     *
+     * @return object[]
      *
      * @since 3.01
      */
-    public function getItems();
+    public function getItems($limit = null);
+
+    /**
+     * Возвращает общее количество доступных объектов
+     *
+     * @return int
+     *
+     * @since 3.01
+     */
+    public function getCount();
 }
 
