@@ -81,6 +81,21 @@ abstract class Widget
     }
 
     /**
+     * Задаёт менеджер шаблонов
+     *
+     * @param TemplateManager $templateManager
+     *
+     * @return Widget
+     *
+     * @since 3.01
+     */
+    protected function setTemplateManager(TemplateManager $templateManager)
+    {
+        $this->templateManager = $templateManager;
+        return $this;
+    }
+
+    /**
      * Возвращает менеджер шаблонов
      *
      * @throws \LogicException

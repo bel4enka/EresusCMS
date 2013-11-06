@@ -30,7 +30,6 @@ use Eresus\Entity\Account;
 use Eresus\Security\Exceptions\BadCredentialsException;
 use Eresus\Security\SecurityManager;
 use Eresus\Templating\TemplateManager;
-use Eresus_CMS_FrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,7 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @since 3.01
  */
-class AdminFrontController extends Eresus_CMS_FrontController
+class AdminFrontController extends FrontController
 {
     /**
      * Выполняет действия контроллера и возвращает ответ

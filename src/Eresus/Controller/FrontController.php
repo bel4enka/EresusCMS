@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс контроллера контента АИ
+ * Абстрактный фронт-контроллер CMS
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -26,23 +26,83 @@
 
 namespace Eresus\Controller;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Интерфейс контроллера контента АИ
+ * Абстрактный фронт-контроллер CMS
  *
  * @since 3.01
  */
-interface ControllerInterface
+abstract class FrontController extends Controller
 {
     /**
-     * Возвращает разметку области контента
+     * Обрабатываемый запрос
      *
-     * @param Request $request
-     *
-     * @return string
+     * @var Request
      * @since 3.01
      */
-    public function getHtml(Request $request);
+    private $request;
+
+    /**
+     * Создаваемая страница
+     * @var \Eresus_CMS_Page
+     * @since 3.01
+     */
+    private $page;
+
+    /**
+     * Конструктор контроллера
+     *
+     * @param ContainerInterface $container
+     * @param Request $request
+     *
+     * @since 3.01
+     */
+    public function __construct(ContainerInterface $container, Request $request)
+    {
+        parent::__construct($container);
+        $this->request = $request;
+        $this->page = $this->createPage();
+    }
+
+    /**
+     * Выполняет действия контроллера и возвращает ответ
+     *
+     * @return Response
+     * @since 3.01
+     */
+    abstract public function dispatch();
+
+    /**
+     * Возвращает объект Eresus_CMS_Page
+     *
+     * @return \Eresus_CMS_Page
+     * @since 3.01
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * Возвращает текущий запрос
+     *
+     * @return Request
+     * @since 3.01
+     */
+    protected function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * Создаёт объект Eresus_CMS_Page
+     *
+     * @return \Eresus_CMS_Page
+     * @since 3.01
+     */
+    abstract protected function createPage();
 }
 

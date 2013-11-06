@@ -50,7 +50,7 @@ use Eresus\Exceptions\NotFoundException;
  * @internal
  * @since 3.01
  */
-class AccountsController extends Controller
+class AccountsController extends AdminController
 {
     /**
      * Возвращает разметку
@@ -61,8 +61,6 @@ class AccountsController extends Controller
      */
     public function getHtml(Request $request)
     {
-        $response = '';
-
         $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
 
         /** @var SecurityManager $security */

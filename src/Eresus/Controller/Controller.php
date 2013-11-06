@@ -1,6 +1,6 @@
 <?php
 /**
- * Абстрактный фронт-контроллер CMS
+ * Абстрактный контроллер
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,20 +22,18 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
+
+namespace Eresus\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Абстрактный фронт-контроллер CMS
+ * Абстрактный контроллер CMS
  *
- * @package Eresus
  * @since 3.01
  */
-abstract class Eresus_CMS_FrontController
+abstract class Controller
 {
     /**
      * Контейнер служб
@@ -46,52 +44,15 @@ abstract class Eresus_CMS_FrontController
     protected $container;
 
     /**
-     * Обрабатываемый запрос
-     *
-     * @var Request
-     * @since 3.01
-     */
-    private $request;
-
-    /**
-     * Создаваемая страница
-     * @var Eresus_CMS_Page
-     * @since 3.01
-     */
-    private $page;
-
-    /**
      * Конструктор контроллера
      *
      * @param ContainerInterface $container
-     * @param Request $request
      *
      * @since 3.01
      */
-    public function __construct(ContainerInterface $container, Request $request)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->request = $request;
-        $this->page = $this->createPage();
-    }
-
-    /**
-     * Выполняет действия контроллера и возвращает ответ
-     *
-     * @return Eresus_HTTP_Response
-     * @since 3.01
-     */
-    abstract public function dispatch();
-
-    /**
-     * Возвращает объект Eresus_CMS_Page
-     *
-     * @return Eresus_CMS_Page
-     * @since 3.01
-     */
-    public function getPage()
-    {
-        return $this->page;
     }
 
     /**
@@ -107,24 +68,5 @@ abstract class Eresus_CMS_FrontController
     {
         return $this->container->get($id);
     }
-
-    /**
-     * Возвращает текущий запрос
-     *
-     * @return Request
-     * @since 3.01
-     */
-    protected function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * Создаёт объект Eresus_CMS_Page
-     *
-     * @return Eresus_CMS_Page
-     * @since 3.01
-     */
-    abstract protected function createPage();
 }
 

@@ -32,7 +32,7 @@
 	</header>
 
 	<div class="width-limit">
-		<div class="nav sidebar">
+		<aside class="nav sidebar">
 
 			<div class="box ui-widget ui-widget-content">
 				<div class="header">{$i18n->getText('admContent')}</div>
@@ -43,9 +43,12 @@
 				</div>
 			</div>
 
-			<div class="box ui-widget ui-widget-content menu">
-				{$controlMenu}
-			</div>
+            <nav class="sidebar__block block">
+                <h1 class="block__title">Управление</h1>
+                <div class="block__body">
+                    {$mainMenu->getHtml()}
+                </div>
+            </nav>
 
 			<div class="box ui-widget ui-widget-content">
 				<div class="header">{$user.name}</div>
@@ -62,7 +65,7 @@
 				</div>
 			</div>
 
-		</div>
+		</aside>
 
 		<div id="content">
 			<noscript>

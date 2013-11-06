@@ -98,7 +98,7 @@ class Kernel
     public function __construct($appDir)
     {
         $this->appDir = $appDir;
-        //session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
+        //TODO session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
         session_name('sid');
         session_start();
     }
@@ -416,6 +416,7 @@ class Kernel
              */
             $GLOBALS['page'] = $this->page;
             $tm->setGlobal('page', $this->page);
+            /** @var Response $response */
             $response = $controller->dispatch();
             $response->send();
 

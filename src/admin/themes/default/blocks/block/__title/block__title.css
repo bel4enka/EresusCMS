@@ -1,0 +1,12 @@
+.block__title
+{
+    background: #007acc;
+    background: linear-gradient(#007acc, #0064a8);
+    border: solid 1px;
+    border-color: #08d #05a #05a #06C;
+    color: gold;
+    font-size: 1em;
+    margin: 0;
+    padding: .1em .5em;
+    text-align: center;
+}

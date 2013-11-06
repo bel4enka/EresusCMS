@@ -1,6 +1,6 @@
 <?php
 /**
- * Абстрактный контроллер АИ
+ * Меню
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,50 +24,52 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\Controller\Admin;
+namespace Eresus\UI\Menu;
 
-use Eresus\Controller\ControllerInterface;
-use Eresus\Templating\TemplateManager;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Eresus\UI\Widget;
 
 /**
- * Абстрактный контроллер АИ
+ * Меню
  *
- * @internal
  * @since 3.01
  */
-abstract class Controller extends ContainerAware implements ControllerInterface
+class Menu extends Widget
 {
     /**
-     * Возвращает службу из контейнера служб
+     * Пункты меню
      *
-     * @param string $id
-     *
-     * @return object
+     * @var MenuItem[]
      *
      * @since 3.01
      */
-    protected function get($id)
+    protected $items = array();
+
+    /**
+     * Добавляет пункт к меню
+     *
+     * @param MenuItem $item
+     *
+     * @return Menu
+     *
+     * @since 3.01
+     */
+    public function add(MenuItem $item)
     {
-        return $this->container->get($id);
+        $item->setTemplateManager($this->getTemplateManager());
+        $this->items []= $item;
+        return $this;
     }
 
     /**
-     * Возвращает отрисованное на основе указанного шаблона представление данных
+     * Возвращает пункты меню
      *
-     * @param string $templateName
-     * @param array  $templateVars
-     *
-     * @return string
+     * @return MenuItem[]
      *
      * @since 3.01
      */
-    protected function renderView($templateName, array $templateVars = array())
+    public function getItems()
     {
-        /** @var TemplateManager $templates */
-        $templates = $this->get('templates');
-        $template = $templates->getAdminTemplate($templateName);
-        return $template->compile($templateVars);
+        return $this->items;
     }
 }
 

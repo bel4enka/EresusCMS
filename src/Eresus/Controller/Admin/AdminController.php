@@ -1,6 +1,6 @@
 <?php
 /**
- * Интерфейс меню
+ * Абстрактный контроллер АИ
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,22 +24,46 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\UI\Menu;
+namespace Eresus\Controller\Admin;
+
+use Eresus\Controller\Controller;
+use Eresus\Templating\TemplateManager;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Интерфейс меню
+ * Абстрактный контроллер АИ
  *
+ * @internal
  * @since 3.01
  */
-interface MenuInterface
+abstract class AdminController extends Controller
 {
     /**
-     * Возвращает разметку меню
+     * Возвращает разметку области контента
      *
-     * @return string  HTML
+     * @param Request $request
+     *
+     * @return string
+     * @since 3.01
+     */
+    abstract public function getHtml(Request $request);
+
+    /**
+     * Возвращает отрисованное на основе указанного шаблона представление данных
+     *
+     * @param string $templateName
+     * @param array  $templateVars
+     *
+     * @return string
      *
      * @since 3.01
      */
-    public function __toString();
+    protected function renderView($templateName, array $templateVars = array())
+    {
+        /** @var TemplateManager $templates */
+        $templates = $this->get('templates');
+        $template = $templates->getAdminTemplate($templateName);
+        return $template->compile($templateVars);
+    }
 }
 

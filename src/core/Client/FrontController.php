@@ -26,13 +26,15 @@
  * @package Eresus
  */
 
+use Eresus\Controller\FrontController;
+
 /**
  * Фронт-контроллер КИ
  *
  * @package Eresus
  * @since 3.01
  */
-class Eresus_Client_FrontController extends Eresus_CMS_FrontController
+class Eresus_Client_FrontController extends FrontController
 {
     /**
      * Выполняет действия контроллера и возвращает ответ

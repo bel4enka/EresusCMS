@@ -31,7 +31,9 @@
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Eresus\Controller\ControllerInterface;
+use Eresus\Controller\Admin\AdminController;
+use Eresus\UI\Menu\Menu;
+use Eresus\UI\Menu\MenuItem;
 use Eresus\UI\Menu\SectionMenu;
 
 /**
@@ -237,28 +239,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         while ($i !== false);
 
         $this->sub--;
-
-        /* Создаем меню */
-        $this->menu = array(
-            array(
-                "access"  => EDITOR,
-                "caption" => admControls,
-                "items" => array (
-                    array ("link" => "pages", "caption"  => admStructure, "hint"  => admStructureHint,
-                        'access'=>ADMIN),
-                    array ("link" => "files", "caption"  => admFileManager, "hint"  => admFileManagerHint,
-                        'access'=>EDITOR),
-                    array ("link" => "plgmgr", "caption"  => admPlugins, "hint"  => admPluginsHint,
-                        'access'=>ADMIN),
-                    array ("link" => "themes", "caption"  => admThemes, "hint"  => admThemesHint,
-                        'access'=>ADMIN),
-                    array ("link" => "users", "caption"  => admUsers, "hint"  => admUsersHint,
-                        'access'=>ADMIN),
-                    array ("link" => "settings", "caption"  => admConfiguration,
-                        "hint"  => admConfigurationHint, 'access'=>ADMIN),
-                )
-            ),
-        );
     }
 
     /**
@@ -1029,7 +1009,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             $module = arg('mod', '/[^\w-]/');
             if (array_key_exists($module, $routes))
             {
-                $controller = new $routes[$module];
+                $controller = new $routes[$module]($GLOBALS['_container']);
                 $this->module = $controller;
             }
             elseif (file_exists(Eresus_CMS::getLegacyKernel()->froot . "core/$module.php"))
@@ -1055,7 +1035,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
              */
             if (is_object($this->module))
             {
-                if (isset($controller) &&  $controller instanceof ControllerInterface)
+                if (isset($controller) &&  $controller instanceof AdminController)
                 {
                     if ($controller instanceof ContainerAwareInterface)
                     {
@@ -1280,34 +1260,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
             }
         }
 
-        for ($section = 0; $section < count($this->menu); $section++)
-        {
-            if (UserRights($this->menu[$section]['access']))
-            {
-                $menu .= '<div class="header">' . $this->menu[$section]['caption'] .
-                    '</div><div class="content">';
-                foreach ($this->menu[$section]['items'] as $item)
-                {
-                    if (
-                        UserRights(
-                            isset($item['access']) ? $item['access'] : $this->menu[$section]['access']
-                        ) &&
-                        (!(isset($item['disabled']) && $item['disabled']))
-                    )
-                    {
-                        if ($item['link'] == arg('mod'))
-                        {
-                            $this->title = $item['caption'];
-                        }
-                        $menu .= '<div '.($item['link'] == arg('mod') ?'class="selected"':'') .
-                            "><a href=\"" . Eresus_CMS::getLegacyKernel()->root . "admin.php?mod=" . $item['link'] .
-                            "\" title=\"" .	$item['hint'] . "\">" . $item['caption'] . "</a></div>\n";
-                    }
-                }
-                $menu .= "</div>\n";
-            }
-        }
-
         return $menu;
     }
 
@@ -1336,25 +1288,60 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 
         if (!($response instanceof Response))
         {
-            $data = array();
-            $data['page'] = $this;
-            $data['errors'] = $this->getErrorMessages();
-            $data['content'] = $response;
-            $data['siteName'] = option('siteName');
-            $data['body'] = $this->renderBodySection();
+            $vars = array();
+            $vars['page'] = $this;
+            $vars['errors'] = $this->getErrorMessages();
+            $vars['content'] = $response;
+            $vars['siteName'] = option('siteName');
+            $vars['body'] = $this->renderBodySection();
 
-            $menu = new SectionMenu();
-            $data['sectionMenu'] = $menu;
-            $data['controlMenu'] = $this->renderControlMenu();
-            $data['user'] = Eresus_CMS::getLegacyKernel()->user;
+            /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+            $container = $GLOBALS['_container'];
+            /** @var \Eresus\Templating\TemplateManager $tm */
+            $tm = $container->get('templates');
+
+            $menu = new SectionMenu($tm);
+            //$vars['sectionMenu'] = $menu->getHtml();
+            $vars['controlMenu'] = $this->renderControlMenu();
+            $vars['mainMenu'] = $this->createMainMenu();
+            $vars['user'] = Eresus_CMS::getLegacyKernel()->user;
 
             /** @var \Eresus\Templating\TemplateManager $templates */
             $templates = $this->container->get('templates');
             $tmpl = $templates->getAdminTemplate('Pages/Default.html');
-            $response = new Response($tmpl->compile($data), 200, $this->headers);
+            $response = new Response($tmpl->compile($vars), 200, $this->headers);
         }
 
         return $response;
+    }
+
+    /**
+     * Создаёт главное меню
+     *
+     * @return Menu
+     *
+     * @since 3.01
+     */
+    private function createMainMenu()
+    {
+        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+        $container = $GLOBALS['_container'];
+        /** @var \Eresus\Templating\TemplateManager $tm */
+        $tm = $container->get('templates');
+        /** @var \Eresus\Security\SecurityManager $security */
+        $security = $container->get('security');
+
+        $menu = new Menu($tm);
+        $menu->add(new MenuItem(_('Разделы сайта'), 'admin.php?mod=pages'));
+        $menu->add(new MenuItem(_('Файловый менеджер'), 'admin.php?mod=files'));
+        if ($security->getCurrentUser()->hasAccess(ADMIN))
+        {
+            $menu->add(new MenuItem(_('Модули расширения'), 'admin.php?mod=plgmgr'));
+            $menu->add(new MenuItem(_('Оформление'), 'admin.php?mod=themes'));
+            $menu->add(new MenuItem(_('Пользователи'), 'admin.php?mod=users'));
+            $menu->add(new MenuItem(_('Конфигурация'), 'admin.php?mod=settings'));
+        }
+        return $menu;
     }
 }
 

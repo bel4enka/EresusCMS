@@ -1,6 +1,6 @@
 <?php
 /**
- * Меню разделов сайта
+ * Пункт меню
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -26,12 +26,66 @@
 
 namespace Eresus\UI\Menu;
 
+use Eresus\UI\Widget;
+
 /**
- * Меню разделов сайта
+ * Пункт меню
  *
+ * @api
  * @since 3.01
  */
-class SectionMenu extends Menu
+class MenuItem extends Widget
 {
+    /**
+     * Текст пункта
+     *
+     * @var string
+     *
+     * @since 3.01
+     */
+    protected $caption;
+
+    /**
+     * URL
+     *
+     * @var string
+     *
+     * @since 3.01
+     */
+    protected $url;
+
+    /**
+     * @param string $caption
+     * @param string $url
+     */
+    public function __construct($caption, $url)
+    {
+        $this->caption = $caption;
+        $this->url = $url;
+    }
+
+    /**
+     * Возвращает текст пункта меню
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getCaption()
+    {
+        return $this->caption;
+    }
+
+    /**
+     * Возвращает URL
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }
 
