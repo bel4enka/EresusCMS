@@ -27,6 +27,8 @@
 namespace Eresus\Controller;
 
 use Eresus\Entity\Account;
+use Eresus\Security\Exceptions\BadCredentialsException;
+use Eresus\Security\SecurityManager;
 use Eresus\Templating\TemplateManager;
 use Eresus_CMS_FrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -51,7 +53,10 @@ class AdminFrontController extends Eresus_CMS_FrontController
         $dispatcher = $this->container->get('events');
         $dispatcher->dispatch('cms.admin.start');
 
-        if (!UserRights(EDITOR))
+        /** @var SecurityManager $security */
+        $security = $this->get('security');
+        $user = $security->getCurrentUser();
+        if (is_null($user) || !$user->hasAccess(EDITOR))
         {
             $response = $this->authAction();
         }
@@ -92,12 +97,20 @@ class AdminFrontController extends Eresus_CMS_FrontController
         $req = $this->getRequest();
         if ($req->getMethod() == 'POST')
         {
-            $user = $req->request->get('user');
-            $password = $req->request->get('password');
+            $user = trim($req->request->get('user'));
+            $password = trim($req->request->get('password'));
             $auto = $req->request->get('autologin');
-            if ($legacyKernel->login($user, Account::hashPassword($password), $auto))
+
+            /** @var SecurityManager $security */
+            $security = $this->container->get('security');
+            try
             {
+                $security->login($user, Account::hashPassword($password), $auto);
                 return new RedirectResponse($legacyKernel->root . 'admin.php');
+            }
+            catch (BadCredentialsException $e)
+            {
+                $this->getPage()->addErrorMessage(_('Неправильный пароль или имя пользователя'));
             }
             $data['user'] = $user;
             $data['autologin'] = $auto;

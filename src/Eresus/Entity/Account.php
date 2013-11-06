@@ -27,7 +27,8 @@
 namespace Eresus\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DateTime;
+use Eresus\Content\ElementInterface;
+use Eresus\Content\SwitchableElementInterface;
 
 /**
  * Учётная запись пользователя
@@ -40,7 +41,7 @@ use DateTime;
  *     @ORM\Index(name="default_idx", columns={"login", "active"})
  * })
  */
-class Account
+class Account implements ElementInterface, SwitchableElementInterface
 {
     /**
      * Идентификатор
@@ -87,39 +88,6 @@ class Account
      * @ORM\Column(type="boolean")
      */
     private $active = false;
-
-    /**
-     * Время последней активности на сайте
-     *
-     * @var DateTime
-     *
-     * @since 3.01
-     *
-     * @ORM\Column(type="datetime")
-     */
-    private $lastVisit;
-
-    /**
-     * Время последнего входа на сайт
-     *
-     * @var DateTime
-     *
-     * @since 3.01
-     *
-     * @ORM\Column(type="datetime")
-     */
-    private $lastLoginTime;
-
-    /**
-     * Кол-во неудачных попыток входа
-     *
-     * @var int
-     *
-     * @since 3.01
-     *
-     * @ORM\Column(type="integer")
-     */
-    private $loginErrors = 0;
 
     /**
      * Уровень доступа
@@ -232,7 +200,7 @@ class Account
      *
      * @since 3.01
      */
-    public function isActive()
+    public function isEnabled()
     {
         return $this->active;
     }
@@ -244,80 +212,19 @@ class Account
      *
      * @since 3.01
      */
-    public function setActive($active)
+    public function setEnabled($active)
     {
         $this->active = (bool) $active;
     }
 
     /**
-     * Возвращает время последней активности на сайте
-     *
-     * @return DateTime
+     * Переключает активность записи
      *
      * @since 3.01
      */
-    public function getLastVisit()
+    public function toggle()
     {
-        return $this->lastVisit;
-    }
-
-    /**
-     * Задаёт время последней активности на сайте
-     * @param DateTime $time
-     *
-     * @since 3.01
-     */
-    public function setLastVisit(DateTime $time)
-    {
-        $this->lastVisit = $time;
-    }
-
-    /**
-     * Возвращает время последнего входа на сайт
-     *
-     * @return DateTime
-     *
-     * @since 3.01
-     */
-    public function getLastLoginTime()
-    {
-        return $this->lastLoginTime;
-    }
-
-    /**
-     * Задаёт время последнего входа на сайт
-     *
-     * @param DateTime $time
-     *
-     * @since 3.01
-     */
-    public function setLastLoginTime(DateTime $time)
-    {
-        $this->lastLoginTime = $time;
-    }
-
-    /**
-     * Возвращает количество ошибочных попыток входа
-     *
-     * @return int
-     *
-     * @since 3.01
-     */
-    public function getLoginErrors()
-    {
-        return $this->loginErrors;
-    }
-
-    /**
-     * Задаёт количество ошибочных попыток входа
-     *
-     * @param int $count
-     *
-     * @since 3.01
-     */
-    public function setLoginErrors($count)
-    {
-        $this->loginErrors = $count;
+        $this->active = !$this->active;
     }
 
     /**
@@ -342,6 +249,19 @@ class Account
     public function setAccess($access)
     {
         $this->access = $access;
+    }
+
+    /**
+     * Проверяет уровень доступа пользователя
+     *
+     * @param int $level
+     * @return bool
+     *
+     * @since 3.01
+     */
+    public function hasAccess($level)
+    {
+        return $this->getAccess() <= $level;
     }
 
     /**

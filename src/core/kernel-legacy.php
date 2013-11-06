@@ -1340,19 +1340,12 @@ class Eresus
 	 */
 	private function init_session()
 	{
-		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
-		session_name('sid');
-		session_start();
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg']))
 		{
 			$this->session['msg'] = array('error' => array(), 'information' => array());
 		}
 		$this->user = &$_SESSION['user'];
-
-		# Обратная совместимость
-		$GLOBALS['session'] = &$_SESSION['session'];
-		$GLOBALS['user'] = &$_SESSION['user'];
 	}
 
 	/**
@@ -1599,27 +1592,6 @@ class Eresus
 	}
 
 	/**
-	 * Проверка сессии
-	 */
-	private function check_session()
-	{
-		if (isset($this->session['time']))
-		{
-			if (
-				(time() - $this->session['time'] > $this->conf['session']['timeout']*3600) &&
-				($this->user['auth'])
-			)
-			{
-				$this->logout(false);
-			}
-			else
-			{
-				$this->session['time'] = time();
-			}
-		}
-	}
-
-	/**
 	 * Проверка на логин/логаут
 	 *
 	 */
@@ -1668,7 +1640,7 @@ class Eresus
             $account = $om->find('Eresus\Entity\Account', $this->user['id']);
 			if (!is_null($account))
 			{
-				if ($account->isActive())
+				if ($account->isEnabled())
 				{
 					# Если учетная запись активна...
 					$this->user['name'] = $account->getName();
@@ -1710,10 +1682,7 @@ class Eresus
 		$this->init_extensions();
 		$this->initDataSource();
         $this->plugins = $this->container->get('plugins');
-		$this->check_session();
-		$this->check_loginout();
 		$this->check_cookies();
-		$this->reset_login();
 	}
 
 	/**
@@ -1730,118 +1699,38 @@ class Eresus
 	}
 
 	/**
-	 * Устанавливает авторизационные кукисы
-	 *
-	 * @param string $login
-	 * @param string $key
-	 */
-	function set_login_cookies($login, $key)
-	{
-		setcookie('eresus_login', $login, time()+2592000, $this->path);
-		setcookie('eresus_key', $key, time()+2592000, $this->path);
-	}
-
-	/**
-	 * Удалаяет авторизационные кукисы
-	 *
-	 */
-	function clear_login_cookies()
-	{
-		setcookie('eresus_login', '', time()-3600, $this->path);
-		setcookie('eresus_key', '', time()-3600, $this->path);
-	}
-
-	/**
 	 * Авторизация пользователя
 	 *
 	 * @param string $unsafeLogin  Имя пользователя
-	 * @param string $key		       Ключ учётной записи
-	 * @param bool   $auto		     Сохранить авторизационные данные на компьютере посетителя
-	 * @param bool   $cookie       Авторизация при помощи cookie
-	 * @return bool Результат
+	 * @param string $key		   Ключ учётной записи
+	 * @param bool   $auto		   Сохранить авторизационные данные на компьютере посетителя
+	 *
+     * @return bool Результат
+     *
+     * @deprecated с 3.01 используйте службу «security»
 	 */
-	public function login($unsafeLogin, $key, $auto = false, $cookie = false)
+	public function login($unsafeLogin, $key, $auto = false)
 	{
-		$result = false;
+        /** @var \Eresus\Security\SecurityManager $security */
+        $security = $this->container->get('security');
+        try
+        {
+            $security->login($unsafeLogin, $key, $auto);
+        }
+        catch (\Eresus\Security\Exceptions\SecurityException $e)
+        {
+            return false;
+        }
 
-		$login = preg_replace('/[^a-z0-9_\-\.\@]/', '', $unsafeLogin);
-
-		if ($login != $unsafeLogin)
-		{
-            Eresus_Kernel::app()->getPage()->addErrorMessage(ERR_PASSWORD_INVALID);
-			return false;
-		}
-
-        /** @var \Eresus\ORM\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        $om = $doctrine->getManager();
-        $account = $om->getRepository('Eresus\Entity\Account')->findOneBy(array('login' => $login));
-		if (!is_null($account))
-		{
-			if ($account->isActive())
-			{
-				$noBruteForcing = time() - $account->getLastLoginTime()->getTimestamp()
-                    > $account->getLoginErrors();
-				if ($noBruteForcing || $this->conf['debug']['enable'])
-				{
-					// Если пароль верен...
-					if ($account->getPasswordHash() == $key)
-					{
-						if ($auto)
-						{
-							$this->set_login_cookies($login, $key);
-						}
-						else
-						{
-							$this->clear_login_cookies();
-						}
-						$setVisitTime = (! isset($this->user['id'])) || (! (bool) $this->user['id']);
-						$this->user = array(
-                            'id' => $account->getId(),
-                            'profile' => $account->getProfile(),
-                            'auth' => true, # Устанавливаем флаг авторизации
-                            'hash' => $account->getPasswordHash(),
-                        );
-						if ($setVisitTime)
-						{
-                            $account->setLastVisit(new DateTime());
-						}
-						$account->setLastLoginTime(new DateTime());
-                        $account->setLoginErrors(0);
-						$this->session['time'] = time(); # Инициализируем время последней активности сессии.
-						$result = true;
-					}
-					else
-					{
-						// Если пароль не верен...
-						if (!$cookie)
-						{
-                            Eresus_Kernel::app()->getPage()->addErrorMessage(ERR_PASSWORD_INVALID);
-                            $account->setLastLoginTime(new DateTime());
-                            $account->setLoginErrors($account->getLoginErrors() + 1);
-						}
-					}
-				}
-				else
-				{
-					// Если авторизация проведена слишком рано
-                    Eresus_Kernel::app()->getPage()->addErrorMessage(
-                        sprintf(ERR_LOGIN_FAILED_TOO_EARLY, $account->getLoginErrors()));
-                    $account->setLastLoginTime(new DateTime());
-				}
-			}
-			else
-			{
-                Eresus_Kernel::app()->getPage()->addErrorMessage(
-                    sprintf(ERR_ACCOUNT_NOT_ACTIVE, $login));
-			}
-		}
-		else
-		{
-            Eresus_Kernel::app()->getPage()->addErrorMessage(
-                ERR_PASSWORD_INVALID);
-		}
-		return $result;
+        $account = $security->getCurrentUser();
+        $this->user = array(
+            'id' => $account->getId(),
+            'profile' => $account->getProfile(),
+            'auth' => true, // Устанавливаем флаг авторизации
+            'hash' => $account->getPasswordHash(),
+        );
+        $this->session['time'] = time(); // Инициализируем время последней активности сессии.
+        return true;
 	}
 
 	/**

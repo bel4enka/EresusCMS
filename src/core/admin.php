@@ -222,7 +222,9 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 
         $theme = new AdminUITheme();
         $this->setUITheme($theme);
-        TemplateSettings::setGlobalValue('theme', $theme);
+        /** @var \Eresus\Templating\TemplateManager $tm */
+        $tm = $GLOBALS['_container']->get('templates');
+        $tm->setGlobal('theme', $theme);
 
         $this->setTitle(admControls);
         /* Определяем уровень вложенности */
@@ -1019,7 +1021,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
 
         // TODO: Это временное решение до заврешения выноса кода в контроллеры
         $routes = array(
-            'users' => 'Eresus_Admin_Controller_Accounts'
+            'users' => 'Eresus\Controller\Admin\AccountsController'
         );
 
         if (arg('mod'))

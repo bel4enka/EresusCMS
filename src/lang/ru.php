@@ -322,7 +322,6 @@ define('admUsersLastVisit', 'Последний визит');
 define('admUsersLastVisitShort', 'Последний визит');
 define('admUsersPassword', 'Пароль');
 define('admUsersConfirmation', 'Подтверждение');
-define('admUsersChangeUser', 'Изменить учетную запись');
 define('admUsersChangePassword', 'Изменить пароль');
 define('admUsersPasswordChanged', 'Изменен пароль');
 define('admUsersNameInvalid', 'Псевдоним пользователя не может быть пустым.');

@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @property-read string $version  версия CMS
  *
  * @package Eresus
+ * @deprecated с 3.01 основной функционал перенесён в Eresus\Kernel
  */
 class Eresus_CMS
 {
@@ -51,13 +52,6 @@ class Eresus_CMS
      * @since 3.01
      */
     private $version = '${product.version}';
-
-    /**
-     * Объект создаваемой страницы
-     * @var WebPage
-     * @since 3.00
-     */
-    protected $page;
 
     /**
      * Основной метод приложения
@@ -117,10 +111,11 @@ class Eresus_CMS
      * @return Eresus
      *
      * @since 3.00
+     * @deprecated с 3.01 используйте Eresus_Kernel::$app->getLegacyKernel()
      */
     public static function getLegacyKernel()
     {
-        return $GLOBALS['Eresus'];
+        return Eresus_Kernel::$app->getLegacyKernel();
     }
 
     /**
@@ -133,20 +128,6 @@ class Eresus_CMS
     public function getSite()
     {
         return $this->site;
-    }
-
-    /**
-     * Возвращает экземпляр класса TClientUI или TAdminUI
-     *
-     * Метод нужен до отказа от переменной $page
-     *
-     * @return WebPage
-     *
-     * @since 3.00
-     */
-    public function getPage()
-    {
-        return $this->page;
     }
 
     /**

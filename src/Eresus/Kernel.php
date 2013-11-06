@@ -28,10 +28,13 @@ namespace Eresus;
 
 use Bedoved;
 use Eresus\Controller\AdminFrontController;
+use Eresus\Templating\TemplateManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use WebServer;
+use WebPage;
 
 /**
  * Ядро
@@ -79,6 +82,13 @@ class Kernel
     private $site;
 
     /**
+     * Объект создаваемой страницы
+     * @var WebPage
+     * @since 3.00
+     */
+    private $page;
+
+    /**
      * Инициализирует ядро
      *
      * @param string $appDir  папка приложения
@@ -88,6 +98,9 @@ class Kernel
     public function __construct($appDir)
     {
         $this->appDir = $appDir;
+        //session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
+        session_name('sid');
+        session_start();
     }
 
     /**
@@ -117,7 +130,23 @@ class Kernel
         $this->initLegacyKernel();
         $this->initConf();
         $this->initSite($request);
+
+        /** TODO Обратная совместимость @deprecated с 3.01 */
+        \Eresus_Kernel::$app = $this;
+
         $this->run($request);
+    }
+
+    /**
+     * Возвращает контейнер
+     *
+     * @return ContainerBuilder
+     *
+     * @since 3.01
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     /**
@@ -141,6 +170,34 @@ class Kernel
     public function getCacheDir()
     {
         return $this->getAppDir() . '/var/cache';
+    }
+
+    /**
+     * Возвращает экземпляр класса TClientUI или TAdminUI
+     *
+     * Метод нужен до отказа от переменной $page
+     *
+     * @return WebPage
+     *
+     * @since 3.00
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * Возвращает экземпляр класса Eresus
+     *
+     * Метод нужен до отказа от класса Eresus
+     *
+     * @return \Eresus
+     *
+     * @since 3.00
+     */
+    public static function getLegacyKernel()
+    {
+        return $GLOBALS['Eresus'];
     }
 
     /**
@@ -182,6 +239,7 @@ class Kernel
 
         $this->container->setParameter('debug', $this->debug);
         $this->container->setParameter('request', $request);
+        $this->container->setParameter('security.session.ttl', 30); // в минутах
 
         $this->container->set('container', $this->container);
         $this->container->set('kernel', $this);
@@ -196,6 +254,10 @@ class Kernel
         $this->container
             ->register('doctrine.driver_chain',
                 'Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
+
+        $this->container
+            ->register('security', 'Eresus\Security\SecurityManager')
+            ->addArgument(new Reference('container'));
 
         $this->container
             ->register('plugins', 'Eresus\Plugins\PluginManager')
@@ -325,8 +387,11 @@ class Kernel
         $legacyKernel = $GLOBALS['Eresus'];
         $legacyKernel->init();
 
+        /** @var TemplateManager $tm */
+        $tm = $this->container->get('templates');
         // TODO Удалить где-нибудь в 3.03-04
-        //TODO TemplateSettings::setGlobalValue('siteRoot', $request->getSiteRoot());
+        $tm->setGlobal('siteRoot',
+            $request->getSchemeAndHttpHost() . $request->getBasePath() . '/');
 
         // TODO $this->initSite();
 
@@ -336,8 +401,7 @@ class Kernel
         }
         else
         {
-            if (dirname($request->getPathInfo()) == '/admin'
-                || $request->getPathInfo() == '/admin.php')
+            if ($request->getPathInfo() == '/admin/' || $request->getPathInfo() == '/admin.php')
             {
                 $controller = new AdminFrontController($this->container, $request);
             }
@@ -351,7 +415,7 @@ class Kernel
              * @deprecated с 3.01 используйте Eresus_Kernel::app()->getPage()
              */
             $GLOBALS['page'] = $this->page;
-            // TODO TemplateSettings::setGlobalValue('page', $this->page);
+            $tm->setGlobal('page', $this->page);
             $response = $controller->dispatch();
             $response->send();
 

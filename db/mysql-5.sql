@@ -47,9 +47,6 @@ CREATE TABLE `accounts` (
   `login` varchar(255) NOT NULL default '',
   `hash` varchar(32) NOT NULL default '',
   `active` tinyint(1) unsigned NOT NULL default 1,
-  `lastVisit` datetime default NULL,
-  `lastLoginTime` datetime default NULL,
-  `loginErrors` int(10) unsigned default NULL,
   `access` tinyint(3) unsigned default NULL,
   `name` varchar(255) default NULL,
   `mail` varchar(255) default NULL,
@@ -59,4 +56,7 @@ CREATE TABLE `accounts` (
   KEY `active` (`active`)
 ) DEFAULT CHARSET=utf8;
 
-INSERT INTO `accounts` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 1, 'Служба поддержки', 'support@example.org', NULL);
+INSERT INTO `accounts` VALUES(1, 'root', '74be16979710d4c4e7c6647856088456', 1, 1, 'Служба поддержки', 'support@example.org', NULL);
+INSERT INTO `accounts` VALUES(2, 'admin', '74be16979710d4c4e7c6647856088456', 1, 2, 'Администратор', 'admin@example.org', NULL);
+INSERT INTO `accounts` VALUES(3, 'editor', '74be16979710d4c4e7c6647856088456', 1, 3, 'Редактор', 'editor@example.org', NULL);
+INSERT INTO `accounts` VALUES(4, 'user', '74be16979710d4c4e7c6647856088456', 1, 4, 'Пользователь', 'user@example.org', NULL);
