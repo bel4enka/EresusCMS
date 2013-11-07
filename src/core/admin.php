@@ -36,120 +36,6 @@ use Eresus\UI\Menu\Menu;
 use Eresus\UI\Menu\MenuItem;
 use Eresus\UI\Menu\SectionMenu;
 
-/**
- * Тема оформления административного интерфейса
- *
- * Экземпляр этого класса доступен через переменную {$theme} в шаблонах и может быть использован
- * для определения путей к файлам темы, вызова помощников (helpers) и других вспомогательных
- * функций.
- *
- * Автор темы может создать потомка этого класса, размещённого в файле theme.php в корне темы.
- * В этом случае его класс будет использован вместо стандартного.
- *
- * @package Eresus
- */
-class AdminUITheme
-{
-    /**
-     * Путь к директории тем относительно корня сайта
-     *
-     * @var string
-     */
-    protected $prefix = 'admin/themes';
-
-    /**
-     * Внутреннее имя темы
-     *
-     * Должно совпадать с именем директории темы.
-     *
-     * @var string
-     * @see getName
-     */
-    protected $name = 'default';
-
-    /**
-     * Конструктор
-     *
-     * @param string $name  Внутреннее имя темы (директория внутри themes)
-     *
-     * @return AdminUITheme
-     */
-    public function __construct($name = null)
-    {
-        if ($name)
-        {
-            $this->name = $name;
-        }
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает внутреннее имя темы
-     *
-     * @return string
-     * @see $name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает адрес ресурса относительно корня сайта
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    public function getResource($path)
-    {
-        return $this->prefix . '/' . $this->getName() . '/' . $path;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает адрес картинки относительно корня сайта
-     *
-     * @param string $image
-     *
-     * @return string
-     */
-    public function getImage($image)
-    {
-        return $this->getResource('img/' . $image);
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает адрес иконки относительно корня сайта
-     *
-     * @param string $icon             Имя иконки
-     * @param string $size [optional]  Размер иконки. По умолчанию 'medium'
-     *
-     * @return string
-     */
-    public function getIcon($icon, $size = 'medium')
-    {
-        return $this->getResource('img/' . $size . '/' . $icon);
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает шаблон
-     *
-     * @param string $name
-     *
-     * @return Eresus_Template
-     */
-    public function getTemplate($name)
-    {
-        $filename = $this->getResource($name);
-        $template = new Eresus_Template($filename);
-        return $template;
-    }
-}
-
 
 /**
  * @deprecated с 3.01
@@ -199,45 +85,12 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     public $options = array();
 
     /**
-     * Тема оформления
-     *
-     * @var AdminUITheme
-     */
-    protected $uiTheme;
-
-    /**
      * Конструктор
-     * @return TAdminUI
      */
     public function __construct()
     {
         parent::__construct();
-
-        $theme = new AdminUITheme();
-        $this->setUITheme($theme);
-        /** @var \Eresus\Templating\TemplateManager $tm */
-        $tm = $GLOBALS['_container']->get('templates');
-        $tm->setGlobal('theme', $theme);
-        $this->setTitle(admControls);
-    }
-
-    /**
-     * Возвращает объект текущей темы оформления
-     * @return AdminUITheme
-     */
-    public function getUITheme()
-    {
-        return $this->uiTheme;
-    }
-
-    /**
-     * Устанавливает новую тему оформления
-     * @param AdminUITheme $theme
-     * @return void
-     */
-    public function setUITheme(AdminUITheme $theme)
-    {
-        $this->uiTheme = $theme;
+        $this->setTitle(_('Управление'));
     }
 
     /**

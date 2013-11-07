@@ -30,7 +30,9 @@ use Eresus\Entity\Account;
 use Eresus\Security\Exceptions\BadCredentialsException;
 use Eresus\Security\SecurityManager;
 use Eresus\Templating\TemplateManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

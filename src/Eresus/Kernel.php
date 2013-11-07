@@ -240,6 +240,7 @@ class Kernel
         $this->container->setParameter('debug', $this->debug);
         $this->container->setParameter('request', $request);
         $this->container->setParameter('security.session.ttl', 30); // в минутах
+        $this->container->setParameter('admin.theme', 'default');
 
         $this->container->set('container', $this->container);
         $this->container->set('kernel', $this);
@@ -286,8 +287,13 @@ class Kernel
             ->addArgument(new Reference('container'))
             ->addArgument(new Reference('templates.dwoo'))
             ->addMethodCall('setGlobal', array('site', '%site%'))
-            ->addMethodCall('setGlobal', array('i18n', new Reference('i18n')));
+            ->addMethodCall('setGlobal', array('i18n', new Reference('i18n')))
+            ->addMethodCall('setGlobal', array('theme', new Reference('admin.theme')));
 
+        $this->container
+            ->register('admin.theme', 'Eresus\Templating\AdminTheme')
+            ->addArgument(new Reference('container'))
+            ->addArgument('%admin.theme%');
 
         //TODO Удалить после удаления устаревших компонентов
         $GLOBALS['_container'] = $this->container;
