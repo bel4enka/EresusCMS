@@ -35,7 +35,7 @@
 		<aside class="nav sidebar">
 
 			<div class="box ui-widget ui-widget-content">
-				<div class="header">{$i18n->getText('admContent')}</div>
+				<div class="header">Контент</div>
 				<div class="content menu menu-content">
 					<ul>
 						{$sectionMenu}
@@ -54,12 +54,12 @@
 				<div class="header">{$user.name}</div>
 				<div class="content user-box">
 					<a href="{$site->getRootUrl()}/admin.php?mod=users&amp;id={$user.id}">
-						{$i18n->getText('admUsersChangePassword')}
+						Изменить пароль
 					</a>
 					<form action="{$site->getRootUrl()}/admin.php" method="post">
 						<div class="ui-button-box">
 							<input type="hidden" name="action" value="logout">
-							<button type="submit">{$i18n->getText('strExit')}</button>
+							<button type="submit">Выйти</button>
 						</div>
 					</form>
 				</div>

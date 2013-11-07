@@ -185,13 +185,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     public $extmenu;
 
     /**
-     * Уровень вложенности
-     *
-     * @var int
-     */
-    public $sub;
-
-    /**
      * Заголовки ответа сервера
      *
      * @var array
@@ -218,8 +211,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      */
     public function __construct()
     {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-
         parent::__construct();
 
         $theme = new AdminUITheme();
@@ -227,18 +218,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         /** @var \Eresus\Templating\TemplateManager $tm */
         $tm = $GLOBALS['_container']->get('templates');
         $tm->setGlobal('theme', $theme);
-
         $this->setTitle(admControls);
-        /* Определяем уровень вложенности */
-        do
-        {
-            $this->sub++;
-            $i = strpos(Eresus_CMS::getLegacyKernel()->request['url'],
-                str_repeat('sub_', $this->sub) . 'id');
-        }
-        while ($i !== false);
-
-        $this->sub--;
     }
 
     /**
@@ -650,7 +630,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
      */
     function renderPages($itemsCount, $itemsPerPage, $pageCount, $Descending = false, $sub_prefix='')
     {
-        $prefix = empty($sub_prefix)?str_repeat('sub_', $this->sub):$sub_prefix;
+        $prefix = $sub_prefix;
         if ($itemsCount > $itemsPerPage)
         {
             $result = '<div class="admListPages">'.strPages;
@@ -720,7 +700,7 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     public function renderTable($table, $values=null, $sub_prefix='')
     {
         $result = '';
-        $prefix = empty($sub_prefix) ? str_repeat('sub_', $this->sub) : $sub_prefix;
+        $prefix = $sub_prefix;
         $itemsPerPage = isset($table['itemsPerPage']) ?
             $table['itemsPerPage'] :
             (isset($this->module->settings['itemsPerPage']) ?
