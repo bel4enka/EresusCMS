@@ -27,10 +27,14 @@
 namespace Eresus\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Абстрактный контроллер CMS
  *
+ * @api
  * @since 3.01
  */
 abstract class Controller
@@ -56,6 +60,17 @@ abstract class Controller
     }
 
     /**
+     * Обрабатывает полученный запрос и возвращает ответ
+     *
+     * @param Request $request
+     *
+     * @return string|Response
+     *
+     * @since 3.01
+     */
+    abstract public function process(Request $request);
+
+    /**
      * Возвращает службу из контейнера
      *
      * @param string $id
@@ -67,6 +82,21 @@ abstract class Controller
     protected function get($id)
     {
         return $this->container->get($id);
+    }
+
+    /**
+     * Отправляет извещение о событии
+     *
+     * @param string $eventName  имя события
+     * @param Event  $event      опциональное описание события
+     *
+     * @since 3.01
+     */
+    protected function dispatchEvent($eventName, Event $event = null)
+    {
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get('events');
+        $dispatcher->dispatch($eventName, $event);
     }
 }
 

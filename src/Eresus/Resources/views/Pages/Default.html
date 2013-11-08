@@ -3,9 +3,8 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>{$siteName} - {$page->title}</title>
+	<title>{$site->getName()} - {$page->getTitle()}</title>
 	<link rel="stylesheet" href="{$site->getRootUrl()}/admin/themes/default/theme.css">
-	<link rel="stylesheet" href="{$site->getRootUrl()}/admin/themes/default/main.css">
 	<script>
 		window.Eresus = {
 				siteRoot: "{$site->getRootUrl()}"
@@ -13,21 +12,19 @@
 	</script>
 	{jslib jquery ui cookie}
     {jslib webshim}
-	{* renderHeadSection надо обязательно вызывать после всех jslib *}
-	{$page->renderHeadSection()}
 </head>
 <body>
 
 	<header id="header" class="header ui-widget-header">
 		<div class="width-limit">
 			<div id="cmsLogo">
-				<a href="admin.php?mod=about">
+				<a href="{$site->getRootUrl()}admin.php?mod=about">
 					<img src="{$site->getRootUrl()}/admin/themes/default/img/logo.png"
-                        alt="{$cms->name} {$cms->version}" width="150" height="30">
+                        alt="Eresus ${product.version}" width="150" height="30">
 				</a>
 			</div>
-			<h1>{$siteName} &ndash; {$page->title}</h1>
-			CMS {$cms->name} {$cms->version}
+			<h1>{$site->getName()} &ndash; {$page->getTitle()}</h1>
+			Eresus ${product.version}
 		</div>
 	</header>
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Абстрактный фронт-контроллер CMS
+ * Стили
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -24,82 +24,87 @@
  * <http://www.gnu.org/licenses/>
  */
 
-namespace Eresus\Controller;
+namespace Eresus\UI\HTML;
 
-use Eresus\Site;
-use Eresus\UI\Page\Page;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Eresus\UI\Widget;
 
 /**
- * Абстрактный фронт-контроллер CMS
+ * Стили
  *
  * @since 3.01
  */
-abstract class FrontController extends Controller
+class Style extends Widget
 {
     /**
-     * Текущий сайт
+     * Содержимое
      *
-     * @var Site
+     * @var string|null
      *
      * @since 3.01
      */
-    private $site;
+    protected $contents = null;
 
     /**
-     * Создаваемая страница
-     * @var Page
+     * Тип носителя
+     *
+     * @var string|null
+     *
      * @since 3.01
      */
-    private $page;
+    protected $media = null;
 
     /**
-     * Конструктор контроллера
+     * Возвращает содержимое
      *
-     * @param ContainerInterface $container
-     * @param Site               $site
+     * @return string|null
      *
      * @since 3.01
      */
-    public function __construct(ContainerInterface $container, Site $site)
+    public function getContents()
     {
-        parent::__construct($container);
-        $this->site = $site;
-        $this->page = $this->createPage();
-        // TODO Убрать
-        $GLOBALS['page'] = $this->page;
+        return $this->contents;
     }
 
     /**
-     * Возвращает текущий сайт
+     * Задаёт содержимое
      *
-     * @return Site
+     * @param string $css
+     *
+     * @return Style
      *
      * @since 3.01
      */
-    public function getSite()
+    public function setContents($css)
     {
-        return $this->site;
+        $this->contents = $css;
+        return $this;
     }
 
     /**
-     * Возвращает создаваемую страницу
+     * Возвращает тип носителя
      *
-     * @return Page
+     * @return string|null
+     *
      * @since 3.01
      */
-    public function getPage()
+    public function getMedia()
     {
-        return $this->page;
+        return $this->media;
     }
 
     /**
-     * Создаёт объект Page
+     * Задаёт тип носителя
      *
-     * @return Page
+     * @param string $media
+     *
+     * @return Link
+     *
      * @since 3.01
      */
-    abstract protected function createPage();
+    public function setMedia($media)
+    {
+        $this->media = $media;
+        return $this;
+    }
 }
 

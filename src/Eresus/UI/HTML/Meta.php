@@ -1,6 +1,6 @@
 <?php
 /**
- * Страница АИ
+ * Мета-тег
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -22,79 +22,131 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
+
+namespace Eresus\UI\HTML;
+
+use Eresus\UI\Widget;
 
 /**
- * Страница АИ
+ * Мета-тег
  *
- * @package Eresus
  * @since 3.01
- * @todo Унаследовать напрямую от Eresus_CMS_Page после удаления WebPage
  */
-class Eresus_CMS_Page_Admin extends WebPage
+class Meta extends Widget
 {
     /**
-     * Заголовок страницы
+     * Имя
      *
-     * @var string
-     */
-    private $title = '';
-
-    /**
-     * Возвращает полный заголовок страницы
+     * @var string|null
      *
-     * Этот метод возвращает полный заголовок страницы, куда, в зависимости от настроек сайта, могут
-     * входить: имя сайта, заголовок сайта, заголовок раздела и т. д.
-     *
-     * @return string
      * @since 3.01
      */
-    public function getTitle()
+    protected $name = null;
+
+    /**
+     * Заголовок HTTP
+     *
+     * @var string|null
+     *
+     * @since 3.01
+     */
+    protected $header = null;
+
+    /**
+     * Содержимое
+     *
+     * @var string|null
+     *
+     * @since 3.01
+     */
+    protected $content = null;
+
+    /**
+     * Возвращает имя
+     *
+     * @return string|null
+     *
+     * @since 3.01
+     */
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
     /**
-     * Задаёт заголовок страницы
+     * Задаёт имя
      *
-     * @param string $title
+     * При этом любое значение, заданное при помощи {@link setHeader()} будет удалено.
+     *
+     * @param string $name
+     *
+     * @return Meta
      *
      * @since 3.01
      */
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = $name;
+        $this->header = null;
+        return $this;
     }
 
     /**
-     * Возвращает описание страницы
+     * Возвращает имя заголовка HTTP
      *
-     * Этот метод возвращает полное описание страницы для мета-тега description. В зависимости от
-     * настроек сайта, в него могут входить: описание сайта и описание раздела.
+     * @return string|null
      *
-     * @return string
      * @since 3.01
      */
-    public function getDescription()
+    public function getHeader()
     {
-        return '';
+        return $this->header;
     }
 
     /**
-     * Возвращает ключевые слова страницы
+     * Задаёт имя заголовка HTTP
      *
-     * Этот метод возвращает полный набор ключевых слов страницы для мета-тега keywords. В
-     * зависимости от настроек сайта, в него могут входить: ключевые слова сайта и ключевые слова
-     * раздела.
+     * При этом любое значение, заданное при помощи {@link setName()} будет удалено.
      *
-     * @return string
+     * @param string $header
+     *
+     * @return Meta
+     *
      * @since 3.01
      */
-    public function getKeywords()
+    public function setHeader($header)
     {
-        return '';
+        $this->header = $header;
+        $this->name = null;
+        return $this;
+    }
+
+    /**
+     * Возвращает содержимое
+     *
+     * @return string|null
+     *
+     * @since 3.01
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Задаёт содержимое
+     *
+     * @param string $content
+     *
+     * @return Meta
+     *
+     * @since 3.01
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+        return $this;
     }
 }
 

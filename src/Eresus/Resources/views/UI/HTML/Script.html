@@ -1,0 +1,3 @@
+<script{if $widget->getUrl()} src="{$widget->getUrl()}"{if $widget->isDefer()} defer{/if}{if $widget->isAsync()} async{/if}{/if}>{if $widget->getContents()}
+    {$widget->getContents()}
+{/if}</script>

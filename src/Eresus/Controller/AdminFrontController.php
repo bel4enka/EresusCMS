@@ -27,13 +27,18 @@
 namespace Eresus\Controller;
 
 use Eresus\Entity\Account;
+use Eresus\Exceptions\NotFoundException;
 use Eresus\Security\Exceptions\BadCredentialsException;
 use Eresus\Security\SecurityManager;
 use Eresus\Templating\TemplateManager;
+use Eresus\UI\Menu\Menu;
+use Eresus\UI\Menu\MenuItem;
+use Eresus\UI\Page\AdminPage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Eresus\UI\Page\Page;
 
 /**
  * Фронт-контроллер АИ
@@ -45,62 +50,85 @@ class AdminFrontController extends FrontController
     /**
      * Выполняет действия контроллера и возвращает ответ
      *
+     * @param Request $request
+     *
      * @return Response
+     *
      * @since 3.01
      */
-    public function dispatch()
+    public function process(Request $request)
     {
-        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
-        $dispatcher = $this->container->get('events');
-        $dispatcher->dispatch('cms.admin.start');
+        $this->dispatchEvent('cms.admin.start');
 
         /** @var SecurityManager $security */
         $security = $this->get('security');
         $user = $security->getCurrentUser();
         if (is_null($user) || !$user->hasAccess(EDITOR))
         {
-            $response = $this->authAction();
+            return $this->authAction($request);
         }
-        else
+
+        $response = $this->renderContent($request);
+
+        if (!($response instanceof Response))
         {
-            /** @var \TAdminUI $page */
             $page = $this->getPage();
-            $response = $page->render($this->getRequest());
+            $page->set('content', $response);
+            //$vars['errors'] = $this->getErrorMessages();
+            $page->set('site', $this->getSite());
+            //$vars['body'] = $this->renderBodySection();
+
+            /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+            //$container = $GLOBALS['_container'];
+            /** @var \Eresus\Templating\TemplateManager $tm */
+            //$tm = $container->get('templates');
+
+            //$menu = new SectionMenu($tm);
+            //$vars['sectionMenu'] = $menu->getHtml();
+            //$vars['controlMenu'] = $this->renderControlMenu();
+            $page->set('mainMenu', $this->createMainMenu());
+            //$vars['user'] = Eresus_CMS::getLegacyKernel()->user;
+
+            $response = new Response($page->getHtml(), 200/*, $this->headers*/);
         }
+
         return $response;
     }
 
     /**
-     * Создаёт объект Eresus_CMS_Page
+     * Создаёт объект Page
      *
-     * @return \Eresus_CMS_Page
+     * @return Page
      * @since 3.01
      */
     protected function createPage()
     {
-        $page = new \TAdminUI();
-        $page->setContainer($this->container);
+        /** @var TemplateManager $tm */
+        $tm = $this->get('templates');
+        $page = new AdminPage($tm);
+        $page->setTitle(_('Управление'));
         return $page;
     }
 
     /**
      * Отрисовка страницы аутентификации
      *
+     * @param Request $request
+     *
      * @return Response
      *
      * @since 3.01
      */
-    private function authAction()
+    private function authAction(Request $request)
     {
         $data = array('errors' => array(), 'user' => '', 'autologin' => '');
 
         $legacyKernel = \Eresus_CMS::getLegacyKernel();
-        $req = $this->getRequest();
-        if ($req->getMethod() == 'POST')
+        if ($request->getMethod() == 'POST')
         {
-            $user = trim($req->request->get('user'));
-            $password = trim($req->request->get('password'));
-            $auto = $req->request->get('autologin');
+            $user = trim($request->request->get('user'));
+            $password = trim($request->request->get('password'));
+            $auto = $request->request->get('autologin');
 
             /** @var SecurityManager $security */
             $security = $this->container->get('security');
@@ -132,6 +160,86 @@ class AdminFrontController extends FrontController
         $html = $tmpl->compile($data);
         $response = new Response($html);
         return $response;
+    }
+
+    /**
+     * Отрисовывает область контента
+     *
+     * @param Request $request
+     *
+     * @return string|Response
+     *
+     * @throws NotFoundException
+     * @throws \LogicException
+     *
+     * @since 3.01
+     */
+    private function renderContent(Request $request)
+    {
+        // TODO: Это временное решение до завершения выноса кода в контроллеры
+        $routes = array(
+            'users' => 'Eresus\Controller\Admin\AccountsController'
+        );
+
+        if (arg('mod'))
+        {
+            $module = arg('mod', '/[^\w-]/');
+            if (array_key_exists($module, $routes))
+            {
+                $controller = new $routes[$module]($this->container);
+            }
+            /*elseif (substr($module, 0, 4) == 'ext-')
+            {
+                $name = substr($module, 4);
+                $this->module = Eresus_CMS::getLegacyKernel()->plugins->load($name);
+            }*/
+            else
+            {
+                throw new NotFoundException();
+            }
+
+            if (!($controller instanceof Controller))
+            {
+                throw new \LogicException(
+                    sprintf('Controller should be a descendant of Eresus\Controller\Controller'));
+            }
+
+            $response = $controller->process($request);
+        }
+        else
+        {
+            $response = '';
+        }
+
+        return $response;
+    }
+
+    /**
+     * Создаёт главное меню
+     *
+     * @return Menu
+     *
+     * @since 3.01
+     */
+    private function createMainMenu()
+    {
+        /** @var \Eresus\Templating\TemplateManager $tm */
+        $tm = $this->get('templates');
+        /** @var \Eresus\Security\SecurityManager $security */
+        $security = $this->get('security');
+
+        $menu = new Menu($tm);
+        $menu->add(new MenuItem(
+            _('Разделы сайта'), 'admin.php?mod=pages'));
+        $menu->add(new MenuItem(_('Файловый менеджер'), 'admin.php?mod=files'));
+        if ($security->getCurrentUser()->hasAccess(ADMIN))
+        {
+            $menu->add(new MenuItem(_('Модули расширения'), 'admin.php?mod=plgmgr'));
+            $menu->add(new MenuItem(_('Оформление'), 'admin.php?mod=themes'));
+            $menu->add(new MenuItem(_('Пользователи'), 'admin.php?mod=users'));
+            $menu->add(new MenuItem(_('Конфигурация'), 'admin.php?mod=settings'));
+        }
+        return $menu;
     }
 }
 

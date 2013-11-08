@@ -22,210 +22,16 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
- *
- * @package Eresus
  */
 
-
-/**
- * Абстрактный элемент документа HTML
- *
- * @package Eresus
- * @since 2.15
- */
-class HtmlElement
-{
-    /**
-     * Имя тега
-     *
-     * @var string
-     */
-    private $tagName;
-
-    /**
-     * Атрибуты
-     *
-     * @var array
-     */
-    private $attrs = array();
-
-    /**
-     * Содержимое
-     *
-     * @var string
-     */
-    private $contents = null;
-
-    /**
-     * Конструктор
-     *
-     * @param string $tagName
-     *
-     * @since 2.15
-     */
-    public function __construct($tagName)
-    {
-        $this->tagName = $tagName;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Устанавливает значение атрибута
-     *
-     * @param string $name   имя атрибута
-     * @param mixed  $value  значение атрибута
-     *
-     * @return void
-     *
-     * @since 2.15
-     */
-    public function setAttribute($name, $value = true)
-    {
-        $this->attrs[$name] = $value;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает значение атрибута
-     *
-     * @param string $name  имя атрибута
-     *
-     * @return mixed
-     *
-     * @since 2.15
-     */
-    public function getAttribute($name)
-    {
-        if (!isset($this->attrs[$name]))
-        {
-            return null;
-        }
-
-        return $this->attrs[$name];
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Устанавливает содержимое
-     *
-     * @param string $contents  содержимое
-     *
-     * @return void
-     *
-     * @since 2.15
-     */
-    public function setContents($contents)
-    {
-        $this->contents = $contents;
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Возвращает разметку элемента
-     *
-     * @return string  разметка HTML
-     *
-     * @since 2.15
-     */
-    public function getHTML()
-    {
-        // Открывающий тег
-        $html = '<' . $this->tagName;
-
-        /* Добавляем атрибуты */
-        foreach ($this->attrs as $name => $value)
-        {
-            $html .= ' ' . $name;
-
-            if ($value !== true)
-            {
-                $html .= '="' . $value . '"';
-            }
-        }
-
-        $html .= '>';
-
-        /* Если есть содержимое, то добавляем его и закрывающий тег */
-        if ($this->contents !== null)
-        {
-            $html .= $this->contents . '</' . $this->tagName . '>';
-        }
-
-        return $html;
-    }
-    //-----------------------------------------------------------------------------
-}
-
-
-
-/**
- * Элемент <script>
- *
- * @package Eresus
- * @since 2.15
- */
-class HtmlScriptElement extends HtmlElement
-{
-    /**
-     * Создаёт новый элемент <script>
-     *
-     * @param string $script [optional]  URL или код скрипта.
-     *
-     * @since 2.15
-     */
-    public function __construct($script = '')
-    {
-        parent::__construct('script');
-
-        $this->setAttribute('type', 'text/javascript');
-
-        /*
-         * Считаем URL-ом всё, что:
-         * - либо содержит xxx:// в начале
-         * - либо состоит из минимум двух групп символов (любые непроблеьные или «;»), разделённых
-         *   точкой или слэшем
-         */
-        if ($script !== '' && preg_match('=(^\w{3,8}://|^[^\s;]+(\.|/)[^\s;]+$)=', $script))
-        {
-            $this->setAttribute('src', $script);
-            $this->setContents('');
-        }
-        else
-        {
-            $this->setContents($script);
-        }
-    }
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Устанавливает содержимое
-     *
-     * @param string $contents  содержимое
-     *
-     * @return void
-     *
-     * @since 2.15
-     */
-    public function setContents($contents)
-    {
-        if ($contents)
-        {
-            $contents = "//<!-- <![CDATA[\n". $contents . "\n//]] -->";
-        }
-        parent::setContents($contents);
-    }
-    //-----------------------------------------------------------------------------
-
-}
-
-
+namespace Eresus\UI\Page;
 
 /**
  * Родительский класс веб-интерфейсов
  *
- * @package Eresus
+ * @deprecated с 3.01
  */
-abstract class WebPage extends Eresus_CMS_Page
+abstract class WebPage extends Page
 {
     /**
      * Идентификатор текущего раздела
@@ -247,15 +53,6 @@ abstract class WebPage extends Eresus_CMS_Page
             '<a href="$(href)">&rarr;</a>',
         ),
     );
-
-    /**
-     * Конструктор
-     *
-     * @return WebPage
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Строит URL GET-запроса на основе переданных аргументов
