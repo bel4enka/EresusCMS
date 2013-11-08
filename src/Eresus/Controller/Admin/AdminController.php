@@ -39,16 +39,6 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AdminController extends Controller
 {
     /**
-     * Возвращает разметку области контента
-     *
-     * @param Request $request
-     *
-     * @return string
-     * @since 3.01
-     */
-    abstract public function getHtml(Request $request);
-
-    /**
      * Возвращает отрисованное на основе указанного шаблона представление данных
      *
      * @param string $templateName

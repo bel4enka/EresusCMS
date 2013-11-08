@@ -53,13 +53,13 @@ use Eresus\Exceptions\NotFoundException;
 class AccountsController extends AdminController
 {
     /**
-     * Возвращает разметку
+     * Обрабатывает полученный запрос и возвращает ответ
      *
      * @param Request $request
      *
      * @return string|Response
      */
-    public function getHtml(Request $request)
+    public function process(Request $request)
     {
         $args = $request->getMethod() == 'GET' ? $request->query : $request->request;
 
