@@ -28,11 +28,13 @@ namespace Eresus\Controller;
 
 use Eresus\Entity\Account;
 use Eresus\Exceptions\NotFoundException;
+use Eresus\Sections\SectionManager;
 use Eresus\Security\Exceptions\BadCredentialsException;
 use Eresus\Security\SecurityManager;
 use Eresus\Templating\TemplateManager;
 use Eresus\UI\Menu\Menu;
 use Eresus\UI\Menu\MenuItem;
+use Eresus\UI\Menu\SectionMenu;
 use Eresus\UI\Page\AdminPage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -78,13 +80,7 @@ class AdminFrontController extends FrontController
             $page->set('site', $this->getSite());
             //$vars['body'] = $this->renderBodySection();
 
-            /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
-            //$container = $GLOBALS['_container'];
-            /** @var \Eresus\Templating\TemplateManager $tm */
-            //$tm = $container->get('templates');
-
-            //$menu = new SectionMenu($tm);
-            //$vars['sectionMenu'] = $menu->getHtml();
+            $page->set('sectionMenu', $this->createSectionMenu());
             //$vars['controlMenu'] = $this->renderControlMenu();
             $page->set('mainMenu', $this->createMainMenu());
             //$vars['user'] = Eresus_CMS::getLegacyKernel()->user;
@@ -239,6 +235,24 @@ class AdminFrontController extends FrontController
             $menu->add(new MenuItem(_('Пользователи'), 'admin.php?mod=users'));
             $menu->add(new MenuItem(_('Конфигурация'), 'admin.php?mod=settings'));
         }
+        return $menu;
+    }
+
+    /**
+     * Создаёт меню разделов
+     *
+     * @return SectionMenu
+     *
+     * @since 3.01
+     */
+    private function createSectionMenu()
+    {
+        /** @var \Eresus\Templating\TemplateManager $tm */
+        $tm = $this->get('templates');
+        /** @var SectionManager $sm */
+        $sm = $this->get('sections');
+
+        $menu = new SectionMenu($tm, $sm);
         return $menu;
     }
 }

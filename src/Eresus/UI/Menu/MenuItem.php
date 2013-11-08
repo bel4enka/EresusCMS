@@ -87,5 +87,17 @@ class MenuItem extends Widget
     {
         return $this->url;
     }
+
+    /**
+     * Возвращает подменю
+     *
+     * @return null|Menu
+     *
+     * @since 3.01
+     */
+    public function getSubMenu()
+    {
+        return null;
+    }
 }
 

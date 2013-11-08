@@ -71,5 +71,17 @@ class Menu extends Widget
     {
         return $this->items;
     }
+
+    /**
+     * Возвращает уровень вложенности этого меню
+     *
+     * @return int
+     *
+     * @since 3.01
+     */
+    public function getLevel()
+    {
+        return 1;
+    }
 }
 
