@@ -27,6 +27,7 @@
 namespace Eresus\Sections;
 
 use Doctrine\ORM\EntityManager;
+use Eresus\Entity\RootSection;
 use Eresus\Entity\Section;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -46,6 +47,15 @@ class SectionManager
     private $container;
 
     /**
+     * Корневой псевдо-раздел
+     *
+     * @var null|RootSection
+     *
+     * @since 3.01
+     */
+    private $root = null;
+
+    /**
      * @param ContainerInterface $container
      *
      * @since 3.01
@@ -58,7 +68,7 @@ class SectionManager
     /**
      * Возвращает раздел по идентификатору
      *
-     * @param int $id
+     * @param int|null $id
      *
      * @return Section|null
      *
@@ -153,6 +163,22 @@ class SectionManager
     public function move(Section $section, Section $newParent)
     {
         // TODO
+    }
+
+    /**
+     * Возвращает корневой псевдо-раздел
+     *
+     * @return RootSection
+     *
+     * @since 3.01
+     */
+    public function getRootSection()
+    {
+        if (is_null($this->root))
+        {
+            $this->root = new RootSection($this->getRepository());
+        }
+        return $this->root;
     }
 
     /**
