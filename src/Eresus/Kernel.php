@@ -27,17 +27,16 @@
 namespace Eresus;
 
 use Bedoved;
-use Eresus\Controller\AdminFrontController;
-use Eresus\Templating\TemplateManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use WebServer;
-use WebPage;
+use Eresus_Kernel;
 
 /**
  * Ядро
+ *
+ * Ядро обеспечивает начальную инициализацию CMS, создание объекта сайта и передачу ему управления.
  *
  * @since 3.01
  */
@@ -82,13 +81,6 @@ class Kernel
     private $site;
 
     /**
-     * Объект создаваемой страницы
-     * @var WebPage
-     * @since 3.00
-     */
-    private $page;
-
-    /**
      * Инициализирует ядро
      *
      * @param string $appDir  папка приложения
@@ -126,13 +118,13 @@ class Kernel
 
         $this->initErrorHandling();
         $this->initContainer($request);
-        $this->initEventListeners();
         $this->initLegacyKernel();
+        $this->initEventListeners();
         $this->initConf();
-        $this->initSite($request);
 
         /** TODO Обратная совместимость @deprecated с 3.01 */
-        \Eresus_Kernel::$app = $this;
+        $GLOBALS['Eresus']->init();
+        Eresus_Kernel::$app = $this;
 
         $this->run($request);
     }
@@ -170,20 +162,6 @@ class Kernel
     public function getCacheDir()
     {
         return $this->getAppDir() . '/var/cache';
-    }
-
-    /**
-     * Возвращает экземпляр класса TClientUI или TAdminUI
-     *
-     * Метод нужен до отказа от переменной $page
-     *
-     * @return WebPage
-     *
-     * @since 3.00
-     */
-    public function getPage()
-    {
-        return $this->page;
     }
 
     /**
@@ -363,24 +341,6 @@ class Kernel
     }
 
     /**
-     * Инициализирует сайт
-     *
-     * @param Request $request
-     *
-     * @return void
-     *
-     * @since 3.01
-     */
-    private function initSite(Request $request)
-    {
-        $this->site = new Site($request);
-        $this->site->setTitle(siteTitle);
-        $this->site->setDescription(siteDescription);
-        $this->site->setKeywords(siteKeywords);
-        $this->container->setParameter('site', $this->site);
-    }
-
-    /**
      * Выполняет приложение
      *
      * @param Request $request
@@ -389,47 +349,15 @@ class Kernel
      */
     private function run(Request $request)
     {
-        /** @var \Eresus $legacyKernel */
-        $legacyKernel = $GLOBALS['Eresus'];
-        $legacyKernel->init();
+        $this->site = new Site($this, $request);
+        $this->container->setParameter('site', $this->site);
 
-        /** @var TemplateManager $tm */
-        $tm = $this->container->get('templates');
-        // TODO Удалить где-нибудь в 3.03-04
-        $tm->setGlobal('siteRoot',
-            $request->getSchemeAndHttpHost() . $request->getBasePath() . '/');
+        $response = $this->site->handleRequest($request);
+        $response->send();
 
-        // TODO $this->initSite();
-
-        if (substr($request->getPathInfo(), 0, 8) == '/ext-3rd')
-        {
-            $this->call3rdPartyExtension($request);
-        }
-        else
-        {
-            if ($request->getPathInfo() == '/admin/' || $request->getPathInfo() == '/admin.php')
-            {
-                $controller = new AdminFrontController($this->container, $request);
-            }
-            else
-            {
-                $controller = new Eresus_Client_FrontController($this->container, $request);
-            }
-            $this->page = $controller->getPage();
-            /**
-             * @global
-             * @deprecated с 3.01 используйте Eresus_Kernel::app()->getPage()
-             */
-            $GLOBALS['page'] = $this->page;
-            $tm->setGlobal('page', $this->page);
-            /** @var Response $response */
-            $response = $controller->dispatch();
-            $response->send();
-
-            /** @var \Symfony\Component\EventDispatcher\EventDispatcher $evd */
-            $evd = $this->container->get('events');
-            $evd->dispatch('cms.shutdown');
-        }
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $evd */
+        $evd = $this->container->get('events');
+        $evd->dispatch('cms.shutdown');
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Описание сайта
+ * Сайт
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -25,20 +25,42 @@
  */
 
 namespace Eresus;
+
+use Eresus\Controller\AdminFrontController;
 use Eresus\Exceptions\InvalidArgumentTypeException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Описание сайта
+ * Сайт
  *
- * <b>Внимание!</b> Не создавайте экземпляров этого класса самостоятельно, используйте контейнер
- * служб.
+ * <b>Внимание!</b> Не создавайте экземпляров этого класса самостоятельно!
  *
- * @api
+ *
+ *
  * @since 3.01
  */
 class Site
 {
+    /**
+     * Контейнер служб
+     *
+     * @var ContainerInterface
+     *
+     * @since 3.01
+     */
+    private $container;
+
+    /**
+     * Имя сайта
+     *
+     * @var string
+     *
+     * @since 3.01
+     */
+    private $name = '';
+
     /**
      * URL корня сайта
      * @var string
@@ -84,13 +106,21 @@ class Site
     /**
      * Создаёт описание сайта
      *
+     * @param Kernel  $kernel
      * @param Request $request
      */
-    public function __construct(Request $request)
+    public function __construct(Kernel $kernel, Request $request)
     {
+        $this->container = $kernel->getContainer();
         $this->rootUrl = $request->getSchemeAndHttpHost() . $request->getBasePath();
         $this->stylesUrl = $this->rootUrl . '/style';
         $this->domain = $request->getHttpHost();
+
+        include $kernel->getAppDir() . '/cfg/settings.php';
+        $this->name = siteName;
+        $this->title = siteTitle;
+        $this->description = siteDescription;
+        $this->keywords = siteKeywords;
     }
 
     /**
@@ -136,6 +166,36 @@ class Site
      *
      * @since 3.01
      */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Задаёт название
+     *
+     * @param string $name
+     *
+     * @throws InvalidArgumentTypeException
+     * @since 3.01
+     */
+    public function setName($name)
+    {
+        if (!is_string($name))
+        {
+            throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'string', $name);
+        }
+        $this->name = $name;
+    }
+
+    /**
+     * Возвращает название
+     *
+     * @return string
+     *
+     * @since 3.01
+     * @todo Вынести в отдельный класс
+     */
     public function getTitle()
     {
         return $this->title;
@@ -148,6 +208,7 @@ class Site
      *
      * @throws InvalidArgumentTypeException
      * @since 3.01
+     * @todo Вынести в отдельный класс
      */
     public function setTitle($title)
     {
@@ -164,6 +225,7 @@ class Site
      * @return string
      *
      * @since 3.01
+     * @todo Вынести в отдельный класс
      */
     public function getDescription()
     {
@@ -178,6 +240,7 @@ class Site
      * @throws InvalidArgumentTypeException
      *
      * @since 3.01
+     * @todo Вынести в отдельный класс
      */
     public function setDescription($description)
     {
@@ -194,6 +257,7 @@ class Site
      * @return string
      *
      * @since 3.01
+     * @todo Вынести в отдельный класс
      */
     public function getKeywords()
     {
@@ -208,6 +272,7 @@ class Site
      * @throws InvalidArgumentTypeException
      *
      * @since 3.01
+     * @todo Вынести в отдельный класс
      */
     public function setKeywords($keywords)
     {
@@ -216,6 +281,39 @@ class Site
             throw InvalidArgumentTypeException::factory(__METHOD__, 1, 'string', $keywords);
         }
         $this->keywords = $keywords;
+    }
+
+    /**
+     * Обрабатывает запрос и возвращает ответ
+     *
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @since 3.01
+     */
+    public function handleRequest(Request $request)
+    {
+        if (substr($request->getPathInfo(), 0, 8) == '/ext-3rd')
+        {
+            // TODO
+            $this->call3rdPartyExtension($request);
+        }
+        else
+        {
+            if ($request->getPathInfo() == '/admin/' || $request->getPathInfo() == '/admin.php')
+            {
+                $controller = new AdminFrontController($this->container, $this);
+            }
+            else
+            {
+                // TODO
+                $controller = new Eresus_Client_FrontController($this->container, $request);
+            }
+            /** @var Response $response */
+            $response = $controller->process($request);
+        }
+        return $response;
     }
 }
 
