@@ -1,0 +1,4 @@
+.section-menu .menu__item > .menu
+{
+    display: none;
+}

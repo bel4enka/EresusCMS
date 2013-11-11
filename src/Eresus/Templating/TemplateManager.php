@@ -38,6 +38,8 @@ use Dwoo_Template_File;
  *
  * @api
  * @since 3.01
+ *
+ * @todo Сделать кэширование объектов Template
  */
 class TemplateManager
 {
@@ -324,7 +326,7 @@ class TemplateManager
     /**
      * Возвращает объект шаблона
      *
-     * @param string $name    имя файла шаблона
+     * @param string $filename    имя файла шаблона
      * @param string $prefix  опциональный префикс (путь относительно корня шаблонов)
      *
      * @throws RuntimeException
@@ -333,9 +335,9 @@ class TemplateManager
      *
      * @since 3.01
      */
-    public function getTemplate($name, $prefix = '')
+    public function getTemplate($filename, $prefix = '')
     {
-        $path = $this->getFilename($name, $prefix);
+        $path = $this->getFilename($filename, $prefix);
 
         if (!file_exists($this->getClientTmplDir() . '/' . $path))
         {

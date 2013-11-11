@@ -1,11 +1,10 @@
 /**
- * ${product.title} ${product.version}
- *
  * Скрипты темы Default.
  *
- * @copyright 2010, Eresus Project, http://eresus.ru/
+ * @version ${product.version}
+ * @copyright ${product.copyright}
  * @license ${license.uri} ${license.name}
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,18 +23,22 @@
  * <http://www.gnu.org/licenses/>
  */
 
-/*
- * Инициализация
- */
-jQuery(document).ready(function ()
+$(document).on('click', '.section-menu a[data-action="toggle"]', function (e)
 {
-	jQuery("div.menu-content").click(function (e)
-	{
-		if (e.target.nodeName.toLowerCase() != "img")
-			return;
-
-		jQuery(e.target).parent().
-			toggleClass("opened").
-			children("ul").toggle();
-	});
+    e.preventDefault();
+    var control = $(e.currentTarget);
+    control.blur();
+    var menu = control.closest('.menu__item').children('.menu');
+    var icon = $('.control__icon', control);
+    /* TODO Сделать изменение alt */
+    if (icon.hasClass('control__icon_img_expl'))
+    {
+        menu.show();
+        icon.removeClass('control__icon_img_expl').addClass('control__icon_img_fold');
+    }
+    else if (icon.hasClass('control__icon_img_fold'))
+    {
+        menu.hide();
+        icon.removeClass('control__icon_img_fold').addClass('control__icon_img_expl');
+    }
 });
