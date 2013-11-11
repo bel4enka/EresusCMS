@@ -1,6 +1,6 @@
 <?php
 /**
- * Пункт меню
+ * Интерфейс поставщика пунктов меню
  *
  * @version ${product.version}
  * @copyright ${product.copyright}
@@ -26,99 +26,21 @@
 
 namespace Eresus\UI\Menu;
 
-use Eresus\UI\Widget;
-
 /**
- * Пункт меню
+ * Интерфейс поставщика пунктов меню
  *
  * @api
  * @since 3.01
  */
-class MenuItem extends Widget
+interface ItemProviderInterface
 {
     /**
-     * Текст пункта
+     * Наполняет меню пунктами
      *
-     * @var string
-     *
-     * @since 3.01
-     */
-    protected $caption;
-
-    /**
-     * URL
-     *
-     * @var string
+     * @param Menu $target
      *
      * @since 3.01
      */
-    protected $url;
-
-    /**
-     * Подменю
-     *
-     * @var Menu|null
-     *
-     * @since 3.01
-     */
-    protected $subMenu = null;
-
-    /**
-     * @param string $caption
-     * @param string $url
-     */
-    public function __construct($caption, $url)
-    {
-        $this->caption = $caption;
-        $this->url = $url;
-    }
-
-    /**
-     * Возвращает текст пункта меню
-     *
-     * @return string
-     *
-     * @since 3.01
-     */
-    public function getCaption()
-    {
-        return $this->caption;
-    }
-
-    /**
-     * Возвращает URL
-     *
-     * @return string
-     *
-     * @since 3.01
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * Возвращает подменю
-     *
-     * @return null|Menu
-     *
-     * @since 3.01
-     */
-    public function getSubMenu()
-    {
-        return $this->subMenu;
-    }
-
-    /**
-     * Задаёт подменю
-     *
-     * @param Menu $menu
-     *
-     * @since 3.01
-     */
-    public function setSubMenu(Menu $menu)
-    {
-        $this->subMenu = $menu;
-    }
+    public function populate(Menu $target);
 }
 

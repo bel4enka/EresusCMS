@@ -47,6 +47,15 @@ abstract class Widget
     private $templateManager = null;
 
     /**
+     * Имя файла шаблона
+     *
+     * @var null|string
+     *
+     * @since 3.01
+     */
+    private $templateName = null;
+
+    /**
      * Кэш шаблона
      *
      * @var null|Template
@@ -81,6 +90,36 @@ abstract class Widget
     }
 
     /**
+     * Задаёт имя файла шаблона
+     *
+     * @param string $filename
+     *
+     * @since 3.01
+     */
+    public function setTemplateName($filename)
+    {
+        $this->templateName = $filename;
+    }
+
+    /**
+     * Возвращает имя файла шаблона
+     *
+     * @return string
+     *
+     * @since 3.01
+     */
+    protected function getTemplateName()
+    {
+        if (is_null($this->templateName))
+        {
+            $class = get_class($this);
+            $this->templateName = str_replace('\\', '/', substr($class, strlen('Eresus\\')))
+                . '.html';
+        }
+        return $this->templateName;
+    }
+
+    /**
      * Задаёт менеджер шаблонов
      *
      * @param TemplateManager $templateManager
@@ -89,7 +128,7 @@ abstract class Widget
      *
      * @since 3.01
      */
-    protected function setTemplateManager(TemplateManager $templateManager)
+    public function setTemplateManager(TemplateManager $templateManager)
     {
         $this->templateManager = $templateManager;
         return $this;
@@ -129,19 +168,6 @@ abstract class Widget
                 ->getAdminTemplate($this->getTemplateName());
         }
         return $this->template;
-    }
-
-    /**
-     * Возвращает имя файла шаблона
-     *
-     * @return string
-     *
-     * @since 3.01
-     */
-    protected function getTemplateName()
-    {
-        $class = get_class($this);
-        return str_replace('\\', '/', substr($class, strlen('Eresus\\'))) . '.html';
     }
 }
 

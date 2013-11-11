@@ -1,0 +1,4 @@
+<a href="{$widget->getUrl()}" class="menu__link">{$widget->getCaption()}</a>
+{if $widget->getSubMenu()}
+{$widget->getSubMenu()->getHtml()}
+{/if}

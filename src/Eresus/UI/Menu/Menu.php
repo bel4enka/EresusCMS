@@ -31,6 +31,15 @@ use Eresus\UI\Widget;
 /**
  * Меню
  *
+ * Меню — это виджет, как правило навигационный, состоящий из пунктов, каждый из которых позволяет
+ * выполнить некоторое действие (обычно — переход на URL). Также каждый пункт может иметь
+ * собственное подменю, что позволяет создавать древовидные структуры.
+ *
+ * Пункты могут быть добавлены в меню вручную (см. {@link add()}), либо предоставлены поставщиком
+ * пунктов меню — объектом класса, поддерживающего интерфейс {@link ItemProviderInterface}
+ * (см. {@link setItemProvider()}).
+ *
+ * @api
  * @since 3.01
  */
 class Menu extends Widget
@@ -38,11 +47,66 @@ class Menu extends Widget
     /**
      * Пункты меню
      *
-     * @var MenuItem[]
+     * @var MenuItem[]|null
      *
      * @since 3.01
      */
     protected $items = array();
+
+    /**
+     * Были ли получены пункты от поставщика
+     *
+     * @var bool
+     *
+     * @since 3.01
+     */
+    protected $populated = false;
+
+    /**
+     * Уровень вложенности
+     *
+     * @var int
+     *
+     * @since 3.01
+     */
+    private $level = 1;
+
+    /**
+     * Поставщик пунктов меню
+     *
+     * @var ItemProviderInterface|null
+     *
+     * @since 3.01
+     */
+    private $itemProvider = null;
+
+    /**
+     * Задаёт поставщика пунктов для меню
+     *
+     * @param ItemProviderInterface $provider
+     *
+     * @return Menu
+     *
+     * @since 3.01
+     */
+    public function setItemProvider(ItemProviderInterface $provider)
+    {
+        $this->itemProvider = $provider;
+        $this->populated = false;
+        return $this;
+    }
+
+    /**
+     * Возвращает поставщика пунктов для меню
+     *
+     * @return ItemProviderInterface|null
+     *
+     * @since 3.01
+     */
+    protected function getItemProvider()
+    {
+        return $this->itemProvider;
+    }
 
     /**
      * Добавляет пункт к меню
@@ -55,7 +119,10 @@ class Menu extends Widget
      */
     public function add(MenuItem $item)
     {
-        $item->setTemplateManager($this->getTemplateManager());
+        if (!is_null($this->getTemplateManager()))
+        {
+            $item->setTemplateManager($this->getTemplateManager());
+        }
         $this->items []= $item;
         return $this;
     }
@@ -69,6 +136,10 @@ class Menu extends Widget
      */
     public function getItems()
     {
+        if (!is_null($this->getItemProvider()) && !$this->populated)
+        {
+            $this->getItemProvider()->populate($this);
+        }
         return $this->items;
     }
 
@@ -81,7 +152,37 @@ class Menu extends Widget
      */
     public function getLevel()
     {
-        return 1;
+        return $this->level;
+    }
+
+    /**
+     * Задаёт уровень вложенности
+     *
+     * @param int $level
+     *
+     * @since 3.01
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    /**
+     * Создаёт и возвращает пустое подменю
+     *
+     * Подменю устанавливается уровень вложенности на единицу больше, чем создающего меню.
+     *
+     * @return Menu
+     *
+     * @since 3.01
+     */
+    public function createSubMenu()
+    {
+        $class = get_class($this);
+        /** @var Menu $menu */
+        $menu = new $class($this->getTemplateManager());
+        $menu->setLevel($this->getLevel() + 1);
+        return $menu;
     }
 }
 
