@@ -28,6 +28,7 @@ namespace Eresus\Controller;
 
 use Eresus\Entity\Account;
 use Eresus\Exceptions\NotFoundException;
+use Eresus\Sections\MenuItemProvider;
 use Eresus\Sections\SectionManager;
 use Eresus\Security\Exceptions\BadCredentialsException;
 use Eresus\Security\SecurityManager;
@@ -174,6 +175,7 @@ class AdminFrontController extends FrontController
     {
         // TODO: Это временное решение до завершения выноса кода в контроллеры
         $routes = array(
+            'pages' => 'Eresus\Controller\Admin\SectionsController',
             'users' => 'Eresus\Controller\Admin\AccountsController'
         );
 
@@ -241,7 +243,7 @@ class AdminFrontController extends FrontController
     /**
      * Создаёт меню разделов
      *
-     * @return SectionMenu
+     * @return Menu
      *
      * @since 3.01
      */
@@ -252,7 +254,10 @@ class AdminFrontController extends FrontController
         /** @var SectionManager $sm */
         $sm = $this->get('sections');
 
-        $menu = new SectionMenu($tm, $sm);
+        $menu = new Menu($tm);
+        $provider = new MenuItemProvider($sm);
+        $provider->setTemplateName('SectionMenu/MenuItem.html');
+        $menu->setItemProvider($provider);
         return $menu;
     }
 }

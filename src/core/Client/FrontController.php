@@ -56,7 +56,7 @@ class Eresus_Client_FrontController extends FrontController
     /**
      * Создаёт объект Eresus_CMS_Page
      *
-     * @return Eresus_CMS_Page
+     * @return \Eresus\Templating\Page
      * @since 3.01
      */
     protected function createPage()

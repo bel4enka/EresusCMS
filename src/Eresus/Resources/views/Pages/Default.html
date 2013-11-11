@@ -31,14 +31,12 @@
 	<div class="width-limit">
 		<aside class="nav sidebar">
 
-			<div class="box ui-widget ui-widget-content">
-				<div class="header">Контент</div>
-				<div class="content menu menu-content">
-					<ul>
-						{$sectionMenu->getHtml()}
-					</ul>
+			<nav class="sidebar__block block">
+				<h1 class="block__title">Контент</h1>
+				<div class="block__body section-menu">
+                    {$sectionMenu->getHtml()}
 				</div>
-			</div>
+			</nav>
 
             <nav class="sidebar__block block">
                 <h1 class="block__title">Управление</h1>

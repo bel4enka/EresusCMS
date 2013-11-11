@@ -1,0 +1,7 @@
+<a href="#" class="control" data-action="toggle"><img src="{$theme->getImage('dot.gif')}"
+    class="control__icon control__icon_img_{if $widget->getSubMenu()}expl{else}leaf{/if}"
+    alt="{if $widget->getSubMenu()}[+]{else}[&nbsp;]{/if}"></a>
+<a href="{$widget->getUrl()}" class="menu__link">{$widget->getCaption()}</a>
+{if $widget->getSubMenu()}
+{$widget->getSubMenu()->getHtml()}
+{/if}

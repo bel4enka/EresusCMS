@@ -35,7 +35,7 @@ use Eresus\Controller\Admin\AdminController;
 use Eresus\UI\Menu\Menu;
 use Eresus\UI\Menu\MenuItem;
 use Eresus\UI\Menu\SectionMenu;
-
+use Eresus\Templating\AdminPage;
 
 /**
  * @deprecated с 3.01
@@ -47,7 +47,7 @@ define('ADMINUI', true);
  *
  * @package Eresus
  */
-class TAdminUI extends Eresus_CMS_Page_Admin
+class TAdminUI extends AdminPage
 {
     /**
      * Загружаемый модуль
@@ -1097,25 +1097,13 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     }
 
     /**
-     * Отправляет созданную страницу пользователю
-     *
-     * @param Request $request
-     * @return Eresus_HTTP_Response
-     */
-    public function render(Request $request)
-    {
-        Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
-        return $this->renderUI($request);
-    }
-
-    /**
      * Отрисовка интерфейса
      *
      * @param Request $request
      *
      * @return Response
      */
-    private function renderUI(Request $request)
+    public function renderUI(Request $request)
     {
         $response = $this->renderContent($request);
 
@@ -1146,35 +1134,6 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         }
 
         return $response;
-    }
-
-    /**
-     * Создаёт главное меню
-     *
-     * @return Menu
-     *
-     * @since 3.01
-     */
-    private function createMainMenu()
-    {
-        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
-        $container = $GLOBALS['_container'];
-        /** @var \Eresus\Templating\TemplateManager $tm */
-        $tm = $container->get('templates');
-        /** @var \Eresus\Security\SecurityManager $security */
-        $security = $container->get('security');
-
-        $menu = new Menu($tm);
-        $menu->add(new MenuItem(_('Разделы сайта'), 'admin.php?mod=pages'));
-        $menu->add(new MenuItem(_('Файловый менеджер'), 'admin.php?mod=files'));
-        if ($security->getCurrentUser()->hasAccess(ADMIN))
-        {
-            $menu->add(new MenuItem(_('Модули расширения'), 'admin.php?mod=plgmgr'));
-            $menu->add(new MenuItem(_('Оформление'), 'admin.php?mod=themes'));
-            $menu->add(new MenuItem(_('Пользователи'), 'admin.php?mod=users'));
-            $menu->add(new MenuItem(_('Конфигурация'), 'admin.php?mod=settings'));
-        }
-        return $menu;
     }
 }
 
