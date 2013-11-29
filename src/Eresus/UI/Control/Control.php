@@ -26,6 +26,7 @@
 
 namespace Eresus\UI\Control;
 
+use Eresus\Templating\TemplateManager;
 use Eresus\UI\Control\UrlBuilder\UrlBuilderInterface;
 use Eresus\UI\Widget;
 
@@ -41,7 +42,19 @@ use Eresus\UI\Widget;
  */
 class Control extends Widget
 {
+    /**
+     * Стиль «ссылка»
+     */
+    const STYLE_LINK = 'link';
+
+    /**
+     * Стиль «значок»
+     */
     const STYLE_ICON = 'icon';
+
+    /**
+     * Стиль «кнопка»
+     */
     const STYLE_BUTTON = 'button';
 
     /**
@@ -74,7 +87,7 @@ class Control extends Widget
      *
      * @since 3.01
      */
-    private $style = self::STYLE_BUTTON;
+    private $style = self::STYLE_LINK;
 
     /**
      * Кэш для {@link getAltText()}
@@ -84,13 +97,26 @@ class Control extends Widget
     private $label = null;
 
     /**
+     * Конструктор виджета
+     *
+     * @param TemplateManager $templateManager
+     *
+     * @since 3.01
+     */
+    public function __construct(TemplateManager $templateManager)
+    {
+        parent::__construct($templateManager);
+        $this->setTemplateName('UI/Control/Control.html');
+    }
+
+    /**
      * Задаёт построитель адресов по умолчанию для элементов управления, использующихся в таблице
      *
      * @param UrlBuilderInterface $urlBuilder
      *
      * @since 3.01
      */
-    public function setControlUrlBuilder(UrlBuilderInterface $urlBuilder)
+    public function setUrlBuilder(UrlBuilderInterface $urlBuilder)
     {
         $this->urlBuilder = $urlBuilder;
     }
@@ -136,6 +162,7 @@ class Control extends Widget
      */
     public function setStyle($style)
     {
+        assert('is_string($style)');
         $this->style = $style;
         return $this;
     }
@@ -177,12 +204,11 @@ class Control extends Widget
         {
             return $this->actionUrl;
         }
-        if (is_null($this->urlBuilder))
+        if (!is_null($this->urlBuilder))
         {
-            return $this->getActionName();
+            return $this->urlBuilder->getActionUrl($this->getActionName());
         }
-
-        return $this->urlBuilder->getActionUrl($this->getActionName());
+        return $this->getActionName();
     }
 
     /**
@@ -268,7 +294,7 @@ class Control extends Widget
     }
 
     /**
-     * Возвращает клиентский обработчик активации ЭУ
+     * Возвращает обработчик активации ЭУ на стороне клиента
      *
      * @return string|null
      *
@@ -277,18 +303,6 @@ class Control extends Widget
     public function getClientHandler()
     {
         return null;
-    }
-
-    /**
-     * Возвращает имя файла шаблона
-     *
-     * @return string
-     *
-     * @since 3.01
-     */
-    protected function getTemplateName()
-    {
-        return 'UI/Control/Control.html';
     }
 }
 
