@@ -1,8 +1,8 @@
 <a href="{$widget->getActionUrl()}"{if $widget->getHint()} title="{$widget->getHint()}"{/if}
-    class="control{if $widget->getType()} control_type_{$widget->getType()}{/if}{if
-    $widget->getStyle()} control_style_{$widget->getStyle()}{/if}"{if
+    class="control control_style_{$widget->getStyle()}{if
+    $widget->getType()} control_type_{$widget->getType()}{/if}"{if
     $widget->getClientHandler()} onclick="{$widget->getClientHandler()}"{/if}
     >{if $widget->getIconUrl()}<img src="{$theme->getIcon($widget->getIconUrl())}"
     alt="{$widget->getLabel()}" class="control__icon">{/if}{if
-    $widget->getStyle() == $widget::STYLE_BUTTON or not $widget->getIconUrl()}<span
+    $widget->getStyle() != $widget::STYLE_ICON or not $widget->getIconUrl()}<span
     class="control__label">{$widget->getLabel()}</span>{/if}</a>
