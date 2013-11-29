@@ -37,29 +37,10 @@ require_once __DIR__ . '/../../bootstrap.php';
 class WidgetTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers Eresus\UI\Widget::__toString
-     */
-    public function testToString()
-    {
-        $widget = $this->getMockBuilder('Eresus\UI\Widget')->disableOriginalConstructor()
-            ->setMethods(array('getHtml'))->getMock();
-        $widget->expects($this->once())->method('getHtml')->will($this->returnValue('foo'));
-        /** @var Widget $widget */
-        $this->assertEquals('foo', strval($widget));
-
-        $widget = $this->getMockBuilder('Eresus\UI\Widget')->disableOriginalConstructor()
-            ->setMethods(array('getHtml'))->getMock();
-        /** @var \PHPUnit_Framework_MockObject_MockObject $widget */
-        $widget->expects($this->once())->method('getHtml')
-            ->will($this->throwException(new \Exception('bar')));
-        /** @var Widget $widget */
-        $this->assertEquals('Exception: bar', strval($widget));
-    }
-
-    /**
      * @covers Eresus\UI\Widget::getTemplateName
+     * @covers Eresus\UI\Widget::setTemplateName
      */
-    public function testGetTemplateName()
+    public function testTemplateName()
     {
         /** @var TemplateManager $tm */
         $tm = $this->getMockBuilder('Eresus\Templating\TemplateManager')
@@ -68,6 +49,71 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
         $getTemplateName = new \ReflectionMethod('Eresus\UI\Widget', 'getTemplateName');
         $getTemplateName->setAccessible(true);
         $this->assertEquals('UI/Tests/FooWidget.html', $getTemplateName->invoke($widget));
+        $widget->setTemplateName('foo.html');
+        $this->assertEquals('foo.html', $getTemplateName->invoke($widget));
+    }
+
+    /**
+     * @covers Eresus\UI\Widget::__construct
+     * @covers Eresus\UI\Widget::getTemplateManager
+     * @covers Eresus\UI\Widget::setTemplateManager
+     */
+    public function testTemplateManager()
+    {
+        /** @var TemplateManager $tm1 */
+        $tm1 = $this->getMockBuilder('Eresus\Templating\TemplateManager')
+            ->disableOriginalConstructor()->getMock();
+        $tm2 = clone $tm1;
+        $widget = new FooWidget($tm1);
+        $getTemplateManager = new \ReflectionMethod('Eresus\UI\Widget', 'getTemplateManager');
+        $getTemplateManager->setAccessible(true);
+        $this->assertSame($tm1, $getTemplateManager->invoke($widget));
+        $widget->setTemplateManager($tm2);
+        $this->assertSame($tm2, $getTemplateManager->invoke($widget));
+    }
+
+    /**
+     * @covers Eresus\UI\Widget::getTemplateManager
+     * @expectedException \LogicException
+     */
+    public function testTemplateManagerNull()
+    {
+        $widget = $this->getMockBuilder('Eresus\UI\Widget')->setMethods(array('none'))
+            ->disableOriginalConstructor()->getMock();
+        $getTemplateManager = new \ReflectionMethod('Eresus\UI\Widget', 'getTemplateManager');
+        $getTemplateManager->setAccessible(true);
+        $getTemplateManager->invoke($widget);
+    }
+
+    /**
+     * @covers Eresus\UI\Widget::getTemplate
+     */
+    public function testGetTemplate()
+    {
+        /** @var TemplateManager $tm */
+        $tm = $this->getMockBuilder('Eresus\Templating\TemplateManager')
+            ->disableOriginalConstructor()->getMock();
+        $widget = new FooWidget($tm);
+        $getTemplate = new \ReflectionMethod('Eresus\UI\Widget', 'getTemplate');
+        $getTemplate->setAccessible(true);
+        $t1 = $getTemplate->invoke($widget);
+        $t2 = $getTemplate->invoke($widget);
+        $this->assertSame($t1, $t2);
+    }
+
+    /**
+     * @covers Eresus\UI\Widget::getHtml
+     */
+    public function testGetHtml()
+    {
+        $template = $this->getMock('stdClass', array('compile'));
+        $widget = $this->getMockBuilder('Eresus\UI\Widget')->setMethods(array('getTemplate'))
+            ->disableOriginalConstructor()->getMock();
+        $widget->expects($this->any())->method('getTemplate')->will($this->returnValue($template));
+        $template->expects($this->once())->method('compile')->with(array('widget' => $widget))
+            ->will($this->returnValue('foo'));
+        /** @var Widget $widget */
+        $this->assertEquals('foo', $widget->getHtml());
     }
 }
 
