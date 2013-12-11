@@ -1714,6 +1714,7 @@ class Eresus
 		# Подключение к источнику данных
 		$this->initDataSource();
         $this->plugins = Eresus_Plugin_Registry::getInstance();
+        $this->plugins->init();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута

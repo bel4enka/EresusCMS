@@ -128,12 +128,6 @@ class Eresus_Plugin_Registry
                 }
             }
             while (!$success);
-
-            /* Загружаем плагины */
-            foreach ($this->list as $item)
-            {
-                $this->load($item['name']);
-            }
         }
 
         spl_autoload_register(array($this, 'autoload'));
@@ -145,10 +139,14 @@ class Eresus_Plugin_Registry
      * @return void
      *
      * @since 2.16
-     * @deprecated с 3.01 все действия этого метода выполняются в конструкторе
      */
     public function init()
     {
+        /* Загружаем плагины */
+        foreach ($this->list as $item)
+        {
+            $this->load($item['name']);
+        }
     }
 
     /**
