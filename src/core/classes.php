@@ -40,7 +40,7 @@
  *
  * @package Eresus
  */
-class ContentPlugin extends Eresus_Plugin implements Eresus_Plugin_ContentProviderInterface
+class ContentPlugin extends Eresus_Plugin
 {
     /**
      * Конструктор
@@ -118,20 +118,18 @@ class ContentPlugin extends Eresus_Plugin implements Eresus_Plugin_ContentProvid
     /**
      * Отрисовка клиентской части
      *
-     * @param Eresus_CMS_Request $request  обрабатываемый запрос
-     * @param Eresus_CMS_Page    $page     создаваемая страница
-     *
-     * @throws Eresus_CMS_Exception_NotFound
-     *
-     * @return string
+     * @return  string  Контент
      */
-    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
+    public function clientRenderContent()
     {
         /** @var TClientUI $page */
+        $page = Eresus_Kernel::app()->getPage();
         /* Если в URL указано что-либо кроме адреса раздела, отправляет ответ 404 */
-        if ($request->getFile() || $request->getQueryString() || $page->subpage || $page->topic)
+        if (Eresus_CMS::getLegacyKernel()->request['file'] ||
+            Eresus_CMS::getLegacyKernel()->request['query'] ||
+            Eresus_Kernel::app()->getPage()->subpage || Eresus_Kernel::app()->getPage()->topic)
         {
-            throw new Eresus_CMS_Exception_NotFound;
+            $page->httpError(404);
         }
 
         return $page->content;

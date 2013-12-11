@@ -32,7 +32,7 @@
  * @package Eresus
  * @deprecated с 3.01 используйте ContentPlugin
  */
-class TContentPlugin implements Eresus_Plugin_ContentProviderInterface
+class TContentPlugin
 {
     /**
      * Имя плагина
@@ -240,15 +240,11 @@ class TContentPlugin implements Eresus_Plugin_ContentProviderInterface
     /**
      * Отрисовка клиентской части
      *
-     * @param Eresus_CMS_Request $request  обрабатываемый запрос
-     * @param Eresus_CMS_Page    $page     создаваемая страница
-     *
-     * @return string|Eresus_HTTP_Response
+     * @return  string  контент
      */
-    public function clientRenderContent(Eresus_CMS_Request $request, Eresus_CMS_Page $page)
+    public function clientRenderContent()
     {
-        /** @var TClientUI $page */
-        return $page->content;
+        return Eresus_Kernel::app()->getPage()->content;
     }
 
     /**
