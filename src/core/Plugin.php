@@ -195,7 +195,7 @@ abstract class Eresus_Plugin
     public function __item($item = null)
     {
         $result['name'] = $this->getName();
-        $result['content'] = false;
+        $result['content'] = '0';
         $result['active'] = is_null($item)? true : $item['active'];
         $result['settings'] = Eresus_CMS::getLegacyKernel()->db->
             escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
