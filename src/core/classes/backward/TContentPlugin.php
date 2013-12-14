@@ -96,7 +96,10 @@ class TContentPlugin
         $page = Eresus_Kernel::app()->getPage();
         if ($page)
         {
-            $page->plugin = $this->name;
+            if ($page instanceof TClientUI)
+            {
+                $page->plugin = $this->name;
+            }
             if (count($page->options))
             {
                 foreach ($page->options as $key => $value)
