@@ -35,10 +35,10 @@ require_once __DIR__ . '/../../../bootstrap.php';
  * @package EresusCMS
  * @subpackage Tests
  */
-class PaginationHelperTest extends PHPUnit_Framework_TestCase
+class PaginationHelperTest extends Eresus_TestCase
 {
     /**
-     * (non-PHPdoc)
+     * Подготовка окружения
      * @see Framework/PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
@@ -47,20 +47,17 @@ class PaginationHelperTest extends PHPUnit_Framework_TestCase
         $GLOBALS['Eresus']->request = array('path' => '/root/');
         $dwoo = $this->getMock('stdClass', array('get'));
         $dwoo->expects($this->any())->method('get')->will($this->returnArgument(1));
-        Eresus_Tests::setStatic('Template', $dwoo, 'dwoo');
+        $this->setStaticProperty('Template', $dwoo, 'dwoo');
     }
-    //-----------------------------------------------------------------------------
 
     /**
-     * (non-PHPdoc)
+     * Очистка окружения
      * @see Framework/PHPUnit_Framework_TestCase::tearDown()
      */
     protected function tearDown()
     {
-        Eresus_Tests::setStatic('Template', null, 'dwoo');
         unset($GLOBALS['Eresus']);
     }
-    //-----------------------------------------------------------------------------
 
     /**
      * Проверяем установку и чтение свойства $total

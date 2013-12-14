@@ -38,14 +38,30 @@ require_once TESTS_SRC_DIR . '/lang/ru.php';
 require_once TESTS_SRC_DIR . '/core/autoload.php';
 
 /**
- * Вспомогательный инструментарий для тестов
- *
- * @package Eresus
- * @subpackage Tests
- * @since 3.00
+ * Базовый класс для тестов
  */
-class Eresus_Tests
+class Eresus_TestCase extends PHPUnit_Framework_TestCase
 {
+    private $staticProps = array();
+
+    /**
+     * Очищает окружение
+     */
+    protected function tearDown()
+    {
+        foreach ($this->staticProps as $className => $props)
+        {
+            foreach (array_keys($props) as $propertyName)
+            {
+                $property = new ReflectionProperty($className, $propertyName);
+                $property->setAccessible(true);
+                $property->setValue($className, null);
+            }
+        }
+        $this->staticProps = array();
+        parent::tearDown();
+    }
+
     /**
      * Устанавливает статическое приватное свойство класса
      *
@@ -55,13 +71,18 @@ class Eresus_Tests
      *
      * @return void
      *
-     * @since 3.00
+     * @since 3.01
      */
-    public static function setStatic($className, $value, $propertyName = 'instance')
+    protected function setStaticProperty($className, $value, $propertyName = 'instance')
     {
         $property = new ReflectionProperty($className, $propertyName);
         $property->setAccessible(true);
         $property->setValue($className, $value);
+        if (!array_key_exists($className, $this->staticProps))
+        {
+            $this->staticProps[$className] = array();
+        }
+        $this->staticProps[$className][$propertyName] = true;
     }
 }
 

@@ -35,7 +35,7 @@ require_once __DIR__ . '/../../bootstrap.php';
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_Plugin_RegistryTest extends PHPUnit_Framework_TestCase
+class Eresus_Plugin_RegistryTest extends Eresus_TestCase
 {
     /**
      * @covers Eresus_Plugin_Registry::autoload
@@ -55,7 +55,7 @@ class Eresus_Plugin_RegistryTest extends PHPUnit_Framework_TestCase
         $app = $this->getMock('stdClass', array('getFsRoot'));
         $app->expects($this->any())->method('getFsRoot')->
             will($this->returnValue(TESTS_FIXT_DIR . '/core/Plugins/'));
-        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
+        $this->setStaticProperty('Eresus_Kernel', $app, 'app');
 
         /** @var Eresus_Plugin_Registry $plugins */
         // Нет такого файла

@@ -34,7 +34,7 @@ require_once __DIR__ . '/../bootstrap.php';
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_TemplateTest extends PHPUnit_Framework_TestCase
+class Eresus_TemplateTest extends Eresus_TestCase
 {
     /**
      * Тест метода setContents
@@ -45,7 +45,7 @@ class Eresus_TemplateTest extends PHPUnit_Framework_TestCase
     {
         $dwoo = $this->getMock('stdClass', array('get'));
         $dwoo->expects($this->once())->method('get')->will($this->returnArgument(0));
-        Eresus_Tests::setStatic('Template', $dwoo, 'dwoo');
+        $this->setStaticProperty('Template', $dwoo, 'dwoo');
         $tmpl = new Eresus_Template();
         $tmpl->setSource('foo');
         $template = $tmpl->compile();

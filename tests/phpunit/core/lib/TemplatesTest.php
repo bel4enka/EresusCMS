@@ -35,17 +35,17 @@ require_once __DIR__ . '/../../bootstrap.php';
  * @package Eresus_CMS
  * @subpackage Tests
  */
-class Eresus_Templates_Test extends PHPUnit_Framework_TestCase
+class Eresus_Templates_Test extends Eresus_TestCase
 {
     /**
      * @covers Templates::get
      */
-    public function test_get()
+    public function testGet()
     {
         $app = $this->getMock('stdClass', array('getFsRoot'));
         $app->expects($this->any())->method('getFsRoot')->
             will($this->returnValue(TESTS_FIXT_DIR . '/core/lib'));
-        Eresus_Tests::setStatic('Eresus_Kernel', $app, 'app');
+        $this->setStaticProperty('Eresus_Kernel', $app, 'app');
 
         $templates = new Templates();
 

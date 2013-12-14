@@ -37,7 +37,7 @@ require_once __DIR__ . '/../../bootstrap.php';
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_Plugin_TemplatesTest extends PHPUnit_Framework_TestCase
+class Eresus_Plugin_TemplatesTest extends Eresus_TestCase
 {
     /**
      * Тестовый плагин
@@ -75,7 +75,7 @@ class Eresus_Plugin_TemplatesTest extends PHPUnit_Framework_TestCase
         $cms = $this->getMock('stdClass', array('getFsRoot'));
         $cms->expects($this->any())->method('getFsRoot')
             ->will($this->returnValue(vfsStream::url('site')));
-        Eresus_Tests::setStatic('Eresus_Kernel', $cms, 'app');
+        $this->setStaticProperty('Eresus_Kernel', $cms, 'app');
 
         $this->plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('getName'))->getMock();

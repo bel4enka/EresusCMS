@@ -34,7 +34,7 @@ require_once __DIR__ . '/../../bootstrap.php';
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_Template_ServiceTest extends PHPUnit_Framework_TestCase
+class Eresus_Template_ServiceTest extends Eresus_TestCase
 {
     /**
      * Путь к временной папке теста
@@ -86,7 +86,7 @@ class Eresus_Template_ServiceTest extends PHPUnit_Framework_TestCase
 
         $Eresus_CMS = $this->getMock('stdClass', array('getFsRoot'));
         $Eresus_CMS->expects($this->any())->method('getFsRoot')->will($this->returnValue("$root/"));
-        Eresus_Tests::setStatic('Eresus_Kernel', $Eresus_CMS, 'app');
+        $this->setStaticProperty('Eresus_Kernel', $Eresus_CMS, 'app');
 
         $ts = Eresus_Template_Service::getInstance();
         $ts->remove('foo');

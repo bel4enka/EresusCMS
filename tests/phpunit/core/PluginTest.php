@@ -34,8 +34,20 @@ require_once __DIR__ . '/../bootstrap.php';
  * @package Eresus
  * @subpackage Tests
  */
-class Eresus_PluginTest extends PHPUnit_Framework_TestCase
+class Eresus_PluginTest extends Eresus_TestCase
 {
+    /**
+     * Подготовка окружения
+     */
+    protected function setUp()
+    {
+        $plugins = $this->getMockBuilder('Eresus_Plugin_Registry')->disableOriginalConstructor()
+            ->setMethods(array('registerBcEventListeners'))->getMock();
+        $plugins->expects($this->any())->method('registerBcEventListeners')
+            ->will($this->returnValue(null));
+        $this->setStaticProperty('Eresus_Plugin_Registry', $plugins);
+    }
+
     /**
      * Тест метода getName
      * @covers Eresus_Plugin::getName
@@ -46,7 +58,7 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('_'))->getMock();
         /** @var Eresus_Plugin $plugin */
         $this->assertRegExp('/^mock_eresus_plugin_/', $plugin->getName());
-;
+
         $name = new ReflectionProperty('Eresus_Plugin', 'name');
         $name->setAccessible(true);
         $name->setValue($plugin, 'foo');
@@ -70,6 +82,7 @@ class Eresus_PluginTest extends PHPUnit_Framework_TestCase
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('getName'))->getMock();
         $plugin->expects($this->any())->method('getName')->will($this->returnValue('plugin'));
+
         /** @var Eresus_Plugin $plugin */
         $plugin->__construct();
         $this->assertEquals('http://example.org/data/plugin/', $plugin->getDataUrl());
