@@ -372,8 +372,12 @@ class Eresus_Plugin_Registry
      *
      * @deprecated с 3.01
      */
-    public function clientOnURLSplit(Eresus_Event_UrlSectionFound $event)
+    public function clientOnURLSplit($event)
     {
+        if (!($event instanceof Eresus_Event_UrlSectionFound))
+        {
+            return;
+        }
         if (isset($this->events['clientOnURLSplit']))
         {
             foreach ($this->events['clientOnURLSplit'] as $plugin)
@@ -387,8 +391,12 @@ class Eresus_Plugin_Registry
      * @param Eresus_Event_Render $event
      * @deprecated с 3.01
      */
-    public function clientOnContentRender(Eresus_Event_Render $event)
+    public function clientOnContentRender($event)
     {
+        if (!($event instanceof Eresus_Event_Render))
+        {
+            return;
+        }
         if (isset($this->events['clientOnContentRender']))
         {
             foreach ($this->events['clientOnContentRender'] as $plugin)
@@ -403,8 +411,12 @@ class Eresus_Plugin_Registry
      *
      * @deprecated с 3.01
      */
-    public function clientOnPageRender(Eresus_Event_Render $event)
+    public function clientOnPageRender($event)
     {
+        if (!($event instanceof Eresus_Event_Render))
+        {
+            return;
+        }
         if (isset($this->events['clientOnPageRender']))
         {
             foreach ($this->events['clientOnPageRender'] as $plugin)
@@ -418,8 +430,12 @@ class Eresus_Plugin_Registry
      * @param Eresus_Event_Response $event
      * @deprecated с 3.01
      */
-    public function clientBeforeSend(Eresus_Event_Response $event)
+    public function clientBeforeSend($event)
     {
+        if (!($event instanceof Eresus_Event_Response))
+        {
+            return;
+        }
         if (isset($this->events['clientBeforeSend']))
         {
             foreach ($this->events['clientBeforeSend'] as $plugin)
@@ -435,8 +451,12 @@ class Eresus_Plugin_Registry
      * @param Eresus_Event $event
      * @deprecated с 3.01
      */
-    public function adminOnMenuRender(Eresus_Event $event)
+    public function adminOnMenuRender($event)
     {
+        if (!($event instanceof Eresus_Event))
+        {
+            return;
+        }
         if (isset($this->events['adminOnMenuRender']))
         {
             foreach ($this->events['adminOnMenuRender'] as $plugin)

@@ -29,12 +29,9 @@
  *
  * @package Eresus
  * @subpackage Tests
- *
- * $Id: Functions_Test.php 1932 2011-11-18 10:46:35Z mk $
  */
 
 require_once __DIR__ . '/../../bootstrap.php';
-require_once TESTS_SRC_DIR . '/core/lib/glib.php';
 
 
 class glib_Test extends PHPUnit_Framework_TestCase
@@ -50,5 +47,5 @@ class glib_Test extends PHPUnit_Framework_TestCase
         $this->assertInternalType('resource', imageCreateFromFile($folder . '/jpeg.jpg'));
         $this->assertInternalType('resource', imageCreateFromFile($folder . '/png.png'));
     }
-    //-----------------------------------------------------------------------------
 }
+
