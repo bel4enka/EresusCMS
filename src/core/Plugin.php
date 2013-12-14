@@ -157,9 +157,10 @@ abstract class Eresus_Plugin
         global $locale;
 
         $legacyKernel = Eresus_CMS::getLegacyKernel();
-        if (array_key_exists($this->getName(), $legacyKernel->plugins->list))
+        $plugins = Eresus_Plugin_Registry::getInstance();
+        if (array_key_exists($this->getName(), $plugins->list))
         {
-            $info = $legacyKernel->plugins->list[$this->getName()];
+            $info = $plugins->list[$this->getName()];
             $this->settings = decodeOptions($info['settings'], $this->settings);
             /*
              * Если установлена версия плагина отличная от установленной ранее, то необходимо
@@ -196,7 +197,7 @@ abstract class Eresus_Plugin
     {
         $result['name'] = $this->getName();
         $result['content'] = '0';
-        $result['active'] = is_null($item)? true : $item['active'];
+        $result['active'] = is_null($item) ? true : $item['active'];
         $result['settings'] = Eresus_CMS::getLegacyKernel()->db->
             escape(is_null($item) ? encodeOptions($this->settings) : $item['settings']);
         $result['title'] = $this->title;
@@ -338,17 +339,16 @@ abstract class Eresus_Plugin
      */
     public function updateSettings()
     {
-        foreach ($this->settings as $key => $value)
+        foreach ($this->settings as $key => &$value)
         {
             if (!is_null(arg($key)))
             {
-                $this->settings[$key] = arg($key);
+                $value = arg($key);
             }
         }
         $this->onSettingsUpdate();
         $this->saveSettings();
     }
-    //------------------------------------------------------------------------------
 
     /**
      * Производит выборку из таблицы БД
@@ -509,8 +509,8 @@ abstract class Eresus_Plugin
      */
     protected function loadSettings()
     {
-        $result = Eresus_CMS::getLegacyKernel()->db->
-            selectItem('plugins', "`name`='" . $this->getName() . "'");
+        $result = Eresus_CMS::getLegacyKernel()->db
+            ->selectItem('plugins', "`name`='" . $this->getName() . "'");
         if ($result)
         {
             $this->settings = decodeOptions($result['settings'], $this->settings);

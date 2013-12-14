@@ -71,6 +71,8 @@
   `HTTP::goback <api/classes/HTTP.html#method_goback>`_ объявлены устаревшими в пользу новых классов
   `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
   `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
+* Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ унаследован от
+  `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_
 * Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ объявлен устаревшим.
 * Метод ``WebPage::pageSelector()`` объявлен устаревшим.
 * Свойство Eresus::$plugins объявлено устаревшим. Вместо него следует использовать
