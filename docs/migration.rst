@@ -46,9 +46,6 @@
 
 * Полностью переделана система событий (совместимость со старым механизмом сохранена).
   Подробности в статье :doc:`События <dev/guide/events>`.
-* Теперь метод ``clientRenderContent`` классов, унаследованных от
-  `ContentPlugin <api/classes/ContentPlugin.html>`_, должен принимать два аргумента. Подробнее см.
-  :doc:`Предоставление типа раздела (типа контента) <dev/guide/providing_content_type>`.
 * Класс Plugin переименован в `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_. Для обратной
   совместимости имя Plugin оставлено как псевдоним к Eresus_Plugin.
 * Класс Plugins переименован в `Eresus_Plugin_Registry <api/classes/Eresus_Plugin_Registry.html>`_.
@@ -57,31 +54,26 @@
   совместимости имя Template оставлено как псевдоним к Eresus_Template.
 * Класс HttpRequest переименован в `Eresus_HTTP_Request <api/classes/Eresus_HTTP_Request.html>`_. Для
   обратной совместимости имя HttpRequest оставлено как псевдоним к Eresus_HTTP_Request.
-* Функция ``eresus_log`` объявлена устаревшей, вместо неё следует использовать
-  `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_.
 * Библиотека Webshim в АИ теперь доступна всегда (т. е. её не надо больше подключать самостоятельно).
-* Свойство ``Eresus_Plugin::$name`` объявлено устаревшим, вместо него следует использовать метод
-  `Eresus_Plugin::getName <api/classes/Eresus_Plugin.html#method_getName>`_.
 * Свойство ``TClientUI::$template`` сделано приватным. Для чтения его значения используйте
   `TClientUI::getTemplateName <api/classes/TClientUI.html#method_getTemplateName>`_
 * Класс `WebPage <api/classes/WebPage.html>`_ унаследован от
   `Eresus_CMS_Page <api/classes/Eresus_CMS_Page.html>`_ и сделан абстрактным.
-* Класс `HttpResponse <api/classes/HttpResponse.html>`_ и методы
-  `HTTP::redirect <api/classes/HTTP.html#method_redirect>`_ и
-  `HTTP::goback <api/classes/HTTP.html#method_goback>`_ объявлены устаревшими в пользу новых классов
-  `Eresus_HTTP_Response <api/classes/Eresus_HTTP_Response.html>`_ и
-  `Eresus_HTTP_Redirect <api/classes/Eresus_HTTP_Redirect.html>`_.
 * Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ унаследован от
   `Eresus_Plugin <api/classes/Eresus_Plugin.html>`_
-* Класс `TContentPlugin <api/classes/TContentPlugin.html>`_ объявлен устаревшим.
+* Функция ``eresus_log`` объявлена устаревшей, вместо неё следует использовать
+  `Eresus_Kernel::log <api/classes/Eresus_Kernel.html#method_log>`_.
+* Свойство ``Eresus_Plugin::$name`` объявлено устаревшим, вместо него следует использовать метод
+  `Eresus_Plugin::getName <api/classes/Eresus_Plugin.html#method_getName>`_.
 * Метод ``WebPage::pageSelector()`` объявлен устаревшим.
 * Свойство Eresus::$plugins объявлено устаревшим. Вместо него следует использовать
   `Eresus_Plugin_Registry::getInstance <api/classes/Eresus_Plugin_Registry.html#method_getInstance>`_.
 * Функция ErrorMessage объявлена устаревшей, вместо нее следует использовать
   `Eresus_CMS_Page::addErrorMessage <api/classes/Eresus_CMS_Page.html#method_addErrorMessage>`_.
-* Функция InfoMessage объявлена устаревшей.
-* Функция ErrorBox объявлена устаревшей.
-* Функция InfoBox объявлена устаревшей.
+* Следующие классы объявлены устаревшими: `TContentPlugin <api/classes/TContentPlugin.html>`_,
+  Core, EresusFsRuntimeException, EresusPropertyNotExistsException, EresusRuntimeException,
+  EresusTypeException
+* Следующие функции объявлены устаревшими: InfoMessage, ErrorBox, InfoBox, useLib.
 
 .. note::
    Полный список устаревших элементов можно найти `здесь <api/deprecated.html>`_.

@@ -238,7 +238,6 @@ class HTTP
      * Object instancing only once
      *
      * @return Eresus_HTTP_Request
-     * @deprecated с 3.01 вместо работы с глобальным экземпляром, его следует передавать как аргумент
      */
     static public function request()
     {
@@ -254,8 +253,6 @@ class HTTP
      *
      * @param string $uri        новый адрес
      * @param bool   $permanent  отправлять заголовок '301 Moved permanently'
-     *
-     * @deprecated с 3.01 используйте {@link Eresus_HTTP_Redirect}
      */
     public static function redirect($uri, $permanent = false)
     {
@@ -292,7 +289,6 @@ class HTTP
      * So if there is nowhere to go back user will be redirected to some fixed URI.
      *
      * @see redirect
-     * @deprecated с 3.01 используйте {@link Eresus_HTTP_Redirect}
      */
     static public function goback()
     {

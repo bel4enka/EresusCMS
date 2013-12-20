@@ -32,9 +32,72 @@
  *
  * @package Eresus
  * @subpackage BC
+ * @deprecated с 3.01
+ */
+class Core
+{
+    /**
+     * @param Exception $e
+     * @deprecated с 3.01 используйте {@link Eresus_Kernel::logException()}
+     */
+    public static function logException(Exception $e)
+    {
+        Eresus_Kernel::logException($e);
+    }
+}
+
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
  * @deprecated с 3.01 используйте {@link Eresus_DB}
  */
 class DB extends Eresus_DB
+{
+}
+
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
+ * @deprecated с 3.01
+ */
+class EresusFsRuntimeException extends RuntimeException
+{
+}
+
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
+ * @deprecated с 3.01
+ */
+class EresusPropertyNotExistsException extends RuntimeException
+{
+}
+
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
+ * @deprecated с 3.01
+ */
+class EresusRuntimeException extends RuntimeException
+{
+}
+
+/**
+ * Класс для обратной совместимости
+ *
+ * @package Eresus
+ * @subpackage BC
+ * @deprecated с 3.01 используйте {@link Eresus_Exception_InvalidArgumentType}
+ */
+class EresusTypeException extends Eresus_Exception_InvalidArgumentType
 {
 }
 
@@ -79,6 +142,13 @@ class Plugins extends Eresus_Plugin_Registry
  * @deprecated с 3.01 используйте {@link Eresus_Template}
  */
 class Template extends Eresus_Template
+{
+}
+
+/**
+ * @deprecated с 3.01
+ */
+function useLib()
 {
 }
 

@@ -50,7 +50,7 @@
      {
        parent::__construct();
        Eresus_Kernel::app()->getEventDispatcher()
-           ->addEventListener('event.name', array($this, 'MyEventHandler'));
+           ->addListener('event.name', array($this, 'MyEventHandler'));
      }
 
 События CMS
