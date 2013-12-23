@@ -87,6 +87,8 @@ class Eresus_Plugin_Registry
      */
     public function __construct()
     {
+        spl_autoload_register(array($this, 'autoload'));
+
         $this->registerBcEventListeners();
         $items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
         if ($items)
@@ -129,8 +131,6 @@ class Eresus_Plugin_Registry
             }
             while (!$success);
         }
-
-        spl_autoload_register(array($this, 'autoload'));
     }
 
     /**
