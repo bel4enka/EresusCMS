@@ -81,6 +81,8 @@ class Plugins
 	 */
 	public function init()
 	{
+        spl_autoload_register(array($this, 'autoload'));
+
 		$items = Eresus_CMS::getLegacyKernel()->db->select('plugins', 'active = 1');
 		if ($items)
 		{
@@ -128,8 +130,6 @@ class Plugins
 				$this->load($item['name']);
 			}
 		}
-
-		spl_autoload_register(array($this, 'autoload'));
 	}
 	//-----------------------------------------------------------------------------
 
