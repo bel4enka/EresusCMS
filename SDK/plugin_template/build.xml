@@ -2,7 +2,7 @@
 
 <project name="MyPlugin" default="build" basedir="./">
 
-    <property file="build.properties" />
+    <property file="build.properties"/>
 
     <!--
     =====================================================================
@@ -10,14 +10,14 @@
     =====================================================================
     -->
 
-    <!-- Все исходные файлы -->
+    <!-- Исходные файлы модуля -->
     <fileset dir="src" id="files.sources">
-        <include name="**" />
+        <include name="**"/>
     </fileset>
 
-    <!-- Исходные файлы PHP -->
+    <!-- Исходные файлы модуля (только PHP) -->
     <fileset dir="src" id="files.sources.php">
-        <include name="**/*.php" />
+        <include name="**/*.php"/>
     </fileset>
 
     <!--
@@ -28,24 +28,23 @@
     <target name="vendors" description="Fetch 3rd party components">
 
         <if>
-            <available file="vendor" property="." />
-
+            <not>
+                <available file="${project.basedir}/composer.phar" property="."/>
+            </not>
             <then>
-                <composer command="update" />
+                <httpget url="http://getcomposer.org/composer.phar"
+                    dir="${project.basedir}"/>
+                <chmod file="${project.basedir}/composer.phar" mode="0777"/>
             </then>
+        </if>
 
+        <if>
+            <available file="vendor" property="."/>
+            <then>
+                <composer command="update"/>
+            </then>
             <else>
-                <if>
-                    <not>
-                        <available file="${project.basedir}/composer.phar" property="." />
-                    </not>
-                    <then>
-                        <httpget url="http://getcomposer.org/composer.phar"
-                            dir="${project.basedir}" />
-                        <chmod file="${project.basedir}/composer.phar" mode="0777" />
-                    </then>
-                </if>
-                <composer command="install" />
+                <composer command="install"/>
             </else>
         </if>
 
@@ -59,10 +58,10 @@
     <target name="tests" description="Run unit tests">
 
         <phplint>
-            <fileset refid="files.sources.php" />
+            <fileset refid="files.sources.php"/>
         </phplint>
 
-        <mkdir dir="${logs.dir}" />
+        <mkdir dir="${logs.dir}"/>
         <exec
             command="phpunit
                 --log-junit ${logs.dir}/phpunit.xml
@@ -82,14 +81,14 @@
     -->
     <target name="mess" description="Mess detection">
 
-        <mkdir dir="${logs.dir}" />
+        <mkdir dir="${logs.dir}"/>
 
         <phpmd rulesets="${phpmd.rulesets}">
             <formatter
                 type="${phpmd.format}"
                 outfile="${logs.dir}/phpmd.${phpmd.format}"
             />
-            <fileset refid="files.sources.php" />
+            <fileset refid="files.sources.php"/>
         </phpmd>
 
     </target>
@@ -101,15 +100,15 @@
     -->
     <target name="checkstyle" description="Check for coding standards">
 
-        <mkdir dir="${logs.dir}" />
+        <mkdir dir="${logs.dir}"/>
 
         <if>
-            <equals arg1="${phpcs.format}" arg2="checkstyle" />
+            <equals arg1="${phpcs.format}" arg2="checkstyle"/>
             <then>
-                <property name="phpcs.file.extension" value="xml" />
+                <property name="phpcs.file.extension" value="xml"/>
             </then>
             <else>
-                <property name="phpcs.file.extension" value="${phpcs.format}" />
+                <property name="phpcs.file.extension" value="${phpcs.format}"/>
             </else>
         </if>
 
@@ -118,7 +117,7 @@
                 type="${phpcs.format}"
                 outfile="${logs.dir}/phpcs.${phpcs.file.extension}"
             />
-            <fileset refid="files.sources.php" />
+            <fileset refid="files.sources.php"/>
         </phpcodesniffer>
 
     </target>
@@ -131,14 +130,14 @@
 
     <target name="clean" description="Clean up build">
 
-        <delete dir="${distr.dir}" includeemptydirs="true" />
-        <delete dir="${build.dir}" includeemptydirs="true" />
-        <delete dir="${docs.dir}" includeemptydirs="true" />
-        <delete dir="${logs.dir}" includeemptydirs="true" />
-        <delete dir="${phpunit.coverage.html}" includeemptydirs="true" />
-        <delete file="composer.lock" />
-        <delete file="composer.phar" />
-        <delete dir="vendor" includeemptydirs="true" />
+        <delete dir="${distr.dir}" includeemptydirs="true"/>
+        <delete dir="${build.dir}" includeemptydirs="true"/>
+        <delete dir="${docs.dir}" includeemptydirs="true"/>
+        <delete dir="${logs.dir}" includeemptydirs="true"/>
+        <delete dir="${phpunit.coverage.html}" includeemptydirs="true"/>
+        <delete file="composer.lock"/>
+        <delete file="composer.phar"/>
+        <delete dir="vendor" includeemptydirs="true"/>
 
     </target>
 
@@ -150,12 +149,12 @@
 
     <target name="build" description="Build project">
 
-        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.dir}"/>
 
         <copy todir="${build.dir}">
-            <fileset refid="files.sources" />
+            <fileset refid="files.sources"/>
             <filterchain>
-                <expandproperties />
+                <expandproperties/>
             </filterchain>
         </copy>
 
@@ -169,16 +168,16 @@
     <target name="docs" description="Generate documentation">
 
         <if>
-            <available file="${docs.dir}" property="." />
+            <available file="${docs.dir}" property="."/>
             <then>
-                <delete dir="${docs.dir}" includeemptydirs="true" failonerror="true" />
+                <delete dir="${docs.dir}" includeemptydirs="true" failonerror="true"/>
             </then>
         </if>
-        <mkdir dir="${docs.dir}" />
+        <mkdir dir="${docs.dir}"/>
 
 
         <phpdoc2 title="${phing.project.name} ${product.version} API" destdir="${docs.dir}">
-            <fileset refid="files.sources.php" />
+            <fileset refid="files.sources.php"/>
         </phpdoc2>
 
     </target>
@@ -192,10 +191,10 @@
 
         <if>
             <not>
-                <available file="${distr.dir}" property="." />
+                <available file="${distr.dir}" property="."/>
             </not>
             <then>
-                <mkdir dir="${distr.dir}" />
+                <mkdir dir="${distr.dir}"/>
             </then>
         </if>
 
@@ -204,7 +203,7 @@
             compression="bzip2"
         >
             <fileset dir="${build.dir}">
-                <include name="**" />
+                <include name="**"/>
             </fileset>
         </tar>
 
