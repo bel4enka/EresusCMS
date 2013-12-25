@@ -1,6 +1,7 @@
 {
     "name": "[разработчик]/[название]",
     "description": "Модуль «Название» для Eresus CMS",
+    "license": "GPL-3.0",
     "authors":
     [
         {
