@@ -570,7 +570,7 @@ abstract class Eresus_Plugin
      */
     protected function installTemplates()
     {
-        $path = $this->getCodeDir() . '/templates/client';
+        $path = $this->getCodeDir() . '/client/templates';
         if (file_exists($path))
         {
             $ts = Eresus_Template_Service::getInstance();
@@ -591,7 +591,7 @@ abstract class Eresus_Plugin
      */
     protected function uninstallTemplates()
     {
-        $path = $this->getCodeDir() . '/templates/client';
+        $path = $this->getCodeDir() . '/client/templates';
         if (file_exists($path))
         {
             $ts = Eresus_Template_Service::getInstance();
