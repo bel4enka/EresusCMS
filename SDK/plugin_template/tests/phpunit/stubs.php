@@ -9,8 +9,6 @@
 use Mekras\TestDoubles\UniversalStub;
 use Mekras\TestDoubles\MockFacade;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 /**
  * Заглушка для класса Eresus_Plugin
  *
