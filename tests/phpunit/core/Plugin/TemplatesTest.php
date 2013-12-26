@@ -54,11 +54,13 @@ class Eresus_Plugin_TemplatesTest extends Eresus_TestCase
         vfsStream::setup('site', null, array(
             'ext' => array(
                 'foo' => array(
-                    'templates' => array(
-                        'admin' => array(
+                    'admin' => array(
+                        'templates' => array(
                             'Foo.html' => 'admin-foo'
                         ),
-                        'client' => array(
+                    ),
+                    'client' => array(
+                        'templates' => array(
                             'Foo.html' => 'client-foo-ro'
                         )
                     )
