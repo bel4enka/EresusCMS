@@ -1022,12 +1022,12 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                     {
                         if (isset($name))
                         {
-                            $msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
+                            $msg = I18n::getInstance()->getText('An error occurred in plugin "%s".', __CLASS__);
                             $msg = sprintf($msg, $name);
                         }
                         else
                         {
-                            $msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
+                            $msg = I18n::getInstance()->getText('An error occurred module "%s".', __CLASS__);
                             $msg = sprintf($msg, $module);
                         }
 
