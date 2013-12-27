@@ -112,9 +112,9 @@ class TContent
         }
         else
         {
-            $plugins->load($item['type']);
-            $page->module = $plugins->items[$item['type']];
-            $result = $plugins->items[$item['type']]->adminRenderContent();
+            $plugin = $plugins->load($item['type']);
+            $page->module = $plugin;
+            $result = $plugin->adminRenderContent();
         }
         return $result;
     }
