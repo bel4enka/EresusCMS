@@ -977,6 +977,11 @@ class TAdminUI extends Eresus_CMS_Page_Admin
         return $result;
     }
 
+    /**
+     * Отрисовывает область контента страницы
+     *
+     * @return string
+     */
     private function renderContent()
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
