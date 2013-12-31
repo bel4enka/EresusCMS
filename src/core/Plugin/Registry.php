@@ -244,7 +244,7 @@ class Eresus_Plugin_Registry
      *
      * @param string $name  Имя плагина
      *
-     * @return Plugin|TContentPlugin|bool  Экземпляр плагина или false если не удалось загрузить плагин
+     * @return Eresus_Plugin|bool  Экземпляр плагина или false если не удалось загрузить плагин
      *
      * @since 2.10
      */
