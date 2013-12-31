@@ -69,5 +69,38 @@ class Eresus_Admin_ContentProvider_AbstractTest extends Eresus_TestCase
         /** @var Eresus_Admin_ContentProvider_Abstract $provider */
         $provider->adminRender();
     }
+
+    /**
+     * @covers Eresus_Admin_ContentProvider_Abstract::adminRenderContent
+     * @expectedException LogicException
+     */
+    public function testAdminRenderContentNoMethod()
+    {
+        $provider = $this->getMockBuilder('Eresus_Admin_ContentProvider_Abstract')
+            ->setMethods(array('getModule', 'getModuleName'))->getMock();
+        $provider->expects($this->any())->method('getModule')
+            ->will($this->returnValue(new stdClass()));
+        /** @var Eresus_Admin_ContentProvider_Abstract $provider */
+        $provider->adminRenderContent();
+    }
+
+    /**
+     * @covers Eresus_Admin_ContentProvider_Abstract::adminRenderContent
+     * @expectedException RuntimeException
+     */
+    public function testAdminRenderContentException()
+    {
+        $module = $this->getMock('stdClass', array('adminRenderContent'));
+        $module->expects($this->once())->method('adminRenderContent')
+            ->will($this->throwException(new RuntimeException('Bar baz')));
+        $provider = $this->getMockBuilder('Eresus_Admin_ContentProvider_Abstract')
+            ->setMethods(array('getModule', 'getModuleName'))->getMock();
+        $provider->expects($this->any())->method('getModuleName')
+            ->will($this->returnValue('Foo'));
+        $provider->expects($this->any())->method('getModule')
+            ->will($this->returnValue($module));
+        /** @var Eresus_Admin_ContentProvider_Abstract $provider */
+        $provider->adminRenderContent();
+    }
 }
 

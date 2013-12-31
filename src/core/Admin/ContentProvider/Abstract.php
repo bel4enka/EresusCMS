@@ -74,6 +74,37 @@ abstract class Eresus_Admin_ContentProvider_Abstract
     }
 
     /**
+     * Отрисовывает область контента раздела
+     *
+     * @return string  HTML
+     *
+     * @throws LogicException
+     * @throws RuntimeException
+     *
+     * @since 3.01
+     */
+    public function adminRenderContent()
+    {
+        if (!method_exists($this->getModule(), 'adminRenderContent'))
+        {
+            throw new LogicException(sprintf(_('Метод "%s" не найден в классе "%s".'),
+                'adminRenderContent`
+                ', get_class($this->getModule())));
+        }
+        try
+        {
+            $html = $this->getModule()->adminRenderContent();
+        }
+        catch (Exception $e)
+        {
+            throw new RuntimeException(
+                sprintf(_('В модуле %s произошла ошибка: %s'), $this->getModuleName(),
+                    $e->getMessage(), 0, $e));
+        }
+        return $html;
+    }
+
+    /**
      * Возвращает модуль-поставщик
      *
      * @return object

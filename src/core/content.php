@@ -113,8 +113,15 @@ class TContent
         else
         {
             $plugin = $plugins->load($item['type']);
+            if (false === $plugin)
+            {
+                return ErrorBox(
+                    sprintf(_('Отсутствует модуль расширения для работы с разделами типа "%s"'),
+                        $item['type']));
+            }
             $page->module = $plugin;
-            $result = $plugin->adminRenderContent();
+            $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+            $result = $provider->adminRenderContent();
         }
         return $result;
     }
