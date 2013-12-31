@@ -981,13 +981,20 @@ class TAdminUI extends Eresus_CMS_Page_Admin
     {
         Eresus_Kernel::log(__METHOD__, LOG_DEBUG, '()');
 
+        $result = '';
         if (arg('mod'))
         {
             $module = arg('mod', '/[^\w-]/');
             if (substr($module, 0, 4) == 'ext-')
             {
                 $name = substr($module, 4);
-                $this->module = Eresus_CMS::getLegacyKernel()->plugins->load($name);
+                $plugin = Eresus_Plugin_Registry::getInstance()->load($name);
+                if (false === $plugin)
+                {
+                    throw new Eresus_HTTP_Exception_NotFound();
+                }
+                $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+                $this->module = $plugin;
             }
             else
             {
@@ -996,55 +1003,22 @@ class TAdminUI extends Eresus_CMS_Page_Admin
                 {
                     throw new Eresus_HTTP_Exception_NotFound();
                 }
-                $this->module = new $class;
+                $module = new $class;
+                $provider = new Eresus_Admin_ContentProvider_Module($module);
+                $this->module = $module;
             }
 
-            /*
-             * Отрисовка контента плагином
-             */
-            if (is_object($this->module))
+            try
             {
-                if (method_exists($this->module, 'adminRender'))
-                {
-                    try
-                    {
-                        $result = $this->module->adminRender();
-                    }
-                    catch (Exception $e)
-                    {
-                        if (isset($name))
-                        {
-                            $msg = I18n::getInstance()->getText('An error occured in plugin "%s".', __CLASS__);
-                            $msg = sprintf($msg, $name);
-                        }
-                        else
-                        {
-                            $msg = I18n::getInstance()->getText('An error occured module "%s".', __CLASS__);
-                            $msg = sprintf($msg, $module);
-                        }
-
-                        Eresus_Kernel::logException($e);
-
-                        $msg .= '<br />' . $e->getMessage();
-                        $result = ErrorBox($msg);
-                    }
-                }
-                else
-                {
-                    $result = ErrorBox(sprintf(errMethodNotFound, 'adminRender', get_class($this->module)));
-                }
+                $result = $provider->adminRender();
             }
-            else
+            catch (RuntimeException $e)
             {
-                Eresus_Kernel::log(__METHOD__, LOG_ERR, '$module property is not an object');
-                $msg = I18n::getInstance()->getText('ERR_PLUGIN_NOT_AVAILABLE', __CLASS__);
-                $result = ErrorBox(sprintf($msg, isset($name) ? $name : $module));
+                Eresus_Kernel::logException($e);
+                $result = ErrorBox($e->getMessage());
             }
         }
-        else
-        {
-            $result = '';
-        }
+
         if (
             isset(Eresus_CMS::getLegacyKernel()->session['msg']['information']) &&
             count(Eresus_CMS::getLegacyKernel()->session['msg']['information'])
