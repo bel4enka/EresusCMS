@@ -61,7 +61,7 @@ class Eresus_Plugin_Templates
      */
     public function admin($filename)
     {
-        $path = "ext/{$this->plugin->getName()}/templates/admin/$filename";
+        $path = "ext/{$this->plugin->getName()}/admin/templates/$filename";
         return Eresus_Template::loadFromFile($path);
     }
 
