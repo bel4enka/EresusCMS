@@ -47,6 +47,40 @@ class Eresus_Admin_ContentProvider_Plugin extends Eresus_Admin_ContentProvider_A
     }
 
     /**
+     * Отрисовывает интерфейс модуля
+     *
+     * @throws LogicException
+     * @throws RuntimeException
+     *
+     * @return string  HTML
+     *
+     * @since 3.01
+     */
+    public function adminRender()
+    {
+        $this->linkAdminResources();
+        $html = parent::adminRender();
+        return $html;
+    }
+
+    /**
+     * Отрисовывает область контента раздела
+     *
+     * @return string  HTML
+     *
+     * @throws LogicException
+     * @throws RuntimeException
+     *
+     * @since 3.01
+     */
+    public function adminRenderContent()
+    {
+        $this->linkAdminResources();
+        $html = parent::adminRenderContent();
+        return $html;
+    }
+
+    /**
      * Возвращает имя модуля, пригодное для вывода пользователю
      *
      * @return string
@@ -58,6 +92,30 @@ class Eresus_Admin_ContentProvider_Plugin extends Eresus_Admin_ContentProvider_A
         /** @var Eresus_Plugin $plugin */
         $plugin = $this->module;
         return $plugin->getName();
+    }
+
+    /**
+     * Подключает стили и скрипты АИ
+     *
+     * @since 3.01
+     */
+    private function linkAdminResources()
+    {
+        $page = Eresus_Kernel::app()->getPage();
+        /** @var Eresus_Plugin $plugin */
+        $plugin = $this->getModule();
+
+        $resource = '/admin/default.css'; // В будущем «default» можно заменить именем темы
+        if (file_exists($plugin->getCodeDir() . $resource))
+        {
+            $page->linkStyles($plugin->getCodeUrl() . $resource);
+        }
+
+        $resource = '/admin/scripts.js';
+        if (file_exists($plugin->getCodeDir() . $resource))
+        {
+            $page->linkScripts($plugin->getCodeUrl() . $resource);
+        }
     }
 }
 
