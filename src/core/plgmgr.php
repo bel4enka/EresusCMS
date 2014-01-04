@@ -69,13 +69,15 @@ class TPlgMgr
     /**
      * Настройки модуля
      *
+     * @param string $pluginName  имя модуля
+     *
      * @return mixed
      *
      * @throws Eresus_CMS_Exception_NotFound
      */
-    private function edit()
+    private function actionSettings($pluginName)
     {
-        $plugin = Eresus_Plugin_Registry::getInstance()->load(arg('id'));
+        $plugin = Eresus_Plugin_Registry::getInstance()->load($pluginName);
         if (false === $plugin)
         {
             throw new Eresus_CMS_Exception_NotFound;
@@ -87,33 +89,15 @@ class TPlgMgr
         {
             throw new Eresus_CMS_Exception_NotFound;
         }
+
         $html = $controller->getHtml();
+
+        $request = Eresus_Kernel::app()->getLegacyKernel()->request;
+        if ('POST' == $request['method'])
+        {
+            HTTP::redirect(arg('submitURL'));
+        }
         return $html;
-    }
-
-    /**
-     * Настройки модуля
-     *
-     * @return mixed
-     *
-     * @throws Eresus_CMS_Exception_NotFound
-     */
-    private function update()
-    {
-        $plugin = Eresus_Plugin_Registry::getInstance()->load(arg('update'));
-        if (false === $plugin)
-        {
-            throw new Eresus_CMS_Exception_NotFound;
-        }
-
-        $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
-        $controller = $provider->getSettingsController();
-        if (false === $controller)
-        {
-            throw new Eresus_CMS_Exception_NotFound;
-        }
-        $controller->getHtml();
-        HTTP::redirect(arg('submitURL'));
     }
 
     /**
@@ -268,7 +252,7 @@ class TPlgMgr
         switch (true)
         {
             case arg('update') !== null:
-                $this->update();
+                $result = $this->actionSettings(arg('update'));
                 break;
             case arg('toggle') !== null:
                 $this->toggle();
@@ -277,7 +261,7 @@ class TPlgMgr
                 $this->delete();
                 break;
             case arg('id') !== null:
-                $result = $this->edit();
+                $result = $this->actionSettings(arg('id'));
                 break;
             case arg('action') == 'add':
                 $result = $this->add();
@@ -297,7 +281,7 @@ class TPlgMgr
                     ),
                     'controls' => array (
                         'delete' => '',
-                        'edit' => '',
+                        'edit' => 'checkHasSettings',
                         'toggle' => '',
                     ),
                     'tabs' => array(
