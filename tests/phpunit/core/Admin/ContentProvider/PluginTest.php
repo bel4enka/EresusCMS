@@ -51,6 +51,12 @@ class Eresus_Admin_ContentProvider_PluginTest extends Eresus_TestCase
 
         $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
             ->setMethods(array('settings'))->getMock();
+
+        $page = $this->getMock('stdClass');
+        $app = $this->getMock('stdClass', array('getPage'));
+        $app->expects($this->any())->method('getPage')->will($this->returnValue($page));
+        $this->setStaticProperty('Eresus_Kernel', $app, 'app');
+
         $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
         $this->assertInstanceOf('Eresus_Admin_Controller_Content_Interface',
             $provider->getSettingsController());
@@ -75,7 +81,7 @@ class Eresus_Admin_ContentProvider_PluginTest extends Eresus_TestCase
         $plugin->expects($this->any())->method('getCodeDir')
             ->will($this->returnValue(vfsStream::url('foo/bar')));
         $plugin->expects($this->any())->method('getCodeUrl')
-            ->will($this->returnValue('http://foo/bar'));
+            ->will($this->returnValue('http://foo/bar/'));
 
         $provider = $this->getMockBuilder('Eresus_Admin_ContentProvider_Plugin')
             ->disableOriginalConstructor()->setMethods(array('getModule'))->getMock();
