@@ -124,5 +124,17 @@ abstract class Eresus_Admin_ContentProvider_Abstract
      * @since 3.01
      */
     abstract public function getModuleName();
+
+    /**
+     * Возвращает контроллер диалога настроек или false, если настроек у модуля нет
+     *
+     * @return bool|Eresus_Admin_Controller_Content_Interface
+     *
+     * @since 3.01
+     */
+    public function getSettingsController()
+    {
+        return false;
+    }
 }
 

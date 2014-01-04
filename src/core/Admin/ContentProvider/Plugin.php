@@ -95,6 +95,25 @@ class Eresus_Admin_ContentProvider_Plugin extends Eresus_Admin_ContentProvider_A
     }
 
     /**
+     * Возвращает контроллер диалога настроек или false, если настроек у модуля нет
+     *
+     * @return bool|Eresus_Admin_Controller_Content_Interface
+     *
+     * @since 3.01
+     */
+    public function getSettingsController()
+    {
+        /** @var Eresus_Plugin $plugin */
+        $plugin = $this->getModule();
+        if (!method_exists($plugin, 'settings'))
+        {
+            return false;
+        }
+        $controller = new Eresus_Plugin_Controller_Admin_LegacySettings($plugin);
+        return $controller;
+    }
+
+    /**
      * Подключает стили и скрипты АИ
      *
      * @since 3.01
