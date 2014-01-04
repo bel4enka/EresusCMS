@@ -296,5 +296,21 @@ class TPlgMgr
         }
         return $result;
     }
+
+    /**
+     * Проверяет, есть ли у модуля настройки
+     * @param array $item
+     * @return bool
+     */
+    public function checkHasSettings($item)
+    {
+        $plugin = Eresus_Plugin_Registry::getInstance()->load($item['name']);
+        if (false === $plugin)
+        {
+            return false;
+        }
+        $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+        return false !== $provider->getSettingsController();
+    }
 }
 
