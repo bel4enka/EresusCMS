@@ -66,35 +66,53 @@ class TPlgMgr
         HTTP::redirect(Eresus_Kernel::app()->getPage()->url());
     }
 
+    /**
+     * Настройки модуля
+     *
+     * @return mixed
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     */
     private function edit()
     {
-        $plugins = Eresus_Plugin_Registry::getInstance();
-        $plugins->load(arg('id'));
-        if (method_exists($plugins->items[arg('id')], 'settings'))
+        $plugin = Eresus_Plugin_Registry::getInstance()->load(arg('id'));
+        if (false === $plugin)
         {
-            $result = $plugins->items[arg('id', 'word')]->settings();
+            throw new Eresus_CMS_Exception_NotFound;
         }
-        else
+
+        $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+        $controller = $provider->getSettingsController();
+        if (false === $controller)
         {
-            $form = array(
-                'name' => 'InfoWindow',
-                'caption' => Eresus_Kernel::app()->getPage()->title,
-                'width' => '300px',
-                'fields' => array (
-                    array('type'=>'text','value'=>
-                    '<div align="center"><strong>Этот плагин не имеет настроек</strong></div>'),
-                ),
-                'buttons' => array('cancel'),
-            );
-            $result = Eresus_Kernel::app()->getPage()->renderForm($form);
+            throw new Eresus_CMS_Exception_NotFound;
         }
-        return $result;
+        $html = $controller->getHtml();
+        return $html;
     }
 
+    /**
+     * Настройки модуля
+     *
+     * @return mixed
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     */
     private function update()
     {
-        Eresus_CMS::getLegacyKernel()->plugins->load(arg('update'));
-        Eresus_CMS::getLegacyKernel()->plugins->items[arg('update')]->updateSettings();
+        $plugin = Eresus_Plugin_Registry::getInstance()->load(arg('update'));
+        if (false === $plugin)
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+
+        $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+        $controller = $provider->getSettingsController();
+        if (false === $controller)
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+        $controller->getHtml();
         HTTP::redirect(arg('submitURL'));
     }
 
