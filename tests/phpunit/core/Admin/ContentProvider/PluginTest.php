@@ -41,6 +41,22 @@ require_once __DIR__ . '/../../../bootstrap.php';
 class Eresus_Admin_ContentProvider_PluginTest extends Eresus_TestCase
 {
     /**
+     * @covers Eresus_Admin_ContentProvider_Plugin::getSettingsController
+     */
+    public function testGetSettingsController()
+    {
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()->getMock();
+        $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+        $this->assertFalse($provider->getSettingsController());
+
+        $plugin = $this->getMockBuilder('Eresus_Plugin')->disableOriginalConstructor()
+            ->setMethods(array('settings'))->getMock();
+        $provider = new Eresus_Admin_ContentProvider_Plugin($plugin);
+        $this->assertInstanceOf('Eresus_Admin_Controller_Content_Interface',
+            $provider->getSettingsController());
+    }
+
+    /**
      * @covers Eresus_Admin_ContentProvider_Plugin::linkAdminResources
      */
     public function testLinkAdminResources()
