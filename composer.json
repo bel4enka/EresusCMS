@@ -1,4 +1,15 @@
 {
+    "name": "eresus/eresus-cms",
+    "type": "project",
+    "description": "Система управления сайтом",
+    "license": "GPL-3.0",
+    "authors":
+    [
+        {
+            "name": "Михаил Красильников",
+            "email": "m.krasilnikov@yandex.ru"
+        }
+    ],
 	"require":
 	{
 		"mekras/botobor" : "0.3.*",
