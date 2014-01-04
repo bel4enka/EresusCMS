@@ -109,6 +109,7 @@ class Eresus_Admin_ContentProvider_Plugin extends Eresus_Admin_ContentProvider_A
         {
             return false;
         }
+        $this->linkAdminResources();
         $controller = new Eresus_Plugin_Controller_Admin_LegacySettings($plugin);
         return $controller;
     }
