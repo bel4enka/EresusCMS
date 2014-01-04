@@ -125,14 +125,14 @@ class Eresus_Admin_ContentProvider_Plugin extends Eresus_Admin_ContentProvider_A
         /** @var Eresus_Plugin $plugin */
         $plugin = $this->getModule();
 
-        $resource = '/admin/default.css'; // В будущем «default» можно заменить именем темы
-        if (file_exists($plugin->getCodeDir() . $resource))
+        $resource = 'admin/default.css'; // В будущем «default» можно заменить именем темы
+        if (file_exists($plugin->getCodeDir() . '/' . $resource))
         {
             $page->linkStyles($plugin->getCodeUrl() . $resource);
         }
 
-        $resource = '/admin/scripts.js';
-        if (file_exists($plugin->getCodeDir() . $resource))
+        $resource = 'admin/scripts.js';
+        if (file_exists($plugin->getCodeDir() . '/' . $resource))
         {
             $page->linkScripts($plugin->getCodeUrl() . $resource);
         }
