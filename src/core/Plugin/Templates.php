@@ -61,8 +61,7 @@ class Eresus_Plugin_Templates
      */
     public function admin($filename)
     {
-        $path = "ext/{$this->plugin->getName()}/admin/templates/$filename";
-        return Eresus_Template::loadFromFile($path);
+        return Eresus_Template::loadFromFile($this->adminPath($filename, false));
     }
 
     /**
@@ -76,7 +75,7 @@ class Eresus_Plugin_Templates
      */
     public function client($filename)
     {
-        $path = $this->composeClientPath($filename);
+        $path = $this->clientPath($filename, false);
         return Eresus_Template::loadFromFile($path);
     }
 
@@ -91,7 +90,7 @@ class Eresus_Plugin_Templates
      */
     public function clientRead($filename)
     {
-        $path = $this->getFullPath($this->composeClientPath($filename));
+        $path = $this->clientPath($filename);
         return file_get_contents($path);
     }
 
@@ -107,21 +106,44 @@ class Eresus_Plugin_Templates
      */
     public function clientWrite($filename, $source)
     {
-        $path = $this->getFullPath($this->composeClientPath($filename));
+        $path = $this->clientPath($filename);
         file_put_contents($path, $source);
     }
 
     /**
-     * Возвращает путь к клиентскому шаблону
+     * Возвращает путь к шаблону КИ
      *
-     * @param string $filename
-     * @return string
+     * @param string $filename  имя файла относительно папки шаблонов
+     * @param bool   $absolute  если false, то вернёт путь относительно корня сайта
      *
-     * @since 3.01
+     * @return string  путь к файлу шаблона
      */
-    private function composeClientPath($filename)
+    public function clientPath($filename, $absolute = true)
     {
-        return "templates/{$this->plugin->getName()}/$filename";
+        $path = "templates/{$this->plugin->getName()}/$filename";
+        if ($absolute)
+        {
+            $path = $this->getFullPath($path);
+        }
+        return $path;
+    }
+
+    /**
+     * Возвращает путь к шаблону АИ
+     *
+     * @param string $filename  имя файла относительно папки шаблонов
+     * @param bool   $absolute  если false, то вернёт путь относительно корня сайта
+     *
+     * @return string  путь к файлу шаблона
+     */
+    public function adminPath($filename, $absolute = true)
+    {
+        $path = "ext/{$this->plugin->getName()}/admin/templates/$filename";
+        if ($absolute)
+        {
+            $path = $this->getFullPath($path);
+        }
+        return $path;
     }
 
     /**
